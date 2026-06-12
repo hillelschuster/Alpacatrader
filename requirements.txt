@@ -1,0 +1,33 @@
+# Alpacatrader — Attention-First Top-Gainer Trading Bot (Rebuild)
+# Minimum Python 3.11+
+
+# --- Core ---
+pydantic>=2.0
+pydantic-settings>=2.0
+python-dotenv>=1.0
+pyyaml>=6.0
+
+# --- Market Data ---
+yfinance>=0.2.40
+
+# --- Web Scraping ---
+beautifulsoup4>=4.12
+
+# --- HTTP ---
+requests>=2.31
+
+# --- Logging ---
+loguru>=0.7
+
+# --- CLI ---
+click>=8.1
+
+# --- Market Data ---
+alpaca-py>=0.43
+
+# --- Testing ---
+pytest>=8.0
+pytest-cov>=5.0
+
+# --- Linting ---
+ruff>=0.5
