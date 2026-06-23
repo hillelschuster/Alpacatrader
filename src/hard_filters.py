@@ -187,7 +187,10 @@ def check_account_risk(
     *,
     symbol_locked: bool = False,
     max_positions: int = 3,
+    max_open_risk_pct: Optional[float] = None,
+    equity: float = 100_000.0,
     theme_exceeds_limit: bool = False,
+    per_symbol_loss_capped: bool = False,
 ) -> list[str]:
     """Account / symbol risk hard blocks (SPEC §7.5)."""
     blocks: list[str] = []
@@ -202,15 +205,19 @@ def check_account_risk(
     if account.open_position_count >= max_positions:
         blocks.append("max_positions_reached")
 
-    if account.total_open_risk > 0:
-        # max_open_risk is checked by the caller with a threshold
-        pass
+    if max_open_risk_pct is not None and equity > 0:
+        open_risk_pct = account.total_open_risk / equity
+        if open_risk_pct > max_open_risk_pct:
+            blocks.append(f"open_risk_pct_exceeded:{open_risk_pct:.4f}>{max_open_risk_pct}")
 
     if symbol_locked:
         blocks.append("symbol_locked")
 
     if theme_exceeds_limit:
         blocks.append("theme_concentration_limit")
+
+    if per_symbol_loss_capped:
+        blocks.append("per_symbol_loss_cap_breached")
 
     return blocks
 
@@ -254,7 +261,12 @@ def run_hard_filters(
     account: Optional[AccountRiskState] = None,
     symbol_locked: bool = False,
     max_positions: int = 3,
+    max_open_risk_pct: Optional[float] = None,
+    equity: float = 100_000.0,
     theme_exceeds_limit: bool = False,
+    per_symbol_loss_capped: bool = False,
+    # ── Snapshot pre-validation (SPEC §6) ─────────────────
+    snapshot_missing: Optional[list[str]] = None,
 ) -> HardFilterResult:
     """Run every hard filter and return a ``HardFilterResult``.
 
@@ -276,6 +288,11 @@ def run_hard_filters(
         ``passed=True`` when zero hard blocks were found.
     """
     all_blocks: list[str] = []
+
+    # Surface snapshot pre-validation failures (from MarketSnapshot.validate_for_entry)
+    # as explicit hard blocks so the decision record carries the exact missing field.
+    if snapshot_missing:
+        all_blocks.extend(snapshot_missing)
 
     all_blocks.extend(
         check_market_structure(
@@ -327,13 +344,18 @@ def run_hard_filters(
                 account,
                 symbol_locked=symbol_locked,
                 max_positions=max_positions,
+                max_open_risk_pct=max_open_risk_pct,
+                equity=equity,
                 theme_exceeds_limit=theme_exceeds_limit,
+                per_symbol_loss_capped=per_symbol_loss_capped,
             )
         )
     else:
-        # Account not provided — still check symbol lock
+        # Account not provided — still check symbol lock and per-symbol cap
         if symbol_locked:
             all_blocks.append("symbol_locked")
+        if per_symbol_loss_capped:
+            all_blocks.append("per_symbol_loss_cap_breached")
 
     passed = len(all_blocks) == 0
     return HardFilterResult(passed=passed, blocks=all_blocks)

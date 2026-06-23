@@ -12,8 +12,7 @@ Usage::
     if snapshot is not None:
         # use snapshot.bars, snapshot.quote_age_seconds, etc.
 
-Spec: §22.15 items 17, 20 — paper mode must succeed through rebuild path
-with real-time data enrichment.
+Spec: paper mode must succeed through the pipeline with real-time data enrichment.
 """
 
 from __future__ import annotations
@@ -46,10 +45,36 @@ def _compute_ema(values: list[float], period: int) -> Optional[float]:
     return ema
 
 
+def derive_bar_enrichment(
+    bars: list[Bar],
+) -> tuple[Optional[float], Optional[float], Optional[float], Optional[float]]:
+    """Derive shared enrichment math from a bar window.
+
+    Returns ``(vwap, day_high, prior_hod, dollar_volume_5m)``.
+    Shared by live paper-mode and off-hours sim snapshot builders so the
+    enrichment math stays identical in both paths.
+    """
+    total_volume = sum(bar.volume for bar in bars)
+    vwap = (
+        sum(bar.close * bar.volume for bar in bars) / total_volume
+        if total_volume > 0 else None
+    )
+    day_high = max((bar.high for bar in bars), default=None)
+    unique_highs = sorted({bar.high for bar in bars}, reverse=True)
+    prior_hod = unique_highs[1] if len(unique_highs) >= 2 else day_high
+    dollar_volume_5m = sum(bar.close * bar.volume for bar in bars[-5:]) if bars else None
+    return vwap, day_high, prior_hod, dollar_volume_5m
+
+
 # ── Main entry point ────────────────────────────────────────────────────
 
 
-def build_market_snapshot(candidate) -> Optional[MarketSnapshot]:
+def build_market_snapshot(
+    candidate,
+    *,
+    api_key: Optional[str] = None,
+    secret_key: Optional[str] = None,
+) -> Optional[MarketSnapshot]:
     """Fetch real-time quote + bars for *candidate* via Alpaca.
 
     Returns a ``MarketSnapshot`` when Alpaca keys are configured and data
@@ -76,20 +101,18 @@ def build_market_snapshot(candidate) -> Optional[MarketSnapshot]:
         )
         return None
 
-    # Support both naming conventions; prefer ALPACA_* when both are set.
-    api_key = os.getenv("ALPACA_API_KEY") or os.getenv("APCA_API_KEY_ID")
-    secret_key = os.getenv("ALPACA_SECRET_KEY") or os.getenv("APCA_API_SECRET_KEY")
+    _api_key = api_key or os.getenv("ALPACA_API_KEY")
+    _secret_key = secret_key or os.getenv("ALPACA_SECRET_KEY")
 
-    if not api_key or not secret_key:
+    if not _api_key or not _secret_key:
         logger.info(
             "Alpaca API keys not configured — market data enrichment unavailable. "
-            "Set ALPACA_API_KEY / ALPACA_SECRET_KEY "
-            "(or APCA_API_KEY_ID / APCA_API_SECRET_KEY) in .env"
+            "Set ALPACA_API_KEY / ALPACA_SECRET_KEY in .env"
         )
         return None
 
     try:
-        client = StockHistoricalDataClient(api_key, secret_key)
+        client = StockHistoricalDataClient(_api_key, _secret_key)
         now = datetime.now(timezone.utc)
 
         # ── Latest quote ──────────────────────────────────────────
@@ -138,38 +161,9 @@ def build_market_snapshot(candidate) -> Optional[MarketSnapshot]:
             ))
 
         # ── Derived enrichment ────────────────────────────────────
-        vwap: Optional[float] = None
-        ema9: Optional[float] = None
-        day_high: Optional[float] = None
-        prior_hod: Optional[float] = None
-        dollar_volume_5m: Optional[float] = None
-
-        if bars:
-            close_prices = [b.close for b in bars]
-            volumes = [b.volume for b in bars]
-
-            # VWAP over all available bars
-            total_pv = sum(c * v for c, v in zip(close_prices, volumes))
-            total_v = sum(volumes)
-            if total_v > 0:
-                vwap = total_pv / total_v
-
-            # EMA 9
-            ema9 = _compute_ema(close_prices, 9)
-
-            # Day high (from available bars — not the actual session high
-            # without full history, but sufficient for paper estimation)
-            day_high = max(b.high for b in bars)
-
-            # Prior HOD: second-highest distinct high in the window
-            distinct_highs = sorted({b.high for b in bars}, reverse=True)
-            if len(distinct_highs) >= 2:
-                prior_hod = distinct_highs[1]
-
-            # Trailing 5-minute dollar volume
-            last_5 = bars[-5:]
-            if last_5:
-                dollar_volume_5m = sum(b.close * b.volume for b in last_5)
+        close_prices = [b.close for b in bars]
+        ema9 = _compute_ema(close_prices, 9) if bars else None
+        vwap, day_high, prior_hod, dollar_volume_5m = derive_bar_enrichment(bars)
 
         rvol = candidate.relative_volume
 

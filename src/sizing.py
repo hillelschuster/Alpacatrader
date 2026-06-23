@@ -101,5 +101,8 @@ def entry_sizing(
         soft_mult=soft_multiplier,
         data_confidence=data_confidence,
     )
+    # Cap per-trade risk at max_trade_risk_pct * equity (T4.4)
+    max_risk = equity * max_trade_risk_pct
+    adjusted = min(adjusted, max_risk)
     shares = calculate_shares(adjusted, risk_per_share)
     return shares, starter, adjusted, adjusted

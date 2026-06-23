@@ -10,7 +10,7 @@ from unittest.mock import patch
 import pytest
 
 from src.models.schemas import Candidate
-from src.scanner.enrichment import FinvizRow
+from src.scanner.enrichment import FinvizRow, _finviz_is_stale, scrape_finviz_gainers
 from src.scanner.scanner import scan_finviz_candidates, scan_manual_watchlist
 
 
@@ -145,9 +145,45 @@ class TestScanFinvizCandidates:
         assert c.country is None
         assert c.exchange is None
 
+    @patch("src.scanner.scanner.scrape_yfinance_gainers", create=True)
     @patch("src.scanner.scanner.scrape_finviz_gainers")
-    def test_empty_scraper_returns_empty_list(self, mock_scrape):
+    def test_empty_scraper_falls_back_to_yfinance(self, mock_scrape, mock_yf):
+        """Empty Finviz result → yfinance fallback used."""
         mock_scrape.return_value = {}
+        mock_yf.return_value = {"DSY": _make_row("DSY", price=10.50, change_pct=20.0, volume=1_000_000)}
+
+        result = scan_finviz_candidates()
+
+        assert len(result) == 1
+        assert result[0].symbol == "DSY"
+        assert result[0].source == "yfinance_fallback"
+        mock_yf.assert_called_once()
+
+    @patch("src.scanner.scanner.scrape_yfinance_gainers", create=True)
+    @patch("src.scanner.scanner.scrape_finviz_gainers")
+    def test_stale_finviz_falls_back_to_yfinance(self, mock_scrape, mock_yf):
+        """Stale Finviz result → yfinance fallback used."""
+        mock_scrape.return_value = {
+            "A": _make_row("A", change_pct=0.0, volume=0),
+            "B": _make_row("B", change_pct=0.0, volume=0),
+            "C": _make_row("C", change_pct=0.0, volume=0),
+            "D": _make_row("D", change_pct=0.0, volume=1000),
+            "E": _make_row("E", change_pct=10.0, volume=1000),
+        }
+        mock_yf.return_value = {"DSY": _make_row("DSY", price=10.50, change_pct=20.0, volume=1_000_000)}
+
+        result = scan_finviz_candidates()
+
+        assert len(result) == 1
+        assert result[0].symbol == "DSY"
+        assert result[0].source == "yfinance_fallback"
+        mock_yf.assert_called_once()
+
+    @patch("src.scanner.scanner.scrape_yfinance_gainers", create=True)
+    @patch("src.scanner.scanner.scrape_finviz_gainers")
+    def test_empty_scraper_and_empty_fallback_returns_empty_list(self, mock_scrape, mock_yf):
+        mock_scrape.return_value = {}
+        mock_yf.return_value = {}
         result = scan_finviz_candidates()
         assert result == []
 
@@ -233,3 +269,214 @@ class TestScanManualWatchlist:
     def test_empty_list_returns_empty(self):
         result = scan_manual_watchlist([])
         assert result == []
+
+
+# ──────────────────────────────────────────────────────────────────
+#  Task 11 — real parser coverage + stale boundary tests
+# ──────────────────────────────────────────────────────────────────
+
+
+class TestFinvizHtmlParser:
+    """Mocked Finviz HTML parser tests — verifies column mapping."""
+
+    def test_scrape_finviz_gainers_parses_expected_columns(self, monkeypatch):
+        """Plan Step 1: real HTML table → parsed FinvizRow with correct fields."""
+        class FakeResponse:
+            def __init__(self, status_code: int, text: str):
+                self.status_code = status_code
+                self.text = text
+
+        html = """
+        <table class='styled-table-new'>
+          <tr><td>No</td><td>Ticker</td><td>Company</td><td>Sector</td><td>Industry</td><td>Country</td><td>Market Cap</td><td>P/E</td><td>Price</td><td>Change</td><td>Volume</td></tr>
+          <tr><td>1</td><td>DSY</td><td>Demo Sys</td><td>Technology</td><td>Software</td><td>USA</td><td>500M</td><td>-</td><td>10.50</td><td>25.0%</td><td>5.2M</td></tr>
+        </table>
+        """
+        monkeypatch.setattr(
+            "src.scanner.enrichment.requests.get",
+            lambda *a, **k: FakeResponse(200, html),
+        )
+        rows = scrape_finviz_gainers()
+        assert "DSY" in rows
+        assert rows["DSY"].price == 10.5
+        assert rows["DSY"].change_pct == 25.0
+        assert rows["DSY"].volume == 5_200_000  # 5.2M parsed
+        assert rows["DSY"].sector == "Technology"
+        assert rows["DSY"].country == "USA"
+        assert rows["DSY"].market_cap == 500_000_000.0  # 500M parsed
+
+    def test_scrape_finviz_skips_rows_with_fewer_columns(self, monkeypatch):
+        """Rows with <11 columns are skipped, not crashed on."""
+        class FakeResponse:
+            def __init__(self, status_code: int, text: str):
+                self.status_code = status_code
+                self.text = text
+
+        html = """
+        <table class='styled-table-new'>
+          <tr><td>No</td><td>Ticker</td></tr>
+          <tr><td>1</td><td>DSY</td></tr>
+          <tr><td>2</td><td>AAPL</td><td>Apple</td><td>Tech</td><td>Software</td><td>USA</td><td>2T</td><td>30</td><td>195.0</td><td>1.5%</td><td>50M</td></tr>
+        </table>
+        """
+        monkeypatch.setattr(
+            "src.scanner.enrichment.requests.get",
+            lambda *a, **k: FakeResponse(200, html),
+        )
+        rows = scrape_finviz_gainers()
+        # Only the 11-column row survives
+        assert "AAPL" in rows
+        assert "DSY" not in rows
+
+    def test_scrape_finviz_rate_limit_returns_empty(self, monkeypatch):
+        """'Too many requests' in body → empty dict."""
+        class FakeResponse:
+            def __init__(self, status_code: int, text: str):
+                self.status_code = status_code
+                self.text = text
+
+        monkeypatch.setattr(
+            "src.scanner.enrichment.requests.get",
+            lambda *a, **k: FakeResponse(200, "Too many requests"),
+        )
+        rows = scrape_finviz_gainers()
+        assert rows == {}
+
+    def test_scrape_finviz_non_200_returns_empty(self, monkeypatch):
+        """Non-200 status → empty dict."""
+        class FakeResponse:
+            def __init__(self, status_code: int, text: str):
+                self.status_code = status_code
+                self.text = text
+
+        monkeypatch.setattr(
+            "src.scanner.enrichment.requests.get",
+            lambda *a, **k: FakeResponse(503, ""),
+        )
+        rows = scrape_finviz_gainers()
+        assert rows == {}
+
+
+class TestFinvizIsStale:
+    """Plan Step 2: _finviz_is_stale() boundary tests."""
+
+    def test_finviz_is_stale_trips_at_eighty_percent_zero_rows(self):
+        """≥80% zero change OR zero volume → stale."""
+        rows = {
+            "A": FinvizRow(ticker="A", company="", sector="", industry="",
+                          country="", market_cap=0.0, price=0.0, change_pct=0.0, volume=0),
+            "B": FinvizRow(ticker="B", company="", sector="", industry="",
+                          country="", market_cap=0.0, price=0.0, change_pct=0.0, volume=0),
+            "C": FinvizRow(ticker="C", company="", sector="", industry="",
+                          country="", market_cap=0.0, price=0.0, change_pct=0.0, volume=0),
+            "D": FinvizRow(ticker="D", company="", sector="", industry="",
+                          country="", market_cap=0.0, price=0.0, change_pct=0.0, volume=1000),
+            "E": FinvizRow(ticker="E", company="", sector="", industry="",
+                          country="", market_cap=0.0, price=0.0, change_pct=10.0, volume=1000),
+        }
+        assert _finviz_is_stale(rows) is True
+
+    def test_finviz_is_stale_skips_small_result_sets(self):
+        """<3 rows → not enough data to call stale → False."""
+        rows = {
+            "A": FinvizRow(ticker="A", company="", sector="", industry="",
+                          country="", market_cap=0.0, price=0.0, change_pct=0.0, volume=0),
+            "B": FinvizRow(ticker="B", company="", sector="", industry="",
+                          country="", market_cap=0.0, price=0.0, change_pct=0.0, volume=0),
+        }
+        assert _finviz_is_stale(rows) is False
+
+    def test_finviz_is_stale_false_when_most_rows_have_data(self):
+        """<80% zero → not stale."""
+        rows = {
+            "A": FinvizRow(ticker="A", company="", sector="", industry="",
+                          country="", market_cap=0.0, price=10.0, change_pct=5.0, volume=1000),
+            "B": FinvizRow(ticker="B", company="", sector="", industry="",
+                          country="", market_cap=0.0, price=11.0, change_pct=3.0, volume=2000),
+            "C": FinvizRow(ticker="C", company="", sector="", industry="",
+                          country="", market_cap=0.0, price=12.0, change_pct=0.0, volume=0),
+        }
+        assert _finviz_is_stale(rows) is False
+
+    def test_finviz_is_stale_empty_returns_true(self):
+        """Empty result → stale (no data at all)."""
+        assert _finviz_is_stale({}) is True
+
+
+class TestYfinanceWatchlistFilter:
+    """Plan Step 3: yfinance fallback scanner filters ETFs, keeps equities.
+
+    Uses monkeypatch to avoid real network calls.  Verifies the return
+    type is dict and that ETF-like quote types are excluded.
+    """
+
+    def test_scrape_yfinance_gainers_returns_dict(self, monkeypatch):
+        """scrape_yfinance_gainers() returns dict (may be empty if yfinance missing)."""
+        # Force ImportError to exercise the defensive path
+        import builtins
+        real_import = builtins.__import__
+
+        def fake_import(name, *args, **kwargs):
+            if name == "yfinance":
+                raise ImportError("no yfinance in test env")
+            return real_import(name, *args, **kwargs)
+
+        monkeypatch.setattr(builtins, "__import__", fake_import)
+        from src.scanner.enrichment import scrape_yfinance_gainers
+        rows = scrape_yfinance_gainers()
+        assert isinstance(rows, dict)
+
+    def test_scrape_yfinance_filters_etf_quote_types(self, monkeypatch):
+        """ETFs/mutual funds/funds/indexes are filtered out."""
+        class FakeFastInfo:
+            def __init__(self, quote_type, prev, last, vol):
+                self.quote_type = quote_type
+                self.previous_close = prev
+                self.last_price = last
+                self.last_volume = vol
+                self.exchange = "NASDAQ"
+
+        class FakeTicker:
+            def __init__(self, symbol):
+                self._symbol = symbol
+                # Map symbol → fake data
+                data = {
+                    "DSY": ("EQUITY", 10.0, 12.0, 1_000_000),    # equity, +20%, kept
+                    "SPY": ("ETF", 400.0, 402.0, 5_000_000),      # ETF, filtered
+                    "VTI": ("MUTUALFUND", 200.0, 201.0, 2_000_000),  # fund, filtered
+                }
+                qt, prev, last, vol = data.get(symbol, ("EQUITY", 1.0, 1.0, 0))
+                self.fast_info = FakeFastInfo(qt, prev, last, vol)
+
+            @property
+            def info(self):
+                return {
+                    "longName": f"{self._symbol} Inc",
+                    "sector": "Technology",
+                    "industry": "Software",
+                    "country": "USA",
+                    "marketCap": 1_000_000_000,
+                }
+
+        class FakeYf:
+            Ticker = FakeTicker
+
+        import sys
+        sys.modules["yfinance"] = FakeYf
+        try:
+            from src.scanner.enrichment import scrape_yfinance_gainers
+            # Override watchlist to just our test symbols
+            import src.scanner.enrichment as mod
+            original = mod._VOLATILE_WATCHLIST
+            mod._VOLATILE_WATCHLIST = ["DSY", "SPY", "VTI"]
+            try:
+                rows = scrape_yfinance_gainers(min_price=2.0, max_price=20.0, min_gap_pct=5.0)
+            finally:
+                mod._VOLATILE_WATCHLIST = original
+        finally:
+            del sys.modules["yfinance"]
+
+        # Only DSY (equity, +20%, price 12.0 in range) survives
+        assert "DSY" in rows, f"Expected DSY kept, got: {list(rows.keys())}"
+        assert "SPY" not in rows, "ETF must be filtered"
+        assert "VTI" not in rows, "Mutual fund must be filtered"

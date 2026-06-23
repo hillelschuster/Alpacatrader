@@ -1,24 +1,18 @@
-"""CLI rebuild path tests — Batch A (SPEC §22.2, §22.15, §22.16).
+"""CLI path tests.
 
 Verifies:
-  1. Default CLI (``--mode mock --once``) exercises the rebuild path.
-  2. ``RossCameronPipeline`` / ``v3_pipeline`` is NOT imported by default.
-  3. ``--legacy`` is rejected as an unknown option (Click usage error).
-  4. Paper mode emits a clear "rebuild-paper-not-ready" message without
-     mentioning legacy.
-  5. Live mode remains blocked.
-  6. No pillars, anti-patterns, regime, or quality scoring appear in default output.
+  1. Default CLI (--mode mock --once) exercises the pipeline.
+  2. Paper mode runs the pipeline via scanner (monkeypatched).
+  3. Live mode remains blocked.
+  4. Paper mode market-data enrichment works.
 """
 
 from __future__ import annotations
 
-import sys
 from unittest.mock import patch
 
 import pytest
 
-# We import main_cli at module level — it does not import RossCameronPipeline
-# or v3_pipeline at module level.
 from main import main_cli
 
 
@@ -37,29 +31,29 @@ def _run_cli(*args: str) -> tuple[int, str]:
 
 
 # ──────────────────────────────────────────────────────────────────
-#  1. Default mock --once exercises the rebuild path
+#  1. Default mock --once exercises the pipeline
 # ──────────────────────────────────────────────────────────────────
 
 
 class TestDefaultMockOnce:
-    """``python main.py --mode mock --once`` must use rebuild path."""
+    """python main.py --mode mock --once runs the pipeline."""
 
     def test_exit_code_zero(self):
         """Default CLI exits successfully."""
         ec, out = _run_cli("--mode", "mock", "--once")
         assert ec == 0, f"exit code {ec}, output:\n{out}"
 
-    def test_banner_shows_rebuild_flow(self):
-        """Startup banner contains the rebuild pipeline steps."""
+    def test_banner_shows_pipeline_flow(self):
+        """Startup banner contains the pipeline steps."""
         ec, out = _run_cli("--mode", "mock", "--once")
-        assert "Attention" in out, f"Rebuild flow missing from banner:\n{out}"
-        assert "Hard Filters" in out, f"Rebuild flow missing from banner:\n{out}"
-        assert "Entry Setup" in out, f"Rebuild flow missing from banner:\n{out}"
-        assert "Sizing" in out, f"Rebuild flow missing from banner:\n{out}"
-        assert "DecisionRecord" in out, f"Rebuild flow missing from banner:\n{out}"
+        assert "Attention" in out
+        assert "Hard Filters" in out
+        assert "Entry Setup" in out
+        assert "Sizing" in out
+        assert "DecisionRecord" in out
 
-    def test_log_shows_rebuild_flow(self):
-        """Logger output contains the rebuild pipeline steps."""
+    def test_log_shows_pipeline_flow(self):
+        """Logger output contains the pipeline steps."""
         ec, out = _run_cli("--mode", "mock", "--once")
         assert "Scan " in out
         assert "Attention" in out
@@ -68,93 +62,17 @@ class TestDefaultMockOnce:
         assert "Hard Filters" in out
         assert "Move State" in out
 
-    def test_no_legacy_funnel_in_output(self):
-        """Output must NOT mention pillars, anti-patterns, regime, or quality score."""
+    def test_module_names_in_output(self):
+        """Output references the decision pipeline."""
         ec, out = _run_cli("--mode", "mock", "--once")
-        legacy_terms = ["pillar", "anti-pattern", "anti_pattern", "regime",
-                        "quality score", "QualityTier", "A_PLUS"]
-        for term in legacy_terms:
-            assert term.lower() not in out.lower(), \
-                f"Legacy term '{term}' found in default path output:\n{out}"
-
-    def test_rebuild_module_names_in_output(self):
-        """Output references the rebuild decision pipeline."""
-        ec, out = _run_cli("--mode", "mock", "--once")
-        assert "Rebuild Pipeline" in out, f"Rebuild header missing:\n{out}"
+        assert "Pipeline" in out
         assert "decision=" in out, f"Pipeline results missing:\n{out}"
         assert "hard_passed" in out or "hard_" in out, \
             f"Hard filter results missing:\n{out}"
 
 
 # ──────────────────────────────────────────────────────────────────
-#  2. RossCameronPipeline is NOT imported by default
-# ──────────────────────────────────────────────────────────────────
-
-
-class TestDoesNotImportRossCameron:
-    """Prove the default path does NOT import ``RossCameronPipeline``."""
-
-    def test_default_path_does_not_import_ross_cameron(self):
-        """Block import of RossCameronPipeline — default path must not touch it."""
-        import builtins
-
-        original_import = builtins.__import__
-
-        def _guarded_import(name, *args, **kwargs):
-            if "RossCameronPipeline" in str(name):
-                raise AssertionError(
-                    "RossCameronPipeline was imported by the default path!"
-                )
-            if "v3_pipeline" in str(name):
-                raise AssertionError(
-                    "src.pipeline.v3_pipeline was imported by the default path!"
-                )
-            return original_import(name, *args, **kwargs)
-
-        with patch("builtins.__import__", _guarded_import):
-            ec, out = _run_cli("--mode", "mock", "--once")
-            assert ec == 0, f"exit code {ec} when RossCameronPipeline blocked:\n{out}"
-
-    def test_ross_cameron_not_in_sys_modules_after_default(self):
-        """After running default path, RossCameronPipeline must not be in sys.modules."""
-        for mod in list(sys.modules.keys()):
-            if "RossCameronPipeline" in mod or "v3_pipeline" in mod:
-                del sys.modules[mod]
-
-        ec, out = _run_cli("--mode", "mock", "--once")
-        assert ec == 0
-
-        mod_names = list(sys.modules.keys())
-        ross_related = [m for m in mod_names
-                        if "RossCameronPipeline" in m or "v3_pipeline" in m]
-        assert not ross_related, (
-            "RossCameronPipeline / v3_pipeline found in sys.modules after "
-            f"default run: {ross_related}"
-        )
-
-
-# ──────────────────────────────────────────────────────────────────
-#  3. --legacy is rejected
-# ──────────────────────────────────────────────────────────────────
-
-
-class TestLegacyFlagRejected:
-    """``--legacy`` must be rejected as an unknown option."""
-
-    def test_legacy_flag_rejected(self):
-        """--legacy is not a recognised option — Click usage error (exit 2)."""
-        ec, out = _run_cli("--mode", "mock", "--once", "--legacy")
-        assert ec == 2, (
-            f"Expected exit code 2 (Click usage error) for --legacy, "
-            f"got {ec}. Output:\n{out}"
-        )
-        assert "Error" in out or "Usage" in out or "no such option" in out.lower(), (
-            f"Expected Click error message in output:\n{out}"
-        )
-
-
-# ──────────────────────────────────────────────────────────────────
-#  4. Paper mode — rebuild path (Batch D)
+#  Paper mode — pipeline path (via Finviz scanner)
 # ──────────────────────────────────────────────────────────────────
 
 
@@ -181,10 +99,10 @@ def _make_paper_candidates():
 
 
 class TestPaperMode:
-    """Paper mode runs the rebuild path via Finviz scanner (monkeypatched)."""
+    """Paper mode runs the pipeline via Finviz scanner (monkeypatched)."""
 
     def test_paper_once_with_candidates(self):
-        """--mode paper --once exits 0 and shows rebuild paper path/results."""
+        """--mode paper --once exits 0 and shows pipeline results."""
         with patch("src.scanner.scanner.scan_finviz_candidates",
                    return_value=_make_paper_candidates()), \
              patch("src.market_data.build_market_snapshot",
@@ -192,14 +110,10 @@ class TestPaperMode:
             ec, out = _run_cli("--mode", "paper", "--once")
         assert ec == 0, f"exit code {ec}, output:\n{out}"
         assert "Paper Mode" in out, f"Paper Mode header missing:\n{out}"
-        assert "Rebuild Pipeline" in out, f"Rebuild Pipeline header missing:\n{out}"
+        assert "Pipeline" in out, f"Pipeline header missing:\n{out}"
         assert "decision=" in out, f"Pipeline results missing:\n{out}"
         assert "GAPR" in out, f"Candidate GAPR not in output:\n{out}"
         assert "CHIPR" in out, f"Candidate CHIPR not in output:\n{out}"
-        # Must NOT mention legacy
-        assert "legacy" not in out.lower(), (
-            f"Paper mode output must not mention legacy:\n{out}"
-        )
 
     def test_paper_once_no_candidates(self):
         """--mode paper --once with empty scanner exits 0, no-candidates message."""
@@ -211,47 +125,8 @@ class TestPaperMode:
             f"Expected no-candidates message in output:\n{out}"
         )
 
-    def test_paper_once_no_legacy_import(self):
-        """Paper once does not import RossCameronPipeline or v3_pipeline."""
-        import builtins
-
-        original_import = builtins.__import__
-
-        def _guarded_import(name, *args, **kwargs):
-            if "RossCameronPipeline" in str(name):
-                raise AssertionError(
-                    "RossCameronPipeline was imported by paper mode!"
-                )
-            if "v3_pipeline" in str(name):
-                raise AssertionError(
-                    "src.pipeline.v3_pipeline was imported by paper mode!"
-                )
-            return original_import(name, *args, **kwargs)
-
-        with patch("builtins.__import__", _guarded_import):
-            with patch("src.scanner.scanner.scan_finviz_candidates",
-                       return_value=[]):
-                ec, out = _run_cli("--mode", "paper", "--once")
-            assert ec == 0, (
-                f"exit code {ec} when legacy imports blocked:\n{out}"
-            )
-
-    def test_paper_once_no_legacy_terms(self):
-        """Paper output does not mention pillars, anti-patterns, regime, quality."""
-        with patch("src.scanner.scanner.scan_finviz_candidates",
-                   return_value=_make_paper_candidates()), \
-             patch("src.market_data.build_market_snapshot",
-                   return_value=None):
-            ec, out = _run_cli("--mode", "paper", "--once")
-        assert ec == 0, f"exit code {ec}:\n{out}"
-        legacy_terms = ["pillar", "anti-pattern", "anti_pattern", "regime",
-                        "quality score", "QualityTier", "A_PLUS"]
-        for term in legacy_terms:
-            assert term.lower() not in out.lower(), \
-                f"Legacy term '{term}' found in paper output:\n{out}"
-
     def test_paper_loop_starts_trading_app(self):
-        """--mode paper --loop imports and instantiates TradingApp (wired to rebuild)."""
+        """--mode paper --loop imports and instantiates TradingApp."""
         import builtins
 
         original_import = builtins.__import__
@@ -273,7 +148,7 @@ class TestPaperMode:
             # is_running again — mocked run is a no-op, so fine).
             assert ec == 0, f"exit code {ec}:\n{out}"
             assert "Paper Loop" in out, f"Loop mode header missing:\n{out}"
-            assert "Rebuild Pipeline" in out, f"Rebuild header missing:\n{out}"
+            assert "Pipeline" in out, f"Pipeline header missing:\n{out}"
 
 
 # ──────────────────────────────────────────────────────────────────
@@ -295,7 +170,7 @@ class TestLiveMode:
 # ──────────────────────────────────────────────────────────────────
 
 
-def _mock_market_snapshot(candidate):
+def _mock_market_snapshot(candidate, **kwargs):
     """Return a deterministic MarketSnapshot for paper enrichment tests.
 
     Uses real prices so hard filters pass the spread/quote checks.
@@ -326,12 +201,53 @@ def _mock_market_snapshot(candidate):
     )
 
 
+# ──────────────────────────────────────────────────────────────────
+#  7. Paper loop wires broker truth and persistence
+# ──────────────────────────────────────────────────────────────────
+
+
+@pytest.fixture
+def settings() -> "Settings":
+    """Minimal Settings for paper-loop wiring tests."""
+    from config.settings import Settings
+    return Settings()
+
+
+class TestPaperLoopWiring:
+    """Verify _run_paper_loop wires broker_snapshot_fn and persist_path."""
+
+    def test_run_paper_loop_wires_broker_snapshot_and_persist_path(
+        self, monkeypatch, settings,
+    ):
+        """_run_paper_loop must pass broker_snapshot_fn and persist_path to TradingApp."""
+        from main import _run_paper_loop
+
+        captured: dict = {}
+
+        class FakeApp:
+            def __init__(self, **kwargs):
+                captured.update(kwargs)
+
+            def run(self):
+                return None
+
+        monkeypatch.setattr("src.app.TradingApp", FakeApp)
+
+        _run_paper_loop(settings)
+
+        assert callable(captured["broker_snapshot_fn"]), (
+            f"Expected callable broker_snapshot_fn, got {captured.get('broker_snapshot_fn')!r}"
+        )
+        assert captured["persist_path"] == "data/positions.json", (
+            f"Expected persist_path='data/positions.json', got {captured.get('persist_path')!r}"
+        )
+
+
 class TestPaperMarketData:
     """Paper mode market-data enrichment — SPEC §22.15 item 17.
 
     Verifies that paper-mode candidates with injected market data can
-    pass hard filters, and that missing enrichment blocks mechanically
-    (not via legacy checks).
+    pass hard filters, and that missing enrichment blocks mechanically.
     """
 
     def test_paper_with_enrichment_passes_hard_filters(self):
@@ -369,25 +285,3 @@ class TestPaperMarketData:
         assert "no_quote_timestamp" in out or "missing_bid_ask" in out, (
             f"Expected mechanical hard block:\n{out}"
         )
-        # No legacy in output
-        assert "legacy" not in out.lower(), (
-            f"Legacy term in output:\n{out}"
-        )
-
-    def test_paper_no_providers_imported(self):
-        """Paper mode does NOT import src.providers (deleted legacy)."""
-        import builtins
-        original_import = builtins.__import__
-
-        def _guard_providers(name, *args, **kwargs):
-            if "src.providers" in str(name):
-                raise AssertionError("src.providers was imported by paper mode!")
-            return original_import(name, *args, **kwargs)
-
-        with patch("builtins.__import__", _guard_providers):
-            with patch("src.scanner.scanner.scan_finviz_candidates",
-                       return_value=[]):
-                ec, out = _run_cli("--mode", "paper", "--once")
-            assert ec == 0, (
-                f"exit code {ec} when src.providers blocked:\n{out}"
-            )

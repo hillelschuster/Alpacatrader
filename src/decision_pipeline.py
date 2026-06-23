@@ -13,10 +13,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime, time, timezone
-from typing import Optional
+from typing import Callable, Optional
 
 from src.entries import Bar, find_entry
-from src.hard_filters import run_hard_filters
+from src.hard_filters import run_hard_filters, is_past_entry_cutoff, is_watch_only_window
 from src.journal.decision_logger import DecisionLogger
 from src.models.schemas import (
     AccountRiskState,
@@ -30,13 +30,13 @@ from src.models.schemas import (
     MoveState,
     PositionState,
 )
+from src.annotations import map_soft_warnings, soft_warning_multiplier
+from src.classifier_features import derive_classifier_features
 from src.move_classifier import classify_move_state, get_allowed_setups
 from src.paper_execution import PaperExecutionGateway
 from src.scanner.attention import (
     FormerRunnerStore,
-    map_soft_warnings,
     score_attention,
-    soft_warning_multiplier,
 )
 from src.scanner.confidence import calculate_data_confidence, compute_scanner_age_seconds
 from src.sizing import attention_multiplier, entry_sizing
@@ -70,6 +70,22 @@ class MarketSnapshot:
     rvol: Optional[float] = None
     dollar_volume_5m: Optional[float] = None
     halt_count_today: int = 0
+
+    def validate_for_entry(self) -> tuple[bool, list[str]]:
+        """Return (valid, missing_fields) for entry-required snapshot data.
+
+        A snapshot must have a valid price, quote age, and spread to
+        proceed. Missing bars or enrichment are noted but not blocking
+        (hard filters handle those individually).
+        """
+        missing: list[str] = []
+        if not self.candidate.price or self.candidate.price <= 0:
+            missing.append("invalid_or_missing_price")
+        if self.quote_age_seconds is None:
+            missing.append("missing_quote_age")
+        if self.spread_pct is None:
+            missing.append("missing_spread")
+        return len(missing) == 0, missing
 
 
 # ──────────────────────────────────────────────────────────────────
@@ -199,6 +215,7 @@ def run_pipeline(
     # Risk config
     equity: float = 100_000.0,
     starter_risk_pct: float = 0.0025,
+    max_trade_risk_pct: float = 0.01,
     max_positions: int = 3,
     max_open_risk_pct: float = 0.03,
     max_daily_loss_pct: float = 0.03,
@@ -216,6 +233,9 @@ def run_pipeline(
     # News / catalyst status (SPEC §8, §22.12)
     has_news: Optional[bool] = None,
     has_catalyst: Optional[bool] = None,
+    # Snapshot pre-validation + pre-submit quote recheck (SPEC §6, §14)
+    snapshot_missing: Optional[list[str]] = None,
+    pre_submit_quote_fn: Optional[Callable[[Candidate], Optional["MarketSnapshot"]]] = None,
 ) -> PipelineResult:
     """Run the full decision pipeline for one candidate.
 
@@ -288,15 +308,47 @@ def run_pipeline(
         account=account,
         symbol_locked=symbol_locked,
         max_positions=max_positions,
+        max_open_risk_pct=max_open_risk_pct,
+        equity=equity,
+        past_entry_cutoff=is_past_entry_cutoff(et_time) if et_time else False,
+        in_watch_only_window=is_watch_only_window(et_time) if et_time else False,
+        per_symbol_loss_capped=per_symbol_loss_capped,
+        snapshot_missing=snapshot_missing,
     )
     result.hard_blocks = hf.blocks
     result.hard_filter_passed = hf.passed
 
     # ── 5. Move classification ──────────────────────────────────
+    # Derive bar-driven features once and feed them to the classifier
+    # (SPEC §9).  Missing VWAP/day_high degrade gracefully — the
+    # classifier's VWAP-missing safeguard prevents manufacturing BACKSIDE.
+    features = derive_classifier_features(
+        bars or [],
+        price=candidate.price,
+        vwap=vwap,
+        day_high=day_high,
+    )
     state, mode, evidence = classify_move_state(
         price=candidate.price, day_high=day_high, vwap=vwap, ema9=ema9,
         spread_pct=spread_pct, rvol=rvol,
         appeared_recently=(result.attention_score or 0) > 50,
+        avg_range=features.avg_range,
+        lower_highs_count=features.lower_highs_count,
+        consecutive_below_vwap=features.consecutive_below_vwap,
+        higher_low_structure=features.higher_low_structure,
+        strong_volume=features.strong_volume,
+        volume_fading=features.volume_fading,
+        bounces_failing=features.bounces_failing,
+        pullbacks_bought=features.pullbacks_bought,
+        vertical_move=features.vertical_move,
+        vertical_without_pullback=features.vertical_without_pullback,
+        price_moved_pct_5m=features.price_moved_pct_5m,
+        pullback_low=features.pullback_low,
+        nearest_stop_distance_pct=features.nearest_stop_distance_pct,
+        failed_hod_reclaim=features.failed_hod_reclaim,
+        failed_vwap_reclaim=features.failed_vwap_reclaim,
+        hod_behavior_repeated=features.hod_behavior_repeated,
+        has_pullback_formed=features.has_pullback_formed,
     )
     result.move_state = state
     result.move_mode = mode.value
@@ -312,6 +364,7 @@ def run_pipeline(
             signal = find_entry(
                 candidate, bars, state=state,
                 vwap=vwap, ema9=ema9, day_high=day_high, prior_hod=prior_hod,
+                avg_range=features.avg_range,
                 spread_pct=spread_pct, quote_age_seconds=quote_age_seconds,
                 data_confidence=result.data_confidence or 1.0,
                 allowed_setups=allowed_setups,
@@ -327,6 +380,7 @@ def run_pipeline(
                 shares, starter, adj_risk, risk_amount = entry_sizing(
                     equity, signal.risk_per_share,
                     starter_risk_pct=starter_risk_pct,
+                    max_trade_risk_pct=max_trade_risk_pct,
                     attention_score=result.attention_score,
                     soft_multiplier=soft_mult,
                     data_confidence=result.data_confidence or 1.0,
@@ -336,8 +390,27 @@ def run_pipeline(
 
                 # ── 8. Order submission ──────────────────────
                 if shares > 0 and execution_gw is not None:
+                    # ── 8-pre. Pre-submit quote recheck (SPEC §14) ──
+                    # Refresh the quote right before submission; abort to watch
+                    # if the refreshed snapshot is invalid or stale (>5s).
+                    if pre_submit_quote_fn is not None:
+                        refreshed = pre_submit_quote_fn(candidate)
+                        if refreshed is not None:
+                            r_valid, r_missing = refreshed.validate_for_entry()
+                            stale = (
+                                refreshed.quote_age_seconds is not None
+                                and refreshed.quote_age_seconds > 5.0
+                            )
+                            if not r_valid or stale:
+                                result.decision = "watch"
+                                result.decision_reason = "stale_pre_submit_quote"
+                                record = result.to_decision_record()
+                                if logger is not None:
+                                    logger.write(record)
+                                return result
                     try:
-                        sized_signal = signal.model_copy(update={
+                        sized_signal = EntrySignal.model_validate({
+                            **signal.model_dump(),
                             "proposed_shares": shares,
                             "risk_amount": risk_amount,
                         })
@@ -397,12 +470,35 @@ def run_pipeline(
     # ── 9. Exit check (if position exists) ──────────────────────
     if check_exits_for_open and position_store is not None:
         pos = position_store.get(candidate.symbol)
-        if pos is not None and pos.state in (PositionState.OPEN, PositionState.UNPROTECTED):
-            from src.exits import check_exits as run_exits
-            position_unprotected = pos.state == PositionState.UNPROTECTED
+        if pos is not None and pos.state in (PositionState.OPEN, PositionState.UNPROTECTED, PositionState.EXITING):
+            # EXITING timeout recovery: escalate stale EXITING → UNPROTECTED
+            _EXITING_TIMEOUT_S = 120.0  # TODO: promote to Phase1Settings
+            if pos.state == PositionState.EXITING:
+                elapsed = (datetime.now(timezone.utc) - pos.updated_at).total_seconds()
+                if elapsed > _EXITING_TIMEOUT_S and execution_gw is not None:
+                    try:
+                        execution_gw.mark_unprotected(pos.symbol)
+                        pos = position_store.get(candidate.symbol)
+                    except ValueError:
+                        pass
+                    if logger is not None:
+                        logger.warning(
+                            f"EXITING timeout for {candidate.symbol} "
+                            f"({elapsed:.0f}s) → escalated to UNPROTECTED"
+                        )
+                else:
+                    # Within timeout — skip exit checks for EXITING positions
+                    pass
+            # Only run exit engine for non-EXITING positions
+            if pos is not None and pos.state != PositionState.EXITING:
+                from src.exits import check_exits as run_exits
+                position_unprotected = (
+                    pos.state == PositionState.UNPROTECTED
+                    or (execution_gw is not None and not execution_gw._has_pending_stop(pos.symbol))
+                )
             exit_dec = run_exits(
                 pos,
-                current_price=candidate.price or 0,
+                current_price=candidate.price,
                 risk_per_share=pos.entry_price - pos.stop_price if pos.entry_price and pos.stop_price else None,
                 position_unprotected=position_unprotected,
                 spread_pct=spread_pct, quote_age_seconds=quote_age_seconds,

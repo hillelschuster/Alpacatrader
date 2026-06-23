@@ -31,11 +31,10 @@ from src.scanner.attention import (
     detect_themes,
     float_rotation_label,
     is_symbol_in_theme,
-    map_soft_warnings,
     score_attention,
     score_candidates,
-    soft_warning_multiplier,
 )
+from src.annotations import map_soft_warnings, soft_warning_multiplier
 
 
 # ── Helpers ───────────────────────────────────────────────────────
@@ -705,7 +704,7 @@ class TestSoftWarningMultiplier:
 
     def test_multipliers_multiply(self):
         result = soft_warning_multiplier(["price_below_2", "float_unknown"])
-        assert result == pytest.approx(0.25, abs=0.01)  # 0.5 * 0.5 = 0.25
+        assert result == pytest.approx(0.375, abs=0.01)  # 0.5 * 0.75 = 0.375 (T4.6 float_unknown→0.75)
 
     def test_floor_at_0_25(self):
         result = soft_warning_multiplier(["price_below_2", "float_unknown", "parabolic"])
@@ -744,8 +743,8 @@ class TestSoftWarningMultiplier:
         r = soft_warning_multiplier(
             ["no_news", "float_unknown"], attention_score=50,
         )
-        # 0.75 (no_news) * 0.5 (float_unknown) = 0.375
-        assert r == pytest.approx(0.375, abs=0.01)
+        # 0.75 (no_news) * 0.75 (float_unknown) = 0.5625 (T4.6 float_unknown→0.75)
+        assert r == pytest.approx(0.5625, abs=0.01)
 
     def test_news_unknown_does_not_trigger_penalty(self):
         """news_unknown is annotation-only, does not trigger attention-dependent penalty."""
@@ -901,3 +900,143 @@ class TestScoreCandidates:
         dsy_score = next(s for c, s in scored if c.symbol == "DSY").score
         aapl_score = next(s for c, s in scored if c.symbol == "AAPL").score
         assert dsy_score >= aapl_score
+
+
+# ──────────────────────────────────────────────────────────────────
+#  Task 10 — float enrichment + annotation truth
+# ──────────────────────────────────────────────────────────────────
+
+
+class TestFloatEnrichment:
+    """T10: populated float_shares removes float_unknown warning;
+    news/catalyst unknowns stay annotation-only (no penalty)."""
+
+    def test_float_enrichment_removes_universal_float_unknown(self):
+        """Plan Step 4: candidate with float_shares set → no float_unknown."""
+        c = Candidate(symbol="DSY", price=10.50, float_shares=12_000_000)
+        warnings = map_soft_warnings(
+            c,
+            price_range_min=1.0, price_range_max=50.0,
+            quote_age_seconds=2.0, spread_pct=0.5,
+            data_confidence=0.9,
+        )
+        assert "float_unknown" not in warnings, (
+            f"Populated float_shares must remove float_unknown, got: {warnings}"
+        )
+
+    def test_news_unknown_remains_annotation_only_without_source(self):
+        """Plan Step 4: has_news=None → news_unknown warning, but multiplier=1.0."""
+        c = Candidate(symbol="DSY", price=10.50, float_shares=12_000_000)
+        warnings = map_soft_warnings(c, has_news=None, has_catalyst=None)
+        assert "news_unknown" in warnings
+        # Annotation-only: multiplier must stay 1.0 even at low attention
+        mult = soft_warning_multiplier(warnings, attention_score=80)
+        assert mult == 1.0, (
+            f"news_unknown must be annotation-only (mult=1.0), got {mult}"
+        )
+
+    def test_enrich_float_shares_returns_none_when_yfinance_missing(self, monkeypatch):
+        """enrich_float_shares() returns None when yfinance not installed."""
+        import builtins
+        real_import = builtins.__import__
+
+        def fake_import(name, *args, **kwargs):
+            if name == "yfinance":
+                raise ImportError("no yfinance")
+            return real_import(name, *args, **kwargs)
+
+        monkeypatch.setattr(builtins, "__import__", fake_import)
+        from src.scanner.enrichment import enrich_float_shares
+        result = enrich_float_shares("DSY")
+        assert result is None
+
+    def test_enrich_float_shares_returns_int_when_available(self, monkeypatch):
+        """enrich_float_shares() returns int when yfinance provides floatShares."""
+        class FakeInfo(dict):
+            pass
+
+        class FakeTicker:
+            def __init__(self, symbol):
+                self.symbol = symbol
+
+            @property
+            def info(self):
+                return FakeInfo(floatShares=12_500_000)
+
+        class FakeYf:
+            Ticker = FakeTicker
+
+        monkeypatch.setattr("src.scanner.enrichment.yfinance", FakeYf, raising=False)
+        # Also patch the import inside the function
+        import sys
+        sys.modules["yfinance"] = FakeYf
+        from src.scanner.enrichment import enrich_float_shares
+        result = enrich_float_shares("DSY")
+        assert result == 12_500_000
+        del sys.modules["yfinance"]
+
+    def test_enrich_float_shares_returns_none_when_field_missing(self, monkeypatch):
+        """enrich_float_shares() returns None when floatShares key absent."""
+        class FakeInfo(dict):
+            pass
+
+        class FakeTicker:
+            def __init__(self, symbol):
+                self.symbol = symbol
+
+            @property
+            def info(self):
+                return FakeInfo()  # no floatShares key
+
+        class FakeYf:
+            Ticker = FakeTicker
+
+        import sys
+        sys.modules["yfinance"] = FakeYf
+        from src.scanner.enrichment import enrich_float_shares
+        result = enrich_float_shares("DSY")
+        assert result is None
+        del sys.modules["yfinance"]
+
+    def test_enrich_float_shares_returns_none_on_zero(self, monkeypatch):
+        """enrich_float_shares() returns None when floatShares=0 (invalid)."""
+        class FakeInfo(dict):
+            pass
+
+        class FakeTicker:
+            def __init__(self, symbol):
+                self.symbol = symbol
+
+            @property
+            def info(self):
+                return FakeInfo(floatShares=0)
+
+        class FakeYf:
+            Ticker = FakeTicker
+
+        import sys
+        sys.modules["yfinance"] = FakeYf
+        from src.scanner.enrichment import enrich_float_shares
+        result = enrich_float_shares("DSY")
+        assert result is None
+        del sys.modules["yfinance"]
+
+    def test_enrich_float_shares_returns_none_on_exception(self, monkeypatch):
+        """enrich_float_shares() returns None when yfinance raises."""
+        class FakeTicker:
+            def __init__(self, symbol):
+                self.symbol = symbol
+
+            @property
+            def info(self):
+                raise RuntimeError("network error")
+
+        class FakeYf:
+            Ticker = FakeTicker
+
+        import sys
+        sys.modules["yfinance"] = FakeYf
+        from src.scanner.enrichment import enrich_float_shares
+        result = enrich_float_shares("DSY")
+        assert result is None
+        del sys.modules["yfinance"]

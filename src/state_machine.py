@@ -129,6 +129,13 @@ def is_symbol_locked_for_entries(
 #  Candidate lifecycle (SPEC §13.1)
 # ──────────────────────────────────────────────────────────────────
 
+# Reserved for future runtime wiring of lifecycle-aware pipelines.
+# Currently unused in runtime (T7.3) — tested and kept as spec artifacts.
+# Once candidate enrichment and state tracking are wired end-to-end
+# these helpers govern when a candidate has progressed far enough
+# for a given downstream stage (e.g., only STARTER_READY candidates
+# should reach entry sizing).
+
 CANDIDATE_LIFECYCLE = [
     "DISCOVERED",
     "ATTENTION_RANKED",

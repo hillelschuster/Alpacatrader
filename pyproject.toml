@@ -1,14 +1,14 @@
 [project]
 name = "alpacatrader"
 version = "0.4.0"
-description = "Attention-First Top-Gainer Trading Bot — Rebuild"
+description = "Attention-First Top-Gainer Trading Bot"
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
 authors = [
     { name = "Alpacatrader Team" }
 ]
-keywords = ["trading", "momentum", "top-gainer", "finviz", "rebuild"]
+keywords = ["trading", "momentum", "top-gainer", "finviz"]
 
 dependencies = [
     "pydantic>=2.0",

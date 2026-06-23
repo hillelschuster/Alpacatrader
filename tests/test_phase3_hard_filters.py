@@ -461,10 +461,10 @@ class TestRunHardFilters:
 
 
 class TestOldFiltersAreNotHardBlocks:
-    """Per SPEC §20, these legacy concepts must *never* be hard blocks.
+    """Per the spec, these concepts must *never* be hard blocks.
 
     Every single one of these checks must pass — if a candidate is
-    rejected for any of these reasons, the rebuild has failed.
+    rejected for any of these reasons, the design has failed.
     """
 
     def test_chinese_adr_not_hard_blocked(self):

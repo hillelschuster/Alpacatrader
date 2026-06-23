@@ -164,13 +164,13 @@ class TestLossCaps:
 class TestHardStop:
     def test_triggers_at_stop(self):
         p = _pos(stop=10.30)
-        result = check_hard_stop(p, current_price=10.30)
+        result = check_hard_stop(p, current_price=10.30, quote_age_seconds=2.0)
         assert result is not None
         assert "hard_stop" in result.reason
 
     def test_triggers_below_stop(self):
         p = _pos(stop=10.30)
-        result = check_hard_stop(p, current_price=10.20)
+        result = check_hard_stop(p, current_price=10.20, quote_age_seconds=2.0)
         assert result is not None
 
     def test_no_trigger_above_stop(self):
@@ -180,7 +180,7 @@ class TestHardStop:
 
     def test_pnl_r_included(self):
         p = _pos(entry=10.50, stop=10.30, shares=50)
-        result = check_hard_stop(p, current_price=10.30, risk_per_share=0.20)
+        result = check_hard_stop(p, current_price=10.30, risk_per_share=0.20, quote_age_seconds=2.0)
         assert result.pnl is not None
         assert result.pnl_r is not None
 
@@ -195,7 +195,7 @@ class TestInvalidation:
         p = _pos()
         bars = [Bar(10.50, 10.51, 10.20, 10.25, 500)]  # red close below HOD
         result = check_invalidation(p, current_price=10.25, entry_setup="hod_reclaim",
-                                     bars=bars, prior_hod=10.50)
+                                     bars=bars, prior_hod=10.50, quote_age_seconds=2.0)
         assert result is not None
         assert "hod_reclaim_failed" in result.reason
 
@@ -203,7 +203,7 @@ class TestInvalidation:
         p = _pos()
         bars = [Bar(9.90, 9.95, 9.80, 9.85, 500)]  # red, below VWAP
         result = check_invalidation(p, current_price=9.85, entry_setup="vwap_reclaim",
-                                     bars=bars, vwap=10.00)
+                                     bars=bars, vwap=10.00, quote_age_seconds=2.0)
         assert result is not None
 
     def test_no_bars_no_invalidation(self):
@@ -411,9 +411,16 @@ class TestCheckExits:
 
     def test_hard_stop_when_no_emergency(self):
         p = _pos(stop=10.30)
-        result = check_exits(p, current_price=10.29, spread_pct=1.0)
+        result = check_exits(p, current_price=10.29, spread_pct=1.0, quote_age_seconds=2.0)
         assert result is not None
         assert "hard_stop" in result.reason
+
+    def test_stale_quote_30s_blocks_hard_stop(self):
+        p = _pos(stop=10.30)
+        result = check_exits(
+            p, current_price=10.20, spread_pct=0.5, quote_age_seconds=30.0,
+        )
+        assert result is None
 
     def test_no_exit_when_all_clear(self):
         p = _pos(entry=10.50, stop=10.30)
@@ -422,7 +429,7 @@ class TestCheckExits:
 
     def test_returns_exit_decision(self):
         p = _pos(stop=10.30)
-        result = check_exits(p, current_price=10.20)
+        result = check_exits(p, current_price=10.20, quote_age_seconds=2.0)
         assert isinstance(result, ExitDecision)
         assert result.should_exit is True
         assert len(result.reason) > 0

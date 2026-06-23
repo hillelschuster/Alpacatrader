@@ -7,6 +7,7 @@
 - If the user's instruction is ambiguous or you lack critical information to complete it correctly, ASK — do not guess.
 - Never take shortcuts. Verify every claim. No lazy assumptions.
 - Creativity is welcome only within the explicit boundaries of the request. Stay focused on what was asked.
+- Never touch Git (status/diff/log/add/commit/push/etc.) unless the user explicitly asks for Git work.
 
 ### Context7 — Mandatory (Web-Based)
 

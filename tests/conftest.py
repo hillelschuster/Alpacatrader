@@ -1,5 +1,5 @@
 """
-Shared test fixtures for Alpacatrader rebuild.
+Shared test fixtures for Alpacatrader.
 
 Provides common test objects (Candidate, EntrySignal, PaperExecutionGateway)
 used across multiple test files to reduce duplication.

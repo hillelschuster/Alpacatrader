@@ -221,8 +221,8 @@ def _build_signal(
             stop_price=stop_price,
             risk_per_share=risk_per_share,
             target_price=target_price,
-            proposed_shares=1,  # Phase 6 replaces with real sizing
-            risk_amount=risk_per_share,  # Phase 6 replaces
+            proposed_shares=1,  # detector-level placeholder — pipeline sizing overwrites
+            risk_amount=risk_per_share,  # placeholder — pipeline sizing overwrites
             invalidation=invalidation,
             state=state,
             state_evidence=state_evidence or [],

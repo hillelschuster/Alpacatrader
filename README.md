@@ -1,10 +1,10 @@
 # Alpacatrader — Attention-First Top-Gainer Trading Bot
 
-> **Source of truth:** `docs/SPEC.md`
+> **Source of truth:** `SPEC.md`
 
-The rebuild target is an attention-first top-gainer system: find the stocks the market is focused on, identify where risk is definable, enter small, add only when right, scale out fast, and exit when risk control disappears.
+An attention-first top-gainer system: find the stocks the market is focused on, identify where risk is definable, enter small, add only when right, scale out fast, and exit when risk control disappears.
 
-Rebuild path:
+Pipeline:
 
 `Top Gainers → Attention Ranking → Catastrophic Tradeability Checks → Move State → Price-Action Entry → Starter/Add/Scale-Out → Emergency-First Exits`
 
@@ -14,7 +14,7 @@ Rebuild path:
 
 ## Features
 
-- **Rebuild spec**: attention-first top-gainer exploitation model in `docs/SPEC.md`
+- **Attention-first top-gainer** exploitation model in `SPEC.md`
 - **Finviz top-gainer scanner** with yfinance fallback
 - **Mock mode** for end-to-end dry runs without API keys
 - **Paper execution gateway** for order simulation
@@ -87,7 +87,7 @@ python main.py --mode paper --once  # Test with Finviz scanner
 # Mock mode — simulation, no keys required
 python main.py --mode mock --once
 
-# Paper trading — Finviz top-gainer scan through rebuild decision pipeline
+# Paper trading — Finviz top-gainer scan through decision pipeline
 #   (Optionally set ALPACA_API_KEY / ALPACA_SECRET_KEY in .env
 #    for real-time quote/bar enrichment. Paper mode still uses the
 #    local PaperExecutionGateway — no live broker orders are placed.)
@@ -123,7 +123,7 @@ Configuration is loaded from `config/default_config.yaml` and overridden by envi
 | `LOGGING_LEVEL` | `INFO` | Log level (DEBUG, INFO, WARNING, ERROR, CRITICAL) |
 | `LOGGING_DIR` | `./logs` | Log output directory |
 
-Phase 1 rebuild settings (`PHASE1_*` env prefix) control scanner, attention ranking, tradeability, risk, and execution defaults. See `config/default_config.yaml` and `docs/SPEC.md §17`.
+Phase 1 settings (`PHASE1_*` env prefix) control scanner, attention ranking, tradeability, risk, and execution defaults. See `config/default_config.yaml` and `SPEC.md §7`.
 
 ---
 
@@ -144,11 +144,11 @@ The system **refuses to start** if both conditions are not met. This prevents ac
 ├── main.py                          # CLI entry point
 │
 ├── config/
-│   ├── default_config.yaml          # Rebuild defaults
+│   ├── default_config.yaml          # Config defaults
 │   └── settings.py                  # Pydantic settings models
 │
 ├── src/
-│   ├── decision_pipeline.py         # Main rebuild decision pipeline
+│   ├── decision_pipeline.py         # Main decision pipeline
 │   ├── app.py                       # Loop controller (scan → pipeline → sleep)
 │   ├── entries.py                   # Bar model, entry signal detection
 │   ├── exits.py                     # Scale-out, time, technical exits
@@ -171,11 +171,9 @@ The system **refuses to start** if both conditions are not met. This prevents ac
 │   └── journal/
 │       └── decision_logger.py       # Decision record journal
 │
-├── tests/                           # Phase-gate tests
+├── tests/                           # Test suite
 │
-├── docs/
-│   ├── SPEC.md                      # Canonical rebuild specification
-│   └── FINDINGS.md                  # Reference research
+├── archive/                         # Historical planning documents
 │
 ├── data/                            # Runtime data files
 └── logs/                            # Runtime logs

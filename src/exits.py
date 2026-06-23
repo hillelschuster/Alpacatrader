@@ -76,7 +76,7 @@ def _exit_decision(
 def check_emergency_exit(
     position: PositionStateModel,
     *,
-    current_price: float,
+    current_price: Optional[float],
     spread_pct: Optional[float] = None,
     entry_spread_pct: Optional[float] = None,
     quote_age_seconds: Optional[float] = None,
@@ -96,16 +96,20 @@ def check_emergency_exit(
     # Spread explosion
     if spread_pct is not None:
         if spread_pct > 5.0 or (entry_spread_pct is not None and spread_pct > entry_spread_pct * 3):
+            if price is None:
+                return _exit_decision(sym, 100, f"spread_explosion:{spread_pct}%")
             pnl = calculate_pnl(position, price)
             return _exit_decision(sym, 100, f"spread_explosion:{spread_pct}%", exit_price=price, pnl=pnl)
 
     # Quote unreliable — any stale quote >60s flattens (SPEC §12.5, §15.3)
     if quote_age_seconds is not None and quote_age_seconds > 60:
+        if price is None:
+            return _exit_decision(sym, 100, f"quote_unreliable_age:{quote_age_seconds}s")
         pnl = calculate_pnl(position, price)
         return _exit_decision(sym, 100, f"quote_unreliable_age:{quote_age_seconds}s", exit_price=price, pnl=pnl)
 
     # Position unprotected + losing
-    if position_unprotected:
+    if position_unprotected and price is not None:
         pnl = calculate_pnl(position, price)
         if pnl < 0:
             return _exit_decision(sym, 100, "unprotected_and_losing", exit_price=price, pnl=pnl)
@@ -124,17 +128,21 @@ def check_emergency_exit(
 def check_loss_caps(
     position: PositionStateModel,
     *,
-    current_price: float,
+    current_price: Optional[float],
     risk_per_share: Optional[float] = None,
     daily_loss_breached: bool = False,
     per_symbol_loss_capped: bool = False,
 ) -> Optional[ExitDecision]:
     """P2 — Daily loss / per-symbol loss cap (SPEC §12.2 loss-caps)."""
     if daily_loss_breached:
+        if current_price is None:
+            return _exit_decision(position.symbol, 100, "daily_loss_cap_breached")
         pnl = calculate_pnl(position, current_price)
         return _exit_decision(position.symbol, 100, "daily_loss_cap_breached", exit_price=current_price, pnl=pnl)
 
     if per_symbol_loss_capped:
+        if current_price is None:
+            return _exit_decision(position.symbol, 100, "per_symbol_loss_cap_breached")
         pnl = calculate_pnl(position, current_price)
         return _exit_decision(position.symbol, 100, "per_symbol_loss_cap_breached", exit_price=current_price, pnl=pnl)
 
@@ -144,11 +152,20 @@ def check_loss_caps(
 def check_hard_stop(
     position: PositionStateModel,
     *,
-    current_price: float,
+    current_price: Optional[float],
+    quote_age_seconds: Optional[float] = None,
     risk_per_share: Optional[float] = None,
 ) -> Optional[ExitDecision]:
     """P3 — Hard stop triggers when price trades at or below stop (SPEC §12.2)."""
-    if position.stop_price is not None and current_price <= position.stop_price:
+    if (
+        current_price is None
+        or position.stop_price is None
+        or quote_age_seconds is None
+        or quote_age_seconds > 15
+    ):
+        return None
+
+    if current_price <= position.stop_price:
         pnl = calculate_pnl(position, current_price)
         pnl_r = calculate_pnl_r(position, current_price, risk_per_share or 0.01)
         return _exit_decision(
@@ -161,7 +178,8 @@ def check_hard_stop(
 def check_invalidation(
     position: PositionStateModel,
     *,
-    current_price: float,
+    current_price: Optional[float],
+    quote_age_seconds: Optional[float] = None,
     entry_setup: Optional[str] = None,
     bars: Optional[list[Bar]] = None,
     vwap: Optional[float] = None,
@@ -170,6 +188,9 @@ def check_invalidation(
     risk_per_share: Optional[float] = None,
 ) -> Optional[ExitDecision]:
     """P3b — Setup invalidation (SPEC §12.2)."""
+    if current_price is None or quote_age_seconds is None or quote_age_seconds > 15:
+        return None
+
     if not bars or len(bars) < 1:
         return None
 
@@ -213,8 +234,12 @@ def check_missing_protection(
     *,
     position_unprotected: bool = False,
 ) -> Optional[ExitDecision]:
-    """P4 — Missing protection (SPEC §12.1 priority 4)."""
-    if position_unprotected and position.state == PositionState.OPEN:
+    """P4 — Missing protection (SPEC §12.1 priority 4).
+
+    Fires for UNPROTECTED state or when the caller signals that
+    verified protection is absent for an OPEN position.
+    """
+    if position_unprotected or position.state == PositionState.UNPROTECTED:
         return _exit_decision(position.symbol, 100, "missing_protection")
     return None
 
@@ -222,7 +247,7 @@ def check_missing_protection(
 def check_scale_out(
     position: PositionStateModel,
     *,
-    current_price: float,
+    current_price: Optional[float],
     risk_per_share: Optional[float] = None,
     move_state: Optional[MoveState] = None,
     entry_setup: Optional[str] = None,
@@ -230,6 +255,9 @@ def check_scale_out(
     bars: Optional[list[Bar]] = None,
 ) -> Optional[ExitDecision]:
     """P5 — Scale-out triggers (SPEC §12.3)."""
+    if current_price is None:
+        return None
+
     if position.average_entry is None or position.current_shares <= 0:
         return None
 
@@ -277,13 +305,16 @@ def check_scale_out(
 def check_failed_reclaim(
     position: PositionStateModel,
     *,
-    current_price: float,
+    current_price: Optional[float],
     risk_per_share: Optional[float] = None,
     entry_setup: Optional[str] = None,
     bars: Optional[list[Bar]] = None,
     vwap: Optional[float] = None,
 ) -> Optional[ExitDecision]:
     """P6 — Failed reclaim / failed pullback (SPEC §12.1)."""
+    if current_price is None:
+        return None
+
     if not bars or len(bars) < 2:
         return None
     sym = position.symbol
@@ -304,11 +335,14 @@ def check_failed_reclaim(
 def check_vwap_loss(
     position: PositionStateModel,
     *,
-    current_price: float,
+    current_price: Optional[float],
     vwap: Optional[float] = None,
     risk_per_share: Optional[float] = None,
 ) -> Optional[ExitDecision]:
     """P7 — VWAP loss without reclaim (SPEC §12.1)."""
+    if current_price is None:
+        return None
+
     if vwap is not None and current_price < vwap:
         pnl = calculate_pnl(position, current_price)
         pnl_r = calculate_pnl_r(position, current_price, risk_per_share or 0.01)
@@ -323,12 +357,15 @@ def check_vwap_loss(
 def check_spread_expansion(
     position: PositionStateModel,
     *,
-    current_price: float,
+    current_price: Optional[float],
     spread_pct: Optional[float] = None,
     entry_spread_pct: Optional[float] = None,
     risk_per_share: Optional[float] = None,
 ) -> Optional[ExitDecision]:
     """P8 — Spread expansion exit (SPEC §12.1)."""
+    if current_price is None:
+        return None
+
     if spread_pct is not None and entry_spread_pct is not None:
         if spread_pct > entry_spread_pct * 2.0 and spread_pct > 2.0:
             pnl = calculate_pnl(position, current_price)
@@ -342,11 +379,14 @@ def check_spread_expansion(
 def check_volume_disappearance(
     position: PositionStateModel,
     *,
-    current_price: float,
+    current_price: Optional[float],
     bars: Optional[list[Bar]] = None,
     risk_per_share: Optional[float] = None,
 ) -> Optional[ExitDecision]:
     """P9 — Volume/liquidity disappearance (SPEC §12.1)."""
+    if current_price is None:
+        return None
+
     if not bars or len(bars) < 5:
         return None
     recent = bars[-3:]
@@ -371,14 +411,14 @@ def check_time_exit(
 def check_runner_trail(
     position: PositionStateModel,
     *,
-    current_price: float,
+    current_price: Optional[float],
     risk_per_share: Optional[float] = None,
     highest_price_seen: Optional[float] = None,
     bars: Optional[list[Bar]] = None,
     trail_hit: bool = False,
 ) -> Optional[ExitDecision]:
     """P11 — Trailing runner exit (SPEC §12.4)."""
-    if position.state != PositionState.RUNNER:
+    if current_price is None or position.state != PositionState.RUNNER:
         return None
     sym = position.symbol
     price = current_price
@@ -404,7 +444,7 @@ def check_runner_trail(
 def check_exits(
     position: PositionStateModel,
     *,
-    current_price: float,
+    current_price: Optional[float],
     risk_per_share: Optional[float] = None,
     # Emergency
     spread_pct: Optional[float] = None,
@@ -449,12 +489,14 @@ def check_exits(
             daily_loss_breached=daily_loss_breached, per_symbol_loss_capped=per_symbol_loss_capped,
         )),
         ("P3_hard_stop", lambda: check_hard_stop(
-            position, current_price=current_price, risk_per_share=risk_per_share,
+            position, current_price=current_price, quote_age_seconds=quote_age_seconds,
+            risk_per_share=risk_per_share,
         )),
         ("P3b_invalidation", lambda: check_invalidation(
             position, current_price=current_price, entry_setup=entry_setup,
             bars=bars, vwap=vwap, prior_hod=prior_hod,
-            consolidation_low=consolidation_low, risk_per_share=risk_per_share,
+            consolidation_low=consolidation_low, quote_age_seconds=quote_age_seconds,
+            risk_per_share=risk_per_share,
         )),
         ("P4_missing_protection", lambda: check_missing_protection(
             position, position_unprotected=position_unprotected,

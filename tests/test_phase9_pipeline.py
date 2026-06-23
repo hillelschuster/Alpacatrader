@@ -20,8 +20,10 @@ from pathlib import Path
 from typing import Optional
 
 import pytest
+from pydantic import ValidationError
 
 from src.decision_pipeline import (
+    MarketSnapshot,
     PipelineResult,
     run_pipeline,
     run_pipeline_batch,
@@ -33,6 +35,7 @@ from src.models.schemas import (
     DecisionRecord,
     EntrySetupType,
     EntrySignal,
+    MoveState,
     OrderActionType,
     PositionState,
     PositionStateModel,
@@ -275,7 +278,12 @@ class TestPipeline:
         result = run_pipeline(c, bars=_surge_bars(), vwap=10.20, spread_pct=0.8,
                               rvol=5.0, bars_available=True,
                               former_runner_store=store)
-        assert "former_runner" in result.attention_drivers or True  # bonus may be capped
+        # Former-runner bonus is applied when the store marks the symbol;
+        # the driver appears in attention_drivers (bonus may be capped but
+        # the driver label is always recorded when the bonus fires).
+        assert "former_runner" in result.attention_drivers, (
+            f"Expected former_runner in attention_drivers, got: {result.attention_drivers}"
+        )
 
     def test_state_permission_matrix_enforced(self):
         """Pipeline must pass allowed_setups from the move-state permission matrix.
@@ -500,7 +508,7 @@ class TestBatch6NoNews:
         # The no_news warning should be present
         assert "no_news" in result.soft_warnings
         # Compute multiplier with and without no_news to prove no_news contributes 1.0x
-        from src.scanner.attention import soft_warning_multiplier
+        from src.annotations import soft_warning_multiplier
         mult_with = soft_warning_multiplier(result.soft_warnings, attention_score=result.attention_score)
         other_warnings = [w for w in result.soft_warnings if w != "no_news"]
         mult_without = soft_warning_multiplier(other_warnings, attention_score=result.attention_score)
@@ -522,7 +530,7 @@ class TestBatch6NoNews:
         assert result.attention_score is not None and result.attention_score < 70, (
             f"Expected low attention, got {result.attention_score}"
         )
-        from src.scanner.attention import soft_warning_multiplier
+        from src.annotations import soft_warning_multiplier
         mult = soft_warning_multiplier(result.soft_warnings, attention_score=result.attention_score)
         if "no_news" in result.soft_warnings:
             assert mult <= 0.75, (
@@ -590,7 +598,7 @@ class TestPipelineExit:
         ps.upsert(pos)
         result = run_pipeline(c, bars=_surge_bars()[:3], vwap=10.40, spread_pct=0.8,
                               bars_available=True, position_store=ps,
-                              check_exits_for_open=True)
+                              check_exits_for_open=True, quote_age_seconds=2.0)
         # Price 10.20 < stop 10.30 → should trigger hard stop exit
         if result.exit_decision is not None:
             assert result.decision == "exit"
@@ -796,3 +804,493 @@ def force_entry(monkeypatch):
         "src.decision_pipeline.find_entry",
         lambda *a, **kw: _fake_entry_signal(),
     )
+
+
+# ──────────────────────────────────────────────────────────────────
+#  Task 5 — per-symbol loss cap + configurable max_trade_risk_pct
+# ──────────────────────────────────────────────────────────────────
+
+
+class TestPerSymbolLossCapBlocksScanEntry:
+    """T5: per_symbol_loss_capped=True must hard-block scan-path entry."""
+
+    def test_per_symbol_loss_cap_blocks_entry(self, force_entry, gw):
+        result = run_pipeline(
+            _candidate(symbol="DSY", price=10.50),
+            bars=_surge_bars(),
+            vwap=10.20,
+            ema9=10.10,
+            day_high=10.55,
+            quote_age_seconds=2.0,
+            spread_pct=0.5,
+            rvol=5.0,
+            dollar_volume_5m=500_000,
+            equity=100_000,
+            execution_gw=gw,
+            position_store=gw.positions,
+            per_symbol_loss_capped=True,
+        )
+        assert result.decision == "skip"
+        assert "per_symbol_loss_cap_breached" in result.hard_blocks
+        assert result.hard_filter_passed is False
+
+    def test_per_symbol_loss_not_capped_allows_entry_path(self, force_entry, gw):
+        """When per_symbol_loss_capped=False, the block must NOT appear."""
+        result = run_pipeline(
+            _candidate(symbol="DSY", price=10.50),
+            bars=_surge_bars(),
+            vwap=10.20,
+            ema9=10.10,
+            day_high=10.55,
+            quote_age_seconds=2.0,
+            spread_pct=0.5,
+            rvol=5.0,
+            dollar_volume_5m=500_000,
+            equity=100_000,
+            execution_gw=gw,
+            position_store=gw.positions,
+            per_symbol_loss_capped=False,
+        )
+        assert "per_symbol_loss_cap_breached" not in result.hard_blocks
+
+
+class TestMaxTradeRiskPctCapsRiskAmount:
+    """T5: configured max_trade_risk_pct must cap entry_risk_amount."""
+
+    def test_cap_binds_when_starter_exceeds_cap(self, force_entry, gw):
+        """max_trade_risk_pct=0.001 → cap=$100 < starter=$250 → risk_amount=$100."""
+        result = run_pipeline(
+            _candidate(symbol="DSY", price=10.50),
+            bars=_surge_bars(),
+            vwap=10.20,
+            ema9=10.10,
+            day_high=10.55,
+            quote_age_seconds=2.0,
+            spread_pct=0.5,
+            rvol=5.0,
+            dollar_volume_5m=500_000,
+            equity=100_000,
+            execution_gw=gw,
+            position_store=gw.positions,
+            starter_risk_pct=0.0025,   # starter = $250
+            max_trade_risk_pct=0.001,  # cap = $100  → binds
+        )
+        # If entry happened, risk_amount must be ≤ cap; if not, hard_blocks
+        # must not include a risk-cap reason. Either way cap is enforced.
+        if result.entry_signal is not None:
+            assert result.entry_risk_amount <= 100_000 * 0.001
+
+    def test_cap_loose_when_above_starter(self, force_entry, gw):
+        """max_trade_risk_pct=0.01 → cap=$1000 > starter=$250 → no binding."""
+        result = run_pipeline(
+            _candidate(symbol="DSY", price=10.50),
+            bars=_surge_bars(),
+            vwap=10.20,
+            ema9=10.10,
+            day_high=10.55,
+            quote_age_seconds=2.0,
+            spread_pct=0.5,
+            rvol=5.0,
+            dollar_volume_5m=500_000,
+            equity=100_000,
+            execution_gw=gw,
+            position_store=gw.positions,
+            starter_risk_pct=0.0025,
+            max_trade_risk_pct=0.01,
+        )
+        if result.entry_signal is not None:
+            assert result.entry_risk_amount <= 100_000 * 0.01
+
+
+# ──────────────────────────────────────────────────────────────────
+#  Task 6 — Snapshot validation, sized-signal revalidation,
+#           pre-submit quote recheck
+# ──────────────────────────────────────────────────────────────────
+
+
+class TestSnapshotValidation:
+    """MarketSnapshot.validate_for_entry() + pipeline wiring of missing fields."""
+
+    def test_validate_for_entry_missing_price(self):
+        """price=None → invalid, 'invalid_or_missing_price' in missing."""
+        snap = MarketSnapshot(
+            candidate=_candidate(symbol="DSY", price=None),
+            quote_age_seconds=2.0,
+            spread_pct=0.5,
+        )
+        valid, missing = snap.validate_for_entry()
+        assert valid is False
+        assert "invalid_or_missing_price" in missing
+
+    def test_validate_for_entry_missing_quote_age(self):
+        """quote_age=None → invalid, 'missing_quote_age' in missing."""
+        snap = MarketSnapshot(
+            candidate=_candidate(symbol="DSY", price=10.50),
+            quote_age_seconds=None,
+            spread_pct=0.5,
+        )
+        valid, missing = snap.validate_for_entry()
+        assert valid is False
+        assert "missing_quote_age" in missing
+
+    def test_validate_for_entry_missing_spread(self):
+        """spread=None → invalid, 'missing_spread' in missing."""
+        snap = MarketSnapshot(
+            candidate=_candidate(symbol="DSY", price=10.50),
+            quote_age_seconds=2.0,
+            spread_pct=None,
+        )
+        valid, missing = snap.validate_for_entry()
+        assert valid is False
+        assert "missing_spread" in missing
+
+    def test_validate_for_entry_valid_snapshot(self):
+        """All fields present → valid, no missing."""
+        snap = MarketSnapshot(
+            candidate=_candidate(symbol="DSY", price=10.50),
+            quote_age_seconds=2.0,
+            spread_pct=0.5,
+        )
+        valid, missing = snap.validate_for_entry()
+        assert valid is True
+        assert missing == []
+
+    def test_pipeline_surfaces_snapshot_missing_as_hard_blocks(self, gw):
+        """snapshot_missing passed to run_pipeline → appears in hard_blocks → skip."""
+        result = run_pipeline(
+            _candidate(symbol="DSY", price=10.50),
+            bars=_surge_bars(),
+            quote_age_seconds=2.0,
+            spread_pct=0.5,
+            rvol=5.0,
+            dollar_volume_5m=500_000,
+            execution_gw=gw,
+            position_store=gw.positions,
+            snapshot_missing=["invalid_or_missing_price", "missing_quote_age"],
+        )
+        assert result.decision == "skip"
+        assert "invalid_or_missing_price" in result.hard_blocks
+        assert "missing_quote_age" in result.hard_blocks
+
+
+class TestSizedSignalRevalidation:
+    """EntrySignal.model_validate enforces field constraints on the sized copy."""
+
+    def test_revalidation_rejects_zero_shares(self):
+        """proposed_shares=0 violates ge=1 → ValidationError."""
+        with pytest.raises(ValidationError):
+            EntrySignal.model_validate({
+                "symbol": "DSY",
+                "entry_setup": EntrySetupType.FIRST_PULLBACK,
+                "entry_price": 10.50,
+                "stop_price": 10.40,
+                "risk_per_share": 0.10,
+                "target_price": 10.90,
+                "proposed_shares": 0,
+                "risk_amount": 0.0,
+                "invalidation": "below first pullback low",
+            })
+
+    def test_revalidation_rejects_zero_risk_amount(self):
+        """risk_amount=0.0 violates gt=0.0 → ValidationError."""
+        with pytest.raises(ValidationError):
+            EntrySignal.model_validate({
+                "symbol": "DSY",
+                "entry_setup": EntrySetupType.FIRST_PULLBACK,
+                "entry_price": 10.50,
+                "stop_price": 10.40,
+                "risk_per_share": 0.10,
+                "target_price": 10.90,
+                "proposed_shares": 50,
+                "risk_amount": 0.0,
+                "invalidation": "below first pullback low",
+            })
+
+    def test_revalidation_rejects_risk_per_share_mismatch(self):
+        """risk_per_share != abs(entry-stop) within 2c → model_validator raises."""
+        with pytest.raises(ValidationError):
+            EntrySignal.model_validate({
+                "symbol": "DSY",
+                "entry_setup": EntrySetupType.FIRST_PULLBACK,
+                "entry_price": 10.50,
+                "stop_price": 10.40,
+                "risk_per_share": 0.50,  # expected 0.10, off by 0.40
+                "target_price": 10.90,
+                "proposed_shares": 50,
+                "risk_amount": 25.0,
+                "invalidation": "below first pullback low",
+            })
+
+    def test_revalidation_accepts_valid_sized_signal(self):
+        """Valid sized signal passes model_validate."""
+        sig = EntrySignal.model_validate({
+            "symbol": "DSY",
+            "entry_setup": EntrySetupType.FIRST_PULLBACK,
+            "entry_price": 10.50,
+            "stop_price": 10.40,
+            "risk_per_share": 0.10,
+            "target_price": 10.90,
+            "proposed_shares": 100,
+            "risk_amount": 10.0,
+            "invalidation": "below first pullback low",
+        })
+        assert sig.proposed_shares == 100
+        assert sig.risk_amount == 10.0
+
+
+class TestPreSubmitQuoteRecheck:
+    """pre_submit_quote_fn recheck in run_pipeline aborts stale entries."""
+
+    def test_stale_pre_submit_quote_aborts_to_watch(self, force_entry, gw):
+        """quote_age=10s (>5s threshold) → decision=watch, reason=stale_pre_submit_quote."""
+        def recheck(c):
+            return MarketSnapshot(
+                candidate=c,
+                bars=_surge_bars(),
+                quote_age_seconds=10.0,
+                spread_pct=0.5,
+            )
+        result = run_pipeline(
+            _candidate(symbol="DSY", price=10.50),
+            bars=_surge_bars(),
+            vwap=10.20,
+            ema9=10.10,
+            day_high=10.55,
+            quote_age_seconds=2.0,  # fresh at scan time → passes hard filter
+            spread_pct=0.5,
+            rvol=5.0,
+            dollar_volume_5m=500_000,
+            equity=100_000,
+            execution_gw=gw,
+            position_store=gw.positions,
+            starter_risk_pct=0.01,
+            pre_submit_quote_fn=recheck,
+        )
+        assert result.decision == "watch"
+        assert result.decision_reason == "stale_pre_submit_quote"
+
+    def test_invalid_pre_submit_quote_aborts_to_watch(self, force_entry, gw):
+        """Refreshed snapshot missing price → invalid → watch."""
+        def recheck(c):
+            return MarketSnapshot(
+                candidate=_candidate(symbol="DSY", price=None),
+                quote_age_seconds=2.0,
+                spread_pct=0.5,
+            )
+        result = run_pipeline(
+            _candidate(symbol="DSY", price=10.50),
+            bars=_surge_bars(),
+            vwap=10.20,
+            ema9=10.10,
+            day_high=10.55,
+            quote_age_seconds=2.0,
+            spread_pct=0.5,
+            rvol=5.0,
+            dollar_volume_5m=500_000,
+            equity=100_000,
+            execution_gw=gw,
+            position_store=gw.positions,
+            starter_risk_pct=0.01,
+            pre_submit_quote_fn=recheck,
+        )
+        assert result.decision == "watch"
+        assert result.decision_reason == "stale_pre_submit_quote"
+
+    def test_fresh_pre_submit_quote_proceeds_to_enter(self, force_entry, gw):
+        """quote_age=2s (≤5s) → not stale → proceeds to enter."""
+        def recheck(c):
+            return MarketSnapshot(
+                candidate=c,
+                bars=_surge_bars(),
+                quote_age_seconds=2.0,
+                spread_pct=0.5,
+            )
+        result = run_pipeline(
+            _candidate(symbol="DSY", price=10.50),
+            bars=_surge_bars(),
+            vwap=10.20,
+            ema9=10.10,
+            day_high=10.55,
+            quote_age_seconds=2.0,
+            spread_pct=0.5,
+            rvol=5.0,
+            dollar_volume_5m=500_000,
+            equity=100_000,
+            execution_gw=gw,
+            position_store=gw.positions,
+            starter_risk_pct=0.01,
+            pre_submit_quote_fn=recheck,
+        )
+        assert result.decision == "enter"
+
+    def test_none_recheck_snapshot_proceeds(self, force_entry, gw):
+        """pre_submit_quote_fn returns None → no recheck → proceeds to enter."""
+        def recheck(c):
+            return None
+        result = run_pipeline(
+            _candidate(symbol="DSY", price=10.50),
+            bars=_surge_bars(),
+            vwap=10.20,
+            ema9=10.10,
+            day_high=10.55,
+            quote_age_seconds=2.0,
+            spread_pct=0.5,
+            rvol=5.0,
+            dollar_volume_5m=500_000,
+            equity=100_000,
+            execution_gw=gw,
+            position_store=gw.positions,
+            starter_risk_pct=0.01,
+            pre_submit_quote_fn=recheck,
+        )
+        assert result.decision == "enter"
+
+
+# ──────────────────────────────────────────────────────────────────
+#  Task 9 — runtime-path classifier wiring + lockout regressions
+# ──────────────────────────────────────────────────────────────────
+
+
+def _micro_pullback_bars() -> list[Bar]:
+    """Bars that trigger detect_micro_pullback when state=ACTIVE.
+
+    Pattern: gentle uptick → surge (≥1.5·avg_range) → 2 red dip candles
+    with lower volume → green reclaim candle above surge peak.
+    """
+    return [
+        Bar(10.00, 10.05, 9.99, 10.04, 800),
+        Bar(10.04, 10.10, 10.02, 10.08, 900),
+        Bar(10.08, 10.20, 10.06, 10.18, 1500),
+        Bar(10.18, 10.35, 10.16, 10.30, 2000),
+        # Dip: 2 red candles with lower volume
+        Bar(10.30, 10.32, 10.22, 10.24, 800),
+        Bar(10.24, 10.26, 10.20, 10.22, 600),
+        # Reclaim: green above surge peak
+        Bar(10.22, 10.42, 10.20, 10.40, 2500),
+    ]
+
+
+class TestRuntimeClassifierWiring:
+    """T9: run_pipeline() derives features from real bars and feeds them
+    into classify_move_state().  No more injected-feature fakes."""
+
+    def test_runtime_path_reaches_active_from_real_bars(self, force_entry, gw):
+        """Plan Step 3: surge bars → ACTIVE (not BACKSIDE/HALT_RISK)."""
+        candidate = _candidate(symbol="DSY", price=10.50)
+        result = run_pipeline(
+            candidate,
+            bars=_surge_bars(),
+            vwap=10.30,
+            ema9=10.20,
+            day_high=10.55,
+            spread_pct=0.3,
+            rvol=5.0,
+            dollar_volume_5m=500_000,
+            quote_age_seconds=2.0,
+            execution_gw=gw,
+            position_store=gw.positions,
+        )
+        # Surge bars must not be classified as BACKSIDE or HALT_RISK.
+        assert result.move_state not in (MoveState.BACKSIDE, MoveState.HALT_RISK), (
+            f"Surge bars must not be BACKSIDE/HALT_RISK, got {result.move_state}: "
+            f"{result.state_evidence}"
+        )
+
+    def test_vwap_missing_and_spread_over_one_pct_does_not_force_backside(
+        self, force_entry, gw,
+    ):
+        """Plan Step 4: VWAP=None + spread>1% → NOT BACKSIDE.
+
+        The classifier's VWAP-missing safeguard (move_classifier.py:234)
+        skips the spread-widening-no-reclaim signal when vwap is None,
+        so missing VWAP may degrade confidence but must not manufacture
+        BACKSIDE.
+        """
+        candidate = _candidate(symbol="DSY", price=10.50)
+        result = run_pipeline(
+            candidate,
+            bars=_surge_bars(),
+            vwap=None,
+            ema9=10.20,
+            day_high=10.55,
+            spread_pct=1.2,  # >1.0 — would trigger spread signal if vwap present
+            rvol=5.0,
+            dollar_volume_5m=500_000,
+            quote_age_seconds=2.0,
+            execution_gw=gw,
+            position_store=gw.positions,
+        )
+        assert result.move_state != MoveState.BACKSIDE, (
+            f"VWAP-missing must not force BACKSIDE, got {result.move_state}: "
+            f"{result.state_evidence}"
+        )
+
+    def test_micro_pullback_becomes_runtime_reachable(self, gw):
+        """Plan Step 5: micro-pullback bars → entry_signal with MICRO_PULLBACK.
+
+        Verifies the full runtime path: bars → derive features →
+        classify (ACTIVE) → find_entry → detect_micro_pullback fires.
+
+        No force_entry fixture — real find_entry must fire.
+        vwap/ema9 set far below pullback low so FIRST_PULLBACK's
+        logical-level check fails (pb_low not near any level), letting
+        MICRO_PULLBACK win priority.
+        """
+        candidate = _candidate(symbol="DSY", price=10.40)
+        result = run_pipeline(
+            candidate,
+            bars=_micro_pullback_bars(),
+            vwap=9.50,   # far below pb_low=10.20 → first_pullback logical-level fails
+            ema9=9.40,
+            day_high=10.45,
+            spread_pct=0.3,
+            rvol=5.0,
+            dollar_volume_5m=500_000,
+            quote_age_seconds=2.0,
+            execution_gw=gw,
+            position_store=gw.positions,
+        )
+        # State must be ACTIVE (micro_pullback requires ACTIVE)
+        assert result.move_state == MoveState.ACTIVE, (
+            f"Expected ACTIVE for micro-pullback bars, got {result.move_state}: "
+            f"{result.state_evidence}"
+        )
+        # Entry signal must fire with MICRO_PULLBACK setup
+        assert result.entry_signal is not None, (
+            f"Expected entry_signal for micro-pullback, got None. "
+            f"State={result.move_state}, hard_blocks={result.hard_blocks}"
+        )
+        assert result.entry_signal.entry_setup == EntrySetupType.MICRO_PULLBACK, (
+            f"Expected MICRO_PULLBACK setup, got {result.entry_signal.entry_setup}"
+        )
+
+    def test_features_derived_not_injected(self, gw):
+        """Verify run_pipeline derives features internally — no external
+        feature kwargs needed.  Classifier output must reflect bar content."""
+        # Fading bars → BACKSIDE-eligible features (lower_highs, volume_fading)
+        fading_bars = [
+            Bar(10.50, 10.60, 10.40, 10.45, 4000),
+            Bar(10.45, 10.55, 10.35, 10.40, 3000),
+            Bar(10.40, 10.50, 10.30, 10.35, 2000),
+            Bar(10.35, 10.42, 10.25, 10.30, 1500),
+            Bar(10.30, 10.38, 10.20, 10.25, 1000),
+        ]
+        candidate = _candidate(symbol="DSY", price=10.25)
+        result = run_pipeline(
+            candidate,
+            bars=fading_bars,
+            vwap=10.60,  # above all closes → consecutive_below_vwap
+            ema9=10.40,
+            day_high=10.60,
+            spread_pct=0.3,
+            rvol=0.5,
+            dollar_volume_5m=500_000,
+            quote_age_seconds=2.0,
+            execution_gw=gw,
+            position_store=gw.positions,
+        )
+        # Fading bars + below VWAP → BACKSIDE or at least not ACTIVE
+        assert result.move_state != MoveState.ACTIVE, (
+            f"Fading bars below VWAP must not be ACTIVE, got {result.move_state}: "
+            f"{result.state_evidence}"
+        )

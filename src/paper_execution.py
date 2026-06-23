@@ -160,14 +160,15 @@ class PaperExecutionGateway:
     ) -> Optional[PendingOrder]:
         """Ensure a position has active stop protection. Idempotent.
 
-        Returns None if the position is already protected with the same stop.
+        Returns None only if the position already has a verified pending
+        stop at the requested price.  Local stop_price alone is not proof.
         """
         pos = self._positions.get(symbol)
         if pos is None:
             return None
         q = qty if qty is not None else pos.current_shares
-        if pos.stop_price == stop_price:
-            return None  # already protected at this level
+        if pos.stop_price == stop_price and self._has_pending_stop(symbol):
+            return None  # already protected with a verified pending stop
         return self.place_stop(symbol, stop_price, q)
 
     def _has_pending_stop(self, symbol: str) -> bool:
@@ -205,10 +206,16 @@ class PaperExecutionGateway:
         exit_price: Optional[float] = None,
         pnl: Optional[float] = None,
     ) -> tuple[PendingOrder, PositionStateModel]:
-        """Submit a full or partial exit for a position."""
+        """Submit a full or partial exit for a position.
+
+        Cancels existing protective orders before creating sell order
+        to prevent stale-stop / unintended-short hazard.
+        """
         pos = self._positions.get(symbol)
         if pos is None:
             raise ValueError(f"No position for {symbol}")
+
+        self.cancel_stale_orders(symbol)
 
         transition_position(pos, PositionState.EXITING, force=True)
 
@@ -226,14 +233,24 @@ class PaperExecutionGateway:
         return order, pos
 
     def confirm_exit_fill(self, order_id: str) -> PositionStateModel:
-        """Mark an exit as filled, close the position."""
+        """Mark an exit as filled, reduce shares. Close only if zero remain.
+
+        When shares remain after a partial exit, transition back to OPEN
+        and place a new stop for the remaining quantity.
+        """
         for o in self._pending.all_pending():
             if o.order_id == order_id:
                 pos = self._positions.get(o.symbol)
                 if pos is not None:
-                    pos.state = PositionState.CLOSED
-                    pos.current_shares = 0
+                    remaining = max(pos.current_shares - o.qty, 0)
+                    pos.current_shares = remaining
                     pos.updated_at = datetime.now(timezone.utc)
+                    if remaining == 0:
+                        pos.state = PositionState.CLOSED
+                    else:
+                        transition_position(pos, PositionState.OPEN, force=True)
+                        if pos.stop_price is not None:
+                            self.place_stop(pos.symbol, pos.stop_price, remaining)
                     self._positions.upsert(pos)
                 self._pending.resolve(order_id, "filled")
                 if pos is None:
@@ -251,18 +268,17 @@ class PaperExecutionGateway:
         return self._pending.has_pending_buy(symbol)
 
     def mark_unprotected(self, symbol: str) -> PositionStateModel:
-        """Transition an OPEN position to UNPROTECTED state.
+        """Transition an OPEN or EXITING position to UNPROTECTED state.
 
-        Used when stop-loss protection cannot be placed after fill.
-        Makes the protection failure explicit rather than silently
-        leaving the position unprotected.
+        EXITING positions that timed out can be escalated to UNPROTECTED
+        so the exit engine can handle them.
         """
         pos = self._positions.get(symbol)
         if pos is None:
             raise ValueError(f"No position for {symbol}")
-        if pos.state != PositionState.OPEN:
+        if pos.state not in (PositionState.OPEN, PositionState.EXITING):
             raise ValueError(
-                f"Cannot mark unprotected: {symbol} is {pos.state.value}, not OPEN"
+                f"Cannot mark unprotected: {symbol} is {pos.state.value}, not OPEN/EXITING"
             )
         transition_position(pos, PositionState.UNPROTECTED)
         self._positions.upsert(pos)
@@ -292,7 +308,9 @@ class AlpacaExecutionGateway(PaperExecutionGateway):
     """Execution gateway that submits real orders to Alpaca paper API.
 
     Extends ``PaperExecutionGateway`` — overrides submit/confirm/protect
-    to use ``TradingClient``.  Fallback to local simulation on API failure.
+    to use ``TradingClient``.  T6.5: API failures produce explicit errors,
+    never silent synthetic fills.  T6.7: order statuses handled explicitly
+    (filled, partially_filled, rejected, canceled, expired, pending).
     """
 
     def __init__(
@@ -300,10 +318,12 @@ class AlpacaExecutionGateway(PaperExecutionGateway):
         *,
         positions: Optional[PositionStore] = None,
         pending_orders: Optional[PendingOrderStore] = None,
+        api_key: Optional[str] = None,
+        secret_key: Optional[str] = None,
     ) -> None:
         super().__init__(positions=positions, pending_orders=pending_orders)
-        self._api_key = os.getenv("ALPACA_API_KEY") or os.getenv("APCA_API_KEY_ID")
-        self._secret_key = os.getenv("ALPACA_SECRET_KEY") or os.getenv("APCA_API_SECRET_KEY")
+        self._api_key = api_key or os.getenv("ALPACA_API_KEY")
+        self._secret_key = secret_key or os.getenv("ALPACA_SECRET_KEY")
         self._client = None
 
     @property
@@ -313,8 +333,32 @@ class AlpacaExecutionGateway(PaperExecutionGateway):
             self._client = TradingClient(self._api_key, self._secret_key, paper=True)
         return self._client
 
+    # ── Status helpers (T6.7) ───────────────────────────────────
+
+    _FILL_TERMINAL = frozenset({"filled"})
+    _PARTIAL_FILL = frozenset({"partially_filled"})
+    _ERROR_TERMINAL = frozenset({"rejected", "canceled", "expired", "done_for_day"})
+    _PENDING_OPEN = frozenset({"new", "accepted", "pending_new", "pending_cancel", "pending_replace"})
+
+    @staticmethod
+    def _map_alpaca_status(raw_status: str) -> str:
+        """Normalise Alpaca order status to a canonical key."""
+        s = raw_status.lower().replace("_", "")
+        if s in ("fill", "filled"):
+            return "filled"
+        if s in ("partialfill", "partiallyfilled"):
+            return "partially_filled"
+        if s in ("rejected", "canceled", "expired", "doneforday"):
+            return s if s != "doneforday" else "expired"
+        return "pending"
+
+    # ── Entry ───────────────────────────────────────────────────
+
     def submit_entry(self, signal: EntrySignal) -> tuple[PendingOrder, PositionStateModel]:
-        """Submit LIMIT buy order to Alpaca paper account."""
+        """Submit LIMIT buy order to Alpaca paper account (T6.5: no synthetic fallback).
+
+        On API failure, raises RuntimeError — caller must handle escalation.
+        """
         symbol = signal.symbol
         existing = self._positions.get(symbol)
         if existing is not None and existing.state not in (
@@ -336,7 +380,7 @@ class AlpacaExecutionGateway(PaperExecutionGateway):
         )
         self._positions.upsert(position)
 
-        # Submit to Alpaca
+        # Submit to Alpaca — T6.5: no synthetic fallback on failure
         try:
             from alpaca.trading.requests import LimitOrderRequest
             from alpaca.trading.enums import OrderSide, TimeInForce
@@ -349,9 +393,12 @@ class AlpacaExecutionGateway(PaperExecutionGateway):
             )
             alpaca_order = self.client.submit_order(req)
             order_id = str(alpaca_order.id)
-        except Exception:
-            logger.exception("Alpaca submit_entry failed for %s — using synthetic", symbol)
-            order_id = f"paper_entry_{uuid.uuid4().hex[:8]}"
+        except Exception as e:
+            # T6.5: Clean up local state on API failure — no fake order
+            self._positions.remove(symbol)
+            raise RuntimeError(
+                f"Alpaca submit_entry failed for {symbol}: {e}"
+            ) from e
 
         order = PendingOrder(
             symbol=symbol,
@@ -367,37 +414,82 @@ class AlpacaExecutionGateway(PaperExecutionGateway):
         return order, position
 
     def confirm_fill(self, order_id: str) -> PositionStateModel:
-        """Wait for Alpaca fill. Falls back to synthetic fill after timeout."""
+        """Check Alpaca order status (T6.7). No synthetic fill.
+
+        - filled → advance to OPEN
+        - partially_filled → OPEN with filled qty only
+        - rejected/canceled/expired → mark ERROR
+        - pending → stay PENDING_ENTRY (caller must retry)
+        """
         for o in list(self._pending.all_pending()):
             if o.order_id == order_id:
                 pos = self._positions.get(o.symbol)
                 if pos is None:
                     raise ValueError(f"No position for {o.symbol}")
 
-                # Try real fill check
+                # Check real Alpaca order status (T6.7)
                 try:
-                    from alpaca.trading.requests import GetOrdersRequest
-                    from alpaca.trading.enums import QueryOrderStatus
                     alpaca_order = self.client.get_order_by_id(order_id)
-                    if alpaca_order.status == "filled":
-                        filled_price = float(alpaca_order.filled_avg_price or pos.entry_price)
-                        filled_qty = int(float(alpaca_order.filled_qty or 0))
+                    raw_status = str(alpaca_order.status)
+                    status = self._map_alpaca_status(raw_status)
+                except Exception as e:
+                    raise RuntimeError(
+                        f"Alpaca confirm_fill check failed for {o.symbol} order {order_id}: {e}"
+                    ) from e
+
+                if status == "filled":
+                    filled_price = float(getattr(alpaca_order, 'filled_avg_price', None) or pos.entry_price)
+                    filled_qty = int(float(getattr(alpaca_order, 'filled_qty', None) or o.qty))
+                    pos.entry_price = filled_price
+                    pos.average_entry = filled_price
+                    pos.current_shares = filled_qty
+                    transition_position(pos, PositionState.OPEN)
+                    pos.updated_at = datetime.now(timezone.utc)
+                    self._positions.upsert(pos)
+                    self._pending.resolve(order_id, "filled")
+                    return pos
+
+                elif status == "partially_filled":
+                    filled_qty = int(float(getattr(alpaca_order, 'filled_qty', None) or 0))
+                    if filled_qty > 0:
+                        filled_price = float(getattr(alpaca_order, 'filled_avg_price', None) or pos.entry_price)
                         pos.entry_price = filled_price
                         pos.average_entry = filled_price
                         pos.current_shares = filled_qty
-                except Exception:
-                    logger.exception("confirm_fill check failed for %s — simulating fill", o.symbol)
-                    time.sleep(0.5)  # brief wait for paper fill
+                        transition_position(pos, PositionState.OPEN)
+                        pos.updated_at = datetime.now(timezone.utc)
+                        self._positions.upsert(pos)
+                        self._pending.resolve(order_id, "partially_filled")
+                        logger.info(
+                            "Partial fill for %s: %d/%d shares filled",
+                            o.symbol, filled_qty, o.qty,
+                        )
+                    return pos
+                    # Note: if filled_qty is 0, position stays PENDING_ENTRY
 
-                transition_position(pos, PositionState.OPEN)
-                pos.updated_at = datetime.now(timezone.utc)
-                self._positions.upsert(pos)
-                self._pending.resolve(order_id, "filled")
-                return pos
+                elif status in self._ERROR_TERMINAL:
+                    pos.state = PositionState.ERROR
+                    pos.updated_at = datetime.now(timezone.utc)
+                    self._positions.upsert(pos)
+                    self._pending.resolve(order_id, status)
+                    raise RuntimeError(
+                        f"Entry order {order_id} for {o.symbol} was {status} — position set to ERROR"
+                    )
+
+                else:
+                    # pending — no action, caller retries next cycle
+                    logger.debug(
+                        "Entry order %s for %s is %s — awaiting fill",
+                        order_id, o.symbol, raw_status,
+                    )
+                    return pos
+
         raise ValueError(f"Order {order_id} not found in pending")
 
+    # ── Stop / protection ───────────────────────────────────────
+
     def place_stop(self, symbol: str, stop_price: float, qty: int) -> PendingOrder:
-        """Place STOP sell order at Alpaca."""
+        """Place STOP sell order at Alpaca. T6.5: no synthetic fallback."""
         pos = self._positions.get(symbol)
         if pos is None or pos.state != PositionState.OPEN:
             raise ValueError(f"Cannot place stop: {symbol} not in OPEN state")
@@ -415,9 +507,10 @@ class AlpacaExecutionGateway(PaperExecutionGateway):
             )
             alpaca_order = self.client.submit_order(req)
             order_id = str(alpaca_order.id)
-        except Exception:
-            logger.exception("Alpaca stop placement failed for %s — using synthetic", symbol)
-            order_id = f"paper_stop_{uuid.uuid4().hex[:8]}"
+        except Exception as e:
+            raise RuntimeError(
+                f"Alpaca stop placement failed for {symbol}: {e}"
+            ) from e
 
         order = PendingOrder(
             symbol=symbol,
@@ -434,15 +527,49 @@ class AlpacaExecutionGateway(PaperExecutionGateway):
         self._positions.upsert(pos)
         return order
 
+    # ── Cancel ──────────────────────────────────────────────────
+
+    def cancel_order(self, order_id: str) -> bool:
+        """Cancel a pending order at Alpaca, then resolve locally.
+
+        Handles broker errors gracefully (e.g. already-terminal or not-found
+        orders) so the caller can proceed with exit without crashing.
+        """
+        for order in list(self._pending.all_pending()):
+            if order.order_id == order_id:
+                try:
+                    self.client.cancel_order_by_id(order_id)
+                except Exception:
+                    logger.warning(
+                        "Broker cancel failed for order %s, continuing with local cleanup",
+                        order_id,
+                    )
+                self._pending.resolve(order_id, "cancelled")
+                return True
+        return False
+
+    # ── Exit ────────────────────────────────────────────────────
+
     def submit_exit(self, symbol: str, reason: str, *, exit_pct: int = 100,
                     exit_price: Optional[float] = None, pnl: Optional[float] = None,
                     ) -> tuple[PendingOrder, PositionStateModel]:
-        """Submit MARKET sell to Alpaca."""
+        """Submit MARKET sell to Alpaca. T6.5: no synthetic fallback.
+
+        Transitions to EXITING only after the broker call succeeds.
+        On API failure, restores the prior stop protection (if any)
+        so the position does not become an unprotected zombie.
+        """
         pos = self._positions.get(symbol)
         if pos is None:
             raise ValueError(f"No position for {symbol}")
 
-        transition_position(pos, PositionState.EXITING, force=True)
+        # Capture stop state before cancelling (for rollback on failure)
+        had_stop = self._has_pending_stop(symbol)
+        existing_stop = pos.stop_price
+        existing_qty = pos.current_shares
+
+        self.cancel_stale_orders(symbol)
+
         qty = int(pos.current_shares * exit_pct / 100)
         now = datetime.now(timezone.utc)
 
@@ -457,9 +584,22 @@ class AlpacaExecutionGateway(PaperExecutionGateway):
             )
             alpaca_order = self.client.submit_order(req)
             order_id = str(alpaca_order.id)
-        except Exception:
-            logger.exception("Alpaca exit failed for %s — using synthetic", symbol)
-            order_id = f"paper_exit_{uuid.uuid4().hex[:8]}"
+        except Exception as e:
+            # Restore stop protection on submit failure if we had one
+            if had_stop and existing_stop is not None and existing_qty > 0:
+                try:
+                    self.place_stop(symbol, existing_stop, existing_qty)
+                except Exception as restore_err:
+                    logger.error(
+                        "Failed to restore stop for %s after exit failure: %s",
+                        symbol, restore_err,
+                    )
+            raise RuntimeError(
+                f"Alpaca exit failed for {symbol}: {e}"
+            ) from e
+
+        # Only transition to EXITING after successful broker submission
+        transition_position(pos, PositionState.EXITING, force=True)
 
         order = PendingOrder(
             symbol=symbol,
@@ -475,26 +615,87 @@ class AlpacaExecutionGateway(PaperExecutionGateway):
         return order, pos
 
     def confirm_exit_fill(self, order_id: str) -> PositionStateModel:
-        """Confirm exit fill and close position."""
+        """Confirm exit fill from Alpaca (T6.7). No synthetic fill.
+
+        - filled → reduce shares, close if zero
+        - partially_filled → reduce only filled qty
+        - rejected/canceled/expired → mark ERROR
+        - pending → stay EXITING (caller must retry)
+        """
         for o in list(self._pending.all_pending()):
             if o.order_id == order_id:
                 pos = self._positions.get(o.symbol)
-                if pos is not None:
-                    try:
-                        alpaca_order = self.client.get_order_by_id(order_id)
-                        if alpaca_order.status == "filled":
-                            filled_qty = int(float(alpaca_order.filled_qty or 0))
-                            pos.realized_pnl = (float(alpaca_order.filled_avg_price or 0) - (pos.average_entry or 0)) * filled_qty
-                    except Exception:
-                        pass
-                    pos.state = PositionState.CLOSED
-                    pos.current_shares = 0
-                    pos.updated_at = datetime.now(timezone.utc)
-                    self._positions.upsert(pos)
-                self._pending.resolve(order_id, "filled")
                 if pos is None:
                     raise ValueError(f"No position for {o.symbol}")
-                return pos
+
+                # Check real Alpaca order status (T6.7)
+                try:
+                    alpaca_order = self.client.get_order_by_id(order_id)
+                    raw_status = str(alpaca_order.status)
+                    status = self._map_alpaca_status(raw_status)
+                except Exception as e:
+                    raise RuntimeError(
+                        f"Alpaca confirm_exit_fill check failed for {o.symbol} order {order_id}: {e}"
+                    ) from e
+
+                if status == "filled":
+                    filled_qty = int(float(getattr(alpaca_order, 'filled_qty', None) or o.qty))
+                    avg_price = float(getattr(alpaca_order, 'filled_avg_price', None) or 0)
+                    if avg_price > 0 and pos.average_entry:
+                        pos.realized_pnl = (avg_price - pos.average_entry) * filled_qty
+                    remaining = max(pos.current_shares - filled_qty, 0)
+                    pos.current_shares = remaining
+                    pos.updated_at = datetime.now(timezone.utc)
+                    if remaining == 0:
+                        pos.state = PositionState.CLOSED
+                    else:
+                        transition_position(pos, PositionState.OPEN, force=True)
+                        if pos.stop_price is not None:
+                            self.place_stop(pos.symbol, pos.stop_price, remaining)
+                    self._positions.upsert(pos)
+                    self._pending.resolve(order_id, "filled")
+                    return pos
+
+                elif status == "partially_filled":
+                    filled_qty = int(float(getattr(alpaca_order, 'filled_qty', None) or 0))
+                    if filled_qty > 0:
+                        avg_price = float(getattr(alpaca_order, 'filled_avg_price', None) or 0)
+                        if avg_price > 0 and pos.average_entry:
+                            pos.realized_pnl = (avg_price - pos.average_entry) * filled_qty
+                        remaining = max(pos.current_shares - filled_qty, 0)
+                        pos.current_shares = remaining
+                        pos.updated_at = datetime.now(timezone.utc)
+                        if remaining == 0:
+                            pos.state = PositionState.CLOSED
+                        else:
+                            transition_position(pos, PositionState.OPEN, force=True)
+                            if pos.stop_price is not None:
+                                self.place_stop(pos.symbol, pos.stop_price, remaining)
+                        self._positions.upsert(pos)
+                        self._pending.resolve(order_id, "partially_filled")
+                        logger.info(
+                            "Exit partial fill for %s: %d/%d shares filled",
+                            o.symbol, filled_qty, o.qty,
+                        )
+                    return pos
+
+                elif status in self._ERROR_TERMINAL:
+                    pos.state = PositionState.ERROR
+                    pos.updated_at = datetime.now(timezone.utc)
+                    self._positions.upsert(pos)
+                    self._pending.resolve(order_id, status)
+                    raise RuntimeError(
+                        f"Exit order {order_id} for {o.symbol} was {status} — position set to ERROR"
+                    )
+
+                else:
+                    # pending — no action, caller retries next cycle
+                    logger.debug(
+                        "Exit order %s for %s is %s — awaiting fill",
+                        order_id, o.symbol, raw_status,
+                    )
+                    return pos
+
         raise ValueError(f"Order {order_id} not found")
 
 
@@ -630,3 +831,27 @@ def reconcile_positions(
                 })
 
     return actions
+
+
+# ──────────────────────────────────────────────────────────────────
+#  Broker snapshot for Alpaca mode (T6.6)
+# ──────────────────────────────────────────────────────────────────
+
+
+def build_alpaca_broker_snapshot(gateway: AlpacaExecutionGateway) -> Optional[dict[str, tuple[int, float]]]:
+    """Fetch current positions from Alpaca for broker snapshot (T6.6).
+
+    Returns a dict ``{symbol: (qty, avg_entry_price)}`` on success,
+    or ``None`` if the broker is unreachable (T6.2 policy).
+    """
+    try:
+        positions = gateway.client.get_positions()
+        result: dict[str, tuple[int, float]] = {}
+        for pos in positions:
+            qty = int(float(pos.qty))
+            avg_entry = float(getattr(pos, 'avg_entry_price', None) or pos.cost_basis or 0)
+            result[pos.symbol] = (qty, avg_entry)
+        return result
+    except Exception:
+        logger.exception("Failed to fetch broker snapshot from Alpaca")
+        return None

@@ -1,16 +1,17 @@
 # =============================================================
-# Alpacatrader — Rebuild: Attention-First Top-Gainer Bot
+# Alpacatrader — Attention-First Top-Gainer Bot
 # =============================================================
 # All values can be overridden via environment variables.
 # Environment variables take precedence over this file.
-# Updated: 2026-06-11 — Rebuild-defaults supersede legacy v0.3 defaults.
+# Updated: 2026-06-11.
 #
-# Only sections read by the current rebuild code are kept here.
-# See docs/SPEC.md §17 for full phase1 documentation.
+# Only sections read by the current code are kept here.
+# See SPEC.md §7 for full documentation.
 
 trading:
-  mode: paper          # paper | mock | live
+  mode: paper          # paper | mock | live | sim
   live_trading_confirmed: "no"
+  # Alpaca credentials — set via ALPACA_API_KEY / ALPACA_SECRET_KEY env vars (or .env)
 
 logging:
   level: INFO
@@ -19,23 +20,19 @@ logging:
   retention_days: 90
 
 # ──────────────────────────────────────────────────────
-# Phase 1 rebuild — attention-first top-gainer defaults
+# Phase 1 — attention-first top-gainer defaults
 # ──────────────────────────────────────────────────────
 phase1:
   # Data freshness
-  max_quote_age_seconds: 15
-  fresh_quote_seconds: 5
   scanner_interval_seconds: 30
   monitor_interval_seconds: 10
 
   # Scanner
-  max_candidates: 30
   focus_price_min: 1.0
   focus_price_max: 50.0
 
   # Risk defaults
   starter_risk_pct: 0.0025
-  max_trade_risk_pct: 0.01
   max_daily_loss_pct: 0.03
   max_positions: 3
   max_open_risk_pct: 0.03

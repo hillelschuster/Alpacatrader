@@ -3,7 +3,7 @@ Finviz free-tier scanner adapter — ticker discovery only.
 
 Provides the FinvizRow dataclass, Finviz scrape, yfinance fallback scanner,
 and stale-result detection.  No yfinance enrichment (that belongs in a
-separate service), no legacy funnel types.
+separate service).
 """
 
 from typing import Optional
@@ -263,9 +263,11 @@ def _finviz_is_stale(result: dict) -> bool:
     have near-100% nonzero change, and a real trading day should have
     near-100% nonzero volume.
     """
-    if not result or len(result) < 3:
+    if not result:
         return True
     n = len(result)
+    if n < 3:
+        return False  # small result set — not enough data to call stale
     zero_change = sum(1 for r in result.values() if r.change_pct == 0.0)
     zero_volume = sum(1 for r in result.values() if r.volume == 0)
     if zero_change >= n * 0.8:
@@ -273,3 +275,48 @@ def _finviz_is_stale(result: dict) -> bool:
     if zero_volume >= n * 0.8:
         return True
     return False
+
+
+# ── Float enrichment (SPEC §5.3) ───────────────────────────────────
+
+
+def enrich_float_shares(symbol: str) -> Optional[int]:
+    """Fetch float shares for a symbol from yfinance.
+
+    Uses ``yf.Ticker(symbol).info.get("floatShares")`` per Context7-verified
+    yfinance API (ranaroussi/yfinance).  Returns ``None`` when yfinance is
+    unavailable, the ticker is unknown, or ``floatShares`` is missing/zero.
+
+    Bounded: a single info fetch per call.  Callers should cache or batch
+    when scanning many symbols.
+
+    Parameters
+    ----------
+    symbol : str
+        Ticker symbol (e.g. ``"DSY"``).
+
+    Returns
+    -------
+    int or None
+        Float share count, or ``None`` if unavailable.
+    """
+    try:
+        import yfinance as yf
+    except ImportError:
+        logger.debug("yfinance not installed — cannot enrich float for %s", symbol)
+        return None
+
+    try:
+        info = yf.Ticker(symbol).info or {}
+    except Exception:
+        logger.debug("yfinance info fetch failed for %s", symbol)
+        return None
+
+    raw = info.get("floatShares")
+    if raw is None:
+        return None
+    try:
+        val = int(raw)
+    except (TypeError, ValueError):
+        return None
+    return val if val > 0 else None

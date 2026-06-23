@@ -59,10 +59,20 @@ def _load_yaml_config(config_path: Optional[str] = None) -> dict:
 
 
 class TradingSettings(BaseSettings):
-    """Trading-specific settings."""
+    """Trading-specific settings.
+
+    Unknown env vars with ``TRADING_`` prefix are silently ignored
+    (model_config has extra='ignore').  Mis-prefixed keys like
+    ``LIVE_TRADING_CONFIRMED`` without the ``TRADING_`` prefix are
+    also ignored — only correctly-prefixed keys take effect.
+    """
 
     mode: str = "paper"
     live_trading_confirmed: str = "no"
+
+    # Alpaca credentials — read from ALPACA_API_KEY / ALPACA_SECRET_KEY env vars
+    alpaca_api_key: Optional[str] = Field(default=None, validation_alias="ALPACA_API_KEY")
+    alpaca_secret_key: Optional[str] = Field(default=None, validation_alias="ALPACA_SECRET_KEY")
 
     @field_validator("mode")
     @classmethod
@@ -83,6 +93,14 @@ class TradingSettings(BaseSettings):
                 "live_trading_confirmed must be 'no' or 'yes_i_accept_the_risks'"
             )
         return v
+
+    def require_alpaca_credentials(self) -> None:
+        """Validate Alpaca credentials are present when a mode requires them."""
+        if not self.alpaca_api_key or not self.alpaca_secret_key:
+            raise ValueError(
+                f"Alpaca credentials required for mode '{self.mode}'. "
+                "Set ALPACA_API_KEY and ALPACA_SECRET_KEY in .env"
+            )
 
     model_config = SettingsConfigDict(env_prefix="TRADING_", extra="ignore")
 
@@ -109,16 +127,27 @@ class LoggingSettings(BaseSettings):
 
 
 class Phase1Settings(BaseSettings):
-    """Minimal rebuild settings — attention-first top-gainer defaults."""
+    """Attention-first top-gainer settings.
+
+    Unknown env vars with ``PHASE1_`` prefix are silently ignored
+    (model_config has extra='ignore').  Mis-typed or mis-prefixed
+    keys do not raise errors — they are dropped.  If stricter
+    validation is needed, change to extra='forbid'.
+
+    Removed (unwired, deferred to later phases):
+      - fresh_quote_seconds → re-add when wired through pipeline/hard_filters
+      - max_quote_age_seconds → re-add when wired through pipeline/hard_filters
+      - max_candidates → re-add when ranking is wired
+
+    Env vars (PHASE1_ prefix):
+      - PHASE1_MAX_TRADE_RISK_PCT → max_trade_risk_pct (per-trade risk cap, T4.4)
+    """
 
     # Data freshness
-    max_quote_age_seconds: int = 15
-    fresh_quote_seconds: int = 5
     scanner_interval_seconds: int = 30
     monitor_interval_seconds: int = 10
 
     # Scanner
-    max_candidates: int = 30
     focus_price_min: float = 1.0
     focus_price_max: float = 50.0
 
@@ -128,13 +157,6 @@ class Phase1Settings(BaseSettings):
     max_daily_loss_pct: float = 0.03
     max_positions: int = 3
     max_open_risk_pct: float = 0.03
-
-    @field_validator("max_quote_age_seconds")
-    @classmethod
-    def validate_max_quote_age(cls, v: int) -> int:
-        if v < 1:
-            raise ValueError("max_quote_age_seconds must be >= 1")
-        return v
 
     @field_validator("max_positions")
     @classmethod

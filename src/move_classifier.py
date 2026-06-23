@@ -230,8 +230,8 @@ def _is_backside(
         evidence.append("volume_fading_and_bounces_failing")
         signals += 1
 
-    # Spread widening while price cannot reclaim
-    if spread_pct is not None and spread_pct > 1.0 and not _can_reclaim(price, vwap):
+    # Spread widening while price cannot reclaim (T5.9: skip if VWAP missing)
+    if spread_pct is not None and spread_pct > 1.0 and vwap is not None and not _can_reclaim(price, vwap):
         evidence.append(f"spread_widening_no_reclaim:spread={spread_pct}")
         signals += 1
 

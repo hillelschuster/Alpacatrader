@@ -5,7 +5,7 @@ Broker-agnostic Pydantic v2 schemas for candidate discovery, attention scoring,
 hard filtering, move classification, entry signals, position management,
 account risk, exit decisions, and decision logging.
 
-No broker calls, no runtime trading logic, no legacy dependencies.
+No broker calls, no runtime trading logic.
 """
 
 from __future__ import annotations

@@ -25,10 +25,15 @@ from loguru import logger
 
 from src.decision_pipeline import MarketSnapshot
 from src.entries import Bar
-from src.market_data import _compute_ema
+from src.market_data import _compute_ema, derive_bar_enrichment
 
 
-def build_market_snapshot_sim(candidate) -> Optional[MarketSnapshot]:
+def build_market_snapshot_sim(
+    candidate,
+    *,
+    api_key: Optional[str] = None,
+    secret_key: Optional[str] = None,
+) -> Optional[MarketSnapshot]:
     """Fetch yesterday's last-hour bars and build a realistic snapshot.
 
     Uses Alpaca historical data (no live trading client).  Spread is
@@ -44,14 +49,14 @@ def build_market_snapshot_sim(candidate) -> Optional[MarketSnapshot]:
         logger.info("alpaca-py not installed — sim data unavailable")
         return None
 
-    api_key = os.getenv("ALPACA_API_KEY") or os.getenv("APCA_API_KEY_ID")
-    secret_key = os.getenv("ALPACA_SECRET_KEY") or os.getenv("APCA_API_SECRET_KEY")
-    if not api_key or not secret_key:
+    _api_key = api_key or os.getenv("ALPACA_API_KEY")
+    _secret_key = secret_key or os.getenv("ALPACA_SECRET_KEY")
+    if not _api_key or not _secret_key:
         logger.info("Alpaca API keys not configured — sim data unavailable")
         return None
 
     try:
-        client = StockHistoricalDataClient(api_key, secret_key)
+        client = StockHistoricalDataClient(_api_key, _secret_key)
         now = datetime.now(timezone.utc)
 
         # ── Yesterday's last hour of 1-minute bars ────────────
@@ -105,24 +110,8 @@ def build_market_snapshot_sim(candidate) -> Optional[MarketSnapshot]:
 
         # ── Derived enrichment ────────────────────────────────
         close_prices = [b.close for b in bars]
-        volumes = [b.volume for b in bars]
-
-        # VWAP
-        total_pv = sum(c * v for c, v in zip(close_prices, volumes))
-        total_v = sum(volumes)
-        vwap = total_pv / total_v if total_v > 0 else None
-
-        # EMA 9
         ema9 = _compute_ema(close_prices, 9)
-
-        # Day high / prior HOD from the simulated window
-        day_high = max(b.high for b in bars)
-        distinct_highs = sorted({b.high for b in bars}, reverse=True)
-        prior_hod = distinct_highs[1] if len(distinct_highs) >= 2 else None
-
-        # Trailing 5-minute dollar volume
-        last_5 = bars[-5:]
-        dollar_volume_5m = sum(b.close * b.volume for b in last_5) if last_5 else None
+        vwap, day_high, prior_hod, dollar_volume_5m = derive_bar_enrichment(bars)
 
         rvol = candidate.relative_volume
 

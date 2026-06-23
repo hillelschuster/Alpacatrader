@@ -5,7 +5,7 @@ Verifies:
   1. Settings.load() loads trading, logging, phase1 from YAML.
   2. Missing config file returns defaults.
   3. validate_live_trading() blocks live without confirmation.
-  4. Legacy settings classes are no longer available.
+   4. Historical settings classes removed.
 """
 
 from __future__ import annotations
@@ -27,7 +27,7 @@ def minimal_yaml() -> str:
     return yaml.dump({
         "trading": {"mode": "mock", "live_trading_confirmed": "no"},
         "logging": {"level": "DEBUG", "dir": "/tmp/logs", "retention_days": 7},
-        "phase1": {"max_candidates": 50, "focus_price_min": 2.0},
+        "phase1": {"max_positions": 5, "focus_price_min": 2.0},
     })
 
 
@@ -56,7 +56,7 @@ class TestSettingsLoad:
         assert s.logging.level == "INFO"
         assert s.logging.dir == "./logs"
         assert s.logging.retention_days == 90
-        assert s.phase1.max_candidates == 30
+        assert s.phase1.max_positions == 3
 
     def test_load_from_yaml(self, config_path: Path):
         """Loading from YAML overrides defaults (env-var sections may be .env-overridden).
@@ -69,7 +69,7 @@ class TestSettingsLoad:
 
         s = Settings.load(str(config_path))
         # Phase1 settings have no .env overrides — show YAML values
-        assert s.phase1.max_candidates == 50
+        assert s.phase1.max_positions == 5
         assert s.phase1.focus_price_min == 2.0
         # Logging.retention_days and format are not in .env — show YAML values
         assert s.logging.format == "json"  # default (not in YAML, not in .env)
@@ -84,7 +84,7 @@ class TestSettingsLoad:
         assert hasattr(s, "trading")
         assert hasattr(s, "logging")
         assert hasattr(s, "phase1")
-        # These should NOT exist (removed legacy sections)
+        # These should NOT exist (removed sections)
         assert not hasattr(s, "broker")
         assert not hasattr(s, "alpaca")
         assert not hasattr(s, "llm")
@@ -202,37 +202,142 @@ class TestModeValidation:
         path.unlink(missing_ok=True)
 
 
-class TestLegacyGone:
-    """Legacy settings classes are no longer importable from config.settings."""
+class TestPhase1EnvVarIngestion:
+    """PHASE1_* env vars override defaults and are visible in Settings."""
 
-    def test_validate_config_warnings_gone(self):
-        with pytest.raises(ImportError):
-            from config.settings import validate_config_warnings  # noqa
+    def test_env_overrides_default(self, monkeypatch):
+        """PHASE1_MAX_POSITIONS=5 in env overrides the default of 3."""
+        from config.settings import Settings
 
-    def test_broker_settings_gone(self):
-        with pytest.raises(ImportError):
-            from config.settings import BrokerSettings  # noqa
+        monkeypatch.setenv("PHASE1_MAX_POSITIONS", "5")
+        s = Settings.load("/nonexistent/config.yaml")
+        assert s.phase1.max_positions == 5
 
-    def test_llm_settings_gone(self):
-        with pytest.raises(ImportError):
-            from config.settings import LLMSettings  # noqa
+    def test_env_overrides_yaml(self, monkeypatch):
+        """PHASE1_MAX_POSITIONS env var takes precedence over YAML value."""
+        from config.settings import Settings
+        import tempfile
+        from pathlib import Path
 
-    def test_scanner_settings_gone(self):
-        with pytest.raises(ImportError):
-            from config.settings import ScannerSettings  # noqa
+        monkeypatch.setenv("PHASE1_MAX_POSITIONS", "7")
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
+            f.write(yaml.dump({"phase1": {"max_positions": 3}}))
+            path = Path(f.name)
 
-    def test_strategy_settings_gone(self):
-        with pytest.raises(ImportError):
-            from config.settings import StrategySettings  # noqa
+        s = Settings.load(str(path))
+        assert s.phase1.max_positions == 7  # env wins over YAML
+        path.unlink(missing_ok=True)
 
-    def test_risk_settings_gone(self):
-        with pytest.raises(ImportError):
-            from config.settings import RiskSettings  # noqa
+    def test_invalid_max_positions_raises(self, monkeypatch):
+        """PHASE1_MAX_POSITIONS=0 is rejected by the field validator."""
+        from pydantic import ValidationError
+        from config.settings import Phase1Settings
 
-    def test_execution_settings_gone(self):
-        with pytest.raises(ImportError):
-            from config.settings import ExecutionSettings  # noqa
+        monkeypatch.setenv("PHASE1_MAX_POSITIONS", "0")
+        with pytest.raises(ValidationError, match="max_positions must be >= 1"):
+            Phase1Settings()
 
-    def test_database_settings_gone(self):
-        with pytest.raises(ImportError):
-            from config.settings import DatabaseSettings  # noqa
+
+class TestMisPrefixedKeySafety:
+    """Mis-prefixed env vars are silently ignored (extra='ignore' policy).
+
+    This is by design — pydantic-settings with extra='ignore' drops
+    unrecognized keys. If stricter validation is needed, change to
+    extra='forbid' in the model config.
+    """
+
+    def test_unprefixed_live_trading_not_read(self, monkeypatch):
+        """LIVE_TRADING_CONFIRMED (no TRADING_ prefix) is silently ignored."""
+        from config.settings import Settings
+
+        # Set the WRONG key (missing TRADING_ prefix)
+        monkeypatch.setenv("LIVE_TRADING_CONFIRMED", "yes_i_accept_the_risks")
+        # Remove the CORRECT key
+        monkeypatch.delenv("TRADING_LIVE_TRADING_CONFIRMED", raising=False)
+
+        s = Settings.load("/nonexistent/config.yaml")
+        assert s.trading.live_trading_confirmed == "no"  # still default
+
+    def test_misspelled_phase1_key_ignored(self, monkeypatch):
+        """PHASEX_MAX_POSITIONS (typo in prefix) is silently ignored."""
+        from config.settings import Settings
+
+        monkeypatch.setenv("PHASEX_MAX_POSITIONS", "8")
+        s = Settings.load("/nonexistent/config.yaml")
+        assert s.phase1.max_positions == 3  # default, not 8
+
+    def test_wrong_prefix_trading_key_ignored(self, monkeypatch):
+        """TRADE_MODE (typo, should be TRADING_MODE) is silently ignored."""
+        from config.settings import Settings
+
+        monkeypatch.setenv("TRADE_MODE", "live")
+        monkeypatch.delenv("TRADING_MODE", raising=False)
+        s = Settings.load("/nonexistent/config.yaml")
+        assert s.trading.mode == "paper"  # default, not "live"
+
+
+class TestAlpacaCredentialValidation:
+    """Startup validation rejects missing Alpaca credentials in paper/sim/live."""
+
+    def test_validation_passes_with_creds(self, monkeypatch):
+        """require_alpaca_credentials() passes when both keys are set."""
+        from config.settings import TradingSettings
+
+        monkeypatch.setenv("ALPACA_API_KEY", "test-key")
+        monkeypatch.setenv("ALPACA_SECRET_KEY", "test-secret")
+        ts = TradingSettings()
+        ts.require_alpaca_credentials()  # should not raise
+
+    def test_validation_raises_without_creds(self, monkeypatch):
+        """require_alpaca_credentials() raises when keys are missing."""
+        from config.settings import TradingSettings
+
+        monkeypatch.delenv("ALPACA_API_KEY", raising=False)
+        monkeypatch.delenv("ALPACA_SECRET_KEY", raising=False)
+        ts = TradingSettings()
+        with pytest.raises(ValueError, match="Alpaca credentials required"):
+            ts.require_alpaca_credentials()
+
+    def test_settings_picks_up_alpaca_keys(self, monkeypatch):
+        """TradingSettings reads ALPACA_API_KEY / ALPACA_SECRET_KEY from env."""
+        from config.settings import Settings
+
+        monkeypatch.setenv("ALPACA_API_KEY", "pk-test")
+        monkeypatch.setenv("ALPACA_SECRET_KEY", "sk-test")
+        s = Settings.load("/nonexistent/config.yaml")
+        assert s.trading.alpaca_api_key == "pk-test"
+        assert s.trading.alpaca_secret_key == "sk-test"
+
+
+
+
+
+class TestMaxTradeRiskPctEnv:
+    """T5: PHASE1_MAX_TRADE_RISK_PCT env var loads into Phase1Settings."""
+
+    def test_default_max_trade_risk_pct(self):
+        from config.settings import Settings
+
+        s = Settings.load("/nonexistent/config.yaml")
+        assert s.phase1.max_trade_risk_pct == 0.01
+
+    def test_env_overrides_default(self, monkeypatch):
+        from config.settings import Settings
+
+        monkeypatch.setenv("PHASE1_MAX_TRADE_RISK_PCT", "0.005")
+        s = Settings.load("/nonexistent/config.yaml")
+        assert s.phase1.max_trade_risk_pct == 0.005
+
+    def test_env_overrides_yaml(self, monkeypatch):
+        import tempfile
+        from pathlib import Path
+        from config.settings import Settings
+
+        monkeypatch.setenv("PHASE1_MAX_TRADE_RISK_PCT", "0.002")
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
+            f.write(yaml.dump({"phase1": {"max_trade_risk_pct": 0.01}}))
+            path = Path(f.name)
+
+        s = Settings.load(str(path))
+        assert s.phase1.max_trade_risk_pct == 0.002  # env wins
+        path.unlink(missing_ok=True)
