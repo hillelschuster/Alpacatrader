@@ -9,6 +9,7 @@ Verifies:
 
 from __future__ import annotations
 
+from types import SimpleNamespace
 from unittest.mock import patch
 
 import pytest
@@ -103,7 +104,7 @@ class TestPaperMode:
 
     def test_paper_once_with_candidates(self):
         """--mode paper --once exits 0 and shows pipeline results."""
-        with patch("src.scanner.scanner.scan_finviz_candidates",
+        with patch("src.scanner.scanner.scan_dynamic_candidates",
                    return_value=_make_paper_candidates()), \
              patch("src.market_data.build_market_snapshot",
                    return_value=None):
@@ -117,7 +118,7 @@ class TestPaperMode:
 
     def test_paper_once_no_candidates(self):
         """--mode paper --once with empty scanner exits 0, no-candidates message."""
-        with patch("src.scanner.scanner.scan_finviz_candidates",
+        with patch("src.scanner.scanner.scan_dynamic_candidates",
                    return_value=[]):
             ec, out = _run_cli("--mode", "paper", "--once")
         assert ec == 0, f"exit code {ec}, output:\n{out}"
@@ -140,7 +141,7 @@ class TestPaperMode:
             return original_import(name, *args, **kwargs)
 
         with patch("src.app.TradingApp.run", return_value=None), \
-             patch("src.scanner.scanner.scan_finviz_candidates", return_value=[]), \
+             patch("src.scanner.scanner.scan_dynamic_candidates", return_value=[]), \
              patch("builtins.__import__", _guard_import):
             ec, out = _run_cli("--mode", "paper", "--loop")
             # Loop may exit immediately if scanner returns empty (TradingApp
@@ -157,12 +158,41 @@ class TestPaperMode:
 
 
 class TestLiveMode:
-    """Live mode is blocked with a clear error message."""
+    """Live mode: blocked without confirmation, proceeds with confirmation."""
 
-    def test_live_mode_blocked(self):
-        """--mode live --once exits non-zero (disabled by default)."""
+    def test_live_mode_blocked_without_confirmation(self, monkeypatch):
+        """--mode live --once exits non-zero without explicit confirmation."""
+        monkeypatch.delenv("TRADING_LIVE_TRADING_CONFIRMED", raising=False)
         ec, out = _run_cli("--mode", "live", "--once")
-        assert ec != 0, "Live mode should exit non-zero"
+        assert ec != 0, (
+            f"Live mode without confirmation should exit non-zero, got {ec}. Output:\n{out}"
+        )
+
+    def test_live_confirmed_proceeds_no_candidates(self, monkeypatch):
+        """--mode live --once with confirmation and no candidates exits cleanly."""
+        monkeypatch.setenv("TRADING_LIVE_TRADING_CONFIRMED", "yes_i_accept_the_risks")
+        with patch("src.scanner.scanner.scan_dynamic_candidates", return_value=[]):
+            ec, out = _run_cli("--mode", "live", "--once")
+        assert ec == 0, (
+            f"Confirmed live mode with no candidates should exit 0, got {ec}. Output:\n{out}"
+        )
+        assert "no candidates" in out.lower(), (
+            f"Expected no-candidates message. Output:\n{out}"
+        )
+
+    def test_live_loop_starts_trading_app(self, monkeypatch):
+        """--mode live --loop instantiates TradingApp with paper_mode=False."""
+        monkeypatch.setenv("TRADING_LIVE_TRADING_CONFIRMED", "yes_i_accept_the_risks")
+        monkeypatch.setattr(
+            "src.paper_execution.build_alpaca_account_equity",
+            lambda gw: 54321.09,
+            raising=False,
+        )
+        with patch("src.app.TradingApp.run", return_value=None), \
+             patch("src.scanner.scanner.scan_dynamic_candidates", return_value=[]):
+            ec, out = _run_cli("--mode", "live", "--loop")
+        assert ec == 0, f"exit code {ec}:\n{out}"
+        assert "Live Loop" in out, f"Live Loop header missing:\n{out}"
 
 
 # ──────────────────────────────────────────────────────────────────
@@ -238,9 +268,83 @@ class TestPaperLoopWiring:
         assert callable(captured["broker_snapshot_fn"]), (
             f"Expected callable broker_snapshot_fn, got {captured.get('broker_snapshot_fn')!r}"
         )
+        assert callable(captured["broker_orders_snapshot_fn"]), (
+            "Expected callable broker_orders_snapshot_fn, got "
+            f"{captured.get('broker_orders_snapshot_fn')!r}"
+        )
         assert captured["persist_path"] == "data/positions.json", (
             f"Expected persist_path='data/positions.json', got {captured.get('persist_path')!r}"
         )
+
+    def test_run_paper_loop_passes_alpaca_account_equity(self, monkeypatch, settings):
+        """Paper loop must size/risk from Alpaca account equity, not hardcoded $100k."""
+        from main import _run_paper_loop
+
+        captured: dict = {}
+
+        class FakeApp:
+            def __init__(self, **kwargs):
+                captured.update(kwargs)
+
+            def run(self):
+                return None
+
+        monkeypatch.setattr("src.app.TradingApp", FakeApp)
+        monkeypatch.setattr(
+            "src.paper_execution.build_alpaca_account_equity",
+            lambda gw: 54321.09,
+            raising=False,
+        )
+
+        _run_paper_loop(settings)
+
+        assert captured["equity"] == 54321.09
+
+
+class TestPaperEquityWiring:
+    def test_run_scan_pipeline_uses_alpaca_account_equity_for_all_candidates(
+        self, monkeypatch, settings,
+    ):
+        """Paper once path must use Alpaca account equity in both snapshot branches."""
+        from main import _run_scan_pipeline
+
+        fake_gw = SimpleNamespace(positions=object())
+        equities: list[float] = []
+
+        def fake_build_components(_settings, *, paper=True):
+            return fake_gw, object(), object(), {}
+
+        def fake_run_pipeline(candidate, **kwargs):
+            equities.append(kwargs["equity"])
+            return SimpleNamespace(
+                symbol=candidate.symbol,
+                attention_score=0.0,
+                hard_filter_passed=False,
+                decision="skip",
+                decision_reason="test",
+            )
+
+        calls = {"n": 0}
+
+        def fake_build_snapshot(candidate, **kwargs):
+            calls["n"] += 1
+            return _mock_market_snapshot(candidate, **kwargs) if calls["n"] == 1 else None
+
+        monkeypatch.setattr("main._build_components", fake_build_components)
+        monkeypatch.setattr(
+            "src.scanner.scanner.scan_dynamic_candidates",
+            lambda: _make_paper_candidates(),
+        )
+        monkeypatch.setattr(
+            "src.paper_execution.build_alpaca_account_equity",
+            lambda gw: 54321.09,
+            raising=False,
+        )
+        monkeypatch.setattr("src.decision_pipeline.run_pipeline", fake_run_pipeline)
+
+        _run_scan_pipeline(settings, "Paper", fake_build_snapshot)
+
+        assert equities == [54321.09, 54321.09]
 
 
 class TestPaperMarketData:
@@ -252,7 +356,7 @@ class TestPaperMarketData:
 
     def test_paper_with_enrichment_passes_hard_filters(self):
         """Injected enrichment -> no quote/spread hard blocks."""
-        with patch("src.scanner.scanner.scan_finviz_candidates",
+        with patch("src.scanner.scanner.scan_dynamic_candidates",
                    return_value=_make_paper_candidates()), \
              patch("src.market_data.build_market_snapshot",
                    side_effect=_mock_market_snapshot):
@@ -275,7 +379,7 @@ class TestPaperMarketData:
 
     def test_paper_without_enrichment_mechanically_blocks(self):
         """When enrichment returns None, hard filters mechanically block."""
-        with patch("src.scanner.scanner.scan_finviz_candidates",
+        with patch("src.scanner.scanner.scan_dynamic_candidates",
                    return_value=_make_paper_candidates()), \
              patch("src.market_data.build_market_snapshot",
                    return_value=None):

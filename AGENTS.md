@@ -1,5 +1,8 @@
 # Alpacatrader Project — OpenCode Agent Rules
 
+## Mental Model
+Read `SOUL.md` before changing entry, risk, sizing, scanner, classifier, or exit logic — it captures this bot's trading identity (top-gainer momentum, candidates-first, catch-runners, paper = live rehearsal).
+
 ## Rules
 
 ### Obedience and Precision
@@ -8,6 +11,9 @@
 - Never take shortcuts. Verify every claim. No lazy assumptions.
 - Creativity is welcome only within the explicit boundaries of the request. Stay focused on what was asked.
 - Never touch Git (status/diff/log/add/commit/push/etc.) unless the user explicitly asks for Git work.
+- Ask before ambiguous changes affecting trading logic, risk, order execution, broker actions, position sizing, or paper/live behavior.
+- Do not broaden the requested strategy or repository scope without approval.
+
 
 ### Context7 — Mandatory (Web-Based)
 

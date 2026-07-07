@@ -155,8 +155,20 @@ class Phase1Settings(BaseSettings):
     starter_risk_pct: float = 0.0025
     max_trade_risk_pct: float = 0.01
     max_daily_loss_pct: float = 0.03
+    max_consecutive_losses: int = 3
+    weekly_drawdown_pct: float = 0.06
     max_positions: int = 3
     max_open_risk_pct: float = 0.03
+
+    # Liquidity
+    dollar_volume_min: float = 50_000.0
+
+    # Spread sizing tiers (SPEC §11.18.4)
+    spread_full_size_threshold: float = 2.0   # ≤2% → 100% size
+    spread_block_threshold: float = 20.0      # >20% → block
+
+    # Phase 6 live-readiness
+    exiting_timeout_seconds: int = 120
 
     @field_validator("max_positions")
     @classmethod
@@ -165,7 +177,60 @@ class Phase1Settings(BaseSettings):
             raise ValueError("max_positions must be >= 1")
         return v
 
+    @field_validator("max_consecutive_losses")
+    @classmethod
+    def validate_max_consecutive_losses(cls, v: int) -> int:
+        if v < 1:
+            raise ValueError("max_consecutive_losses must be >= 1")
+        return v
+
     model_config = SettingsConfigDict(env_prefix="PHASE1_", extra="ignore")
+
+
+class RunnerSettings(BaseSettings):
+    """Runner promotion and ATR Chandelier trailing settings."""
+
+    activation_r: float = 1.5
+    atr_period: int = 5
+    trail_multiplier: float = 2.5
+
+    @field_validator("activation_r", "trail_multiplier")
+    @classmethod
+    def validate_positive_float(cls, v: float) -> float:
+        if v <= 0:
+            raise ValueError("runner float settings must be > 0")
+        return v
+
+    @field_validator("atr_period")
+    @classmethod
+    def validate_atr_period(cls, v: int) -> int:
+        if v < 1:
+            raise ValueError("atr_period must be >= 1")
+        return v
+
+    model_config = SettingsConfigDict(env_prefix="RUNNER_", extra="ignore")
+
+
+class ScalingSettings(BaseSettings):
+    """Scaling-in (Phase 4) settings per SPEC §11.5."""
+
+    max_adds: int = 2
+    add_risk_pct: float = 0.0025
+    add_size_multiplier: float = 0.5
+    add_activation_r_multiple: float = 2.0
+
+    model_config = SettingsConfigDict(env_prefix="SCALING_", extra="ignore")
+
+
+class LLMAdvisorSettings(BaseSettings):
+    """Phase 7 LLM pre-market annotator settings (opt-in, disabled by default).
+
+    Unknown env vars with ``LLM_ADVISOR_`` prefix are silently ignored.
+    """
+
+    enabled: bool = False
+
+    model_config = SettingsConfigDict(env_prefix="LLM_ADVISOR_", extra="ignore")
 
 
 class Settings(BaseSettings):
@@ -174,6 +239,9 @@ class Settings(BaseSettings):
     trading: TradingSettings = Field(default_factory=TradingSettings)
     logging: LoggingSettings = Field(default_factory=LoggingSettings)
     phase1: Phase1Settings = Field(default_factory=Phase1Settings)
+    runner: RunnerSettings = Field(default_factory=RunnerSettings)
+    scaling: ScalingSettings = Field(default_factory=ScalingSettings)
+    llm_advisor: LLMAdvisorSettings = Field(default_factory=LLMAdvisorSettings)
 
     model_config = SettingsConfigDict(extra="ignore", env_file=".env", env_file_encoding="utf-8")
 
@@ -186,6 +254,9 @@ class Settings(BaseSettings):
             trading=TradingSettings(**yaml_data.get("trading", {})),
             logging=LoggingSettings(**yaml_data.get("logging", {})),
             phase1=Phase1Settings(**yaml_data.get("phase1", {})),
+            runner=RunnerSettings(**yaml_data.get("runner", {})),
+            scaling=ScalingSettings(**yaml_data.get("scaling", {})),
+            llm_advisor=LLMAdvisorSettings(**yaml_data.get("llm_advisor", {})),
         )
         return settings
 

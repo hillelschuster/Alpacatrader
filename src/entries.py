@@ -590,8 +590,8 @@ def detect_vwap_reclaim(
     if not vol_ok:
         return None
 
-    # Spread acceptable (relaxed — hard filter handles wide spread)
-    if spread_pct is not None and spread_pct > 5.0:
+    # Spread acceptable (sizing multiplier handles wide spreads)
+    if spread_pct is not None and spread_pct > 20.0:
         return None
 
     reclaim_low = min(b.low for b in bars[-3:])
@@ -630,7 +630,7 @@ def detect_scalp_reclaim(
     """
     if state not in (MoveState.EXTENDED, MoveState.HALT_RISK):
         return None
-    if spread_pct is not None and spread_pct > 3.0:
+    if spread_pct is not None and spread_pct > 8.0:
         return None
     if quote_age_seconds is not None and quote_age_seconds > 5.0:
         return None

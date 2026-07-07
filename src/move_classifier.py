@@ -101,6 +101,7 @@ def classify_move_state(
     is_bs, bs_evidence = _is_backside(
         lower_highs_count=lower_highs_count,
         failed_hod_reclaim=failed_hod_reclaim,
+        hod_behavior_repeated=hod_behavior_repeated,
         consecutive_below_vwap=consecutive_below_vwap,
         failed_vwap_reclaim=failed_vwap_reclaim,
         volume_fading=volume_fading,
@@ -130,7 +131,6 @@ def classify_move_state(
 
     # ── 4. Active ──────────────────────────────────────────────
     is_ac, ac_evidence = _is_active(
-        hod_behavior_repeated=hod_behavior_repeated,
         higher_low_structure=higher_low_structure,
         pullbacks_bought=pullbacks_bought,
         strong_volume=strong_volume,
@@ -178,10 +178,14 @@ def _is_halt_risk(
 
     if halt_count_today > 0:
         evidence.append(f"halt_count={halt_count_today}")
+        signals += 2 if halt_count_today > 1 else 1
+
+    if spread_pct is not None and spread_pct > 3.0:
+        evidence.append(f"spread_gt_3pct:spread={spread_pct}")
         signals += 1
 
-    if spread_pct is not None and spread_pct > 3.0 and vertical_move:
-        evidence.append(f"spread_gt_3pct_and_vertical:spread={spread_pct}")
+    if vertical_move:
+        evidence.append("vertical_move")
         signals += 1
 
     if price_moved_pct_5m is not None and price_moved_pct_5m >= 10.0:
@@ -196,13 +200,14 @@ def _is_halt_risk(
         evidence.append("vertical_without_pullback")
         signals += 1
 
-    return signals > 0, evidence
+    return signals >= 2, evidence
 
 
 def _is_backside(
     *,
     lower_highs_count: int = 0,
     failed_hod_reclaim: bool = False,
+    hod_behavior_repeated: bool = False,
     consecutive_below_vwap: int = 0,
     failed_vwap_reclaim: bool = False,
     volume_fading: bool = False,
@@ -218,6 +223,10 @@ def _is_backside(
     # At least 2 lower highs over last 20 bars and failed HOD reclaim
     if lower_highs_count >= 2 and failed_hod_reclaim:
         evidence.append(f"lower_highs={lower_highs_count}_and_failed_hod_reclaim")
+        signals += 1
+
+    if hod_behavior_repeated:
+        evidence.append("hod_behavior_repeated")
         signals += 1
 
     # Below VWAP for 5 consecutive bars and at least one failed VWAP reclaim
@@ -280,7 +289,6 @@ def _is_extended(
 
 def _is_active(
     *,
-    hod_behavior_repeated: bool = False,
     higher_low_structure: bool = False,
     pullbacks_bought: bool = False,
     strong_volume: bool = False,
@@ -297,9 +305,6 @@ def _is_active(
     evidence: list[str] = []
     core_signals: int = 0
 
-    if hod_behavior_repeated:
-        evidence.append("hod_repeated")
-        core_signals += 1
     if higher_low_structure:
         evidence.append("higher_lows")
         core_signals += 1

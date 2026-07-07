@@ -123,15 +123,16 @@ def check_liquidity_spread(
     spread_pct: Optional[float] = None,
     volume_zero: bool = False,
     dollar_volume_5m: Optional[float] = None,
-    min_dollar_volume: float = 100_000.0,
+    min_dollar_volume: float = 50_000.0,
     is_scanner_only: bool = False,
 ) -> list[str]:
-    """Liquidity / spread hard blocks (SPEC §7.3)."""
-    blocks: list[str] = []
+    """Liquidity / spread hard blocks (SPEC §7.3).
 
-    st = spread_tier(spread_pct)
-    if st == "hard_reject":
-        blocks.append(f"spread_hard_reject:{spread_pct}")
+    Spread is NO LONGER a hard block — it's a sizing multiplier
+    (see spread_sizing_multiplier in annotations.py).
+    Only volume_zero and dollar_volume_below_min remain as hard blocks.
+    """
+    blocks: list[str] = []
 
     if volume_zero:
         blocks.append("zero_volume")
@@ -247,7 +248,7 @@ def run_hard_filters(
     spread_pct: Optional[float] = None,
     volume_zero: bool = False,
     dollar_volume_5m: Optional[float] = None,
-    min_dollar_volume: float = 100_000.0,
+    min_dollar_volume: float = 50_000.0,
     is_scanner_only: bool = False,
     # ── Risk definition ───────────────────────────────────
     has_logical_stop: bool = True,

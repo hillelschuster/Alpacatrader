@@ -258,6 +258,10 @@ def check_scale_out(
     if current_price is None:
         return None
 
+    # P5 is paused for RUNNER state — trailing stop handles exits (SPEC §11.4)
+    if position.state == PositionState.RUNNER:
+        return None
+
     if position.average_entry is None or position.current_shares <= 0:
         return None
 
@@ -414,24 +418,43 @@ def check_runner_trail(
     current_price: Optional[float],
     risk_per_share: Optional[float] = None,
     highest_price_seen: Optional[float] = None,
+    atr: Optional[float] = None,
     bars: Optional[list[Bar]] = None,
-    trail_hit: bool = False,
+    trail_multiplier: float = 2.5,
 ) -> Optional[ExitDecision]:
-    """P11 — Trailing runner exit (SPEC §12.4)."""
+    """P11 — ATR Chandelier trailing runner exit (SPEC §12.4, §11.4).
+
+    Fires when current_price <= trailing_stop_price.
+    Uses highest_price_seen + ATR Chandelier with minimum distance.
+    """
     if current_price is None or position.state != PositionState.RUNNER:
         return None
+
     sym = position.symbol
     price = current_price
     rps = risk_per_share or 0.01
     pnl = calculate_pnl(position, price)
     pnl_r = calculate_pnl_r(position, price, rps)
 
-    if trail_hit:
-        return _exit_decision(sym, 100, "trail_hit", exit_price=price, pnl=pnl, pnl_r=pnl_r)
+    # Use position's trailing_stop_price if set, otherwise compute from params
+    trail_stop = position.trailing_stop_price
+    if trail_stop is None:
+        # Compute on the fly if we have the inputs
+        from src.runner import compute_runner_stop
 
-    # 2 consecutive red 5-minute bars → exit
-    if bars and len(bars) >= 2 and bars[-1].is_red and bars[-2].is_red:
-        return _exit_decision(sym, 100, "runner_2_red_bars", exit_price=price, pnl=pnl, pnl_r=pnl_r)
+        original_risk = abs(position.entry_price - position.stop_price) if position.entry_price and position.stop_price else None
+        trail_stop = compute_runner_stop(
+            highest_price_seen, atr,
+            multiplier=trail_multiplier,
+            current_stop=position.stop_price,
+            original_risk=original_risk,
+        )
+
+    if trail_stop is not None and trail_stop > 0 and price <= trail_stop:
+        return _exit_decision(
+            sym, 100, f"atr_trail_hit:stop={trail_stop:.2f}",
+            exit_price=price, pnl=pnl, pnl_r=pnl_r,
+        )
 
     return None
 
@@ -468,14 +491,16 @@ def check_exits(
     et_time: Optional[time] = None,
     flatten_time: time = time(15, 55),
     # Runner
-    trail_hit: bool = False,
+    highest_price_seen: Optional[float] = None,
+    atr: Optional[float] = None,
+    trail_multiplier: float = 2.5,
 ) -> Optional[ExitDecision]:
     """Run all exit checks in priority order.  Returns the first triggered exit.
 
-    Priority (SPEC §12.1):
+    Priority (SPEC §12.1 + §11.17.13 #7):
       P1 emergency → P2 loss caps → P3 hard stop → P3b invalidation
-      → P4 missing protection → P5 scale-out → P6 failed reclaim
-      → P7 VWAP loss → P8 spread → P9 volume → P10 time → P11 runner trail
+      → P4 missing protection → P10 time → P5 scale-out → P6 failed reclaim
+      → P7 VWAP loss → P8 spread → P9 volume → P11 runner trail
     """
     checks = [
         ("P1_emergency", lambda: check_emergency_exit(
@@ -501,6 +526,9 @@ def check_exits(
         ("P4_missing_protection", lambda: check_missing_protection(
             position, position_unprotected=position_unprotected,
         )),
+        ("P10_time", lambda: check_time_exit(
+            position, et_time=et_time, flatten_time=flatten_time,
+        )),
         ("P5_scale_out", lambda: check_scale_out(
             position, current_price=current_price, risk_per_share=risk_per_share,
             move_state=move_state, entry_setup=entry_setup, spread_pct=spread_pct, bars=bars,
@@ -519,12 +547,10 @@ def check_exits(
         ("P9_volume", lambda: check_volume_disappearance(
             position, current_price=current_price, bars=bars, risk_per_share=risk_per_share,
         )),
-        ("P10_time", lambda: check_time_exit(
-            position, et_time=et_time, flatten_time=flatten_time,
-        )),
         ("P11_runner_trail", lambda: check_runner_trail(
             position, current_price=current_price, risk_per_share=risk_per_share,
-            bars=bars, trail_hit=trail_hit,
+            highest_price_seen=highest_price_seen, atr=atr,
+            trail_multiplier=trail_multiplier,
         )),
     ]
 

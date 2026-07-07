@@ -7,10 +7,9 @@ No broker calls.  Pure operational logic.
 State transitions (SPEC §13.2):
   NONE → PENDING_ENTRY
   PENDING_ENTRY → OPEN | CLOSED | ERROR
-  OPEN → ADDING | SCALING_OUT | RUNNER | EXITING | UNPROTECTED | CLOSED | ERROR
-  ADDING → OPEN | ERROR
-  SCALING_OUT → OPEN | RUNNER | CLOSED | ERROR
-  RUNNER → SCALING_OUT | EXITING | UNPROTECTED | CLOSED | ERROR
+   OPEN → ADDING | RUNNER | EXITING | UNPROTECTED | CLOSED | ERROR
+   ADDING → OPEN | RUNNER | ERROR
+   RUNNER → ADDING | EXITING | UNPROTECTED | CLOSED | ERROR
   EXITING → CLOSED | ERROR
   UNPROTECTED → OPEN | EXITING | CLOSED | ERROR
   CLOSED → NONE (session re-entry only)
@@ -33,21 +32,24 @@ from src.models.schemas import PositionState, PositionStateModel, PendingOrder
 
 _VALID_TRANSITIONS: dict[PositionState, set[PositionState]] = {
     PositionState.NONE: {PositionState.PENDING_ENTRY},
-    PositionState.PENDING_ENTRY: {PositionState.OPEN, PositionState.CLOSED, PositionState.ERROR},
+    # ponytail: PENDING_ENTRY → UNPROTECTED for mark_unprotected on protect failure
+    PositionState.PENDING_ENTRY: {
+        PositionState.OPEN, PositionState.CLOSED, PositionState.ERROR, PositionState.UNPROTECTED,
+    },
     PositionState.OPEN: {
-        PositionState.ADDING, PositionState.SCALING_OUT, PositionState.RUNNER,
+        PositionState.ADDING, PositionState.RUNNER,
         PositionState.EXITING, PositionState.UNPROTECTED, PositionState.CLOSED,
         PositionState.ERROR,
     },
-    PositionState.ADDING: {PositionState.OPEN, PositionState.ERROR},
-    PositionState.SCALING_OUT: {
-        PositionState.OPEN, PositionState.RUNNER, PositionState.CLOSED, PositionState.ERROR,
-    },
+    PositionState.ADDING: {PositionState.OPEN, PositionState.RUNNER, PositionState.ERROR},
     PositionState.RUNNER: {
-        PositionState.SCALING_OUT, PositionState.EXITING, PositionState.UNPROTECTED,
-        PositionState.CLOSED, PositionState.ERROR,
+        PositionState.ADDING, PositionState.EXITING,
+        PositionState.UNPROTECTED, PositionState.CLOSED, PositionState.ERROR,
     },
-    PositionState.EXITING: {PositionState.CLOSED, PositionState.ERROR},
+    # ponytail: EXITING → UNPROTECTED for mark_unprotected on exit/protect failure
+    PositionState.EXITING: {
+        PositionState.CLOSED, PositionState.ERROR, PositionState.UNPROTECTED,
+    },
     PositionState.UNPROTECTED: {
         PositionState.OPEN, PositionState.EXITING, PositionState.CLOSED, PositionState.ERROR,
     },
@@ -60,7 +62,6 @@ _LOCKED_STATES: set[PositionState] = {
     PositionState.PENDING_ENTRY,
     PositionState.OPEN,
     PositionState.ADDING,
-    PositionState.SCALING_OUT,
     PositionState.RUNNER,
     PositionState.EXITING,
     PositionState.UNPROTECTED,

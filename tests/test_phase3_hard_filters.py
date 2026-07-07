@@ -202,9 +202,10 @@ class TestLiquiditySpread:
         blocks = check_liquidity_spread(spread_pct=0.5, dollar_volume_5m=200_000, min_dollar_volume=100_000)
         assert blocks == []
 
-    def test_wide_spread_hard_reject(self):
+    def test_wide_spread_not_hard_blocked(self):
+        """Spread is no longer a hard block — it's a sizing multiplier (SPEC §11.18.4)."""
         blocks = check_liquidity_spread(spread_pct=6.0)
-        assert any("spread_hard_reject" in b for b in blocks)
+        assert not any("spread_hard_reject" in b for b in blocks)
 
     def test_zero_volume(self):
         blocks = check_liquidity_spread(volume_zero=True)
@@ -413,12 +414,13 @@ class TestRunHardFilters:
         assert result.passed is False
         assert "no_current_price" in result.blocks
 
-    def test_wide_spread_blocked(self):
+    def test_wide_spread_not_blocked(self):
+        """Spread is no longer a hard block — sizing multiplier handles it (SPEC §11.18.4)."""
         c = _candidate()
         result = run_hard_filters(c, current_price=10.0, bid=9.50, ask=10.50,
                                    quote_age_seconds=2.0, spread_pct=10.0)
-        assert result.passed is False
-        assert any("spread_hard_reject" in b for b in result.blocks)
+        assert result.passed is True
+        assert not any("spread_hard_reject" in b for b in result.blocks)
 
     def test_multiple_blocks_aggregated(self):
         c = _candidate()

@@ -54,7 +54,7 @@ def adjusted_starter_risk(
     attention_mult: float = 1.0,
     soft_mult: float = 1.0,
     data_confidence: float = 1.0,
-    floor_soft: float = 0.25,
+    floor_soft: float = 0.40,
 ) -> float:
     """Adjusted starter risk after attention/soft/confidence multipliers.
 
@@ -63,6 +63,64 @@ def adjusted_starter_risk(
     """
     soft_mult = max(soft_mult, floor_soft)
     return round(starter_risk * attention_mult * soft_mult * data_confidence, 2)
+
+
+def add_sizing(
+    equity: float,
+    add_risk_pct: float,
+    add_count: int,
+    risk_per_share_at_add: float,
+    max_open_risk_pct: float,
+    total_open_risk: float,
+    add_size_multiplier: float = 0.5,
+) -> tuple[int, float, float]:
+    """Compute add sizing with anti-martingale reduction.
+
+    Add risk = equity * add_risk_pct * (add_size_multiplier ** (add_count + 1))
+
+    Returns
+    -------
+    (shares, risk_amount, total_risk_after)
+        Returns (0, 0.0, total_open_risk) if risk cap exceeded or
+        risk_per_share_at_add <= 0.
+    """
+    if risk_per_share_at_add <= 0:
+        return (0, 0.0, total_open_risk)
+
+    risk = equity * add_risk_pct * (add_size_multiplier ** (add_count + 1))
+    risk = round(risk, 2)
+    total_risk_after = total_open_risk + risk
+    max_risk = equity * max_open_risk_pct
+    if total_risk_after > max_risk:
+        return (0, 0.0, total_open_risk)
+
+    shares = int(risk / risk_per_share_at_add)
+    if shares <= 0:
+        return (0, 0.0, total_open_risk)
+
+    actual_risk = round(shares * risk_per_share_at_add, 2)
+    return (shares, actual_risk, round(total_open_risk + actual_risk, 2))
+
+
+def add_shares_for_position(
+    equity: float,
+    add_risk_pct: float,
+    add_count: int,
+    risk_per_share_at_add: float,
+    max_open_risk_pct: float,
+    total_open_risk: float,
+    add_size_multiplier: float = 0.5,
+) -> tuple[int, float, float]:
+    """Alias for ``add_sizing`` (imported by tests)."""
+    return add_sizing(
+        equity=equity,
+        add_risk_pct=add_risk_pct,
+        add_count=add_count,
+        risk_per_share_at_add=risk_per_share_at_add,
+        max_open_risk_pct=max_open_risk_pct,
+        total_open_risk=total_open_risk,
+        add_size_multiplier=add_size_multiplier,
+    )
 
 
 def calculate_shares(risk_amount: float, risk_per_share: float) -> int:

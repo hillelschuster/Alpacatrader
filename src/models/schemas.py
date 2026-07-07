@@ -40,7 +40,6 @@ class PositionState(str, Enum):
     PENDING_ENTRY = "PENDING_ENTRY"
     OPEN = "OPEN"
     ADDING = "ADDING"
-    SCALING_OUT = "SCALING_OUT"
     RUNNER = "RUNNER"
     EXITING = "EXITING"
     UNPROTECTED = "UNPROTECTED"
@@ -77,7 +76,6 @@ class ModeType(str, Enum):
 
     WATCH = "watch"
     STARTER_ENTRY = "starter_entry"
-    ADD_ON_CONFIRMATION = "add_on_confirmation"
     SCALP_ONLY = "scalp_only"
     AVOID_NEW_LONGS = "avoid_new_longs"
 
@@ -212,11 +210,18 @@ class PositionStateModel(BaseModel):
     current_shares: int = Field(default=0, ge=0)
     average_entry: Optional[float] = None
     stop_price: Optional[float] = None
+    original_risk_per_share: Optional[float] = None
     highest_price_seen: Optional[float] = None
+    runner_since: Optional[datetime] = None
+    trailing_stop_price: Optional[float] = None
     realized_pnl: float = 0.0
     unrealized_pnl: float = 0.0
     opened_at: Optional[datetime] = None
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    add_count: int = Field(default=0, ge=0)
+    # ponytail: fields for monitor-loop fill confirmation + exit engine context
+    pending_order_id: Optional[str] = None
+    entry_setup: Optional[str] = None
 
 
 class PendingOrder(BaseModel):
@@ -313,6 +318,9 @@ class DecisionRecord(BaseModel):
     attention_score: Optional[float] = None
     attention_drivers: list[str] = Field(default_factory=list)
     data_confidence: Optional[float] = None
+    percent_gain: Optional[float] = None
+    rvol: Optional[float] = None
+    daily_volume: Optional[float] = None
     hard_blocks: list[str] = Field(default_factory=list)
     soft_warnings: list[str] = Field(default_factory=list)
     state: Optional[str] = None

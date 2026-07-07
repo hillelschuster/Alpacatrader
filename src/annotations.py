@@ -15,6 +15,65 @@ from typing import Optional
 
 
 # ──────────────────────────────────────────────────────────────────
+#  Phase 7 — LLM pre-market annotator
+# ──────────────────────────────────────────────────────────────────
+
+
+def enrich_with_llm(
+    symbol: str,
+    price: float,
+    gain_pct: float,
+    volume: int,
+    api_key: str,
+) -> str:
+    """Phase 7 LLM pre-market annotator (SPEC §11.8).
+
+    Calls Anthropic Claude Haiku to produce a one-sentence catalyst
+    summary.  On any failure (missing key, import error, API error,
+    timeout) returns an empty string.
+
+    Parameters
+    ----------
+    symbol : str
+    price : float
+    gain_pct : float
+    volume : int
+    api_key : str
+        Anthropic API key.  Empty string → no-op.
+
+    Returns
+    -------
+    str
+        Catalyst summary, or ``""`` on any failure.
+    """
+    if not api_key:
+        return ""
+
+    try:
+        from anthropic import Anthropic
+
+        client = Anthropic(api_key=api_key)
+        prompt = (
+            f"Symbol: {symbol}\n"
+            f"Price: ${price:.2f}\n"
+            f"Gain: {gain_pct:.1f}%\n"
+            f"Volume: {volume:,}\n\n"
+            "Is there a catalyst for this pre-market move? "
+            "Reply with one short sentence or 'No clear catalyst.'"
+        )
+        response = client.messages.create(
+            max_tokens=300,
+            messages=[{"role": "user", "content": prompt}],
+            model="claude-haiku-4-5",
+        )
+        if response.content:
+            return response.content[0].text.strip()
+        return ""
+    except Exception:
+        return ""
+
+
+# ──────────────────────────────────────────────────────────────────
 #  Constants
 # ──────────────────────────────────────────────────────────────────
 
@@ -38,7 +97,6 @@ def map_soft_warnings(
     parabolic: bool = False,
     below_vwap: bool = False,
     below_ema: bool = False,
-    is_lunch: bool = False,
     halt_history_today: bool = False,
     float_rotation: Optional[float] = None,
     data_confidence: Optional[float] = None,
@@ -65,8 +123,6 @@ def map_soft_warnings(
         Whether price is below VWAP.
     below_ema : bool
         Whether price is below 9-EMA.
-    is_lunch : bool
-        Whether the session is in the lunch window.
     halt_history_today : bool
         Whether the symbol was halted earlier today.
     float_rotation : float or None
@@ -139,8 +195,6 @@ def map_soft_warnings(
         warnings.append("below_ema")
 
     # ── Session / time warnings ───────────────────────────
-    if is_lunch:
-        warnings.append("lunch_window")
     if halt_history_today:
         warnings.append("halt_history_today")
 
@@ -176,7 +230,7 @@ def soft_warning_multiplier(
 ) -> float:
     """Compute the soft multiplier for a set of warnings per SPEC §8.
 
-    Multipliers are multiplied together.  Floor is 0.25x per SPEC.
+    Multipliers are multiplied together.  Floor is 0.40x per SPEC §11.3.
 
     ``no_news`` / ``no_catalyst`` are attention-dependent:
     - no penalty when attention >= 70,
@@ -192,7 +246,7 @@ def soft_warning_multiplier(
     Returns
     -------
     float
-        Multiplier in [0.25, 1.0].
+        Multiplier in [0.40, 1.0].
     """
     # Default multipliers per warning label
     _MULTIPLIERS: dict[str, float] = {
@@ -212,7 +266,6 @@ def soft_warning_multiplier(
         "parabolic": 0.5,
         "below_vwap": 1.0,  # context only
         "below_ema": 1.0,  # trend warning
-        "lunch_window": 0.5,
         "halt_history_today": 1.0,
         "low_data_confidence": 1.0,
         "no_news": 1.0,  # handled by attention-dependent logic below
@@ -230,4 +283,38 @@ def soft_warning_multiplier(
     if has_no_news_or_catalyst and attention_score is not None and attention_score < 70:
         multiplier *= 0.75
 
-    return max(0.25, round(multiplier, 4))
+    return max(0.40, round(multiplier, 4))
+
+
+# ──────────────────────────────────────────────────────────────────
+#  Spread-based position sizing (SPEC §11.18.4)
+# ──────────────────────────────────────────────────────────────────
+
+
+def spread_sizing_multiplier(
+    spread_pct: Optional[float],
+    *,
+    full_size_threshold: float = 2.0,
+    block_threshold: float = 20.0,
+) -> float:
+    """Tiered position sizing based on bid-ask spread.
+
+    Spread is a sizing dial, not a binary gate. Top gainers with wide
+    spreads are still tradeable at reduced size.
+
+    Returns 0.0 = block (spread too wide or missing).
+    """
+    if spread_pct is None:
+        return 0.0  # missing spread = can't assess execution cost = block
+    if spread_pct <= full_size_threshold:
+        return 1.0   # full size
+    # Linear interpolation between tiers:
+    # full_size_threshold → 100%, block_threshold → 25%
+    if spread_pct <= block_threshold:
+        # 4 tiers: 2-5%→75%, 5-8%→50%, 8-20%→25%
+        if spread_pct <= 5.0:
+            return 0.75
+        if spread_pct <= 8.0:
+            return 0.50
+        return 0.25  # floor — wide spread top gainers still tradeable
+    return 0.0       # block — too illiquid

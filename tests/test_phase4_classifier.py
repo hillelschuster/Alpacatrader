@@ -32,10 +32,15 @@ from src.models.schemas import ModeType, MoveState
 
 
 class TestHaltRisk:
-    def test_halted_today(self):
+    def test_single_halt_history_is_not_halt_risk_by_itself(self):
         detected, evidence = _is_halt_risk(halt_count_today=1)
-        assert detected is True
+        assert detected is False
         assert any("halt_count=1" in e for e in evidence)
+
+    def test_multiple_halts_detected(self):
+        detected, evidence = _is_halt_risk(halt_count_today=2)
+        assert detected is True
+        assert any("halt_count=2" in e for e in evidence)
 
     def test_no_halt_no_signal(self):
         detected, _ = _is_halt_risk(halt_count_today=0)
@@ -56,7 +61,7 @@ class TestHaltRisk:
 
     def test_moved_10pct_in_5min(self):
         detected, evidence = _is_halt_risk(price_moved_pct_5m=12.0)
-        assert detected is True
+        assert detected is False
         assert any("moved_gt_10pct" in e for e in evidence)
 
     def test_moved_under_10pct_no_detect(self):
@@ -65,12 +70,20 @@ class TestHaltRisk:
 
     def test_quote_instability(self):
         detected, evidence = _is_halt_risk(quote_instability=True)
-        assert detected is True
+        assert detected is False
         assert any("quote_instability" in e for e in evidence)
 
     def test_vertical_without_pullback(self):
         detected, evidence = _is_halt_risk(vertical_without_pullback=True)
+        assert detected is False
+
+    def test_two_risk_signals_detected(self):
+        detected, evidence = _is_halt_risk(
+            price_moved_pct_5m=12.0,
+            vertical_without_pullback=True,
+        )
         assert detected is True
+        assert len(evidence) >= 2
 
     def test_multiple_signals(self):
         detected, evidence = _is_halt_risk(halt_count_today=2, spread_pct=5.0, vertical_move=True)
@@ -84,6 +97,11 @@ class TestHaltRisk:
 
 
 class TestBackside:
+    def test_repeated_hod_behavior_is_backside_evidence(self):
+        detected, evidence = _is_backside(hod_behavior_repeated=True)
+        assert detected is True
+        assert "hod_behavior_repeated" in evidence
+
     def test_lower_highs_with_failed_hod(self):
         detected, evidence = _is_backside(lower_highs_count=3, failed_hod_reclaim=True)
         assert detected is True
@@ -181,9 +199,16 @@ class TestExtended:
 
 
 class TestActive:
+    def test_two_signals_not_active(self):
+        """Two core signals alone are not enough to trigger ACTIVE (needs ≥3)."""
+        detected, evidence = _is_active(
+            higher_low_structure=True,
+            pullbacks_bought=True,
+        )
+        assert detected is False
+
     def test_all_signals_active(self):
         detected, evidence = _is_active(
-            hod_behavior_repeated=True,
             higher_low_structure=True,
             pullbacks_bought=True,
             strong_volume=True,
@@ -196,10 +221,9 @@ class TestActive:
 
     def test_three_of_five_signals_active(self):
         detected, _ = _is_active(
-            hod_behavior_repeated=True,
             higher_low_structure=True,
             pullbacks_bought=True,
-            strong_volume=False,
+            strong_volume=True,
             spread_pct=None,  # unknown
             nearest_stop_distance_pct=None,  # unknown
         )
@@ -207,7 +231,6 @@ class TestActive:
 
     def test_two_signals_not_enough(self):
         detected, _ = _is_active(
-            hod_behavior_repeated=True,
             higher_low_structure=True,
             pullbacks_bought=False,
             strong_volume=False,
@@ -218,7 +241,6 @@ class TestActive:
 
     def test_spread_too_wide(self):
         detected, evidence = _is_active(
-            hod_behavior_repeated=True,
             higher_low_structure=True,
             pullbacks_bought=True,
             strong_volume=True,
@@ -227,15 +249,15 @@ class TestActive:
             max_stop_width_pct=5.0,
         )
         # spread at 4.0 → not manageable (doesn't contribute to core_signals)
-        # core: hod + hl + pb + vol + stop = 5, still ≥3 → active
+        # core: hl + pb + vol + stop = 4, still ≥3 → active
         assert detected is True
         assert any("spread_wide=4.0" in e for e in evidence)
 
     def test_rvol_as_strong_volume(self):
         detected, _ = _is_active(
-            hod_behavior_repeated=True,
             higher_low_structure=True,
             rvol=3.0,  # ≥2.0 → strong volume
+            spread_pct=1.0,
         )
         assert detected is True
 
@@ -272,10 +294,23 @@ class TestCanReclaim:
 class TestPriorityOrder:
     def test_halt_risk_beats_backside(self):
         state, mode, evidence = classify_move_state(
-            halt_count_today=1,  # halt-risk trigger
+            halt_count_today=2,  # halt-risk trigger
             lower_highs_count=3, failed_hod_reclaim=True,  # backside trigger
         )
         assert state == MoveState.HALT_RISK
+
+    def test_repeated_hod_classifies_backside_not_active(self):
+        state, mode, evidence = classify_move_state(
+            hod_behavior_repeated=True,
+            higher_low_structure=True,
+            pullbacks_bought=True,
+            strong_volume=True,
+            spread_pct=0.5,
+            nearest_stop_distance_pct=2.0,
+        )
+        assert state == MoveState.BACKSIDE
+        assert mode == ModeType.AVOID_NEW_LONGS
+        assert "hod_behavior_repeated" in evidence
 
     def test_backside_beats_extended(self):
         state, mode, evidence = classify_move_state(
@@ -287,14 +322,14 @@ class TestPriorityOrder:
     def test_extended_beats_active(self):
         state, mode, evidence = classify_move_state(
             nearest_stop_distance_pct=6.0, max_stop_width_pct=5.0,  # extended
-            hod_behavior_repeated=True, higher_low_structure=True, pullbacks_bought=True,  # active
+            higher_low_structure=True, pullbacks_bought=True,  # active
             strong_volume=True, spread_pct=1.0,  # active signals
         )
         assert state == MoveState.EXTENDED
 
     def test_active_beats_early(self):
         state, mode, evidence = classify_move_state(
-            hod_behavior_repeated=True, higher_low_structure=True,
+            higher_low_structure=True,
             pullbacks_bought=True, strong_volume=True,
             spread_pct=1.0,
         )
@@ -308,7 +343,7 @@ class TestPriorityOrder:
 
 class TestModeMapping:
     def test_halt_risk_mode(self):
-        _, mode, _ = classify_move_state(halt_count_today=1)
+        _, mode, _ = classify_move_state(halt_count_today=2)
         assert mode == ModeType.AVOID_NEW_LONGS
 
     def test_backside_mode(self):
@@ -323,7 +358,7 @@ class TestModeMapping:
 
     def test_active_mode(self):
         _, mode, _ = classify_move_state(
-            hod_behavior_repeated=True, higher_low_structure=True,
+            higher_low_structure=True,
             pullbacks_bought=True, strong_volume=True, spread_pct=1.0,
         )
         assert mode == ModeType.STARTER_ENTRY
@@ -356,14 +391,14 @@ class TestEvidence:
 
     def test_active_returns_evidence(self):
         state, mode, evidence = classify_move_state(
-            hod_behavior_repeated=True, higher_low_structure=True,
+            higher_low_structure=True,
             pullbacks_bought=True, strong_volume=True, spread_pct=1.0,
         )
-        assert "hod_repeated" in evidence
         assert "higher_lows" in evidence
+        assert "pullbacks_bought" in evidence
 
     def test_halt_risk_returns_evidence(self):
-        state, mode, evidence = classify_move_state(halt_count_today=1)
+        state, mode, evidence = classify_move_state(halt_count_today=2)
         assert any("halt_count" in e for e in evidence)
 
     def test_evidence_never_empty(self):
@@ -447,7 +482,7 @@ class TestEdgeCases:
         """Multi-day runner is context, not a state by itself."""
         state, _, _ = classify_move_state(
             multi_day_runner=True,
-            hod_behavior_repeated=True, higher_low_structure=True,
+            higher_low_structure=True,
             pullbacks_bought=True, strong_volume=True, spread_pct=1.0,
         )
         assert state == MoveState.ACTIVE  # still active with good signals
@@ -456,7 +491,7 @@ class TestEdgeCases:
         """Prior state is informational, not deterministic."""
         state, _, _ = classify_move_state(
             prior_state="active",  # prior was active
-            halt_count_today=1,    # now halted
+            halt_count_today=2,    # now halt-risk
         )
         assert state == MoveState.HALT_RISK  # current state wins
 
@@ -482,7 +517,7 @@ class TestDSYClassifier:
 
     def test_dsy_as_active_with_strong_volume(self):
         state, mode, _ = classify_move_state(
-            hod_behavior_repeated=True, higher_low_structure=True,
+            higher_low_structure=True,
             pullbacks_bought=True, strong_volume=True, rvol=5.0,
             spread_pct=0.8,
         )
@@ -499,7 +534,7 @@ class TestDSYClassifier:
     def test_dsy_not_backside_with_volume(self):
         """High volume + no lower highs = not backside."""
         state, mode, _ = classify_move_state(
-            hod_behavior_repeated=True, higher_low_structure=True,
+            higher_low_structure=True,
             pullbacks_bought=True, strong_volume=True, rvol=8.0,
             spread_pct=0.8,
         )
@@ -536,7 +571,6 @@ class TestRuntimePathClassifier:
             strong_volume=True,
             pullbacks_bought=True,
             higher_low_structure=True,
-            hod_behavior_repeated=True,
         )
         assert state == MoveState.ACTIVE, (
             f"Expected ACTIVE, got {state} with evidence: {evidence}"

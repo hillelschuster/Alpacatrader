@@ -58,7 +58,7 @@ class TestPositionState:
         assert PositionState.PENDING_ENTRY.value == "PENDING_ENTRY"
         assert PositionState.OPEN.value == "OPEN"
         assert PositionState.ADDING.value == "ADDING"
-        assert PositionState.SCALING_OUT.value == "SCALING_OUT"
+        assert "SCALING_OUT" not in PositionState.__members__
         assert PositionState.RUNNER.value == "RUNNER"
         assert PositionState.EXITING.value == "EXITING"
         assert PositionState.UNPROTECTED.value == "UNPROTECTED"

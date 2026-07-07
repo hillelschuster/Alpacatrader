@@ -77,11 +77,6 @@ def main_cli(mode: str, once: bool, config: str):
     setup_logging(settings)
     logger.info(f"Alpacatrader v0.4.0 starting in {mode} mode")
 
-    if mode == "live":
-        logger.error("LIVE TRADING IS DISABLED BY DEFAULT. "
-                     "Set TRADING_LIVE_TRADING_CONFIRMED=yes_i_accept_the_risks in .env")
-        sys.exit(1)
-
     _run(settings, mode, once)
 
 
@@ -104,6 +99,11 @@ def _run(settings, mode, once):
             _run_paper_loop(settings)
         else:
             _run_paper(settings)
+    elif mode == "live":
+        if not once:
+            _run_live_loop(settings)
+        else:
+            _run_live(settings)
     elif mode == "sim":
         _run_sim(settings)
     else:
@@ -111,19 +111,22 @@ def _run(settings, mode, once):
         sys.exit(1)
 
 
-def _build_components(settings):
+def _build_components(settings, *, paper: bool = True):
     """T7.1: Build gateway, logger, runner-store, and risk config from settings.
 
     Returns ``(gw, logger_inst, former_runners, risk_kwargs)``.
-    All four CLI modes (mock, paper, sim, loop) use this helper.
+    All CLI modes (mock, paper, sim, loop, live) use this helper.
     """
     from src.journal.decision_logger import DecisionLogger
     from src.paper_execution import AlpacaExecutionGateway
     from src.scanner.attention import FormerRunnerStore
+    from src.trade_ledger import TradeLedger
 
     gw = AlpacaExecutionGateway(
         api_key=settings.trading.alpaca_api_key,
         secret_key=settings.trading.alpaca_secret_key,
+        paper=paper,
+        trade_ledger=TradeLedger("data/executed_trades.jsonl"),
     )
     logger_inst = DecisionLogger("data/decisions.jsonl")
     former_runners = FormerRunnerStore()
@@ -136,8 +139,20 @@ def _build_components(settings):
         max_daily_loss_pct=p1.max_daily_loss_pct,
         focus_price_min=p1.focus_price_min,
         focus_price_max=p1.focus_price_max,
+        dollar_volume_min=p1.dollar_volume_min,
     )
     return gw, logger_inst, former_runners, risk_kwargs
+
+
+def _require_alpaca_account_equity(gw, *, label: str) -> float:
+    """Fetch broker account equity for startup sizing/risk caps."""
+    from src.paper_execution import build_alpaca_account_equity
+
+    equity = build_alpaca_account_equity(gw)
+    if equity is None or equity <= 0:
+        raise RuntimeError(f"{label} mode failed to fetch Alpaca account equity")
+    logger.info("{} mode using Alpaca account equity ${:.2f}", label, equity)
+    return equity
 
 
 def _run_mock(settings, once):
@@ -239,6 +254,16 @@ def _run_paper(settings):
     _run_scan_pipeline(settings, "Paper", build_market_snapshot)
 
 
+def _run_live(settings):
+    """Live mode — same scan/pipeline machinery as paper, but live Alpaca routing.
+
+    Uses ``_run_scan_pipeline`` with ``paper=False`` so the execution gateway
+    creates ``TradingClient(paper=False)`` for live broker orders.
+    """
+    from src.market_data import build_market_snapshot
+    _run_scan_pipeline(settings, "Live", build_market_snapshot, paper=False)
+
+
 def _run_sim(settings):
     """Sim mode — use yesterday's Alpaca historical bars instead of live quotes.
 
@@ -254,14 +279,14 @@ def _run_sim(settings):
 
 
 def _run_scan_pipeline(settings, label: str, build_snapshot_fn, *,
-                       extra_header: str = ""):
-    """T7.1: Shared scan→enrich→pipeline loop for paper and sim modes.
+                       extra_header: str = "", paper: bool = True):
+    """T7.1: Shared scan→enrich→pipeline loop for paper, sim, and live modes.
 
-    Scans Finviz candidates, enriches each with market data, and runs
+    Scans dynamic top-gainer candidates, enriches each with market data, and runs
     the decision pipeline.  Results are logged per-candidate.
     """
     from src.decision_pipeline import run_pipeline
-    from src.scanner.scanner import scan_finviz_candidates
+    from src.scanner.scanner import scan_dynamic_candidates
 
     logger.info("=" * 60)
     logger.info(f"  Pipeline — {label} Mode{extra_header}")
@@ -271,7 +296,7 @@ def _run_scan_pipeline(settings, label: str, build_snapshot_fn, *,
     logger.info("=" * 60)
 
     try:
-        candidates = scan_finviz_candidates()
+        candidates = scan_dynamic_candidates()
     except Exception as exc:
         logger.warning("Scanner error: {}", exc)
         candidates = []
@@ -283,7 +308,8 @@ def _run_scan_pipeline(settings, label: str, build_snapshot_fn, *,
         )
         return
 
-    gw, logger_inst, former_runners, risk_kwargs = _build_components(settings)
+    gw, logger_inst, former_runners, risk_kwargs = _build_components(settings, paper=paper)
+    runtime_equity = _require_alpaca_account_equity(gw, label=label)
     ak = settings.trading.alpaca_api_key
     sk = settings.trading.alpaca_secret_key
 
@@ -302,7 +328,7 @@ def _run_scan_pipeline(settings, label: str, build_snapshot_fn, *,
                 spread_pct=snapshot.spread_pct,
                 rvol=snapshot.rvol,
                 dollar_volume_5m=snapshot.dollar_volume_5m,
-                equity=100_000.0,
+                equity=runtime_equity,
                 execution_gw=gw,
                 position_store=gw.positions,
                 former_runner_store=former_runners,
@@ -312,7 +338,7 @@ def _run_scan_pipeline(settings, label: str, build_snapshot_fn, *,
         else:
             result = run_pipeline(
                 candidate,
-                equity=100_000.0,
+                equity=runtime_equity,
                 execution_gw=gw,
                 position_store=gw.positions,
                 former_runner_store=former_runners,
@@ -336,6 +362,74 @@ def _run_scan_pipeline(settings, label: str, build_snapshot_fn, *,
     logger.info("=" * 60)
 
 
+def _run_live_loop(settings):
+    """Live loop mode — same TradingApp machinery as paper loop, but live Alpaca routing.
+
+    Uses ``paper=False`` for both the execution gateway (``TradingClient(paper=False)``)
+    and the ``TradingApp`` ``paper_mode`` flag, so broker orders are sent to the live
+    Alpaca environment.
+    """
+    from functools import partial
+
+    from src.app import TradingApp
+    from src.market_data import build_market_snapshot, build_market_snapshots
+    from src.paper_execution import (
+        build_alpaca_broker_snapshot,
+        build_alpaca_open_order_snapshot,
+        get_alpaca_market_session,
+    )
+    from src.scanner.scanner import scan_dynamic_candidates
+
+    logger.info("=" * 60)
+    logger.info("  Pipeline — Live Loop Mode")
+    logger.info("  Scan → Attention → Confidence → Soft Warnings")
+    logger.info("  → Mechanical Hard Filters → Move State → Entry Setup")
+    logger.info("  → Sizing → Paper Execution → Exits → DecisionRecord")
+    logger.info("  Loop: monitor=10s  scan=30s  SIGINT to stop")
+    logger.info("  LIVE TRADING — broker orders go to real Alpaca account")
+    logger.info("=" * 60)
+
+    ak = settings.trading.alpaca_api_key
+    sk = settings.trading.alpaca_secret_key
+    gw, logger_inst, _, risk_kwargs = _build_components(settings, paper=False)
+    runtime_equity = _require_alpaca_account_equity(gw, label="Live")
+
+    p1 = settings.phase1
+    runner = settings.runner
+    scaling = settings.scaling
+    app = TradingApp(
+        scanner_fn=scan_dynamic_candidates,
+        market_data_fn=partial(build_market_snapshot, api_key=ak, secret_key=sk),
+        market_data_batch_fn=partial(build_market_snapshots, api_key=ak, secret_key=sk),
+        logger=logger_inst,
+        execution_gw=gw,
+        position_store=gw.positions,
+        broker_snapshot_fn=partial(build_alpaca_broker_snapshot, gw),
+        broker_orders_snapshot_fn=partial(build_alpaca_open_order_snapshot, gw),
+        market_session_fn=partial(get_alpaca_market_session, gw),
+        persist_path="data/positions.json",
+        # Cadence
+        monitor_interval_seconds=p1.monitor_interval_seconds,
+        scan_interval_seconds=p1.scanner_interval_seconds,
+        # Risk
+        equity=runtime_equity,
+        **risk_kwargs,
+        max_consecutive_losses=p1.max_consecutive_losses,
+        weekly_drawdown_pct=p1.weekly_drawdown_pct,
+        runner_activation_r=runner.activation_r,
+        runner_atr_period=runner.atr_period,
+        runner_trail_multiplier=runner.trail_multiplier,
+        # Scaling
+        add_risk_pct=scaling.add_risk_pct,
+        add_size_multiplier=scaling.add_size_multiplier,
+        add_activation_r_multiple=scaling.add_activation_r_multiple,
+        max_adds=scaling.max_adds,
+        paper_mode=False,
+        exiting_timeout_seconds=p1.exiting_timeout_seconds,
+    )
+    app.run()
+
+
 def _run_paper_loop(settings):
     """Paper loop mode — continuous scanning and monitoring via TradingApp.
 
@@ -346,9 +440,13 @@ def _run_paper_loop(settings):
     from functools import partial
 
     from src.app import TradingApp
-    from src.market_data import build_market_snapshot
-    from src.paper_execution import build_alpaca_broker_snapshot
-    from src.scanner.scanner import scan_finviz_candidates
+    from src.market_data import build_market_snapshot, build_market_snapshots
+    from src.paper_execution import (
+        build_alpaca_broker_snapshot,
+        build_alpaca_open_order_snapshot,
+        get_alpaca_market_session,
+    )
+    from src.scanner.scanner import scan_dynamic_candidates
 
     logger.info("=" * 60)
     logger.info("  Pipeline — Paper Loop Mode")
@@ -361,22 +459,40 @@ def _run_paper_loop(settings):
     ak = settings.trading.alpaca_api_key
     sk = settings.trading.alpaca_secret_key
     gw, logger_inst, _, risk_kwargs = _build_components(settings)
+    runtime_equity = _require_alpaca_account_equity(gw, label="Paper")
 
     p1 = settings.phase1
+    runner = settings.runner
+    scaling = settings.scaling
     app = TradingApp(
-        scanner_fn=scan_finviz_candidates,
+        scanner_fn=scan_dynamic_candidates,
         market_data_fn=partial(build_market_snapshot, api_key=ak, secret_key=sk),
+        market_data_batch_fn=partial(build_market_snapshots, api_key=ak, secret_key=sk),
         logger=logger_inst,
         execution_gw=gw,
         position_store=gw.positions,
         broker_snapshot_fn=partial(build_alpaca_broker_snapshot, gw),
+        broker_orders_snapshot_fn=partial(build_alpaca_open_order_snapshot, gw),
+        market_session_fn=partial(get_alpaca_market_session, gw),
         persist_path="data/positions.json",
         # Cadence
         monitor_interval_seconds=p1.monitor_interval_seconds,
         scan_interval_seconds=p1.scanner_interval_seconds,
         # Risk
+        equity=runtime_equity,
         **risk_kwargs,
+        max_consecutive_losses=p1.max_consecutive_losses,
+        weekly_drawdown_pct=p1.weekly_drawdown_pct,
+        runner_activation_r=runner.activation_r,
+        runner_atr_period=runner.atr_period,
+        runner_trail_multiplier=runner.trail_multiplier,
+        # Scaling
+        add_risk_pct=scaling.add_risk_pct,
+        add_size_multiplier=scaling.add_size_multiplier,
+        add_activation_r_multiple=scaling.add_activation_r_multiple,
+        max_adds=scaling.max_adds,
         paper_mode=True,
+        exiting_timeout_seconds=p1.exiting_timeout_seconds,
     )
     app.run()
 

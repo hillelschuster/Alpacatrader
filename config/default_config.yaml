@@ -34,5 +34,40 @@ phase1:
   # Risk defaults
   starter_risk_pct: 0.0025
   max_daily_loss_pct: 0.03
+  max_consecutive_losses: 3
+  weekly_drawdown_pct: 0.06
   max_positions: 3
   max_open_risk_pct: 0.03
+
+  # Liquidity
+  dollar_volume_min: 50000
+
+  # Spread sizing tiers (SPEC §11.18.4)
+  spread_full_size_threshold: 2.0   # ≤2% → 100% size
+  spread_block_threshold: 20.0      # >20% → block
+
+  # Phase 6 live-readiness (exiting timeout)
+  exiting_timeout_seconds: 120
+
+# ──────────────────────────────────────────────────────
+# Phase 3 — runner capture defaults
+# ──────────────────────────────────────────────────────
+runner:
+  activation_r: 1.5
+  atr_period: 5
+  trail_multiplier: 2.5
+
+# ──────────────────────────────────────────────────────
+# Phase 4 — scaling-in defaults (SPEC §11.5)
+# ──────────────────────────────────────────────────────
+scaling:
+  max_adds: 2
+  add_risk_pct: 0.0025
+  add_size_multiplier: 0.5
+  add_activation_r_multiple: 2.0
+
+# ──────────────────────────────────────────────────────
+# Phase 7 — LLM pre-market annotator (SPEC §11.8)
+# ──────────────────────────────────────────────────────
+llm_advisor:
+  enabled: false

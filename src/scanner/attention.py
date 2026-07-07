@@ -32,23 +32,29 @@ from src.models.schemas import AttentionScore, Candidate
 #  Constants (SPEC-tunable defaults)
 # ──────────────────────────────────────────────────────────────────
 
-# V1 factor weights
-_PRICE_WEIGHT = 40
-_VOLUME_WEIGHT = 35
-_HOD_WEIGHT = 25
+# Attention factor weights
+_PRICE_WEIGHT = 30
+_VOLUME_WEIGHT = 40
+_HOD_WEIGHT = 30
 _TOTAL_WEIGHT = _PRICE_WEIGHT + _VOLUME_WEIGHT + _HOD_WEIGHT  # 100
+
+# ponytail: Top-gainer bot — % gain is the primary signal.
+# Cap at 100% so a 250% gainer scores full 30 pts, not capped at 25%.
+# A 50% gainer gets 15 pts, a 100%+ gainer gets full 30 pts.
+_PRICE_NORMALIZATION_CAP_PCT = 100.0
 
 # Bonuses (capped so total never exceeds 100)
 _THEME_BONUS = 10
 _FORMER_RUNNER_BONUS = 5
 _REPEATED_SCANNER_BONUS = 5
+_SCANNER_FRESH_BONUS = 5
 
 # Volume attention sub-weights
-_RVOL_SUB_WEIGHT = 20
+_RVOL_SUB_WEIGHT = 25
 _DOLLAR_VOL_SUB_WEIGHT = 15
 
 # HOD acceleration sub-weights
-_HOD_PROXIMITY_SUB_WEIGHT = 15
+_HOD_PROXIMITY_SUB_WEIGHT = 20
 _ROC_SUB_WEIGHT = 10
 
 # Minimum available weight to allow entry-scoring
@@ -81,9 +87,11 @@ def score_attention(
     roc_1m_pct: Optional[float] = None,
     roc_3m_pct: Optional[float] = None,
     roc_5m_pct: Optional[float] = None,
+    new_hod_recent: bool = False,
     theme_active: bool = False,
     former_runner: bool = False,
     repeated_scanner_seen: bool = False,
+    scanner_seen_count: Optional[int] = None,
 ) -> AttentionScore:
     """Score a single enriched candidate on attention (0–100).
 
@@ -100,12 +108,17 @@ def score_attention(
         Current HOD price.  *None* if unavailable.
     roc_1m_pct, roc_3m_pct, roc_5m_pct : float or None
         Rate-of-change percentages for 1m/3m/5m windows.
+    new_hod_recent : bool
+        Whether recent bars set the current HOD.
     theme_active : bool
         Whether a relevant theme is active (see ``detect_themes``).
     former_runner : bool
         Whether the symbol is a former runner.
     repeated_scanner_seen : bool
-        Whether this symbol appeared in prior scans this session.
+        Legacy flat scanner bonus flag, kept for compatibility.
+    scanner_seen_count : int or None
+        Consecutive scan-cycle count for this symbol.  A fresh scanner hit gets
+        a small bonus that decays away over repeated cycles.
 
     Returns
     -------
@@ -114,7 +127,7 @@ def score_attention(
     raw_components: dict[str, float] = {}
     drivers: list[str] = []
 
-    # ── Price attention (40 pts) ──────────────────────────────────
+    # ── Price attention (30 pts) ──────────────────────────────────
     price_pts, price_available = _price_attention(
         candidate.percent_gain, candidate.premarket_gap_pct
     )
@@ -122,7 +135,7 @@ def score_attention(
     if price_pts > 0:
         drivers.append("top_gainer")
 
-    # ── Volume attention (35 pts) ─────────────────────────────────
+    # ── Volume attention (40 pts) ─────────────────────────────────
     vol_pts, vol_available = _volume_attention(
         rvol=rvol,
         dollar_volume_5m=dollar_volume_5m,
@@ -134,13 +147,14 @@ def score_attention(
     if vol_pts > 0:
         drivers.append("strong_volume")
 
-    # ── HOD acceleration (25 pts) ─────────────────────────────────
+    # ── HOD acceleration (30 pts) ─────────────────────────────────
     hod_pts, hod_available = _hod_acceleration(
         price=candidate.price,
         hod_price=hod_price,
         roc_1m_pct=roc_1m_pct,
         roc_3m_pct=roc_3m_pct,
         roc_5m_pct=roc_5m_pct,
+        new_hod_recent=new_hod_recent,
     )
     raw_components["hod_acceleration"] = hod_pts
     if hod_pts > 0:
@@ -175,7 +189,11 @@ def score_attention(
         bonuses += _FORMER_RUNNER_BONUS
         bonuses_applied.append("former_runner")
         drivers.append("former_runner")
-    if repeated_scanner_seen:
+    scanner_fresh_bonus = _scanner_freshness_bonus(scanner_seen_count)
+    if scanner_fresh_bonus > 0:
+        bonuses += scanner_fresh_bonus
+        bonuses_applied.append("scanner_fresh")
+    elif scanner_seen_count is None and repeated_scanner_seen:
         bonuses += _REPEATED_SCANNER_BONUS
         bonuses_applied.append("repeated_scanner_seen")
 
@@ -197,10 +215,10 @@ def _price_attention(
     percent_gain: Optional[float],
     premarket_gap_pct: Optional[float],
 ) -> tuple[float, bool]:
-    """Compute price-attention points (max 40).
+    """Compute price-attention points.
 
     Uses the larger of ``percent_gain`` and ``premarket_gap_pct``,
-    normalised to max 50% gain → 40 pts.
+    normalised to the roadmap #4 top-gainer cap (25%).
 
     Returns
     -------
@@ -215,7 +233,7 @@ def _price_attention(
     else:
         return 0.0, False  # unavailable
 
-    pts = min(_PRICE_WEIGHT, best_gain / 50.0 * _PRICE_WEIGHT)
+    pts = min(_PRICE_WEIGHT, best_gain / _PRICE_NORMALIZATION_CAP_PCT * _PRICE_WEIGHT)
     return round(max(0.0, pts), 2), True
 
 
@@ -227,9 +245,9 @@ def _volume_attention(
     candidate_price: Optional[float],
     min_dollar_volume: float,
 ) -> tuple[float, bool]:
-    """Compute volume-attention points (max 35).
+    """Compute volume-attention points.
 
-    RVOL contributes up to 20 pts (RVOL * 5, capped at 20).
+    RVOL contributes up to 25 pts using Phase 2 bands.
     Dollar volume contributes up to 15 pts.
 
     Returns
@@ -242,7 +260,7 @@ def _volume_attention(
     # RVOL component
     if rvol is not None:
         has_any = True
-        pts += min(_RVOL_SUB_WEIGHT, rvol * 5.0)
+        pts += _rvol_points(rvol)
 
     # Dollar-volume component
     dv: Optional[float] = dollar_volume_5m
@@ -264,10 +282,12 @@ def _hod_acceleration(
     roc_1m_pct: Optional[float],
     roc_3m_pct: Optional[float],
     roc_5m_pct: Optional[float],
+    new_hod_recent: bool = False,
 ) -> tuple[float, bool]:
-    """Compute HOD-acceleration points (max 25).
+    """Compute HOD-acceleration points.
 
-    HOD proximity: 15 pts within 1%, 8 pts within 3%, else 0.
+    HOD proximity: 20 pts within 1% or recent new HOD,
+    ~10.6 pts within 3%, else 0.
     ROC: best of 1m/3m/5m / 5% * 10 pts, capped at 10.
 
     Returns
@@ -277,14 +297,19 @@ def _hod_acceleration(
     pts: float = 0.0
     has_any: bool = False
 
-    # HOD proximity
+    # HOD proximity / recent new HOD
+    proximity_pts = 0.0
     if price is not None and hod_price is not None and hod_price > 0:
         has_any = True
         dist_pct = (hod_price - price) / hod_price * 100.0
         if dist_pct <= 1.0:
-            pts += _HOD_PROXIMITY_SUB_WEIGHT
+            proximity_pts = _HOD_PROXIMITY_SUB_WEIGHT
         elif dist_pct <= 3.0:
-            pts += _HOD_PROXIMITY_SUB_WEIGHT * 0.53  # ~8 pts
+            proximity_pts = _HOD_PROXIMITY_SUB_WEIGHT * 0.53  # ~10.6 pts
+    if new_hod_recent:
+        has_any = True
+        proximity_pts = max(proximity_pts, float(_HOD_PROXIMITY_SUB_WEIGHT))
+    pts += proximity_pts
 
     # ROC
     roc_vals = [v for v in (roc_1m_pct, roc_3m_pct, roc_5m_pct) if v is not None]
@@ -294,6 +319,33 @@ def _hod_acceleration(
         pts += min(_ROC_SUB_WEIGHT, best_roc / 5.0 * _ROC_SUB_WEIGHT)
 
     return round(max(0.0, pts), 2), has_any
+
+
+def _rvol_points(rvol: float) -> float:
+    """RVOL bands per SPEC §11.17.5: <2 weak, 2-3 moderate,
+    3-5 strong, >=5 capped.
+    """
+    rvol = max(0.0, rvol)
+    if rvol < 2.0:
+        return rvol / 2.0 * 10.0
+    if rvol < 3.0:
+        return 10.0 + (rvol - 2.0) * 5.0
+    if rvol < 5.0:
+        return 15.0 + (rvol - 3.0) / 2.0 * 10.0
+    return float(_RVOL_SUB_WEIGHT)
+
+
+def _scanner_freshness_bonus(scanner_seen_count: Optional[int]) -> float:
+    """Small scanner-hit bonus that decays across repeated scan cycles."""
+    if scanner_seen_count is None or scanner_seen_count <= 0:
+        return 0.0
+    if scanner_seen_count == 1:
+        return float(_SCANNER_FRESH_BONUS)
+    if scanner_seen_count == 2:
+        return 3.0
+    if scanner_seen_count == 3:
+        return 1.0
+    return 0.0
 
 
 # ──────────────────────────────────────────────────────────────────
@@ -438,6 +490,7 @@ def score_candidates(
     *,
     min_dollar_volume: float = _DEFAULT_MIN_DOLLAR_VOLUME_5M,
     former_runner_store: Optional[FormerRunnerStore] = None,
+    scanner_seen_counts: Optional[dict[str, int]] = None,
 ) -> list[tuple[Candidate, AttentionScore]]:
     """Score a list of candidates and return them sorted by attention (descending).
 
@@ -451,6 +504,8 @@ def score_candidates(
     min_dollar_volume : float
         Reference min dollar volume for normalisation.
     former_runner_store : FormerRunnerStore or None
+    scanner_seen_counts : dict[str, int] or None
+        Consecutive scan-cycle counts used for the decaying scanner-fresh bonus.
 
     Returns
     -------
@@ -468,10 +523,14 @@ def score_candidates(
         )
         score = score_attention(
             c,
+            rvol=c.relative_volume,
+            dollar_volume_5m=c.dollar_volume,
             min_dollar_volume=min_dollar_volume,
+            hod_price=c.day_high,
             theme_active=is_symbol_in_theme(c, themes),
             former_runner=is_runner,
-            # Phase 2: no bars/quotes yet → HOD/ROC unavailable
+            scanner_seen_count=(scanner_seen_counts or {}).get(c.symbol),
+            # Batch rank has no bars yet → ROC unavailable.
         )
         scored.append((c, score))
 

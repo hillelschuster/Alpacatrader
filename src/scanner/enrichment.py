@@ -1,9 +1,9 @@
 """
 Finviz free-tier scanner adapter — ticker discovery only.
 
-Provides the FinvizRow dataclass, Finviz scrape, yfinance fallback scanner,
-and stale-result detection.  No yfinance enrichment (that belongs in a
-separate service).
+Provides the FinvizRow dataclass, Finviz scrape, yfinance watchlist utility,
+and stale-result detection. Static watchlists are watch-only, not automatic
+top-gainer trade discovery.
 """
 
 from typing import Optional
@@ -176,10 +176,10 @@ def _parse_finviz_market_cap(raw: str) -> float:
         return 0.0
 
 
-# ── yfinance fallback scanner (when Finviz is dead / stale) ──────────────────
+# ── yfinance static watchlist utility ────────────────────────────────────────
 
-# Static equity-focused fallback watchlist for yfinance intraday scanning.
-# Used only when Finviz is unreachable or returns stale data.
+# Static equity-focused watchlist for yfinance intraday observation.
+# Not used as automatic trade discovery when dynamic top-gainer sources fail.
 # This list is dated 2026-06 — refresh periodically.
 # EXCLUDES: ETFs, mutual funds, and indices (filtered dynamically below).
 _VOLATILE_WATCHLIST: list[str] = [
@@ -199,8 +199,9 @@ def scrape_yfinance_gainers(
     """Scan a curated watchlist for intraday gainers using yfinance.
 
     Filters out ETFs/mutual funds/funds/indexes via fast_info.quote_type.
-    Returns dict[ticker, FinvizRow] for ticker discovery, with real-time
-    change% and volume from yfinance fast_info.
+    Returns dict[ticker, FinvizRow] for watch-only observation, with real-time
+    change% and volume from yfinance fast_info. Automatic scanner paths must
+    not treat this static list as today's top-gainer discovery.
     """
     try:
         import yfinance as yf

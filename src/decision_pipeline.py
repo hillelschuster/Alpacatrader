@@ -29,8 +29,9 @@ from src.models.schemas import (
     ExitInfo,
     MoveState,
     PositionState,
+    PositionStateModel,
 )
-from src.annotations import map_soft_warnings, soft_warning_multiplier
+from src.annotations import map_soft_warnings, soft_warning_multiplier, spread_sizing_multiplier
 from src.classifier_features import derive_classifier_features
 from src.move_classifier import classify_move_state, get_allowed_setups
 from src.paper_execution import PaperExecutionGateway
@@ -43,6 +44,30 @@ from src.sizing import attention_multiplier, entry_sizing
 from src.state_machine import PositionStore
 
 import loguru
+
+
+def _roc_pct_from_bars(bars: Optional[list[Bar]], lookback_bars: int) -> Optional[float]:
+    """Return close-to-close ROC over ``lookback_bars`` 1-minute bars."""
+    if not bars or len(bars) <= lookback_bars:
+        return None
+    start = bars[-(lookback_bars + 1)].close
+    end = bars[-1].close
+    if start is None or start <= 0:
+        return None
+    return (end - start) / start * 100.0
+
+
+def _new_hod_recent_from_bars(
+    bars: Optional[list[Bar]],
+    day_high: Optional[float],
+    *,
+    lookback_bars: int = 5,
+) -> bool:
+    """Return True when recent bars set the current HOD."""
+    if not bars or day_high is None or day_high <= 0:
+        return False
+    recent = bars[-lookback_bars:]
+    return any(bar.high >= day_high for bar in recent)
 
 
 # ──────────────────────────────────────────────────────────────────
@@ -61,6 +86,7 @@ class MarketSnapshot:
 
     candidate: Candidate
     bars: Optional[list[Bar]] = None
+    five_min_bars: Optional[list[Bar]] = None
     vwap: Optional[float] = None
     ema9: Optional[float] = None
     day_high: Optional[float] = None
@@ -69,6 +95,7 @@ class MarketSnapshot:
     spread_pct: Optional[float] = None
     rvol: Optional[float] = None
     dollar_volume_5m: Optional[float] = None
+    daily_volume: Optional[float] = None
     halt_count_today: int = 0
 
     def validate_for_entry(self) -> tuple[bool, list[str]]:
@@ -109,6 +136,9 @@ class PipelineResult:
         self.data_confidence: Optional[float] = None
         self.scanner_age_seconds: Optional[float] = None
         self.quote_age_seconds: Optional[float] = None
+        self.spread_pct: Optional[float] = None
+        self.rvol: Optional[float] = None
+        self.daily_volume: Optional[float] = None
         self.soft_warnings: list[str] = []
         self.hard_blocks: list[str] = []
         self.hard_filter_passed: bool = True
@@ -165,6 +195,9 @@ class PipelineResult:
             attention_score=self.attention_score,
             attention_drivers=self.attention_drivers,
             data_confidence=self.data_confidence,
+            percent_gain=self.candidate.percent_gain,
+            rvol=self.rvol,
+            daily_volume=self.daily_volume,
             hard_blocks=self.hard_blocks,
             soft_warnings=self.soft_warnings,
             state=self.move_state.value if self.move_state else None,
@@ -188,11 +221,12 @@ class PipelineResult:
 
 
 # ══════════════════════════════════════════════════════════════════
-#  Pipeline runner
+#  Pipeline — split into evaluate_candidate / execute_entry / evaluate_exits
+#  (SPEC §11.2 — Phase 1 refactor)
 # ══════════════════════════════════════════════════════════════════
 
 
-def run_pipeline(
+def evaluate_candidate(
     candidate: Candidate,
     *,
     # Enrichment
@@ -205,59 +239,40 @@ def run_pipeline(
     spread_pct: Optional[float] = None,
     rvol: Optional[float] = None,
     dollar_volume_5m: Optional[float] = None,
-    bars_available: Optional[bool] = None,  # derived from bars; kept for test compat
+    daily_volume: Optional[float] = None,
+    bars_available: Optional[bool] = None,
     # Attention context
     theme_active: bool = False,
     former_runner_store: Optional[FormerRunnerStore] = None,
-    # Execution
+    scanner_seen_count: Optional[int] = None,
+    # Execution (for symbol_locked check in hard filters)
     execution_gw: Optional[PaperExecutionGateway] = None,
-    position_store: Optional[PositionStore] = None,
-    # Risk config
+    # Risk config (for hard filters)
     equity: float = 100_000.0,
-    starter_risk_pct: float = 0.0025,
-    max_trade_risk_pct: float = 0.01,
     max_positions: int = 3,
     max_open_risk_pct: float = 0.03,
-    max_daily_loss_pct: float = 0.03,
     focus_price_min: float = 1.0,
     focus_price_max: float = 50.0,
+    dollar_volume_min: float = 50_000.0,
     account: Optional[AccountRiskState] = None,
-    # Exit context
-    check_exits_for_open: bool = False,
-    daily_loss_breached: bool = False,
+    # Exit context (for hard filters)
     per_symbol_loss_capped: bool = False,
     halt_count_today: int = 0,
     et_time: Optional[time] = None,
-    # Logger
-    logger: Optional[DecisionLogger] = None,
-    # News / catalyst status (SPEC §8, §22.12)
+    # News / catalyst status
     has_news: Optional[bool] = None,
     has_catalyst: Optional[bool] = None,
-    # Snapshot pre-validation + pre-submit quote recheck (SPEC §6, §14)
+    # Snapshot pre-validation
     snapshot_missing: Optional[list[str]] = None,
-    pre_submit_quote_fn: Optional[Callable[[Candidate], Optional["MarketSnapshot"]]] = None,
 ) -> PipelineResult:
-    """Run the full decision pipeline for one candidate.
+    """Steps 1-6: data confidence, attention, soft warnings, hard filters,
+    move classification, entry detection.
 
-    Steps (in order):
-      1. Data confidence
-      2. Attention scoring
-      3. Soft warnings
-      4. Hard filters
-      5. Move classification
-      6. Entry detection (if allowed)
-      7. Sizing
-      8. Order submission (if execution gateway provided)
-      9. Exit check (if position exists)
-     10. Decision record + JSONL log
-
-    Returns
-    -------
-    PipelineResult
+    Pure analysis — no side effects, no order submission, no logging.
+    Returns a PipelineResult with move_state and entry_signal populated.
     """
     result = PipelineResult(candidate)
 
-    # Derive bars_available from actual bars if not explicitly provided
     if bars_available is None:
         bars_available = bars is not None and len(bars) > 0
 
@@ -268,6 +283,9 @@ def run_pipeline(
     )
     result.scanner_age_seconds = compute_scanner_age_seconds(candidate, now=now)
     result.quote_age_seconds = quote_age_seconds
+    result.spread_pct = spread_pct
+    result.rvol = rvol
+    result.daily_volume = daily_volume
 
     # ── 2. Attention ────────────────────────────────────────────
     is_runner = (
@@ -276,7 +294,16 @@ def run_pipeline(
     )
     att = score_attention(
         candidate, rvol=rvol, dollar_volume_5m=dollar_volume_5m,
+        hod_price=day_high if day_high is not None else candidate.day_high,
+        roc_1m_pct=_roc_pct_from_bars(bars, 1),
+        roc_3m_pct=_roc_pct_from_bars(bars, 3),
+        roc_5m_pct=_roc_pct_from_bars(bars, 5),
+        new_hod_recent=_new_hod_recent_from_bars(
+            bars,
+            day_high if day_high is not None else candidate.day_high,
+        ),
         theme_active=theme_active, former_runner=is_runner,
+        scanner_seen_count=scanner_seen_count,
     )
     result.attention_score = att.score
     result.attention_drivers = att.drivers
@@ -286,11 +313,11 @@ def run_pipeline(
         candidate, price_range_min=focus_price_min, price_range_max=focus_price_max,
         quote_age_seconds=quote_age_seconds, spread_pct=spread_pct,
         data_confidence=result.data_confidence,
+        halt_history_today=halt_count_today > 0,
         has_news=has_news, has_catalyst=has_catalyst,
     )
 
     # ── 4. Hard filters ─────────────────────────────────────────
-    # Estimate bid/ask from price when not provided (paper mode)
     est_bid = (candidate.price * 0.999) if candidate.price else None
     est_ask = (candidate.price * 1.001) if candidate.price else None
     symbol_locked = (
@@ -304,7 +331,8 @@ def run_pipeline(
         quote_age_seconds=quote_age_seconds,
         spread_pct=spread_pct,
         dollar_volume_5m=dollar_volume_5m,
-        is_halted=(halt_count_today > 0),
+        min_dollar_volume=dollar_volume_min,
+        is_halted=(halt_count_today > 1),
         account=account,
         symbol_locked=symbol_locked,
         max_positions=max_positions,
@@ -319,9 +347,6 @@ def run_pipeline(
     result.hard_filter_passed = hf.passed
 
     # ── 5. Move classification ──────────────────────────────────
-    # Derive bar-driven features once and feed them to the classifier
-    # (SPEC §9).  Missing VWAP/day_high degrade gracefully — the
-    # classifier's VWAP-missing safeguard prevents manufacturing BACKSIDE.
     features = derive_classifier_features(
         bars or [],
         price=candidate.price,
@@ -357,8 +382,6 @@ def run_pipeline(
     # ── 6. Entry detection ──────────────────────────────────────
     if result.hard_filter_passed and result.attention_score is not None:
         att_mult = attention_multiplier(result.attention_score)
-
-        # Only attempt entry if attention allows (>0.25x)
         if att_mult > 0.25 and bars:
             allowed_setups = get_allowed_setups(state) if state else set()
             signal = find_entry(
@@ -371,89 +394,7 @@ def run_pipeline(
             )
             if signal is not None:
                 result.entry_signal = signal
-
-                # ── 7. Sizing ───────────────────────────────
-                soft_mult = soft_warning_multiplier(
-                    result.soft_warnings,
-                    attention_score=result.attention_score,
-                )
-                shares, starter, adj_risk, risk_amount = entry_sizing(
-                    equity, signal.risk_per_share,
-                    starter_risk_pct=starter_risk_pct,
-                    max_trade_risk_pct=max_trade_risk_pct,
-                    attention_score=result.attention_score,
-                    soft_multiplier=soft_mult,
-                    data_confidence=result.data_confidence or 1.0,
-                )
-                result.entry_shares = shares
-                result.entry_risk_amount = risk_amount
-
-                # ── 8. Order submission ──────────────────────
-                if shares > 0 and execution_gw is not None:
-                    # ── 8-pre. Pre-submit quote recheck (SPEC §14) ──
-                    # Refresh the quote right before submission; abort to watch
-                    # if the refreshed snapshot is invalid or stale (>5s).
-                    if pre_submit_quote_fn is not None:
-                        refreshed = pre_submit_quote_fn(candidate)
-                        if refreshed is not None:
-                            r_valid, r_missing = refreshed.validate_for_entry()
-                            stale = (
-                                refreshed.quote_age_seconds is not None
-                                and refreshed.quote_age_seconds > 5.0
-                            )
-                            if not r_valid or stale:
-                                result.decision = "watch"
-                                result.decision_reason = "stale_pre_submit_quote"
-                                record = result.to_decision_record()
-                                if logger is not None:
-                                    logger.write(record)
-                                return result
-                    try:
-                        sized_signal = EntrySignal.model_validate({
-                            **signal.model_dump(),
-                            "proposed_shares": shares,
-                            "risk_amount": risk_amount,
-                        })
-                        order, pos = execution_gw.submit_entry(sized_signal)
-
-                        # ── 8a. Fill confirmation (paper sim) ──
-                        try:
-                            execution_gw.confirm_fill(order.order_id)
-                        except Exception:
-                            loguru.logger.exception(
-                                "confirm_fill failed for %s order %s — position stays PENDING_ENTRY",
-                                sized_signal.symbol, order.order_id,
-                            )
-
-                        # ── 8b. Place stop protection ──────────
-                        try:
-                            execution_gw.protect_position(
-                                sized_signal.symbol,
-                                sized_signal.stop_price,
-                                sized_signal.proposed_shares,
-                            )
-                        except Exception:
-                            # Protection placement failed — mark UNPROTECTED explicitly
-                            # so the exit monitor can see and escalate per SPEC §12.5.
-                            try:
-                                execution_gw.mark_unprotected(sized_signal.symbol)
-                            except Exception:
-                                loguru.logger.exception(
-                                    "mark_unprotected failed for %s after protection failure",
-                                    sized_signal.symbol,
-                                )
-
-                        result.decision = "enter"
-                        result.decision_reason = f"setup={signal.entry_setup.value} shares={shares}"
-                    except ValueError:
-                        result.decision = "watch"
-                        result.decision_reason = "symbol_locked"
-                elif shares > 0:
-                    result.decision = "enter"
-                    result.decision_reason = f"setup={signal.entry_setup.value} shares={shares} (paper sim)"
-                else:
-                    result.decision = "watch"
-                    result.decision_reason = "zero_shares_from_sizing"
+                # Decision set by execute_entry() if called
             else:
                 result.decision = "watch"
                 result.decision_reason = "no_entry_setup_detected"
@@ -467,55 +408,260 @@ def run_pipeline(
         result.decision = "watch"
         result.decision_reason = "no_attention_score"
 
-    # ── 9. Exit check (if position exists) ──────────────────────
-    if check_exits_for_open and position_store is not None:
-        pos = position_store.get(candidate.symbol)
-        if pos is not None and pos.state in (PositionState.OPEN, PositionState.UNPROTECTED, PositionState.EXITING):
-            # EXITING timeout recovery: escalate stale EXITING → UNPROTECTED
-            _EXITING_TIMEOUT_S = 120.0  # TODO: promote to Phase1Settings
-            if pos.state == PositionState.EXITING:
-                elapsed = (datetime.now(timezone.utc) - pos.updated_at).total_seconds()
-                if elapsed > _EXITING_TIMEOUT_S and execution_gw is not None:
-                    try:
-                        execution_gw.mark_unprotected(pos.symbol)
-                        pos = position_store.get(candidate.symbol)
-                    except ValueError:
-                        pass
-                    if logger is not None:
-                        logger.warning(
-                            f"EXITING timeout for {candidate.symbol} "
-                            f"({elapsed:.0f}s) → escalated to UNPROTECTED"
-                        )
-                else:
-                    # Within timeout — skip exit checks for EXITING positions
-                    pass
-            # Only run exit engine for non-EXITING positions
-            if pos is not None and pos.state != PositionState.EXITING:
-                from src.exits import check_exits as run_exits
-                position_unprotected = (
-                    pos.state == PositionState.UNPROTECTED
-                    or (execution_gw is not None and not execution_gw._has_pending_stop(pos.symbol))
-                )
-            exit_dec = run_exits(
-                pos,
-                current_price=candidate.price,
-                risk_per_share=pos.entry_price - pos.stop_price if pos.entry_price and pos.stop_price else None,
-                position_unprotected=position_unprotected,
-                spread_pct=spread_pct, quote_age_seconds=quote_age_seconds,
-                bars=bars, vwap=vwap, move_state=state,
-                entry_setup=result.entry_signal.entry_setup.value if result.entry_signal else None,
-                prior_hod=prior_hod,
-                daily_loss_breached=daily_loss_breached,
-                per_symbol_loss_capped=per_symbol_loss_capped,
-                halt_count_today=halt_count_today,
-                et_time=et_time,
-            )
-            if exit_dec is not None and exit_dec.should_exit:
-                result.exit_decision = exit_dec
-                result.decision = "exit"
-                result.decision_reason = exit_dec.reason
+    return result
 
-    # ── 10. Log ─────────────────────────────────────────────────
+
+def execute_entry(
+    result: PipelineResult,
+    *,
+    execution_gw: Optional[PaperExecutionGateway] = None,
+    equity: float = 100_000.0,
+    starter_risk_pct: float = 0.0025,
+    max_trade_risk_pct: float = 0.01,
+    pre_submit_quote_fn: Optional[Callable[[Candidate], Optional["MarketSnapshot"]]] = None,
+) -> PipelineResult:
+    """Steps 7-8: sizing + order submission + fill confirm + protect position.
+
+    Mutates and returns the PipelineResult. If no entry_signal was found
+    by evaluate_candidate(), this is a no-op.
+    """
+    signal = result.entry_signal
+    if signal is None:
+        return result
+
+    # ── 7. Sizing ───────────────────────────────────────────────
+    soft_mult = soft_warning_multiplier(
+        result.soft_warnings,
+        attention_score=result.attention_score,
+    )
+    spread_mult = spread_sizing_multiplier(result.spread_pct)
+    if spread_mult == 0.0:
+        result.decision = "skip"
+        result.decision_reason = f"spread_block:{result.spread_pct}"
+        return result
+    combined_mult = soft_mult * spread_mult
+    shares, starter, adj_risk, risk_amount = entry_sizing(
+        equity, signal.risk_per_share,
+        starter_risk_pct=starter_risk_pct,
+        max_trade_risk_pct=max_trade_risk_pct,
+        attention_score=result.attention_score,
+        soft_multiplier=combined_mult,
+        data_confidence=result.data_confidence or 1.0,
+    )
+    result.entry_shares = shares
+    result.entry_risk_amount = risk_amount
+
+    # ── 8. Order submission ─────────────────────────────────────
+    if shares > 0 and execution_gw is not None:
+        # ── 8-pre. Pre-submit quote recheck (SPEC §14) ──
+        if pre_submit_quote_fn is not None:
+            refreshed = pre_submit_quote_fn(result.candidate)
+            if refreshed is not None:
+                r_valid, r_missing = refreshed.validate_for_entry()
+                stale = (
+                    refreshed.quote_age_seconds is not None
+                    and refreshed.quote_age_seconds > 5.0
+                )
+                if not r_valid or stale:
+                    result.decision = "watch"
+                    result.decision_reason = "stale_pre_submit_quote"
+                    return result
+        try:
+            sized_signal = EntrySignal.model_validate({
+                **signal.model_dump(),
+                "proposed_shares": shares,
+                "risk_amount": risk_amount,
+            })
+            order, pos = execution_gw.submit_entry(sized_signal)
+
+            # ── 8a. Fill confirmation ──
+            fill_confirmed = True
+            try:
+                execution_gw.confirm_fill(order.order_id)
+            except Exception:
+                loguru.logger.exception(
+                    "confirm_fill failed for %s order %s — position stays PENDING_ENTRY",
+                    sized_signal.symbol, order.order_id,
+                )
+                fill_confirmed = False
+
+            # ── 8b. Place stop protection ──────────
+            if fill_confirmed:
+                try:
+                    execution_gw.protect_position(
+                        sized_signal.symbol,
+                        sized_signal.stop_price,
+                        sized_signal.proposed_shares,
+                    )
+                except Exception:
+                    try:
+                        execution_gw.mark_unprotected(sized_signal.symbol)
+                    except Exception:
+                        loguru.logger.exception(
+                            "mark_unprotected failed for %s after protection failure",
+                            sized_signal.symbol,
+                        )
+            else:
+                # ponytail: fill not confirmed → skip protection, mark unprotected
+                try:
+                    execution_gw.mark_unprotected(sized_signal.symbol)
+                except Exception:
+                    loguru.logger.exception(
+                        "mark_unprotected failed for %s after confirm_fill failure",
+                        sized_signal.symbol,
+                    )
+
+            result.decision = "enter"
+            result.decision_reason = f"setup={signal.entry_setup.value} shares={shares}"
+        except ValueError:
+            result.decision = "watch"
+            result.decision_reason = "symbol_locked"
+    elif shares > 0:
+        result.decision = "enter"
+        result.decision_reason = f"setup={signal.entry_setup.value} shares={shares} (paper sim)"
+    else:
+        result.decision = "watch"
+        result.decision_reason = "zero_shares_from_sizing"
+
+    return result
+
+
+def evaluate_exits(
+    pos: PositionStateModel,
+    *,
+    current_price: Optional[float],
+    risk_per_share: Optional[float] = None,
+    position_unprotected: bool = False,
+    spread_pct: Optional[float] = None,
+    quote_age_seconds: Optional[float] = None,
+    bars: Optional[list[Bar]] = None,
+    vwap: Optional[float] = None,
+    move_state: Optional[MoveState] = None,
+    entry_setup: Optional[str] = None,
+    prior_hod: Optional[float] = None,
+    daily_loss_breached: bool = False,
+    per_symbol_loss_capped: bool = False,
+    halt_count_today: int = 0,
+    et_time: Optional[time] = None,
+    flatten_time: Optional[time] = None,
+    # P11 params
+    highest_price_seen: Optional[float] = None,
+    atr: Optional[float] = None,
+    trail_multiplier: float = 2.5,
+) -> Optional[ExitDecision]:
+    """Step 9: exit engine orchestration (P1-P11).
+
+    Returns an ExitDecision if an exit should fire, or None.
+    Does NOT submit orders — the caller handles execution.
+    """
+    from src.exits import check_exits as run_exits
+
+    return run_exits(
+        pos,
+        current_price=current_price,
+        risk_per_share=risk_per_share,
+        position_unprotected=position_unprotected,
+        spread_pct=spread_pct, quote_age_seconds=quote_age_seconds,
+        bars=bars, vwap=vwap, move_state=move_state,
+        entry_setup=entry_setup,
+        prior_hod=prior_hod,
+        daily_loss_breached=daily_loss_breached,
+        per_symbol_loss_capped=per_symbol_loss_capped,
+        halt_count_today=halt_count_today,
+        et_time=et_time,
+        flatten_time=flatten_time or time(15, 55),
+        highest_price_seen=highest_price_seen,
+        atr=atr,
+        trail_multiplier=trail_multiplier,
+    )
+
+
+# ══════════════════════════════════════════════════════════════════
+#  Backward-compatible wrapper (tests call this; new code should call
+#  evaluate_candidate / execute_entry / evaluate_exits directly)
+# ══════════════════════════════════════════════════════════════════
+
+
+def run_pipeline(
+    candidate: Candidate,
+    *,
+    # Enrichment
+    bars: Optional[list[Bar]] = None,
+    vwap: Optional[float] = None,
+    ema9: Optional[float] = None,
+    day_high: Optional[float] = None,
+    prior_hod: Optional[float] = None,
+    quote_age_seconds: Optional[float] = None,
+    spread_pct: Optional[float] = None,
+    rvol: Optional[float] = None,
+    dollar_volume_5m: Optional[float] = None,
+    daily_volume: Optional[float] = None,
+    bars_available: Optional[bool] = None,
+    # Attention context
+    theme_active: bool = False,
+    former_runner_store: Optional[FormerRunnerStore] = None,
+    scanner_seen_count: Optional[int] = None,
+    # Execution
+    execution_gw: Optional[PaperExecutionGateway] = None,
+    position_store: Optional[PositionStore] = None,
+    # Risk config
+    equity: float = 100_000.0,
+    starter_risk_pct: float = 0.0025,
+    max_trade_risk_pct: float = 0.01,
+    max_positions: int = 3,
+    max_open_risk_pct: float = 0.03,
+    max_daily_loss_pct: float = 0.03,
+    focus_price_min: float = 1.0,
+    focus_price_max: float = 50.0,
+    dollar_volume_min: float = 50_000.0,
+    account: Optional[AccountRiskState] = None,
+    # Exit context
+    daily_loss_breached: bool = False,
+    per_symbol_loss_capped: bool = False,
+    halt_count_today: int = 0,
+    et_time: Optional[time] = None,
+    # Logger
+    logger: Optional[DecisionLogger] = None,
+    # News / catalyst status
+    has_news: Optional[bool] = None,
+    has_catalyst: Optional[bool] = None,
+    # Snapshot pre-validation + pre-submit quote recheck
+    snapshot_missing: Optional[list[str]] = None,
+    pre_submit_quote_fn: Optional[Callable[[Candidate], Optional["MarketSnapshot"]]] = None,
+) -> PipelineResult:
+    """Backward-compatible wrapper. Calls evaluate_candidate → execute_entry
+    → evaluate_exits. New code should call the three functions directly.
+    """
+    # Steps 1-6: pure analysis
+    result = evaluate_candidate(
+        candidate,
+        bars=bars, vwap=vwap, ema9=ema9, day_high=day_high, prior_hod=prior_hod,
+        quote_age_seconds=quote_age_seconds, spread_pct=spread_pct,
+        rvol=rvol, dollar_volume_5m=dollar_volume_5m, daily_volume=daily_volume,
+        bars_available=bars_available,
+        theme_active=theme_active, former_runner_store=former_runner_store,
+        scanner_seen_count=scanner_seen_count,
+        execution_gw=execution_gw,
+        equity=equity, max_positions=max_positions, max_open_risk_pct=max_open_risk_pct,
+        focus_price_min=focus_price_min, focus_price_max=focus_price_max,
+        dollar_volume_min=dollar_volume_min,
+        account=account, per_symbol_loss_capped=per_symbol_loss_capped,
+        halt_count_today=halt_count_today, et_time=et_time,
+        has_news=has_news, has_catalyst=has_catalyst,
+        snapshot_missing=snapshot_missing,
+    )
+
+    # Steps 7-8: sizing + order submission
+    if result.entry_signal is not None:
+        result = execute_entry(
+            result,
+            execution_gw=execution_gw,
+            equity=equity, starter_risk_pct=starter_risk_pct,
+            max_trade_risk_pct=max_trade_risk_pct,
+            pre_submit_quote_fn=pre_submit_quote_fn,
+        )
+
+    # Step 10: Log
     record = result.to_decision_record()
     if logger is not None:
         logger.write(record)

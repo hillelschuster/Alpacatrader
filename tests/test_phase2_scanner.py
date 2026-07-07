@@ -11,7 +11,12 @@ import pytest
 
 from src.models.schemas import Candidate
 from src.scanner.enrichment import FinvizRow, _finviz_is_stale, scrape_finviz_gainers
-from src.scanner.scanner import scan_finviz_candidates, scan_manual_watchlist
+from src.scanner.scanner import (
+    scan_alpaca_movers,
+    scan_dynamic_candidates,
+    scan_finviz_candidates,
+    scan_manual_watchlist,
+)
 
 
 # ── Helpers ───────────────────────────────────────────────────────
@@ -147,22 +152,20 @@ class TestScanFinvizCandidates:
 
     @patch("src.scanner.scanner.scrape_yfinance_gainers", create=True)
     @patch("src.scanner.scanner.scrape_finviz_gainers")
-    def test_empty_scraper_falls_back_to_yfinance(self, mock_scrape, mock_yf):
-        """Empty Finviz result → yfinance fallback used."""
+    def test_empty_scraper_does_not_trade_static_yfinance_watchlist(self, mock_scrape, mock_yf):
+        """Empty Finviz result → no automatic static-watchlist trade discovery."""
         mock_scrape.return_value = {}
         mock_yf.return_value = {"DSY": _make_row("DSY", price=10.50, change_pct=20.0, volume=1_000_000)}
 
         result = scan_finviz_candidates()
 
-        assert len(result) == 1
-        assert result[0].symbol == "DSY"
-        assert result[0].source == "yfinance_fallback"
-        mock_yf.assert_called_once()
+        assert result == []
+        mock_yf.assert_not_called()
 
     @patch("src.scanner.scanner.scrape_yfinance_gainers", create=True)
     @patch("src.scanner.scanner.scrape_finviz_gainers")
-    def test_stale_finviz_falls_back_to_yfinance(self, mock_scrape, mock_yf):
-        """Stale Finviz result → yfinance fallback used."""
+    def test_stale_finviz_does_not_trade_static_yfinance_watchlist(self, mock_scrape, mock_yf):
+        """Stale Finviz result → no automatic static-watchlist trade discovery."""
         mock_scrape.return_value = {
             "A": _make_row("A", change_pct=0.0, volume=0),
             "B": _make_row("B", change_pct=0.0, volume=0),
@@ -174,10 +177,8 @@ class TestScanFinvizCandidates:
 
         result = scan_finviz_candidates()
 
-        assert len(result) == 1
-        assert result[0].symbol == "DSY"
-        assert result[0].source == "yfinance_fallback"
-        mock_yf.assert_called_once()
+        assert result == []
+        mock_yf.assert_not_called()
 
     @patch("src.scanner.scanner.scrape_yfinance_gainers", create=True)
     @patch("src.scanner.scanner.scrape_finviz_gainers")
@@ -269,6 +270,62 @@ class TestScanManualWatchlist:
     def test_empty_list_returns_empty(self):
         result = scan_manual_watchlist([])
         assert result == []
+
+
+# ──────────────────────────────────────────────────────────────────
+#  Roadmap #9 — Alpaca movers dynamic source
+# ──────────────────────────────────────────────────────────────────
+
+
+class _Mover:
+    def __init__(self, symbol: str, price: float, percent_change: float) -> None:
+        self.symbol = symbol
+        self.price = price
+        self.percent_change = percent_change
+
+
+class _Movers:
+    def __init__(self, gainers: list[_Mover]) -> None:
+        self.gainers = gainers
+
+
+class _ScreenerClient:
+    def __init__(self, gainers: list[_Mover]) -> None:
+        self.gainers = gainers
+        self.requests = []
+
+    def get_market_movers(self, request):
+        self.requests.append(request)
+        return _Movers(self.gainers)
+
+
+class TestScanAlpacaMovers:
+    def test_maps_alpaca_gainers_to_candidates(self):
+        client = _ScreenerClient([
+            _Mover("DSY", price=10.50, percent_change=24.5),
+            _Mover("HOD", price=3.20, percent_change=18.0),
+        ])
+
+        result = scan_alpaca_movers(client=client, max_candidates=2)
+
+        assert [c.symbol for c in result] == ["DSY", "HOD"]
+        assert result[0].price == 10.50
+        assert result[0].percent_gain == 24.5
+        assert result[0].source == "alpaca_movers"
+        assert result[0].source_timestamp is not None
+        assert client.requests
+
+    @patch("src.scanner.scanner.scan_finviz_candidates")
+    @patch("src.scanner.scanner.scan_alpaca_movers")
+    def test_dynamic_scanner_falls_back_to_finviz_when_alpaca_empty(self, mock_alpaca, mock_finviz):
+        mock_alpaca.return_value = []
+        mock_finviz.return_value = [Candidate(symbol="FNVZ", price=7.50, source="finviz")]
+
+        result = scan_dynamic_candidates()
+
+        assert [c.symbol for c in result] == ["FNVZ"]
+        mock_alpaca.assert_called_once()
+        mock_finviz.assert_called_once()
 
 
 # ──────────────────────────────────────────────────────────────────

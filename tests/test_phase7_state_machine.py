@@ -53,8 +53,8 @@ class TestValidTransitions:
     def test_open_to_adding(self):
         assert is_valid_transition(PositionState.OPEN, PositionState.ADDING) is True
 
-    def test_open_to_scaling_out(self):
-        assert is_valid_transition(PositionState.OPEN, PositionState.SCALING_OUT) is True
+    def test_scaling_out_state_removed(self):
+        assert "SCALING_OUT" not in PositionState.__members__
 
     def test_open_to_closed(self):
         assert is_valid_transition(PositionState.OPEN, PositionState.CLOSED) is True

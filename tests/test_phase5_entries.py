@@ -402,8 +402,9 @@ class TestVwapReclaim:
         assert signal is None
 
     def test_wide_spread_blocks(self):
+        """Spread >20% blocks vwap_reclaim (SPEC §11.18.4)."""
         bars = self._vwap_bounce_bars()
-        signal = detect_vwap_reclaim("DSY", bars, vwap=10.00, spread_pct=6.0)
+        signal = detect_vwap_reclaim("DSY", bars, vwap=10.00, spread_pct=25.0)
         assert signal is None
 
 
@@ -436,8 +437,9 @@ class TestScalpReclaim:
             assert signal.entry_setup == EntrySetupType.SCALP_RECLAIM
 
     def test_spread_too_wide(self):
+        """Spread >8% blocks scalp_reclaim (SPEC §11.18.4)."""
         bars = self._scalp_bars()
-        signal = detect_scalp_reclaim("DSY", bars, state=MoveState.EXTENDED, spread_pct=4.0)
+        signal = detect_scalp_reclaim("DSY", bars, state=MoveState.EXTENDED, spread_pct=10.0)
         assert signal is None
 
     def test_quote_too_stale(self):

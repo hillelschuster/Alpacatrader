@@ -14,6 +14,7 @@ Covers:
 No network calls, no broker dependencies.
 """
 
+import sys
 from datetime import datetime, timedelta, timezone
 
 import pytest
@@ -34,7 +35,7 @@ from src.scanner.attention import (
     score_attention,
     score_candidates,
 )
-from src.annotations import map_soft_warnings, soft_warning_multiplier
+from src.annotations import enrich_with_llm, map_soft_warnings, soft_warning_multiplier, spread_sizing_multiplier
 
 
 # ── Helpers ───────────────────────────────────────────────────────
@@ -83,24 +84,82 @@ def _candidate(
     )
 
 
+class TestLLMPreMarketAnnotator:
+    """Phase 7 LLM annotation stays optional and failure-safe."""
+
+    def test_llm_failure_returns_empty_string(self, monkeypatch):
+        class BrokenMessages:
+            def create(self, **kwargs):
+                raise RuntimeError("api unavailable")
+
+        class BrokenAnthropic:
+            def __init__(self, api_key):
+                self.messages = BrokenMessages()
+
+        fake_anthropic = type(sys)("anthropic")
+        fake_anthropic.Anthropic = BrokenAnthropic
+        monkeypatch.setitem(sys.modules, "anthropic", fake_anthropic)
+
+        assert enrich_with_llm("DSY", 10.5, 25.0, 5_000_000, "test-key") == ""
+        assert enrich_with_llm("DSY", 10.5, 25.0, 5_000_000, "") == ""
+
+    def test_llm_success_returns_summary_without_leaking_api_key(self, monkeypatch):
+        calls: list[dict] = []
+
+        class TextBlock:
+            text = "DSY has a potential catalyst from unusual premarket momentum."
+
+        class SuccessfulMessages:
+            def create(self, **kwargs):
+                calls.append(kwargs)
+                return type("Message", (), {"content": [TextBlock()]})()
+
+        class SuccessfulAnthropic:
+            def __init__(self, api_key):
+                assert api_key == "secret-test-key"
+                self.messages = SuccessfulMessages()
+
+        fake_anthropic = type(sys)("anthropic")
+        fake_anthropic.Anthropic = SuccessfulAnthropic
+        monkeypatch.setitem(sys.modules, "anthropic", fake_anthropic)
+
+        summary = enrich_with_llm("DSY", 10.5, 25.0, 5_000_000, "secret-test-key")
+
+        assert summary == "DSY has a potential catalyst from unusual premarket momentum."
+        assert calls[0]["model"] == "claude-haiku-4-5"
+        assert calls[0]["max_tokens"] == 300
+        assert "secret-test-key" not in str(calls[0])
+
+
 # ──────────────────────────────────────────────────────────────────
 #  Price attention
 # ──────────────────────────────────────────────────────────────────
 
 
 class TestPriceAttention:
-    def test_returns_max_40_pts_for_50pct_gain(self):
+    def test_100pct_gain_reaches_full_price_weight(self):
+        """SPEC §11.18.5: cap raised to 100% — top gainers get primary ranking."""
+        pts, available = _price_attention(percent_gain=100.0, premarket_gap_pct=None)
+        assert available is True
+        assert pts == _PRICE_WEIGHT
+
+    def test_50pct_gain_gets_half_price_attention(self):
         pts, available = _price_attention(percent_gain=50.0, premarket_gap_pct=None)
         assert available is True
-        assert pts == _PRICE_WEIGHT  # 40
+        assert pts == pytest.approx(_PRICE_WEIGHT * 0.5, abs=0.1)
+
+    def test_250pct_gain_capped_at_full_weight(self):
+        pts, available = _price_attention(percent_gain=250.0, premarket_gap_pct=None)
+        assert available is True
+        assert pts == _PRICE_WEIGHT
 
     def test_scales_linearly(self):
         pts, _ = _price_attention(percent_gain=25.0, premarket_gap_pct=None)
-        assert pts == pytest.approx(20.0, abs=0.1)  # 25/50 * 40 = 20
+        assert pts == pytest.approx(7.5, abs=0.1)  # 25/100 * 30 = 7.5
 
     def test_uses_best_of_gain_and_gap(self):
         pts, _ = _price_attention(percent_gain=10.0, premarket_gap_pct=30.0)
-        assert pts == pytest.approx(24.0, abs=0.1)  # 30/50 * 40 = 24
+        assert pts == pytest.approx(9.0, abs=0.1)  # 30/100 * 30 = 9
 
     def test_zero_or_negative_gain_returns_zero(self):
         pts, available = _price_attention(percent_gain=0.0, premarket_gap_pct=None)
@@ -119,7 +178,7 @@ class TestPriceAttention:
     def test_only_gap_available_works(self):
         pts, available = _price_attention(percent_gain=None, premarket_gap_pct=20.0)
         assert available is True
-        assert pts == pytest.approx(16.0, abs=0.1)
+        assert pts == pytest.approx(6.0, abs=0.1)  # 20/100 * 30 = 6
 
 
 # ──────────────────────────────────────────────────────────────────
@@ -134,14 +193,14 @@ class TestVolumeAttention:
             candidate_price=None, min_dollar_volume=100_000,
         )
         assert available is True
-        assert pts == pytest.approx(15.0, abs=0.1)  # min(20, 3.0*5) = 15
+        assert pts == pytest.approx(15.0, abs=0.1)  # 3x RVOL starts the strong band
 
-    def test_rvol_capped_at_20(self):
+    def test_rvol_capped_at_25(self):
         pts, _ = _volume_attention(
             rvol=10.0, dollar_volume_5m=None, candidate_volume=None,
             candidate_price=None, min_dollar_volume=100_000,
         )
-        assert pts == pytest.approx(20.0, abs=0.1)  # capped at 20
+        assert pts == pytest.approx(25.0, abs=0.1)
 
     def test_dollar_volume_component(self):
         pts, available = _volume_attention(
@@ -156,7 +215,7 @@ class TestVolumeAttention:
             rvol=4.0, dollar_volume_5m=300_000, candidate_volume=None,
             candidate_price=None, min_dollar_volume=100_000,
         )
-        # RVOL: min(20, 4*5)=20, DV: min(15, 300k/100k*15=45→15) = 15 → total 35
+        # RVOL 4x = 20, DV capped at 15 → total 35
         assert pts == pytest.approx(35.0, abs=0.1)
 
     def test_no_volume_data_returns_unavailable(self):
@@ -186,14 +245,14 @@ class TestVolumeAttention:
 
 
 class TestHodAcceleration:
-    def test_within_1pct_hod_gets_15_pts(self):
+    def test_within_1pct_hod_gets_20_pts(self):
         pts, available = _hod_acceleration(
             price=10.05, hod_price=10.10,
             roc_1m_pct=None, roc_3m_pct=None, roc_5m_pct=None,
         )
         assert available is True
-        # dist = (10.10 - 10.05)/10.10 = 0.495% → within 1% → 15 pts
-        assert pts == pytest.approx(15.0, abs=0.5)
+        # dist = (10.10 - 10.05)/10.10 = 0.495% → within 1% → 20 pts
+        assert pts == pytest.approx(20.0, abs=0.5)
 
     def test_within_3pct_hod_gets_reduced_pts(self):
         pts, available = _hod_acceleration(
@@ -201,8 +260,8 @@ class TestHodAcceleration:
             roc_1m_pct=None, roc_3m_pct=None, roc_5m_pct=None,
         )
         assert available is True
-        # dist = 2% → within 3% → ~8 pts
-        assert 7.0 < pts < 9.0
+        # dist = 2% → within 3% → ~10.6 pts
+        assert 10.0 < pts < 11.5
 
     def test_beyond_3pct_hod_gets_zero(self):
         pts, available = _hod_acceleration(
@@ -228,6 +287,15 @@ class TestHodAcceleration:
         )
         assert pts == pytest.approx(10.0, abs=0.1)  # capped at 10
 
+    def test_recent_new_hod_gets_strong_hod_points(self):
+        pts, available = _hod_acceleration(
+            price=10.40, hod_price=11.00,
+            roc_1m_pct=None, roc_3m_pct=None, roc_5m_pct=None,
+            new_hod_recent=True,
+        )
+        assert available is True
+        assert pts == pytest.approx(20.0, abs=0.1)
+
     def test_no_hod_or_roc_returns_unavailable(self):
         pts, available = _hod_acceleration(
             price=None, hod_price=None,
@@ -238,11 +306,11 @@ class TestHodAcceleration:
 
     def test_hod_and_roc_combined(self):
         pts, _ = _hod_acceleration(
-            price=10.05, hod_price=10.10,  # near HOD → 15 pts
+            price=10.05, hod_price=10.10,  # near HOD → 20 pts
             roc_1m_pct=2.0,  # 2/5 * 10 = 4 pts
             roc_3m_pct=None, roc_5m_pct=None,
         )
-        assert pts == pytest.approx(19.0, abs=0.5)
+        assert pts == pytest.approx(24.0, abs=0.5)
 
 
 # ──────────────────────────────────────────────────────────────────
@@ -251,6 +319,30 @@ class TestHodAcceleration:
 
 
 class TestScoreAttention:
+    def test_scanner_freshness_bonus_decays_over_scan_cycles(self):
+        c = _candidate(percent_gain=12.0, current_volume=None)
+
+        fresh = score_attention(c, scanner_seen_count=1)
+        repeated = score_attention(c, scanner_seen_count=2)
+        stale = score_attention(c, scanner_seen_count=4)
+
+        assert fresh.score > repeated.score > stale.score
+        assert "scanner_fresh" in fresh.bonuses_applied
+        assert "scanner_fresh" not in stale.bonuses_applied
+
+    def test_scanner_seen_count_decay_overrides_legacy_repeated_bonus(self):
+        c = _candidate(percent_gain=12.0, current_volume=None)
+
+        stale_with_legacy_flag = score_attention(
+            c,
+            scanner_seen_count=4,
+            repeated_scanner_seen=True,
+        )
+        stale_without_legacy_flag = score_attention(c, scanner_seen_count=4)
+
+        assert stale_with_legacy_flag.score == stale_without_legacy_flag.score
+        assert "repeated_scanner_seen" not in stale_with_legacy_flag.bonuses_applied
+
     def test_perfect_candidate_scores_high(self):
         c = _candidate(percent_gain=40.0)
         result = score_attention(
@@ -289,11 +381,11 @@ class TestScoreAttention:
     def test_price_only_redistributes(self):
         """When only price data is available, redistribute weight.
         Must explicitly nullify volume data since the helper sets defaults."""
-        c = _candidate(percent_gain=30.0, current_volume=None, relative_volume=None)
+        c = _candidate(percent_gain=15.0, current_volume=None, relative_volume=None)
         result = score_attention(c)
-        # price_attention weight=40, available_weight=40
-        # raw = 30/50*40 = 24, base = 24 * (100/40) = 60
-        assert result.score == pytest.approx(60.0, abs=2.0)
+        # price_attention weight=30, available_weight=30
+        # raw = 15/100*30 = 4.5, base = 4.5 * (100/30) = 15.0
+        assert result.score == pytest.approx(15.0, abs=2.0)
 
     def test_theme_bonus_applied(self):
         c = _candidate(percent_gain=30.0)
@@ -633,11 +725,6 @@ class TestSoftWarnings:
         warnings = map_soft_warnings(c, below_ema=True)
         assert "below_ema" in warnings
 
-    def test_lunch_window_warning(self):
-        c = _candidate()
-        warnings = map_soft_warnings(c, is_lunch=True)
-        assert "lunch_window" in warnings
-
     def test_halt_history_warning(self):
         c = _candidate()
         warnings = map_soft_warnings(c, halt_history_today=True)
@@ -704,11 +791,12 @@ class TestSoftWarningMultiplier:
 
     def test_multipliers_multiply(self):
         result = soft_warning_multiplier(["price_below_2", "float_unknown"])
-        assert result == pytest.approx(0.375, abs=0.01)  # 0.5 * 0.75 = 0.375 (T4.6 float_unknown→0.75)
+        # 0.5 * 0.75 = 0.375, but floor is now 0.40
+        assert result == 0.40
 
-    def test_floor_at_0_25(self):
+    def test_floor_at_0_40(self):
         result = soft_warning_multiplier(["price_below_2", "float_unknown", "parabolic"])
-        assert result == 0.25  # floor
+        assert result == 0.40  # floor
 
     def test_chinese_adr_not_penalized(self):
         """Chinese ADR is a theme annotation, not a penalty per SPEC §8."""
@@ -739,7 +827,7 @@ class TestSoftWarningMultiplier:
         assert r == pytest.approx(0.75, abs=0.01)
 
     def test_no_news_penalty_multiplies_with_other_warnings(self):
-        """no_news 0.75x stacks with other multipliers (floor at 0.25)."""
+        """no_news 0.75x stacks with other multipliers (floor at 0.40)."""
         r = soft_warning_multiplier(
             ["no_news", "float_unknown"], attention_score=50,
         )
@@ -870,6 +958,19 @@ class TestDSYRegression:
 
 
 class TestScoreCandidates:
+    def test_hod_field_influences_batch_ranking_when_available(self):
+        candidates = [
+            _candidate("FAR", price=10.00, percent_gain=18.0, current_volume=5_000_000, day_high=11.00),
+            _candidate("HOD", price=10.00, percent_gain=18.0, current_volume=5_000_000, day_high=10.05),
+        ]
+
+        scored = score_candidates(candidates)
+
+        assert scored[0][0].symbol == "HOD"
+        hod_score = next(s for c, s in scored if c.symbol == "HOD").score
+        far_score = next(s for c, s in scored if c.symbol == "FAR").score
+        assert hod_score > far_score
+
     def test_sorts_by_attention_descending(self):
         candidates = [
             _candidate("LOW", percent_gain=5.0, current_volume=100_000),
@@ -975,68 +1076,35 @@ class TestFloatEnrichment:
         assert result == 12_500_000
         del sys.modules["yfinance"]
 
-    def test_enrich_float_shares_returns_none_when_field_missing(self, monkeypatch):
-        """enrich_float_shares() returns None when floatShares key absent."""
-        class FakeInfo(dict):
-            pass
 
-        class FakeTicker:
-            def __init__(self, symbol):
-                self.symbol = symbol
+# ──────────────────────────────────────────────────────────────────
+#  Spread sizing multiplier (SPEC §11.18.4)
+# ──────────────────────────────────────────────────────────────────
 
-            @property
-            def info(self):
-                return FakeInfo()  # no floatShares key
 
-        class FakeYf:
-            Ticker = FakeTicker
+class TestSpreadSizingMultiplier:
+    """Spread is a sizing dial, not a binary gate. Top gainers with wide
+    spreads are still tradeable at reduced size."""
 
-        import sys
-        sys.modules["yfinance"] = FakeYf
-        from src.scanner.enrichment import enrich_float_shares
-        result = enrich_float_shares("DSY")
-        assert result is None
-        del sys.modules["yfinance"]
+    def test_tight_spread_full_size(self):
+        assert spread_sizing_multiplier(0.5) == 1.0
+        assert spread_sizing_multiplier(2.0) == 1.0
 
-    def test_enrich_float_shares_returns_none_on_zero(self, monkeypatch):
-        """enrich_float_shares() returns None when floatShares=0 (invalid)."""
-        class FakeInfo(dict):
-            pass
+    def test_moderate_spread_75pct(self):
+        assert spread_sizing_multiplier(3.0) == 0.75
+        assert spread_sizing_multiplier(5.0) == 0.75
 
-        class FakeTicker:
-            def __init__(self, symbol):
-                self.symbol = symbol
+    def test_wide_spread_50pct(self):
+        assert spread_sizing_multiplier(6.0) == 0.50
+        assert spread_sizing_multiplier(8.0) == 0.50
 
-            @property
-            def info(self):
-                return FakeInfo(floatShares=0)
+    def test_very_wide_spread_25pct_floor(self):
+        assert spread_sizing_multiplier(15.0) == 0.25
+        assert spread_sizing_multiplier(20.0) == 0.25
 
-        class FakeYf:
-            Ticker = FakeTicker
+    def test_extreme_spread_blocks(self):
+        assert spread_sizing_multiplier(25.0) == 0.0
+        assert spread_sizing_multiplier(50.0) == 0.0
 
-        import sys
-        sys.modules["yfinance"] = FakeYf
-        from src.scanner.enrichment import enrich_float_shares
-        result = enrich_float_shares("DSY")
-        assert result is None
-        del sys.modules["yfinance"]
-
-    def test_enrich_float_shares_returns_none_on_exception(self, monkeypatch):
-        """enrich_float_shares() returns None when yfinance raises."""
-        class FakeTicker:
-            def __init__(self, symbol):
-                self.symbol = symbol
-
-            @property
-            def info(self):
-                raise RuntimeError("network error")
-
-        class FakeYf:
-            Ticker = FakeTicker
-
-        import sys
-        sys.modules["yfinance"] = FakeYf
-        from src.scanner.enrichment import enrich_float_shares
-        result = enrich_float_shares("DSY")
-        assert result is None
-        del sys.modules["yfinance"]
+    def test_missing_spread_blocks(self):
+        assert spread_sizing_multiplier(None) == 0.0

@@ -79,9 +79,9 @@ class TestAdjustedStarterRisk:
         assert result == 75.0
 
     def test_soft_mult_floor(self):
-        """Soft multiplier floored at 0.25."""
+        """Soft multiplier floored at 0.40."""
         result = adjusted_starter_risk(250, attention_mult=1.0, soft_mult=0.10, data_confidence=1.0)
-        assert result == 250 * 0.25  # soft_mult floored from 0.10 to 0.25
+        assert result == 250 * 0.40  # soft_mult floored from 0.10 to 0.40
 
     def test_all_minimums(self):
         result = adjusted_starter_risk(250, attention_mult=0.25, soft_mult=0.25, data_confidence=0.30)

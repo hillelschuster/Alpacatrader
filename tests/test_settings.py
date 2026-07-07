@@ -6,6 +6,7 @@ Verifies:
   2. Missing config file returns defaults.
   3. validate_live_trading() blocks live without confirmation.
    4. Historical settings classes removed.
+   5. LLM advisor config is opt-in and disabled by default.
 """
 
 from __future__ import annotations
@@ -28,6 +29,7 @@ def minimal_yaml() -> str:
         "trading": {"mode": "mock", "live_trading_confirmed": "no"},
         "logging": {"level": "DEBUG", "dir": "/tmp/logs", "retention_days": 7},
         "phase1": {"max_positions": 5, "focus_price_min": 2.0},
+        "llm_advisor": {"enabled": True},
     })
 
 
@@ -46,8 +48,10 @@ def config_path(minimal_yaml: str) -> Path:
 class TestSettingsLoad:
     """Settings.load from YAML returns correct values."""
 
-    def test_load_defaults(self):
+    def test_load_defaults(self, monkeypatch):
         """Loading with missing config file returns all defaults."""
+        monkeypatch.setenv("TRADING_MODE", "paper")
+        monkeypatch.setenv("TRADING_LIVE_TRADING_CONFIRMED", "no")
         from config.settings import Settings
 
         s = Settings.load("/nonexistent/config.yaml")
@@ -76,7 +80,7 @@ class TestSettingsLoad:
         assert s.logging.retention_days == 7
 
     def test_kept_sections(self):
-        """Only trading, logging, phase1 sections exist."""
+        """Only active settings sections exist."""
         from config.settings import Settings
 
         s = Settings.load("/nonexistent/config.yaml")
@@ -84,6 +88,7 @@ class TestSettingsLoad:
         assert hasattr(s, "trading")
         assert hasattr(s, "logging")
         assert hasattr(s, "phase1")
+        assert hasattr(s, "llm_advisor")
         # These should NOT exist (removed sections)
         assert not hasattr(s, "broker")
         assert not hasattr(s, "alpaca")
@@ -94,6 +99,30 @@ class TestSettingsLoad:
         assert not hasattr(s, "execution")
         assert not hasattr(s, "data")
         assert not hasattr(s, "database")
+
+
+class TestLLMAdvisorSettings:
+    """Phase 7 LLM advisor config is disabled by default and opt-in only."""
+
+    def test_llm_disabled_by_default(self):
+        from config.settings import Settings
+
+        s = Settings.load("/nonexistent/config.yaml")
+        assert s.llm_advisor.enabled is False
+
+    def test_llm_yaml_can_enable(self, config_path: Path, monkeypatch):
+        from config.settings import Settings
+
+        monkeypatch.delenv("LLM_ADVISOR_ENABLED", raising=False)
+        s = Settings.load(str(config_path))
+        assert s.llm_advisor.enabled is True
+
+    def test_llm_env_overrides_yaml(self, config_path: Path, monkeypatch):
+        from config.settings import Settings
+
+        monkeypatch.setenv("LLM_ADVISOR_ENABLED", "false")
+        s = Settings.load(str(config_path))
+        assert s.llm_advisor.enabled is False
 
 
 class TestValidateLiveTrading:
@@ -340,4 +369,43 @@ class TestMaxTradeRiskPctEnv:
 
         s = Settings.load(str(path))
         assert s.phase1.max_trade_risk_pct == 0.002  # env wins
+        path.unlink(missing_ok=True)
+
+
+class TestRunnerSettings:
+    def test_runner_defaults(self):
+        from config.settings import Settings
+
+        s = Settings.load("/nonexistent/config.yaml")
+        assert s.runner.activation_r == 1.5
+        assert s.runner.atr_period == 5
+        assert s.runner.trail_multiplier == 2.5
+
+    def test_runner_yaml_loads(self):
+        import tempfile
+        from pathlib import Path
+        from config.settings import Settings
+
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
+            f.write(yaml.dump({"runner": {"activation_r": 2.0, "atr_period": 7}}))
+            path = Path(f.name)
+
+        s = Settings.load(str(path))
+        assert s.runner.activation_r == 2.0
+        assert s.runner.atr_period == 7
+        assert s.runner.trail_multiplier == 2.5
+        path.unlink(missing_ok=True)
+
+    def test_runner_env_overrides_yaml(self, monkeypatch):
+        import tempfile
+        from pathlib import Path
+        from config.settings import Settings
+
+        monkeypatch.setenv("RUNNER_TRAIL_MULTIPLIER", "3.0")
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
+            f.write(yaml.dump({"runner": {"trail_multiplier": 2.5}}))
+            path = Path(f.name)
+
+        s = Settings.load(str(path))
+        assert s.runner.trail_multiplier == 3.0
         path.unlink(missing_ok=True)

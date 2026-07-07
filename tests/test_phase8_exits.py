@@ -378,17 +378,38 @@ class TestTimeExit:
 
 
 class TestRunnerTrail:
-    def test_trail_hit(self):
+    def test_atr_chandelier_trail_fires(self):
         p = _pos(state=PositionState.RUNNER)
-        result = check_runner_trail(p, current_price=10.80, trail_hit=True)
+        p.highest_price_seen = 11.50
+        p.trailing_stop_price = 11.00
+        result = check_runner_trail(p, current_price=10.98)
         assert result is not None
-        assert "trail_hit" in result.reason
+        assert "atr_trail_hit" in result.reason
 
-    def test_two_red_bars(self):
+    def test_atr_chandelier_computes_from_inputs(self):
         p = _pos(state=PositionState.RUNNER)
-        bars = [Bar(10.80, 10.82, 10.75, 10.76, 300), Bar(10.76, 10.78, 10.70, 10.72, 400)]
-        result = check_runner_trail(p, current_price=10.72, bars=bars)
+        result = check_runner_trail(
+            p,
+            current_price=10.98,
+            highest_price_seen=11.50,
+            atr=0.10,
+            risk_per_share=0.20,
+            trail_multiplier=2.5,
+        )
         assert result is not None
+        assert "atr_trail_hit" in result.reason
+
+    def test_atr_chandelier_minimum_distance(self):
+        p = _pos(state=PositionState.RUNNER, entry=10.50, stop=10.00)
+        result = check_runner_trail(
+            p,
+            current_price=11.20,
+            highest_price_seen=11.50,
+            atr=0.05,
+            risk_per_share=0.50,
+            trail_multiplier=2.5,
+        )
+        assert result is None
 
     def test_not_runner_no_trail(self):
         p = _pos(state=PositionState.OPEN)
@@ -414,6 +435,19 @@ class TestCheckExits:
         result = check_exits(p, current_price=10.29, spread_pct=1.0, quote_age_seconds=2.0)
         assert result is not None
         assert "hard_stop" in result.reason
+
+    def test_time_flatten_overrides_scale_out_at_1r(self):
+        p = _pos(entry=10.00, stop=9.80, shares=100)
+        result = check_exits(
+            p,
+            current_price=10.20,
+            risk_per_share=0.20,
+            et_time=time(15, 55),
+        )
+        assert result is not None
+        assert result.exit_pct == 100
+        assert "flatten_time" in result.reason
+        assert "scale_out_1R" not in result.reason
 
     def test_stale_quote_30s_blocks_hard_stop(self):
         p = _pos(stop=10.30)

@@ -14,6 +14,7 @@ Covers:
   - Exit check for open positions.
 """
 
+import inspect
 import json
 import tempfile
 from pathlib import Path
@@ -23,6 +24,7 @@ import pytest
 from pydantic import ValidationError
 
 from src.decision_pipeline import (
+    evaluate_exits,
     MarketSnapshot,
     PipelineResult,
     run_pipeline,
@@ -105,6 +107,30 @@ class TestPipeline:
         assert result.soft_warnings is not None
         assert result.hard_blocks is not None
 
+    def test_llm_annotation_not_in_execution_path(self):
+        from src.annotations import enrich_with_llm
+        import src.app as app_module
+        import src.decision_pipeline as pipeline_module
+        import src.entries as entries_module
+        import src.exits as exits_module
+        import src.hard_filters as hard_filters_module
+        import src.paper_execution as execution_module
+        import src.sizing as sizing_module
+
+        forbidden = enrich_with_llm.__name__
+        execution_modules = [
+            app_module,
+            pipeline_module,
+            entries_module,
+            exits_module,
+            hard_filters_module,
+            execution_module,
+            sizing_module,
+        ]
+
+        for module in execution_modules:
+            assert forbidden not in inspect.getsource(module)
+
     def test_high_attention_produces_entry(self, force_entry, high_att_candidate):
         c = high_att_candidate
         result = run_pipeline(c, bars=_surge_bars(), vwap=10.20, spread_pct=0.8,
@@ -113,6 +139,63 @@ class TestPipeline:
         assert result.attention_score is not None
         assert result.attention_score > 50
         assert result.decision == "enter"
+
+    def test_hod_and_bar_roc_are_wired_into_attention_score(self):
+        c = _candidate(price=10.80, percent_gain=12.0, current_volume=1_000_000)
+        bars = _surge_bars()
+
+        without_hod = run_pipeline(
+            c, bars=bars, vwap=10.20, spread_pct=0.8,
+            rvol=3.0, dollar_volume_5m=200_000, bars_available=True,
+            quote_age_seconds=2.0,
+        )
+        with_hod = run_pipeline(
+            c, bars=bars, vwap=10.20, spread_pct=0.8,
+            day_high=10.85, rvol=3.0, dollar_volume_5m=200_000,
+            bars_available=True, quote_age_seconds=2.0,
+        )
+
+        assert with_hod.attention_score is not None
+        assert without_hod.attention_score is not None
+        assert with_hod.attention_score > without_hod.attention_score
+        assert "hod_proximity" in with_hod.attention_drivers
+
+    def test_recent_new_hod_from_bars_boosts_attention_even_after_pullback(self):
+        c = _candidate(price=10.40, percent_gain=12.0, current_volume=1_000_000)
+        bars = [
+            Bar(10.00, 10.10, 9.95, 10.05, 1_000),
+            Bar(10.05, 10.20, 10.00, 10.10, 1_000),
+            Bar(10.10, 11.00, 10.05, 10.70, 3_000),
+            Bar(10.70, 10.75, 10.35, 10.40, 1_500),
+        ]
+
+        result = run_pipeline(
+            c, bars=bars, vwap=10.20, spread_pct=0.8,
+            day_high=11.00, rvol=3.0, dollar_volume_5m=200_000,
+            bars_available=True, quote_age_seconds=2.0,
+        )
+
+        assert result.attention_score is not None
+        assert result.attention_score >= 55  # SPEC §11.18.5: cap raised to 100%, lower % gain scores less
+        assert "hod_proximity" in result.attention_drivers
+
+    def test_single_resolved_halt_is_soft_warning_not_hard_block(self):
+        c = _candidate(price=10.50)
+        result = run_pipeline(
+            c,
+            bars=_surge_bars(),
+            vwap=10.20,
+            spread_pct=0.8,
+            rvol=5.0,
+            dollar_volume_5m=500_000,
+            bars_available=True,
+            quote_age_seconds=2.0,
+            halt_count_today=1,
+        )
+
+        assert result.hard_filter_passed is True
+        assert "symbol_halted" not in result.hard_blocks
+        assert "halt_history_today" in result.soft_warnings
 
     def test_low_attention_watch(self):
         c = _candidate(percent_gain=3.0, current_volume=100_000)
@@ -202,9 +285,19 @@ class TestPipeline:
             average_entry=10.50,
         )
         ps.upsert(pos)
-        result = run_pipeline(c, bars=_surge_bars()[:3], vwap=10.40, spread_pct=0.8,
-                              bars_available=True, position_store=ps,
-                              check_exits_for_open=True)
+        exit_decision = evaluate_exits(
+            pos,
+            current_price=c.price,
+            risk_per_share=pos.entry_price - pos.stop_price,
+            bars=_surge_bars()[:3],
+            vwap=10.40,
+            spread_pct=0.8,
+        )
+        result = PipelineResult(c)
+        if exit_decision is not None:
+            result.exit_decision = exit_decision
+            result.decision = "exit"
+            result.decision_reason = exit_decision.reason
         # If exit triggered, nested exit fields must be populated
         if result.decision == "exit":
             record = result.to_decision_record()
@@ -493,8 +586,9 @@ class TestBatch6NoNews:
     def test_high_attention_no_news_no_size_penalty(self):
         """no_news with high attention (>=70) has no additional penalty from no_news."""
         # Use a candidate with known float to avoid float_unknown dilution
+        # SPEC §11.18.5: cap raised to 100% — need 100%+ gain for full price weight
         c = _candidate(
-            percent_gain=45.0, current_volume=10_000_000,
+            percent_gain=100.0, current_volume=10_000_000,
             float_shares=10_000_000,
         )
         result = run_pipeline(
@@ -596,9 +690,20 @@ class TestPipelineExit:
             average_entry=10.50,
         )
         ps.upsert(pos)
-        result = run_pipeline(c, bars=_surge_bars()[:3], vwap=10.40, spread_pct=0.8,
-                              bars_available=True, position_store=ps,
-                              check_exits_for_open=True, quote_age_seconds=2.0)
+        exit_decision = evaluate_exits(
+            pos,
+            current_price=c.price,
+            risk_per_share=pos.entry_price - pos.stop_price,
+            bars=_surge_bars()[:3],
+            vwap=10.40,
+            spread_pct=0.8,
+            quote_age_seconds=2.0,
+        )
+        result = PipelineResult(c)
+        if exit_decision is not None:
+            result.exit_decision = exit_decision
+            result.decision = "exit"
+            result.decision_reason = exit_decision.reason
         # Price 10.20 < stop 10.30 → should trigger hard stop exit
         if result.exit_decision is not None:
             assert result.decision == "exit"
@@ -1289,8 +1394,8 @@ class TestRuntimeClassifierWiring:
             execution_gw=gw,
             position_store=gw.positions,
         )
-        # Fading bars + below VWAP → BACKSIDE or at least not ACTIVE
-        assert result.move_state != MoveState.ACTIVE, (
-            f"Fading bars below VWAP must not be ACTIVE, got {result.move_state}: "
+        # Fading bars + below VWAP → BACKSIDE
+        assert result.move_state == MoveState.BACKSIDE, (
+            f"Fading bars below VWAP must be BACKSIDE, got {result.move_state}: "
             f"{result.state_evidence}"
         )

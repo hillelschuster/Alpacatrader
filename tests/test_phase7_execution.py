@@ -11,12 +11,18 @@ Verifies:
 
 import pytest
 
-from src.paper_execution import PaperExecutionGateway, AlpacaExecutionGateway, reconcile_positions
+from src.paper_execution import (
+    PaperExecutionGateway,
+    AlpacaExecutionGateway,
+    reconcile_positions,
+    reconcile_open_orders,
+)
 from src.state_machine import PositionStore, PendingOrderStore
 from src.models.schemas import (
     EntrySetupType,
     EntrySignal,
     OrderActionType,
+    PendingOrder,
     PositionState,
     PositionStateModel,
 )
@@ -144,12 +150,12 @@ class TestStopProtection:
         gw.mark_unprotected("DSY")
         assert "DSY" in gw.get_unprotected_positions()
 
-    def test_mark_unprotected_on_non_open_raises(self):
-        """mark_unprotected on PENDING_ENTRY raises ValueError."""
+    def test_mark_unprotected_on_pending_entry_succeeds(self):
+        """mark_unprotected on PENDING_ENTRY transitions to UNPROTECTED (SPEC §11.18 bugfix)."""
         gw = PaperExecutionGateway()
         gw.submit_entry(_signal())
-        with pytest.raises(ValueError, match="not OPEN"):
-            gw.mark_unprotected("DSY")
+        pos = gw.mark_unprotected("DSY")
+        assert pos.state.value == "UNPROTECTED"
 
     def test_mark_unprotected_nonexistent_raises(self):
         """mark_unprotected on nonexistent symbol raises ValueError."""
@@ -212,6 +218,79 @@ class TestExit:
         gw = PaperExecutionGateway()
         with pytest.raises(ValueError, match="No position"):
             gw.submit_exit("NONEXISTENT", "test")
+
+
+# ──────────────────────────────────────────────────────────────────
+#  ADD fill — trailing_stop_price must be updated
+# ──────────────────────────────────────────────────────────────────
+
+
+class TestAddFillTrailingStop:
+    """ADD fill must set pos.trailing_stop_price alongside stop_price.
+
+    Without this fix, an ADD fill leaves trailing_stop_price stale,
+    breaking subsequent trail-update broker sync.
+    """
+
+    def _setup_runner(self, gw: PaperExecutionGateway) -> tuple:  # (PendingOrder, str)
+        """Helper: create a RUNNER position ready for ADD."""
+        order, _ = gw.submit_entry(_signal())
+        gw.confirm_fill(order.order_id)
+        pos = gw.positions.get("DSY")
+        pos.state = PositionState.RUNNER
+        pos.highest_price_seen = 11.50
+        pos.trailing_stop_price = 10.00
+        gw.positions.upsert(pos)
+        gw.place_stop("DSY", 10.00, 50)
+        return order, "DSY"
+
+    def test_add_fill_updates_trailing_stop_price(self):
+        """After confirm_fill for ADD, trailing_stop_price == stop_price."""
+        gw = PaperExecutionGateway()
+        _, symbol = self._setup_runner(gw)
+
+        # Submit ADD
+        add_order, _ = gw.submit_add(symbol, qty=25, entry_price=11.00, stop_price=10.00)
+        # The add_order's stop_price is used as new_stop floor
+        pos = gw.confirm_fill(add_order.order_id)
+
+        assert pos.state == PositionState.RUNNER
+        expected_stop = max(add_order.stop_price or 0, pos.entry_price or 0)
+        assert pos.stop_price == expected_stop, (
+            f"Expected stop_price={expected_stop}, got {pos.stop_price}"
+        )
+        assert pos.trailing_stop_price == expected_stop, (
+            f"Expected trailing_stop_price={expected_stop}, got {pos.trailing_stop_price}"
+        )
+
+    def test_add_partial_fill_updates_trailing_stop_price(self):
+        """Partial ADD fill must also set trailing_stop_price."""
+        gw = PaperExecutionGateway()
+        _, symbol = self._setup_runner(gw)
+
+        # Submit ADD then simulate partial fill
+        add_order, _ = gw.submit_add(symbol, qty=25, entry_price=11.00, stop_price=10.00)
+        pos = gw.positions.get(symbol)
+        pos.state = PositionState.ADDING
+        gw.positions.upsert(pos)
+
+        # Simulate partial fill directly using place_stop + manual mutation
+        # (same pattern the confirm_fill partially_filled branch follows)
+        pos.current_shares = 60  # 50 original + 10 filled
+        pos.average_entry = round((50 * 10.50 + 10 * 11.00) / 60, 2)
+        pos.add_count += 1
+        pos.state = PositionState.RUNNER
+        gw.positions.upsert(pos)
+        gw._pending.resolve(add_order.order_id, "partially_filled")
+        gw.cancel_stale_orders(symbol)
+        new_stop = max(add_order.stop_price or 0, pos.entry_price or 0)
+        gw.place_stop(symbol, new_stop, 60)
+        pos.stop_price = new_stop
+        pos.trailing_stop_price = new_stop
+        gw.positions.upsert(pos)
+
+        assert pos.stop_price == new_stop
+        assert pos.trailing_stop_price == new_stop
 
 
 # ──────────────────────────────────────────────────────────────────
@@ -439,6 +518,7 @@ class TestAlpacaConfirmFill:
 
         pos = alpaca_gw.positions.get("DSY")
         assert pos.state == PositionState.ERROR
+        assert alpaca_gw._entry_signals == {}
 
     def test_canceled_status_sets_error(self, alpaca_gw, mock_alpaca_client):
         """canceled → ERROR."""
@@ -511,6 +591,79 @@ class TestAlpacaPlaceStop:
 
         with pytest.raises(RuntimeError, match="stop placement failed"):
             alpaca_gw.place_stop("DSY", 10.20, 50)
+
+
+class TestOpenOrderReconciliation:
+    """Roadmap #3: broker open orders are reconciled with local pending orders."""
+
+    def test_broker_stop_missing_locally_is_imported(self):
+        positions = PositionStore()
+        pending = PendingOrderStore()
+        positions.upsert(PositionStateModel(
+            symbol="DSY", state=PositionState.OPEN,
+            entry_price=10.50, stop_price=10.20,
+            current_shares=50, average_entry=10.50,
+        ))
+        broker_orders = [PendingOrder(
+            symbol="DSY", order_id="broker-stop-1",
+            order_type=OrderActionType.STOP, side="sell",
+            qty=50, status="submitted", stop_price=10.20,
+        )]
+
+        actions = reconcile_open_orders(
+            broker_orders=broker_orders,
+            local_store=positions,
+            pending_store=pending,
+        )
+
+        assert any(a["action"] == "import_broker_order" for a in actions)
+        assert pending.get_for_symbol("DSY")[0].order_id == "broker-stop-1"
+
+    def test_local_pending_stop_missing_from_broker_marks_unprotected(self):
+        positions = PositionStore()
+        pending = PendingOrderStore()
+        positions.upsert(PositionStateModel(
+            symbol="DSY", state=PositionState.OPEN,
+            entry_price=10.50, stop_price=10.20,
+            current_shares=50, average_entry=10.50,
+        ))
+        pending.add(PendingOrder(
+            symbol="DSY", order_id="local-stop-1",
+            order_type=OrderActionType.STOP, side="sell",
+            qty=50, status="submitted", stop_price=10.20,
+        ))
+
+        actions = reconcile_open_orders(
+            broker_orders=[],
+            local_store=positions,
+            pending_store=pending,
+        )
+
+        assert len(pending.get_for_symbol("DSY")) == 0
+        assert any(a["action"] == "missing_broker_stop" for a in actions)
+        assert positions.get("DSY").state == PositionState.UNPROTECTED
+
+    def test_broker_order_without_local_position_is_cancelled(self):
+        positions = PositionStore()
+        pending = PendingOrderStore()
+        broker_orders = [PendingOrder(
+            symbol="GONE", order_id="orphan-stop-1",
+            order_type=OrderActionType.STOP, side="sell",
+            qty=25, status="submitted", stop_price=4.20,
+        )]
+
+        actions = reconcile_open_orders(
+            broker_orders=broker_orders,
+            local_store=positions,
+            pending_store=pending,
+        )
+
+        assert actions == [{
+            "action": "cancel_orphan_broker_order",
+            "symbol": "GONE",
+            "reason": "broker_order_without_local_position",
+            "order_id": "orphan-stop-1",
+        }]
 
 
 class TestAlpacaExit:
@@ -593,6 +746,7 @@ class TestAlpacaExit:
 
         assert pos.current_shares == 30  # 50 - 20
         assert pos.state != PositionState.CLOSED
+        mock_alpaca_client.cancel_order_by_id.assert_called_with(exit_order.order_id)
 
     def test_confirm_exit_partial_fill_reprotects_remaining_shares(self, alpaca_gw, mock_alpaca_client):
         self._open_position(alpaca_gw, mock_alpaca_client)
@@ -692,11 +846,26 @@ class MockAlpacaPosition:
 class TestBuildAlpacaBrokerSnapshot:
     """T6.6: build_alpaca_broker_snapshot with mocked Alpaca client."""
 
+    def test_uses_get_all_positions_api(self):
+        """Regression: current alpaca-py TradingClient exposes get_all_positions()."""
+        from src.paper_execution import AlpacaExecutionGateway, build_alpaca_broker_snapshot
+
+        class FakeClient:
+            def get_all_positions(self):
+                return [MockAlpacaPosition("AAPL", "100", "150.50")]
+
+        gw = AlpacaExecutionGateway(api_key="test_key", secret_key="test_secret")
+        gw._client = FakeClient()
+
+        result = build_alpaca_broker_snapshot(gw)
+
+        assert result == {"AAPL": (100, 150.50)}
+
     def test_returns_snapshot_on_success(self, alpaca_gw, mock_alpaca_client):
         """build_alpaca_broker_snapshot returns correct dict on success."""
         from src.paper_execution import build_alpaca_broker_snapshot
 
-        mock_alpaca_client.get_positions.return_value = [
+        mock_alpaca_client.get_all_positions.return_value = [
             MockAlpacaPosition("AAPL", "100", "150.50"),
             MockAlpacaPosition("MSFT", "50", "300.25"),
         ]
@@ -709,7 +878,7 @@ class TestBuildAlpacaBrokerSnapshot:
         """Broker unreachable → returns None (T6.2 policy)."""
         from src.paper_execution import build_alpaca_broker_snapshot
 
-        mock_alpaca_client.get_positions.side_effect = ConnectionError("API down")
+        mock_alpaca_client.get_all_positions.side_effect = ConnectionError("API down")
 
         result = build_alpaca_broker_snapshot(alpaca_gw)
         assert result is None
@@ -718,7 +887,7 @@ class TestBuildAlpacaBrokerSnapshot:
         """No positions → returns empty dict (not None)."""
         from src.paper_execution import build_alpaca_broker_snapshot
 
-        mock_alpaca_client.get_positions.return_value = []
+        mock_alpaca_client.get_all_positions.return_value = []
         result = build_alpaca_broker_snapshot(alpaca_gw)
 
         assert result is not None
@@ -729,7 +898,7 @@ class TestBuildAlpacaBrokerSnapshot:
         from src.paper_execution import build_alpaca_broker_snapshot
         from src.app import TradingApp
 
-        mock_alpaca_client.get_positions.return_value = [
+        mock_alpaca_client.get_all_positions.return_value = [
             MockAlpacaPosition("DSY", "50", "10.50"),
         ]
 
@@ -756,7 +925,7 @@ class TestBuildAlpacaBrokerSnapshot:
             stop_price=10.30,
         ))
 
-        mock_alpaca_client.get_positions.side_effect = ConnectionError("API down")
+        mock_alpaca_client.get_all_positions.side_effect = ConnectionError("API down")
 
         def snapshot_fn():
             return build_alpaca_broker_snapshot(alpaca_gw)
@@ -766,6 +935,57 @@ class TestBuildAlpacaBrokerSnapshot:
 
         pos = alpaca_gw.positions.get("DSY")
         assert pos.state == PositionState.UNPROTECTED
+
+
+class TestBuildAlpacaAccountEquity:
+    """Account equity helper should read Alpaca account equity."""
+
+    def test_returns_float_equity_on_success(self, alpaca_gw, mock_alpaca_client):
+        from src.paper_execution import build_alpaca_account_equity
+
+        class FakeAccount:
+            equity = "54321.09"
+
+        mock_alpaca_client.get_account.return_value = FakeAccount()
+
+        assert build_alpaca_account_equity(alpaca_gw) == 54321.09
+
+    def test_returns_none_on_account_api_failure(self, alpaca_gw, mock_alpaca_client):
+        from src.paper_execution import build_alpaca_account_equity
+
+        mock_alpaca_client.get_account.side_effect = ConnectionError("API down")
+
+        assert build_alpaca_account_equity(alpaca_gw) is None
+
+
+class TestBuildAlpacaOpenOrderSnapshot:
+    """Roadmap #3: Alpaca open-order snapshot uses TradingClient.get_orders."""
+
+    def test_returns_open_orders_as_pending_orders(self, alpaca_gw, mock_alpaca_client):
+        from src.paper_execution import build_alpaca_open_order_snapshot
+
+        order = MockAlpacaOrder(id="stop-1", qty="50")
+        order.symbol = "DSY"
+        order.side = "sell"
+        order.type = "stop"
+        order.stop_price = "10.20"
+        mock_alpaca_client.get_orders.return_value = [order]
+
+        result = build_alpaca_open_order_snapshot(alpaca_gw)
+
+        assert result is not None
+        assert len(result) == 1
+        assert result[0].order_id == "stop-1"
+        assert result[0].order_type == OrderActionType.STOP
+        assert result[0].symbol == "DSY"
+        assert result[0].stop_price == 10.20
+
+    def test_returns_none_on_open_order_api_failure(self, alpaca_gw, mock_alpaca_client):
+        from src.paper_execution import build_alpaca_open_order_snapshot
+
+        mock_alpaca_client.get_orders.side_effect = ConnectionError("API down")
+
+        assert build_alpaca_open_order_snapshot(alpaca_gw) is None
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -992,3 +1212,38 @@ class TestBrokerSnapshotMismatch:
         assert any(a["action"] == "insert_protect" and a["symbol"] == "NEW"
                    for a in actions)
         assert local.get("NEW").current_shares == 30
+
+
+# ══════════════════════════════════════════════════════════════════
+#  AlpacaExecutionGateway — paper param for live vs paper routing
+# ══════════════════════════════════════════════════════════════════
+
+
+class TestAlpacaGatewayPaperParam:
+    """AlpacaExecutionGateway accepts paper= parameter for live vs paper routing."""
+
+    def test_default_paper_is_true(self):
+        """Default paper=True for backward compatibility."""
+        gw = AlpacaExecutionGateway(api_key="test", secret_key="test")
+        assert gw._paper is True
+
+    def test_paper_false_sets_live_mode(self):
+        """paper=False sets _paper to False for live trading."""
+        gw = AlpacaExecutionGateway(api_key="test", secret_key="test", paper=False)
+        assert gw._paper is False
+
+    def test_paper_true_creates_paper_trading_client(self):
+        """When paper=True, client creates TradingClient with paper=True."""
+        from unittest.mock import patch
+        with patch("alpaca.trading.TradingClient") as mock_tc:
+            gw = AlpacaExecutionGateway(api_key="test", secret_key="test", paper=True)
+            _ = gw.client
+            mock_tc.assert_called_once_with("test", "test", paper=True)
+
+    def test_paper_false_creates_live_trading_client(self):
+        """When paper=False, client creates TradingClient with paper=False."""
+        from unittest.mock import patch
+        with patch("alpaca.trading.TradingClient") as mock_tc:
+            gw = AlpacaExecutionGateway(api_key="test", secret_key="test", paper=False)
+            _ = gw.client
+            mock_tc.assert_called_once_with("test", "test", paper=False)
