@@ -230,7 +230,9 @@ def main():
     cov = ev.select([pl.col(c).is_not_null().mean().alias(c) for c in cov_cols])
     stats = {k: round(v, 3) for k, v in cov.row(0, named=True).items()}
     print(f"[{a.month}] wrote {out} rows={ev.height:,} coverage={stats}")
-    Path(out.parent / f"coverage_{a.month}.json").write_text(json.dumps(stats, indent=2))
+    cov_path = Path("factory/artifacts/ml") / f"coverage_{a.month}.json"
+    cov_path.parent.mkdir(parents=True, exist_ok=True)
+    cov_path.write_text(json.dumps(stats, indent=2))
 
 
 if __name__ == "__main__":
