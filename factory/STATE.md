@@ -6,6 +6,44 @@ on Drive. H006 tail + H009 faithful replicated on May: NOT ROBUST (H006 edge →
 H009 edge halved). H007/H010 killed. Next: download+certify 2025-07 as the true
 OOS month for H006/H009; run H008.
 
+## ML Phase — Overnight Mission (2026-09-01, in progress)
+
+Pivot approved by user: systematic ML pattern discovery on the certified event
+stream, replacing hypothesis-by-hypothesis testing (all ten H001–H010 now tested;
+H008/H009 live on as features).
+
+- **Spec**: `factory/artifacts/ml/FEATURE_SPEC.md` v1 + oracle review (design
+  critic subagent, ADOPT/MODIFY verdicts) + reviewer leakage audit (10 findings,
+  3 must-fix code items — all implemented).
+- **Target**: raw `fwd_ret_60m` winsorized ±10% (constant cost shift moved to
+  evaluation). Cost scenarios 20/40bps RT at eval only.
+- **Sampling**: `sample_weight = 1/n_events(episode)`, cap 120 (episode-equal
+  influence). Evaluation always on FULL population.
+- **Splits**: train 2025-05+06, dev 2025-07 (burned: early stop + threshold only),
+  final OOS 2025-08..12 certifying via `cert_chain.sh`. Nov–Dec frozen as re-OOS
+  if August is ever peeked. Rolling-origin added later if first result is alive.
+- **Feature build** `factory/scripts/build_features.py`: minute grid per event
+  (ticker,et_date), close/high ffill, low/volume NULL on missing bars (real bars
+  only for dips + vol stats); H008 RVOL baselines (null at 09:30 — expdv=0 trap);
+  H009-faithful trap/reclaim on grid (`hod_before = hod.shift(1)`); range_pos via
+  running cum extremes (reviewer HIGH fix); gain_vel time-based; market_ret_5m
+  within-session; t+1m-entry label variants (executable-entry proxy; edge must
+  survive both entry timings). Outputs `data/ml_features/features_YYYY-MM.parquet`
+  (gitignored) + `coverage_YYYY-MM.json`.
+- **Coverage 2025-07** (139,400 events): rvol .896, ret_30m .942, vwap_dist 1.0,
+  trap_reclaim 1.0, market_ret_5m .993, fwd_ret_60m .738, fwd60_t1entry .683.
+- **Training** `factory/scripts/train_ml.py`: LightGBM (single config, depth 6,
+  min_data 200) + ElasticNet baseline; decile tables day-ranked; episode-best
+  (one trade per ticker-day); day-clustered bootstrap CIs; daily-PnL drawdown;
+  Spearman IC; t+1-entry variant; long+short; @20/40bps. Aug–Dec evaluated once,
+  frozen.
+- **Accepted biases (documented, not fixed)**: non-PIT universe tags (yfinance
+  2026 fetch; PIT archive = future option); certify `n_bars>=30` full-day gate
+  conditions on the future (survivor-flavored population; uniform across months);
+  H009 dip window 5 grid-min (tighter than H009's 5 bars post-halt).
+- **2025-03 downloaded late** (May 1 baselines reach into March); May features
+  rebuilt after March clean.
+
 ## 2025-06 Certification — DONE (2026-08-28)
 
 Internal gates (certify_month.py, `factory/artifacts/certification_2025-06/`):
