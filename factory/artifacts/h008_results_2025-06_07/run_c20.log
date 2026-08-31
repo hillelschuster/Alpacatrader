@@ -1,0 +1,14 @@
+Loading 3 clean files ...
+ rows 68900258 (RTH only)
+events factory\artifacts\certification_2025-06\events_topN.parquet: 120054 (2025-06)
+events factory\artifacts\certification_2025-07\events_topN.parquet: 139400 (2025-07)
+events without 20-session baseline (dropped): 26964
+
+Wrote factory\artifacts\h008_results_2025-06_07\h008_results_c20.parquet (219540)
+2025-06|RVOL>1.5           h15 n= 66752 exp_net=-0.392% | h60 n= 59763 exp_net=-0.371%
+2025-06|RVOL1.0-1.5        h15 n=  9098 exp_net=-0.42% | h60 n=  7379 exp_net=-0.509%
+2025-06|RVOL<1.0           h15 n= 19670 exp_net=-0.43% | h60 n= 15719 exp_net=-0.537%
+2025-07|RVOL>1.5           h15 n= 77789 exp_net=-0.393% | h60 n= 68657 exp_net=-0.336%
+2025-07|RVOL1.0-1.5        h15 n=  9081 exp_net=-0.415% | h60 n=  7138 exp_net=-0.476%
+2025-07|RVOL<1.0           h15 n= 20429 exp_net=-0.435% | h60 n= 16132 exp_net=-0.496%
+Wrote factory\artifacts\h008_results_2025-06_07\h008_summary.json

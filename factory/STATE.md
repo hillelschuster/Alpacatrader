@@ -192,9 +192,10 @@ datasets; Drive is not a database). Don't let storage work delay research.
 1. ~~Download + clean + certify 2025-07~~ DONE (2026-08-31, see above).
 2. ~~Run H006 + H009-faithful on certified 2025-07~~ DONE: H006 killed; H009 direction-persistent
    but not executable standalone (ledgers updated).
-3. **H008** RVOL vs 20-day TOD baseline — NOW highest-EV queued hypothesis. Needs May+June staged
-   for June-event baselines and June+July staged for July-event baselines (May events lack a trailing
-   baseline — no April data locally; run June+July only, document).
+3. ~~H008 RVOL vs 20-day TOD baseline~~ DONE (2026-09-01, EXP-H008-2025-06_07): relative edge real
+   (+7..+28bps @60m, 6/6 volume-matched cells, 2/2 months) but absolute ≈0 to negative; stack with
+   H009 dead in July. All ten hypotheses now tested on certified data; no standalone executable edge
+   survives 20bps RT. Next: synthesis decision (see STATE.md Where We Are).
 4. Upload new artifacts (July cert, May/June re-verified outputs, May
    replication artifacts, ledgers, STATE) to Drive + MD5 verify; prune local if
    disk >90%.
