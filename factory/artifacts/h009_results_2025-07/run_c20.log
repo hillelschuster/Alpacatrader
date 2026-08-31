@@ -1,0 +1,218 @@
+Loading 2 clean files ...
+ rows 46353625
+ prior closes ...
+ candidate days 59765 rows 8158114
+ detecting trap vs clean signals ...
+ groups 59765 trap 2671618 clean 78543
+ after dedup trap 822609 clean 48997
+
+ Total signals 871606 trap 822609 clean 48997
+ Dates 2025-06-03 .. 2025-07-31 (41 days)
+
+=== ALL n=871606 ===
+  h=5m: n=535138 wr=0.462 wr_net=0.160 avg=0.0002 med=0.0000 exp_net=-0.0038 aw=0.0052 al=-0.0042
+  h=15m: n=510461 wr=0.481 wr_net=0.249 avg=0.0005 med=0.0000 exp_net=-0.0035 aw=0.0084 al=-0.0069
+  h=30m: n=479970 wr=0.489 wr_net=0.303 avg=0.0008 med=0.0000 exp_net=-0.0032 aw=0.0115 al=-0.0093
+  h=60m: n=425902 wr=0.490 wr_net=0.347 avg=0.0013 med=0.0000 exp_net=-0.0027 aw=0.0157 al=-0.0125
+
+=== TRAP n=822609 ===
+  h=5m: n=509202 wr=0.461 wr_net=0.164 avg=0.0002 med=0.0000 exp_net=-0.0038 aw=0.0053 al=-0.0042
+  h=15m: n=486100 wr=0.480 wr_net=0.252 avg=0.0005 med=0.0000 exp_net=-0.0035 aw=0.0085 al=-0.0070
+  h=30m: n=457126 wr=0.488 wr_net=0.306 avg=0.0008 med=0.0000 exp_net=-0.0032 aw=0.0117 al=-0.0095
+  h=60m: n=405476 wr=0.490 wr_net=0.350 avg=0.0013 med=0.0000 exp_net=-0.0027 aw=0.0160 al=-0.0128
+
+=== CLEAN n=48997 ===
+  h=5m: n=25936 wr=0.480 wr_net=0.092 avg=0.0003 med=0.0000 exp_net=-0.0037 aw=0.0034 al=-0.0026
+  h=15m: n=24361 wr=0.502 wr_net=0.180 avg=0.0006 med=0.0001 exp_net=-0.0034 aw=0.0052 al=-0.0040
+  h=30m: n=22844 wr=0.497 wr_net=0.248 avg=0.0007 med=0.0000 exp_net=-0.0033 aw=0.0071 al=-0.0056
+  h=60m: n=20426 wr=0.485 wr_net=0.287 avg=0.0010 med=0.0000 exp_net=-0.0030 aw=0.0099 al=-0.0074
+
+=== TRAP vs CLEAN diff (trap exp_net - clean exp_net) ===
+ h5m trap -0.0038 clean -0.0037 diff -0.0001
+ h15m trap -0.0035 clean -0.0034 diff -0.0002
+ h30m trap -0.0032 clean -0.0033 diff 0.0001
+ h60m trap -0.0027 clean -0.0030 diff 0.0003
+
+=== by time_bucket (trap vs clean) ===
+ 09:30-10:00 n=45855 trap 40879 clean 4976
+  h=5m: n=32576 wr=0.483 wr_net=0.329 avg=0.0005 med=0.0000 exp_net=-0.0035 aw=0.0125 al=-0.0108
+  h=15m: n=31477 wr=0.496 wr_net=0.388 avg=0.0013 med=0.0000 exp_net=-0.0027 aw=0.0193 al=-0.0164
+  h=30m: n=30623 wr=0.517 wr_net=0.432 avg=0.0027 med=0.0010 exp_net=-0.0013 aw=0.0245 al=-0.0208
+  h=60m: n=28961 wr=0.533 wr_net=0.464 avg=0.0048 med=0.0020 exp_net=0.0008 aw=0.0314 al=-0.0257
+  h=5m: n=30847 wr=0.483 wr_net=0.329 avg=0.0004 med=0.0000 exp_net=-0.0036 aw=0.0124 al=-0.0108
+  h=15m: n=29871 wr=0.496 wr_net=0.390 avg=0.0012 med=0.0000 exp_net=-0.0028 aw=0.0193 al=-0.0166
+  h=30m: n=29124 wr=0.518 wr_net=0.433 avg=0.0026 med=0.0010 exp_net=-0.0014 aw=0.0246 al=-0.0210
+  h=60m: n=27577 wr=0.533 wr_net=0.464 avg=0.0046 med=0.0020 exp_net=0.0006 aw=0.0315 al=-0.0260
+  h=5m: n=1729 wr=0.495 wr_net=0.331 avg=0.0013 med=0.0000 exp_net=-0.0027 aw=0.0140 al=-0.0111
+  h=15m: n=1606 wr=0.494 wr_net=0.360 avg=0.0026 med=0.0000 exp_net=-0.0014 aw=0.0194 al=-0.0138
+  h=30m: n=1499 wr=0.512 wr_net=0.415 avg=0.0034 med=0.0007 exp_net=-0.0006 aw=0.0225 al=-0.0165
+  h=60m: n=1384 wr=0.539 wr_net=0.462 avg=0.0079 med=0.0022 exp_net=0.0039 aw=0.0309 al=-0.0191
+ 10:00-11:00 n=117883 trap 109906 clean 7977
+  h=5m: n=78832 wr=0.496 wr_net=0.248 avg=0.0006 med=0.0000 exp_net=-0.0034 aw=0.0071 al=-0.0058
+  h=15m: n=77258 wr=0.521 wr_net=0.350 avg=0.0016 med=0.0007 exp_net=-0.0024 aw=0.0116 al=-0.0093
+  h=30m: n=75023 wr=0.524 wr_net=0.393 avg=0.0023 med=0.0010 exp_net=-0.0017 aw=0.0159 al=-0.0126
+  h=60m: n=71344 wr=0.509 wr_net=0.410 avg=0.0025 med=0.0006 exp_net=-0.0015 aw=0.0210 al=-0.0166
+  h=5m: n=75111 wr=0.496 wr_net=0.253 avg=0.0006 med=0.0000 exp_net=-0.0034 aw=0.0072 al=-0.0060
+  h=15m: n=73666 wr=0.519 wr_net=0.353 avg=0.0016 med=0.0007 exp_net=-0.0024 aw=0.0118 al=-0.0096
+  h=30m: n=71517 wr=0.522 wr_net=0.396 avg=0.0023 med=0.0010 exp_net=-0.0017 aw=0.0163 al=-0.0129
+  h=60m: n=68082 wr=0.507 wr_net=0.412 avg=0.0025 med=0.0005 exp_net=-0.0015 aw=0.0214 al=-0.0170
+  h=5m: n=3721 wr=0.499 wr_net=0.138 avg=0.0004 med=0.0000 exp_net=-0.0036 aw=0.0041 al=-0.0032
+  h=15m: n=3592 wr=0.558 wr_net=0.274 avg=0.0016 med=0.0008 exp_net=-0.0024 aw=0.0064 al=-0.0045
+  h=30m: n=3506 wr=0.560 wr_net=0.339 avg=0.0018 med=0.0011 exp_net=-0.0022 aw=0.0083 al=-0.0063
+  h=60m: n=3262 wr=0.547 wr_net=0.386 avg=0.0031 med=0.0013 exp_net=-0.0009 aw=0.0119 al=-0.0074
+ 11:00-12:00 n=131354 trap 123116 clean 8238
+  h=5m: n=82302 wr=0.464 wr_net=0.171 avg=0.0001 med=0.0000 exp_net=-0.0039 aw=0.0052 al=-0.0043
+  h=15m: n=80478 wr=0.480 wr_net=0.265 avg=0.0004 med=0.0000 exp_net=-0.0036 aw=0.0084 al=-0.0071
+  h=30m: n=78332 wr=0.491 wr_net=0.322 avg=0.0009 med=0.0000 exp_net=-0.0031 aw=0.0117 al=-0.0095
+  h=60m: n=76018 wr=0.494 wr_net=0.358 avg=0.0015 med=0.0000 exp_net=-0.0025 aw=0.0159 al=-0.0126
+  h=5m: n=77707 wr=0.461 wr_net=0.175 avg=0.0001 med=0.0000 exp_net=-0.0039 aw=0.0053 al=-0.0044
+  h=15m: n=76043 wr=0.476 wr_net=0.266 avg=0.0003 med=0.0000 exp_net=-0.0037 aw=0.0087 al=-0.0073
+  h=30m: n=74018 wr=0.485 wr_net=0.319 avg=0.0008 med=0.0000 exp_net=-0.0032 aw=0.0119 al=-0.0097
+  h=60m: n=71746 wr=0.492 wr_net=0.358 avg=0.0014 med=0.0000 exp_net=-0.0026 aw=0.0162 al=-0.0129
+  h=5m: n=4595 wr=0.506 wr_net=0.099 avg=0.0004 med=0.0001 exp_net=-0.0036 aw=0.0031 al=-0.0023
+  h=15m: n=4435 wr=0.551 wr_net=0.234 avg=0.0009 med=0.0007 exp_net=-0.0031 aw=0.0049 al=-0.0040
+  h=30m: n=4314 wr=0.579 wr_net=0.370 avg=0.0025 med=0.0014 exp_net=-0.0015 aw=0.0079 al=-0.0048
+  h=60m: n=4272 wr=0.526 wr_net=0.359 avg=0.0025 med=0.0007 exp_net=-0.0015 aw=0.0109 al=-0.0068
+ 12:00-13:00 n=135404 trap 127731 clean 7673
+  h=5m: n=80175 wr=0.452 wr_net=0.139 avg=0.0001 med=0.0000 exp_net=-0.0039 aw=0.0045 al=-0.0036
+  h=15m: n=78708 wr=0.472 wr_net=0.227 avg=0.0002 med=0.0000 exp_net=-0.0038 aw=0.0072 al=-0.0061
+  h=30m: n=77093 wr=0.479 wr_net=0.282 avg=0.0004 med=0.0000 exp_net=-0.0036 aw=0.0100 al=-0.0084
+  h=60m: n=74846 wr=0.482 wr_net=0.330 avg=0.0009 med=0.0000 exp_net=-0.0031 aw=0.0134 al=-0.0107
+  h=5m: n=75770 wr=0.449 wr_net=0.142 avg=0.0000 med=0.0000 exp_net=-0.0040 aw=0.0046 al=-0.0036
+  h=15m: n=74453 wr=0.471 wr_net=0.231 avg=0.0002 med=0.0000 exp_net=-0.0038 aw=0.0074 al=-0.0062
+  h=30m: n=72910 wr=0.482 wr_net=0.288 avg=0.0005 med=0.0000 exp_net=-0.0035 aw=0.0103 al=-0.0085
+  h=60m: n=70799 wr=0.489 wr_net=0.339 avg=0.0011 med=0.0000 exp_net=-0.0029 aw=0.0137 al=-0.0109
+  h=5m: n=4405 wr=0.495 wr_net=0.078 avg=0.0003 med=0.0000 exp_net=-0.0037 aw=0.0025 al=-0.0019
+  h=15m: n=4255 wr=0.488 wr_net=0.161 avg=0.0003 med=0.0000 exp_net=-0.0037 aw=0.0041 al=-0.0033
+  h=30m: n=4183 wr=0.426 wr_net=0.180 avg=-0.0013 med=-0.0007 exp_net=-0.0053 aw=0.0049 al=-0.0060
+  h=60m: n=4047 wr=0.356 wr_net=0.177 avg=-0.0030 med=-0.0023 exp_net=-0.0070 aw=0.0062 al=-0.0081
+ 13:00-14:00 n=133928 trap 127766 clean 6162
+  h=5m: n=77749 wr=0.459 wr_net=0.122 avg=0.0001 med=0.0000 exp_net=-0.0039 aw=0.0040 al=-0.0031
+  h=15m: n=77269 wr=0.480 wr_net=0.214 avg=0.0003 med=0.0000 exp_net=-0.0037 aw=0.0064 al=-0.0052
+  h=30m: n=77319 wr=0.485 wr_net=0.269 avg=0.0004 med=0.0000 exp_net=-0.0036 aw=0.0086 al=-0.0073
+  h=60m: n=78199 wr=0.484 wr_net=0.315 avg=0.0005 med=0.0000 exp_net=-0.0035 aw=0.0116 al=-0.0100
+  h=5m: n=74216 wr=0.460 wr_net=0.125 avg=0.0001 med=0.0000 exp_net=-0.0039 aw=0.0040 al=-0.0032
+  h=15m: n=73808 wr=0.481 wr_net=0.219 avg=0.0003 med=0.0000 exp_net=-0.0037 aw=0.0065 al=-0.0054
+  h=30m: n=73908 wr=0.486 wr_net=0.274 avg=0.0004 med=0.0000 exp_net=-0.0036 aw=0.0088 al=-0.0075
+  h=60m: n=74739 wr=0.484 wr_net=0.319 avg=0.0005 med=0.0000 exp_net=-0.0035 aw=0.0119 al=-0.0102
+  h=5m: n=3533 wr=0.457 wr_net=0.047 avg=0.0001 med=0.0000 exp_net=-0.0039 aw=0.0021 al=-0.0017
+  h=15m: n=3461 wr=0.470 wr_net=0.111 avg=0.0001 med=0.0000 exp_net=-0.0039 aw=0.0033 al=-0.0028
+  h=30m: n=3411 wr=0.465 wr_net=0.169 avg=-0.0000 med=0.0000 exp_net=-0.0040 aw=0.0044 al=-0.0038
+  h=60m: n=3460 wr=0.490 wr_net=0.233 avg=0.0000 med=0.0000 exp_net=-0.0040 aw=0.0058 al=-0.0055
+ 14:00-15:00 n=140757 trap 134479 clean 6278
+  h=5m: n=83193 wr=0.448 wr_net=0.108 avg=0.0000 med=0.0000 exp_net=-0.0040 aw=0.0037 al=-0.0029
+  h=15m: n=83856 wr=0.470 wr_net=0.188 avg=0.0000 med=0.0000 exp_net=-0.0040 aw=0.0058 al=-0.0051
+  h=30m: n=85861 wr=0.476 wr_net=0.246 avg=0.0001 med=0.0000 exp_net=-0.0039 aw=0.0079 al=-0.0069
+  h=60m: n=96534 wr=0.469 wr_net=0.297 avg=0.0002 med=-0.0001 exp_net=-0.0038 aw=0.0112 al=-0.0096
+  h=5m: n=79692 wr=0.448 wr_net=0.111 avg=0.0000 med=0.0000 exp_net=-0.0040 aw=0.0038 al=-0.0030
+  h=15m: n=80367 wr=0.470 wr_net=0.192 avg=0.0001 med=0.0000 exp_net=-0.0039 aw=0.0059 al=-0.0052
+  h=30m: n=82318 wr=0.476 wr_net=0.251 avg=0.0002 med=0.0000 exp_net=-0.0038 aw=0.0081 al=-0.0071
+  h=60m: n=92533 wr=0.468 wr_net=0.300 avg=0.0002 med=-0.0002 exp_net=-0.0038 aw=0.0115 al=-0.0098
+  h=5m: n=3501 wr=0.453 wr_net=0.044 avg=-0.0000 med=0.0000 exp_net=-0.0040 aw=0.0019 al=-0.0016
+  h=15m: n=3489 wr=0.469 wr_net=0.096 avg=-0.0001 med=0.0000 exp_net=-0.0041 aw=0.0028 al=-0.0027
+  h=30m: n=3543 wr=0.470 wr_net=0.147 avg=-0.0001 med=0.0000 exp_net=-0.0041 aw=0.0038 al=-0.0036
+  h=60m: n=4001 wr=0.498 wr_net=0.229 avg=0.0001 med=0.0000 exp_net=-0.0039 aw=0.0054 al=-0.0052
+ 15:00-16:00 n=166425 trap 158732 clean 7693
+  h=5m: n=100311 wr=0.450 wr_net=0.120 avg=0.0001 med=0.0000 exp_net=-0.0039 aw=0.0039 al=-0.0031
+  h=15m: n=81415 wr=0.460 wr_net=0.198 avg=0.0000 med=0.0000 exp_net=-0.0040 aw=0.0061 al=-0.0051
+  h=30m: n=55719 wr=0.463 wr_net=0.250 avg=0.0001 med=0.0000 exp_net=-0.0039 aw=0.0082 al=-0.0069
+  h=5m: n=95859 wr=0.450 wr_net=0.123 avg=0.0001 med=0.0000 exp_net=-0.0039 aw=0.0040 al=-0.0031
+  h=15m: n=77892 wr=0.460 wr_net=0.202 avg=0.0000 med=0.0000 exp_net=-0.0040 aw=0.0062 al=-0.0052
+  h=30m: n=53331 wr=0.463 wr_net=0.254 avg=0.0001 med=0.0000 exp_net=-0.0039 aw=0.0083 al=-0.0071
+  h=5m: n=4452 wr=0.458 wr_net=0.042 avg=-0.0000 med=0.0000 exp_net=-0.0040 aw=0.0020 al=-0.0017
+  h=15m: n=3523 wr=0.465 wr_net=0.112 avg=-0.0000 med=0.0000 exp_net=-0.0040 aw=0.0033 al=-0.0029
+  h=30m: n=2388 wr=0.461 wr_net=0.170 avg=0.0000 med=-0.0002 exp_net=-0.0040 aw=0.0047 al=-0.0040
+
+=== by gain_bin ===
+ <10% n=744343
+  h=5m: n=451689 wr=0.461 wr_net=0.137 avg=0.0002 med=0.0000 exp_net=-0.0038 aw=0.0041 al=-0.0032
+  h=15m: n=431426 wr=0.481 wr_net=0.228 avg=0.0004 med=0.0000 exp_net=-0.0036 aw=0.0066 al=-0.0053
+  h=30m: n=406077 wr=0.489 wr_net=0.286 avg=0.0007 med=0.0000 exp_net=-0.0033 aw=0.0090 al=-0.0072
+  h=60m: n=360954 wr=0.490 wr_net=0.334 avg=0.0010 med=0.0000 exp_net=-0.0030 aw=0.0122 al=-0.0097
+  h=5m: n=426446 wr=0.460 wr_net=0.139 avg=0.0001 med=0.0000 exp_net=-0.0039 aw=0.0041 al=-0.0032
+  h=15m: n=407674 wr=0.480 wr_net=0.231 avg=0.0004 med=0.0000 exp_net=-0.0036 aw=0.0067 al=-0.0054
+  h=30m: n=383748 wr=0.488 wr_net=0.289 avg=0.0007 med=0.0000 exp_net=-0.0033 aw=0.0091 al=-0.0073
+  h=60m: n=340976 wr=0.490 wr_net=0.336 avg=0.0010 med=0.0000 exp_net=-0.0030 aw=0.0124 al=-0.0099
+  h=5m: n=25243 wr=0.480 wr_net=0.088 avg=0.0003 med=0.0000 exp_net=-0.0037 aw=0.0032 al=-0.0024
+  h=15m: n=23752 wr=0.502 wr_net=0.176 avg=0.0006 med=0.0001 exp_net=-0.0034 aw=0.0049 al=-0.0038
+  h=30m: n=22329 wr=0.498 wr_net=0.246 avg=0.0007 med=0.0000 exp_net=-0.0033 aw=0.0068 al=-0.0053
+  h=60m: n=19978 wr=0.485 wr_net=0.285 avg=0.0010 med=0.0000 exp_net=-0.0030 aw=0.0095 al=-0.0071
+ 10-20% n=94890
+  h=5m: n=60406 wr=0.470 wr_net=0.265 avg=0.0003 med=0.0000 exp_net=-0.0037 aw=0.0084 al=-0.0068
+  h=15m: n=57046 wr=0.483 wr_net=0.346 avg=0.0008 med=0.0000 exp_net=-0.0032 aw=0.0135 al=-0.0110
+  h=30m: n=53273 wr=0.491 wr_net=0.387 avg=0.0017 med=0.0000 exp_net=-0.0023 aw=0.0185 al=-0.0146
+  h=60m: n=46795 wr=0.492 wr_net=0.417 avg=0.0028 med=0.0000 exp_net=-0.0012 aw=0.0259 al=-0.0196
+  h=5m: n=59789 wr=0.469 wr_net=0.265 avg=0.0003 med=0.0000 exp_net=-0.0037 aw=0.0084 al=-0.0068
+  h=15m: n=56499 wr=0.482 wr_net=0.346 avg=0.0008 med=0.0000 exp_net=-0.0032 aw=0.0135 al=-0.0110
+  h=30m: n=52814 wr=0.491 wr_net=0.387 avg=0.0017 med=0.0000 exp_net=-0.0023 aw=0.0185 al=-0.0146
+  h=60m: n=46388 wr=0.492 wr_net=0.418 avg=0.0028 med=0.0000 exp_net=-0.0012 aw=0.0259 al=-0.0196
+  h=5m: n=617 wr=0.489 wr_net=0.245 avg=0.0009 med=0.0000 exp_net=-0.0031 aw=0.0107 al=-0.0085
+  h=15m: n=547 wr=0.492 wr_net=0.340 avg=0.0040 med=0.0000 exp_net=0.0000 aw=0.0188 al=-0.0102
+  h=30m: n=459 wr=0.495 wr_net=0.351 avg=0.0023 med=0.0000 exp_net=-0.0017 aw=0.0186 al=-0.0136
+  h=60m: n=407 wr=0.501 wr_net=0.378 avg=0.0041 med=0.0002 exp_net=0.0001 aw=0.0253 al=-0.0172
+ 20%+ n=32373
+  h=5m: n=23043 wr=0.471 wr_net=0.354 avg=0.0001 med=0.0000 exp_net=-0.0039 aw=0.0184 al=-0.0162
+  h=15m: n=21989 wr=0.478 wr_net=0.402 avg=0.0008 med=0.0000 exp_net=-0.0032 aw=0.0304 al=-0.0264
+  h=30m: n=20620 wr=0.487 wr_net=0.426 avg=0.0015 med=0.0000 exp_net=-0.0025 aw=0.0420 al=-0.0369
+  h=60m: n=18153 wr=0.482 wr_net=0.438 avg=0.0023 med=-0.0008 exp_net=-0.0017 aw=0.0583 al=-0.0498
+  h=5m: n=22967 wr=0.471 wr_net=0.354 avg=0.0001 med=0.0000 exp_net=-0.0039 aw=0.0184 al=-0.0161
+  h=15m: n=21927 wr=0.478 wr_net=0.402 avg=0.0008 med=0.0000 exp_net=-0.0032 aw=0.0304 al=-0.0264
+  h=30m: n=20564 wr=0.487 wr_net=0.427 avg=0.0015 med=0.0000 exp_net=-0.0025 aw=0.0420 al=-0.0369
+  h=60m: n=18112 wr=0.482 wr_net=0.438 avg=0.0023 med=-0.0007 exp_net=-0.0017 aw=0.0583 al=-0.0498
+  h=5m: n=76 wr=0.474 wr_net=0.342 avg=-0.0055 med=0.0000 exp_net=-0.0095 aw=0.0211 al=-0.0294
+  h=15m: n=62 wr=0.500 wr_net=0.339 avg=-0.0028 med=0.0003 exp_net=-0.0068 aw=0.0241 al=-0.0296
+  h=30m: n=56 wr=0.429 wr_net=0.321 avg=-0.0039 med=-0.0018 exp_net=-0.0079 aw=0.0289 al=-0.0286
+  h=60m: n=41 wr=0.415 wr_net=0.390 avg=-0.0098 med=-0.0024 exp_net=-0.0138 aw=0.0463 al=-0.0495
+
+=== by dip depth (trap only) ===
+ 0.3-0.5% n=132157
+  h=5m: n=85701 wr=0.468 wr_net=0.097 avg=0.0001 med=0.0000 exp_net=-0.0039 aw=0.0029 al=-0.0023
+  h=15m: n=82360 wr=0.487 wr_net=0.187 avg=0.0003 med=0.0000 exp_net=-0.0037 aw=0.0048 al=-0.0040
+  h=30m: n=77537 wr=0.494 wr_net=0.249 avg=0.0005 med=0.0000 exp_net=-0.0035 aw=0.0065 al=-0.0055
+  h=60m: n=69238 wr=0.488 wr_net=0.300 avg=0.0006 med=0.0000 exp_net=-0.0034 aw=0.0090 al=-0.0074
+ 0.5-1% n=226254
+  h=5m: n=144842 wr=0.463 wr_net=0.122 avg=0.0002 med=0.0000 exp_net=-0.0038 aw=0.0035 al=-0.0027
+  h=15m: n=138688 wr=0.483 wr_net=0.213 avg=0.0003 med=0.0000 exp_net=-0.0037 aw=0.0057 al=-0.0046
+  h=30m: n=130355 wr=0.490 wr_net=0.271 avg=0.0006 med=0.0000 exp_net=-0.0034 aw=0.0078 al=-0.0064
+  h=60m: n=115545 wr=0.489 wr_net=0.321 avg=0.0008 med=0.0000 exp_net=-0.0032 aw=0.0107 al=-0.0087
+ 1%+ n=452970
+  h=5m: n=273676 wr=0.458 wr_net=0.204 avg=0.0002 med=0.0000 exp_net=-0.0038 aw=0.0068 al=-0.0054
+  h=15m: n=260393 wr=0.477 wr_net=0.291 avg=0.0005 med=0.0000 exp_net=-0.0035 aw=0.0110 al=-0.0090
+  h=30m: n=244741 wr=0.486 wr_net=0.341 avg=0.0011 med=0.0000 exp_net=-0.0029 aw=0.0151 al=-0.0122
+  h=60m: n=216402 wr=0.490 wr_net=0.381 avg=0.0017 med=0.0000 exp_net=-0.0023 aw=0.0207 al=-0.0165
+ no_hod_dip n=60225
+  h=5m: n=30919 wr=0.478 wr_net=0.130 avg=0.0003 med=0.0000 exp_net=-0.0037 aw=0.0055 al=-0.0045
+  h=15m: n=29020 wr=0.499 wr_net=0.210 avg=0.0007 med=0.0000 exp_net=-0.0033 aw=0.0079 al=-0.0064
+  h=30m: n=27337 wr=0.498 wr_net=0.273 avg=0.0011 med=0.0000 exp_net=-0.0029 aw=0.0106 al=-0.0083
+  h=60m: n=24717 wr=0.491 wr_net=0.312 avg=0.0015 med=0.0000 exp_net=-0.0025 aw=0.0141 al=-0.0107
+
+=== Chronological split train 15d test 26d cutoff 2025-06-25 ===
+ train n=334393 trap 315236
+  h=5m: n=206102 wr=0.458 wr_net=0.154 avg=0.0002 med=0.0000 exp_net=-0.0038 aw=0.0051 al=-0.0040
+  h=15m: n=197312 wr=0.478 wr_net=0.239 avg=0.0005 med=0.0000 exp_net=-0.0035 aw=0.0081 al=-0.0066
+  h=30m: n=186189 wr=0.486 wr_net=0.295 avg=0.0009 med=0.0000 exp_net=-0.0031 aw=0.0112 al=-0.0089
+  h=60m: n=165618 wr=0.492 wr_net=0.345 avg=0.0015 med=0.0000 exp_net=-0.0025 aw=0.0153 al=-0.0119
+  h=5m: n=196084 wr=0.458 wr_net=0.158 avg=0.0002 med=0.0000 exp_net=-0.0038 aw=0.0052 al=-0.0041
+  h=15m: n=187735 wr=0.478 wr_net=0.244 avg=0.0005 med=0.0000 exp_net=-0.0035 aw=0.0083 al=-0.0067
+  h=30m: n=177220 wr=0.486 wr_net=0.299 avg=0.0009 med=0.0000 exp_net=-0.0031 aw=0.0115 al=-0.0091
+  h=60m: n=157599 wr=0.492 wr_net=0.348 avg=0.0015 med=0.0000 exp_net=-0.0025 aw=0.0156 al=-0.0122
+  h=5m: n=10018 wr=0.461 wr_net=0.073 avg=0.0001 med=0.0000 exp_net=-0.0039 aw=0.0030 al=-0.0025
+  h=15m: n=9577 wr=0.476 wr_net=0.140 avg=0.0002 med=0.0000 exp_net=-0.0038 aw=0.0045 al=-0.0038
+  h=30m: n=8969 wr=0.474 wr_net=0.201 avg=0.0003 med=0.0000 exp_net=-0.0037 aw=0.0061 al=-0.0050
+  h=60m: n=8019 wr=0.494 wr_net=0.270 avg=0.0010 med=0.0000 exp_net=-0.0030 aw=0.0087 al=-0.0064
+ test n=537213 trap 507373
+  h=5m: n=329036 wr=0.465 wr_net=0.165 avg=0.0002 med=0.0000 exp_net=-0.0038 aw=0.0053 al=-0.0042
+  h=15m: n=313149 wr=0.483 wr_net=0.255 avg=0.0005 med=0.0000 exp_net=-0.0035 aw=0.0085 al=-0.0070
+  h=30m: n=293781 wr=0.491 wr_net=0.309 avg=0.0008 med=0.0000 exp_net=-0.0032 aw=0.0116 al=-0.0096
+  h=60m: n=260284 wr=0.488 wr_net=0.349 avg=0.0011 med=0.0000 exp_net=-0.0029 aw=0.0159 al=-0.0130
+  h=5m: n=313118 wr=0.463 wr_net=0.168 avg=0.0002 med=0.0000 exp_net=-0.0038 aw=0.0054 al=-0.0043
+  h=15m: n=298365 wr=0.481 wr_net=0.257 avg=0.0004 med=0.0000 exp_net=-0.0036 aw=0.0086 al=-0.0072
+  h=30m: n=279906 wr=0.490 wr_net=0.310 avg=0.0008 med=0.0000 exp_net=-0.0032 aw=0.0118 al=-0.0097
+  h=60m: n=247877 wr=0.488 wr_net=0.352 avg=0.0011 med=0.0000 exp_net=-0.0029 aw=0.0162 al=-0.0132
+  h=5m: n=15918 wr=0.493 wr_net=0.104 avg=0.0004 med=0.0000 exp_net=-0.0036 aw=0.0036 al=-0.0028
+  h=15m: n=14784 wr=0.518 wr_net=0.207 avg=0.0009 med=0.0003 exp_net=-0.0031 aw=0.0057 al=-0.0042
+  h=30m: n=13875 wr=0.513 wr_net=0.279 avg=0.0010 med=0.0003 exp_net=-0.0030 aw=0.0076 al=-0.0060
+  h=60m: n=12407 wr=0.479 wr_net=0.299 avg=0.0010 med=-0.0001 exp_net=-0.0030 aw=0.0108 al=-0.0081
+
+Wrote factory\artifacts\h009_results_2025-07\h009_results_c20.parquet (871606)
+Wrote factory\artifacts\h009_results_2025-07\h009_summary.json

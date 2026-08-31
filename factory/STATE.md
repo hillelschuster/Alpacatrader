@@ -52,6 +52,25 @@ certification_2025-05/external_verification_report.md.
 - Implication: no hypothesis currently justifies building. The decisive test is
   a forward OOS month: download + certify 2025-07, run H006/H009 unchanged.
 
+## 2025-07 OOS — COMPLETE (2026-08-31)
+
+- **Certification 2025-07 DONE** (`certification_2025-07/`): 22 sessions, 24.36M rows, 14,611 tickers,
+  2,657 candidates, 67 split suspects (< June's 86), 139,400 events (4,958–7,360/day).
+  Certified with **BOTH** clean_ohlcv_2025-06 + 2025-07 files so 2025-07-01 sessions get the
+  2025-06-30 prior-session close (user-corrected design; certified clean_2025-07 predates this fix).
+- **External verification**: 1-min path PASS 20/20 (independent Alpaca IEX tape), split cross-check PASS 20/20;
+  prev_close/pct_gain/rth_hod FAIL raw gates at 55%/85%/90% — statistically identical to May's
+  adjudicated-and-accepted profile (50%/90%/90%; medians slightly better than May). Adjudicated ACCEPT
+  (same reference artifacts: last-print vs 16:00 auction, consolidated-vs-feed highs). Run-note: first
+  attempt had IEX checked=0 (missing python-dotenv in ephemeral uv env); re-run with --with python-dotenv.
+- **H006 KILLED by July OOS** (EXP-H006-2025-07): tail 12%+ n=1,070 (4.3× June) exp −0.065% @20bps
+  (June: +3.08% on n=247); monotone gradient absent; 8–12% bucket flipped positive.
+- **H009 not executable standalone** (EXP-H009-2025-07): relative edge vs clean replicates 3/3 months
+  (+13.7bps @60m July-only, halving each month: 28.6→21.5→13.7) but absolute net ≈0 @20bps, negative @40bps;
+  June's 10–11am concentration absent in July. Faithful-subset filters reconciled (May used strict,
+  June used loose — both now reported for all months).
+- Comparison: `factory/artifacts/replication_2025-05_06_07.md`.
+
 ## Where We Are (summary)
 
 H001–H005 (continuation-family hypotheses) were tested on 2025-07 and all killed
@@ -170,13 +189,12 @@ datasets; Drive is not a database). Don't let storage work delay research.
 
 ## Next Actions (ordered)
 
-1. **Download + clean + certify 2025-07** (download_month → audit → clean →
-   certify_month → verify_external with split-normalization). July is the true
-   forward OOS month for H006/H009 (H001–H005 saw July events, but H006/H009
-   signals were never fit to it; treat as OOS with the H001–H005 overlap noted).
-2. **Run H006 + H009-faithful on certified 2025-07** unchanged → decisive
-   robustness verdict; update ledgers.
-3. **H008** RVOL vs 20-day TOD baseline (needs May+June; both certified now).
+1. ~~Download + clean + certify 2025-07~~ DONE (2026-08-31, see above).
+2. ~~Run H006 + H009-faithful on certified 2025-07~~ DONE: H006 killed; H009 direction-persistent
+   but not executable standalone (ledgers updated).
+3. **H008** RVOL vs 20-day TOD baseline — NOW highest-EV queued hypothesis. Needs May+June staged
+   for June-event baselines and June+July staged for July-event baselines (May events lack a trailing
+   baseline — no April data locally; run June+July only, document).
 4. Upload new artifacts (July cert, May/June re-verified outputs, May
    replication artifacts, ledgers, STATE) to Drive + MD5 verify; prune local if
    disk >90%.

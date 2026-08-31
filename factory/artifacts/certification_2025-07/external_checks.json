@@ -1,0 +1,519 @@
+{
+  "month": "2025-07",
+  "sample_n": 20,
+  "n_distinct_dates": 20,
+  "distinct_dates": [
+    "2025-07-01",
+    "2025-07-02",
+    "2025-07-03",
+    "2025-07-08",
+    "2025-07-09",
+    "2025-07-10",
+    "2025-07-11",
+    "2025-07-14",
+    "2025-07-15",
+    "2025-07-16",
+    "2025-07-17",
+    "2025-07-18",
+    "2025-07-21",
+    "2025-07-22",
+    "2025-07-23",
+    "2025-07-24",
+    "2025-07-25",
+    "2025-07-28",
+    "2025-07-29",
+    "2025-07-31"
+  ],
+  "tolerances": {
+    "prev_close_tight": "|our_prev_close - yf_prev_close| / prev_close <= 0.1%",
+    "prev_close_operating": "|our_prev_close - yf_prev_close| / prev_close <= 0.35% (PASS gate, with median diff <= 0.05%)",
+    "pct_gain": "|our_pct_gain - yf_day_change| <= 0.5 percentage points",
+    "rth_hod": "|our_clean_day_high - yf_daily_high| / our_day_high <= 0.3% (consolidated yfinance High; IEX reported as sanity only)",
+    "verdict": "PASS if match_rate >= 95%, else FAIL; INSUFFICIENT if < 3 measured"
+  },
+  "methodology": "yfinance `history()` serves split-adjusted OHLC in BOTH auto_adjust modes \u2014 the bool gates dividend adjustment only, not splits \u2014 so for any ticker that later splits, the Close/High reference is the raw price already divided by the post-split ratio (e.g. CVNA 5:1 ex 2026-05-08 -> yf 58.612 = raw 292.35 / 5). Each of the three price-comparison references (prev_close, pct_gain close, rth_hod high) is therefore normalized to the unadjusted frame by multiplying by the cumulative future split ratio: the product of split ratios whose ex-date is strictly after the sampled session date (CVNA: 58.612 x 5.0 = 293.06 vs our 292.35 -> ~0.24%). Split cross-check and 1-min path checks are unaffected.",
+  "adjudication": [
+    {
+      "title": "pct_gain@16:00 mis-referenced",
+      "text": "The events file's per-ticker-day last bar is the last bar the ticker sat in top-N, often mid-session, so it was NOT the day close. Fixed to recompute the true end-of-RTH (max-timestamp) close per sampled ticker-day from the clean parquet and compare that against yfinance's daily change. Tolerance unchanged (0.5pp)."
+    },
+    {
+      "title": "prev_close tolerance",
+      "text": "Our prev_close is the last 1-min print of the prior session; yfinance Close is the official 16:00 closing-auction price, so a systematic ~0.1% gap is expected. The 0.1% tolerance is retained as a diagnostics stat; the PASS gate is operating tolerance 0.35% (median diff <= 0.05%). 0.5pp on check 2 absorbs this gap."
+    },
+    {
+      "title": "rth_hod reference",
+      "text": "The previous IEX-only day-high reference undercounted on thin IEX coverage (DXYZ 20/390, PHAT 263/381, PLAY 332/385). The verdict now rides on the consolidated yfinance daily High (0.3%); the IEX comparison is reported as sanity with per-day iex_n/our_n coverage noted."
+    },
+    {
+      "title": "split normalization",
+      "text": "yfinance `history()` serves split-adjusted OHLC in BOTH auto_adjust modes (the bool gates dividends only, not splits), so a Close/High read for a ticker that later splits is the raw price already divided by the post-split ratio (CVNA 5:1 ex 2026-05-08 -> 58.612 = raw/5). The three price-comparison checks therefore multiply each yfinance reference by the cumulative future split ratio \u2014 the product of split ratios whose ex-date is STRICTLY AFTER the sampled session date \u2014 to recover the unadjusted frame our pipeline stores."
+    }
+  ],
+  "checks": [
+    {
+      "name": "prev_close vs yfinance (last-print vs 16:00 auction)",
+      "n_checked": 20,
+      "n_match": 11,
+      "match_rate": 0.55,
+      "median_diff": 0.0854361826209425,
+      "n_errors": 0,
+      "verdict": "FAIL",
+      "reason": null,
+      "worst_offenders": [
+        {
+          "ticker": "VOR",
+          "date": "2025-07-28",
+          "our": 2.18,
+          "ref": 2.2,
+          "diff_pct": -0.9174311926605512,
+          "match": false,
+          "match_op": false,
+          "breakdown": [
+            2.18,
+            2.2,
+            -0.9174311926605512
+          ]
+        },
+        {
+          "ticker": "BMNR",
+          "date": "2025-07-09",
+          "our": 112.46,
+          "ref": 111.5,
+          "diff_pct": 0.8536368486572949,
+          "match": false,
+          "match_op": false,
+          "breakdown": [
+            112.46,
+            111.5,
+            0.8536368486572949
+          ]
+        },
+        {
+          "ticker": "VIOT",
+          "date": "2025-07-10",
+          "our": 2.33,
+          "ref": 2.3399999141693115,
+          "diff_pct": -0.4291808656356847,
+          "match": false,
+          "match_op": false,
+          "breakdown": [
+            2.33,
+            2.3399999141693115,
+            -0.4291808656356847
+          ]
+        },
+        {
+          "ticker": "EVGO",
+          "date": "2025-07-21",
+          "our": 3.76,
+          "ref": 3.7699999809265137,
+          "diff_pct": -0.26595693953494376,
+          "match": false,
+          "match_op": true,
+          "breakdown": [
+            3.76,
+            3.7699999809265137,
+            -0.26595693953494376
+          ]
+        },
+        {
+          "ticker": "BTU",
+          "date": "2025-07-02",
+          "our": 13.21,
+          "ref": 13.180000305175781,
+          "diff_pct": 0.22709837111445572,
+          "match": false,
+          "match_op": true,
+          "breakdown": [
+            13.21,
+            13.180000305175781,
+            0.22709837111445572
+          ]
+        }
+      ],
+      "match_rate_op": 0.85,
+      "tol_operating": "0.35% (vs 0.1% tight)"
+    },
+    {
+      "name": "pct_gain@16:00 vs yfinance (EOD close)",
+      "n_checked": 20,
+      "n_match": 17,
+      "match_rate": 0.85,
+      "median_diff": 0.12999059381618006,
+      "n_errors": 0,
+      "verdict": "FAIL",
+      "reason": null,
+      "worst_offenders": [
+        {
+          "ticker": "VOR",
+          "date": "2025-07-28",
+          "our_ret": 11.46788990825688,
+          "ref_ret": 10.000003467906597,
+          "diff_pp": 1.4678864403502843,
+          "match": false,
+          "breakdown": [
+            11.46788990825688,
+            10.000003467906597,
+            1.4678864403502843
+          ]
+        },
+        {
+          "ticker": "AMPY",
+          "date": "2025-07-22",
+          "our_ret": 18.61861861861862,
+          "ref_ret": 18.018022726660895,
+          "diff_pp": 0.6005958919577239,
+          "match": false,
+          "breakdown": [
+            18.61861861861862,
+            18.018022726660895,
+            0.6005958919577239
+          ]
+        },
+        {
+          "ticker": "BMNR",
+          "date": "2025-07-09",
+          "our_ret": -40.672239018317626,
+          "ref_ret": -40.161433882777466,
+          "diff_pp": -0.5108051355401599,
+          "match": false,
+          "breakdown": [
+            -40.672239018317626,
+            -40.161433882777466,
+            -0.5108051355401599
+          ]
+        },
+        {
+          "ticker": "TGEN",
+          "date": "2025-07-31",
+          "our_ret": 15.035799522673027,
+          "ref_ret": 15.513128555865114,
+          "diff_pp": -0.4773290331920865,
+          "match": true,
+          "breakdown": [
+            15.035799522673027,
+            15.513128555865114,
+            -0.4773290331920865
+          ]
+        },
+        {
+          "ticker": "VIOT",
+          "date": "2025-07-10",
+          "our_ret": 22.74678111587982,
+          "ref_ret": 23.076932481995577,
+          "diff_pp": -0.33015136611575713,
+          "match": true,
+          "breakdown": [
+            22.74678111587982,
+            23.076932481995577,
+            -0.33015136611575713
+          ]
+        }
+      ]
+    },
+    {
+      "name": "split cross-check (no event day on a split date)",
+      "n_checked": 20,
+      "n_match": 20,
+      "match_rate": 1.0,
+      "median_diff": null,
+      "n_errors": 0,
+      "verdict": "PASS",
+      "reason": null,
+      "worst_offenders": [
+        {
+          "ticker": "TGEN",
+          "date": "2025-07-31",
+          "split_on_event_date": false,
+          "match": true
+        },
+        {
+          "ticker": "BMNR",
+          "date": "2025-07-09",
+          "split_on_event_date": false,
+          "match": true
+        },
+        {
+          "ticker": "SANA",
+          "date": "2025-07-03",
+          "split_on_event_date": false,
+          "match": true
+        },
+        {
+          "ticker": "TMO",
+          "date": "2025-07-23",
+          "split_on_event_date": false,
+          "match": true
+        },
+        {
+          "ticker": "TMC",
+          "date": "2025-07-15",
+          "split_on_event_date": false,
+          "match": true
+        }
+      ],
+      "splits_seen": [
+        {
+          "ticker": "AMPY",
+          "ex_date": "2015-08-04",
+          "ratio": 0.1
+        },
+        {
+          "ticker": "IVZ",
+          "ex_date": "1998-04-27",
+          "ratio": 2.0
+        },
+        {
+          "ticker": "IVZ",
+          "ex_date": "2000-11-08",
+          "ratio": 2.5
+        },
+        {
+          "ticker": "SNA",
+          "ex_date": "1979-05-14",
+          "ratio": 2.0
+        },
+        {
+          "ticker": "SNA",
+          "ex_date": "1986-07-28",
+          "ratio": 2.0
+        },
+        {
+          "ticker": "SNA",
+          "ex_date": "1996-09-11",
+          "ratio": 1.5
+        },
+        {
+          "ticker": "SNPS",
+          "ex_date": "1995-09-11",
+          "ratio": 2.0
+        },
+        {
+          "ticker": "SNPS",
+          "ex_date": "2003-09-24",
+          "ratio": 2.0
+        },
+        {
+          "ticker": "TMO",
+          "ex_date": "1984-01-04",
+          "ratio": 1.5
+        },
+        {
+          "ticker": "TMO",
+          "ex_date": "1985-09-17",
+          "ratio": 1.5
+        },
+        {
+          "ticker": "TMO",
+          "ex_date": "1986-11-03",
+          "ratio": 1.5
+        },
+        {
+          "ticker": "TMO",
+          "ex_date": "1993-10-29",
+          "ratio": 1.5
+        },
+        {
+          "ticker": "TMO",
+          "ex_date": "1995-05-25",
+          "ratio": 1.5
+        },
+        {
+          "ticker": "TMO",
+          "ex_date": "1996-06-06",
+          "ratio": 1.5
+        },
+        {
+          "ticker": "UNFI",
+          "ex_date": "2004-04-20",
+          "ratio": 2.0
+        },
+        {
+          "ticker": "VOR",
+          "ex_date": "2025-09-19",
+          "ratio": 0.05
+        }
+      ]
+    },
+    {
+      "name": "rth_hod vs consolidated yf High",
+      "n_checked": 20,
+      "n_match": 18,
+      "match_rate": 0.9,
+      "median_diff": 1.8861296669538418e-06,
+      "n_errors": 0,
+      "verdict": "FAIL",
+      "reason": null,
+      "worst_offenders": [
+        {
+          "ticker": "SNA",
+          "date": "2025-07-17",
+          "our_day_high": 341.35,
+          "yf_high": 342.57000732421875,
+          "diff_pct": -0.3574065692745649,
+          "match": false,
+          "breakdown": [
+            341.35,
+            342.57000732421875,
+            -0.3574065692745649
+          ],
+          "iex_high": 340.275,
+          "iex_n": 84,
+          "our_n": 203,
+          "n_overlap": 84,
+          "median_bps": 0.0,
+          "corr": 0.9895676118473798,
+          "iex_diff_pct": 0.3149260290025034
+        },
+        {
+          "ticker": "VIOT",
+          "date": "2025-07-10",
+          "our_day_high": 3.08,
+          "yf_high": 3.0899999141693115,
+          "diff_pct": -0.3246725379646575,
+          "match": false,
+          "breakdown": [
+            3.08,
+            3.0899999141693115,
+            -0.3246725379646575
+          ],
+          "iex_high": 3.08,
+          "iex_n": 123,
+          "our_n": 246,
+          "n_overlap": 123,
+          "median_bps": 0.0,
+          "corr": 0.9949682377433835,
+          "iex_diff_pct": 0.0
+        },
+        {
+          "ticker": "TMC",
+          "date": "2025-07-15",
+          "our_day_high": 7.845,
+          "yf_high": 7.849999904632568,
+          "diff_pct": -0.0637336473240103,
+          "match": true,
+          "breakdown": [
+            7.845,
+            7.849999904632568,
+            -0.0637336473240103
+          ],
+          "iex_high": 7.84,
+          "iex_n": 295,
+          "our_n": 389,
+          "n_overlap": 295,
+          "median_bps": 6.657789613848061,
+          "corr": 0.9969217014748156,
+          "iex_diff_pct": 0.06373486297004326
+        },
+        {
+          "ticker": "BTU",
+          "date": "2025-07-02",
+          "our_day_high": 14.735,
+          "yf_high": 14.739999771118164,
+          "diff_pct": -0.033931259709295086,
+          "match": true,
+          "breakdown": [
+            14.735,
+            14.739999771118164,
+            -0.033931259709295086
+          ],
+          "iex_high": 14.735,
+          "iex_n": 361,
+          "our_n": 388,
+          "n_overlap": 361,
+          "median_bps": 0.0,
+          "corr": 0.9987443121605918,
+          "iex_diff_pct": 0.0
+        },
+        {
+          "ticker": "IVZ",
+          "date": "2025-07-18",
+          "our_day_high": 20.045,
+          "yf_high": 20.049999237060547,
+          "diff_pct": -0.024940070144899823,
+          "match": true,
+          "breakdown": [
+            20.045,
+            20.049999237060547,
+            -0.024940070144899823
+          ],
+          "iex_high": 20.045,
+          "iex_n": 376,
+          "our_n": 390,
+          "n_overlap": 376,
+          "median_bps": 0.0,
+          "corr": 0.999712107546156,
+          "iex_diff_pct": 0.0
+        }
+      ]
+    },
+    {
+      "name": "1-min path (IEX vs clean)",
+      "n_checked": 20,
+      "n_match": 20,
+      "match_rate": 1.0,
+      "median_diff": 0.0,
+      "n_errors": 0,
+      "verdict": "PASS",
+      "reason": null,
+      "worst_offenders": [
+        {
+          "ticker": "BMNR",
+          "date": "2025-07-09",
+          "iex_high": 124.99,
+          "iex_n": 288,
+          "our_n": 373,
+          "n_overlap": 288,
+          "median_bps": 25.58046321504018,
+          "corr": 0.9993056913192048,
+          "match": true
+        },
+        {
+          "ticker": "TMC",
+          "date": "2025-07-15",
+          "iex_high": 7.84,
+          "iex_n": 295,
+          "our_n": 389,
+          "n_overlap": 295,
+          "median_bps": 6.657789613848061,
+          "corr": 0.9969217014748156,
+          "match": true
+        },
+        {
+          "ticker": "CRWV",
+          "date": "2025-07-14",
+          "iex_high": 135.55,
+          "iex_n": 228,
+          "our_n": 389,
+          "n_overlap": 228,
+          "median_bps": 4.459677729668199,
+          "corr": 0.9896212544026312,
+          "match": true
+        },
+        {
+          "ticker": "GLXY",
+          "date": "2025-07-11",
+          "iex_high": 21.835,
+          "iex_n": 261,
+          "our_n": 379,
+          "n_overlap": 261,
+          "median_bps": 2.4324981756258843,
+          "corr": 0.9959989549006618,
+          "match": true
+        },
+        {
+          "ticker": "TMO",
+          "date": "2025-07-23",
+          "iex_high": 487.74,
+          "iex_n": 356,
+          "our_n": 388,
+          "n_overlap": 356,
+          "median_bps": 1.793678503807016,
+          "corr": 0.9966162221981242,
+          "match": true
+        }
+      ]
+    }
+  ]
+}

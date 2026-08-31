@@ -1,0 +1,70 @@
+{
+  "month": "2025-07",
+  "n_sessions": 22,
+  "n_rows": 24356822,
+  "n_tickers": 14611,
+  "n_candidates": 2657,
+  "n_split_suspects": 67,
+  "split_examples": [
+    {
+      "ticker": "HSDT",
+      "et_date": "2025-07-01"
+    },
+    {
+      "ticker": "SCAG",
+      "et_date": "2025-07-01"
+    },
+    {
+      "ticker": "RMGUF",
+      "et_date": "2025-07-01"
+    },
+    {
+      "ticker": "YAAS",
+      "et_date": "2025-07-01"
+    },
+    {
+      "ticker": "ANYYY",
+      "et_date": "2025-07-01"
+    }
+  ],
+  "n_universe_excluded": 1521,
+  "n_universe_unknown": 230,
+  "n_events": 139400,
+  "events_per_day": {
+    "min": 4958,
+    "median": 6492.5,
+    "max": 7360
+  },
+  "events_pct_gain": {
+    "p50": 12.124406958355301,
+    "p90": 23.642493229038436,
+    "p99": 66.66666666666667,
+    "max": 263.265306122449
+  },
+  "example_ticker_days": [
+    {
+      "ticker": "BE",
+      "date": "2025-07-09",
+      "prev_close": 24.33,
+      "close_1600": 28.7,
+      "pct_gain_close": 17.961364570489113,
+      "rank_1600": 5
+    },
+    {
+      "ticker": "MP",
+      "date": "2025-07-10",
+      "prev_close": 30.02,
+      "close_1600": 45.29,
+      "pct_gain_close": 50.86608927381745,
+      "rank_1600": 3
+    },
+    {
+      "ticker": "MP",
+      "date": "2025-07-15",
+      "prev_close": 48.51,
+      "close_1600": 58.23,
+      "pct_gain_close": 20.037105751391465,
+      "rank_1600": 3
+    }
+  ]
+}

@@ -523,10 +523,11 @@ def write_outputs(artdir, month, sample_n, distinct_dates, checks, tolerances, c
                 line = f"  - {o.get('ticker')} {o.get('date')}: "
                 for key in ("diff_pct", "diff_pp", "median_bps", "iex_diff_pct"):
                     if key in o:
-                        line += f"{key}={o[key]:.3f} "
+                        val = o[key]
+                        line += f"{key}={val:.3f} " if isinstance(val, (int, float)) else f"{key}={val} "
                 if isinstance(o.get("breakdown"), tuple) and len(o["breakdown"]) == 3:
                     b = o["breakdown"]
-                    line += f"| {b[0]} | {b[1]} | {b[2]:.3f} "
+                    line += f"| {b[0]} | {b[1]} | {b[2]:.3f} " if isinstance(b[2], (int, float)) else f"| {b[0]} | {b[1]} | {b[2]} "
                 if o.get("iex_n") is not None and o.get("our_n") is not None:
                     line += f"iex_n={o['iex_n']}/our_n={o['our_n']}"
                 lines.append(line.rstrip())

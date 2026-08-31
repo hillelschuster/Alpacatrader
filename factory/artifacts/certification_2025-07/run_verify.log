@@ -1,0 +1,8 @@
+Installed 34 packages in 3.05s
+Sampled 20 ticker-days over 20 dates; 20 tickers: AMPY, BMNR, BTU, CRWV, DFH, EVGO, GLXY, GTX, HNST, IVZ...
+  prev_close vs yfinance (last-print vs 16:00 auction): FAIL checked=20 match_rate=55%
+  pct_gain@16:00 vs yfinance (EOD close): FAIL checked=20 match_rate=85%
+  split cross-check (no event day on a split date): PASS checked=20 match_rate=100%
+  rth_hod vs consolidated yf High: FAIL checked=20 match_rate=90%
+  1-min path (IEX vs clean): PASS checked=20 match_rate=100%
+Wrote factory\artifacts\certification_2025-07\external_checks.json and factory\artifacts\certification_2025-07\external_verification_report.md
