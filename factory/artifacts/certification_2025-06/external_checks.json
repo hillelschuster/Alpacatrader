@@ -1,0 +1,509 @@
+{
+  "month": "2025-06",
+  "sample_n": 20,
+  "n_distinct_dates": 20,
+  "distinct_dates": [
+    "2025-06-02",
+    "2025-06-03",
+    "2025-06-04",
+    "2025-06-05",
+    "2025-06-06",
+    "2025-06-09",
+    "2025-06-10",
+    "2025-06-11",
+    "2025-06-12",
+    "2025-06-13",
+    "2025-06-16",
+    "2025-06-17",
+    "2025-06-18",
+    "2025-06-20",
+    "2025-06-23",
+    "2025-06-24",
+    "2025-06-25",
+    "2025-06-26",
+    "2025-06-27",
+    "2025-06-30"
+  ],
+  "tolerances": {
+    "prev_close_tight": "|our_prev_close - yf_prev_close| / prev_close <= 0.1%",
+    "prev_close_operating": "|our_prev_close - yf_prev_close| / prev_close <= 0.35% (PASS gate, with median diff <= 0.05%)",
+    "pct_gain": "|our_pct_gain - yf_day_change| <= 0.5 percentage points",
+    "rth_hod": "|our_clean_day_high - yf_daily_high| / our_day_high <= 0.3% (consolidated yfinance High; IEX reported as sanity only)",
+    "verdict": "PASS if match_rate >= 95%, else FAIL; INSUFFICIENT if < 3 measured"
+  },
+  "methodology": "yfinance `history()` serves split-adjusted OHLC in BOTH auto_adjust modes \u2014 the bool gates dividend adjustment only, not splits \u2014 so for any ticker that later splits, the Close/High reference is the raw price already divided by the post-split ratio (e.g. CVNA 5:1 ex 2026-05-08 -> yf 58.612 = raw 292.35 / 5). Each of the three price-comparison references (prev_close, pct_gain close, rth_hod high) is therefore normalized to the unadjusted frame by multiplying by the cumulative future split ratio: the product of split ratios whose ex-date is strictly after the sampled session date (CVNA: 58.612 x 5.0 = 293.06 vs our 292.35 -> ~0.24%). Split cross-check and 1-min path checks are unaffected.",
+  "adjudication": [
+    {
+      "title": "pct_gain@16:00 mis-referenced",
+      "text": "The events file's per-ticker-day last bar is the last bar the ticker sat in top-N, often mid-session, so it was NOT the day close. Fixed to recompute the true end-of-RTH (max-timestamp) close per sampled ticker-day from the clean parquet and compare that against yfinance's daily change. Tolerance unchanged (0.5pp)."
+    },
+    {
+      "title": "prev_close tolerance",
+      "text": "Our prev_close is the last 1-min print of the prior session; yfinance Close is the official 16:00 closing-auction price, so a systematic ~0.1% gap is expected. The 0.1% tolerance is retained as a diagnostics stat; the PASS gate is operating tolerance 0.35% (median diff <= 0.05%). 0.5pp on check 2 absorbs this gap."
+    },
+    {
+      "title": "rth_hod reference",
+      "text": "The previous IEX-only day-high reference undercounted on thin IEX coverage (DXYZ 20/390, PHAT 263/381, PLAY 332/385). The verdict now rides on the consolidated yfinance daily High (0.3%); the IEX comparison is reported as sanity with per-day iex_n/our_n coverage noted."
+    },
+    {
+      "title": "split normalization",
+      "text": "yfinance `history()` serves split-adjusted OHLC in BOTH auto_adjust modes (the bool gates dividends only, not splits), so a Close/High read for a ticker that later splits is the raw price already divided by the post-split ratio (CVNA 5:1 ex 2026-05-08 -> 58.612 = raw/5). The three price-comparison checks therefore multiply each yfinance reference by the cumulative future split ratio \u2014 the product of split ratios whose ex-date is STRICTLY AFTER the sampled session date \u2014 to recover the unadjusted frame our pipeline stores."
+    }
+  ],
+  "checks": [
+    {
+      "name": "prev_close vs yfinance (last-print vs 16:00 auction)",
+      "n_checked": 20,
+      "n_match": 14,
+      "match_rate": 0.7,
+      "median_diff": 0.08672993801411955,
+      "n_errors": 0,
+      "verdict": "FAIL",
+      "reason": null,
+      "worst_offenders": [
+        {
+          "ticker": "UAMY",
+          "date": "2025-06-06",
+          "our": 3.02,
+          "ref": 3.0,
+          "diff_pct": 0.6622516556291397,
+          "match": false,
+          "match_op": false,
+          "breakdown": [
+            3.02,
+            3.0,
+            0.6622516556291397
+          ]
+        },
+        {
+          "ticker": "IAG",
+          "date": "2025-06-02",
+          "our": 6.85,
+          "ref": 6.860000133514404,
+          "diff_pct": -0.14598735057525042,
+          "match": false,
+          "match_op": true,
+          "breakdown": [
+            6.85,
+            6.860000133514404,
+            -0.14598735057525042
+          ]
+        },
+        {
+          "ticker": "ASM",
+          "date": "2025-06-05",
+          "our": 3.505,
+          "ref": 3.509999990463257,
+          "diff_pct": -0.14265308026410678,
+          "match": false,
+          "match_op": true,
+          "breakdown": [
+            3.505,
+            3.509999990463257,
+            -0.14265308026410678
+          ]
+        },
+        {
+          "ticker": "KTOS",
+          "date": "2025-06-27",
+          "our": 41.28,
+          "ref": 41.33000183105469,
+          "diff_pct": -0.1211284667022441,
+          "match": false,
+          "match_op": true,
+          "breakdown": [
+            41.28,
+            41.33000183105469,
+            -0.1211284667022441
+          ]
+        },
+        {
+          "ticker": "QBTS",
+          "date": "2025-06-10",
+          "our": 17.93,
+          "ref": 17.950000762939453,
+          "diff_pct": -0.111549151921101,
+          "match": false,
+          "match_op": true,
+          "breakdown": [
+            17.93,
+            17.950000762939453,
+            -0.111549151921101
+          ]
+        }
+      ],
+      "match_rate_op": 0.95,
+      "tol_operating": "0.35% (vs 0.1% tight)"
+    },
+    {
+      "name": "pct_gain@16:00 vs yfinance (EOD close)",
+      "n_checked": 20,
+      "n_match": 19,
+      "match_rate": 0.95,
+      "median_diff": 0.042123515362776226,
+      "n_errors": 0,
+      "verdict": "PASS",
+      "reason": null,
+      "worst_offenders": [
+        {
+          "ticker": "UAMY",
+          "date": "2025-06-06",
+          "our_ret": 11.589403973509937,
+          "ref_ret": 12.333329518636067,
+          "diff_pp": -0.74392554512613,
+          "match": false,
+          "breakdown": [
+            11.589403973509937,
+            12.333329518636067,
+            -0.74392554512613
+          ]
+        },
+        {
+          "ticker": "QBTS",
+          "date": "2025-06-10",
+          "our_ret": -5.40992749581706,
+          "ref_ret": -5.682453562172656,
+          "diff_pp": 0.27252606635559573,
+          "match": true,
+          "breakdown": [
+            -5.40992749581706,
+            -5.682453562172656,
+            0.27252606635559573
+          ]
+        },
+        {
+          "ticker": "AEVA",
+          "date": "2025-06-26",
+          "our_ret": 14.844017826534103,
+          "ref_ret": 15.049713011707407,
+          "diff_pp": -0.20569518517330465,
+          "match": true,
+          "breakdown": [
+            14.844017826534103,
+            15.049713011707407,
+            -0.20569518517330465
+          ]
+        },
+        {
+          "ticker": "IAG",
+          "date": "2025-06-02",
+          "our_ret": 9.051094890510951,
+          "ref_ret": 8.892123102113423,
+          "diff_pp": 0.1589717883975279,
+          "match": true,
+          "breakdown": [
+            9.051094890510951,
+            8.892123102113423,
+            0.1589717883975279
+          ]
+        },
+        {
+          "ticker": "PACS",
+          "date": "2025-06-17",
+          "our_ret": 21.915103652517264,
+          "ref_ret": 21.794871433138262,
+          "diff_pp": 0.12023221937900175,
+          "match": true,
+          "breakdown": [
+            21.915103652517264,
+            21.794871433138262,
+            0.12023221937900175
+          ]
+        }
+      ]
+    },
+    {
+      "name": "split cross-check (no event day on a split date)",
+      "n_checked": 20,
+      "n_match": 20,
+      "match_rate": 1.0,
+      "median_diff": null,
+      "n_errors": 0,
+      "verdict": "PASS",
+      "reason": null,
+      "worst_offenders": [
+        {
+          "ticker": "SG",
+          "date": "2025-06-30",
+          "split_on_event_date": false,
+          "match": true
+        },
+        {
+          "ticker": "EXK",
+          "date": "2025-06-09",
+          "split_on_event_date": false,
+          "match": true
+        },
+        {
+          "ticker": "ZETA",
+          "date": "2025-06-23",
+          "split_on_event_date": false,
+          "match": true
+        },
+        {
+          "ticker": "UAMY",
+          "date": "2025-06-06",
+          "split_on_event_date": false,
+          "match": true
+        },
+        {
+          "ticker": "TEM",
+          "date": "2025-06-13",
+          "split_on_event_date": false,
+          "match": true
+        }
+      ],
+      "splits_seen": [
+        {
+          "ticker": "AEVA",
+          "ex_date": "2024-03-19",
+          "ratio": 0.2
+        },
+        {
+          "ticker": "CBRL",
+          "ex_date": "1983-07-01",
+          "ratio": 1.5
+        },
+        {
+          "ticker": "CBRL",
+          "ex_date": "1987-03-27",
+          "ratio": 1.5
+        },
+        {
+          "ticker": "CBRL",
+          "ex_date": "1989-02-14",
+          "ratio": 1.5
+        },
+        {
+          "ticker": "CBRL",
+          "ex_date": "1990-04-03",
+          "ratio": 1.5
+        },
+        {
+          "ticker": "CBRL",
+          "ex_date": "1991-03-25",
+          "ratio": 1.5
+        },
+        {
+          "ticker": "CBRL",
+          "ex_date": "1992-03-23",
+          "ratio": 1.5
+        },
+        {
+          "ticker": "CBRL",
+          "ex_date": "1993-03-22",
+          "ratio": 1.5
+        },
+        {
+          "ticker": "EDU",
+          "ex_date": "2011-08-19",
+          "ratio": 4.0
+        },
+        {
+          "ticker": "EDU",
+          "ex_date": "2021-03-12",
+          "ratio": 10.0
+        },
+        {
+          "ticker": "EDU",
+          "ex_date": "2022-04-07",
+          "ratio": 0.1
+        },
+        {
+          "ticker": "EDU",
+          "ex_date": "2022-04-08",
+          "ratio": 0.1
+        },
+        {
+          "ticker": "KTOS",
+          "ex_date": "2009-09-11",
+          "ratio": 0.1
+        },
+        {
+          "ticker": "OUST",
+          "ex_date": "2023-04-21",
+          "ratio": 0.1
+        }
+      ]
+    },
+    {
+      "name": "rth_hod vs consolidated yf High",
+      "n_checked": 20,
+      "n_match": 20,
+      "match_rate": 1.0,
+      "median_diff": 0.008298359702462874,
+      "n_errors": 0,
+      "verdict": "PASS",
+      "reason": null,
+      "worst_offenders": [
+        {
+          "ticker": "UAMY",
+          "date": "2025-06-06",
+          "our_day_high": 3.55,
+          "yf_high": 3.559999942779541,
+          "diff_pct": -0.2816885290011604,
+          "match": true,
+          "breakdown": [
+            3.55,
+            3.559999942779541,
+            -0.2816885290011604
+          ],
+          "iex_high": 3.53,
+          "iex_n": 206,
+          "our_n": 343,
+          "n_overlap": 206,
+          "median_bps": 0.0,
+          "corr": 0.9945599544247195,
+          "iex_diff_pct": 0.5633802816901414
+        },
+        {
+          "ticker": "CBRL",
+          "date": "2025-06-16",
+          "our_day_high": 57.65,
+          "yf_high": 57.72999954223633,
+          "diff_pct": -0.13876763614280926,
+          "match": true,
+          "breakdown": [
+            57.65,
+            57.72999954223633,
+            -0.13876763614280926
+          ],
+          "iex_high": 57.63,
+          "iex_n": 149,
+          "our_n": 293,
+          "n_overlap": 149,
+          "median_bps": 0.0,
+          "corr": 0.9978609210056796,
+          "iex_diff_pct": 0.03469210754552649
+        },
+        {
+          "ticker": "AEVA",
+          "date": "2025-06-26",
+          "our_day_high": 34.385,
+          "yf_high": 34.41999816894531,
+          "diff_pct": -0.1017832454422408,
+          "match": true,
+          "breakdown": [
+            34.385,
+            34.41999816894531,
+            -0.1017832454422408
+          ],
+          "iex_high": 34.36,
+          "iex_n": 186,
+          "our_n": 346,
+          "n_overlap": 186,
+          "median_bps": 4.655469279246163,
+          "corr": 0.9989711221591091,
+          "iex_diff_pct": 0.07270612185545611
+        },
+        {
+          "ticker": "OUST",
+          "date": "2025-06-20",
+          "our_day_high": 22.39,
+          "yf_high": 22.399999618530273,
+          "diff_pct": -0.04466109214056663,
+          "match": true,
+          "breakdown": [
+            22.39,
+            22.399999618530273,
+            -0.04466109214056663
+          ],
+          "iex_high": 22.18,
+          "iex_n": 262,
+          "our_n": 380,
+          "n_overlap": 262,
+          "median_bps": 5.901719244902791,
+          "corr": 0.9906966133951061,
+          "iex_diff_pct": 0.9379187137114822
+        },
+        {
+          "ticker": "IREN",
+          "date": "2025-06-25",
+          "our_day_high": 12.23,
+          "yf_high": 12.234999656677246,
+          "diff_pct": -0.04088026718925321,
+          "match": true,
+          "breakdown": [
+            12.23,
+            12.234999656677246,
+            -0.04088026718925321
+          ],
+          "iex_high": 12.23,
+          "iex_n": 333,
+          "our_n": 390,
+          "n_overlap": 333,
+          "median_bps": 4.144218814752595,
+          "corr": 0.9934130765092984,
+          "iex_diff_pct": 0.0
+        }
+      ]
+    },
+    {
+      "name": "1-min path (IEX vs clean)",
+      "n_checked": 20,
+      "n_match": 20,
+      "match_rate": 1.0,
+      "median_diff": 4.144218814752595,
+      "n_errors": 0,
+      "verdict": "PASS",
+      "reason": null,
+      "worst_offenders": [
+        {
+          "ticker": "EXK",
+          "date": "2025-06-09",
+          "iex_high": 5.105,
+          "iex_n": 246,
+          "our_n": 375,
+          "n_overlap": 246,
+          "median_bps": 9.803921568628112,
+          "corr": 0.9978684899884115,
+          "match": true
+        },
+        {
+          "ticker": "CRCL",
+          "date": "2025-06-11",
+          "iex_high": 120.06,
+          "iex_n": 278,
+          "our_n": 390,
+          "n_overlap": 278,
+          "median_bps": 9.041215766047978,
+          "corr": 0.9968449952100061,
+          "match": true
+        },
+        {
+          "ticker": "IAG",
+          "date": "2025-06-02",
+          "iex_high": 7.555,
+          "iex_n": 239,
+          "our_n": 384,
+          "n_overlap": 239,
+          "median_bps": 6.631299734747869,
+          "corr": 0.9975677213764848,
+          "match": true
+        },
+        {
+          "ticker": "OUST",
+          "date": "2025-06-20",
+          "iex_high": 22.18,
+          "iex_n": 262,
+          "our_n": 380,
+          "n_overlap": 262,
+          "median_bps": 5.901719244902791,
+          "corr": 0.9906966133951061,
+          "match": true
+        },
+        {
+          "ticker": "TEM",
+          "date": "2025-06-13",
+          "iex_high": 74.1,
+          "iex_n": 291,
+          "our_n": 390,
+          "n_overlap": 291,
+          "median_bps": 5.601456378659327,
+          "corr": 0.9968683050152477,
+          "match": true
+        }
+      ]
+    }
+  ]
+}

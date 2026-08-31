@@ -1,0 +1,121 @@
+Loading 1 clean files ...
+ raw rows 21996803
+ RTH filtered 21996803
+ ticker-days with no prior_close (dropped) 14213 across 20 dates (first session [datetime.date(2025, 6, 2), datetime.date(2025, 6, 3), datetime.date(2025, 6, 4), datetime.date(2025, 6, 5), datetime.date(2025, 6, 6), datetime.date(2025, 6, 9), datetime.date(2025, 6, 10), datetime.date(2025, 6, 11), datetime.date(2025, 6, 12), datetime.date(2025, 6, 13), datetime.date(2025, 6, 16), datetime.date(2025, 6, 17), datetime.date(2025, 6, 18), datetime.date(2025, 6, 20), datetime.date(2025, 6, 23), datetime.date(2025, 6, 24), datetime.date(2025, 6, 25), datetime.date(2025, 6, 26), datetime.date(2025, 6, 27), datetime.date(2025, 6, 30)])
+  first session 2025-06-02: 10919 tickers dropped (no prior_close in June-only)
+ ticker-days with NO 09:30 bar (delayed open -> excluded) 61724
+ candidate days (|gap|>5%) 3075 rows 445614
+ liquidity gate dollar_open>=1,000,000: drops 2045 of 3075 candidate days
+ signals (one per candidate ticker-day) 982  hold 10  fail 972
+  well-covered (or=5 bars & hold=10 bars): 767 (78.1%)  sparse: 215
+  fail_time present 972
+  fwd-ret nulls (thin tickers, exact-bar join): h15 54 h30 76 h60 131
+
+=== BY SEGMENT (exp_net = expectancy - roundtrip cost) ===
+
+gap-up-hold n=8
+  h15m n=8 wr=0.500 wr_net=0.500 avg=1.1721% exp_net=0.7721%
+  h30m n=6 wr=0.500 wr_net=0.500 avg=0.1958% exp_net=-0.2042%
+  h60m n=6 wr=0.167 wr_net=0.167 avg=-3.5519% exp_net=-3.9519%
+
+gap-up-fail n=634
+  h15m n=595 wr=0.484 wr_net=0.393 avg=0.1681% exp_net=-0.2319%
+  h30m n=579 wr=0.487 wr_net=0.427 avg=0.1236% exp_net=-0.2764%
+  h60m n=547 wr=0.537 wr_net=0.466 avg=0.4014% exp_net=0.0014%
+
+gap-down-hold n=2
+  h15m n=1 wr=0.000 wr_net=0.000 avg=-4.4937% exp_net=-4.8937%
+  h30m n=2 wr=0.000 wr_net=0.000 avg=-11.5788% exp_net=-11.9788%
+  h60m n=2 wr=0.000 wr_net=0.000 avg=-17.6120% exp_net=-18.0120%
+
+gap-down-fail n=338
+  h15m n=324 wr=0.506 wr_net=0.389 avg=0.0394% exp_net=-0.3606%
+  h30m n=319 wr=0.470 wr_net=0.408 avg=-0.1968% exp_net=-0.5968%
+  h60m n=296 wr=0.409 wr_net=0.358 avg=-0.2904% exp_net=-0.6904%
+
+=== BASELINE / control ===
+  h15m n=928 wr=0.491 wr_net=0.392 avg=0.1268% exp_net=-0.2732%
+  h30m n=906 wr=0.480 wr_net=0.419 avg=-0.0145% exp_net=-0.4145%
+  h60m n=851 wr=0.489 wr_net=0.425 avg=0.0906% exp_net=-0.3094%
+  h15m n=603 wr=0.484 wr_net=0.395 avg=0.1814% exp_net=-0.2186%
+  h30m n=585 wr=0.487 wr_net=0.427 avg=0.1244% exp_net=-0.2756%
+  h60m n=553 wr=0.533 wr_net=0.463 avg=0.3585% exp_net=-0.0415%
+  h15m n=325 wr=0.505 wr_net=0.388 avg=0.0255% exp_net=-0.3745%
+  h30m n=321 wr=0.467 wr_net=0.405 avg=-0.2677% exp_net=-0.6677%
+  h60m n=298 wr=0.406 wr_net=0.356 avg=-0.4066% exp_net=-0.8066%
+
+=== HYPOTHESIS DIRECTION (exp_net diff) ===
+ gap-up continuation: hold - fail
+  h15: hold 0.7721% fail -0.2319% diff 1.0040%
+  h30: hold -0.2042% fail -0.2764% diff 0.0722%
+  h60: hold -3.9519% fail 0.0014% diff -3.9533%
+ gap-down fade: fail - hold
+  h15: fail -0.3606% hold -4.8937% diff 4.5331%
+  h30: fail -0.5968% hold -11.9788% diff 11.3820%
+  h60: fail -0.6904% hold -18.0120% diff 17.3217%
+
+=== WELL-COVERED SUBSET (or=5 & hold=10 bars) n=767 ===
+
+ well gap-up-hold n=4
+  h15m n=4 wr=0.250 wr_net=0.250 avg=0.4713% exp_net=0.0713%
+  h30m n=3 wr=0.333 wr_net=0.333 avg=0.7849% exp_net=0.3849%
+  h60m n=4 wr=0.000 wr_net=0.000 avg=-3.3765% exp_net=-3.7765%
+
+ well gap-up-fail n=496
+  h15m n=490 wr=0.488 wr_net=0.396 avg=0.1912% exp_net=-0.2088%
+  h30m n=478 wr=0.508 wr_net=0.448 avg=0.2968% exp_net=-0.1032%
+  h60m n=456 wr=0.557 wr_net=0.480 avg=0.7123% exp_net=0.3123%
+
+ well gap-down-hold n=0
+
+ well gap-down-fail n=267
+  h15m n=266 wr=0.515 wr_net=0.398 avg=0.1763% exp_net=-0.2237%
+  h30m n=259 wr=0.490 wr_net=0.425 avg=-0.0380% exp_net=-0.4380%
+  h60m n=250 wr=0.416 wr_net=0.360 avg=-0.1982% exp_net=-0.5982%
+
+=== WELL-COVERED HYPOTHESIS DIRECTION (exp_net diff) ===
+ gap-up continuation: hold - fail
+  h15: hold 0.0713% fail -0.2088% diff 0.2801%
+  h30: hold 0.3849% fail -0.1032% diff 0.4881%
+  h60: hold -3.7765% fail 0.3123% diff -4.0889%
+ gap-down fade: fail - hold
+
+=== by gap_bin (all) ===
+
+ 5-10% n=611
+  h15m n=569 wr=0.490 wr_net=0.374 avg=0.1380% exp_net=-0.2620%
+  h30m n=559 wr=0.479 wr_net=0.413 avg=0.0416% exp_net=-0.3584%
+  h60m n=525 wr=0.509 wr_net=0.432 avg=0.1705% exp_net=-0.2295%
+
+ 10-20% n=233
+  h15m n=228 wr=0.487 wr_net=0.404 avg=0.1870% exp_net=-0.2130%
+  h30m n=219 wr=0.484 wr_net=0.429 avg=-0.0716% exp_net=-0.4716%
+  h60m n=205 wr=0.449 wr_net=0.415 avg=0.0879% exp_net=-0.3121%
+
+ 20%+ n=138
+  h15m n=131 wr=0.504 wr_net=0.450 avg=-0.0269% exp_net=-0.4269%
+  h30m n=128 wr=0.477 wr_net=0.430 avg=-0.1620% exp_net=-0.5620%
+  h60m n=121 wr=0.471 wr_net=0.413 avg=-0.2517% exp_net=-0.6517%
+
+=== SPOT-CHECK AAL 2025-06-13 or_high=10.51 holds=False entry_close=10.415 gap=-5.138% ===
+shape: (21, 6)
+┌────────────────────────────────┬─────┬────────┬────────┬────────┬────────┐
+│ et                             ┆ hm  ┆ open   ┆ high   ┆ low    ┆ close  │
+│ ---                            ┆ --- ┆ ---    ┆ ---    ┆ ---    ┆ ---    │
+│ datetime[ns, America/New_York] ┆ i32 ┆ f64    ┆ f64    ┆ f64    ┆ f64    │
+╞════════════════════════════════╪═════╪════════╪════════╪════════╪════════╡
+│ 2025-06-13 09:30:00 EDT        ┆ 570 ┆ 10.34  ┆ 10.425 ┆ 10.31  ┆ 10.42  │
+│ 2025-06-13 09:31:00 EDT        ┆ 571 ┆ 10.415 ┆ 10.48  ┆ 10.35  ┆ 10.355 │
+│ 2025-06-13 09:32:00 EDT        ┆ 572 ┆ 10.355 ┆ 10.45  ┆ 10.315 ┆ 10.435 │
+│ 2025-06-13 09:33:00 EDT        ┆ 573 ┆ 10.44  ┆ 10.51  ┆ 10.44  ┆ 10.49  │
+│ 2025-06-13 09:34:00 EDT        ┆ 574 ┆ 10.49  ┆ 10.505 ┆ 10.4   ┆ 10.43  │
+│ …                              ┆ …   ┆ …      ┆ …      ┆ …      ┆ …      │
+│ 2025-06-13 09:46:00 EDT        ┆ 586 ┆ 10.415 ┆ 10.42  ┆ 10.405 ┆ 10.415 │
+│ 2025-06-13 09:47:00 EDT        ┆ 587 ┆ 10.415 ┆ 10.485 ┆ 10.415 ┆ 10.465 │
+│ 2025-06-13 09:48:00 EDT        ┆ 588 ┆ 10.47  ┆ 10.49  ┆ 10.45  ┆ 10.45  │
+│ 2025-06-13 09:49:00 EDT        ┆ 589 ┆ 10.455 ┆ 10.455 ┆ 10.41  ┆ 10.425 │
+│ 2025-06-13 09:50:00 EDT        ┆ 590 ┆ 10.425 ┆ 10.445 ┆ 10.4   ┆ 10.42  │
+└────────────────────────────────┴─────┴────────┴────────┴────────┴────────┘
+
+Wrote factory/artifacts/h010_results_2025-06/results_c20.parquet 982 rows
+Wrote factory/artifacts/h010_results_2025-06/results_c20_summary.json

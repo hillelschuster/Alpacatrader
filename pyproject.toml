@@ -22,6 +22,8 @@ dependencies = [
     "click>=8.1",
     "alpaca-py>=0.43",
     "anthropic>=0.49",
+    "huggingface-hub>=0.25",
+    "polars>=1.0",
 ]
 
 [project.optional-dependencies]

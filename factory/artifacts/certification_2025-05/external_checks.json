@@ -1,0 +1,479 @@
+{
+  "month": "2025-05",
+  "sample_n": 20,
+  "n_distinct_dates": 20,
+  "distinct_dates": [
+    "2025-05-02",
+    "2025-05-05",
+    "2025-05-06",
+    "2025-05-07",
+    "2025-05-08",
+    "2025-05-09",
+    "2025-05-12",
+    "2025-05-13",
+    "2025-05-14",
+    "2025-05-15",
+    "2025-05-16",
+    "2025-05-19",
+    "2025-05-20",
+    "2025-05-21",
+    "2025-05-22",
+    "2025-05-23",
+    "2025-05-27",
+    "2025-05-28",
+    "2025-05-29",
+    "2025-05-30"
+  ],
+  "tolerances": {
+    "prev_close_tight": "|our_prev_close - yf_prev_close| / prev_close <= 0.1%",
+    "prev_close_operating": "|our_prev_close - yf_prev_close| / prev_close <= 0.35% (PASS gate, with median diff <= 0.05%)",
+    "pct_gain": "|our_pct_gain - yf_day_change| <= 0.5 percentage points",
+    "rth_hod": "|our_clean_day_high - yf_daily_high| / our_day_high <= 0.3% (consolidated yfinance High; IEX reported as sanity only)",
+    "verdict": "PASS if match_rate >= 95%, else FAIL; INSUFFICIENT if < 3 measured"
+  },
+  "methodology": "yfinance `history()` serves split-adjusted OHLC in BOTH auto_adjust modes \u2014 the bool gates dividend adjustment only, not splits \u2014 so for any ticker that later splits, the Close/High reference is the raw price already divided by the post-split ratio (e.g. CVNA 5:1 ex 2026-05-08 -> yf 58.612 = raw 292.35 / 5). Each of the three price-comparison references (prev_close, pct_gain close, rth_hod high) is therefore normalized to the unadjusted frame by multiplying by the cumulative future split ratio: the product of split ratios whose ex-date is strictly after the sampled session date (CVNA: 58.612 x 5.0 = 293.06 vs our 292.35 -> ~0.24%). Split cross-check and 1-min path checks are unaffected.",
+  "adjudication": [
+    {
+      "title": "pct_gain@16:00 mis-referenced",
+      "text": "The events file's per-ticker-day last bar is the last bar the ticker sat in top-N, often mid-session, so it was NOT the day close. Fixed to recompute the true end-of-RTH (max-timestamp) close per sampled ticker-day from the clean parquet and compare that against yfinance's daily change. Tolerance unchanged (0.5pp)."
+    },
+    {
+      "title": "prev_close tolerance",
+      "text": "Our prev_close is the last 1-min print of the prior session; yfinance Close is the official 16:00 closing-auction price, so a systematic ~0.1% gap is expected. The 0.1% tolerance is retained as a diagnostics stat; the PASS gate is operating tolerance 0.35% (median diff <= 0.05%). 0.5pp on check 2 absorbs this gap."
+    },
+    {
+      "title": "rth_hod reference",
+      "text": "The previous IEX-only day-high reference undercounted on thin IEX coverage (DXYZ 20/390, PHAT 263/381, PLAY 332/385). The verdict now rides on the consolidated yfinance daily High (0.3%); the IEX comparison is reported as sanity with per-day iex_n/our_n coverage noted."
+    },
+    {
+      "title": "split normalization",
+      "text": "yfinance `history()` serves split-adjusted OHLC in BOTH auto_adjust modes (the bool gates dividends only, not splits), so a Close/High read for a ticker that later splits is the raw price already divided by the post-split ratio (CVNA 5:1 ex 2026-05-08 -> 58.612 = raw/5). The three price-comparison checks therefore multiply each yfinance reference by the cumulative future split ratio \u2014 the product of split ratios whose ex-date is STRICTLY AFTER the sampled session date \u2014 to recover the unadjusted frame our pipeline stores."
+    }
+  ],
+  "checks": [
+    {
+      "name": "prev_close vs yfinance (last-print vs 16:00 auction)",
+      "n_checked": 20,
+      "n_match": 10,
+      "match_rate": 0.5,
+      "median_diff": 0.11668121800818046,
+      "n_errors": 0,
+      "verdict": "FAIL",
+      "reason": null,
+      "worst_offenders": [
+        {
+          "ticker": "MNTN",
+          "date": "2025-05-23",
+          "our": 26.64,
+          "ref": 26.360000610351562,
+          "diff_pct": 1.0510487599415843,
+          "match": false,
+          "match_op": false,
+          "breakdown": [
+            26.64,
+            26.360000610351562,
+            1.0510487599415843
+          ]
+        },
+        {
+          "ticker": "GCL",
+          "date": "2025-05-21",
+          "our": 2.17,
+          "ref": 2.1600000858306885,
+          "diff_pct": 0.46082553775628815,
+          "match": false,
+          "match_op": false,
+          "breakdown": [
+            2.17,
+            2.1600000858306885,
+            0.46082553775628815
+          ]
+        },
+        {
+          "ticker": "HNGE",
+          "date": "2025-05-27",
+          "our": 40.305,
+          "ref": 40.15999984741211,
+          "diff_pct": 0.35975723257136916,
+          "match": false,
+          "match_op": false,
+          "breakdown": [
+            40.305,
+            40.15999984741211,
+            0.35975723257136916
+          ]
+        },
+        {
+          "ticker": "EXOD",
+          "date": "2025-05-09",
+          "our": 42.37,
+          "ref": 42.4900016784668,
+          "diff_pct": -0.2832232203606312,
+          "match": false,
+          "match_op": true,
+          "breakdown": [
+            42.37,
+            42.4900016784668,
+            -0.2832232203606312
+          ]
+        },
+        {
+          "ticker": "CVNA",
+          "date": "2025-05-14",
+          "our": 292.35,
+          "ref": 293.05999755859375,
+          "diff_pct": -0.24285875101547022,
+          "match": false,
+          "match_op": true,
+          "breakdown": [
+            292.35,
+            293.05999755859375,
+            -0.24285875101547022
+          ]
+        }
+      ],
+      "match_rate_op": 0.85,
+      "tol_operating": "0.35% (vs 0.1% tight)"
+    },
+    {
+      "name": "pct_gain@16:00 vs yfinance (EOD close)",
+      "n_checked": 20,
+      "n_match": 18,
+      "match_rate": 0.9,
+      "median_diff": 0.10780557425642456,
+      "n_errors": 0,
+      "verdict": "FAIL",
+      "reason": null,
+      "worst_offenders": [
+        {
+          "ticker": "MNTN",
+          "date": "2025-05-23",
+          "our_ret": 2.8528528528528456,
+          "ref_ret": 5.1213901474302315,
+          "diff_pp": -2.268537294577386,
+          "match": false,
+          "breakdown": [
+            2.8528528528528456,
+            5.1213901474302315,
+            -2.268537294577386
+          ]
+        },
+        {
+          "ticker": "GCL",
+          "date": "2025-05-21",
+          "our_ret": 28.110599078341007,
+          "ref_ret": 29.629622271031803,
+          "diff_pp": -1.5190231926907956,
+          "match": false,
+          "breakdown": [
+            28.110599078341007,
+            29.629622271031803,
+            -1.5190231926907956
+          ]
+        },
+        {
+          "ticker": "PONY",
+          "date": "2025-05-02",
+          "our_ret": 21.820303383897308,
+          "ref_ret": 21.49531669060322,
+          "diff_pp": 0.32498669329408614,
+          "match": true,
+          "breakdown": [
+            21.820303383897308,
+            21.49531669060322,
+            0.32498669329408614
+          ]
+        },
+        {
+          "ticker": "EXOD",
+          "date": "2025-05-09",
+          "our_ret": 18.267642199669584,
+          "ref_ret": 17.980699194747874,
+          "diff_pp": 0.2869430049217101,
+          "match": true,
+          "breakdown": [
+            18.267642199669584,
+            17.980699194747874,
+            0.2869430049217101
+          ]
+        },
+        {
+          "ticker": "CVNA",
+          "date": "2025-05-14",
+          "our_ret": 4.532238754917051,
+          "ref_ret": 4.251690098604706,
+          "diff_pp": 0.2805486563123454,
+          "match": true,
+          "breakdown": [
+            4.532238754917051,
+            4.251690098604706,
+            0.2805486563123454
+          ]
+        }
+      ]
+    },
+    {
+      "name": "split cross-check (no event day on a split date)",
+      "n_checked": 20,
+      "n_match": 20,
+      "match_rate": 1.0,
+      "median_diff": null,
+      "n_errors": 0,
+      "verdict": "PASS",
+      "reason": null,
+      "worst_offenders": [
+        {
+          "ticker": "TROX",
+          "date": "2025-05-30",
+          "split_on_event_date": false,
+          "match": true
+        },
+        {
+          "ticker": "EXOD",
+          "date": "2025-05-09",
+          "split_on_event_date": false,
+          "match": true
+        },
+        {
+          "ticker": "SEI",
+          "date": "2025-05-22",
+          "split_on_event_date": false,
+          "match": true
+        },
+        {
+          "ticker": "SEDG",
+          "date": "2025-05-08",
+          "split_on_event_date": false,
+          "match": true
+        },
+        {
+          "ticker": "OGN",
+          "date": "2025-05-15",
+          "split_on_event_date": false,
+          "match": true
+        }
+      ],
+      "splits_seen": [
+        {
+          "ticker": "AAP",
+          "ex_date": "2004-01-05",
+          "ratio": 2.0
+        },
+        {
+          "ticker": "AAP",
+          "ex_date": "2005-09-26",
+          "ratio": 1.5
+        },
+        {
+          "ticker": "CLS",
+          "ex_date": "1999-12-22",
+          "ratio": 2.0
+        },
+        {
+          "ticker": "CVNA",
+          "ex_date": "2026-05-08",
+          "ratio": 5.0
+        },
+        {
+          "ticker": "HUT",
+          "ex_date": "2023-12-04",
+          "ratio": 0.2
+        },
+        {
+          "ticker": "TROX",
+          "ex_date": "2012-07-26",
+          "ratio": 5.0
+        },
+        {
+          "ticker": "TSLA",
+          "ex_date": "2020-08-31",
+          "ratio": 5.0
+        },
+        {
+          "ticker": "TSLA",
+          "ex_date": "2022-08-25",
+          "ratio": 3.0
+        }
+      ]
+    },
+    {
+      "name": "rth_hod vs consolidated yf High",
+      "n_checked": 20,
+      "n_match": 18,
+      "match_rate": 0.9,
+      "median_diff": 4.5136000226913235e-06,
+      "n_errors": 0,
+      "verdict": "FAIL",
+      "reason": null,
+      "worst_offenders": [
+        {
+          "ticker": "HNGE",
+          "date": "2025-05-27",
+          "our_day_high": 43.65,
+          "yf_high": 43.79999923706055,
+          "diff_pct": -0.34364086382714387,
+          "match": false,
+          "breakdown": [
+            43.65,
+            43.79999923706055,
+            -0.34364086382714387
+          ],
+          "iex_high": 43.59,
+          "iex_n": 169,
+          "our_n": 317,
+          "n_overlap": 169,
+          "median_bps": 1.1515430677096852,
+          "corr": 0.9668059426966696,
+          "iex_diff_pct": 0.13745704467352846
+        },
+        {
+          "ticker": "CRCT",
+          "date": "2025-05-07",
+          "our_day_high": 6.43,
+          "yf_high": 6.449999809265137,
+          "diff_pct": -0.3110390243411665,
+          "match": false,
+          "breakdown": [
+            6.43,
+            6.449999809265137,
+            -0.3110390243411665
+          ],
+          "iex_high": 6.43,
+          "iex_n": 180,
+          "our_n": 303,
+          "n_overlap": 180,
+          "median_bps": 0.0,
+          "corr": 0.9963301391685876,
+          "iex_diff_pct": 0.0
+        },
+        {
+          "ticker": "MNTN",
+          "date": "2025-05-23",
+          "our_day_high": 32.43,
+          "yf_high": 32.4900016784668,
+          "diff_pct": -0.1850190517015022,
+          "match": true,
+          "breakdown": [
+            32.43,
+            32.4900016784668,
+            -0.1850190517015022
+          ],
+          "iex_high": 32.08,
+          "iex_n": 173,
+          "our_n": 372,
+          "n_overlap": 173,
+          "median_bps": 15.256823190370621,
+          "corr": 0.9941944902363012,
+          "iex_diff_pct": 1.0792476102374389
+        },
+        {
+          "ticker": "TROX",
+          "date": "2025-05-30",
+          "our_day_high": 5.755,
+          "yf_high": 5.760000228881836,
+          "diff_pct": -0.08688495016222492,
+          "match": true,
+          "breakdown": [
+            5.755,
+            5.760000228881836,
+            -0.08688495016222492
+          ],
+          "iex_high": 5.755,
+          "iex_n": 312,
+          "our_n": 376,
+          "n_overlap": 312,
+          "median_bps": 0.0,
+          "corr": 0.996352791463777,
+          "iex_diff_pct": 0.0
+        },
+        {
+          "ticker": "HUT",
+          "date": "2025-05-12",
+          "our_day_high": 16.3,
+          "yf_high": 16.309999465942383,
+          "diff_pct": -0.061346416824430074,
+          "match": true,
+          "breakdown": [
+            16.3,
+            16.309999465942383,
+            -0.061346416824430074
+          ],
+          "iex_high": 16.25,
+          "iex_n": 319,
+          "our_n": 390,
+          "n_overlap": 319,
+          "median_bps": 6.345177664974484,
+          "corr": 0.9964521472601519,
+          "iex_diff_pct": 0.30674846625767305
+        }
+      ]
+    },
+    {
+      "name": "1-min path (IEX vs clean)",
+      "n_checked": 20,
+      "n_match": 20,
+      "match_rate": 1.0,
+      "median_diff": 2.2693234560828635,
+      "n_errors": 0,
+      "verdict": "PASS",
+      "reason": null,
+      "worst_offenders": [
+        {
+          "ticker": "GCL",
+          "date": "2025-05-21",
+          "iex_high": 2.9,
+          "iex_n": 48,
+          "our_n": 319,
+          "n_overlap": 48,
+          "median_bps": 37.244077012706015,
+          "corr": 0.9512311570292369,
+          "match": true
+        },
+        {
+          "ticker": "MNTN",
+          "date": "2025-05-23",
+          "iex_high": 32.08,
+          "iex_n": 173,
+          "our_n": 372,
+          "n_overlap": 173,
+          "median_bps": 15.256823190370621,
+          "corr": 0.9941944902363012,
+          "match": true
+        },
+        {
+          "ticker": "PONY",
+          "date": "2025-05-02",
+          "iex_high": 11.665,
+          "iex_n": 316,
+          "our_n": 389,
+          "n_overlap": 316,
+          "median_bps": 13.56553721735624,
+          "corr": 0.9976583107350478,
+          "match": true
+        },
+        {
+          "ticker": "HUT",
+          "date": "2025-05-12",
+          "iex_high": 16.25,
+          "iex_n": 319,
+          "our_n": 390,
+          "n_overlap": 319,
+          "median_bps": 6.345177664974484,
+          "corr": 0.9964521472601519,
+          "match": true
+        },
+        {
+          "ticker": "SEDG",
+          "date": "2025-05-08",
+          "iex_high": 18.49,
+          "iex_n": 348,
+          "our_n": 389,
+          "n_overlap": 348,
+          "median_bps": 5.555557270234594,
+          "corr": 0.9990580905253167,
+          "match": true
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "month": "2025-05",
+  "n_sessions": 21,
+  "n_rows": 22546633,
+  "n_tickers": 14058,
+  "n_candidates": 3056,
+  "n_split_suspects": 76,
+  "split_examples": [
+    {
+      "ticker": "PPCB",
+      "et_date": "2025-05-02"
+    },
+    {
+      "ticker": "ZVZZT",
+      "et_date": "2025-05-02"
+    },
+    {
+      "ticker": "BWNB",
+      "et_date": "2025-05-05"
+    },
+    {
+      "ticker": "EPWK",
+      "et_date": "2025-05-05"
+    },
+    {
+      "ticker": "PPCB",
+      "et_date": "2025-05-05"
+    }
+  ],
+  "n_universe_excluded": 1606,
+  "n_universe_unknown": 292,
+  "n_events": 123783,
+  "events_per_day": {
+    "min": 4756,
+    "median": 6258.0,
+    "max": 7229
+  },
+  "events_pct_gain": {
+    "p50": 13.645352669742906,
+    "p90": 28.855721393034834,
+    "p99": 63.69565217391306,
+    "max": 163.0901287553648
+  },
+  "example_ticker_days": [
+    {
+      "ticker": "CRWV",
+      "date": "2025-05-27",
+      "prev_close": 102.77,
+      "close_1600": 123.97,
+      "pct_gain_close": 20.628588109370444,
+      "rank_1600": 9
+    },
+    {
+      "ticker": "ANF",
+      "date": "2025-05-28",
+      "prev_close": 77.17,
+      "close_1600": 88.47,
+      "pct_gain_close": 14.642995982894904,
+      "rank_1600": 7
+    },
+    {
+      "ticker": "ASTS",
+      "date": "2025-05-02",
+      "prev_close": 23.01,
+      "close_1600": 26.4,
+      "pct_gain_close": 14.732724902216413,
+      "rank_1600": 19
+    }
+  ]
+}

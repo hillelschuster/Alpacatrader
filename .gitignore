@@ -35,3 +35,17 @@ alpacatrader-*.zip
 
 # Testing
 .pytest_cache/
+.opencode/
+
+# Codegraph index (regeneratable)
+.codegraph/
+
+# Research factory: heavy/reproducible parquets stay out of git.
+# Kept: all code, ledgers (STATE/HYPOTHESES/EXPERIMENTS), reports, summaries (md/json/csv),
+# and certified evidence events_topN.parquet under certification_2025-*/.
+# Excluded: ranked_*.parquet (reproducible), legacy events_all*, per-signal result dumps.
+factory/artifacts/ranked_*.parquet
+factory/artifacts/events_all*.parquet
+factory/artifacts/events_2025-*.parquet
+factory/artifacts/h00*_results*.parquet
+factory/artifacts/h0*/**/*.parquet

@@ -1,0 +1,70 @@
+{
+  "month": "2025-06",
+  "n_sessions": 20,
+  "n_rows": 21996803,
+  "n_tickers": 14213,
+  "n_candidates": 2370,
+  "n_split_suspects": 86,
+  "split_examples": [
+    {
+      "ticker": "QVCGB",
+      "et_date": "2025-06-02"
+    },
+    {
+      "ticker": "SYHMY",
+      "et_date": "2025-06-02"
+    },
+    {
+      "ticker": "LYRA",
+      "et_date": "2025-06-02"
+    },
+    {
+      "ticker": "ZVZZT",
+      "et_date": "2025-06-02"
+    },
+    {
+      "ticker": "ZWZZT",
+      "et_date": "2025-06-02"
+    }
+  ],
+  "n_universe_excluded": 1448,
+  "n_universe_unknown": 217,
+  "n_events": 120054,
+  "events_per_day": {
+    "min": 5157,
+    "median": 5918.5,
+    "max": 6640
+  },
+  "events_pct_gain": {
+    "p50": 11.288711288711296,
+    "p90": 22.446555819477442,
+    "p99": 50.441176470588246,
+    "max": 148.51063829787233
+  },
+  "example_ticker_days": [
+    {
+      "ticker": "OUST",
+      "date": "2025-06-11",
+      "prev_close": 16.03,
+      "close_1600": 20.36,
+      "pct_gain_close": 27.011852776044904,
+      "rank_1600": 2
+    },
+    {
+      "ticker": "AG",
+      "date": "2025-06-05",
+      "prev_close": 7.27,
+      "close_1600": 8.405,
+      "pct_gain_close": 15.612104539202198,
+      "rank_1600": 5
+    },
+    {
+      "ticker": "TIGR",
+      "date": "2025-06-25",
+      "prev_close": 8.115,
+      "close_1600": 9.94,
+      "pct_gain_close": 22.48921749845963,
+      "rank_1600": 3
+    }
+  ]
+}

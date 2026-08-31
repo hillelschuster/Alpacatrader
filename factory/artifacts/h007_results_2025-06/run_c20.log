@@ -1,0 +1,129 @@
+Loading 1 clean files ...
+ raw rows 21996803
+ RTH filtered 21996803
+ candidate days 13292 rows 1823557
+Computing contraction flags (15m rolling) ...
+ breakout candidates 82083
+  contraction (tight <1%) 25892  control (wide >=1.5%) 42115
+ after 5m dedup 41496 (contraction 16676 control 24820)
+
+=== OVERALL contraction vs control ===
+
+contraction n=16676:
+  h5m n=12871 wr=0.451 wr_net=0.097 avg=0.0001% exp_net=-0.3999%
+  h15m n=12930 wr=0.471 wr_net=0.197 avg=0.0058% exp_net=-0.3942%
+  h30m n=13024 wr=0.469 wr_net=0.259 avg=0.0010% exp_net=-0.3990%
+  h60m n=10951 wr=0.477 wr_net=0.314 avg=0.0206% exp_net=-0.3794%
+
+non_contraction n=24820:
+  h5m n=15862 wr=0.475 wr_net=0.322 avg=0.0462% exp_net=-0.3538%
+  h15m n=15148 wr=0.498 wr_net=0.397 avg=0.1722% exp_net=-0.2278%
+  h30m n=14800 wr=0.499 wr_net=0.425 avg=0.2523% exp_net=-0.1477%
+  h60m n=13117 wr=0.500 wr_net=0.449 avg=0.4408% exp_net=0.0408%
+
+=== by time_bucket (contraction) ===
+ 09:30-10:00:
+  h5m n=45 wr=0.489 wr_net=0.133 avg=0.1049% exp_net=-0.2951%
+  h15m n=46 wr=0.478 wr_net=0.283 avg=0.2152% exp_net=-0.1848%
+  h30m n=44 wr=0.591 wr_net=0.364 avg=0.1009% exp_net=-0.2991%
+  h60m n=44 wr=0.523 wr_net=0.318 avg=-0.0491% exp_net=-0.4491%
+ 10:00-12:00:
+  h5m n=2807 wr=0.472 wr_net=0.123 avg=-0.0005% exp_net=-0.4005%
+  h15m n=2749 wr=0.461 wr_net=0.219 avg=0.0030% exp_net=-0.3970%
+  h30m n=2696 wr=0.473 wr_net=0.287 avg=0.0137% exp_net=-0.3863%
+  h60m n=2603 wr=0.484 wr_net=0.341 avg=0.0464% exp_net=-0.3536%
+ 12:00-14:00:
+  h5m n=5251 wr=0.456 wr_net=0.097 avg=0.0054% exp_net=-0.3946%
+  h15m n=5216 wr=0.486 wr_net=0.201 avg=0.0284% exp_net=-0.3716%
+  h30m n=5219 wr=0.479 wr_net=0.265 avg=0.0238% exp_net=-0.3762%
+  h60m n=5154 wr=0.471 wr_net=0.302 avg=0.0064% exp_net=-0.3936%
+ 14:00-15:30:
+  h5m n=4768 wr=0.433 wr_net=0.082 avg=-0.0065% exp_net=-0.4065%
+  h15m n=4919 wr=0.460 wr_net=0.180 avg=-0.0184% exp_net=-0.4184%
+  h30m n=5065 wr=0.456 wr_net=0.236 avg=-0.0302% exp_net=-0.4302%
+  h60m n=3150 wr=0.480 wr_net=0.314 avg=0.0235% exp_net=-0.3765%
+
+=== by gain_bin (contraction) ===
+ <10%:
+  h5m n=11014 wr=0.453 wr_net=0.089 avg=0.0005% exp_net=-0.3995%
+  h15m n=11069 wr=0.472 wr_net=0.187 avg=0.0073% exp_net=-0.3927%
+  h30m n=11178 wr=0.471 wr_net=0.252 avg=0.0035% exp_net=-0.3965%
+  h60m n=9451 wr=0.481 wr_net=0.311 avg=0.0172% exp_net=-0.3828%
+ 10-20%:
+  h5m n=1679 wr=0.440 wr_net=0.145 avg=-0.0057% exp_net=-0.4057%
+  h15m n=1683 wr=0.466 wr_net=0.255 avg=-0.0071% exp_net=-0.4071%
+  h30m n=1671 wr=0.453 wr_net=0.302 avg=-0.0225% exp_net=-0.4225%
+  h60m n=1351 wr=0.452 wr_net=0.338 avg=0.0438% exp_net=-0.3562%
+ 20%+:
+  h5m n=178 wr=0.455 wr_net=0.146 avg=0.0244% exp_net=-0.3756%
+  h15m n=178 wr=0.444 wr_net=0.258 avg=0.0390% exp_net=-0.3610%
+  h30m n=175 wr=0.486 wr_net=0.291 avg=0.0668% exp_net=-0.3332%
+  h60m n=149 wr=0.443 wr_net=0.336 avg=0.0287% exp_net=-0.3713%
+
+=== by gain_bin (control) ===
+ <10%:
+  h5m n=8436 wr=0.482 wr_net=0.301 avg=0.0737% exp_net=-0.3263%
+  h15m n=7983 wr=0.511 wr_net=0.388 avg=0.2140% exp_net=-0.1860%
+  h30m n=7798 wr=0.514 wr_net=0.426 avg=0.3068% exp_net=-0.0932%
+  h60m n=6964 wr=0.504 wr_net=0.445 avg=0.4120% exp_net=0.0120%
+ 10-20%:
+  h5m n=4713 wr=0.472 wr_net=0.334 avg=0.0631% exp_net=-0.3369%
+  h15m n=4479 wr=0.498 wr_net=0.407 avg=0.2024% exp_net=-0.1976%
+  h30m n=4368 wr=0.493 wr_net=0.419 avg=0.2768% exp_net=-0.1232%
+  h60m n=3825 wr=0.507 wr_net=0.458 avg=0.5682% exp_net=0.1682%
+ 20%+:
+  h5m n=2713 wr=0.458 wr_net=0.369 avg=-0.0687% exp_net=-0.4687%
+  h15m n=2686 wr=0.457 wr_net=0.406 avg=-0.0025% exp_net=-0.4025%
+  h30m n=2634 wr=0.467 wr_net=0.432 avg=0.0502% exp_net=-0.3498%
+  h60m n=2328 wr=0.473 wr_net=0.448 avg=0.3175% exp_net=-0.0825%
+
+=== CHRONO split train <=2025-06-24 n=34028 test n=7468 ===
+
+ train contraction:
+  h5m n=10845 wr=0.446 wr_net=0.094 avg=-0.0032% exp_net=-0.4032%
+  h15m n=10923 wr=0.465 wr_net=0.191 avg=-0.0019% exp_net=-0.4019%
+  h30m n=10977 wr=0.465 wr_net=0.251 avg=-0.0135% exp_net=-0.4135%
+  h60m n=9283 wr=0.471 wr_net=0.308 avg=0.0019% exp_net=-0.3981%
+ test contraction:
+  h5m n=2026 wr=0.481 wr_net=0.114 avg=0.0174% exp_net=-0.3826%
+  h15m n=2007 wr=0.503 wr_net=0.231 avg=0.0479% exp_net=-0.3521%
+  h30m n=2047 wr=0.494 wr_net=0.300 avg=0.0786% exp_net=-0.3214%
+  h60m n=1668 wr=0.511 wr_net=0.349 avg=0.1246% exp_net=-0.2754%
+
+ train non_contraction:
+  h5m n=12782 wr=0.473 wr_net=0.319 avg=0.0380% exp_net=-0.3620%
+  h15m n=12273 wr=0.497 wr_net=0.397 avg=0.1699% exp_net=-0.2301%
+  h30m n=12003 wr=0.499 wr_net=0.424 avg=0.2785% exp_net=-0.1215%
+  h60m n=10691 wr=0.501 wr_net=0.449 avg=0.4973% exp_net=0.0973%
+ test non_contraction:
+  h5m n=3080 wr=0.484 wr_net=0.335 avg=0.0803% exp_net=-0.3197%
+  h15m n=2875 wr=0.499 wr_net=0.397 avg=0.1820% exp_net=-0.2180%
+  h30m n=2797 wr=0.498 wr_net=0.429 avg=0.1399% exp_net=-0.2601%
+  h60m n=2426 wr=0.493 wr_net=0.451 avg=0.1918% exp_net=-0.2082%
+
+Wrote factory/artifacts/h007_results_2025-06/results_c20.parquet 41496 rows
+  h5m n=12871 wr=0.451 wr_net=0.097 avg=0.0001% exp_net=-0.3999%
+  h15m n=12930 wr=0.471 wr_net=0.197 avg=0.0058% exp_net=-0.3942%
+  h30m n=13024 wr=0.469 wr_net=0.259 avg=0.0010% exp_net=-0.3990%
+  h60m n=10951 wr=0.477 wr_net=0.314 avg=0.0206% exp_net=-0.3794%
+  h5m n=15862 wr=0.475 wr_net=0.322 avg=0.0462% exp_net=-0.3538%
+  h15m n=15148 wr=0.498 wr_net=0.397 avg=0.1722% exp_net=-0.2278%
+  h30m n=14800 wr=0.499 wr_net=0.425 avg=0.2523% exp_net=-0.1477%
+  h60m n=13117 wr=0.500 wr_net=0.449 avg=0.4408% exp_net=0.0408%
+  h5m n=10845 wr=0.446 wr_net=0.094 avg=-0.0032% exp_net=-0.4032%
+  h15m n=10923 wr=0.465 wr_net=0.191 avg=-0.0019% exp_net=-0.4019%
+  h30m n=10977 wr=0.465 wr_net=0.251 avg=-0.0135% exp_net=-0.4135%
+  h60m n=9283 wr=0.471 wr_net=0.308 avg=0.0019% exp_net=-0.3981%
+  h5m n=12782 wr=0.473 wr_net=0.319 avg=0.0380% exp_net=-0.3620%
+  h15m n=12273 wr=0.497 wr_net=0.397 avg=0.1699% exp_net=-0.2301%
+  h30m n=12003 wr=0.499 wr_net=0.424 avg=0.2785% exp_net=-0.1215%
+  h60m n=10691 wr=0.501 wr_net=0.449 avg=0.4973% exp_net=0.0973%
+  h5m n=2026 wr=0.481 wr_net=0.114 avg=0.0174% exp_net=-0.3826%
+  h15m n=2007 wr=0.503 wr_net=0.231 avg=0.0479% exp_net=-0.3521%
+  h30m n=2047 wr=0.494 wr_net=0.300 avg=0.0786% exp_net=-0.3214%
+  h60m n=1668 wr=0.511 wr_net=0.349 avg=0.1246% exp_net=-0.2754%
+  h5m n=3080 wr=0.484 wr_net=0.335 avg=0.0803% exp_net=-0.3197%
+  h15m n=2875 wr=0.499 wr_net=0.397 avg=0.1820% exp_net=-0.2180%
+  h30m n=2797 wr=0.498 wr_net=0.429 avg=0.1399% exp_net=-0.2601%
+  h60m n=2426 wr=0.493 wr_net=0.451 avg=0.1918% exp_net=-0.2082%
+Wrote factory/artifacts/h007_results_2025-06/results_c20_summary.json
