@@ -79,3 +79,21 @@ negative rv<1.5) with no hand-coding. dist_hod and rank add little within D10.
   by looking at these OOS months. The +67.8bps is an upper bound; true value must be
   set by a pre-registered composite on future months (or Nov+Dec-only re-OOS with
   filters built from Aug–Oct only). Not a claim.
+
+## Phase 6 final — nested composite VALIDATED on untouched months (2026-09-01)
+
+Method: threshold grid (rvol×vwap_dist×tod, 27 combos) evaluated on Aug–Oct ONLY;
+best cell frozen and applied to Nov–Dec, which never entered any selection.
+- Selected (Aug–Oct): rv>4.0 & vwap_dist>3% & tod<270 → +78.4bps there (n=6,125)
+- **Frozen Nov–Dec: +89.4bps @20bps, wr .605 (n=3,847; Nov +101, Dec +73)**
+- Ref D10-all Nov–Dec: +12.6bps → composite adds +77bps on held-out months.
+
+Label-complete rows (n=3,444): @20bps **+102.6bps** wr .620 | @40bps **+82.6bps** wr .589
+(SURVIVES 40bps — unlike the bare D10 pocket) | t+1m entry +101.1bps.
+38 sessions: 63% positive days, daily event-mean +26.2bps, maxDD 7.2% (daily-mean units),
+events/day p50=98 p90=196 (capacity: needs per-name caps; ~58 episodes/day universe).
+
+Status: strongest validated result of the project. Composite rule = candidate v2
+strategy. Caveats: 2025 tape only; non-PIT universe tags; certify n_bars≥30 gate;
+2 validation months at composite level (n=3,444). Next cycle: retrain on May..Oct,
+re-freeze, score 2026 months when data lands; sizing research before any live use.

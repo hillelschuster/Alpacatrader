@@ -1,0 +1,6 @@
+FROZEN composite Nov-Dec (label-complete rows): n=3444
+@20bps t-entry : +1.0256% wr=0.620
+@40bps t-entry : +0.8256% wr=0.589
+@20bps t+1m    : +1.0111% wr=0.618
+days=38 pos_days=0.63 daily_mean=+0.2624% maxDD(daily-mean series)=7.163%
+events/day p50=98 p90=196

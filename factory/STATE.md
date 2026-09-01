@@ -55,9 +55,10 @@ LightGBM depth-6 (57 iters), train May+Jun, dev Jul, OOS Aug..Dec (293,687 event
 - wr gradient D1→D10 monotone in all 5 OOS months; D1 = −39..−92bps (avoid zone).
 - @40bps D10 dead (−25..−37bps) → edge requires ≤30bps RT execution.
 - ElasticNet reproduces ordering 5/5 (structure not a tree artifact).
-- Phase 6 descriptive (post-peek, biased): D10 ∩ rv>3 ∩ vwap+2% ∩ tod<240 =
-  +67.8bps, wr .534, 5/5 months; model adds ~58bps over same filters w/o model.
-  NOT a claim until pre-registered on fresh months.
+- Phase 6 NESTED composite (thresholds picked Aug–Oct only, frozen Nov–Dec):
+  rv>4 & vwap_dist>3% & tod<270 → **+102.6bps @20bps, wr .620 (n=3,444); @40bps
+  +82.6bps (survives); t+1m +101bps**; 63% pos days, maxDD 7.2%. Validated, not
+  selection-biased. Candidate v2 strategy; sizing research next.
 - Dead at: D10@40bps; episode-best picking adds nothing (breadth portfolio).
 - Next: pre-register composite rule (rv>3 & vwap+2% & tod<240 built from Aug–Oct,
   validate Nov–Dec untouched); bot integration is a recommendation only (bot off-limits).
