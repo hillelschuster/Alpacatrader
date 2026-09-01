@@ -1,0 +1,12 @@
+{
+  "rvol": 0.958,
+  "ret_30m": 0.949,
+  "vwap_dist": 1.0,
+  "efficiency_30m": 0.942,
+  "market_ret_5m": 0.995,
+  "dv_accel": 0.992,
+  "trap_reclaim": 1.0,
+  "fwd60_t1entry": 0.691,
+  "fwd_ret_60m": 0.743,
+  "pct_gain_grid": 1.0
+}

@@ -44,6 +44,24 @@ H008/H009 live on as features).
 - **2025-03 downloaded late** (May 1 baselines reach into March); May features
   rebuilt after March clean.
 
+## ML v1 OOS — VERDICT: GO (2026-09-01)
+
+Single frozen pass (protocol pre-registered in `factory/artifacts/ml/OOS_PROTOCOL.md`):
+LightGBM depth-6 (57 iters), train May+Jun, dev Jul, OOS Aug..Dec (293,687 events).
+**5/5 gates PASS.** Details: `factory/artifacts/ml/REPORT_OOS_v1.md`.
+
+- D10 (top-10% score/day) all-events net @20bps: +10/+49/+23/+20/+6 bps monthly,
+  pooled +22.1bps, n=49,200. t+1m-entry pooled +22.4bps (entry-timing robust).
+- wr gradient D1→D10 monotone in all 5 OOS months; D1 = −39..−92bps (avoid zone).
+- @40bps D10 dead (−25..−37bps) → edge requires ≤30bps RT execution.
+- ElasticNet reproduces ordering 5/5 (structure not a tree artifact).
+- Phase 6 descriptive (post-peek, biased): D10 ∩ rv>3 ∩ vwap+2% ∩ tod<240 =
+  +67.8bps, wr .534, 5/5 months; model adds ~58bps over same filters w/o model.
+  NOT a claim until pre-registered on fresh months.
+- Dead at: D10@40bps; episode-best picking adds nothing (breadth portfolio).
+- Next: pre-register composite rule (rv>3 & vwap+2% & tod<240 built from Aug–Oct,
+  validate Nov–Dec untouched); bot integration is a recommendation only (bot off-limits).
+
 ## 2025-06 Certification — DONE (2026-08-28)
 
 Internal gates (certify_month.py, `factory/artifacts/certification_2025-06/`):

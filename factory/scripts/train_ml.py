@@ -149,7 +149,8 @@ def main():
         from sklearn.linear_model import ElasticNet
         mu, sd = np.nanmean(Xtr, 0), np.nanstd(Xtr, 0) + 1e-9
         Xtr_s = np.where(np.isnan(Xtr), 0.0, (Xtr - mu) / sd)
-        enet = ElasticNet(alpha=0.001, l1_ratio=0.2).fit(Xtr_s, ytr, sample_weight=wtr)
+        ok = ~np.isnan(ytr)
+        enet = ElasticNet(alpha=0.001, l1_ratio=0.2).fit(Xtr_s[ok], ytr[ok], sample_weight=wtr[ok])
         pred = lambda df: enet.predict(np.where(
             np.isnan(df.select(FEATURES).to_numpy().astype(np.float32)), 0.0,
             (df.select(FEATURES).to_numpy().astype(np.float32) - mu) / sd))
