@@ -48,3 +48,9 @@ for year in ("2025", "2026"):
     first = df.filter(pl.col("tod_min") == pl.col("tod_min").min().over(["ticker", "et_date"]))
     fp = first["pct_gain_grid"].to_numpy()
     print(f"  first-entry only n={len(fp)}: share >=8%: {(fp >= 8).mean():.3f}  >=6%: {(fp >= 6).mean():.3f}  >=5%: {(fp >= 5).mean():.3f}")
+    cd = df["cum_dv"].to_numpy() / 1e6
+    print(f"  entry cum_dv $M: p1={np.percentile(cd,1):.1f} p5={np.percentile(cd,5):.1f} p25={np.percentile(cd,25):.1f} p50={np.percentile(cd,50):.1f}")
+    print(f"  share entry cum_dv >= 5M: {(cd >= 5).mean():.3f}  >= 10M: {(cd >= 10).mean():.3f}  >= 20M: {(cd >= 20).mean():.3f}")
+    tm = df["tod_min"].to_numpy()
+    print(f"  entry tod_min: p1={np.percentile(tm,1):.0f} p5={np.percentile(tm,5):.0f} p25={np.percentile(tm,25):.0f} p50={np.percentile(tm,50):.0f} min={tm.min():.0f}")
+    print(f"  share entry tod_min >= 45: {(tm >= 45).mean():.3f}  >= 60: {(tm >= 60).mean():.3f}")
