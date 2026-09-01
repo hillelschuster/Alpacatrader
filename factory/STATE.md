@@ -331,6 +331,36 @@ unit2/3 at later score>=theta_hi crossings, +5m/+20m spacing) best: composite st
 (model_v1 + theta 0.00115 + M3 + composite + S4 + pocket) first OOS look. Results: see
 factory/artifacts/ml/eval_2026.log. PAPER_BOT_SPEC.md = v0 live reproduction spec.
 
-### Adversarial lanes (in flight)
-oracle (decay mechanisms, vwap>12% cell, capacity) + reviewer (causality audit of
-live_admission/sequencing/archetypes) — record verdicts here when they land.
+### Adversarial lanes — verdicts integrated
+- oracle: decay ranking = (1) regime dependence of extreme-RVOL continuation, (2) execution-
+  universe mismatch (~20-40bps haircut: 24.5% of composite rows lack a next bar; non-PIT tags),
+  (3) layered post-peek selection. vis_rank sensitivity TESTED LOW (plateau <=1..<=4 within
+  ~10bps; random 25% list drop: M3 29->24bps). rvol>8 = 17% of tape, capacity OK ($100-300K
+  positions at 0.5-1% of day volume). vwap>12% cell = don't-cap-extension signal, not a cell.
+  price<=20: trust directionally (stable sign at 4 cost levels). Recommended = pre-registered
+  single 2026 pass. ADOPTED (PRE_REG_2026.md, written before any 2026 peek).
+- reviewer: 1 MATERIAL — sequencing picks were conditioned on fwd60_t1entry non-null
+  (60m-future tradability, unknowable live). FIXED: score-complete pool + decision-time
+  tod<=328 cap; PnL on label-complete picks; null share reported (11.5%). S4 composite
+  survived the fix (+77.5bps/unit vs +77.4 before). 5 MINORs fixed/noted (dead code,
+  pool-definition documented, cut label cosmetic).
+
+### 2026 FROZEN VERDICT (eval_2026.py, gates in PRE_REG_2026.md, written pre-peek)
+2026-01/02/03 = 386,178 events / 61 days, model+theta+rules 100% frozen from 2025.
+ALL 3 GATES PASS: composite net20 avg +77.3bps (gate >= +30), 3/3 months >= 0 (gate 2/3),
+net40 avg +62.4bps (gate >= 0). Monthly @20: Jan +186 / Feb +5 / Mar +41. n=4,177, 70/day.
+Score drift real: only 7.7% of 2026 events >= frozen theta (2025 OOS: 44%) -> strict regime
+filter; DIAG month-own rel-p90 confirms attenuation is NOT a threshold artifact.
+WHAT TRANSFERRED vs NOT:
+- EVENT-LEVEL composite stream: 2025 +91 -> 2026 +87bps @20 (+62 @40). ROBUST. This is the product.
+- Pocket (close<=20 & cumdv 5-100M, post-peek 2025 selection): first OOS look = +129.5bps
+  @20 (n=1,973), monthly +345/-39/-4. Transferred (volatile Feb).
+- Base M3 ranking: 2025 +29 -> 2026 +9.5bps; D10 ref -3bps; score edge now only in >t97
+  tail (+39bps; t90-97 band -8.5bps). Attenuated, tail-only.
+- ENTRY-TIMING refinements: S1 first-crossing 2025 +56 -> 2026 -2.5bps; S4 scale-ins
+  +77 -> +18. DO NOT time within episode in v0; enter on stream events with per-name
+  concurrency cap (expectancy ~= stream average, no timing skill needed).
+Regime telemetry: rvol>8 share and composite flow did NOT collapse -> oracle mechanism #1
+did not fire in H1-2026; mechanism #3 (layered selection) largely dead too.
+RECOMMENDATION: forward paper bot = composite stream, event-level admission, 1 position
+per ticker, 60m hold, 20-40bps budget, vwap extension unbounded. Sizing next.

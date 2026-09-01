@@ -87,6 +87,8 @@ def main():
     eps = {}
     for r in comp_full.to_dicts():
         eps.setdefault((r["ticker"], str(r["et_date"])[:10]), []).append(r)
+    variants = {"S0_indep": [0.0, 0], "S1_first": [0.0, 0], "S4_scale": [0.0, 0]}
+    mv = {k: {} for k in variants}
     u1 = u2 = u3 = nul = 0; s = 0.0; w = 0; ms = {}
     for key, evs in eps.items():
         evs.sort(key=lambda r: r["tod_min"])
@@ -96,19 +98,37 @@ def main():
             picks.append(x2)
             x3 = next((e for e in evs if e["score"] >= THETA_HI and e["tod_min"] > x2["tod_min"] + 20 and e is not x2), None)
             if x3: picks.append(x3)
+        s1 = [evs[0]]
+        for e in evs:
+            if e["fwd60_t1entry"] is None:
+                continue
+            net = e["fwd60_t1entry"] - 0.002
+            variants["S0_indep"][0] += net; variants["S0_indep"][1] += 1
+            mv["S0_indep"].setdefault(e["month"], []).append(net)
+        for e in s1:
+            if e["fwd60_t1entry"] is None:
+                continue
+            net = e["fwd60_t1entry"] - 0.002
+            variants["S1_first"][0] += net; variants["S1_first"][1] += 1
+            mv["S1_first"].setdefault(e["month"], []).append(net)
         for e in picks:
             u1 += e is picks[0]; u2 += e is x2; u3 += e is picks[-1] and len(picks) == 3 and e is not x2
             if e["fwd60_t1entry"] is None:
                 nul += 1
                 continue
             net = e["fwd60_t1entry"] - 0.002
+            variants["S4_scale"][0] += net; variants["S4_scale"][1] += 1
             s += net; w += net > 0
             ms.setdefault(e["month"], []).append(net)
+            mv["S4_scale"].setdefault(e["month"], []).append(net)
     n = u1 + u2 + u3 - nul
     tot = u1 + u2 + u3
-    print(f"S4_scale_composite          n={n:>6} net20={s/n:+.3%} wr={w/n:.3f} "
-          f"(u1={u1} u2={u2} u3={u3} nulls={nul} of {tot}, eps={len(eps)})")
-    print(f"{'':<28} monthly: " + " ".join(f"{k[-2:]}:{np.mean(v):+.2%}" for k, v in sorted(ms.items())))
+    print("=== 2026 composite sequencing variants (t1-entry, 20bps RT) ===")
+    for k, (ss, nn) in variants.items():
+        if nn:
+            print(f"{k:<10} n={nn:>5} net20={ss/nn:+.3%}")
+            print(f"{'':<10} monthly: " + " ".join(f"{kk[-2:]}:{np.mean(vv):+.2%}" for kk, vv in sorted(mv[k].items())))
+    print(f"S4 detail: u1={u1} u2={u2} u3={u3} nulls={nul} of {tot}, eps={len(eps)}")
 
     # per-unit attribution on S4 (is the add-on entry still good?)
     print("\n=== S4 unit-level expectancy (composite, 2026) ===")
@@ -117,7 +137,7 @@ def main():
 
     # score-tier gradient on M3 stream (frozen model, fresh months)
     print("\n=== M3 stream score tiers (2026) ===")
-    tiers = m3.with_columns(pl.col("score").cut([THETA, THETA_HI], labels=["t90-97", ">t97"]).alias("tier"))
+    tiers = m3.with_columns(pl.col("score").cut([THETA, THETA_HI], labels=["<t90", "t90-97", ">t97"]).alias("tier"))
     for x in (tiers.group_by("tier").agg(pl.len().alias("n"), (pl.col("fwd60_t1entry") - 0.002).mean().alias("net"),
                                          ((pl.col("fwd60_t1entry") - 0.002) > 0).mean().alias("wr"))
               .sort("tier").to_dicts()):
