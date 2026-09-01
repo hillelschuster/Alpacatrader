@@ -364,3 +364,28 @@ Regime telemetry: rvol>8 share and composite flow did NOT collapse -> oracle mec
 did not fire in H1-2026; mechanism #3 (layered selection) largely dead too.
 RECOMMENDATION: forward paper bot = composite stream, event-level admission, 1 position
 per ticker, 60m hold, 20-40bps budget, vwap extension unbounded. Sizing next.
+
+### Exposure design (2026-09-01, exposure_design.py) — the conversion layer, SOLVED
+Question: 17 qualifying minutes/episode -> how many real positions? Answer from evidence
+(derivation 2025 Aug-Dec -> frozen replay 2026, PRE_REG_EXPOSURE.md written pre-peek):
+- EXIT: fixed 60m hold dominates BOTH years. State-death exit destroys the edge
+  (2025 +5.4 vs +54.6bps; 2026 +1.0 vs +34.4) — continuation persists PAST model-state
+  lapse; do not exit when the state dies. 30m hold = capital-efficiency alternative
+  (1.23 vs 0.91 bps/capital-minute 2025); 15m dead.
+- EXPOSURE: persistence harvest = re-enter after each 60m hold at next qualified minute
+  (E3/E6), ~1.6 entries/episode. Cycle-2 keeps full edge (+59.2), cycle-3 dead weight
+  (+9.2) but harmless. First-entry-only (E1) is BELOW stream average in 2026 (-2.5).
+- ENTRY GATE: rvol>8 at the entry minute (2025: +70.7 vs -49.7 for rvol 4-8).
+- FROZEN E6 (rvol>8 gate + unlimited 60m re-entry cycles): 2025 +66.4bps/unit wr .548
+  5/5 months, +113.9/episode; 2026 +34.4bps/unit wr .498 3/3 months (+78/+3/+27),
+  +54.1/episode, 5.4 entries/day. ALL 3 pre-registered gates PASS on 2026.
+  Survives 40bps RT at +14.4 (2026) / +46.4 (2025).
+- ECONOMICS (cap 10 names x $10k units): 2026 mean +$194/day (p10 -1,262/p90 +1,400),
+  57/61 trade-days, ~4 positions avg, zero entries skipped -> not concurrency-bound at
+  small size. 2025 mean +$415/day.
+- Feature parity: PAPER_BOT_SPEC.md v0 was WRONG on rvol (real def: cum $vol / 20-session
+  bucket-interpolated expected cum $vol), market_ret_5m (real: cross-sectional MEDIAN over
+  entire clean universe), excess_gain (gain minus that median). Spec rewritten with exact
+  build_features.py definitions. Advisor suspicion confirmed and fixed.
+Bot spec updated (PAPER_BOT_SPEC.md): composite gate + E6 exposure + fixed 60m exit.
+Next: implement v0 paper bot per spec; live rvol baseline table needs 20 sessions warmup.
