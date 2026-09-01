@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "C:\Users\הלל\Desktop\algo projects\Alpacatrader\factory\scripts\entry_gain_stats.py", line 34, in <module>
+    model = pickle.load(open("factory/artifacts/ml/model_v1.pkl", "rb"))
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'factory/artifacts/ml/model_v1.pkl'
