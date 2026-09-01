@@ -70,8 +70,6 @@ def main():
     print(f"theta_fixed(90pct May-Jul)={theta_fixed:.5f}  theta_hi(97pct)={theta_hi:.5f}")
 
     oos = load(OOS_MONTHS, model).sort(["ticker", "et_date", "tod_min"])
-    oos = oos.with_columns(
-        (pl.col("et_date").rank("ordinal").over("ticker").is_first_distinct()).alias("_noop"))
 
     # M1 fixed threshold
     m1 = oos.filter(pl.col("score") >= theta_fixed)

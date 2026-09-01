@@ -41,26 +41,27 @@ def main():
         X = df.select(FEATS).to_numpy().astype(np.float32)
         df = df.with_columns(pl.Series("score", model.predict(X, num_iteration=model.best_iteration)))
         dfs.append(df)
-    df = pl.concat(dfs).filter(
-        pl.col("score").is_not_null() & pl.col("fwd60_t1entry").is_not_null())
+    df = pl.concat(dfs).filter(pl.col("score").is_not_null())
+    theta, theta_hi = 0.00115, 0.00340  # frozen (May-Jul p90/p97, live_admission.log)
 
-    day_q = df.group_by("et_date").agg(pl.col("score").quantile(0.90).alias("q"))
-    # theta from May-Jul calibration is recomputed here from OOS quantiles is WRONG ->
-    # hardcode the frozen values printed by live_admission.py (May-Jul 90th/97th pct)
-    theta, theta_hi = 0.00115, 0.00340
-
-    df = df.sort(["ticker", "et_date", "tod_min"]).with_columns(
+    # reviewer-fix (MATERIAL): NO label filter before picks — pool is score-complete only.
+    # Labelability is enforced causally: entry tod<=328 guarantees t+61 inside session
+    # (clock is knowable at decision time). Residual null labels = intraday no-trade bars
+    # (unknowable live) -> excluded from PnL, share reported per variant.
+    LABEL_CAP = 328
+    df = df.sort(["et_date", "tod_min"]).with_columns(
         pl.col("score").rank("ordinal", descending=True).over(["et_date", "tod_min"]).alias("vis_rank"))
     m3 = df.filter((pl.col("vis_rank") <= 2) & (pl.col("score") >= theta))
     comp = m3.filter((pl.col("rvol") > 4) & (pl.col("vwap_dist") > 0.03) & (pl.col("tod_min") < 270))
 
     for name, stream in [("M3", m3), ("COMPOSITE", comp)]:
-        rows = stream.to_dicts()
+        rows = stream.filter(pl.col("tod_min") <= LABEL_CAP).to_dicts()
         eps = {}
         for r in rows:
             eps.setdefault((r["ticker"], str(r["et_date"])[:10]), []).append(r)
-        res = {v: {"units": 0, "episodes": 0, "net_sum": 0.0, "wins": 0, "dv_sum": 0.0}
-               for v in ["S0_indep", "S1_first", "S2_scale", "S3_reentry", "S4_scale3"]}
+        variants = ["S0_indep", "S1_first", "S2_scale", "S3_reentry", "S4_scale3"]
+        res = {v: {"units": 0, "episodes": 0, "net_sum": 0.0, "wins": 0, "dv_sum": 0.0,
+                   "nulls": 0} for v in variants}
         monthly = {v: {} for v in res}
         for key, evs in eps.items():
             evs.sort(key=lambda r: r["tod_min"])
@@ -86,20 +87,24 @@ def main():
             picks["S3_reentry"] = s3
             for v, ps in picks.items():
                 for e in ps:
-                    net = e["fwd60_t1entry"] - COST
                     res[v]["units"] += 1
+                    res[v]["dv_sum"] += e["cum_dv"]
+                    if e["fwd60_t1entry"] is None:
+                        res[v]["nulls"] += 1
+                        continue
+                    net = e["fwd60_t1entry"] - COST
                     res[v]["net_sum"] += net
                     res[v]["wins"] += net > 0
-                    res[v]["dv_sum"] += e["cum_dv"]
                     monthly[v].setdefault(e["month"], []).append(net)
-        print(f"\n=== stream {name} (OOS Aug-Dec, {COST:.1%} RT, t1-entry fills) ===")
-        print(f"{'variant':<11} {'eps':>5} {'units':>6} {'u/ep':>5} {'net/unit':>9} {'wr':>5} {'net/ep':>9} {'avg_cumdv$M':>11}")
+        print(f"\n=== stream {name} (OOS Aug-Dec, {COST:.1%} RT, t1-entry fills, reviewer-fixed pool) ===")
+        print(f"{'variant':<11} {'eps':>5} {'units':>6} {'u/ep':>5} {'net/unit':>9} {'wr':>5} {'net/ep':>9} {'null%':>6} {'avg_cumdv$M':>11}")
         for v in res:
             r = res[v]
             u, e = r["units"], r["episodes"]
-            nu = r["net_sum"] / u if u else 0.0
-            print(f"{v:<11} {e:>5} {u:>6} {u/e:>5.1f} {nu:>+9.3%} {r['wins']/u:>5.3f} "
-                  f"{r['net_sum']/e:>+9.3%} {r['dv_sum']/u/1e6:>11.1f}")
+            ul = u - r["nulls"]  # label-complete units
+            nu = r["net_sum"] / ul if ul else 0.0
+            print(f"{v:<11} {e:>5} {u:>6} {u/e:>5.1f} {nu:>+9.3%} {r['wins']/ul:>5.3f} "
+                  f"{r['net_sum']/e:>+9.3%} {100*r['nulls']/u:>5.1f}% {r['dv_sum']/u/1e6:>11.1f}")
             mo = {k: sum(x) / len(x) for k, x in sorted(monthly[v].items())}
             print(f"{'':<11} monthly/unit: " + " ".join(f"{k[-2:]}:{x:+.2%}" for k, x in mo.items()))
 

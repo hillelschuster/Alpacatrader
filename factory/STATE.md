@@ -288,3 +288,49 @@ python factory/scripts/rank_day.py --file data/clean_ohlcv_2025-07.parquet --dat
   h001_h005_synthesis.md; ranked_*.parquet)
 - Note: `factory/artifacts/decisions.jsonl*` and `data/journal/` are live-trading
   leftovers, not research products — exclude from research uploads.
+
+## ML Phase 2 — live translation (2026-09-01 session)
+
+Mission: convert D10 ranking into executable admission, understand archetypes, sequence
+real trades, exploit composite, execution costs, fresh 2026 evidence, paper-bot spec.
+
+### Live-causal admission (live_admission.py, frozen theta from May-Jul only)
+| rule | n | net @20bps | @40 | t1 | months |
+|---|---|---|---|---|---|
+| REF whole-day D10 (non-executable) | 49,210 | +22.1bps | +0.2 | +26.3 | 5/5 |
+| M1 fixed theta | 44,221 | +22.6 | +0.3 | +26.2 | 5/5 |
+| M2 rolling-threshold | 51,137 | +19.2 | -0.8 | +22.4 | 4/5 |
+| M3 vis-rank<=2 + theta | 35,186 | **+29.0** | **+9.0** | +32.8 | 5/5 |
+| M4 first-crossing | 1,100 | +26.5 | +6.5 | +33.7 | 4/5 |
+| M5 persist 2of3 | 42,822 | +24.9 | +4.9 | +28.2 | 5/5 |
+| **M3 x composite** | 8,170 | **+90.5** | **+70.5** | wr .570 | 5/5 |
+theta_fixed=0.00115 (May-Jul p90), theta_hi=0.00340 (p97). M3 = score-rank<=2 within
+current minute's visible candidate set (et_date,tod_min) — fully causal, beats D10.
+Flow: 332 events/day (M3), 83/day (composite).
+
+### Sequencing (sequencing.py, t1-entry fills, OOS Aug-Dec)
+First-signal entries are below stream average. S4 scale-in (unit1 first qualifying minute,
+unit2/3 at later score>=theta_hi crossings, +5m/+20m spacing) best: composite stream
++77.4bps/unit, +130bps/episode, 5/5 months, 1.7 units/ep. Re-entry-after-cooldown WORST
+(late-stage contamination). Chasing first-crossing per episode (M4) degrades vs M3.
+
+### Archetypes (archetypes.py, OOS, post-peek descriptive)
+- Money map (M3 stream): rvol>8 & vwap 3-8% +84bps; rvol>8 & vwap>8% +201bps;
+  rvol 2-8 rows NEGATIVE on the M3 stream -> extreme volume is the separator, not the model score alone.
+- Composite-internal gradients monotone: vwap_dist 3-5% +73 / 5-8% +89 / 8-12% +147 /
+  >12% +419 (n=159, small); tod later = better within composite.
+- KMeans k=5 inside composite: all 4 real clusters profitable +55..+183bps (broad region,
+  not knife-edge). Best: parabolic monster-RVOL (rvol~364, vwap +8.7%, ret15m +5%).
+- Blowoff trap: vwap_dist>10% on ALL events loses (-61bps) but WINS inside high RVOL
+  -> extension is safe only with volume behind it.
+- Execution: price>$20 loses at all costs; pocket = close<=20 & cum_dv 5-100M
+  (5-20M best +220bps @20). <$5 survives 100bps. >$100M dv diluted.
+
+### Fresh 2026 evidence (download->clean->certify->features, frozen eval)
+2026-01/02/03 certified: 386,178 events / 61 days. eval_2026.py = frozen stack
+(model_v1 + theta 0.00115 + M3 + composite + S4 + pocket) first OOS look. Results: see
+factory/artifacts/ml/eval_2026.log. PAPER_BOT_SPEC.md = v0 live reproduction spec.
+
+### Adversarial lanes (in flight)
+oracle (decay mechanisms, vwap>12% cell, capacity) + reviewer (causality audit of
+live_admission/sequencing/archetypes) — record verdicts here when they land.
