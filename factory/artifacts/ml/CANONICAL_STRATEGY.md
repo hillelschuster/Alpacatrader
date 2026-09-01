@@ -21,8 +21,8 @@ months ≥0; survives 40bps RT; reviewer-audited (no BLOCKER/MATERIAL).
    all scorers, verified). Never retrain live.
 2. **Admission (M3)**: score ≥ theta_fixed **0.00115** AND score-rank ≤ 2 among the
    current minute's scored candidates.
-3. **Stream gate**: rvol > 4 AND vwap_dist > 0.03 AND tod_min < 270. Entry minutes
-   additionally tod_min ≤ 328.
+3. **Stream gate**: rvol > 4 AND vwap_dist > 0.03 AND tod_min < 270 (= admission before
+   **14:00 ET**). Entry minutes additionally tod_min ≤ 328 (= 14:58 ET).
 4. **Exposure (E6)**: first entry at the first admitted minute with **rvol > 8**;
    after each 60m hold, re-enter at the next admitted minute with rvol > 8; ~1.6
    entries/episode; 1 position per ticker at a time.
@@ -49,25 +49,41 @@ Research ticker-day universe (`certify_month.py`): per-minute dense rank of
 **day-max-gain ≥ 8%** (whole-day, unknowable live), day dollar_volume ≥ $5M,
 n_bars ≥ 30, exchange ∈ {NYSE,NASDAQ,AMEX}, EQUITY, not split-suspect.
 
-**Measured resolution (entry_gain_stats.log)**: at E6 entry minutes the whole-day
-condition is already satisfied — pct_gain ≥ 8% at entry: **98.5% (2025) / 99.5% (2026)**
-(median entry gain +19–21%); cum_dv ≥ $5M at entry: **100.0%** (p1 = $5.0M).
-**Conclusion: NO live proxy filter for the 8% condition — the causal gates imply it.**
-Adding a gain floor would be a new filter (silently changes the trade set) — not added.
-Live-only causal readings of the day gates (near-free, disclosed): require cum_dv ≥ $5M
-at entry and ≥ 30 real bars so far today at entry.
+**Measured resolution (entry_gain_stats.log, residual_gate_stats.log)**:
+- At E6 entry minutes the whole-day condition is already satisfied — pct_gain ≥ 8% at
+  entry: **98.5% (2025) / 99.5% (2026)** (median entry gain +19–21%); cum_dv ≥ $5M at
+  entry: **100.0%** (p1 = $5.0M).
+- The day-level conditions are causally implied by the gates — NO live proxy filter for
+  the 8% condition. Adding a gain floor would be a new filter (silently changes the
+  trade set) — not added.
+- Rank population: research ranks among gap==1, close≥$2, vol≥100/bar, listed-equity
+  rows (universe_tags cache adds only sub-8% names). Recomputing every entry's rank at
+  its entry minute over the full listed population: **identical rank 99.9% (1029/1071),
+  100.0% still top-20** (1 differing case, a 4.9% gainer, stays top-20). The research
+  population is reproduced by: listed equities only (NYSE/NASDAQ/AMEX, quoteType EQUITY,
+  ETFs and OTC EXCLUDED), close ≥ $2, bar volume ≥ 100, gap==1, dense-desc rank by
+  pct_gain vs prev_close, top 20.
+- n_bars ≥ 30 (research full-day screen): **18.4% of E6 entries had <30 real bars at
+  their entry minute and those trades averaged +47.0bps** (vs +57.3 for ≥30) — a live
+  "30 bars so far" rule would tax real edge. NO minimum-bar condition is applied live;
+  bars_so_far is recorded in the ledger only.
 
-**Live scanner rules (from oracle mapping)**: recompute rank LOCALLY from bars — do NOT
-use Alpaca's "top gainers" endpoint (different definition). Rank dense-descending among
-all RTH equities with a bar this minute; take top-20. prev_close = adjusted close of the
-immediately-prior session. gap==1: skip a ticker's first session after a trading gap.
-Tie-break identical ranks deterministically (by symbol).
+**Live scanner rules (resolved)**: build the top-20 locally from live data over the
+onboarded listed-equity universe — do NOT use Alpaca's "top gainers" endpoint (different
+definition) and do NOT use a Finviz gainers list as the rank population (that ranks the
+list, not the market). prev_close = adjusted close of the immediately-prior session.
+gap==1: skip a ticker's first session after a trading gap. Tie-break identical ranks
+deterministically (by symbol). ETF/OTC exclusion via universe onboarding check (once,
+cached; unknown ⇒ excluded, mirrors research fail-closed).
 
 ## D. EXACT LIVE RULES (per-minute loop)
 
 At each RTH bar close t (tod_min = minutes since 09:30 bar):
 
-1. Build top-20 candidate list (rule C). Plus: keep bars for open/recent positions.
+1. Build the top-20 candidate list over the onboarded listed-equity universe (rule C):
+   each minute, gain vs prev_close for every onboarded symbol with activity (snapshot /
+   batched bars — see BOT_DATA_MAP §1), dense-desc rank, top 20, ETFs/OTC/sub-$2
+   excluded. Plus: keep bars for open/recent positions.
 2. For each candidate compute the 30 features exactly as `build_features.py`
    (state machine per BOT_DATA_MAP §4: no-bar minute ⇒ volume 0, close forward-filled,
    real-bar-only stats for r1/realized_vol/dip lows). `rvol` = cum_dv ÷ 20-session
@@ -78,14 +94,17 @@ At each RTH bar close t (tod_min = minutes since 09:30 bar):
    candidates, tie-break by symbol) AND rvol > 4 AND vwap_dist > 0.03 AND tod_min < 270.
 5. Exposure state machine per ticker:
    - idle → ENTER iff admitted AND rvol > 8 AND tod_min ≤ 328 AND cum_dv ≥ $5M
-     AND ≥30 real bars today AND no open position in ticker AND concurrency < cap.
+     AND no open position in ticker AND concurrency < cap. (No minimum-bar condition —
+     measured to cost edge; bars_so_far recorded in ledger.)
    - in-position: exit unconditionally at close of bar (entry_fill_bar + 60).
    - flat after exit → re-ENTER iff an admitted minute with rvol > 8 occurs at
      tod_min ≥ exit_admission_minute + 61 (same cutoffs as above).
 6. Concurrency cap: 10 simultaneous positions (research sim: ~4 avg, zero skipped).
-7. `market_ret_5m` = median 5m return of the visible scanner universe (APPROX,
-   importance 0.015 = rank 26/30; record source in ledger). `excess_gain` =
-   pct_gain − 100·market_ret_5m. Do NOT substitute an index return.
+7. `market_ret_5m` = median 5m return of a BROAD liquid basket (APPROX — research
+   statistic is the whole-market median, measured p50 0.0000, p95 +0.13%; a gainers-list
+   median would be off-scale; a constant worst-case +1.5% proxy bias moves scores ~5%
+   and theta-fails ~3.8% of entries, vis_rank invariant). Record source in ledger.
+   `excess_gain` = pct_gain − 100·market_ret_5m. Do NOT substitute a single index return.
 8. Record everything (§F ledger). No other filters, no stops, no sizing logic.
 
 ## E. CLOCK ARITHMETIC (bar time)
@@ -128,27 +147,34 @@ partials logged verbatim. v0: $10k units, 1 unit per entry, no pyramiding.
 
 ## H. PLAIN-ENGLISH FLOW
 
-Every minute during regular hours: rank all traded stocks by gain vs yesterday's close,
-take the top 20. For each, compute 30 intraday state features from 1-minute bars, score
-with the frozen model. If a stock's score is in the minute's top-2 and above the frozen
-threshold, and it's showing extreme volume (rvol>4) while extended above session VWAP,
-before 11:00 — it qualifies. If its volume is extreme (rvol>8), buy $10k at the next
-minute's close. Hold exactly 60 minutes and sell. If it qualifies again later with
-rvol>8, buy again. At most 10 names at once, one position per name. That's the whole
-system: roughly 5 trades/day, +34–66bps per trade after costs in frozen research,
-positive in 8 of 8 tested months across two regimes.
+Every minute during regular hours: rank all listed stocks (>$2, ETFs/OTC excluded) by
+gain vs yesterday's close, take the top 20. For each, compute 30 intraday state features
+from 1-minute bars, score with the frozen model. If a stock's score is in the minute's
+top-2 and above the frozen threshold, and it's showing extreme volume (rvol>4) while
+extended above session VWAP, before 14:00 — it qualifies. If its volume is extreme
+(rvol>8), buy $10k at the next minute's close. Hold exactly 60 minutes and sell. If it
+qualifies again later with rvol>8, buy again. At most 10 names at once, one position per
+name. That's the whole system: roughly 5 trades/day, +34–66bps per trade after costs —
+positive in all 5 derivation months (Aug–Dec 2025) and then in all 3 frozen validation
+months (Jan–Mar 2026).
 
 ## I. UNRESOLVED AMBIGUITIES (all disclosed; none block)
 
-1. market_ret_5m watchlist-median proxy (importance 0.015 — bounded, recorded).
+1. market_ret_5m broad-basket median proxy (importance 0.015, measured sensitivity:
+   constant +1.5% bias ⇒ ~3.8% theta-fails, ranks invariant — recorded in ledger).
 2. Live feed volume parity (SIP vs IEX) — mitigated by self-consistent baseline or SIP.
 3. rvol baseline warm-up period (first ~4 weeks under-admit; fails closed, safe).
-4. Scanner-membership noise vs research top-20 (research-verified insensitive to ±2
-   ranks and 25% list drops).
+4. Scanner snapshot-vs-bar-close convention (ranked gain from latest price vs 1m bar
+   close — small timing offset; rank-robust per scanner-robustness results).
 5. Full-population vs label-complete expectancy (live trades all picks; research
    full-set numbers are the right expectation).
 6. Early-session entries (26% before tod 45): no research time gate exists — verified
    once at warmup that live ret_15m bar history matches research construction.
+7. split_suspect: research excludes ticker-days whose final close/prev_close is outside
+   [0.5, 2.0] — unknowable live. ~40 excluded 8%-gainer days/month; E6 entry gains cap
+   at ~67% (consistent with those days being fully excluded from research). Live cannot
+   and should not replicate the exclusion; ledger records the EOD flag so paper results
+   can quantify any asymmetry. No pre-filter.
 
 ## J. READY TO BUILD? **YES.**
 

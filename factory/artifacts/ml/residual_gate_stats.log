@@ -1,0 +1,42 @@
+=== E6 entries: n=1071 (2025+2026) ===
+
+[Q4] research market_ret_5m distribution (decimal):
+  p5: -0.0012
+  p25: -0.0003
+  p50: +0.0000
+  p75: +0.0004
+  p95: +0.0013
+  share |m5| > 0.5%: 0.001
+  excess_gain (pct pts) p5/p50/p95: +10.10 / +20.64 / +43.20
+  m5 shift +0.5%: entries falling below theta: 0.012; mean |dscore|/score: 0.028
+  m5 shift +1.0%: entries falling below theta: 0.028; mean |dscore|/score: 0.041
+  m5 shift +1.5%: entries falling below theta: 0.038; mean |dscore|/score: 0.056
+[2025-08] split_suspect days: 41, of which 8%+ gainers: 22, close_ratio p50=2.88 p90=4.99
+[2025-09] split_suspect days: 69, of which 8%+ gainers: 43, close_ratio p50=3.28 p90=9.85
+[2025-10] split_suspect days: 78, of which 8%+ gainers: 37, close_ratio p50=2.48 p90=5.17
+[2025-11] split_suspect days: 71, of which 8%+ gainers: 42, close_ratio p50=2.50 p90=5.53
+[2025-12] split_suspect days: 107, of which 8%+ gainers: 64, close_ratio p50=3.17 p90=7.63
+[2026-01] split_suspect days: 73, of which 8%+ gainers: 37, close_ratio p50=2.50 p90=8.75
+[2026-02] split_suspect days: 52, of which 8%+ gainers: 26, close_ratio p50=3.93 p90=14.35
+[2026-03] split_suspect days: 81, of which 8%+ gainers: 53, close_ratio p50=2.94 p90=9.65
+
+[Q1] real bars available at E6 entry minute (research screen: full-day n_bars>=30):
+  entries total 1071; <30 bars: 197 (18.4%); labels: lo mean net +47.0 bps (n=185), hi mean net +57.3 bps (n=729)
+  <30-bars entries tod_min: min=5 p50=19 max=93
+  <30-bars pct_gain>=8% share: 0.975
+
+[Q2] research rank vs FULL live-population rank at entry minute:
+  matched entries: 1029/1071 (unmatched = ticker absent from cross-section, i.e. no bar at t)
+  identical rank: 0.0379
+  differing: 990 -> pct_gain range 4.9..66.5
+  share entries with pct_gain>=8%: 0.988
+  still top-20 under FULL population: 0.7561
+
+[Q2b] research rank vs LISTED-EQUITIES-ONLY population (exchange/quote_type known):
+  matched: 1029/1071; identical rank: 0.9990
+  still top-20 under LISTED population: 1.0000
+  differing: 1 -> pct_gain range 4.9..4.9
+  of differing: both top-20 1, research-only top-20 0
+
+[Q3] split_suspect excluded ticker-days that were 8%+ gainers (potential lost candidates):
+  total across 8 target months: 324 (~40.5/month) — cf. ~1071 E6 entries/8mo

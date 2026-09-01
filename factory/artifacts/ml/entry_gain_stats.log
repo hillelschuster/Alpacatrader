@@ -1,5 +1,44 @@
-Traceback (most recent call last):
-  File "C:\Users\הלל\Desktop\algo projects\Alpacatrader\factory\scripts\entry_gain_stats.py", line 34, in <module>
-    model = pickle.load(open("factory/artifacts/ml/model_v1.pkl", "rb"))
-                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-FileNotFoundError: [Errno 2] No such file or directory: 'factory/artifacts/ml/model_v1.pkl'
+=== 2025: E6 entries n=670 ===
+  p 1: +7.60%
+  p 5: +10.33%
+  p10: +11.70%
+  p25: +15.05%
+  p50: +21.09%
+  p75: +29.59%
+  p90: +37.63%
+  p99: +52.98%
+  share entry pct_gain >= 3%: 1.000
+  share entry pct_gain >= 4%: 1.000
+  share entry pct_gain >= 5%: 0.999
+  share entry pct_gain >= 6%: 0.999
+  share entry pct_gain >= 7%: 0.996
+  share entry pct_gain >= 8%: 0.985
+  share entry pct_gain >= 9%: 0.973
+  share entry pct_gain >= 10%: 0.961
+  first-entry only n=383: share >=8%: 0.977  >=6%: 0.997  >=5%: 0.997
+  entry cum_dv $M: p1=5.1 p5=5.9 p25=13.3 p50=38.4
+  share entry cum_dv >= 5M: 1.000  >= 10M: 0.807  >= 20M: 0.654
+  entry tod_min: p1=7 p5=13 p25=42 p50=103 min=5
+  share entry tod_min >= 45: 0.742  >= 60: 0.675
+=== 2026: E6 entries n=401 ===
+  p 1: +8.52%
+  p 5: +10.01%
+  p10: +11.11%
+  p25: +14.12%
+  p50: +19.44%
+  p75: +27.77%
+  p90: +35.65%
+  p99: +53.55%
+  share entry pct_gain >= 3%: 1.000
+  share entry pct_gain >= 4%: 1.000
+  share entry pct_gain >= 5%: 1.000
+  share entry pct_gain >= 6%: 1.000
+  share entry pct_gain >= 7%: 1.000
+  share entry pct_gain >= 8%: 0.995
+  share entry pct_gain >= 9%: 0.980
+  share entry pct_gain >= 10%: 0.950
+  first-entry only n=236: share >=8%: 0.992  >=6%: 1.000  >=5%: 1.000
+  entry cum_dv $M: p1=5.0 p5=5.4 p25=11.2 p50=31.3
+  share entry cum_dv >= 5M: 1.000  >= 10M: 0.783  >= 20M: 0.611
+  entry tod_min: p1=6 p5=16 p25=41 p50=95 min=5
+  share entry tod_min >= 45: 0.736  >= 60: 0.661

@@ -21,9 +21,26 @@ Loop: wake at each minute mark +5s (e.g., 10:31:05 for the 10:30 bar), 390 cycle
 
 | input | call | cadence | payload |
 |---|---|---|---|
-| candidate set | Finviz gainers scrape (existing) + intraday pct-gain recompute from bars | 1/min | ~50–200 rows HTML |
+| candidate set | local top-20 rank over onboarded listed-equity universe (NYSE/NASDAQ/AMEX, quoteType EQUITY; ETFs/OTC excluded; close≥$2, vol≥100/bar, gap==1, gain vs prev_close dense-desc rank) | 1/min | snapshot/batched bars for onboarded symbols (see §1b) |
 | 1m bars, candidates | `StockBarsRequest(symbols=<cand∪open-pos>, timeframe=1Min, start=t−95min, end=t, feed=IEX)` | 1/min | ~30–60 symbols × ≤95 bars ≈ 150–350 KB JSON |
 | daily context | `StockBarsRequest(timeframe=1Day, lookback=25 sessions)` per NEW candidate only | on first appearance | ~1.5 KB/symbol/session |
+
+### 1b. Candidate population (RESOLVED — must match research exactly)
+
+Research ranks gap==1 rows with close≥$2 and bar vol≥100 among listed equities from the
+universe_tags cache; verified: recomputing entry ranks over the FULL listed population
+reproduces research rank 99.9% (100.0% still top-20). The live population is therefore:
+
+- **Onboarded universe**: every symbol ever seen as a candidate-class mover gets a one-time
+  check (Alpaca assets endpoint or cached universe_tags: exchange ∈ {NYSE,NASDAQ,AMEX}
+  equivalents, quoteType EQUITY). Unknown ⇒ excluded (mirrors research fail-closed).
+  Start onboarded set = `data/universe_tags.parquet` eligible tickers (6,898 EQUITY rows);
+  extend opportunistically when new symbols appear in scanners; ETFs/OTC never admitted.
+- **Per minute**: for onboarded symbols, gain vs prev_close from the freshest data
+  available (1m bar close or latest snapshot — small timing offset, rank-robust); apply
+  close≥$2, bar vol≥100, gap==1; dense-desc rank; take top 20. Finviz gainers scrape MAY
+  run alongside as a cheap discovery feed for new symbols — but the RANKED population is
+  the onboarded universe, never the scrape list.
 
 Per candidate the minute loop must yield, at minute t (ET, tod_min = minutes since 09:30):
 prev_close, session_open, today's bar list (real bars only flagged), cum dollar volume.
@@ -63,12 +80,14 @@ vol/bar, RTH). Live equivalent fetch is impractical.
 Model importance (`model_v1.pkl`, gain share): **market_ret_5m = 0.52%** (rank 25 of 30;
 top: ret_15m 22.5%, open_gap 6.9%). excess_gain (3.75%) inherits it.
 
-Recommended proxy: **median 5m return over the visible scanner universe each minute**
-(Finviz gainers list + all open/recent positions, typically 50–200 names). Same statistic
-(median, 5m, cross-sectional), smaller breadth; ~0.5%-importance feature shifted by a
-few dozen bps of breadth bias — materially irrelevant to score ranking but MUST be
-recorded in the ledger (`market_ret_5m_source: "watchlist_median"`). Do not attempt
-full-universe parity in v0.
+Recommended proxy: **median 5m return of a BROAD liquid basket** (e.g. a fixed list of a
+few thousand common listed tickers — or the largest feasible onboarded subset). Same
+statistic (cross-sectional median), right scale: research whole-market median is ~0.0000
+(p95 +0.13%); a gainers-only list median (+1%..+2% typical) is off-scale and must NOT be
+used. Sensitivity measured: constant +1.5% proxy bias shifts scores ~5% and theta-fails
+~3.8% of entries; vis_rank invariant (common shift within a minute). MUST be recorded in
+the ledger (`market_ret_5m_source`). Do not attempt full-universe parity in v0 and do not
+substitute a single index return.
 
 ## 4. Per-ticker in-memory state machine (updated per closed 1m bar)
 
@@ -114,9 +133,13 @@ theta_pass, rvol, vwap_dist, gate_rvol4, gate_vwap3, gate_tod270, admitted, reas
 
 **Per-trade record**:
 `{ticker, et_date, entry_minute, cycle#, minutes_since_first_qual, rvol_at_entry, score_at_entry,
-pct_gain_at_entry, model_fill, actual_fill, fill_slippage, units, hold_until_minute,
+pct_gain_at_entry, bars_so_far, model_fill, actual_fill, fill_slippage, units, hold_until_minute,
 exit_minute, model_exit_price, actual_exit_price, exit_slippage,
-model_net_60m (=fwd60_t1entry−0.002), actual_net_60m, rvol_at_exit, state_at_exit}`
+model_net_60m (=fwd60_t1entry−0.002), actual_net_60m, rvol_at_exit, state_at_exit,
+split_suspect_eod, market_ret_5m_source}`
+
+(`bars_so_far` = real bars at entry; `split_suspect_eod` = EOD close-ratio flag filled
+post-close, quantifies the one research exclusion live cannot replicate.)
 
 **Daily rollup**:
 `{date, n_minutes, n_admitted, n_entries, n_cycles_by_k, model_net_unit_bps (mean),
