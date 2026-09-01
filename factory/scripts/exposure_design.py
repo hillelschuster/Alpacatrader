@@ -76,11 +76,6 @@ def main():
     for r in comp.filter(pl.col("tod_min") <= ENTRY_CAP).iter_rows(named=True):
         qual_sets.setdefault((r["ticker"], str(r["et_date"])[:10]), set()).add(r["tod_min"])
 
-    # events grid (all top-20 minutes) for dead-minute detection: minutes present but unqualified
-    present = {}
-    for r in pool.iter_rows(named=True):
-        present.setdefault((r["ticker"], str(r["et_date"])[:10]), set()).add(r["tod_min"])
-
     rows = comp.filter(pl.col("tod_min") <= ENTRY_CAP).to_dicts()
     eps = {}
     for r in rows:
@@ -95,17 +90,23 @@ def main():
             q = [e["tod_min"] for e in evs]
             if struct == "E1_one":
                 picks = [evs[0]]
-            elif struct in ("E2_cycle3", "E5_rvol2"):
-                picks, t = [evs[0]], evs[0]["tod_min"]
+            elif struct in ("E2_cycle3", "E5_rvol2", "E6_rvol8"):
+                pool_evs = [e for e in evs if e["rvol"] is not None and e["rvol"] > 8] if struct == "E6_rvol8" else evs
+                if not pool_evs:
+                    continue
+                picks, t = [pool_evs[0]], pool_evs[0]["tod_min"]
                 while len(picks) < 3:
-                    nxt = next((x for x in evs if x["tod_min"] >= t + HOLD + 1), None)
+                    nxt = next((x for x in pool_evs if x["tod_min"] >= t + HOLD + 1), None)
                     if not nxt:
                         break
                     picks.append(nxt); t = nxt["tod_min"]
-            elif struct == "E3_persist":
-                picks, t = [evs[0]], evs[0]["tod_min"]
+            elif struct in ("E3_persist", "E6_persist_rvol8"):
+                pool_evs = [e for e in evs if e["rvol"] is not None and e["rvol"] > 8] if struct == "E6_persist_rvol8" else evs
+                if not pool_evs:
+                    continue
+                picks, t = [pool_evs[0]], pool_evs[0]["tod_min"]
                 while True:
-                    nxt = next((x for x in evs if x["tod_min"] >= t + HOLD + 1), None)
+                    nxt = next((x for x in pool_evs if x["tod_min"] >= t + HOLD + 1), None)
                     if not nxt:
                         break
                     picks.append(nxt); t = nxt["tod_min"]
@@ -115,7 +116,7 @@ def main():
                 e = dict(e)
                 e["cycle"] = k + 1
                 e["min_since_first"] = e["tod_min"] - evs[0]["tod_min"]
-                e["kth_of_n"] = (k + 1, len(evs))
+                e["kth_of_n"] = (k + 1, len(pool_evs) if struct in ("E6_rvol8", "E6_persist_rvol8") else len(evs))
                 e["units"] = 2 if (struct == "E5_rvol2" and e["rvol"] is not None and e["rvol"] > 8) else 1
                 out.append(e)
         return out
@@ -176,6 +177,9 @@ def main():
         print("\n--- exit variants on E3_persist entries ---")
         for x in ["X_60m", "X_death", "X_30m", "X_15m"]:
             report(f"E3 {x}", entries_for("E3_persist"), exit_variant=x)
+        print("\n--- E6 (rvol>8 gate) reference ---")
+        for s in ["E6_rvol8", "E6_persist_rvol8"]:
+            report(s, entries_for(s))
         print("\n--- within-episode timing (E3, X_60m) ---")
         ents = [e for e in entries_for("E3_persist") if e["fwd60_t1entry"] is not None]
         def bucket_rows(keyfn, labels):
@@ -201,15 +205,18 @@ def main():
         print(f"\n=== {a.years} FROZEN replay: {s} + {x} ===")
         report(f"{s}+{x}", entries_for(s), exit_variant=x)
         report(f"{s} X_death", entries_for(s), exit_variant="X_death")
+        report(f"{s} X_30m", entries_for(s), exit_variant="X_30m")
+        report("E6_persist_rvol8+X_60m", entries_for("E6_persist_rvol8"))
         # economics: minute-by-minute concurrency with global cap 10, per-name 1 pos, $10k units
+        import datetime
         cap, unit_usd = 10, 10_000
         evs = sorted(entries_for(s), key=lambda e: (str(e["et_date"])[:10], e["tod_min"]))
         open_pos = {}
         daily = {}
         skipped = 0
         for e in evs:
-            d = str(e["et_date"])[:10]
-            t = e["tod_min"]
+            dnum = datetime.date.fromisoformat(str(e["et_date"])[:10]).toordinal() * 1440
+            t = dnum + e["tod_min"]
             open_pos = {k: v for k, v in open_pos.items() if v > t}
             if e["ticker"] in open_pos:
                 continue
@@ -217,16 +224,13 @@ def main():
                 skipped += 1
                 continue
             r = ret_x(e, x)
-            if r is None:
-                open_pos[e["ticker"]] = t + HOLD + 1
-                continue
             open_pos[e["ticker"]] = t + HOLD + 1
-            daily.setdefault(d, 0.0)
-            daily[d] += (r - COST) * unit_usd * e["units"]
+            if r is not None:
+                daily[str(e["et_date"])[:10]] = daily.get(str(e["et_date"])[:10], 0.0) + (r - COST) * unit_usd * e["units"]
         vals = np.array(list(daily.values()))
         print(f"\neconomics @{unit_usd:,}/unit cap={cap}: trade-days={len(vals)} "
               f"mean/day=${vals.mean():+,.0f} p10=${np.percentile(vals,10):+,.0f} "
-              f"p90=${np.percentile(vals,90):+,.0f} pos-days≈{len(evs)/len(vals):.0f} skipped={skipped}")
+              f"p90=${np.percentile(vals,90):+,.0f} taken={len(evs)-skipped} skipped={skipped}")
 
 
 if __name__ == "__main__":
