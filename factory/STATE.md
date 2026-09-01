@@ -55,10 +55,12 @@ LightGBM depth-6 (57 iters), train May+Jun, dev Jul, OOS Aug..Dec (293,687 event
 - wr gradient D1→D10 monotone in all 5 OOS months; D1 = −39..−92bps (avoid zone).
 - @40bps D10 dead (−25..−37bps) → edge requires ≤30bps RT execution.
 - ElasticNet reproduces ordering 5/5 (structure not a tree artifact).
-- Phase 6 NESTED composite (thresholds picked Aug–Oct only, frozen Nov–Dec):
-  rv>4 & vwap_dist>3% & tod<270 → **+102.6bps @20bps, wr .620 (n=3,444); @40bps
-  +82.6bps (survives); t+1m +101bps**; 63% pos days, maxDD 7.2%. Validated, not
-  selection-biased. Candidate v2 strategy; sizing research next.
+- Phase 6 composite rv>4 & vwap_dist>3% & tod<270, frozen on Nov–Dec: **+89.4bps
+  @20bps, wr .605 (n=3,847 full set)**; survives 40bps in label-complete subset.
+  Adversarial review: D10 GO claim audited CLEAN; composite PARTIALLY validated —
+  the design grid was informed by an earlier slice peek at Nov–Dec (disclosed in
+  REPORT_OOS_v1.md). Definitive test = exact frozen rule on next fresh month.
+  Script: factory/scripts/composite_ml.py. Sizing research next.
 - Dead at: D10@40bps; episode-best picking adds nothing (breadth portfolio).
 - Next: pre-register composite rule (rv>3 & vwap+2% & tod<240 built from Aug–Oct,
   validate Nov–Dec untouched); bot integration is a recommendation only (bot off-limits).

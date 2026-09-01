@@ -88,12 +88,31 @@ best cell frozen and applied to Nov–Dec, which never entered any selection.
 - **Frozen Nov–Dec: +89.4bps @20bps, wr .605 (n=3,847; Nov +101, Dec +73)**
 - Ref D10-all Nov–Dec: +12.6bps → composite adds +77bps on held-out months.
 
-Label-complete rows (n=3,444): @20bps **+102.6bps** wr .620 | @40bps **+82.6bps** wr .589
-(SURVIVES 40bps — unlike the bare D10 pocket) | t+1m entry +101.1bps.
+Headline = FULL frozen set: n=3,847, **+89.4bps @20bps, wr .605**. (The label-complete
+subset n=3,444 shows +102.6bps / @40bps +82.6bps / t+1m +101bps, but conditioning on a
+traded t+1m bar correlates with liquidity — mild upward selection; secondary read only.)
 38 sessions: 63% positive days, daily event-mean +26.2bps, maxDD 7.2% (daily-mean units),
 events/day p50=98 p90=196 (capacity: needs per-name caps; ~58 episodes/day universe).
 
-Status: strongest validated result of the project. Composite rule = candidate v2
-strategy. Caveats: 2025 tape only; non-PIT universe tags; certify n_bars≥30 gate;
-2 validation months at composite level (n=3,444). Next cycle: retrain on May..Oct,
-re-freeze, score 2026 months when data lands; sizing research before any live use.
+## Adversarial review verdict (reviewer subagent, 2026-09-01)
+
+CLAIM INFLATED at the composite headline; **core D10 GO (+22bps pooled @20bps) audited
+CLEAN and stands** (no label leakage in ranking; eval raw+cost; features leak-free;
+OOS predict-only; gates match frozen protocol; numbers reproduce).
+
+Composite corrections adopted:
+1. (P1) Composite logic existed only as a log → restored as committed script
+   `factory/scripts/composite_ml.py` (reproduces SELECTED/FROZEN numbers exactly).
+2. (P1) "Nov–Dec never entered any selection" was OVERSTATED: the descriptive slice
+   (phase6_joint.log) displayed composite-cell performance on Nov–Dec BEFORE the
+   threshold grid ran. Threshold-conditional selection is controlled (argmax on
+   Aug–Oct only), but the grid's design space was informed by a peek at the val months.
+   Composite validation status: PARTIAL — treat +89.4bps as upper-bound-ish; the
+   definitive test is the next fresh month (2026 data) with this exact frozen rule.
+3. (P2) Headline re-pointed from the label-complete subset (+102.6bps) to the full
+   frozen set (+89.4bps, n=3,847).
+
+Status: D10 = validated ranking edge (GO). Composite = strongest candidate v2 rule,
+partially validated, pending a clean re-OOS on future months. Caveats: 2025 tape only;
+non-PIT universe tags; certify n_bars≥30 gate; 2 validation months. Next: sizing/capacity
+research; retrain May..Oct → re-freeze → score 2026 months when data lands.
