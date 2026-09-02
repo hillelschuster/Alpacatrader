@@ -1,0 +1,42 @@
+
+=== 2025-08  (day=2025-08-05) raw rows=28,581,215  tickers=21,794 ===
+  day 2025-08-05: tickers=15,598 rows=1,393,697 avg bars/ticker=89.4
+   AAPL: vol=  42,535,617  last=$  202.79  $vol=$  8625.8M  bars=691
+    AMD: vol=  89,129,064  last=$  163.28  $vol=$ 14553.0M  bars=944
+   INTC: vol=  96,977,165  last=$   20.13  $vol=$  1952.2M  bars=816
+   NVDA: vol= 156,447,488  last=$  176.80  $vol=$ 27659.9M  bars=951
+   PLTR: vol= 130,904,845  last=$  171.89  $vol=$ 22501.2M  bars=943
+    QQQ: vol=  48,646,900  last=$  558.24  $vol=$ 27156.6M  bars=892
+   SOFI: vol=  48,759,708  last=$   21.28  $vol=$  1037.6M  bars=762
+    SPY: vol=  67,927,872  last=$  627.23  $vol=$ 42606.4M  bars=878
+   TSLA: vol=  57,946,942  last=$  307.00  $vol=$ 17789.7M  bars=869
+  tickers with >=300 bars: 1,750 (11.2%)
+  median ticker $vol: $184K
+
+=== 2026-01  (day=2026-01-06) raw rows=30,353,678  tickers=22,527 ===
+  day 2026-01-06: tickers=16,362 rows=1,522,361 avg bars/ticker=93.0
+   AAPL: vol=  51,759,780  last=$  262.30  $vol=$ 13576.6M  bars=656
+    AMD: vol=  39,923,962  last=$  214.09  $vol=$  8547.3M  bars=724
+   INTC: vol=  66,280,758  last=$   40.06  $vol=$  2655.2M  bars=770
+   NVDA: vol= 176,849,640  last=$  188.15  $vol=$ 33274.3M  bars=951
+   PLTR: vol=  34,516,094  last=$  179.40  $vol=$  6192.2M  bars=728
+    QQQ: vol=  43,131,081  last=$  623.88  $vol=$ 26908.6M  bars=896
+   SOFI: vol= 119,156,013  last=$   26.94  $vol=$  3210.1M  bars=707
+    SPY: vol=  70,275,411  last=$  692.10  $vol=$ 48637.6M  bars=890
+   TSLA: vol=  89,085,776  last=$  434.95  $vol=$ 38747.9M  bars=943
+  tickers with >=300 bars: 1,890 (11.6%)
+  median ticker $vol: $247K
+
+=== 2026-03  (day=2026-03-04) raw rows=34,379,927  tickers=22,057 ===
+  day 2026-03-04: tickers=15,641 rows=1,535,561 avg bars/ticker=98.2
+   AAPL: vol=  39,472,298  last=$  262.71  $vol=$ 10369.8M  bars=647
+    AMD: vol=  40,889,223  last=$  201.69  $vol=$  8246.9M  bars=803
+   INTC: vol=  95,792,223  last=$   45.90  $vol=$  4396.9M  bars=846
+   NVDA: vol= 176,942,719  last=$  183.64  $vol=$ 32493.8M  bars=954
+   PLTR: vol=  59,761,151  last=$  153.61  $vol=$  9179.9M  bars=819
+    QQQ: vol=  70,770,159  last=$  612.72  $vol=$ 43362.3M  bars=942
+   SOFI: vol=  62,412,089  last=$   18.80  $vol=$  1173.3M  bars=818
+    SPY: vol=  78,976,278  last=$  686.93  $vol=$ 54251.2M  bars=937
+   TSLA: vol=  68,261,582  last=$  406.74  $vol=$ 27764.7M  bars=935
+  tickers with >=300 bars: 1,938 (12.4%)
+  median ticker $vol: $284K
