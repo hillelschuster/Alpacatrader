@@ -9,9 +9,7 @@ RAW_HF = "data/ohlcv_2026-03.parquet"
 RAW_ALP = "data/backfill/ohlcv_2026-03.parquet"
 
 hf = pl.read_parquet(RAW_HF).with_columns(
-    pl.col("timestamp").dt.convert_time_zone("America/New_York").dt.hour().cast(pl.Int32) * 60
-    + pl.col("timestamp").dt.convert_time_zone("America/New_York").dt.minute().cast(pl.Int32).alias("_m"))
-hf = hf.with_columns(pl.col("timestamp").dt.convert_time_zone("America/New_York").alias("et"))
+    pl.col("timestamp").dt.convert_time_zone("America/New_York").alias("et"))
 hf = hf.filter((pl.col("et").dt.hour() + pl.col("et").dt.minute() / 60.0 >= 9.5)
                & (pl.col("et").dt.hour() + pl.col("et").dt.minute() / 60.0 < 16.0))
 alp = pl.read_parquet(RAW_ALP).with_columns(
