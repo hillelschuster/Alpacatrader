@@ -1,0 +1,15 @@
+  2025-06 2025-06-05 ACDC: 47 events -> OK
+  2025-06 2025-06-05 AG: 390 events -> OK
+  2025-06 2025-06-05 AGX: 113 events -> OK
+[2025-06] done
+  2025-10 2025-10-15 ABSI: 384 events -> OK
+  2025-10 2025-10-15 ACHR: 35 events -> OK
+  2025-10 2025-10-15 AEVA: 63 events -> OK
+[2025-10] done
+  2026-02 2026-02-20 AG: 44 events -> OK
+  2026-02 2026-02-20 ALGM: 8 events -> OK
+  2026-02 2026-02-20 AMN: 169 events -> OK
+[2026-02] done
+
+TOTAL: 1253 event rows checked, 0 mismatches
+VERDICT: PASS
