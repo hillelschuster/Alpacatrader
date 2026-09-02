@@ -389,3 +389,12 @@ Question: 17 qualifying minutes/episode -> how many real positions? Answer from 
   build_features.py definitions. Advisor suspicion confirmed and fixed.
 Bot spec updated (PAPER_BOT_SPEC.md): composite gate + E6 exposure + fixed 60m exit.
 Next: implement v0 paper bot per spec; live rvol baseline table needs 20 sessions warmup.
+
+## 2026-09-02 (session 3) — rvol corruption + corrected verdicts + frozen v2 + fresh-window prep
+- **BUG (fixed)**: build_features.rvol_attach cum_sum over unsorted rows → all 11 feature parquets had row-order-partial-sum rvol. Fixed (sort before cumsum). tests/test_feature_parity.py caught it (live engine == intended math).
+- **Rebuilt**: features 2025-05..2026-03 (v2), model_v2.pkl (best_iter 56), theta re-derived dev-only = 0.00098 (theta_hi 0.00259).
+- **Corrected verdicts**: composite FROZEN Nov+Dec +86.1bps@20 (was +102.6); E6 2025 +45.0bps/unit (was +66.4); **E6 2026 −62.8bps/unit (was +34.4) — 2026 GO REVERSED**; eval_2026 all cuts negative. RVOL_CORRUPTION_REPORT.md.
+- **Trust audit**: tests/audit_features_independent.py — hand math from raw chronological bars == research parquet == live engine; 1253 event rows, 0 mismatches (train/OOS/2026 samples). Sortedness audit of all window ops: only rvol_attach was unsorted; labels/rank/m5 order-independent (self-join/median/rank).
+- **FROZEN_V2.md committed BEFORE fresh window** (model_v2 + theta 0.00098 + M3/composite/E6_rvol8/X_60m/cap10/$10k; eval protocol pre-registered; no tuning between months).
+- **Fresh window blocked on data**: HF dataset (mito0o852/OHLCV-1m + all mirrors) ends 2026-03; updated 2026-05-03. 2026-04..08 exist nowhere local. FIX: backfill from Alpaca SIP historical (entitlement VERIFIED via test pull). factory/scripts/backfill_alpaca.py → HF-schema raw parquets; clean/certify/featurize chain unchanged; validate_backfill.py (bar-level vs HF 2026-03) gates the run. eval_frozen.py written+committed BEFORE fresh data lands.
+- Decision rule (pre-registered): paper-deploy iff pooled net/unit > 0 @20bps AND all five months ≥ −20bps/unit; else no-go + mechanism investigation, no re-tune.
