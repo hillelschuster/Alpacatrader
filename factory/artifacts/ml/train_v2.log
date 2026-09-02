@@ -1,0 +1,8 @@
+train 243,837 rows | dev 139,400
+best_iter=56
+OOS 2025-08: all net20=-0.1287% ep_best net20=-1.0692%
+OOS 2025-09: all net20=-0.0529% ep_best net20=-1.0277%
+OOS 2025-10: all net20=-0.1710% ep_best net20=-1.2453%
+OOS 2025-11: all net20=-0.1415% ep_best net20=-0.9661%
+OOS 2025-12: all net20=-0.1529% ep_best net20=-1.0517%
+wrote factory\artifacts\ml/train_report_v2.json

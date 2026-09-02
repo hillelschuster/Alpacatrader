@@ -14,6 +14,7 @@ Usage:
   uv run --no-project --with polars --with numpy --with lightgbm --with tzdata \
     python factory/scripts/eval_2026.py
 """
+import os
 import pickle
 import numpy as np
 import polars as pl
@@ -26,10 +27,11 @@ FEATS = ["pct_gain_grid", "rank", "n_hod_breaks", "dip_5m", "trap_reclaim", "dip
          "realized_vol_15m", "efficiency_30m", "n_up_bars_15"]
 THETA, THETA_HI = 0.00115, 0.00340
 MONTHS = ["2026-01", "2026-02", "2026-03"]
+MODEL = "factory/artifacts/ml/model_v1.pkl"  # overridable via env MODEL_PATH
 
 
 def main():
-    model = pickle.load(open("factory/artifacts/ml/model_v1.pkl", "rb"))
+    model = pickle.load(open(os.environ.get("MODEL_PATH", MODEL), "rb"))
     dfs = []
     for m in MONTHS:
         df = pl.read_parquet(f"data/ml_features/features_{m}.parquet")

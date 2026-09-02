@@ -1,0 +1,38 @@
+=== 2025 composite stream (derivation-mode) ===
+E1_one                     entries=  226 (2.4/day) net/unit=+0.480% wr=0.527 net/episode=+0.480% eps=226
+                           monthly/unit: 08:-0.02% 09:+0.38% 10:+0.76% 11:+0.47% 12:+0.77%
+E2_cycle3                  entries=  343 (3.6/day) net/unit=+0.514% wr=0.528 net/episode=+0.767% eps=230
+                           monthly/unit: 08:-0.32% 09:+0.70% 10:+0.47% 11:+0.18% 12:+1.73%
+E3_persist                 entries=  352 (3.7/day) net/unit=+0.495% wr=0.526 net/episode=+0.757% eps=230
+                           monthly/unit: 08:-0.32% 09:+0.72% 10:+0.41% 11:+0.18% 12:+1.63%
+E5_rvol2                   entries=  343 (3.6/day) net/unit=+0.514% wr=0.528 net/episode=+0.767% eps=230
+                           monthly/unit: 08:-0.32% 09:+0.70% 10:+0.47% 11:+0.18% 12:+1.73%
+
+--- exit variants on E3_persist entries ---
+E3 X_60m                   entries=  352 (3.7/day) net/unit=+0.495% wr=0.526 net/episode=+0.757% eps=230
+                           monthly/unit: 08:-0.32% 09:+0.72% 10:+0.41% 11:+0.18% 12:+1.63%
+E3 X_death                 entries=  382 (4.1/day) net/unit=-0.200% wr=0.395 net/episode=-0.308% eps=248
+                           monthly/unit: 08:-0.43% 09:-0.08% 10:-0.45% 11:-0.26% 12:+0.45%
+E3 X_30m                   entries=  353 (3.8/day) net/unit=+0.292% wr=0.501 net/episode=+0.444% eps=232
+                           monthly/unit: 08:-0.58% 09:+0.66% 10:+0.25% 11:+0.32% 12:+0.76%
+E3 X_15m                   entries=  361 (3.8/day) net/unit=-0.061% wr=0.452 net/episode=-0.094% eps=235
+                           monthly/unit: 08:-0.64% 09:+0.29% 10:-0.46% 11:+0.10% 12:+0.69%
+
+--- E6 (rvol>8 gate) reference ---
+E6_rvol8                   entries=  221 (2.6/day) net/unit=+0.527% wr=0.543 net/episode=+0.756% eps=154
+                           monthly/unit: 08:-0.05% 09:+0.66% 10:+0.23% 11:-0.03% 12:+1.98%
+E6_persist_rvol8           entries=  225 (2.6/day) net/unit=+0.508% wr=0.542 net/episode=+0.742% eps=154
+                           monthly/unit: 08:-0.05% 09:+0.66% 10:+0.23% 11:-0.03% 12:+1.82%
+
+--- within-episode timing (E3, X_60m) ---
+1              n=  226 net=+0.480% wr=0.527
+2              n=   82 net=+0.406% wr=0.537
+3              n=   35 net=+0.990% wr=0.514
+0              n=  226 net=+0.480% wr=0.527
+2              n=   57 net=+0.360% wr=0.526
+3              n=   11 net=-0.264% wr=0.455
+5              n=   58 net=+0.830% wr=0.534
+
+--- rvol tier at entry (E3, X_60m) ---
+rvol 4-8       n=  135 net=+0.790% wr=0.519
+rvol >8        n=  217 net=+0.311% wr=0.530

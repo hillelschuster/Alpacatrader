@@ -1,0 +1,21 @@
+=== 2026 composite stream (derivation-mode) ===
+E1_one                     entries=  119 (2.2/day) net/unit=-0.818% wr=0.437 net/episode=-0.818% eps=119
+                           monthly/unit: 01:-0.40% 02:-1.32% 03:-0.61%
+E2_cycle3                  entries=  170 (3.2/day) net/unit=-0.356% wr=0.471 net/episode=-0.492% eps=123
+                           monthly/unit: 01:+0.05% 02:-0.83% 03:-0.25%
+E3_persist                 entries=  179 (3.4/day) net/unit=-0.425% wr=0.458 net/episode=-0.618% eps=123
+                           monthly/unit: 01:+0.02% 02:-0.90% 03:-0.39%
+E5_rvol2                   entries=  170 (3.2/day) net/unit=-0.356% wr=0.471 net/episode=-0.492% eps=123
+                           monthly/unit: 01:+0.05% 02:-0.83% 03:-0.25%
+
+=== 2026 FROZEN replay: E6_rvol8 + X_60m ===
+E6_rvol8+X_60m             entries=  112 (2.3/day) net/unit=-0.606% wr=0.482 net/episode=-0.838% eps=81
+                           monthly/unit: 01:-0.45% 02:-0.76% 03:-0.54%
+E6_rvol8 X_death           entries=  133 (2.8/day) net/unit=-0.480% wr=0.383 net/episode=-0.702% eps=91
+                           monthly/unit: 01:-1.26% 02:+0.16% 03:-0.57%
+E6_rvol8 X_30m             entries=  118 (2.5/day) net/unit=-0.419% wr=0.483 net/episode=-0.582% eps=85
+                           monthly/unit: 01:-0.63% 02:-0.17% 03:-0.51%
+E6_persist_rvol8+X_60m     entries=  117 (2.4/day) net/unit=-0.610% wr=0.479 net/episode=-0.882% eps=81
+                           monthly/unit: 01:-0.43% 02:-0.85% 03:-0.45%
+
+economics @10,000/unit cap=10: trade-days=45 mean/day=$-151 p10=$-993 p90=$+531 taken=148 skipped=0

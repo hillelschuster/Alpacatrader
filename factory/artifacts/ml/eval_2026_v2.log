@@ -1,0 +1,34 @@
+2026-01: 131800 events, score range [-0.0502,0.0262]
+2026-02: 123005 events, score range [-0.0515,0.0150]
+2026-03: 131373 events, score range [-0.0544,0.0282]
+
+=== FROZEN 2026 eval: ['2026-01', '2026-02', '2026-03'] ===
+REF_wholeday_D10             n= 27436 net20=-0.302% wr=0.446 net40=-0.502% net60=-0.702% t/day=450 eps=666
+                             monthly: 01:-0.06% 02:-0.22% 03:-0.62%
+M3_admission                 n= 15960 net20=-0.250% wr=0.465 net40=-0.450% net60=-0.650% t/day=262 eps=473
+                             monthly: 01:+0.07% 02:-0.18% 03:-0.73%
+M3xCOMPOSITE                 n=  2523 net20=-0.325% wr=0.455 net40=-0.525% net60=-0.725% t/day=48 eps=143
+                             monthly: 01:-0.29% 02:-0.44% 03:-0.21%
+POCKET(<=20,5-100M)          n=  1042 net20=-0.461% wr=0.422 net40=-0.661% net60=-0.861% t/day=27 eps=69
+                             monthly: 01:+0.06% 02:-1.02% 03:-0.43%
+DIAG_M3_relp90 (not frozen)  n= 20782 net20=-0.240% wr=0.464 net40=-0.440% net60=-0.640% t/day=341 eps=557
+                             monthly: 01:+0.03% 02:-0.16% 03:-0.67%
+DIAG_COMP_relp90 (not frozen) n=  3382 net20=-0.289% wr=0.446 net40=-0.489% net60=-0.689% t/day=60 eps=172
+                             monthly: 01:-0.15% 02:-0.60% 03:-0.11%
+=== 2026 composite sequencing variants (t1-entry, 20bps RT) ===
+S0_indep   n= 2407 net20=-0.318%
+           monthly: 01:-0.32% 02:-0.39% 03:-0.22%
+S1_first   n=  119 net20=-0.818%
+           monthly: 01:-0.40% 02:-1.32% 03:-0.61%
+S4_scale   n=  171 net20=-0.681%
+           monthly: 01:-0.43% 02:-0.80% 03:-0.81%
+S4 detail: u1=142 u2=43 u3=18 nulls=32 of 203, eps=142
+
+=== S4 unit-level expectancy (composite, 2026) ===
+unit1: 142
+unit2: 43
+unit3: 18
+
+=== M3 stream score tiers (2026) ===
+t90-97: n=11302 net=-0.269% wr=0.463
+>t97: n=4658 net=-0.206% wr=0.468

@@ -26,6 +26,7 @@ Usage:
   uv run ... python factory/scripts/exposure_design.py --years 2026 --frozen-structure E2_cycle3 --frozen-exit X_60m
 """
 import argparse
+import os
 import pickle
 import numpy as np
 import polars as pl
@@ -36,7 +37,7 @@ FEATS = ["pct_gain_grid", "rank", "n_hod_breaks", "dip_5m", "trap_reclaim", "dip
          "market_ret_5m", "tod_min", "dow",
          "ret_1m", "ret_3m", "ret_5m", "ret_10m", "ret_15m", "ret_30m",
          "realized_vol_15m", "efficiency_30m", "n_up_bars_15"]
-THETA = 0.00115
+THETA = 0.00115  # default v1; override via env THETA (v2 dev-recal: 0.00098)
 COST = 0.002
 HOLD = 60
 ENTRY_CAP = 328
@@ -45,7 +46,7 @@ YR = {"2025": ["2025-08", "2025-09", "2025-10", "2025-11", "2025-12"],
       "2026": ["2026-01", "2026-02", "2026-03"]}
 
 
-def load_stream(year, model):
+def load_stream(year, model, theta=None):
     dfs = []
     for m in YR[year]:
         df = pl.read_parquet(f"data/ml_features/features_{m}.parquet")
@@ -56,7 +57,8 @@ def load_stream(year, model):
     pool = pl.concat(dfs).filter(pl.col("score").is_not_null())
     pool = pool.sort(["et_date", "tod_min"]).with_columns(
         pl.col("score").rank("ordinal", descending=True).over(["et_date", "tod_min"]).alias("vis_rank"))
-    m3 = pool.filter((pl.col("vis_rank") <= 2) & (pl.col("score") >= THETA))
+    theta = 0.00115 if theta is None else theta
+    m3 = pool.filter((pl.col("vis_rank") <= 2) & (pl.col("score") >= theta))
     comp = m3.filter((pl.col("rvol") > 4) & (pl.col("vwap_dist") > 0.03) & (pl.col("tod_min") < 270))
     return pool, m3, comp
 
@@ -66,9 +68,12 @@ def main():
     ap.add_argument("--years", required=True)
     ap.add_argument("--frozen-structure", default=None)
     ap.add_argument("--frozen-exit", default="X_60m")
+    ap.add_argument("--model", default="factory/artifacts/ml/model_v1.pkl")
     a = ap.parse_args()
-    model = pickle.load(open("factory/artifacts/ml/model_v1.pkl", "rb"))
-    pool, m3, comp = load_stream(a.years, model)
+    model = pickle.load(open(a.model, "rb"))
+    theta = float(os.environ.get("THETA", THETA))
+    pool, m3, comp = load_stream(a.years, model, theta)
+    print(f"theta={theta}")
 
     # qualified-minute membership per (ticker, et_date) for state-death checks:
     # a minute is DEAD if not qualified; minutes absent from the pool rows are also dead.

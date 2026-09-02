@@ -172,7 +172,10 @@ def rvol_attach(events: pl.DataFrame, base: pl.DataFrame, month_clean: pl.DataFr
     ev = events.with_columns(
         pl.col("timestamp").cast(pl.Datetime("us", "UTC")).alias("timestamp"),
         (pl.col("et").dt.hour().cast(pl.Int32) * 60 + pl.col("et").dt.minute().cast(pl.Int32)).alias("tod_min"))
-    lookup = month_clean.with_columns(
+    # MUST sort by timestamp: cum_sum().over() preserves stored row order, and the clean
+    # parquets are stored shuffled. Unsorted, the numerator is a row-order partial sum,
+    # not time-cumulative volume (bug found via tests/test_feature_parity.py).
+    lookup = month_clean.sort("timestamp").with_columns(
         (pl.col("close") * pl.col("volume")).cum_sum().over(G).alias("cumdv"))
     ev = ev.join(lookup.select(["ticker", "timestamp", "cumdv"]), on=["ticker", "timestamp"], how="left")
     ev = ev.join(base, on=["ticker", "et_date"], how="left")
