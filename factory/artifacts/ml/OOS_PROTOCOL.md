@@ -1,5 +1,10 @@
 # OOS Protocol — Frozen BEFORE any Aug–Dec evaluation (2026-09-01)
 
+> **CORRECTION (2026-09-02):** the rvol feature was corrupted in all research parquets
+> (RVOL_CORRUPTION_REPORT.md). D10 OOS numbers below were produced by the polluted
+> pipeline and are retained as the protocol record; the corrected-model OOS read is
+> +86.1bps @20bps on the frozen Nov+Dec composite (model_v2 + theta 0.00098).
+
 Dev facts (July, burned): D10 all-events net +8.4bps @20bps RT (+6.2bps t+1-entry),
 0 @40bps; episode-equal wr gradient monotone 0.18→0.49; IC +0.047; D1 = −2.8% (avoid/short).
 n=1,285 episodes; CI straddles 0. July proves RANKING, not absolute edge.

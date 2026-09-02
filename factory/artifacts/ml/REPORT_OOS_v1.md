@@ -1,5 +1,10 @@
 # ML v1 OOS Report — VERDICT: GO (2026-09-01)
 
+> **CORRECTION (2026-09-02):** produced on corrupted rvol (RVOL_CORRUPTION_REPORT.md).
+> The +102.6bps Nov+Dec composite headline is corrected to **+86.1bps @20bps** on
+> model_v2 + theta 0.00098. The 2026 frozen replay fails (−62.8bps/unit) — see
+> PRE_REG_2026.md and FROZEN_V2.md. GO verdict superseded by the fresh-window result.
+
 Model: LightGBM depth-6 (best_iter=57), train 2025-05+06 (243,837 events), dev 2025-07
 (burned: early stop + top-decile threshold only). Single frozen pass on 2025-08..12
 (293,687 events). Protocol frozen pre-peek: `OOS_PROTOCOL.md`. Costs are ROUND-TRIP,

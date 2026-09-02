@@ -1,5 +1,11 @@
 # STRATEGY v1 — Top-Gainer Continuation (composite + E6 exposure)
 
+> **CORRECTION (2026-09-02):** all rvol-dependent numbers in this document were derived
+> on corrupted rvol (see RVOL_CORRUPTION_REPORT.md). Corrected: model_v2 + theta 0.00098;
+> E6 2025 +45.0bps/unit; E6 2026 **−62.8**bps/unit (GO reversed). Live verdict pending
+> the pre-registered 2026-04..08 fresh-window eval (FROZEN_V2.md). Numbers below kept as
+> the historical record of the polluted pipeline.
+
 One-page trading description distilled from H001–H010, ML v1 (frozen May–Jul 2025),
 OOS Aug–Dec 2025, and the pre-registered 2026-01..03 frozen passes (eval_2026.py,
 exposure_design.py). Everything below is causal-by-construction or frozen pre-2026.
@@ -10,7 +16,8 @@ Live top-gainers list, refreshed every minute during RTH: top-20 US equities by 
 top-20/minute). Only names with a real 1m bar this minute are candidates.
 
 ## 2. Model & score
-`factory/artifacts/ml/model_v1.pkl` (LightGBM depth-6, best_iter=57, trained May+Jun 2025
+`factory/artifacts/ml/model_v2.pkl` [CORRECTED: was model_v1.pkl] (LightGBM depth-6,
+best_iter=56, trained May+Jun 2025
 only) scores each candidate on the 30-feature decision-time inventory (exact definitions
 in PAPER_BOT_SPEC.md — rvol = CUM $vol ÷ 20-session bucket-interpolated expected cum $vol;
 market_ret_5m = cross-sectional median 5m return of the whole clean universe; excess_gain

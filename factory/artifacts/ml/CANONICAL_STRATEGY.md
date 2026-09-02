@@ -1,5 +1,15 @@
 # CANONICAL STRATEGY — implementation reference (v1, frozen)
 
+> **CORRECTION (2026-09-02, rvol corruption — see RVOL_CORRUPTION_REPORT.md):** the rvol
+> column in every research feature parquet was corrupted (unsorted cum-sum). All numbers
+> depending on rvol/model scores were re-derived on corrected data: canonical model is
+> now **model_v2.pkl** (best_iter=56, same config/training months) with **theta 0.00098**
+> (dev-only recal, May–Jul p90). Corrected results: composite event-stream +86.1bps @20
+> (2025-11+12 val); E6 2025 **+45.0**bps/unit (was +66.4); E6 2026 **−62.8**bps/unit
+> (was +34.4) — **the 2026 GO is REVERSED**. Final live verdict awaits the pre-registered
+> fresh-window eval 2026-04..08 (FROZEN_V2.md, eval_frozen.py, run BEFORE any peek).
+> Stale v1 numbers below are retained and marked [CORRECTED].
+
 Single source of truth for building the paper bot. Everything here is either (a) frozen
 research code (`factory/scripts/*`), (b) measured fact (log cited), or (c) a live
 approximation explicitly labeled APPROX. No strategy redesign in this document.
@@ -12,14 +22,18 @@ BOT_DATA_MAP.md (data/API/state mechanics), PRE_REG_2026.md + PRE_REG_EXPOSURE.m
 ## A. VALIDATED CORE (the alpha — do not modify)
 
 Every element below survived: OOS Aug–Dec 2025 → pre-registered frozen 2026-01..03 pass
-(all 3 gates) → pre-registered E6 exposure test on 2026 (all 3 gates). Results:
-event-stream +91/+87bps @20bps (2025/2026); E6 +66.4/+34.4bps per unit, 5/5 and 3/3
-months ≥0; survives 40bps RT; reviewer-audited (no BLOCKER/MATERIAL).
+(all 3 gates) → pre-registered E6 exposure test on 2026 (all 3 gates). [CORRECTED:
+E6 2026 fails on corrected data (−62.8bps/unit); the pre-registered 2026-04..08
+fresh-window eval (FROZEN_V2.md) now arbitrates the live verdict.] Historical (polluted)
+results: event-stream +91/+87bps @20bps (2025/2026); E6 +66.4/+34.4bps per unit;
+survives 40bps RT; reviewer-audited (no BLOCKER/MATERIAL).
 
-1. **Model**: `factory/artifacts/ml/model_v1.pkl` (LightGBM depth-6, best_iter=57,
+1. **Model**: `factory/artifacts/ml/model_v2.pkl` [CORRECTED: was model_v1.pkl;
+   v2 retrained on corrected rvol, same config, best_iter=56] (LightGBM depth-6,
    trained May+Jun 2025 on 30 features — order in `train_ml.py:FEATURES`, identical in
    all scorers, verified). Never retrain live.
-2. **Admission (M3)**: score ≥ theta_fixed **0.00115** AND score-rank ≤ 2 among the
+2. **Admission (M3)**: score ≥ theta_fixed **0.00098** [CORRECTED: was 0.00115 on
+   polluted rvol] AND score-rank ≤ 2 among the
    current minute's scored candidates.
 3. **Stream gate**: rvol > 4 AND vwap_dist > 0.03 AND tod_min < 270 (= admission before
    **14:00 ET**). Entry minutes additionally tod_min ≤ 328 (= 14:58 ET).
@@ -90,7 +104,7 @@ At each RTH bar close t (tod_min = minutes since 09:30 bar):
    bucket-end-interpolated expected cum_dv (hourly buckets 10:00..16:00, shift-1
    baseline, self-consistent with the live data feed — see F). Null at 09:30.
 3. Score with model_v1.pkl (exact FEATURES order; log_dollar_volume = ln(1+cum_dv)).
-4. Admit iff: score ≥ 0.00115 AND score-rank ≤ 2 (within this minute's scored
+4. Admit iff: score ≥ 0.00098 [CORRECTED] AND score-rank ≤ 2 (within this minute's scored
    candidates, tie-break by symbol) AND rvol > 4 AND vwap_dist > 0.03 AND tod_min < 270.
 5. Exposure state machine per ticker:
    - idle → ENTER iff admitted AND rvol > 8 AND tod_min ≤ 328 AND cum_dv ≥ $5M
@@ -154,9 +168,9 @@ top-2 and above the frozen threshold, and it's showing extreme volume (rvol>4) w
 extended above session VWAP, before 14:00 — it qualifies. If its volume is extreme
 (rvol>8), buy $10k at the next minute's close. Hold exactly 60 minutes and sell. If it
 qualifies again later with rvol>8, buy again. At most 10 names at once, one position per
-name. That's the whole system: roughly 5 trades/day, +34–66bps per trade after costs —
-positive in all 5 derivation months (Aug–Dec 2025) and then in all 3 frozen validation
-months (Jan–Mar 2026).
+name. That's the whole system. [CORRECTED: historical edge +45bps/unit (E6, 2025,
+corrected rvol); 2026-01..03 replayed −62.8bps/unit — verdict pending the
+pre-registered 2026-04..08 fresh-window eval.]
 
 ## I. UNRESOLVED AMBIGUITIES (all disclosed; none block)
 

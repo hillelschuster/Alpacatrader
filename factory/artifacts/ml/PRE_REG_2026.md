@@ -1,5 +1,12 @@
 # PRE-REGISTRATION — frozen stack on 2026-01..03 (written BEFORE any 2026 eval peek)
 
+> **CORRECTION (2026-09-02):** this pre-registration was executed with model_v1 on
+> corrupted rvol; on corrected data (model_v2 + theta 0.00098) the same pre-registered
+> read FAILS: composite 2026-01..03 **−62.8bps/unit** (all months negative). Per the
+> pre-registered rule this is a FAIL; no re-tuning. A new pre-registration for the
+> untouched 2026-04..08 window is in FROZEN_V2.md (written before that window was
+> built) and arbitrates the live verdict.
+
 Date: 2026-09-01. No 2026 eval numbers have been viewed as of this writing.
 Stack under test (all frozen from 2025 work, zero re-tuning):
 model_v1.pkl + theta_fixed=0.00115 + M3 (vis_rank<=2 & score>=theta) +
