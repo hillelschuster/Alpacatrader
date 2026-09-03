@@ -46,6 +46,17 @@ No hindsight: eligible-at-10:17 means nothing before 10:17 counts.
 - empirical: local 1m leader-formation + early-dominance + price-band splits.
 - patterns-skeptic: objective pattern definitions + conditional-edge test design + 5 alt explanations.
 
+## Causal conversion (2026-09-04, main thread, 10 days Mar 2025+Mar 2026)
+Top-3 by gain-so-far at 15:00 UTC, ONLY bars<=15:00, forward-to-close (bps, n=30 names):
+mean fwd +347 (2025) / +339 (2026) — near-identical across years; median ≈ +305/+437;
+P(fwd>20bps costs) = 60%; P(+100bps touched before -100bps) = 63%;
+mean MFE +3359/+2272 vs mean MAE -868/-1142. Read: a SIMPLE causal top-3 already
+isolates large opportunity in both years — but paths are violent (deep MAEs common),
+and intra-watchlist rank does not order outcomes (e.g. BTAI #1 faded -1926 while RAPP
+#3 ran +3258 same day). Population selection works; EXTRACTION (entry/invalidation)
+is the next problem. 7-lane consolidation (target-curve, dominance-rep, state-archetype,
+premarket-backfill, concentration-turnover, target-design, exhaustion-pros) running.
+
 ## Synthesis (2026-09-03, all 8 lanes + local tests)
 
 ### Cross-source consensus (practitioner x science x local)
