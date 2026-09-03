@@ -106,11 +106,59 @@ No hindsight: eligible-at-10:17 means nothing before 10:17 counts.
 - Everything fails net of quoted spread + 1-min lag -> untradable.
 - P&L left-tail on high-VIX/market-down days -> add no-trade regime.
 
-### Next experiments (bounded, <=2-day samples, vectorized)
-1. Expand time-of-day + gap-bucket table to 20+ days across 2025 + 2026 (needs prior-close
-   join for true gaps; premarket 08:00-14:30 UTC bars present in files).
-2. leader_share/separation vs top-20 (fix denominator bug: share vs all-candidates ~0%).
-3. Rank-persistence curve: P(eventual #1 | rank<=k at time t) for t=14:45..16:00.
-4. PM-high distance at 14:30 vs rest-of-day return.
-Full lane outputs: subagent-artifacts/outputs/3116ad61.../{cameron,science,desk}-deep.md +
-379cdfd6.../{cameron,catalyst,literature,microstructure}.md.
+### Pass 2 results (2026-09-03/04; 4 web lanes High + 2 empirical, 21-22 sessions)
+
+EMPIRICAL (own panel, causal, bounded day-by-day):
+- True gap buckets (prior-close join, open->close mean): 10-20% positive BOTH years
+  (+2.97% 2025 n=116; +1.67% 2026 n=201); 4-10% weak/mixed; 20-40% strong 2026 (+6.4%)
+  small-n 2025; 40%+ unstable (2025 +7.3% n=19 vs 2026 -8.6% n=15). NOT tradable stats
+  (include full-day leaders; unfiltered entry = 55-69% fade base rate) — use as priors.
+- Time-of-day leader next-min: 2025: 81/37/18/14 bps; 2026: 46/24/18/5 bps. Front-loaded
+  both years (n~2.8k leader-min). Tail ~0 all day.
+- Remaining opportunity: eventual #1 in top-3 by 15:00 UTC -> 15:00->close mean +48-50%,
+  median +30-33%, beats 20bps costs 9/10 days (n=10, small — expand).
+- Rank persistence (22 days): snapshot #1 holds 27-41% (14:45->16:00); top-5 contains
+  50-64%. Rank alone never enough.
+- SEPARATION (gain1/gain2) >> share: 15:00 high-sep converts 85.7% vs 12.5% low (n=22).
+  Leader $-share vs top-20 NON-monotonic (mid tercile 57% beats high 43% every snapshot).
+- DEMOTED in-sample: premarket-high distance corr -0.007 (~0); competing-movers count
+  corr -0.022 (~0, non-monotonic buckets). Drop both from framework; keep separation.
+- Coverage note: 2025 clean files start 14:30 UTC (NO premarket); 2026 backfill files HAVE
+  premarket (~71% ticker-days). PM tests only where covered.
+
+WEB rechecks (fresh sources): gap-fade CONFIRMED (FILTRIX n=66,906 monotonic 55.8->69.1%);
+RVOL 2x/5x UNCERTAIN as causal cutoff (convention only; SmallCapLab: higher PM vol -> HARDER
+fade); 100k PM floor = execution constraint, not signal; float tiers directional only ->
+rotation-multiple-by-10:00 is the real variable; $2-20 = tradability compromise (INCLUDES
+$5-10 hardest-fade tier per SmallCapLab); morning-only STRONGLY CONFIRMED; EOD reversal
+CONFIRMED (winners flatten/losers bounce; 73.9% close below VWAP; 71% fill prior close in 1d).
+Tradeoff curve: first 15 min holds most GROSS edge but is unchaseable (46.6% HODs there);
+NET-extractable window = 09:45-11:00 continuation; midday/EOD = headwinds. Rent the hold.
+Patterns: unconditional edges ~0 (52-57% win); conditioning is everything; leader-vs-tail test
+exists NOWHERE publicly — our panel is the only place. New numbers: first pullback 63.2%/
+PF 2.25 (n=11k); ORB 190k trades +0.004-0.028R; Concretum RVOL-filter 1637% vs 29%;
+HOD-extension curve 93% fade (weak lifts) -> 11% (doublers); squeezed median gap 316% vs
+faded 102%; halt = reversal default (SEC 83-87% revert); Cameron 20c stop ceiling;
+Dux box (0.5R/trade, 0.25-0.35 ATR stops); grade-by-size A+/A/B/C; day-2/MDR overlay;
+pyramid-from-cushion only.
+ML formulation: profit-weighted LEARNING-TO-RANK (forward net opportunity labels at decision
+minutes 09:30-11:00) + calibrated meta-gate (trade/abstain + size) in 3-stage funnel
+(filters -> ranker -> pattern trigger). LightGBM LambdaRank, gain = forward net bps.
+Month-blocked walk-forward with purge/embargo, DSR, top-1 net P&L as metric. Binary
+classification of leader identity explicitly rejected (loses magnitude, collapses 1-vs-100s).
+
+FRAMEWORK v1 revisions: promote separation@15:00 + 10-20% gap pocket + rotation-pace-by-10:00
++ 09:45 ORB/RVOL stack as earliest gate; demote PM-high distance + competitor-count +
+static float tiers; keep vetoes + time-stop ~11:00-11:30 + EOD flatten; exits =
+pattern-low / VWAP-loss / 10-15min dead-flag / clock.
+Full lane outputs: subagent-artifacts/outputs/04d0cfa8.../{selection-timing,practitioner-v2,
+patterns-evidence,ml-formulation}.md (empirical lanes returned inline).
+
+### Next experiments (Stage A order)
+1. P(day-#1 | threshold) on own panel for 100k PM-vol / RVOL 2x / gap bands (replace lore).
+2. Rotation-by-10:00 ranking vs gap% ranking (needs yfinance float cache <=60 tickers first).
+3. Echo-ratio (PM range x direction) replication on small-cap panel.
+4. Small-cap-conditional ORB expectancy (filtered vs unfiltered) + time-stop attribution.
+5. Leader-vs-tail pattern tests (first-pullback-hold, VWAP-reclaim, pre-10:30 HOD-break).
+6. News created_at<=t pipeline + delay calibration vs IR/EDGAR; catalyst-tier split.
+7. Slippage measurement for $2-20 at 09:30-10:00 (largest unmodeled cost).
