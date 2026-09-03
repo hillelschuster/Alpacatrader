@@ -62,8 +62,11 @@ No hindsight: eligible-at-10:17 means nothing before 10:17 counts.
    news-fresh + imbalance-confirmed subset persists (Heston same-half-hour flow,
    Gao-Han-Li-Zhou first->last half-hour, Lou-Polk overnight-vs-intraday).
 4. Local replication: leader minutes +95bps mean (+45 median) in FIRST hour 14:30-15:30 UTC,
-   decaying +10/+9/+5.5 later buckets (n=6 days Mar 2025, 1,661 leader-minutes). Edge is
-   early. EOD-reversal literature says exit before ~15:00 ET. All 6 eventual #1s opened $2-10.
+   decaying +10/+9/+5.5 later buckets (n=6 days Mar 2025, 1,661 leader-minutes). 2026 CONFIRMS:
+   +51bps mean (+25 median) first hour, +12/+28/+6 later (n=6 days Mar 2026, 1,748 leader-minutes;
+   incl. GSIW +215% mega-leader day). Gradient holds in the year the old stack failed. Edge is
+   early. EOD-reversal literature says exit before ~15:00 ET. All 12 eventual #1s opened $2-10.
+   Premarket bars VERIFIED present in backfill files (~4M bars 08:00-14:30 UTC in 2026-03).
 5. 15:30-UTC rank is weak alone: 15:30-#1 == eventual #1 only 3/6; 15:30-top5 fwd avg -220bps
    vs rest -32bps (n=6, outlier-driven, needs expansion). Rank needs persistence +
    separation + dollar-share confirmation, not level.
