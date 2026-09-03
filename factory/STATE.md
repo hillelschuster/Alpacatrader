@@ -437,3 +437,9 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
 - **Candidate**: NONE. rvol 8-12 same-sign both periods but t≈1.0 post-hoc — not a
   recommendation. Next: forward paper MEASUREMENT only (Sep-Dec 2026, zero capital);
   new hypotheses need new pre-reg. NO paper deployment of this stack.
+
+## 2026-09-03 — Cameron/discretionary-momentum research lane (design only, no implementation)
+- Researcher brief obtained (DIRECT/INFERRED labeled; no web fetch available — cutoffs need primary-source confirmation, but our tests grid our own numbers anyway).
+- Data availability VERIFIED: yfinance float+short% (~0.7s/ticker); Alpaca NewsClient historical news (timing rule: catalyst window ends at 9:30 ET; movers-roundups are coincident, excluded); premarket bars exist in raw backfill files; trade_count NOT retained (design change: keep it in future backfills).
+- Key mechanism probes (16-month panel): HINDSIGHT leader minutes +30/+51bps (2025/2026, incl. mega-leaders +25/+67bps) vs tail −41/−43bps — regime correlates with sign in BOTH years. CAUSAL minute-rank-1: negative every month both years (chasing rotates into tops). Gap = early leader identification = the lane (Stage A prediction + Stage B within-leader patterns).
+- RESEARCH_CAMERON_LANE.md: translations table, 7 pattern event specs, 8 design changes (D1 regime-conditioning first ... D8 catalyst A/B), hypotheses H-C1..H-C7 with dev/validation split (2025+2026 = dev; forward paper = validation). Score gate retired to covariate; 60-min fixed hold retired.
