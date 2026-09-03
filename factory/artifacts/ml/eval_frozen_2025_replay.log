@@ -1,0 +1,20 @@
+2025-08: 130,415 events, score [-0.0534,0.0133]
+2025-09: 131,522 events, score [-0.0597,0.0338]
+2025-10: 148,877 events, score [-0.0572,0.0151]
+2025-11: 116,852 events, score [-0.0557,0.0186]
+2025-12: 126,107 events, score [-0.0550,0.0258]
+theta=0.00098  m3=43,385  composite=6,266
+E6_rvol8 entries: 281
+
+month      entries  taken  net20/unit     wr  net40/unit
+2025-08         52     39    +0.095%  0.462    -0.105%
+2025-09         58     48    +0.574%  0.521    +0.374%
+2025-10         69     58    +0.158%  0.483    -0.042%
+2025-11         51     47    -0.175%  0.511    -0.375%
+2025-12         51     41    +1.771%  0.683    +1.571%
+
+POOLED: entries=281 taken=281 skipped=0
+  net20/unit=+0.450% wr=0.528   net40/unit=+0.250% wr=0.494
+  economics @10,000/unit cap=10: trade-days=84 mean/day=$+125 p10=$-587 p90=$+926 pos-days=0.52
+  concentration: top-5 trades = 10.9% of |gross PnL|
+  top-5 trades: PMI 2025-12-04 +18.10%; VOR 2025-12-09 +17.80%; TMQ 2025-10-14 +16.84%; NMG 2025-10-13 +13.64%; SSP 2025-11-17 +12.68%

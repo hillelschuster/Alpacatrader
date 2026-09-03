@@ -417,3 +417,23 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
 - **Status**: no validated edge in this family as of 2026-08. Paper bot = measurement
   instrument (if built). New hypotheses require new data (2026-09+). No re-tuning on
   04-08.
+
+## 2026-09-03 — forensic investigation (advisor brief + "something is off" intuition)
+- **Implementation/data/parity: CLEAN.** 11 checks: hand-math audit, sortedness audit,
+  bar-level xvendor (100%/99.5%), FULL-STACK March replication (Alpaca −87.7 vs HF
+  −74.6bps, same sign/magnitude), eval_frozen replays 2025 at +45.0 EXACTLY, no April
+  vendor cliff (Q1 worse than fresh), checks.json/coverage stable, nulls incident
+  fixed pre-eval. Reviewer subagent NOT completed (2x provider 429s) — disclosed.
+- **What broke**: 60-min continuation lift fired 2/5 OOS months 2025 (Sep/Dec), ~0/8
+  in 2026. L/S quintile spread negative 11/13 months. Only Dec-2025 significant
+  (t=+2.27, n=41); 2025 pooled t=+1.40 (ns); 13-month arc −10bps t=−0.53.
+- **2025 anatomy**: weak signal + mild selection-adjacency + one lucky month (Dec;
+  cycle-3 n=20 +222bps, vwap-extreme n=39 +190bps tails). Repeatable core (cycle-1)
+  was +30bps t≈1.2. Market-regime proxies do NOT separate winners/losers.
+- **Execution exonerated**: t+0/t+1, holds 15/30/60, cycles, timing — nothing flips
+  2026; gross negative so costs aren't it. Negative pool, no rule rescues it.
+- **Mechanism dead (long)**: no conditioning works in 2026 (12+ variants); multi-day
+  continuation NEVER existed (gainer fade both years); short side ≈ breakeven.
+- **Candidate**: NONE. rvol 8-12 same-sign both periods but t≈1.0 post-hoc — not a
+  recommendation. Next: forward paper MEASUREMENT only (Sep-Dec 2026, zero capital);
+  new hypotheses need new pre-reg. NO paper deployment of this stack.
