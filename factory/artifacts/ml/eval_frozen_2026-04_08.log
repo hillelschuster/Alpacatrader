@@ -1,0 +1,20 @@
+2026-04: 128,785 events, score [-0.0547,0.0368]
+2026-05: 131,633 events, score [-0.0554,0.0222]
+2026-06: 130,893 events, score [-0.0563,0.0145]
+2026-07: 133,626 events, score [-0.0605,0.0160]
+2026-08: 129,537 events, score [-0.0511,0.0302]
+theta=0.00098  m3=39,089  composite=5,101
+E6_rvol8 entries: 215
+
+month      entries  taken  net20/unit     wr  net40/unit
+2026-04         48     45    -0.450%  0.511    -0.650%
+2026-05         66     63    -0.160%  0.524    -0.360%
+2026-06         23     21    -1.532%  0.381    -1.732%
+2026-07         38     36    -0.158%  0.444    -0.358%
+2026-08         40     37    -0.430%  0.459    -0.630%
+
+POOLED: entries=215 taken=215 skipped=0
+  net20/unit=-0.416% wr=0.480   net40/unit=-0.616% wr=0.450
+  economics @10,000/unit cap=10: trade-days=73 mean/day=$-115 p10=$-919 p90=$+817 pos-days=0.44
+  concentration: top-5 trades = 13.2% of |gross PnL|
+  top-5 trades: BIRD 2026-06-17 +27.67%; AEVA 2026-08-06 +13.13%; NMAX 2026-04-22 +11.98%; TRAX 2026-07-09 +11.31%; FJET 2026-05-22 +10.69%

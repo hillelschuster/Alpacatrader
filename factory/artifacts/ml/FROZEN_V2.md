@@ -54,3 +54,14 @@ FEATS = ["pct_gain_grid","rank","n_hod_breaks","dip_5m","trap_reclaim","dip_dept
 - Decision rule (stated in advance): paper-deploy track requires pooled net/unit > 0
   at 20bps with all five months ≥ −20bps/unit. Anything else = no-go, investigate
   mechanism (not re-tune).
+
+---
+
+## EVALUATED (2026-09-03): **NO-GO**
+
+Single pre-registered pass on 2026-04…08 (Alpaca SIP backfill, validate_backfill PASS).
+Pooled −41.6bps/unit @20bps, −61.6 @40bps, wr 0.480; all five months negative
+(−16 … −153bps); 215 entries (2.9/day); −$115/day; top-5 = 13.2% of |gross| (broad, not
+tail-driven). Both deploy conditions failed. Full tables + post-hoc decomposition:
+REPORT_FRESH_WINDOW_2026.md. No re-tuning on the fresh window. Paper bot continues as
+measurement instrument only.
