@@ -449,3 +449,10 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
 - Patterns publicly ~0 unconditional; leader-vs-tail test exists nowhere — only our panel can run it. ML verdict: profit-weighted learning-to-rank + calibrated meta-gate, 3-stage funnel; binary leader classification rejected.
 - Empirical (21-22 sessions, causal): 10-20% true-gap pocket both years; tod gradient 81/37/18/14 (2025), 46/24/18/5 (2026); top-3-by-15:00 leaders +~48% to close (9/10 beat costs); snapshot #1 holds <=41%, top-5 50-64%; separation@15:00 85.7% vs 12.5% (n=22); share non-monotonic; PM-high distance (~0) + scarcity (~0) DEMOTED. 2025 clean files lack premarket; 2026 backfill has it.
 - Doc: researches/07-dominant-leader-program.md (framework v1). No production bot. Next: Stage-A tests 1-7 in doc.
+
+## 2026-09-04 — Leader program pass 3 (advisor consolidation; research only)
+- REGIME CAVEAT: causal top-3 fwd flips sign across day-samples (Mar sessions +3.4% both yrs vs spread-year negative vs second 20d +5.7%). Opportunity is regime-clustered, not uniform. No threshold ships without month-blocked proof.
+- Representations: diff_pp separation wins (rho .54/.47, 85.7% high-tercile); HHI/share dead; $-vol-only dead (-0.39%, 0% recall). Top-4 gain recall 60% eventual / 95% any-big-mover.
+- Stateful: flash-tops below VWAP/off-high vs leaders holding structure; drawdown-from-high corr +.76 with forward; archetypes 7 gap / 0 pure-emergent / 9 other + ELAB late-launch outlier.
+- Premarket-backfill GO: 2025 ext-hours ~538MB total, month phases, entitlement OK. Awaiting run approval.
+- Target verdict: excursion-gated MFE + recall-first funnel. Doc researches/07 (pass 3). No implementation.

@@ -165,6 +165,33 @@ pattern-low / VWAP-loss / 10-15min dead-flag / clock.
 Full lane outputs: subagent-artifacts/outputs/04d0cfa8.../{selection-timing,practitioner-v2,
 patterns-evidence,ml-formulation}.md (empirical lanes returned inline).
 
+### Pass 3 consolidation (2026-09-04; 7 lanes, 20-day samples)
+
+REGIME CAVEAT (most important): day-sample changes everything. Causal top-3 fwd-to-close:
+Mar-first-sessions (main thread, n=30): +347/+339bps both years. Spread-year 20-day sample
+(target-curve, n=60/snapshot): NEGATIVE means at all t (-1.8%..-5.6%), medians negative.
+Different 20-day sample (dominance-rep, n=60): +5.71% mean / +2.18% median / 58% P(>costs).
+Same rules, different days -> opportunity concentrates in hot periods/cycles (matches
+practitioner hot-vs-cold / MDR-cycle doctrine). Pooled-year means are regime mixtures.
+Next work MUST condition on day regime; no threshold ships without month-blocked proof.
+
+Target-curve (n=20d): ID-quality flat 40-50% across 14:45-16:00; MFE decays
+21.5%->11.6%; best quality-x-remaining pocket 14:45-15:00. 15:30/16:00 add no ID.
+Dominance-rep (n=20d): diff_pp (gain1-gain2, pp) wins both snapshots (rho .54/.47, high
+tercile 85.7% hit); ratio collapses by 15:30 (.52->.17); HHI ~0/negative; top1/2-share weak.
+Volume concentration does NOT predict; PRICE separation does. $-vol-only selection is DEAD
+(-0.39% fwd, 0% eventual-recall). Top-4 gain recall: 60% eventual #1, 95% any fwd>200bps.
+State-archetype (n=20d): flash-tops (n=4) sprint to #1 but sit below VWAP, off-high, deep
+pullback; leaders hold structure. Exhaustion measurable: drawdown-from-high corr +0.76/+0.76
+with fwd-to-close (15:30/16:00). Archetypes: 7 premarket-gap / 0 pure-emergent / 9 other
+(+ ELAB late-launch outlier: rank ~2200 at 15:00, finished #1 — snapshot rank can miss).
+Premarket-backfill: GO. Full-2025 extended-hours ≈ 538MB (41-47MB/month phases), 143GB free,
+test pull works, historical SIP bars fine on current entitlement. Awaiting run approval.
+Web: target = excursion-gated MFE-before-drawdown + recall-first funnel (target-design);
+concentration: Lee-Swaminathan (abnormal turnover validates continuation; persistent high =
+late-stage); exhaustion: climax + mirror rule (expand-together = healthy, diverge = exhausted).
+Files: subagent-artifacts/outputs/3babc954.../ (3 web full; 4 empirical inline).
+
 ### Next experiments (Stage A order)
 1. P(day-#1 | threshold) on own panel for 100k PM-vol / RVOL 2x / gap bands (replace lore).
 2. Rotation-by-10:00 ranking vs gap% ranking (needs yfinance float cache <=60 tickers first).
