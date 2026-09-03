@@ -398,3 +398,22 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
 - **FROZEN_V2.md committed BEFORE fresh window** (model_v2 + theta 0.00098 + M3/composite/E6_rvol8/X_60m/cap10/$10k; eval protocol pre-registered; no tuning between months).
 - **Fresh window blocked on data**: HF dataset (mito0o852/OHLCV-1m + all mirrors) ends 2026-03; updated 2026-05-03. 2026-04..08 exist nowhere local. FIX: backfill from Alpaca SIP historical (entitlement VERIFIED via test pull). factory/scripts/backfill_alpaca.py → HF-schema raw parquets; clean/certify/featurize chain unchanged; validate_backfill.py (bar-level vs HF 2026-03) gates the run. eval_frozen.py written+committed BEFORE fresh data lands.
 - Decision rule (pre-registered): paper-deploy iff pooled net/unit > 0 @20bps AND all five months ≥ −20bps/unit; else no-go + mechanism investigation, no re-tune.
+
+## 2026-09-03 — fresh window built (Alpaca SIP backfill) + NO-GO verdict
+- **Data fix**: HF dataset ends 2026-03 → backfilled 2026-03..08 from Alpaca SIP
+  (backfill_alpaca.py, resumable, ~36-39M rows/month). Validation on 2026-03 vs HF:
+  100% listed-ticker bar coverage, 99.5% closes <0.5%, 99.1% vols <1% → PASS.
+  Clean/certify/featurize chain unchanged; features 2026-04..08 coverage healthy
+  (rvol .94-.97). NOTE: first featurize pass wrote all-null features (clean files in
+  data/backfill/, build_features reads data/) — caught by coverage check, re-run fixed.
+- **FROZEN one-shot eval (2026-04..08)**: **NO-GO.** Pooled −41.6bps/unit @20 (−61.6
+  @40), wr 0.480, 215 entries (2.9/day), −$115/day, all 5 months negative (−16..−153),
+  top-5 = 13.2% |gross| (broad loss). Both pre-registered deploy conditions failed.
+- **Post-hoc decomposition** (REPORT_FRESH_WINDOW_2026.md): model IC fresh +0.018 (weak
+  but alive, ~1/3 of 2025 val +0.059); M3 flat; the 2025-selected composite gates
+  (rvol>4 & vwap>0.03) FLIPPED negative (+0.86% 2025 → −0.13% fresh) — the
+  extension/volume conditional is what failed to transfer, not primarily the model.
+  E6 within-episode timing −42bps vs pool +9bps (noise-dominated, n=215).
+- **Status**: no validated edge in this family as of 2026-08. Paper bot = measurement
+  instrument (if built). New hypotheses require new data (2026-09+). No re-tuning on
+  04-08.
