@@ -456,3 +456,18 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
 - Stateful: flash-tops below VWAP/off-high vs leaders holding structure; drawdown-from-high corr +.76 with forward; archetypes 7 gap / 0 pure-emergent / 9 other + ELAB late-launch outlier.
 - Premarket-backfill GO: 2025 ext-hours ~538MB total, month phases, entitlement OK. Awaiting run approval.
 - Target verdict: excursion-gated MFE + recall-first funnel. Doc researches/07 (pass 3). No implementation.
+
+## 2026-09-04 — 2025 premarket repair RUNNING + forward observer BUILT
+- Backfill: factory/scripts/backfill_premarket_2025.py (premarket-only <09:30 ET, own
+  outputs data/backfill/premarket_ohlcv_2025-MM + premarket_parts/, resume per part).
+  API proven, Jan pilot ok (~3-5s/batch, ~40min/mo, ~5GB/yr total, 143GB free).
+  Running all 12 months in background (logs/premarket_backfill.log). Existing data untouched.
+- Observer: factory/scripts/forward_observe.py (ORDER-FREE by construction + assert +
+  test). Session loop 13:25-20:10 UTC, 2-min polls: scans.jsonl (top-30 raw),
+  promotions.jsonl (union of top4-gain / gain-x-vol / sep-shortlist + SIP bars/ADV/float/news),
+  state.jsonl (rank/sep/$-vol per promoted). Scoring offline — nothing frozen.
+  tests: factory/scripts/test_forward_observe.py (5 pass). Dry run ok.
+  Live loop started 2026-09-03 22:06 UTC, idles to Fri 13:25 UTC (logs/forward_observe.log).
+- Judgment (advisor Q): observer-only first, NO live shadow entries — forward 1-min bars
+  make any entry/exit replayable offline with identical SIP data; shadow engine = strategy
+  creep. Watch recall-first (2-8 names), precision downstream offline.
