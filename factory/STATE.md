@@ -519,3 +519,16 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
   emerging-(a) capped, halt-tolerant gating.
 - Assets: 2025 PM repaired+validated (325MB); Friday forward captured (1525 rows/28 syms).
 - Next: PM retests, forward scoring, month-blocked state/health proof. No Stage B.
+
+## 2026-09-04 — advisories reconciled; per-name logging; canonical state; orphans moved
+- Adopted: target-econ (MFE-gated primary + FP-per-opportunity; mean-fwd retired as ranker);
+  inference-audit 15-claim table (5 supported directional, 1 disproven, rest pending);
+  repo-debt triage (leave-alone + 3 orphan moves only).
+- Built: per-name {fwd,mfe,mae,obp} in stagea --out (was the binding constraint).
+- Moved: data/stage_*{md5-verified identical} -> data/_superseded/ + receipt;
+  zz_leader_health.csv -> factory/artifacts/; deprecation headers rank_day/extract_events.
+- Wrote researches/CANONICAL_STATE.md (fresh-context inheritance contract).
+- CodeGraph tested live: 98 files/2.9k nodes, blast-radius + dup-map instant. Adopted as
+  structural navigator; no reorg. Note: indexes src/, not factory/scripts/.
+- /tmp reaped aggressively — write harness outputs to data/_scratch/, not /tmp.
+- Observer redeploy (gain_open_anchored) after Friday close ~20:10 UTC.

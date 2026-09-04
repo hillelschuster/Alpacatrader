@@ -1,4 +1,7 @@
-"""Extract top-N entry events — ponytail minimal."""
+"""Extract top-N entry events — ponytail minimal.
+DEPRECATED for new work (2026-09-04): superseded by factory/scripts/certify_month.py.
+Kept for lineage only — see researches/07 + STATE.
+"""
 import argparse
 from pathlib import Path
 import polars as pl

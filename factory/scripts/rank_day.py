@@ -1,4 +1,7 @@
-"""Chronological per-minute top-gainer ranker — ponytail minimal."""
+"""Chronological per-minute top-gainer ranker — ponytail minimal.
+DEPRECATED for new work (2026-09-04): prior-close-anchored ranks superseded by
+factory/scripts/certify_month.py. Kept for lineage only — see researches/07 + STATE.
+"""
 import argparse
 from pathlib import Path
 import polars as pl

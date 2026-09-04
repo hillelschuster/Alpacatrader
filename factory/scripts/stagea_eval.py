@@ -140,8 +140,8 @@ def eval_day(month, day, gates=("none", "n10", "sh", "both"), hmodes=("none", "l
         fwd_all = [(s, o) for s, o in fwd_all if o]
         for h in hmodes:
             kept = set(health_filter([s for s, _ in fwd_all], e15, e1445, h))
-            sel = [o for s, o in fwd_all if s in kept]
-            rej = [o for t in lists["top20"] if t not in kept and t in frames
+            sel = [(s, o) for s, o in fwd_all if s in kept]
+            rej = [(t, o) for t in lists["top20"] if t not in kept and t in frames
                    for o in [outcome_E0f(frames[t])] if o]
             for g in gates:
                 ok = (g == "none" or (g == "n10" and state["n10"] >= 4)
@@ -150,11 +150,13 @@ def eval_day(month, day, gates=("none", "n10", "sh", "both"), hmodes=("none", "l
                 key = f"{lname}|{h}|{g}"
                 res["rules"][key] = {
                     "gate_ok": ok, "n": len(sel),
-                    "mean": round(st.mean([o["fwd"] for o in sel]), 1) if sel else None,
-                    "med": round(st.median([o["fwd"] for o in sel]), 1) if sel else None,
-                    "hit": round(sum(1 for o in sel if o["fwd"] > 20) / len(sel), 2) if sel else None,
-                    "mfe": round(st.mean([o["mfe"] for o in sel]), 1) if sel else None,
-                    "rej_mean": round(st.mean([o["fwd"] for o in rej]), 1) if rej else None}
+                    "mean": round(st.mean([o["fwd"] for _, o in sel]), 1) if sel else None,
+                    "med": round(st.median([o["fwd"] for _, o in sel]), 1) if sel else None,
+                    "hit": round(sum(1 for _, o in sel if o["fwd"] > 20) / len(sel), 2) if sel else None,
+                    "mfe": round(st.mean([o["mfe"] for _, o in sel]), 1) if sel else None,
+                    "rej_mean": round(st.mean([o["fwd"] for _, o in rej]), 1) if rej else None,
+                    "names": [{"t": s, "fwd": o["fwd"], "mfe": o["mfe"],
+                                 "mae": o["mae"], "obp": o["obp"]} for s, o in sel]}
     return res
 
 
