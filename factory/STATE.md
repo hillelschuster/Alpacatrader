@@ -499,3 +499,14 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
   2+ pullbacks = left-tail (-7.7% mean, hit holds). Health = mid-gain+decel+rising+near-high+VWAP.
 - Regime-web lane failed on tooling; NO-WEB priors filed + main-thread web cover (VIX-gate,
   ERM, panic states, internals). Doc 07 pass 4. No implementation.
+
+## 2026-09-04 — Stage-A harness + block regime map (research only)
+- Harness: factory/scripts/stagea_eval.py (baselines cur1/top3-20, sep3, opp gates,
+  health lite/full, emerging lane; selected-vs-rejected; multi-block). Fast (~25s/day).
+- BLOCKS (causal top-N fwd-to-close, first-sessions/mo + mid-Jun check):
+  Mar25 +983 | Apr-May -431 | Jun-Jul cur1 -341 | Aug-Sep top3 -194 | Oct-Nov +274 |
+  Dec+Mar26 top3 +1086/cur1 +1903 | mid-Jun -1267 (not month-start artifact).
+  Summer = cold regime, fall/winter+Mar = hot. Same rules, opposite signs.
+- Early: health-lite/full >> none on hot blocks; emerging lane ~noise so far
+  (Aug-Sep -403, Oct-Nov -19, Dec-Mar -5); gates untested (hot days pass all).
+- Pending: parity-audit + emerging lanes; backfill Dec; Friday forward session live.
