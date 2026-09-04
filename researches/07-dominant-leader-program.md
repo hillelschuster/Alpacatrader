@@ -230,6 +230,21 @@ density, calendar) + continuous-score-not-binary recommendation. Full in lane fi
 CLOCK NOTES: 2025 files run 13:30-19:59 UTC (DST shift), 2026 14:30-19:59; effective
 close = 19:59 bar. PM repair still backfilling at lane runtime — PM tests pending.
 
+### Milestone verdict (2026-09-04; 48 days, fixed ET+causal harness)
+POOLED: cur1 -88 / top3 +17 / top5 +46 / sep3 -39 / top10 +36 / top20 +18 bps (meds neg,
+hit ~0.45); gates n10/sh/both move nothing (-118..-144); health lite/full ~none or worse;
+emerging -57. SELECTED-vs-REJECTED: 20-24/48 days — coin flip. The raw top-gainer watchlist
+does NOT beat its own tail pooled. Old block map VOID (clock artifact); new blocks
+heterogeneous (-507..+831) with no seasonal form. SURVIVES: ET first-hour gradient recheck
+(144/28/102/34bps over 4d, proper label filter); hindsight leader effect (panel pipeline —
+flagged for ET recheck, not void); regime heterogeneity itself; emerging-(a) capped satellite;
+RAPP halt-hole lesson (gates must tolerate halts). ASSETS LIVE: 2025 premarket repaired +
+validated (325MB, 12mo, maxUTC 869); Friday forward session captured (1525 state rows,
+28 symbols); observer gain_open_anchored deploys after close.
+STAGE-A MATURITY: NOT MET. Milestone requires watchlist materially better than raw population
+across blocks + forward. Next: PM-hypothesis retests on repaired 2025; forward-session scoring;
+state/health conditioning with month-blocked proof. No Stage B until then.
+
 ### Next experiments (Stage A order)
 1. P(day-#1 | threshold) on own panel for 100k PM-vol / RVOL 2x / gap bands (replace lore).
 2. Rotation-by-10:00 ranking vs gap% ranking (needs yfinance float cache <=60 tickers first).

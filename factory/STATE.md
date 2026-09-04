@@ -510,3 +510,12 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
 - Early: health-lite/full >> none on hot blocks; emerging lane ~noise so far
   (Aug-Sep -403, Oct-Nov -19, Dec-Mar -5); gates untested (hot days pass all).
 - Pending: parity-audit + emerging lanes; backfill Dec; Friday forward session live.
+
+## 2026-09-04 — milestone: Stage-A NOT mature (48d fixed harness)
+- Pooled: top3 +17 / top5 +46 / sep3 -39 bps, meds neg, hit ~.45; gates/health move
+  nothing pooled; selected-vs-rejected coin flip (20-24/48). Raw watchlist != edge.
+- Old block map void (clock artifact); new blocks -507..+831, no seasonal form.
+- Survives: ET gradient recheck (4d), hindsight effect (recheck queued), heterogeneity,
+  emerging-(a) capped, halt-tolerant gating.
+- Assets: 2025 PM repaired+validated (325MB); Friday forward captured (1525 rows/28 syms).
+- Next: PM retests, forward scoring, month-blocked state/health proof. No Stage B.

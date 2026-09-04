@@ -173,7 +173,8 @@ def entries_E1(sess, ticker, t_et: int):
 def replay_day(month: str, day, t_list, rules, entries):
     sess = load_day(month, day)
     eves = sess.sort_values("timestamp").groupby("ticker").agg(
-        lc=("close", "last"), fo=("open", "first"))
+        lc=("close", "last"), fo=("open", "first"), n=("close", "size"))
+    eves = eves[eves["n"] >= 100]  # label-side presence filter (label only, not selection)
     eventual = (eves["lc"] / eves["fo"] - 1).idxmax()
     out = {"day": str(day.date()), "eventual": eventual, "snaps": {}}
     for t in t_list:
