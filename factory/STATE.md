@@ -471,3 +471,21 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
 - Judgment (advisor Q): observer-only first, NO live shadow entries — forward 1-min bars
   make any entry/exit replayable offline with identical SIP data; shadow engine = strategy
   creep. Watch recall-first (2-8 names), precision downstream offline.
+
+## 2026-09-04 — backfill bug postmortem + replay harness + regime wave
+- BUG: polars dt.hour()/minute() are Int8 -> `h*60+m` overflowed (10:00 -> 88), so the
+  premarket filter kept the COMPLEMENT (evening bars). Caught by hour-dist validation.
+  Fix: cast to Int32 + assert zero rows >=14:30 UTC per merged month. Lesson: validate
+  distributions, not just row counts. Deleted polluted files, rerunning all 12 months.
+- Ops lesson: git-bash `ps` misses Windows python; duplicate background runs raced on
+  part files. Use tasklist/wmic + check log coherence (no dup batch lines) for singletons.
+- Harness: factory/scripts/replay_watchlist.py — snapshot t -> rules -> E0 (buy-hold,
+  selection alpha) vs E1 (first-pullback, timing alpha). Pilot 2d: E0 neg/flat, E1
+  positive 70-79% hit (tiny n). One code path for historical + (later) forward-backfilled days.
+- Regime cover (web lane lost tooling; ran in main): VIX-gate precedents (Concretum,
+  AlgoKing VIX<16/16-24/>24, AIBROKER ERM trend/breadth/dispersion/vol), Daniel-Moskowitz
+  panic states, internals (TICK/ADD/VOLD), SmallCapLab next-day, Vortex gap map,
+  TradeTheMatrix cycles, FOMO-momentum GH (10yr/23k-ticker negative-results program).
+- Observer widened 30->50 live snapshots for future-rule replay; full-market depth via
+  next-day historical backfill (DO NOT run backfill_alpaca for 2026-09 until month ends —
+  partial final would poison resume-skip).

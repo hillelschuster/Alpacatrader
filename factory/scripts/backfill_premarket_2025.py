@@ -51,9 +51,17 @@ def fetch_chunk(client, symbols: list[str], start: datetime, end: datetime, bad:
                                      "volume", "symbol"]])
             out = out.rename({"symbol": "ticker"}).with_columns(
                 pl.col("timestamp").cast(pl.Datetime("ns", "UTC")))
-            # keep premarket only: < 09:30 America/New_York (handles EST/EDT)
-            ny = pl.col("timestamp").dt.convert_time_zone("America/New_York")
-            out = out.filter(ny.dt.hour() * 60 + ny.dt.minute() < 570)
+            # keep premarket only: 04:00-09:29:59 ET, in pure UTC arithmetic
+            # (polars tz conversion needs tzdata, missing on Windows).
+            # 2025 DST: Mar 9 - Nov 2. EST: 09:00-14:29 UTC; EDT: 08:00-13:29 UTC.
+            d = pl.col("timestamp").dt.date()
+            is_est = (d < pl.date(2025, 3, 9)) | (d >= pl.date(2025, 11, 2))
+            # NOTE: dt.hour()/minute() are Int8 -> cast before arithmetic (i8 overflow!)
+            mins = (pl.col("timestamp").dt.hour().cast(pl.Int32) * 60
+                    + pl.col("timestamp").dt.minute().cast(pl.Int32))
+            out = out.filter(
+                ((is_est) & (mins >= 540) & (mins < 870))
+                | ((~is_est) & (mins >= 480) & (mins < 810)))
             return out
         except Exception as e:
             msg = str(e)
@@ -122,6 +130,10 @@ def main():
                          how="vertical") \
             .unique(subset=["timestamp", "ticker"], keep="first") \
             .sort("timestamp", "ticker")
+        bad_rows = full.filter(
+            pl.col("timestamp").dt.hour().cast(pl.Int32) * 60
+            + pl.col("timestamp").dt.minute().cast(pl.Int32) >= 870).height
+        assert bad_rows == 0, f"{month}: {bad_rows} non-premarket rows leaked"
         full.write_parquet(out)
         print(f"[{month}] wrote {out}: {full.height:,} rows, "
               f"{out.stat().st_size / 1e6:.1f} MB, bad-symbols={len(bad)}", flush=True)
