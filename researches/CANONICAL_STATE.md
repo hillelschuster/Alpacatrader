@@ -54,8 +54,21 @@ lookahead; i8 overflow in polars time math; missing tzdata on Windows (pure-UTC 
 duplicate background PIDs (verify via tasklist + log coherence); /tmp reaped aggressively
 (write outputs to data/_scratch/); 2026-04 clean file absent locally (use backfill).
 
+## MFE-before-drawdown: CONFIRMED stable (2026-09-04; 33d, 165 names, top5@10ET)
+mb100 (MFE before -100bps touch): pooled mean 711 / med 158 / P(>200)=0.46.
+Month blocks ALL positive: 298..1678; day-hit 31/33; FP/cap 0.8-2.2.
+Terminal fwd flips sign across the same blocks; MFE-before-DD never does.
+Adopted Stage-A target stands. FP gate: ~1.2 FP per captured name baseline.
+
+## Premarket retests on repaired 2025 (20d, n=14,379 ticker-days)
+1. Echo 70%: CONTRADICTED blanket (P=0.56); refinement — narrow-PM tercile 0.71,
+   wide-PM 0.36 (monotonic). Only narrow premarket ranges extend.
+2. PM-high distance: DEAD (r=-0.010, agrees 2026). Demote permanently.
+3. True gaps: weak-negative tilt on gap-ups, tiny n at extremes (18-173); UNCLEAR.
+4. PM $-vol leadership: CONTRADICTED 0/20 (crowns liquidity: ETFs/large names).
+
 ## Open questions (in order)
-1. MFE-before-drawdown curves month-blocked; FP-penalized recall gate for Stage B.
+1. FP-penalized recall gate for Stage B (MFE-before-DD target adopted).
 2. Premarket-hypothesis retests on repaired 2025 (echo ratio, gap×catalyst, PM range×dir).
 3. Friday+ forward sessions scored through harness.
 4. Same-pattern expectancy inside selected vs rejected (E1 probe design proven, needs scale).

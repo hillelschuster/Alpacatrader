@@ -532,3 +532,13 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
   structural navigator; no reorg. Note: indexes src/, not factory/scripts/.
 - /tmp reaped aggressively — write harness outputs to data/_scratch/, not /tmp.
 - Observer redeploy (gain_open_anchored) after Friday close ~20:10 UTC.
+
+## 2026-09-04 — MFE-before-DD confirmed; PM retests; mfe lane timed out (partials kept)
+- MFE-before-100bps (33d/165 names, salvaged data/_scratch/mfe_curves.json): pooled
+  711/158, P(>200)=0.46; ALL 9 month-blocks positive (298-1678); day-hit 31/33;
+  FP/cap 0.8-2.2. Terminal fwd flips sign on same blocks. Target adopted.
+- PM retests (20d, n=14,379): echo-70% contradicted blanket (0.56; narrow-PM 0.71 ->
+  wide 0.36 monotonic); PM-high distance dead (r=-0.010, permanent demote);
+  true gaps weak-negative tilt, tiny-n; PM-$-vol leadership contradicted (0/20).
+- mfe-curves lane timed out at 30min despite steer; partial JSON kept. Lesson: cap
+  lane scopes to <=24 days or split halves explicitly.
