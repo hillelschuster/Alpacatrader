@@ -192,6 +192,18 @@ concentration: Lee-Swaminathan (abnormal turnover validates continuation; persis
 late-stage); exhaustion: climax + mirror rule (expand-together = healthy, diverge = exhausted).
 Files: subagent-artifacts/outputs/3babc954.../ (3 web full; 4 empirical inline).
 
+### Parity audit reckoning (2026-09-04; independent reviewer, static + repro)
+VOID as shippable edges (definition-bound): all headline bps/hit-rates from UTC-clock +
+full-day-peek harness (top-3 +347/+339, block map, 85.7% sep, +95/+51 gradients as stated).
+P0 fixed: (1) ET-anchored session/snapshots (DST had shifted EDT dates +1h, dropping open hour);
+(2) causal-only gating min_bars>=10 (no full-day peek); (3) 1-bar snapshot lag (start-stamped);
+(4) observer now logs gain_open_anchored alongside vendor prior-close gain (deploy after Fri close);
+(5) every claim labeled by denominator (open- vs prior-close-anchored); split-exclusion required
+for prior-close numbers. Found live: RAPP ran +49% with 12 bars by 10:00 ET (halt holes) —
+bar-count gates must tolerate halts (min_bars=10). SURVIVES directionally: early drift,
+separation>concentration, morning-only, violent paths, regime clustering. Rerun lane rebuilding
+all blocks on fixed harness + ET re-verification of gradient/separation.
+
 ### Pass 4: opportunity-state + leader-state (2026-09-04; n=36 days / n=150 names)
 
 OPP-STATE (36d, 2/mo Mar25-Aug26): base mean-fwd top-4 +1.4% (median -0.1%, P>0 50%);
