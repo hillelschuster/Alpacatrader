@@ -489,3 +489,13 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
 - Observer widened 30->50 live snapshots for future-rule replay; full-market depth via
   next-day historical backfill (DO NOT run backfill_alpaca for 2026-09 until month ends —
   partial final would poison resume-skip).
+
+## 2026-09-04 — pass 4: opportunity-state (n=36d) + leader-state (n=150)
+- Day base: top-4 fwd +1.4% mean/-0.1% med; max-fwd +39.8% mean (daily continuation exists).
+- HOT TAPE replaces scarcity: n10>=4 -> 61% vs 39% (+2.6 vs +0.2); top1-share NEGATIVE
+  (<0.5 -> 67% vs 33%); HHI negative; churn negative. Price-separation good, vol-diffusion good.
+- Morning window only: 16:00 emergence not still-tradable. Structure persists, behavior re-dices.
+- Names: mid-gain@15 0.58 hit (inverted-U); high-accel fades (0.29); rising>stable;
+  2+ pullbacks = left-tail (-7.7% mean, hit holds). Health = mid-gain+decel+rising+near-high+VWAP.
+- Regime-web lane failed on tooling; NO-WEB priors filed + main-thread web cover (VIX-gate,
+  ERM, panic states, internals). Doc 07 pass 4. No implementation.

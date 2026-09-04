@@ -192,6 +192,32 @@ concentration: Lee-Swaminathan (abnormal turnover validates continuation; persis
 late-stage); exhaustion: climax + mirror rule (expand-together = healthy, diverge = exhausted).
 Files: subagent-artifacts/outputs/3babc954.../ (3 web full; 4 empirical inline).
 
+### Pass 4: opportunity-state + leader-state (2026-09-04; n=36 days / n=150 names)
+
+OPP-STATE (36d, 2/mo Mar25-Aug26): base mean-fwd top-4 +1.4% (median -0.1%, P>0 50%);
+max-fwd mean +39.8% — SOMETHING continues almost daily. Winners: n10 count>10% (+.38 vs
+day#1; hi-tercile mean-fwd +5.8%, max 62.9%; binary n10>=4: 61% vs 39% hit, +2.6 vs +0.2);
+g1; $-concentration; dispersion; breakout/VWAP-hold rates (mid-tercile spikes).
+LOSERS: top1 $-share NEGATIVE (-.30; <0.5 share: 67% vs 33%); HHI negative; churn
+negative vs day#1 (-.38). INTRADAY: structure persists (n5/HHI/conc persist .64-.76)
+but behavior re-dices; cold->hot emergence exists yet NOT still-tradable from 16:00;
+edge window is the morning state.
+REPLACES SCARCITY: HOT TAPE = many movers + BROAD volume + PRICE-separated leader.
+Price separation good, volume concentration bad — the leader far ahead in price while
+participation stays wide. (Differs from HHI-instinct; trust the panel.)
+LEADER-STATE (150 names, 30d): base P(fwd>100bps)=.407, mean +2.22% (median -1.32%, skew).
+Mid-gain@15 best (0.58 hit — inverted-U, tails worse); HIGH acceleration WORSE
+(0.29/-1.3%: violent sprinters fade = exhaustion signature); rising trajectory > stable;
+>=2 pullbacks: hit holds .45 but mean -7.7% (choppy-then-break left tail); deep-dd mean
++11.4% is skew-driven, treat with suspicion. Best interaction: accel x widen (partial).
+Health-score direction: mid-gain + decelerating + rising rank + near-high + VWAP-hold.
+NO-WEB priors (regime-web lane lost tooling; main-thread web cover filed): 10 ranked
+day-state vars (prior-day runner persistence, opening RVOL share, gap regime, index
+trend/chop, stress/vol, breadth, R30 expansion, overnight/intraday split, catalyst
+density, calendar) + continuous-score-not-binary recommendation. Full in lane file.
+CLOCK NOTES: 2025 files run 13:30-19:59 UTC (DST shift), 2026 14:30-19:59; effective
+close = 19:59 bar. PM repair still backfilling at lane runtime — PM tests pending.
+
 ### Next experiments (Stage A order)
 1. P(day-#1 | threshold) on own panel for 100k PM-vol / RVOL 2x / gap bands (replace lore).
 2. Rotation-by-10:00 ranking vs gap% ranking (needs yfinance float cache <=60 tickers first).
