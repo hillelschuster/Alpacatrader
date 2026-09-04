@@ -20,8 +20,30 @@ import json
 import math
 from pathlib import Path
 
-SESSION_MIN, SESSION_MAX = 870, 1260  # 14:30-21:00 UTC
 COST_BPS = 20.0
+SNAP_LAG = 1  # decision at t uses bars with ET-minute <= t-1 (start-stamped bars)
+
+
+def _dst_bounds(year: int):
+    """US DST: second Sunday March -> first Sunday November (no tzdata needed)."""
+    import datetime as dt
+    def nth_sunday(y, m, n):
+        d = dt.date(y, m, 1)
+        first = d + dt.timedelta(days=(6 - d.weekday()) % 7)
+        return first + dt.timedelta(weeks=n - 1)
+    return nth_sunday(year, 3, 2), nth_sunday(year, 11, 1)
+
+
+def et_minute(ts):
+    """Vectorized UTC->ET minute-of-day (Series in, Series out)."""
+    import pandas as pd
+    ts = pd.to_datetime(ts, utc=True)
+    off = pd.Series(300, index=ts.index)
+    for year in ts.dt.year.dropna().unique():
+        s, e = _dst_bounds(int(year))
+        d = ts.dt.date
+        off = off.mask((d >= s) & (d < e), 240)
+    return (ts.dt.hour * 60 + ts.dt.minute - off) % 1440
 
 
 # ── data ───────────────────────────────────────────────────────────────────
@@ -39,23 +61,31 @@ def load_day(month: str, day, premarket: bool = False):
     df["timestamp"] = pd.to_datetime(df["timestamp"], utc=True)
     df["date"] = df["timestamp"].dt.floor("D")
     g = df[df["date"] == day].copy()
-    m = g["timestamp"].dt.hour * 60 + g["timestamp"].dt.minute
-    sess = g[(m >= SESSION_MIN) & (m <= SESSION_MAX)].sort_values(["ticker", "timestamp"])
-    st = sess.groupby("ticker").agg(fo=("open", "first"), n=("close", "size"))
-    cands = st[(st["n"] >= 100) & (st["fo"] >= 1) & (st["fo"] <= 50)].index
-    return sess[sess["ticker"].isin(cands)].copy()
+    g["et"] = et_minute(g["timestamp"])
+    # session in ET (matches clean_month RTH 9:30-16:00 ET); NO full-day gating here —
+    # eligibility is decided causally inside snapshot() from bars <= t only.
+    sess = g[(g["et"] >= 570) & (g["et"] < 960)].sort_values(["ticker", "timestamp"])
+    return sess
 
 
-def snapshot(sess, t_min: int):
-    """Causal snapshot using bars with minute <= t_min. Returns per-ticker rows."""
-    early = sess[(sess["timestamp"].dt.hour * 60 + sess["timestamp"].dt.minute) <= t_min]
-    e = early.sort_values("timestamp").groupby("ticker").agg(
+def snapshot(sess, t_et: int, lag: int = SNAP_LAG, min_bars: int = 10):
+    """Causal snapshot at ET-minute t_et using bars with et <= t_et - lag.
+    Eligibility (causal-only): >= min_bars bars by t AND first session open $1-50.
+    min_bars=10 (not 20): halt-type bar holes are part of small-cap momentum;
+    RAPP-2025-03-04 ran +49% on the day with only 12 bars by 10:00 ET.
+    Returns per-ticker rows sorted by open-anchored gain (pc/po - 1)."""
+    early = sess[sess["et"] <= t_et - lag].sort_values(["ticker", "timestamp"])
+    if len(early) == 0:
+        import pandas as pd
+        return pd.DataFrame()
+    agg = early.groupby("ticker").agg(
         po=("open", "first"), pc=("close", "last"), ph=("high", "max"),
-        cv=("volume", "sum"), cdv=("close", lambda s: float((s * early.loc[s.index, "volume"]).sum())))
-    e["gain"] = e["pc"] / e["po"] - 1
-    e["vwap"] = e["cdv"] / e["cv"]
-    e = e.sort_values("gain", ascending=False)
-    return e
+        cv=("volume", "sum"), n=("close", "size"),
+        cdv=("close", lambda s: float((s * early.loc[s.index, "volume"]).sum())))
+    agg = agg[(agg["n"] >= min_bars) & (agg["po"] >= 1) & (agg["po"] <= 50)]
+    agg["gain"] = agg["pc"] / agg["po"] - 1
+    agg["vwap"] = agg["cdv"] / agg["cv"]
+    return agg.sort_values("gain", ascending=False)
 
 
 # ── watchlist rules (pure; same semantics as forward observer) ─────────────
@@ -82,10 +112,9 @@ RULES = {"top4_gain": r_top_gain, "gain_x_vol": r_gain_x_vol,
 
 
 # ── outcomes ───────────────────────────────────────────────────────────────
-def outcome_E0(sess, ticker, t_min: int):
-    """Buy next bar after t, hold to close. Pure selection read."""
-    late = sess[(sess["ticker"] == ticker)
-                & ((sess["timestamp"].dt.hour * 60 + sess["timestamp"].dt.minute) > t_min)]
+def outcome_E0(sess, ticker, t_et: int):
+    """Buy next bar after ET-minute t, hold to close. Pure selection read."""
+    late = sess[(sess["ticker"] == ticker) & (sess["et"] > t_et)]
     late = late.sort_values("timestamp")
     if len(late) < 2:
         return None
@@ -102,11 +131,10 @@ def outcome_E0(sess, ticker, t_min: int):
             "obp": bool(iu is not None and (idn is None or iu <= idn))}
 
 
-def entries_E1(sess, ticker, t_min: int):
+def entries_E1(sess, ticker, t_et: int):
     """First-pullback entry: opening drive then <=3-bar pause, enter new high.
-    Stop = pause low, time-stop 15 min, flatten last 30 min. Returns trade or None."""
-    late = sess[(sess["ticker"] == ticker)
-                & ((sess["timestamp"].dt.hour * 60 + sess["timestamp"].dt.minute) > t_min)]
+    Stop = pause low, time-stop 15 min, flatten at 15:30 ET. Returns trade or None."""
+    late = sess[(sess["ticker"] == ticker) & (sess["et"] > t_et)]
     late = late.sort_values("timestamp").reset_index(drop=True)
     if len(late) < 20:
         return None
@@ -126,8 +154,7 @@ def entries_E1(sess, ticker, t_min: int):
             for j in range(i + 1, min(i + 16, len(late))):
                 hh = late["high"].iloc[j]
                 ll = late["low"].iloc[j]
-                mm = late["timestamp"].iloc[j]
-                end = (mm.hour * 60 + mm.minute) >= 1230
+                end = late["et"].iloc[j] >= 930  # 15:30 ET flatten
                 if ll <= stop or end:
                     px = stop if ll <= stop else late["close"].iloc[j]
                     ret = (px / entry - 1) * 10000 - COST_BPS
@@ -177,7 +204,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--months", nargs="+", required=True)
     ap.add_argument("--max-days", type=int, default=4)
-    ap.add_argument("--times", default="885,900,930,960")
+    ap.add_argument("--times", default="585,600,630,660")  # ET minutes
     ap.add_argument("--rules", default=",".join(RULES))
     ap.add_argument("--entries", default="E0,E1")
     ap.add_argument("--out", default=None)

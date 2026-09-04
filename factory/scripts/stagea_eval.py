@@ -19,7 +19,7 @@ from pathlib import Path
 
 from replay_watchlist import load_day, snapshot, outcome_E0  # noqa: E402
 
-T_SNAP, T_PATH = 900, 885
+T_SNAP, T_PATH = 600, 585  # ET minutes: 10:00 / 09:45 ET (executable: bars <= t-1)
 
 
 def day_state(e15, e1445):
@@ -31,7 +31,7 @@ def day_state(e15, e1445):
     cdv = top20["cdv"]
     tot = cdv.sum()
     shares = cdv / tot if tot > 0 else cdv * 0
-    top1sh = float(shares.iloc[0]) if len(shares) else 0.0
+    gain1_share = float(shares.iloc[0]) if len(shares) else 0.0  # gain-#1's $-share
     hhi = float((shares ** 2).sum())
     diff_pp = float((top20["gain"].iloc[0] - top20["gain"].iloc[1]) * 100) if len(top20) > 1 else 0.0
     # churn: 1 - spearman(rank1445, rank15) over union top-20 symbols
@@ -44,12 +44,13 @@ def day_state(e15, e1445):
         a = np.array([r1[s] for s in common], dtype=float)
         b = np.array([r2[s] for s in common], dtype=float)
         ra, rb = np.argsort(np.argsort(a)), np.argsort(np.argsort(b))
-        churn = 1.0 - float(np.corrcoef(ra, rb)[0, 1])
+        c = np.corrcoef(ra, rb)[0, 1]
+        churn = 1.0 - float(c) if c == c and abs(float(c)) <= 1 else 0.0
     else:
         churn = 0.0
     held = e15[e15["pc"] > e15["vwap"]]
     vhold = float(len(held.head(10)) / 10)
-    return {"n10": n10, "n5": n5, "top1sh": round(top1sh, 3), "hhi": round(hhi, 3),
+    return {"n10": n10, "n5": n5, "top1sh": round(gain1_share, 3), "hhi": round(hhi, 3),
             "diff_pp": round(diff_pp, 2), "churn": round(float(churn), 3),
             "vhold": round(vhold, 3)}
 
@@ -106,7 +107,7 @@ def health_filter(syms, e15, e1445, mode):
     return out
 
 
-def outcome_E0f(late, t_min=None):
+def outcome_E0f(late):
     """E0 on a pre-filtered, time-sorted ticker frame."""
     late = late.sort_values("timestamp")
     if len(late) < 2:
@@ -127,9 +128,8 @@ def outcome_E0f(late, t_min=None):
 def eval_day(month, day, gates=("none", "n10", "sh", "both"), hmodes=("none", "lite", "full")):
     sess = load_day(month, day)
     e15, e1445 = snapshot(sess, T_SNAP), snapshot(sess, T_PATH)
-    mins = sess["timestamp"].dt.hour * 60 + sess["timestamp"].dt.minute
     frames = {t: g.sort_values("timestamp")
-              for t, g in sess[mins > T_SNAP].groupby("ticker")}
+              for t, g in sess[sess["et"] > T_SNAP].groupby("ticker")}
     if len(e15) < 20:
         return None
     state = day_state(e15, e1445)

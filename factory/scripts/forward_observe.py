@@ -99,6 +99,34 @@ def _jlog(path: Path, obj: dict):
         f.write(json.dumps(obj, default=str) + "\n")
 
 
+def attach_open_anchored_gain(rows: list) -> None:
+    """Best-effort parity with harness: open-anchored gain = last/dailyOpen - 1.
+    Vendor percent_gain is prior-close-anchored (different denominator); log both."""
+    try:
+        from alpaca.data.historical import StockHistoricalDataClient
+        from alpaca.data.requests import StockBarsRequest
+        from alpaca.data.timeframe import TimeFrame
+        from alpaca.data.enums import DataFeed
+        import os as _os
+        syms = [r["symbol"] for r in rows]
+        if not syms:
+            return
+        hc = StockHistoricalDataClient(_os.getenv("ALPACA_API_KEY"),
+                                       _os.getenv("ALPACA_SECRET_KEY"))
+        data = hc.get_stock_bars(StockBarsRequest(
+            symbol_or_symbols=syms, timeframe=TimeFrame.Day, limit=1,
+            feed=DataFeed.IEX)).data
+        by_sym = {r["symbol"]: r for r in rows}
+        for sym, bars in (data or {}).items():
+            if bars and getattr(bars[0], "open", None):
+                r = by_sym.get(sym)
+                px = r.get("price")
+                if r is not None and px:
+                    r["gain_open_anchored"] = round(px / bars[0].open - 1, 5)
+    except Exception:
+        pass
+
+
 def poll_once(day_dir: Path, promoted_state: dict, symbols_override=None) -> dict:
     from src.scanner.scanner import scan_dynamic_candidates, scan_manual_watchlist
     from src.market_data import build_market_snapshots
@@ -121,6 +149,7 @@ def poll_once(day_dir: Path, promoted_state: dict, symbols_override=None) -> dic
             "bid": getattr(q, "bid", None) if q else None,
             "ask": getattr(q, "ask", None) if q else None,
         })
+    attach_open_anchored_gain(rows)
     _jlog(day_dir / "scans.jsonl", {"ts": now, "n": len(rows), "rows": rows})
 
     promoted, debug = select_watchlist(rows)
