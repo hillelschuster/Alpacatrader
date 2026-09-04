@@ -104,8 +104,10 @@ def poll_once(day_dir: Path, promoted_state: dict, symbols_override=None) -> dic
     from src.market_data import build_market_snapshots
 
     now = datetime.now(timezone.utc).isoformat()
+    # WIDE net (50): live rows for rank 31-50 let future rules replay names today's
+    # watchlist missed. Full-market depth comes from next-day historical backfill.
     cands = (scan_manual_watchlist(symbols_override) if symbols_override
-             else scan_dynamic_candidates(max_candidates=30))
+             else scan_dynamic_candidates(max_candidates=50))
     snaps = build_market_snapshots(cands)
     rows = []
     for c in cands:
