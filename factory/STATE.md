@@ -542,3 +542,12 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
   true gaps weak-negative tilt, tiny-n; PM-$-vol leadership contradicted (0/20).
 - mfe-curves lane timed out at 30min despite steer; partial JSON kept. Lesson: cap
   lane scopes to <=24 days or split halves explicitly.
+
+## 2026-09-05 — first forward session scored (n=31 promoted, 26 scored)
+- Scorer bugs fixed: str-vs-datetime compare (zeroed all outcomes), month-boundary end,
+  empty-stats guard, warrant-symbology variants (5 names genuinely bar-less: BNCWZ,
+  EONR.WS, EUDAW, GFAIW, OGGWZ — screener phantoms, 16% of promotions).
+- Friday tape: mean fwd -1025 / med -1175 / hit 7/26 / mean MFE +1338. Violent warrant
+  tape (BIAFW +9743, TMCWW -7889). MFE>>fwd signature live-confirmed; terminal negative.
+- Logging apparatus verified: 178 scans x50, 0 gaps>5min, 2647 state rows, promos
+  13:25-19:56, none pre-window. Observer redeployed w/ gain_open_anchored (idle to Mon).
