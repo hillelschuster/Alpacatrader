@@ -217,17 +217,16 @@ def entries_E2(sess, ticker, t_et: int):
 
 
 def entries_E3(sess, ticker, t_et: int):
-    """VWAP-reclaim: was below session VWAP, then 1-min close back above it.
-    Entry next open; stop = reclaim-bar low. Invalidation exit = close back below
-    VWAP handled as stop-tightening: stop moves to min(stop, VWAP) is skipped —
-    plain stop kept for comparability with E1/E2."""
-    late = sess[(sess["ticker"] == ticker) & (sess["et"] >= t_et)]
-    late = late.sort_values("timestamp").reset_index(drop=True)
+    """VWAP-reclaim: was below TRUE session VWAP (cumsum from 09:30 ET open),
+    then 1-min close back above it. Entry next open; stop = reclaim-bar low."""
+    full = sess[sess["ticker"] == ticker].sort_values("timestamp").reset_index(drop=True)
+    late = full[full["et"] >= t_et].reset_index(drop=True)
     if len(late) < 25:
         return None
-    cv = (late["close"] * late["volume"]).cumsum()
-    vv = late["volume"].cumsum()
-    vw = cv / vv.replace(0, float("nan"))
+    cv = (full["close"] * full["volume"]).cumsum()
+    vv = full["volume"].cumsum()
+    vw_full = cv / vv.replace(0, float("nan"))
+    vw = vw_full[full["et"] >= t_et].reset_index(drop=True)
     was_below = False
     for i in range(10, len(late) - 6):
         if late["close"].iloc[i - 1] < vw.iloc[i - 1]:
@@ -240,7 +239,6 @@ def entries_E3(sess, ticker, t_et: int):
             if entry / stop - 1 > 0.05 or entry / stop - 1 <= 0:
                 return None
             return _run_trade(late, i, entry, stop)
-    return None
     return None
 
 
@@ -270,6 +268,10 @@ def replay_day(month: str, day, t_list, rules, entries):
                     d["E0"] = outcome_E0(sess, p, t)
                 if "E1" in entries:
                     d["E1"] = entries_E1(sess, p, t)
+                if "E2" in entries:
+                    d["E2"] = entries_E2(sess, p, t)
+                if "E3" in entries:
+                    d["E3"] = entries_E3(sess, p, t)
                 det.append(d)
             sres["rules"][rn] = det
         out["snaps"][t] = sres
@@ -283,12 +285,20 @@ def main():
     ap.add_argument("--times", default="585,600,630,660")  # ET minutes
     ap.add_argument("--rules", default=",".join(RULES))
     ap.add_argument("--entries", default="E0,E1")
+    # NOTE: unknown --entries names raise (fail-loud, never silently ignore)
+    
     ap.add_argument("--out", default=None)
     args = ap.parse_args()
     import pandas as pd
     t_list = [int(x) for x in args.times.split(",")]
     rules = args.rules.split(",")
     entries = args.entries.split(",")
+    bad = [e for e in entries if e not in ("E0", "E1", "E2", "E3")]
+    if bad:
+        raise SystemExit(f"unknown entry names (would be silently ignored): {bad}")
+    bad_r = [r for r in rules if r not in RULES]
+    if bad_r:
+        raise SystemExit(f"unknown rules: {bad_r}")
     results = []
     for month in args.months:
         base = Path("data/backfill") if month >= "2026-03" else Path("data")

@@ -581,3 +581,10 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
 - entries_E2/E3 share _run_trade exit engine with E1 conventions (next-bar fill,
   stop-first, 2R, 15-bar stop, 15:30 ET flatten). Wired e2/e3 into stagea names.
 - 3 lanes: rerun-C (03-08), rerun-D (09-12+2026-03), reviewer2 (E2/E3 audit).
+
+## 2026-09-05 — health-conditioned interaction: E3 separates, E1 weak, E2 no
+- 44d stored files: E1 kept +48/.51 vs dropped -5/.43; E2 kept -20/.35 vs -56/.37 (no);
+  E3 kept +24/.43 vs dropped -48/.26 (separates on both metrics, n=60/77).
+- Caveat: files predate session-VWAP fix — E3 verdict needs rerun with true VWAP.
+- Fixed: E3 session-open VWAP cumsum; replay_day E2/E3 branches + unknown-name guard;
+  duplicate return removed.
