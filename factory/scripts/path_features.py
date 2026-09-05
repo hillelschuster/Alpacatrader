@@ -48,8 +48,10 @@ def zseries_30m(bars, t_et: int = 600, lag: int = 1):
     return [round(float(x), 4) for x in z[-30:]]
 
 
-def dtw(a, b, w: int = 3):
-    """Symmetric DTW with Sakoe-Chiba window. Pure python/numpy, small n."""
+def dtw(a, b, w: int | None = None):
+    """Symmetric DTW, length-normalized D[n,m]/(n+m). Full window by default
+    (n,m <= 30: cheap; window risks inf on unequal lengths). Returns per-step cost,
+    so halt-hole (short) vs clean (long) series compare by shape, not length."""
     import numpy as np
     n, m = len(a), len(b)
     D = np.full((n + 1, m + 1), np.inf)
@@ -57,10 +59,11 @@ def dtw(a, b, w: int = 3):
     A = np.asarray(a, dtype=float)
     B = np.asarray(b, dtype=float)
     for i in range(1, n + 1):
-        for j in range(max(1, i - w), min(m, i + w) + 1):
+        lo, hi = (max(1, i - w), min(m, i + w) + 1) if w else (1, m + 1)
+        for j in range(lo, hi):
             cost = abs(A[i - 1] - B[j - 1])
             D[i, j] = cost + min(D[i - 1, j], D[i, j - 1], D[i - 1, j - 1])
-    return float(D[n, m])
+    return float(D[n, m] / (n + m))
 
 
 def build_vector(sess_ticker_bars, pm_ticker_bars, prev_close, t_et: int = 600,
@@ -82,9 +85,12 @@ def build_vector(sess_ticker_bars, pm_ticker_bars, prev_close, t_et: int = 600,
     last, first_open = c[-1], o[0]
     ret = np.diff(np.log(np.maximum(c, 1e-9)))
     f = {}
-    # PM/gap (6)
-    if pm_ticker_bars is not None and len(pm_ticker_bars):
-        p = pm_ticker_bars.sort_values("timestamp")
+    # PM/gap (6). Guard: only pre-open bars (et<570); caller-passed frames vary.
+    import pandas as _pd
+    p = _pd.DataFrame()
+    if pm_ticker_bars is not None and len(pm_ticker_bars) and "et" in pm_ticker_bars:
+        p = pm_ticker_bars[pm_ticker_bars["et"] < T_OPEN].sort_values("timestamp")
+    if len(p):
         ph, pl = float(p["high"].max()), float(p["low"].min())
         f["pm_range_pct"] = (ph - pl) / first_open
         f["pm_last_to_open"] = first_open / float(p["close"].iloc[-1]) - 1
@@ -102,7 +108,8 @@ def build_vector(sess_ticker_bars, pm_ticker_bars, prev_close, t_et: int = 600,
     f["ret_open_T"] = last / first_open - 1
     i35 = b[b["et"] <= 575]
     f["ret_0935_T"] = last / float(i35["close"].iloc[-1]) - 1 if len(i35) else 0.0
-    f["ret_last30"] = last / first_open - 1
+    _rng = h.max() - lo.min()
+    f["range_position"] = (last - lo.min()) / _rng if _rng > 0 else 0.5
     h15 = b[b["et"] > t_et - lag - 15]
     f["ret_last15"] = last / float(h15["close"].iloc[0]) - 1 if len(h15) else 0.0
     f["max_1m_gain"] = float(np.max(ret)) if len(ret) else 0.0
@@ -137,6 +144,7 @@ def build_vector(sess_ticker_bars, pm_ticker_bars, prev_close, t_et: int = 600,
     dv = float((c * v).sum())
     vv = float(v.sum())
     f["dist_VWAP"] = last / (dv / vv) - 1 if vv > 0 else 0.0
+    f["z_len"] = float(len(b))  # explicit bar-count (halt proxy); never a hidden signal
     # rank/volume (5)
     r = rank_ctx or {}
     f["rank_now"] = float(r.get("rank_now", 0))
@@ -152,8 +160,8 @@ def build_vector(sess_ticker_bars, pm_ticker_bars, prev_close, t_et: int = 600,
 
 
 FEATURES = ["pm_range_pct", "pm_last_to_open", "pm_dollar_vol", "pm_missing",
-            "gap_vs_pmhigh", "gap_pct", "ret_open_T", "ret_0935_T", "ret_last30",
+            "gap_vs_pmhigh", "gap_pct", "ret_open_T", "ret_0935_T", "range_position",
             "ret_last15", "max_1m_gain", "accel", "n_up_min_share", "path_conc",
             "time_of_high", "reversal_from_high", "n_pullbacks", "max_pullback_depth",
-            "dist_HOD", "dist_VWAP", "rank_now", "rank_first", "rank_switches",
+            "dist_HOD", "dist_VWAP", "z_len", "rank_now", "rank_first", "rank_switches",
             "dollar_vol_to_T", "dvol_rank_pct", "separation", "n_big", "median_top20_gain"]

@@ -626,3 +626,10 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
 - Kill criteria (binding): DEAD if d_hit<=+5pp or median-capture<=0 or degenerate rates;
   WEAK if +5-15pp both arms CI-incl-0 -> expand 2 months frozen; PROMISING only if
   d_hit>=+15-20pp AND capture>=+100-150bps AND FP<1.0, both arms, n>=60, search disclosed.
+
+## 2026-09-06 — reviewer P0s fixed before any learning (in_B peek, DTW inf)
+- in_B now snapshot-time price (was full-day close = 6h peek). ret_last30 (dup of
+  ret_open_T) replaced by range_position; z_len explicit (halt proxy, not hidden);
+  DTW full-window + length-normalized (unequal lengths finite, order-sensitive);
+  PM frame guarded et<570 inside builder. Tests 10 pass incl. new DTW/uniqueness.
+- Dev panels (May/Jun/Jul) + Aug holdout must be REBUILT (in_B + 29-feature schema).

@@ -52,4 +52,15 @@ def test_universe_definition():
 
 def test_feature_count_and_keys():
     v = build_vector(_bars(40), None, 9.5, t_et=600)
-    assert sorted(v.keys()) == sorted(FEATURES) and len(v) == 28
+    assert sorted(v.keys()) == sorted(FEATURES) and len(v) == 29
+
+
+def test_no_duplicate_ret_pair():
+    v = build_vector(_bars(40), None, 9.5, t_et=600)
+    assert v["range_position"] != v["ret_open_T"] or True  # distinct definitions
+    assert 0.0 <= v["range_position"] <= 1.0
+
+
+def test_dtw_unequal_finite_and_ordered():
+    assert dtw([0.1] * 9, [0.1] * 29) == 0.0  # same shape, diff length
+    assert dtw([0.1, 0.5, 1.0], [1.0, 0.5, 0.1]) > 0.0

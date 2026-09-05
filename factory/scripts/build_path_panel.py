@@ -70,9 +70,11 @@ def day_rows(month: str, day, arms=("A", "B")) -> list:
             end = idx[0] if len(idx) else len(late)
             best = hi[:end].max(initial=0.0)
             mb[dd] = round(float(min(best * 10000, 1000)), 1)
+        # in_B uses SNAPSHOT-time price (pc at t), never full-day close (peek)
+        snap_px = float(e.loc[sym]["pc"]) if sym in e.index else float("nan")
         rows.append({"day": str(day.date()), "symbol": sym, "rank": rank,
                      "common": bool(is_common_stock(sym)),
-                     "in_B": bool(is_common_stock(sym) and 2 <= sb["close"].iloc[-1] <= 20),
+                     "in_B": bool(is_common_stock(sym) and 2 <= snap_px <= 20),
                      "features": v, "zseries": z,
                      "fwd": round(float(fwd), 1), "mb100": mb[100], "mb200": mb[200]})
     return rows
