@@ -47,14 +47,20 @@ def et_minute(ts):
 
 
 # ── data ───────────────────────────────────────────────────────────────────
-def load_day(month: str, day, premarket: bool = False):
+def load_day(month: str, day, premarket: bool = False, return_pm: bool = False):
+    """Load one UTC date. sess = session bars (ET 570-960). If return_pm (or
+    premarket), also return premarket bars (ET < 570) for that date as second frame.
+    2025 PM comes from data/backfill/premarket_ohlcv_YYYY-MM (repaired 2026-09).
+    NOTE: callers needing PM features must pass return_pm=True — sess never
+    contains premarket bars by design."""
     import pandas as pd
     base = Path("data/backfill") if month >= "2026-03" else Path("data")
-    pre = f"premarket_ohlcv_{month}.parquet" if month < "2026-03" else None
     frames = []
-    if premarket and pre and (Path("data/backfill") / pre).exists():
-        frames.append(pd.read_parquet(Path("data/backfill") / pre,
-                                      columns=["timestamp", "ticker", "open", "high", "low", "close", "volume"]))
+    if premarket or return_pm:
+        pre = Path("data/backfill") / f"premarket_ohlcv_{month}.parquet"
+        if pre.exists():
+            frames.append(pd.read_parquet(pre,
+                                          columns=["timestamp", "ticker", "open", "high", "low", "close", "volume"]))
     frames.append(pd.read_parquet(base / f"clean_ohlcv_{month}.parquet",
                                   columns=["timestamp", "ticker", "open", "high", "low", "close", "volume"]))
     df = pd.concat(frames)
@@ -65,10 +71,46 @@ def load_day(month: str, day, premarket: bool = False):
     # session in ET (matches clean_month RTH 9:30-16:00 ET); NO full-day gating here —
     # eligibility is decided causally inside snapshot() from bars <= t only.
     sess = g[(g["et"] >= 570) & (g["et"] < 960)].sort_values(["ticker", "timestamp"])
+    if return_pm or premarket:
+        pm = g[g["et"] < 570].sort_values(["ticker", "timestamp"])
+        return sess, pm
     return sess
 
 
-def snapshot(sess, t_et: int, lag: int = SNAP_LAG, min_bars: int = 10):
+def prior_closes(month: str, day):
+    """{ticker: last session close} from the latest trading date strictly before day.
+    Searches back up to 9 calendar days, crossing into the prior month file if needed.
+    Overnight ratio outside [0.5, 2.0] vs that close => split_suspect downstream."""
+    import pandas as pd
+    from datetime import timedelta
+    files = []
+    y, m = int(month[:4]), int(month[5:])
+    pm = f"{y - (m == 1):04d}-{((m - 2) % 12) + 1:02d}"
+    for mm in [pm, month]:
+        base = Path("data/backfill") if mm >= "2026-03" else Path("data")
+        p = base / f"clean_ohlcv_{mm}.parquet"
+        if p.exists():
+            files.append((mm, p))
+    out = {}
+    for back in range(1, 10):
+        target = (pd.Timestamp(day).tz_convert(None) - timedelta(days=back)).date()
+        mm = f"{target.year:04d}-{target.month:02d}"
+        hit = [p for mm2, p in files if mm2 == mm]
+        if not hit:
+            continue
+        df = pd.read_parquet(hit[0], columns=["timestamp", "ticker", "close"])
+        df["timestamp"] = pd.to_datetime(df["timestamp"], utc=True)
+        df = df[df["timestamp"].dt.floor("D") == pd.Timestamp(target, tz="UTC")]
+        if len(df) == 0:
+            continue
+        df["et"] = et_minute(df["timestamp"])
+        df = df[(df["et"] >= 570) & (df["et"] < 960)].sort_values("timestamp")
+        if len(df):
+            return dict(zip(df["ticker"], df["close"]))
+    return out
+
+
+def snapshot(sess, t_et: int, lag: int = SNAP_LAG, min_bars: int = 10, prev: dict | None = None):
     """Causal snapshot at ET-minute t_et using bars with et <= t_et - lag.
     Eligibility (causal-only): >= min_bars bars by t AND first session open $1-50.
     min_bars=10 (not 20): halt-type bar holes are part of small-cap momentum;
@@ -85,6 +127,12 @@ def snapshot(sess, t_et: int, lag: int = SNAP_LAG, min_bars: int = 10):
     agg = agg[(agg["n"] >= min_bars) & (agg["po"] >= 1) & (agg["po"] <= 50)]
     agg["gain"] = agg["pc"] / agg["po"] - 1
     agg["vwap"] = agg["cdv"] / agg["cv"]
+    if prev:
+        import pandas as pd
+        agg["prev_close"] = agg.index.map(lambda s: prev.get(s))
+        agg["gap_pct"] = agg["po"] / agg["prev_close"] - 1
+        agg["split_suspect"] = ~agg["prev_close"].isna() & (
+            (agg["po"] / agg["prev_close"] < 0.5) | (agg["po"] / agg["prev_close"] > 2.0))
     return agg.sort_values("gain", ascending=False)
 
 
