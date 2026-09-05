@@ -588,3 +588,14 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
 - Caveat: files predate session-VWAP fix — E3 verdict needs rerun with true VWAP.
 - Fixed: E3 session-open VWAP cumsum; replay_day E2/E3 branches + unknown-name guard;
   duplicate return removed.
+
+## 2026-09-05 — E3-fixed rerun: no consistent separation; E1-health weakly consistent
+- E3 true-VWAP kept-vs-dropped: E-lane pooled favors DROPPED (+64 vs +41, 2 reversal
+  months May/Aug dominate); F-lane pooled favors kept (+34 vs -151, n=27, 1 reversal +
+  2 degenerate months). Verdict: NO consistent separation. Old +24/-48 was VWAP-def artifact.
+- E1-health across THREE slices same direction: 44d files +48/-5 (.51/.43); E-lane
+  +99/-24 (.60/.39, kept wins 4/6mo); F-lane +37/-9 (.54/.38). Modest (+50-120bps,
+  +8-20pp hit) but unanimous. Best-supported claim in program; still small-n.
+- Reframing: health value may be FP-avoidance (kept names skip bad setups; trigger-rate
+  gaps 0.45/0.28, Oct kept 0/3 E3 fires vs dropped 6/7 losers), not trade improvement.
+- Harness gap: no --day-offset (F-lane stuck on first-2-days). Add before full-month runs.
