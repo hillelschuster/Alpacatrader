@@ -569,3 +569,10 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
   and matches market-order economics. Discrepancy logged, not hidden.
 - 3 lanes: rerun-A (03-08), rerun-B (09-12+2026-03, capped scopes), reviewer (audit MB/E1
   wiring + independent mb100 repro spec). Outputs to data/_scratch/sae1_*.json.
+
+## 2026-09-05 — interaction verdict: E1 shows no conditionality; P1s fixed+verified
+- E1-first-pullback selected vs rejected: no separation either slice (A +18/0.46 vs
+  +9/0.44; B -45/0.32 vs -2/0.42). Pattern #1 fails the attention-conditionality test.
+- Fixed: E1 next-bar-open fill, dead-bar ref (et>=t), vectorized MB == loop exactly,
+  snapshot cdv vectorized, E1 cached. Post-fix E1 lower (close-fill was optimistic).
+- Next: HOD-break + VWAP-reclaim probes before any mechanism rethink.

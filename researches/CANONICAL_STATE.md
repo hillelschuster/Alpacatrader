@@ -81,6 +81,16 @@ needs harness-path rerun); separation/health/hot-tape/gap-pocket (small-n lanes)
 Invalidated: UTC-clock headlines; seasonal map; echo-70% blanket; PM-high feature;
 $-vol selection; RVOL/100k as alpha cutoffs; scarcity.
 
+## Interaction probe verdict: E1-first-pullback shows NO attention-conditionality (2026-09-05)
+Same E1, selected-top5 vs rejected-top20: A-lane +17.7/0.46 (n=54) vs +8.7/0.44 (n=99);
+B-lane -45/0.32 (n=41) vs -2/0.42 (n=72). No separation either slice; monthly signs flip.
+Reviewer P1s fixed + verified: E1 next-bar-open fill (close-fill was optimistic),
+dead-bar-600 ref (outcome et>=t), MB vectorized == loop exactly (BTAI 398.2, MSTZ 0.0),
+snapshot cdv vectorized, E1 cached. Post-fix Mar3-4 E1: n=3, -73bps.
+Middle-branch status: pattern #1 fails the conditionality test. HOD-break/VWAP-reclaim
+untested — run before mechanism rethink. Trigger-rate gap (0.45 sel vs 0.28 rej) stands
+as the one selected-vs-rejected difference so far (small-n).
+
 ## Open questions (in order)
 1. FP-penalized recall gate for Stage B (MFE-before-DD target adopted).
 2. Premarket-hypothesis retests on repaired 2025 (echo ratio, gap×catalyst, PM range×dir).
