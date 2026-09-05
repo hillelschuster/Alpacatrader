@@ -551,3 +551,13 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
   tape (BIAFW +9743, TMCWW -7889). MFE>>fwd signature live-confirmed; terminal negative.
 - Logging apparatus verified: 178 scans x50, 0 gaps>5min, 2647 state rows, promos
   13:25-19:56, none pre-window. Observer redeployed w/ gain_open_anchored (idle to Mon).
+
+## 2026-09-05 — verification program: rank-1-chase DOWNGRADED, PM retests confirmed
+- verify_core.py (new, permanent): A=hindsight (BTAI +17.2/EGG +25.4 fresh, holds);
+  B=rank-1 chase h60, 11 monthly points MIXED (means -579..+411) — 'negative every
+  month' NOT reproduced; claim downgraded to provisional/horizon-specific. Vectorized
+  merge_asof verified exactly vs row-loop (n=328/303, identical means).
+- C=PM via harness path (6 fresh days): echo narrow>wide monotonic every day
+  (0.54-0.84 vs 0.27-0.39); pmcorr ~0 (one +0.14 day); PM-lead 1/6 (combined 1/26).
+- Trust map written to CANONICAL_STATE.md. MFE-magnitude provenance gap noted
+  (lane-only code — needs harness-path rerun next).

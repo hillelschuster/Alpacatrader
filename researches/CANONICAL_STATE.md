@@ -67,6 +67,20 @@ Adopted Stage-A target stands. FP gate: ~1.2 FP per captured name baseline.
 3. True gaps: weak-negative tilt on gap-ups, tiny n at extremes (18-173); UNCLEAR.
 4. PM $-vol leadership: CONTRADICTED 0/20 (crowns liquidity: ETFs/large names).
 
+## TRUST MAP (2026-09-05; verify_core.py = independent path)
+Independently re-verified: hindsight-leader minutes positive (3 cuts); echo narrow>wide
+monotonic (lane 14k + 6 fresh harness-path days); PM-high dist ~0 (3 cuts); PM-$-vol
+not-a-selector (0/20 + 1/6 fresh, ETFs crowned).
+Harness-verified (48d fixed): pooled Stage-A null; gates/health ~0 pooled; Friday apparatus.
+DOWNGRADED: rank-1-chasing 'negative every month' — fresh 11 monthly points MIXED signs
+(means -579..+411, medians mostly <=0 but not uniformly); original panel claim was
+horizon/universe-specific or fragile. Rotation-top logic plausible, monthly universality NOT
+established. Needs full-month replication to promote or retire.
+Provisional (single-provenance): MFE-before-DD magnitudes + FP rates (lane code only —
+needs harness-path rerun); separation/health/hot-tape/gap-pocket (small-n lanes).
+Invalidated: UTC-clock headlines; seasonal map; echo-70% blanket; PM-high feature;
+$-vol selection; RVOL/100k as alpha cutoffs; scarcity.
+
 ## Open questions (in order)
 1. FP-penalized recall gate for Stage B (MFE-before-DD target adopted).
 2. Premarket-hypothesis retests on repaired 2025 (echo ratio, gap×catalyst, PM range×dir).
