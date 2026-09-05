@@ -170,6 +170,77 @@ def entries_E1(sess, ticker, t_et: int):
             px = late["close"].iloc[min(i + 15, len(late) - 1)]
             return {"entry_i": i, "ret": round(float((px / entry - 1) * 10000 - COST_BPS), 1),
                     "stop_hit": False}
+
+
+def _run_trade(late, i, entry, stop):
+    """Shared exit engine: stop-first same-bar ordering, 2R target, 15-bar
+    time-stop, 15:30 ET flatten. Entry filled at NEXT bar open by callers."""
+    for j in range(i + 2, min(i + 17, len(late))):
+        hh, ll = late["high"].iloc[j], late["low"].iloc[j]
+        end = late["et"].iloc[j] >= 930
+        if ll <= stop or end:
+            px = stop if ll <= stop else late["close"].iloc[j]
+            ret = (px / entry - 1) * 10000 - COST_BPS
+            return {"entry_i": i, "ret": round(float(ret), 1),
+                    "stop_hit": bool(ll <= stop)}
+        if hh / entry - 1 >= 2 * (entry / stop - 1):
+            px = entry * (1 + 2 * (entry / stop - 1))
+            ret = (px / entry - 1) * 10000 - COST_BPS
+            return {"entry_i": i, "ret": round(float(ret), 1), "stop_hit": False}
+    px = late["close"].iloc[min(i + 15, len(late) - 1)]
+    return {"entry_i": i, "ret": round(float((px / entry - 1) * 10000 - COST_BPS), 1),
+            "stop_hit": False}
+
+
+def entries_E2(sess, ticker, t_et: int):
+    """HOD-break: close above running session high on expanding volume.
+    Volume gate: trigger-bar vol > 1.5x trailing-10-bar mean. Stop = break-bar low."""
+    late = sess[(sess["ticker"] == ticker) & (sess["et"] >= t_et)]
+    late = late.sort_values("timestamp").reset_index(drop=True)
+    if len(late) < 25:
+        return None
+    run_high = late["high"].iloc[:10].max()
+    for i in range(10, len(late) - 6):
+        run_high = max(run_high, late["high"].iloc[i - 1])
+        vol_ok = late["volume"].iloc[i] > 1.5 * late["volume"].iloc[max(0, i - 10):i].mean()
+        brk = late["close"].iloc[i] > run_high
+        if brk and vol_ok:
+            if i + 1 >= len(late):
+                return None
+            entry = late["open"].iloc[i + 1]
+            stop = late["low"].iloc[i]
+            if entry / stop - 1 > 0.05 or entry / stop - 1 <= 0:
+                return None
+            return _run_trade(late, i, entry, stop)
+        run_high = max(run_high, late["high"].iloc[i])
+    return None
+
+
+def entries_E3(sess, ticker, t_et: int):
+    """VWAP-reclaim: was below session VWAP, then 1-min close back above it.
+    Entry next open; stop = reclaim-bar low. Invalidation exit = close back below
+    VWAP handled as stop-tightening: stop moves to min(stop, VWAP) is skipped —
+    plain stop kept for comparability with E1/E2."""
+    late = sess[(sess["ticker"] == ticker) & (sess["et"] >= t_et)]
+    late = late.sort_values("timestamp").reset_index(drop=True)
+    if len(late) < 25:
+        return None
+    cv = (late["close"] * late["volume"]).cumsum()
+    vv = late["volume"].cumsum()
+    vw = cv / vv.replace(0, float("nan"))
+    was_below = False
+    for i in range(10, len(late) - 6):
+        if late["close"].iloc[i - 1] < vw.iloc[i - 1]:
+            was_below = True
+        if was_below and late["close"].iloc[i] > vw.iloc[i]:
+            if i + 1 >= len(late):
+                return None
+            entry = late["open"].iloc[i + 1]
+            stop = late["low"].iloc[i]
+            if entry / stop - 1 > 0.05 or entry / stop - 1 <= 0:
+                return None
+            return _run_trade(late, i, entry, stop)
+    return None
     return None
 
 

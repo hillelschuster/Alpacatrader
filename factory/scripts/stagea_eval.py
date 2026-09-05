@@ -17,7 +17,8 @@ import argparse
 import statistics as st
 from pathlib import Path
 
-from replay_watchlist import load_day, snapshot, outcome_E0, entries_E1  # noqa: E402
+from replay_watchlist import (load_day, snapshot, outcome_E0, entries_E1,  # noqa: E402
+                              entries_E2, entries_E3)
 
 T_SNAP, T_PATH = 600, 585  # ET minutes: 10:00 / 09:45 ET (executable: bars <= t-1)
 
@@ -151,13 +152,17 @@ def eval_day(month, day, gates=("none", "n10", "sh", "both"), hmodes=("none", "l
     state = day_state(e15, e1445)
     lists = build_lists(e15, e1445)
     res = {"day": f"{month} {str(day.date())}", "state": state, "rules": {}}
-    e1_cache = {}
+    e_cache = {}
+
+    def ex_of(fn, s):
+        key = (fn.__name__, s)
+        if key not in e_cache:
+            r = fn(sess, s, T_SNAP)
+            e_cache[key] = r["ret"] if r else None
+        return e_cache[key]
 
     def e1_of(s):
-        if s not in e1_cache:
-            r = entries_E1(sess, s, T_SNAP)
-            e1_cache[s] = r["ret"] if r else None
-        return e1_cache[s]
+        return ex_of(entries_E1, s)
 
     for lname, syms in lists.items():
         fwd_all = [(s, outcome_E0f(frames[s])) for s in syms if s in frames]
@@ -183,7 +188,9 @@ def eval_day(month, day, gates=("none", "n10", "sh", "both"), hmodes=("none", "l
                                  "mae": o["mae"], "obp": o["obp"],
                                  "mb100": outcome_MB(frames[s], 100),
                                  "mb200": outcome_MB(frames[s], 200),
-                                 "e1": e1_of(s)} for s, o in sel]}
+                                 "e1": e1_of(s),
+                                 "e2": ex_of(entries_E2, s),
+                                 "e3": ex_of(entries_E3, s)} for s, o in sel]}
     return res
 
 

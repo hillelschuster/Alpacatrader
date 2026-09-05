@@ -576,3 +576,8 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
 - Fixed: E1 next-bar-open fill, dead-bar ref (et>=t), vectorized MB == loop exactly,
   snapshot cdv vectorized, E1 cached. Post-fix E1 lower (close-fill was optimistic).
 - Next: HOD-break + VWAP-reclaim probes before any mechanism rethink.
+
+## 2026-09-05 — E2 (HOD-break) + E3 (VWAP-reclaim) built, scaling
+- entries_E2/E3 share _run_trade exit engine with E1 conventions (next-bar fill,
+  stop-first, 2R, 15-bar stop, 15:30 ET flatten). Wired e2/e3 into stagea names.
+- 3 lanes: rerun-C (03-08), rerun-D (09-12+2026-03), reviewer2 (E2/E3 audit).
