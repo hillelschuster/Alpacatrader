@@ -633,3 +633,12 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
   DTW full-window + length-normalized (unequal lengths finite, order-sensitive);
   PM frame guarded et<570 inside builder. Tests 10 pass incl. new DTW/uniqueness.
 - Dev panels (May/Jun/Jul) + Aug holdout must be REBUILT (in_B + 29-feature schema).
+
+## 2026-09-06 — August collision: Ridge dead, clustering weakly alive
+- Freeze (May-Jul dev): Ridge LOMO rank-IC ~0 both arms (alpha maxed = shrunk to nothing).
+- Collision Aug (63 territ): rankIC -0.13/-0.23, top-1 model loses to gain baseline
+  (393 vs 444; 359 vs 402). Supervised linear carries nothing. Dead as specified.
+- DTW-medoid cluster ORDER roughly replicates: A dev C0<C2<C1<C3 -> test C2<C0<C1<C3
+  (best 602, n=8); B dev C1<C2<C3<C0 -> test C2<C1<C3<C0 (best 606, n=5). Weak,
+  underpowered, same direction. Alive-but-weak: October collision decides.
+- All pre-registered: K=4, support gates, mb200_capped, both arms, disclosed search.
