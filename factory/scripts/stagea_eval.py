@@ -198,6 +198,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--months", nargs="+", required=True)
     ap.add_argument("--max-days", type=int, default=3)
+    ap.add_argument("--day-offset", type=int, default=0)
     ap.add_argument("--out", default=None)
     args = ap.parse_args()
     import pandas as pd, json
@@ -206,7 +207,8 @@ def main():
         base = Path("data/backfill") if month >= "2026-03" else Path("data")
         probe = pd.read_parquet(base / f"clean_ohlcv_{month}.parquet", columns=["timestamp"])
         probe["timestamp"] = pd.to_datetime(probe["timestamp"], utc=True)
-        for d in sorted(probe["timestamp"].dt.floor("D").unique())[:args.max_days]:
+        _dates = sorted(probe["timestamp"].dt.floor("D").unique())
+        for d in _dates[args.day_offset:args.day_offset + args.max_days]:
             try:
                 r = eval_day(month, d)
                 if r:
