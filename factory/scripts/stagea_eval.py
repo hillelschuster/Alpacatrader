@@ -1,6 +1,6 @@
 """Stage-A core experiment: discovery + opportunity-state + leader-health vs baselines.
 
-Compares, per day at snapshot t (default 15:00 UTC, path from 14:45):
+Compares, per day at snapshot t (default 10:00 ET, path from 09:45 ET):
   baselines : cur1, top3/5/10/20 raw gain
   +sep      : top5 gain ordered/filtered by price separation
   +opp      : opportunity-state gate (n10 / top1-share / churn variants + shapes)
@@ -113,12 +113,13 @@ def outcome_MB(late, dd_bps: int = 100):
     late = late.sort_values("timestamp")
     if len(late) < 2:
         return None
+    import numpy as np
     ref = late["open"].iloc[0]
-    best = 0.0
-    for _, b in late.iterrows():
-        if b["low"] / ref - 1 <= -dd_bps / 10000:
-            break  # DD touched first (conservative on ambiguous bars)
-        best = max(best, b["high"] / ref - 1)
+    lo = late["low"].to_numpy() / ref - 1
+    hi = late["high"].to_numpy() / ref - 1
+    dd = np.nonzero(lo <= -dd_bps / 10000)[0]
+    end = dd[0] if len(dd) else len(late)
+    best = hi[:end].max(initial=0.0)
     return round(float(best * 10000), 1)
 
 
@@ -144,12 +145,20 @@ def eval_day(month, day, gates=("none", "n10", "sh", "both"), hmodes=("none", "l
     sess = load_day(month, day)
     e15, e1445 = snapshot(sess, T_SNAP), snapshot(sess, T_PATH)
     frames = {t: g.sort_values("timestamp")
-              for t, g in sess[sess["et"] > T_SNAP].groupby("ticker")}
+              for t, g in sess[sess["et"] >= T_SNAP].groupby("ticker")}
     if len(e15) < 20:
         return None
     state = day_state(e15, e1445)
     lists = build_lists(e15, e1445)
     res = {"day": f"{month} {str(day.date())}", "state": state, "rules": {}}
+    e1_cache = {}
+
+    def e1_of(s):
+        if s not in e1_cache:
+            r = entries_E1(sess, s, T_SNAP)
+            e1_cache[s] = r["ret"] if r else None
+        return e1_cache[s]
+
     for lname, syms in lists.items():
         fwd_all = [(s, outcome_E0f(frames[s])) for s in syms if s in frames]
         fwd_all = [(s, o) for s, o in fwd_all if o]
@@ -174,8 +183,7 @@ def eval_day(month, day, gates=("none", "n10", "sh", "both"), hmodes=("none", "l
                                  "mae": o["mae"], "obp": o["obp"],
                                  "mb100": outcome_MB(frames[s], 100),
                                  "mb200": outcome_MB(frames[s], 200),
-                                 "e1": (lambda r: r["ret"] if r else None)(
-                                     entries_E1(sess, s, T_SNAP))} for s, o in sel]}
+                                 "e1": e1_of(s)} for s, o in sel]}
     return res
 
 

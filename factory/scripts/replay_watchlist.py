@@ -78,10 +78,10 @@ def snapshot(sess, t_et: int, lag: int = SNAP_LAG, min_bars: int = 10):
     if len(early) == 0:
         import pandas as pd
         return pd.DataFrame()
+    early = early.assign(_dv=early["close"] * early["volume"])
     agg = early.groupby("ticker").agg(
         po=("open", "first"), pc=("close", "last"), ph=("high", "max"),
-        cv=("volume", "sum"), n=("close", "size"),
-        cdv=("close", lambda s: float((s * early.loc[s.index, "volume"]).sum())))
+        cv=("volume", "sum"), n=("close", "size"), cdv=("_dv", "sum"))
     agg = agg[(agg["n"] >= min_bars) & (agg["po"] >= 1) & (agg["po"] <= 50)]
     agg["gain"] = agg["pc"] / agg["po"] - 1
     agg["vwap"] = agg["cdv"] / agg["cv"]
@@ -113,8 +113,8 @@ RULES = {"top4_gain": r_top_gain, "gain_x_vol": r_gain_x_vol,
 
 # ── outcomes ───────────────────────────────────────────────────────────────
 def outcome_E0(sess, ticker, t_et: int):
-    """Buy next bar after ET-minute t, hold to close. Pure selection read."""
-    late = sess[(sess["ticker"] == ticker) & (sess["et"] > t_et)]
+    """Buy bar-t open (known at decision t, start-stamped), hold to close."""
+    late = sess[(sess["ticker"] == ticker) & (sess["et"] >= t_et)]
     late = late.sort_values("timestamp")
     if len(late) < 2:
         return None
@@ -134,7 +134,7 @@ def outcome_E0(sess, ticker, t_et: int):
 def entries_E1(sess, ticker, t_et: int):
     """First-pullback entry: opening drive then <=3-bar pause, enter new high.
     Stop = pause low, time-stop 15 min, flatten at 15:30 ET. Returns trade or None."""
-    late = sess[(sess["ticker"] == ticker) & (sess["et"] > t_et)]
+    late = sess[(sess["ticker"] == ticker) & (sess["et"] >= t_et)]
     late = late.sort_values("timestamp").reset_index(drop=True)
     if len(late) < 20:
         return None
@@ -147,11 +147,14 @@ def entries_E1(sess, ticker, t_et: int):
         tight = (window["high"].max() / window["low"].min() - 1) < 0.02
         brk = late["close"].iloc[i] > window["high"].max()
         if pause and tight and brk:
-            entry = late["close"].iloc[i]
+            # live fill = NEXT bar open (start-stamped bars; close[i] known only at bar end)
+            if i + 1 >= len(late):
+                return None
+            entry = late["open"].iloc[i + 1]
             stop = window["low"].min()
             if entry / stop - 1 > 0.05 or entry / stop - 1 <= 0:
                 return None
-            for j in range(i + 1, min(i + 16, len(late))):
+            for j in range(i + 2, min(i + 17, len(late))):
                 hh = late["high"].iloc[j]
                 ll = late["low"].iloc[j]
                 end = late["et"].iloc[j] >= 930  # 15:30 ET flatten
@@ -159,7 +162,7 @@ def entries_E1(sess, ticker, t_et: int):
                     px = stop if ll <= stop else late["close"].iloc[j]
                     ret = (px / entry - 1) * 10000 - COST_BPS
                     return {"entry_i": i, "ret": round(float(ret), 1),
-                            "stop_hit": bool(ll <= stop and not end)}
+                            "stop_hit": bool(ll <= stop)}
                 if hh / entry - 1 >= 2 * (entry / stop - 1):
                     px = entry * (1 + 2 * (entry / stop - 1))
                     ret = (px / entry - 1) * 10000 - COST_BPS
@@ -172,7 +175,8 @@ def entries_E1(sess, ticker, t_et: int):
 
 def replay_day(month: str, day, t_list, rules, entries):
     sess = load_day(month, day)
-    eves = sess.sort_values("timestamp").groupby("ticker").agg(
+    # eventual = LABEL ONLY (hindsight), never a pick input — selecting on it is lookahead
+    eves = sess.sort_values(["ticker", "timestamp"]).groupby("ticker").agg(
         lc=("close", "last"), fo=("open", "first"), n=("close", "size"))
     eves = eves[eves["n"] >= 100]  # label-side presence filter (label only, not selection)
     eventual = (eves["lc"] / eves["fo"] - 1).idxmax()
