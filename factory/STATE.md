@@ -642,3 +642,10 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
   (best 602, n=8); B dev C1<C2<C3<C0 -> test C2<C1<C3<C0 (best 606, n=5). Weak,
   underpowered, same direction. Alive-but-weak: October collision decides.
 - All pre-registered: K=4, support gates, mb200_capped, both arms, disclosed search.
+
+## 2026-09-06 — October collision PRE-REGISTERED (before seeing October)
+- Verdict metric (frozen): Spearman(dev cluster MEANS vs October cluster MEDIANS),
+  plus dev-best cluster finishes top-two in October. Computed once, blind.
+- PASS: rho >= +0.6 with dev-best top-two. FAIL: below, or ordering scrambles.
+- August reference: rho=+0.80 both arms (means AND medians). October decides whether
+  shape recurrence is real (2 months) or an small-n alignment.
