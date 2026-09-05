@@ -38,8 +38,8 @@ def zseries_30m(bars, t_et: int = 600, lag: int = 1):
     import numpy as np
     b = _bars_le(bars, t_et, lag)
     b = b[(b["et"] >= T_OPEN)]
-    if len(b) < 15:
-        return None
+    if len(b) < 10:
+        return None  # DTW handles unequal lengths; 10 = eligibility floor
     c = b["close"].to_numpy(dtype=float)
     r = np.diff(np.log(np.maximum(c, 1e-9)))
     if len(r) < 2 or np.std(r) <= 0:
