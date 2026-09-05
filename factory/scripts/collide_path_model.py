@@ -16,7 +16,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from scripts.path_features import dtw  # noqa: E402
 
 HOLD = {"2025-08": "data/_scratch/p2_hold_2025-08.json",
-        "2025-10": None}  # October built only after August reports
+        "2025-10": "data/_scratch/p2_hold_2025-10.json"}
 
 
 def downsample(z, m: int = 10):

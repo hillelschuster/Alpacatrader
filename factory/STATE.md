@@ -649,3 +649,14 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
 - PASS: rho >= +0.6 with dev-best top-two. FAIL: below, or ordering scrambles.
 - August reference: rho=+0.80 both arms (means AND medians). October decides whether
   shape recurrence is real (2 months) or an small-n alignment.
+
+## 2026-09-06 — October collision: FAIL. Representation retired.
+- Pre-registered bar (rho>=0.6 + dev-best top-two): arm A rho=-0.40, dev-best C3
+  finishes 4/4 (med 15, worst); arm B rho=+0.20, dev-best 3/4. FAIL both arms.
+- Ridge dead again (rankIC +0.04/-0.14). August 0.80 = small-n alignment, retired
+  with E1-health into the mirage file.
+- Note: Oct arm-B only 39 rows (top-3s often outside $2-20 — penny-heavy month).
+- Standing per tree: gain-rank/health/E1-E3/shape-medoid formulations ALL failed.
+  Surviving: MFE target, harness, PM data, Friday forward loop, apparatus.
+  Next: rethink branch — finer representations, turnover-gating, regime-conditioning,
+  or thesis revision. No new learning runs until the rethink lands.
