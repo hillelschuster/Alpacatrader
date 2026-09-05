@@ -17,7 +17,7 @@ import argparse
 import statistics as st
 from pathlib import Path
 
-from replay_watchlist import load_day, snapshot, outcome_E0  # noqa: E402
+from replay_watchlist import load_day, snapshot, outcome_E0, entries_E1  # noqa: E402
 
 T_SNAP, T_PATH = 600, 585  # ET minutes: 10:00 / 09:45 ET (executable: bars <= t-1)
 
@@ -107,6 +107,21 @@ def health_filter(syms, e15, e1445, mode):
     return out
 
 
+def outcome_MB(late, dd_bps: int = 100):
+    """MFE before -dd_bps drawdown touch (excursion-gated opportunity).
+    Conservative same-bar rule: if a bar touches both, DD counts first."""
+    late = late.sort_values("timestamp")
+    if len(late) < 2:
+        return None
+    ref = late["open"].iloc[0]
+    best = 0.0
+    for _, b in late.iterrows():
+        if b["low"] / ref - 1 <= -dd_bps / 10000:
+            break  # DD touched first (conservative on ambiguous bars)
+        best = max(best, b["high"] / ref - 1)
+    return round(float(best * 10000), 1)
+
+
 def outcome_E0f(late):
     """E0 on a pre-filtered, time-sorted ticker frame."""
     late = late.sort_values("timestamp")
@@ -156,7 +171,11 @@ def eval_day(month, day, gates=("none", "n10", "sh", "both"), hmodes=("none", "l
                     "mfe": round(st.mean([o["mfe"] for _, o in sel]), 1) if sel else None,
                     "rej_mean": round(st.mean([o["fwd"] for _, o in rej]), 1) if rej else None,
                     "names": [{"t": s, "fwd": o["fwd"], "mfe": o["mfe"],
-                                 "mae": o["mae"], "obp": o["obp"]} for s, o in sel]}
+                                 "mae": o["mae"], "obp": o["obp"],
+                                 "mb100": outcome_MB(frames[s], 100),
+                                 "mb200": outcome_MB(frames[s], 200),
+                                 "e1": (lambda r: r["ret"] if r else None)(
+                                     entries_E1(sess, s, T_SNAP))} for s, o in sel]}
     return res
 
 

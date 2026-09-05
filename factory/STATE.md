@@ -561,3 +561,11 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
   (0.54-0.84 vs 0.27-0.39); pmcorr ~0 (one +0.14 day); PM-lead 1/6 (combined 1/26).
 - Trust map written to CANONICAL_STATE.md. MFE-magnitude provenance gap noted
   (lane-only code — needs harness-path rerun next).
+
+## 2026-09-05 — interaction scale-up started (per-name E1 + MB detail in harness)
+- stagea --out now stores per-name {fwd,mfe,mae,obp,mb100,mb200,e1}. outcome_MB uses
+  conservative same-bar rule (DD-first). Convention note: entry-bar included, low-based;
+  salvaged lane used looser convention (MSTZ mb100 106 vs 0.0 here) — mine is stricter
+  and matches market-order economics. Discrepancy logged, not hidden.
+- 3 lanes: rerun-A (03-08), rerun-B (09-12+2026-03, capped scopes), reviewer (audit MB/E1
+  wiring + independent mb100 repro spec). Outputs to data/_scratch/sae1_*.json.
