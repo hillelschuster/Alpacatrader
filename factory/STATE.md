@@ -599,3 +599,14 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
 - Reframing: health value may be FP-avoidance (kept names skip bad setups; trigger-rate
   gaps 0.45/0.28, Oct kept 0/3 E3 fires vs dropped 6/7 losers), not trade improvement.
 - Harness gap: no --day-offset (F-lane stuck on first-2-days). Add before full-month runs.
+
+## 2026-09-06 — E1-health DISSOLVED at full-month scale (146d, ~290 triggers)
+- Full-A (Mar-Jun 83d): kept-vs-dropped +27.6bps mean, +0.036 hit; capture medians
+  negative both; verdict: no separation.
+- Full-C (Nov/Dec/Mar26 63d): pooled means indistinguishable (-15 vs -11); capture
+  medians ~0 both; verdict: no. Full-B (Jul-Oct) timed out; gap noted, non-blocking.
+- E1-first-pullback x health-full: earlier 3-slice weak signal was small-n mirage.
+  Per pre-registered tree: mechanism-rethink branch for THIS formulation (gain-rank and
+  health-state selection x pullback timing). Opening-shape conditioning UNTESTED.
+- Standing: MFE-before-DD target (month-blocked); E1 trigger-suppression asymmetry;
+  Friday forward session; repaired PM data; verified harness.
