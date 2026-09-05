@@ -610,3 +610,19 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
   health-state selection x pullback timing). Opening-shape conditioning UNTESTED.
 - Standing: MFE-before-DD target (month-blocked); E1 trigger-suppression asymmetry;
   Friday forward session; repaired PM data; verified harness.
+
+## 2026-09-06 — top-3 path→opportunity program ADOPTED as central lane (design frozen)
+- 3 advisory lanes reconciled (ml-formulation / data-inventory / red-team). Verdict: GO
+  as bounded falsification probe with pre-registered kill criteria; prior for success low.
+- Formulation: clustering K=3-6 + Ridge <=10-15 vars; stock-day unit (episodes as features
+  only, day-clustered SEs); mb200_capped primary (+mb100 comparability); support gates
+  (>=15-20 obs, 3+ months, applicability check); month-blocked validation; 2 unseen months
+  required (1 month = pilot only). Sequence models rejected; GBM capped challenger; kNN diagnostic.
+- Dev = 2025-05+06+07 (63 contiguous days, mixed regimes, PM-capable); collision = 2025-08
+  then 2025-10. Reserve 2025-03/04 + all 2026. Arms A (raw) / B ($2-20+liq) separate models.
+- Preconditions (wiring): premarket branch fix (dead code today) + prev-close/split join
+  into snapshot + RVOL baselines for dev months. Turnover dropped (no PIT float); halt proxy
+  = bar absence; late-starters flagged.
+- Kill criteria (binding): DEAD if d_hit<=+5pp or median-capture<=0 or degenerate rates;
+  WEAK if +5-15pp both arms CI-incl-0 -> expand 2 months frozen; PROMISING only if
+  d_hit>=+15-20pp AND capture>=+100-150bps AND FP<1.0, both arms, n>=60, search disclosed.
