@@ -95,3 +95,32 @@ on H1–H7 all failing month-blocked with FP-denominated scoring. Neither has ha
    provenance gap). 5. Narrow-PM × gap × separation join (H2 leg). 6. Turnover clock
    with $-proxy (H3). 7. Halt-reopen magnitude (H5). 8. Fade trigger (H6).
 9. Event logging → transitions (H7a). 10. Legs portfolio (H7b, last).
+
+---
+## 2026-09-07 — runner phenomenology + first positive gate (data-driven)
+
+**Phenomenology (141 runners ≥60% open→close, 2025-05..12 + 2026-03, 172 days):**
+- Stable frequency: 1.2–1.5 such runners/day, every month, no dead months.
+- Move takes ALL DAY: med open→high 322min; half the move done only by 11:25; only 15%
+  half-done by 10:00. Afternoon share of move: median 55%.
+- Halts are the fingerprint: 84% of runners halt; dose-response (0 halts → +83% mean,
+  11+ halts → +177%). Retrace ≥30% mid-move didn't kill 24/141 (mean +244% finish).
+- Clock conclusion: 10:00-anchored snapshot designs structurally truncated the object.
+
+**First positive gate (pre-registered next-bar-open from 10:30):**
+- Signature = gain≥15% by 10:30 AND ≥1 halt-gap by 10:30 (SIP bar-hole proxy). n=281.
+- Rest-of-day fwd mean +2.8% (10× CTRL +0.3%), MFE med +11%, MAE med −8%.
+- Month-blocked: 7/9 positive (+243..+2127bps; worst −372). Win 48% — payoff is in the tail.
+- 50/281 had MFE≥30% after 10:30 (mean finish +32%). Tail-harvest structure: median ~0,
+  mean driven by MFE-tail — extraction requires stay-rules (H2 discipline) on top of the gate.
+
+**New lead hypothesis H8 (rank #1): "thrust+halt gate → participation/exit management."**
+- Mechanism: halt = float-overhang release valve + visibility spike; post-halt reopen
+  mechanically re-prices; reflexive inflow continues for hours (half the move is after 11:25).
+- Next test (NOT yet run — pre-registered): frozen entry at 10:30 gate → frozen trailing
+  exit (e.g. giveback cap / time stop 15:30) on the 281-name set + fresh months as collision.
+  Metric: net capture after 20bps costs vs SIG-cohort MFE; kill = capture ≤ 0 month-blocked.
+- Caution: halt-gap proxy ≠ true LULD halts (false positives from data holes); friction for
+  these names is 50–150bps not 20; win-rate stays sub-50% so the gate is a tail option, not a
+  predictor. FP of the gate itself still unpriced (how many SIG names die quietly — actually
+  no: SIG IS the FP-inclusive cohort; the +2.8% is net of false positives by construction).

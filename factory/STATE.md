@@ -666,3 +666,16 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
   H5 halt-resolution, H6 fade, H7 transitions/legs. Anomaly ledger (7). Kill criteria
   binding. Adversarial standing kept open with flip conditions both sides.
 - Test queue ordered zero-new-data-first: lag buckets, frozen participation, veto.
+
+## 2026-09-07 — runner phenomenology + thrust+halt gate (first positive month-blocked result)
+- Built runner_phenom.py; scanned 172 days (2025-05..12, 2026-03): 141 runners ≥60%.
+  Phenomenology: move takes all day (med 322min open→high, 55% of move after noon),
+  halts monotone with gain (84% halt; 11+ halts → mean +177%), retrace doesn't kill.
+- FP check: gate = ≥15% by 10:30 + ≥1 halt-gap → rest-of-day from 10:30 next-bar-open:
+  n=281, fwd mean +2.8% vs ctrl +0.3%, 7/9 months positive, MFE med +11% after entry.
+  First positive month-blocked cohort result in project history. Payoff is tail-shaped
+  (win 48%); extraction = stay-rules problem (H2) on a visible gate (H5 fingerprint).
+- Artifacts: factory/artifacts/runner_phenom_2025.json, sig_halt_1030.json.
+- Misdiagnosis log (mine): month scans died to `timeout 280` before writing; I blamed
+  session-reaping for 2 cycles. Fixed: per-day incremental JSONL + resume. Lesson: write
+  incrementally, verify the artifact exists before reasoning.
