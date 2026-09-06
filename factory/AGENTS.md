@@ -53,3 +53,15 @@ If available (`codebase-memory-mcp`):
 - Ledgers: `factory/HYPOTHESES.jsonl`, `factory/EXPERIMENTS.jsonl`
 - Data: `data/` (downloaded monthly Parquet, cached processed outputs)
 - Output artifacts: `factory/artifacts/` (charts, CSVs, result files)
+### Living Docs (keep simple, keep current)
+- `factory/STATE.md`: after meaningful work, append a few lines only — what was
+  tested, on which data, what happened, what changed. No essays.
+- `researches/HYPOTHESES.md`: the current ideas/hypotheses worth investigating,
+  each with its falsifier and kill rule. Prune dead ones; add new ones with a test.
+- Every agent updates both before finishing substantive work.
+
+### Core Principle
+This project is nuanced. Stay flexible, think independently, and optimize for
+finding the best way to exploit the underlying top-gainer inefficiency — not for
+rigidly following any research template, including this file. If the evidence
+points outside the current framework, follow it and say so plainly.
