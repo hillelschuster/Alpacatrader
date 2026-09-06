@@ -660,3 +660,9 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
   Surviving: MFE target, harness, PM data, Friday forward loop, apparatus.
   Next: rethink branch — finer representations, turnover-gating, regime-conditioning,
   or thesis revision. No new learning runs until the rethink lands.
+
+## 2026-09-06 — hypothesis round: 5 thinking lanes -> HYPOTHESES.md (living doc)
+- H1 scanner-lag rental, H2 participation/narrow-base, H3 turnover-clock, H4 veto,
+  H5 halt-resolution, H6 fade, H7 transitions/legs. Anomaly ledger (7). Kill criteria
+  binding. Adversarial standing kept open with flip conditions both sides.
+- Test queue ordered zero-new-data-first: lag buckets, frozen participation, veto.
