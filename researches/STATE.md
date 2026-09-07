@@ -18,21 +18,30 @@ positives have replicated 0-for-4 on unseen months.
 - Thrust alone is DEAD (+0.3% remainder, n=5,521). Rank/health/E1/E2/E3/Ridge/DTW/
   snapshot selection: all failed conditionality at scale. Retired, thesis-level.
 - Buying halt reopens is DEAD causally (next-bar-open D30 -0.5% to -1.5%). The
-  halt-gap money (+6.3% morning median) accrues only to the already-long.
+  halt-gap money (morning qualifying events: mean +6.3%, median +4.4%, n=68) accrues
+  only to the already-long.
 - MFE-before-drawdown is the most stable measured property of top-gainer cohorts
   (mb100 positive in 9/9 month blocks, 31/33 days) — an opportunity map, NOT an
   entry signal (H11 was its capture attempt and failed).
-- Money-location map (dev months): morning halt-gaps (if holding), 10:30-11:00 inflow
-  wave (+1.2%), afternoon 14:00-16:00 wave (+2.0%). Midday is dead capital. The
-  +2.39% afternoon rental did NOT survive collision months (2025-04 -6.27%, 2026-01
-  -3.51% net; pooled -2.13% at 100bps).
+- Money-location map (measured on the GATE cohort — 15-30% by 10:30 + >=1 halt,
+  n=180 dev name-days; not general-population): morning halt-gaps (if holding),
+  10:30-11:00 inflow wave (+1.2%), afternoon 14:00-16:00 wave (+2.0%). Midday is
+  dead capital. The +2.39% afternoon rental did NOT survive collision months
+  (2025-04 -6.27%, 2026-01 -3.51% net; pooled -2.13% at 100bps).
 
 ## Collisions: 0-for-4 (the meta-finding that shapes everything)
-E1xhealth (146d) -> failed. Ridge twice -> failed. DTW medoid October -> failed.
-H11 afternoon rental -> failed (2026-09-08). Pattern: month-blocked dev positives
-with small n are found easily and do not replicate. Consequence: no selection or
-timing rule gets believed again without (a) pooled n across MANY months before
-testing, or (b) forward-observer accumulation as primary evidence.
+E1xhealth (146d) -> failed. Ridge (one formulation) -> failed twice (Aug, Oct). DTW
+medoid October -> failed. H11 afternoon rental -> failed (2026-09-08). Pattern:
+month-blocked dev positives with small per-month n are found easily and do not
+replicate. SCOPE: this covers small-n selection/timing rules; the ML fresh-window
+failure had high n (5/5 months negative) — that implicates regime/decay. Power is
+necessary, not sufficient. Consequence: no selection or timing rule gets believed
+again without (a) pooled n across MANY months before testing, or (b)
+forward-observer accumulation as primary evidence.
+Full retire list with causes: H8 gate (descriptive only; capture failed via H11);
+H9 reopen participation (anchor illusion; causal entry negative); H10a hold-through-
+halt (UNTESTED — open family, not promising); H10b/H11 afternoon rental (collision-
+failed); plus historical: E1/E2/E3, gain-rank, health, Ridge, DTW, 10:00 snapshots.
 
 ## Current strategy for the next phase (decision 2026-09-08)
 1. STOP inventing single-month-sliced selection rules. Statistical power first:
@@ -46,6 +55,15 @@ testing, or (b) forward-observer accumulation as primary evidence.
 4. Open (untested, not promising): hold-through-halt capture; turnover/float clock
   (needs PIT float data we lack); failed-move fade (conditions on late info);
   transitions/handoffs (needs event logging wiring).
+
+## Open questions (unresolved; do not cite either side as settled)
+- Rank-1 chasing conflict: Cameron-lane "causal minute-rank-1 negative every month
+  both years" vs verify_core 11-point monthly h60 DOWNGRADED to mixed (-579..+411).
+  Different horizons/universes; never re-opened head-to-head.
+- FP-penalized recall gate for Stage B (MFE-before-DD target adopted).
+- Harness-path rerun of MFE magnitudes (lane-only provenance currently).
+- 2026-04..08 clean-file provenance (duplicates in data/; backfill clean absent).
+- H10a hold-through-halt: the one open capture family (untested, power-caveated).
 
 ## Critical session-semantics (never re-learn these)
 - et_minute() in replay_watchlist.py; session ET [570, 960); snapshot 10:00 uses
@@ -61,6 +79,13 @@ testing, or (b) forward-observer accumulation as primary evidence.
 
 ## Live evidence sources
 - factory/artifacts/*.json — every number above has a committed artifact.
-- data/forward/2026-09-04/ — first live observer day (16% phantom/warrant issue;
-  fetchability validation required before any live population definition).
+- data/forward/2026-09-04..06/ — live observer days (09-05/06 are WEEKENDS —
+  exclude non-trading days in analysis; 09-04 has the 16% phantom/warrant issue).
 - H11 collision artifact: factory/artifacts/h11_collision_results.json (n=112).
+
+## Provenance doctrine (adopted 2026-09-08 after audit)
+- Every artifact's producer script must be committed under factory/scripts/.
+- Every cohort scan must report distinct days covered (the 281-vs-245 gate-cohort
+  confusion was a day-coverage gap, not a population difference).
+- Friction is annotated per claim; cross-friction comparisons are void (20bps ML-era
+  numbers are not comparable to 100bps H-era numbers).

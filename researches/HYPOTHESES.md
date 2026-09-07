@@ -15,6 +15,9 @@ Settled facts: researches/CANONICAL_STATE.md (trust tiers apply to everything he
 Measurement contract: ET clocks, causal-only, 1-bar lag, open-anchored gains,
 conservative same-bar DD-first, pre-registered kills, month-blocked reporting.
 
+## ARCHIVE (2026-09-06 thinking round — planned but NOT executed; superseded by the
+## 2026-09-08 post-H11 ranking at the bottom of this file. Retained for provenance.)
+
 ## A. Ranked edge hypotheses (mechanism-first)
 
 ### H1. Scanner-lag rental window (test first — zero new data needed)
@@ -80,6 +83,8 @@ buy-hold. Most faithful to retail, most complex — last in queue.
 7. Trader-reader harvestables: VWAP-slope gating, first-pullback-only + leg/pullback
    volume ratio, halt/resume handling, TOD regime — none captured by E1/E2/E3.
 
+## C. Kill criteria (ARCHIVED — predates the power doctrine; superseded by the
+## 2026-09-08 meta-constraint: >=6mo pooled dev, >=2 collision months, >=100bps friction)
 ## C. Kill criteria (binding, from red-team)
 Collision n≈60: SE(hit)≈6.4pp, SE(mean)≈200+bps. DEAD: Δhit ≤ +5pp or median-capture
 ≤ 0 or degenerate rates or FP/cap ≥ baseline w/o lift → mechanism-rethink branch.
@@ -87,6 +92,9 @@ WEAK (+5–15pp, CI incl 0): expand frozen 2 months, no sizing. PROMISING only:
 Δhit ≥ +15–20pp AND capture ≥ +100–150bps AND FP < 1.0, both arms, search disclosed.
 Single month never promotes. Two unseen months required before exposure design.
 
+## D. Adversarial standing (ARCHIVED 09-06 version — flip conditions reference H1-H7
+## which never ran; the failures since were H8-H11 + E/Ridge/DTW. Adversarial stance itself
+## remains OPEN: no-edge flips on 2-mo pre-reg MFE-capture net of realistic friction.)
 ## D. Adversarial standing (kept open, updated 2026-09-06)
 Strongest no-edge case: pooled zeros (48d/146d/collisions) + 97% retail base rates +
 50–150bps realistic friction vs 20 assumed + warrant contamination + non-formalizable

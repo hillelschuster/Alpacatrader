@@ -1,3 +1,7 @@
+# ⛔ HISTORICAL PROGRAM CHRONICLE — ends at the 2026-09-04 milestone. Later evolution
+# (MFE target, E-conditionality, path program, runner H8-H11, H11 collision) lives in
+# factory/STATE.md (append-log) + researches/HYPOTHESES.md. Status: not running.
+
 # 07 — Dominant-Leader Research Program (fresh, 2026-09-03)
 
 Status: RUNNING. 6 parallel subagent lanes (same model, web-heavy) + local empirical replication.

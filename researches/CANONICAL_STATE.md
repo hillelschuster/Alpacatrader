@@ -1,3 +1,8 @@
+# ⛔ FROZEN HISTORICAL SNAPSHOT (2026-09-04/05) — superseded by researches/STATE.md + HYPOTHESES.md.
+# Do NOT cite numbers from this file as current truth. Kept for the trust map and
+# as the record of what was known before the runner-era work (H8-H11). Some claims
+# below (E1-health support, HOD/VWAP untested) were dissolved days after writing.
+
 # CANONICAL RESEARCH STATE — dominant-leader program (2026-09-04)
 
 Inheritance contract: a new session reading THIS file + SOUL.md + factory/STATE.md tail
