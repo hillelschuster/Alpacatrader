@@ -154,3 +154,32 @@ NOT winner-picking, NOT snapshots.
 Pre-registered test: post-halt rule (vel≥30% & hole≥11 & t<12:30; plus vel≥60% variant),
 entry NEXT-BAR-OPEN after reopen (not hole-end close), frozen exits (3bar/30min/trail),
 net 100bps, month-blocked. Kill: capture ≤0 net on ≥2 months.
+
+---
+## 2026-09-07c — WHERE THE MONEY LIVES: temporal decomposition of the runner machine
+
+**Halt-gap vs post-reopen (n=241 qualifying, 32k live events, 9 months):**
+- The +3.9% "post-halt continuation" was an ANCHOR ILLUSION: anchoring at hole-end
+  close captured pre-halt->reopen GAP money. Causal next-bar-open entry after reopen:
+  D30 = −0.5% (all), −1.5% (morning). Buying reopens is DEAD in every cell.
+- The gap is real and tradable only if you are ALREADY LONG: morning qualifying gaps
+  A = +6.28% med +4.43% win 69% (n=68). g5>=5% into halt: gap +9.96%.
+- The machine has TWO delivery windows: (1) the halt-gap itself, (2) afternoon.
+
+**Gate cohort (15-30%+halt by 10:30) full-day accrual (n=179 name-days):**
+- +1.24% by 11:00, dead 11-14, then afternoon wave: +1.25% (14-15) + +0.77% (15-16)
+  → total +3.72% by close (med +1.49%). NOT halt-driven: gap share ≈ −10%.
+- The runner machine runs on a SCHEDULE: morning thrust → midday pause → afternoon
+  power hour. Midday participation is dead capital (11-13 increments ≈ 0).
+
+**H10 (replaces H9 as rank 1): THE SCHEDULE MACHINE.**
+Two separable edges found:
+- H10a HOLD-THROUGH-HALT: enter gate state in the morning (thrust+halt interaction,
+  15-30% sweet spot), ride through halts, exit before/at reopen of a qualifying halt
+  or by frozen time stop. Captures A-gap + slow accrual, avoids buying chaotic reopens.
+- H10b AFTERNOON RENTAL: re-enter/hold the gate cohort through the 14-16 wave
+  (identifiable state: still-active runner, e.g. above VWAP at 13:30).
+- DEAD: reopen scalp, midday chop, thrust-alone, winner-picking, wall-clock snapshots.
+Pre-registered tests: H10a = gate entry 10:30, exit = sell INTO qualifying reopen
+(market sell at ro_open) OR 15:30; net 100bps; kill = capture<=0 on 2+ months.
+H10b = enter 13:30 if gate name still above VWAP, exit 15:30-16:00; kill same.

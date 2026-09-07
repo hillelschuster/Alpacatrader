@@ -687,3 +687,10 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
   hole≥11min → ret3 +3.9% win 57%, 8/9 months. Halt-ordinal decays; morning only.
 - New H9: event-clock participation machine (state coords, not wall clock).
   Artifacts: gate_decomp_2025.json, halt_reopen_all.json (committed).
+
+## 2026-09-07c — temporal decomposition: anchor illusion resolved
+- The +3.9% post-halt continuation was pre-halt->reopen GAP (anchor illusion); causal
+  next-open entry after reopen is NEGATIVE (D30 -1.5% morning). Reopen buying dead.
+- Already-long is where gap money accrues: morning qualifying halt gaps +6.3% med +4.4%.
+- Gate cohort accrual schedule: +1.2% by 11:00, dead 11-14, +2.0% in 14-16 wave.
+  H10a hold-through-halt / H10b afternoon rental pre-registered. Artifacts committed.
