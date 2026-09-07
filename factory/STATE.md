@@ -694,3 +694,11 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
 - Already-long is where gap money accrues: morning qualifying halt gaps +6.3% med +4.4%.
 - Gate cohort accrual schedule: +1.2% by 11:00, dead 11-14, +2.0% in 14-16 wave.
   H10a hold-through-halt / H10b afternoon rental pre-registered. Artifacts committed.
+
+## 2026-09-07d — capture pricing → H11 afternoon rental
+- Priced dumb hold (+1.24%), abort-7% (worse: +0.43%), 13:30 rental (+2.39% best).
+  Green@13:30 dead on general pop (+0.24%); gate interaction is load-bearing.
+- Tail-concentration honest: excl top-5 mean +1.07%; 2nd half (Nov-Mar) +0.67%
+  (excl top-3 −0.38%), 2026-03 alone +2.19%. Lottery-book anatomy.
+- H11 = stupid-simple afternoon rental of gate names, pre-registered kill on two
+  flat collision months. Artifacts: gate_pm_full.json, pm_green_all.json.

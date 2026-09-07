@@ -183,3 +183,33 @@ Two separable edges found:
 Pre-registered tests: H10a = gate entry 10:30, exit = sell INTO qualifying reopen
 (market sell at ro_open) OR 15:30; net 100bps; kill = capture<=0 on 2+ months.
 H10b = enter 13:30 if gate name still above VWAP, exit 15:30-16:00; kill same.
+
+---
+## 2026-09-07d — capture pricing + the decay question
+
+**Simplest captures priced (full gate cohort, n=180, 9 months):**
+- Dumb hold 10:30→close: +1.24% (med −0.26%, win 48%). Abort-7% made it WORSE
+  (+0.43%, win 34% — winners dip −7% intraday then run; aborts are the cost).
+- 13:30→close rental (no condition): +2.39% med +1.23% win 57% — best simple capture.
+- green@13:30 adds nothing on gate names (green +3.10% vs red +1.63%, both pos).
+- General-population control: green@13:30 on ALL ≥5% names = +0.24% ≈ 0. The gate
+  (thrust+halt interaction) is load-bearing, NOT the green/red cut.
+
+**Honest decomposition of the +2.39%:**
+- Tail-concentrated: mean excl top-5 = +1.07%, excl top-10 = +0.54%. One +131% name.
+- First half (May-Oct): +3.26%; second half (Nov-Mar): +0.67% (excl top-3 = −0.38%).
+  Decaying but not dead: 2026-03 alone +2.19% med +1.36% win 67% (n=15).
+- Option-book anatomy: winners mean +7.5% / losers −4.2%; the median name is +1.2%.
+  This is a lottery-book structure: survive losers, own the tail.
+
+**H11 (new rank 1): AFTERNOON RENTAL OF GATE NAMES.**
+Strategy: morning (by 10:30) build watchlist = 15–30% RTH gain + ≥1 halt-gap
+(RTH-only holes now; 3–5 names/day typical). At 13:30 buy the still-trading ones
+(all, not green-only — green adds nothing), flat by close. No intraday management.
+- Why this shape: skips morning chaos (−8% MAE median) and midday dead capital;
+  rents only the 14–16 wave; one decision/day; trivially executable.
+- Preserves the old E-block warning: 2025-11/12 flat, so pre-register kill:
+  two consecutive collision months ≤ 0 net (100bps friction) → retire.
+- It is intentionally the STUPIDEST possible capture of the located money. No
+  state machine, no exits research, no reopen plays. If +2%/name after friction
+  does not survive, complexity cannot save it; if it survives, refine later.
