@@ -1,0 +1,70 @@
+{
+  "month": "2025-08",
+  "n_sessions": 21,
+  "n_rows": 23727538,
+  "n_tickers": 15001,
+  "n_candidates": 2908,
+  "n_split_suspects": 52,
+  "split_examples": [
+    {
+      "ticker": "ZVZZT",
+      "et_date": "2025-08-01"
+    },
+    {
+      "ticker": "PHLT",
+      "et_date": "2025-08-01"
+    },
+    {
+      "ticker": "FBDC",
+      "et_date": "2025-08-04"
+    },
+    {
+      "ticker": "ZVZZT",
+      "et_date": "2025-08-04"
+    },
+    {
+      "ticker": "ZVZZ.T",
+      "et_date": "2025-08-04"
+    }
+  ],
+  "n_universe_excluded": 1595,
+  "n_universe_unknown": 308,
+  "n_events": 130415,
+  "events_per_day": {
+    "min": 4895,
+    "median": 6334.0,
+    "max": 7301
+  },
+  "events_pct_gain": {
+    "p50": 12.489927477840457,
+    "p90": 26.328466335561444,
+    "p99": 48.262548262548265,
+    "max": 96.41577060931901
+  },
+  "example_ticker_days": [
+    {
+      "ticker": "UUUU",
+      "date": "2025-08-26",
+      "prev_close": 10.91,
+      "close_1600": 12.28,
+      "pct_gain_close": 12.55728689275893,
+      "rank_1600": 8
+    },
+    {
+      "ticker": "SNOW",
+      "date": "2025-08-28",
+      "prev_close": 200.5,
+      "close_1600": 240.97,
+      "pct_gain_close": 20.184538653366584,
+      "rank_1600": 2
+    },
+    {
+      "ticker": "TCOM",
+      "date": "2025-08-28",
+      "prev_close": 65.33,
+      "close_1600": 75.03,
+      "pct_gain_close": 14.847696311036282,
+      "rank_1600": 4
+    }
+  ]
+}

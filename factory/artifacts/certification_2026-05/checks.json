@@ -1,0 +1,70 @@
+{
+  "month": "2026-05",
+  "n_sessions": 20,
+  "n_rows": 29136867,
+  "n_tickers": 9905,
+  "n_candidates": 2643,
+  "n_split_suspects": 63,
+  "split_examples": [
+    {
+      "ticker": "MSTP",
+      "et_date": "2026-05-01"
+    },
+    {
+      "ticker": "MRAL",
+      "et_date": "2026-05-01"
+    },
+    {
+      "ticker": "AIOS",
+      "et_date": "2026-05-01"
+    },
+    {
+      "ticker": "CUE",
+      "et_date": "2026-05-01"
+    },
+    {
+      "ticker": "SMCL",
+      "et_date": "2026-05-01"
+    }
+  ],
+  "n_universe_excluded": 1341,
+  "n_universe_unknown": 25,
+  "n_events": 131633,
+  "events_per_day": {
+    "min": 5521,
+    "median": 6619.0,
+    "max": 7178
+  },
+  "events_pct_gain": {
+    "p50": 16.146572104018926,
+    "p90": 29.867256637168133,
+    "p99": 66.71982987772462,
+    "max": 133.88189738625363
+  },
+  "example_ticker_days": [
+    {
+      "ticker": "STRL",
+      "date": "2026-05-05",
+      "prev_close": 529.5,
+      "close_1600": 806.47,
+      "pct_gain_close": 52.307837582625126,
+      "rank_1600": 1
+    },
+    {
+      "ticker": "FLEX",
+      "date": "2026-05-06",
+      "prev_close": 96.39,
+      "close_1600": 134.71,
+      "pct_gain_close": 39.75516132378878,
+      "rank_1600": 3
+    },
+    {
+      "ticker": "RXT",
+      "date": "2026-05-07",
+      "prev_close": 2.265,
+      "close_1600": 3.53,
+      "pct_gain_close": 55.84988962472405,
+      "rank_1600": 3
+    }
+  ]
+}

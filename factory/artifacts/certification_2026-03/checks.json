@@ -1,0 +1,70 @@
+{
+  "month": "2026-03",
+  "n_sessions": 22,
+  "n_rows": 28684434,
+  "n_tickers": 15521,
+  "n_candidates": 3233,
+  "n_split_suspects": 93,
+  "split_examples": [
+    {
+      "ticker": "CSLLY",
+      "et_date": "2026-03-02"
+    },
+    {
+      "ticker": "AARD",
+      "et_date": "2026-03-02"
+    },
+    {
+      "ticker": "BATL",
+      "et_date": "2026-03-02"
+    },
+    {
+      "ticker": "ZVZZT",
+      "et_date": "2026-03-03"
+    },
+    {
+      "ticker": "BATL",
+      "et_date": "2026-03-03"
+    }
+  ],
+  "n_universe_excluded": 2153,
+  "n_universe_unknown": 101,
+  "n_events": 131373,
+  "events_per_day": {
+    "min": 4979,
+    "median": 6064.0,
+    "max": 6709
+  },
+  "events_pct_gain": {
+    "p50": 11.171171171171174,
+    "p90": 21.36409227683048,
+    "p99": 53.56849876948318,
+    "max": 139.43661971830988
+  },
+  "example_ticker_days": [
+    {
+      "ticker": "BATL",
+      "date": "2026-03-06",
+      "prev_close": 18.98,
+      "close_1600": 22.25,
+      "pct_gain_close": 17.228661749209692,
+      "rank_1600": 8
+    },
+    {
+      "ticker": "U",
+      "date": "2026-03-27",
+      "prev_close": 17.105,
+      "close_1600": 19.45,
+      "pct_gain_close": 13.709441683718204,
+      "rank_1600": 8
+    },
+    {
+      "ticker": "NAVN",
+      "date": "2026-03-26",
+      "prev_close": 9.16,
+      "close_1600": 13.11,
+      "pct_gain_close": 43.12227074235807,
+      "rank_1600": 2
+    }
+  ]
+}

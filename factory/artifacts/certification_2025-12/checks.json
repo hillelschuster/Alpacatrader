@@ -1,0 +1,70 @@
+{
+  "month": "2025-12",
+  "n_sessions": 22,
+  "n_rows": 25626270,
+  "n_tickers": 15629,
+  "n_candidates": 2633,
+  "n_split_suspects": 124,
+  "split_examples": [
+    {
+      "ticker": "ULTY",
+      "et_date": "2025-12-01"
+    },
+    {
+      "ticker": "TSLY",
+      "et_date": "2025-12-01"
+    },
+    {
+      "ticker": "XYZY",
+      "et_date": "2025-12-01"
+    },
+    {
+      "ticker": "ZVZZT",
+      "et_date": "2025-12-01"
+    },
+    {
+      "ticker": "FLYE",
+      "et_date": "2025-12-01"
+    }
+  ],
+  "n_universe_excluded": 1708,
+  "n_universe_unknown": 228,
+  "n_events": 126107,
+  "events_per_day": {
+    "min": 4307,
+    "median": 5802.5,
+    "max": 6989
+  },
+  "events_pct_gain": {
+    "p50": 9.745762711864407,
+    "p90": 19.779005524861866,
+    "p99": 47.788461538461526,
+    "max": 100.4950495049505
+  },
+  "example_ticker_days": [
+    {
+      "ticker": "NVO",
+      "date": "2025-12-23",
+      "prev_close": 48.11,
+      "close_1600": 51.625,
+      "pct_gain_close": 7.306173352733321,
+      "rank_1600": 17
+    },
+    {
+      "ticker": "DBRG",
+      "date": "2025-12-29",
+      "prev_close": 13.93,
+      "close_1600": 15.275,
+      "pct_gain_close": 9.6554199569275,
+      "rank_1600": 9
+    },
+    {
+      "ticker": "PL",
+      "date": "2025-12-11",
+      "prev_close": 12.98,
+      "close_1600": 17.47,
+      "pct_gain_close": 34.59167950693373,
+      "rank_1600": 2
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "month": "2026-03",
+  "n_sessions": 22,
+  "n_rows": 32288525,
+  "n_tickers": 9627,
+  "n_candidates": 2339,
+  "n_split_suspects": 48,
+  "split_examples": [
+    {
+      "ticker": "BATL",
+      "et_date": "2026-03-02"
+    },
+    {
+      "ticker": "BNY",
+      "et_date": "2026-03-02"
+    },
+    {
+      "ticker": "AARD",
+      "et_date": "2026-03-02"
+    },
+    {
+      "ticker": "BATL",
+      "et_date": "2026-03-03"
+    },
+    {
+      "ticker": "POAS",
+      "et_date": "2026-03-04"
+    }
+  ],
+  "n_universe_excluded": 1312,
+  "n_universe_unknown": 28,
+  "n_events": 126537,
+  "events_per_day": {
+    "min": 4602,
+    "median": 5853.0,
+    "max": 6523
+  },
+  "events_pct_gain": {
+    "p50": 11.790585129784423,
+    "p90": 22.269767441860473,
+    "p99": 55.83720099964297,
+    "max": 135.306312843371
+  },
+  "example_ticker_days": [
+    {
+      "ticker": "SEDG",
+      "date": "2026-03-20",
+      "prev_close": 45.77,
+      "close_1600": 51.71,
+      "pct_gain_close": 12.977933143980769,
+      "rank_1600": 5
+    },
+    {
+      "ticker": "BRZE",
+      "date": "2026-03-25",
+      "prev_close": 18.05,
+      "close_1600": 21.57,
+      "pct_gain_close": 19.501385041551245,
+      "rank_1600": 6
+    },
+    {
+      "ticker": "ALKS",
+      "date": "2026-03-31",
+      "prev_close": 30.15,
+      "close_1600": 35.37,
+      "pct_gain_close": 17.313432835820894,
+      "rank_1600": 4
+    }
+  ]
+}

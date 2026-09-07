@@ -1,0 +1,70 @@
+{
+  "month": "2026-08",
+  "n_sessions": 21,
+  "n_rows": 30162366,
+  "n_tickers": 10251,
+  "n_candidates": 2621,
+  "n_split_suspects": 51,
+  "split_examples": [
+    {
+      "ticker": "TOP",
+      "et_date": "2026-08-03"
+    },
+    {
+      "ticker": "PN",
+      "et_date": "2026-08-03"
+    },
+    {
+      "ticker": "DFNS",
+      "et_date": "2026-08-03"
+    },
+    {
+      "ticker": "UPC",
+      "et_date": "2026-08-03"
+    },
+    {
+      "ticker": "AMIX",
+      "et_date": "2026-08-04"
+    }
+  ],
+  "n_universe_excluded": 1408,
+  "n_universe_unknown": 20,
+  "n_events": 129537,
+  "events_per_day": {
+    "min": 4732,
+    "median": 6313.0,
+    "max": 7177
+  },
+  "events_pct_gain": {
+    "p50": 12.710242034732671,
+    "p90": 28.771929824561397,
+    "p99": 52.71631205673758,
+    "max": 107.30114836578714
+  },
+  "example_ticker_days": [
+    {
+      "ticker": "INSM",
+      "date": "2026-08-06",
+      "prev_close": 98.98,
+      "close_1600": 132.6,
+      "pct_gain_close": 33.96645787027681,
+      "rank_1600": 3
+    },
+    {
+      "ticker": "PLTR",
+      "date": "2026-08-04",
+      "prev_close": 125.89,
+      "close_1600": 162.55,
+      "pct_gain_close": 29.120660894431655,
+      "rank_1600": 9
+    },
+    {
+      "ticker": "SE",
+      "date": "2026-08-11",
+      "prev_close": 114.695,
+      "close_1600": 131.43,
+      "pct_gain_close": 14.590871441649606,
+      "rank_1600": 9
+    }
+  ]
+}

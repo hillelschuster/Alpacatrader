@@ -1,0 +1,70 @@
+{
+  "month": "2025-11",
+  "n_sessions": 19,
+  "n_rows": 23357289,
+  "n_tickers": 15508,
+  "n_candidates": 3027,
+  "n_split_suspects": 77,
+  "split_examples": [
+    {
+      "ticker": "DD",
+      "et_date": "2025-11-03"
+    },
+    {
+      "ticker": "DRMKY",
+      "et_date": "2025-11-03"
+    },
+    {
+      "ticker": "SRPU",
+      "et_date": "2025-11-04"
+    },
+    {
+      "ticker": "EVOK",
+      "et_date": "2025-11-04"
+    },
+    {
+      "ticker": "IGTA",
+      "et_date": "2025-11-05"
+    }
+  ],
+  "n_universe_excluded": 1763,
+  "n_universe_unknown": 251,
+  "n_events": 116852,
+  "events_per_day": {
+    "min": 5271,
+    "median": 6094.0,
+    "max": 6929
+  },
+  "events_pct_gain": {
+    "p50": 12.786885245901637,
+    "p90": 27.13567839195979,
+    "p99": 50.52034058656575,
+    "max": 99.82262245872558
+  },
+  "example_ticker_days": [
+    {
+      "ticker": "AMKR",
+      "date": "2025-11-03",
+      "prev_close": 32.27,
+      "close_1600": 37.86,
+      "pct_gain_close": 17.322590641462646,
+      "rank_1600": 5
+    },
+    {
+      "ticker": "STGW",
+      "date": "2025-11-06",
+      "prev_close": 4.8,
+      "close_1600": 5.62,
+      "pct_gain_close": 17.08333333333334,
+      "rank_1600": 14
+    },
+    {
+      "ticker": "OSCR",
+      "date": "2025-11-24",
+      "prev_close": 13.485,
+      "close_1600": 16.49,
+      "pct_gain_close": 22.284019280682234,
+      "rank_1600": 8
+    }
+  ]
+}

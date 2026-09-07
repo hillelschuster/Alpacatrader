@@ -1,0 +1,70 @@
+{
+  "month": "2026-01",
+  "n_sessions": 20,
+  "n_rows": 25080944,
+  "n_tickers": 15745,
+  "n_candidates": 3039,
+  "n_split_suspects": 84,
+  "split_examples": [
+    {
+      "ticker": "BCOMF",
+      "et_date": "2026-01-02"
+    },
+    {
+      "ticker": "SINC",
+      "et_date": "2026-01-02"
+    },
+    {
+      "ticker": "ZBIO",
+      "et_date": "2026-01-05"
+    },
+    {
+      "ticker": "ITOCY",
+      "et_date": "2026-01-06"
+    },
+    {
+      "ticker": "IBIDY",
+      "et_date": "2026-01-06"
+    }
+  ],
+  "n_universe_excluded": 1893,
+  "n_universe_unknown": 222,
+  "n_events": 131800,
+  "events_per_day": {
+    "min": 5916,
+    "median": 6607.5,
+    "max": 7195
+  },
+  "events_pct_gain": {
+    "p50": 11.676082862523543,
+    "p90": 21.195184866723988,
+    "p99": 54.04007756948932,
+    "max": 157.9867389993972
+  },
+  "example_ticker_days": [
+    {
+      "ticker": "INTC",
+      "date": "2026-01-28",
+      "prev_close": 43.95,
+      "close_1600": 48.755,
+      "pct_gain_close": 10.932878270762227,
+      "rank_1600": 12
+    },
+    {
+      "ticker": "STX",
+      "date": "2026-01-28",
+      "prev_close": 372.0,
+      "close_1600": 442.8,
+      "pct_gain_close": 19.03225806451613,
+      "rank_1600": 3
+    },
+    {
+      "ticker": "ALMS",
+      "date": "2026-01-06",
+      "prev_close": 8.295,
+      "close_1600": 16.25,
+      "pct_gain_close": 95.90114526823388,
+      "rank_1600": 1
+    }
+  ]
+}

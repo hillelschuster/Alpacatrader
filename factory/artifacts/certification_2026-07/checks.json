@@ -1,0 +1,70 @@
+{
+  "month": "2026-07",
+  "n_sessions": 22,
+  "n_rows": 31839599,
+  "n_tickers": 10153,
+  "n_candidates": 2417,
+  "n_split_suspects": 65,
+  "split_examples": [
+    {
+      "ticker": "MQ",
+      "et_date": "2026-07-01"
+    },
+    {
+      "ticker": "MLI",
+      "et_date": "2026-07-01"
+    },
+    {
+      "ticker": "TC",
+      "et_date": "2026-07-01"
+    },
+    {
+      "ticker": "BFOR",
+      "et_date": "2026-07-01"
+    },
+    {
+      "ticker": "SDOT",
+      "et_date": "2026-07-01"
+    }
+  ],
+  "n_universe_excluded": 1298,
+  "n_universe_unknown": 17,
+  "n_events": 133626,
+  "events_per_day": {
+    "min": 4740,
+    "median": 5994.5,
+    "max": 7250
+  },
+  "events_pct_gain": {
+    "p50": 10.886639676113356,
+    "p90": 22.282352941176473,
+    "p99": 44.319056785370535,
+    "max": 208.252427184466
+  },
+  "example_ticker_days": [
+    {
+      "ticker": "AMZN",
+      "date": "2026-07-31",
+      "prev_close": 236.031,
+      "close_1600": 271.57,
+      "pct_gain_close": 15.056920489257761,
+      "rank_1600": 9
+    },
+    {
+      "ticker": "IREN",
+      "date": "2026-07-20",
+      "prev_close": 33.615,
+      "close_1600": 40.26,
+      "pct_gain_close": 19.76796073181614,
+      "rank_1600": 2
+    },
+    {
+      "ticker": "PENG",
+      "date": "2026-07-08",
+      "prev_close": 62.71,
+      "close_1600": 78.46,
+      "pct_gain_close": 25.11561154520809,
+      "rank_1600": 1
+    }
+  ]
+}

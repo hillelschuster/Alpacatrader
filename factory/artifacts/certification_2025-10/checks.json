@@ -1,0 +1,70 @@
+{
+  "month": "2025-10",
+  "n_sessions": 23,
+  "n_rows": 27805119,
+  "n_tickers": 15706,
+  "n_candidates": 3157,
+  "n_split_suspects": 90,
+  "split_examples": [
+    {
+      "ticker": "ZVZZT",
+      "et_date": "2025-10-01"
+    },
+    {
+      "ticker": "ZVZZ.T",
+      "et_date": "2025-10-01"
+    },
+    {
+      "ticker": "TANAF",
+      "et_date": "2025-10-01"
+    },
+    {
+      "ticker": "RITR",
+      "et_date": "2025-10-01"
+    },
+    {
+      "ticker": "HOJI",
+      "et_date": "2025-10-01"
+    }
+  ],
+  "n_universe_excluded": 1910,
+  "n_universe_unknown": 293,
+  "n_events": 148877,
+  "events_per_day": {
+    "min": 5769,
+    "median": 6484.0,
+    "max": 7389
+  },
+  "events_pct_gain": {
+    "p50": 13.47447891022485,
+    "p90": 27.397260273972613,
+    "p99": 56.2076749435666,
+    "max": 495.3714981729598
+  },
+  "example_ticker_days": [
+    {
+      "ticker": "AES",
+      "date": "2025-10-01",
+      "prev_close": 13.155,
+      "close_1600": 15.365,
+      "pct_gain_close": 16.79969593310529,
+      "rank_1600": 12
+    },
+    {
+      "ticker": "W",
+      "date": "2025-10-28",
+      "prev_close": 86.48,
+      "close_1600": 106.46,
+      "pct_gain_close": 23.103607770582784,
+      "rank_1600": 4
+    },
+    {
+      "ticker": "APLD",
+      "date": "2025-10-10",
+      "prev_close": 29.23,
+      "close_1600": 33.965,
+      "pct_gain_close": 16.19911050290798,
+      "rank_1600": 5
+    }
+  ]
+}

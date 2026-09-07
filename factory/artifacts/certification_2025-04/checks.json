@@ -1,0 +1,70 @@
+{
+  "month": "2025-04",
+  "n_sessions": 21,
+  "n_rows": 24621900,
+  "n_tickers": 14234,
+  "n_candidates": 5786,
+  "n_split_suspects": 53,
+  "split_examples": [
+    {
+      "ticker": "DLICY",
+      "et_date": "2025-04-02"
+    },
+    {
+      "ticker": "NMAX",
+      "et_date": "2025-04-02"
+    },
+    {
+      "ticker": "AREB",
+      "et_date": "2025-04-02"
+    },
+    {
+      "ticker": "FLX",
+      "et_date": "2025-04-02"
+    },
+    {
+      "ticker": "ICCT",
+      "et_date": "2025-04-02"
+    }
+  ],
+  "n_universe_excluded": 3205,
+  "n_universe_unknown": 429,
+  "n_events": 118161,
+  "events_per_day": {
+    "min": 4633,
+    "median": 5942.0,
+    "max": 6686
+  },
+  "events_pct_gain": {
+    "p50": 9.476309226932667,
+    "p90": 20.669291338582674,
+    "p99": 44.912280701754376,
+    "max": 89.24162257495591
+  },
+  "example_ticker_days": [
+    {
+      "ticker": "RKLB",
+      "date": "2025-04-15",
+      "prev_close": 19.09,
+      "close_1600": 21.07,
+      "pct_gain_close": 10.371922472498692,
+      "rank_1600": 10
+    },
+    {
+      "ticker": "HTZ",
+      "date": "2025-04-17",
+      "prev_close": 5.7,
+      "close_1600": 8.2,
+      "pct_gain_close": 43.859649122807,
+      "rank_1600": 2
+    },
+    {
+      "ticker": "HIMS",
+      "date": "2025-04-29",
+      "prev_close": 28.51,
+      "close_1600": 35.05,
+      "pct_gain_close": 22.939319537004543,
+      "rank_1600": 3
+    }
+  ]
+}

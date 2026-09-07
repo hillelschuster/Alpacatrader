@@ -1,0 +1,70 @@
+{
+  "month": "2026-06",
+  "n_sessions": 21,
+  "n_rows": 31245558,
+  "n_tickers": 10089,
+  "n_candidates": 2712,
+  "n_split_suspects": 58,
+  "split_examples": [
+    {
+      "ticker": "ANY",
+      "et_date": "2026-06-01"
+    },
+    {
+      "ticker": "JDZG",
+      "et_date": "2026-06-01"
+    },
+    {
+      "ticker": "SMX",
+      "et_date": "2026-06-01"
+    },
+    {
+      "ticker": "BJDX",
+      "et_date": "2026-06-02"
+    },
+    {
+      "ticker": "FULC",
+      "et_date": "2026-06-02"
+    }
+  ],
+  "n_universe_excluded": 1493,
+  "n_universe_unknown": 25,
+  "n_events": 130893,
+  "events_per_day": {
+    "min": 5037,
+    "median": 6382.0,
+    "max": 7231
+  },
+  "events_pct_gain": {
+    "p50": 12.26635514018691,
+    "p90": 20.863309352517987,
+    "p99": 47.00582935877052,
+    "max": 83.88291959985182
+  },
+  "example_ticker_days": [
+    {
+      "ticker": "DFTX",
+      "date": "2026-06-22",
+      "prev_close": 24.44,
+      "close_1600": 36.69,
+      "pct_gain_close": 50.12274959083468,
+      "rank_1600": 1
+    },
+    {
+      "ticker": "IRDM",
+      "date": "2026-06-29",
+      "prev_close": 43.56,
+      "close_1600": 54.61,
+      "pct_gain_close": 25.36730945821854,
+      "rank_1600": 4
+    },
+    {
+      "ticker": "HPE",
+      "date": "2026-06-02",
+      "prev_close": 47.03,
+      "close_1600": 56.16,
+      "pct_gain_close": 19.413140548586,
+      "rank_1600": 7
+    }
+  ]
+}

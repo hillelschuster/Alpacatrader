@@ -1,0 +1,70 @@
+{
+  "month": "2026-04",
+  "n_sessions": 21,
+  "n_rows": 29534647,
+  "n_tickers": 9727,
+  "n_candidates": 2498,
+  "n_split_suspects": 36,
+  "split_examples": [
+    {
+      "ticker": "ELAB",
+      "et_date": "2026-04-01"
+    },
+    {
+      "ticker": "ELAB",
+      "et_date": "2026-04-02"
+    },
+    {
+      "ticker": "SKYQ",
+      "et_date": "2026-04-02"
+    },
+    {
+      "ticker": "LPCN",
+      "et_date": "2026-04-02"
+    },
+    {
+      "ticker": "BKNG",
+      "et_date": "2026-04-06"
+    }
+  ],
+  "n_universe_excluded": 1288,
+  "n_universe_unknown": 24,
+  "n_events": 128785,
+  "events_per_day": {
+    "min": 4633,
+    "median": 6216.0,
+    "max": 7649
+  },
+  "events_pct_gain": {
+    "p50": 12.103174603174608,
+    "p90": 23.811797387039373,
+    "p99": 49.64537941397445,
+    "max": 123.94410549104506
+  },
+  "example_ticker_days": [
+    {
+      "ticker": "IONQ",
+      "date": "2026-04-15",
+      "prev_close": 35.77,
+      "close_1600": 43.2499,
+      "pct_gain_close": 20.91109868604974,
+      "rank_1600": 8
+    },
+    {
+      "ticker": "BE",
+      "date": "2026-04-29",
+      "prev_close": 226.73,
+      "close_1600": 287.76,
+      "pct_gain_close": 26.917478939708023,
+      "rank_1600": 5
+    },
+    {
+      "ticker": "MXL",
+      "date": "2026-04-24",
+      "prev_close": 34.34,
+      "close_1600": 60.32,
+      "pct_gain_close": 75.65521258008152,
+      "rank_1600": 1
+    }
+  ]
+}

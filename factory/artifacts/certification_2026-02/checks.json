@@ -1,0 +1,70 @@
+{
+  "month": "2026-02",
+  "n_sessions": 19,
+  "n_rows": 24031034,
+  "n_tickers": 15766,
+  "n_candidates": 3308,
+  "n_split_suspects": 66,
+  "split_examples": [
+    {
+      "ticker": "ZWZZ.T",
+      "et_date": "2026-02-02"
+    },
+    {
+      "ticker": "ELPW",
+      "et_date": "2026-02-02"
+    },
+    {
+      "ticker": "AZN",
+      "et_date": "2026-02-02"
+    },
+    {
+      "ticker": "BOIL",
+      "et_date": "2026-02-02"
+    },
+    {
+      "ticker": "PHOE",
+      "et_date": "2026-02-02"
+    }
+  ],
+  "n_universe_excluded": 1967,
+  "n_universe_unknown": 172,
+  "n_events": 123005,
+  "events_per_day": {
+    "min": 5461,
+    "median": 6630.0,
+    "max": 7279
+  },
+  "events_pct_gain": {
+    "p50": 13.111888111888112,
+    "p90": 25.841584158415852,
+    "p99": 54.166666666666686,
+    "max": 114.6300914380715
+  },
+  "example_ticker_days": [
+    {
+      "ticker": "SPOT",
+      "date": "2026-02-10",
+      "prev_close": 414.74,
+      "close_1600": 476.35,
+      "pct_gain_close": 14.855089935863436,
+      "rank_1600": 11
+    },
+    {
+      "ticker": "DDOG",
+      "date": "2026-02-10",
+      "prev_close": 114.27,
+      "close_1600": 129.63,
+      "pct_gain_close": 13.441848254134944,
+      "rank_1600": 14
+    },
+    {
+      "ticker": "FSLY",
+      "date": "2026-02-12",
+      "prev_close": 9.32,
+      "close_1600": 16.03,
+      "pct_gain_close": 71.99570815450645,
+      "rank_1600": 1
+    }
+  ]
+}

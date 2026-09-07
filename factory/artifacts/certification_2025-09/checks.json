@@ -1,0 +1,70 @@
+{
+  "month": "2025-09",
+  "n_sessions": 21,
+  "n_rows": 24637283,
+  "n_tickers": 15346,
+  "n_candidates": 2591,
+  "n_split_suspects": 91,
+  "split_examples": [
+    {
+      "ticker": "ZONE",
+      "et_date": "2025-09-02"
+    },
+    {
+      "ticker": "CTEC",
+      "et_date": "2025-09-02"
+    },
+    {
+      "ticker": "CSTAF",
+      "et_date": "2025-09-02"
+    },
+    {
+      "ticker": "HEAL",
+      "et_date": "2025-09-02"
+    },
+    {
+      "ticker": "DLMAY",
+      "et_date": "2025-09-02"
+    }
+  ],
+  "n_universe_excluded": 1568,
+  "n_universe_unknown": 291,
+  "n_events": 131522,
+  "events_per_day": {
+    "min": 5805,
+    "median": 6166.0,
+    "max": 6915
+  },
+  "events_pct_gain": {
+    "p50": 10.929648241206031,
+    "p90": 24.069478908188593,
+    "p99": 78.18181818181819,
+    "max": 191.6
+  },
+  "example_ticker_days": [
+    {
+      "ticker": "IONS",
+      "date": "2025-09-02",
+      "prev_close": 42.65,
+      "close_1600": 57.44,
+      "pct_gain_close": 34.67760844079719,
+      "rank_1600": 6
+    },
+    {
+      "ticker": "TECK",
+      "date": "2025-09-09",
+      "prev_close": 35.11,
+      "close_1600": 39.075,
+      "pct_gain_close": 11.293078894901747,
+      "rank_1600": 15
+    },
+    {
+      "ticker": "LYFT",
+      "date": "2025-09-17",
+      "prev_close": 20.195,
+      "close_1600": 22.87,
+      "pct_gain_close": 13.24585293389453,
+      "rank_1600": 7
+    }
+  ]
+}
