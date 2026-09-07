@@ -679,3 +679,11 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
 - Misdiagnosis log (mine): month scans died to `timeout 280` before writing; I blamed
   session-reaping for 2 cycles. Fixed: per-day incremental JSONL + resume. Lesson: write
   incrementally, verify the artifact exists before reasoning.
+
+## 2026-09-07b — gate decomposition + halt-reopen mechanics
+- Decomposed the +2.8% gate: thrust alone dead (+0.3%), interaction carries it
+  (15-30%x1halt +5.3%). >=30%+1halt is NEGATIVE (-6.8%) — exhaustion zone.
+- 22,739 live halt events: average reopen ≈ 0 (scalp dead), but velocity≥30% &
+  hole≥11min → ret3 +3.9% win 57%, 8/9 months. Halt-ordinal decays; morning only.
+- New H9: event-clock participation machine (state coords, not wall clock).
+  Artifacts: gate_decomp_2025.json, halt_reopen_all.json (committed).

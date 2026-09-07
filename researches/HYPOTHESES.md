@@ -124,3 +124,33 @@ on H1–H7 all failing month-blocked with FP-denominated scoring. Neither has ha
   these names is 50–150bps not 20; win-rate stays sub-50% so the gate is a tail option, not a
   predictor. FP of the gate itself still unpriced (how many SIG names die quietly — actually
   no: SIG IS the FP-inclusive cohort; the +2.8% is net of false positives by construction).
+
+---
+## 2026-09-07b — decomposition: the gate was a snapshot of an event-machine
+
+**Gate decomposition (n=6900, ≥5% by 10:30, 9 months):**
+- Thrust ALONE (no halt, n=5521): +0.3%, median 0 → dead. Confirms why every old
+  snapshot approach failed: thrust-without-halt is noise.
+- Signal lives in the INTERACTION: 15-30%+1halt: +5.3% (n=103); 10-15%+2halts: +2.7%
+  win 59%; >=30%+1halt: −6.8% (exhaustion zone, MFE +21% MAE −23% = chaos).
+- The 10:30 wall-clock gate mixes process-states; contradiction resolved by event clock.
+
+**Halt-reopen mechanics (22,739 live events, 740k rows incl. 1M ctrl):**
+- AVERAGE reopen print ≈ 0 (ret1 +0.1%, win 45%). Scalping reopens is DEAD.
+- Conditioned continuation: velocity≥30% & hole≥11min: ret3 +3.9%, win 57%,
+  8/9 months positive (only Jul −19bps). Before 12:30: +10% (n=56, win 70%).
+- velocity≥60% any hour: +2.4% (n=630, win 53%) — higher-n variant.
+- Hour structure: morning halts continue (+1.4% 9:30-11), afternoon ≈ 0. The machine runs on attention-hours.
+- Halt ORDINAL decays: #1 halt +0.5% → #10 0.0%. Halts late in a chain carry no state.
+- Confound measured: flat names show 1M+ "halts" = sparse prints; the proxy is only
+  trustworthy for fast names + long holes (real LULD halts). LIVE cell is the robust one.
+
+**H9 (new rank #1): EVENT-CLOCK PARTICIPATION MACHINE.**
+The runner is a reflexive supply-constrained process. Its state coordinates are
+(velocity, halt events elapsed, hour, distance-from-VWAP) — not wall clock. The
+exploitable object: continuation windows after state-qualifying halt-reopens
+(velocity×hole×morning), rented with frozen exits. NOT reopen scalps (avg 0),
+NOT winner-picking, NOT snapshots.
+Pre-registered test: post-halt rule (vel≥30% & hole≥11 & t<12:30; plus vel≥60% variant),
+entry NEXT-BAR-OPEN after reopen (not hole-end close), frozen exits (3bar/30min/trail),
+net 100bps, month-blocked. Kill: capture ≤0 net on ≥2 months.
