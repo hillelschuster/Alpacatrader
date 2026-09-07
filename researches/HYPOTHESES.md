@@ -11,7 +11,7 @@ Retail extracts it live. Our formulations have been wrong, not necessarily the t
 Adversarial check lives at the bottom and stays open. EV is the sole criterion for
 every entry below: does this serve potential profitability?
 
-Settled facts: researches/CANONICAL_STATE.md (trust tiers apply to everything here).
+Settled facts: researches/STATE.md (current snapshot; CANONICAL_STATE.md is frozen history).
 Measurement contract: ET clocks, causal-only, 1-bar lag, open-anchored gains,
 conservative same-bar DD-first, pre-registered kills, month-blocked reporting.
 
@@ -102,6 +102,9 @@ execution skill + monthly re-dicing. Strongest edge case: hindsight persistence 
 9-block excursion stability + Friday live MFE≫fwd. Flip conditions: no-edge side flips
 on 2-month pre-registered MFE-capture edge net of realistic friction; edge side flips
 on H1–H7 all failing month-blocked with FP-denominated scoring. Neither has happened.
+
+## E. Test queue (ARCHIVED — never executed; work went H8->H11 instead. Superseded
+## by the 2026-09-08 ranking. Retained for provenance only.)
 
 ## E. Test queue (order = EV-plausibility × testability, zero-new-data first)
 1. Scanner-lag buckets on landed panel (H1). 2. Frozen participation rule (H2).

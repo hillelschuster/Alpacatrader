@@ -50,6 +50,11 @@ failed); plus historical: E1/E2/E3, gain-rank, health, Ridge, DTW, 10:00 snapsho
 2. Forward observer = the honest evidence engine. It runs daily, order-free, and
    accumulates live n (no backtest overfit). Priority: keep it running, score every
    session through score_forward_day.py, build the live record.
+   RUNBOOK: `python factory/scripts/forward_observe.py --live` during ET market hours
+   (logs to data/forward/YYYY-MM-DD/; starts idling until session open). After close:
+   `python factory/scripts/score_forward_day.py <YYYY-MM-DD>` writes scores.json.
+   Skip weekends/holidays (09-05/06 rows are weekend noise). It is NOT currently
+   scheduled — a session must launch it manually each trading day.
 3. Phenomenology remains the idea mine (money-location map above), but extraction
    formulations must be power-aware from inception.
 4. Open (untested, not promising): hold-through-halt capture; turnover/float clock
