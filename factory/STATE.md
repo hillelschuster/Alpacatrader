@@ -711,3 +711,19 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
   with n~20-30/month do not replicate; power is the binding constraint.
 - Artifact: factory/artifacts/h11_collision_results.json. Halt/runner phenomenology
   stands as description; tradability unproven for every formulation tried so far.
+
+## 2026-09-08 — project reorganization (organization session)
+- 6-lane recon (history/data/scripts/srcdiff/contradicts/git) + fresh-eyes review.
+- Built brain: researches/INTENT.md (stable objective) + researches/STATE.md (current
+  truth snapshot) + entry AGENTS.md (read-order); HYPOTHESES.md archived A-E layers.
+- Audit corrections applied: runner freq 0.82/day (was 1.2-1.5, inflated by day-#1
+  fallback), halt-gap mean/median disentangled (+6.3 mean/+4.4 med), gate-cohort
+  qualifier on money-map, sig(281 rows/118d) vs gd(245/96d) day-coverage resolution,
+  281-vs-245 not-a-trend, halt_reopen 1.06M rows, rank-1 chasing conflict recorded
+  (minute-claim vs h60-mixed — unresolved), CANONICAL_STATE + 07 frozen with headers.
+- Provenance doctrine: producer scripts committed; day-coverage reported per cohort;
+  friction annotated per claim. Ledgers backfilled H011-022, EXP-20..34.
+- Git: 55 commits ahead of origin (clean FF push, awaiting user); untracked
+  certification dirs + ml coverage still uncommitted (next: commit evidence);
+  src/ workstream (~3.1k lines, Phase A/B/C paper-bot) uncommitted, reviewed, split
+  recommended before commit; data/ gitignored by policy.
