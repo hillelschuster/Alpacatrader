@@ -1,4 +1,10 @@
-# HYPOTHESES — living source of truth (created 2026-09-06)
+# HYPOTHESES — living source of truth (created 2026-09-06; rewritten 2026-09-08 post-H11-collision)
+
+STATUS HEADER (read this first): H11 failed collision 2026-09-08 and is RETIRED.
+No hypothesis below currently holds dev+collision support. Ranking below is by
+next-test EV under the power constraint (see researches/STATE.md). H1-H7 were the
+2026-09-06 pre-runner-era ranking; entries below them are historical layers —
+retain for falsifier logic, do not treat as active queue.
 
 Premise (working, not axiom): extreme top-gainer momentum contains real inefficiency.
 Retail extracts it live. Our formulations have been wrong, not necessarily the thesis.
@@ -237,3 +243,35 @@ Strategy: morning (by 10:30) build watchlist = 15–30% RTH gain + ≥1 halt-gap
   ANY selection test; (b) forward-observer accumulation as primary evidence source
   (live n grows daily, no backtest overfit); (c) hold-through-halt never collision-
   tested — same power problem expected; treat as untested, not promising.
+
+---
+## 2026-09-08 — POST-H11 RANKING (power-aware; nothing holds dev+collision support)
+
+### Standing meta-constraint (gates every future test)
+Any new selection/timing rule must: pool >= 6 months of name-days in dev (no
+single-month slicing), pre-register >= 2 unseen collision months, report at
+>= 100bps friction. Violations are why four dev positives died.
+
+### Ranked next-test EV
+1. **P1 — Forward-observer accumulation as primary evidence.** Not a hypothesis
+   but the evidence engine: live daily n, zero backtest overfit. Action: keep
+   forward_observe.py running every session, score every day, grow the record.
+   When a rule looks live-worthy, it must first survive >= 2 months of forward n.
+2. **P2 — Money-location map on POOLED 13 months** (2025-03..12 + 2026-01..03
+   where clean data exists). Re-measure the machine's windows (morning gap-wave,
+   10:30-11:00 inflow, afternoon 14-16) on every available month at once, not
+   5-month windows. If the afternoon wave exists pooled, it was a real structure
+   that 2025-04/2026-01 regime-killed; if it doesn't pool, retire the map.
+   This is description, power-correct — the prerequisite for any capture attempt.
+3. **P3 — Hold-through-halt capture** (H10a family): the only never-collision-tested
+   family with a strong mechanism story (gap money accrues to the already-long).
+   Design from day one with pooled dev (>= 6 months) + 2 collision months.
+4. **P4 — Failed-move fade** (H6): conditions on late-day info (MFE>=800bps + stall),
+   targets the terminal-flip structure. Power-aware design required.
+5. **P5 — Turnover/float clock** (H3): blocked on PIT float data; $-proxy possible
+   but treat as exploratory only.
+
+### Explicitly retired (do not resurrect; new formulation + more power required)
+H11 afternoon rental (collision-failed 2026-09-08) — along with the historical
+retirements: E1/E2/E3 conditionality, gain-rank, health filters, Ridge x2,
+DTW-medoid paths, 10:00-snapshot prediction, reopen buying, thrust-alone anything.
