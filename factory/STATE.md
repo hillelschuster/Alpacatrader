@@ -702,3 +702,12 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
   (excl top-3 −0.38%), 2026-03 alone +2.19%. Lottery-book anatomy.
 - H11 = stupid-simple afternoon rental of gate names, pre-registered kill on two
   flat collision months. Artifacts: gate_pm_full.json, pm_green_all.json.
+
+## 2026-09-08 — H11 collision test: FAILED, hypothesis retired
+- Ran frozen rule on 4 unseen months (2025-03/04, 2026-01/02): pooled net -2.13%
+  (gross -1.13% — sign flip pre-friction), 2025-04 -6.27%, 2026-01 -3.51%.
+- Pre-registered kill met (two consecutive negative collision months). H11 retired.
+- Meta-finding (4th dev-positive to die on collision): month-blocked dev positives
+  with n~20-30/month do not replicate; power is the binding constraint.
+- Artifact: factory/artifacts/h11_collision_results.json. Halt/runner phenomenology
+  stands as description; tradability unproven for every formulation tried so far.

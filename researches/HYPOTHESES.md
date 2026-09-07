@@ -213,3 +213,27 @@ Strategy: morning (by 10:30) build watchlist = 15–30% RTH gain + ≥1 halt-gap
 - It is intentionally the STUPIDEST possible capture of the located money. No
   state machine, no exits research, no reopen plays. If +2%/name after friction
   does not survive, complexity cannot save it; if it survives, refine later.
+
+---
+## 2026-09-08 — H11 COLLISION FAILED (pre-registered kill met)
+
+**Frozen rule, 4 unseen months (2025-03/04, 2026-01/02), 100bps friction:**
+- 2025-03: n=19 net +1.58% | 2025-04: n=29 net −6.27% (win 31%)
+- 2026-01: n=37 net −3.51% | 2026-02: n=27 net +1.60%
+- POOLED: n=112, gross −1.13% (sign flip pre-friction), net −2.13%, win 41%.
+- Kill criterion met: two consecutive collision months ≤ 0 net. **H11 RETIRED.**
+
+**Interpretation (honest):**
+- The dev-window +2.39% (May–Oct +3.26%) did not survive unseen months. Fourth
+  dev-positive formulation to die on collision (E1×health 146d, Ridge x2, DTW October,
+  now H11). META-FINDING: with ~20-30 gate name-days/month and tail-driven means,
+  month-blocked dev positives are easy to find and do not replicate. Statistical
+  power, not signal discovery, is the binding constraint on this data.
+- Descriptive phenomenology REMAINS TRUE (runners take all day, halt dose-response,
+  money-location map in dev months) — but no simple tradable capture of it has
+  survived out-of-sample. Thrust+halt+afternoon rental is NOT an edge as formulated.
+- Consequence for ranking: no live hypothesis currently holds dev+collision support.
+  Live directions: (a) statistical-power reformulation — pool more months/days before
+  ANY selection test; (b) forward-observer accumulation as primary evidence source
+  (live n grows daily, no backtest overfit); (c) hold-through-halt never collision-
+  tested — same power problem expected; treat as untested, not promising.
