@@ -1,53 +1,40 @@
-# Alpacatrader Project — OpenCode Agent Rules
+# AGENTS.md — read this first (kept short on purpose)
 
-## Mental Model
-Read `SOUL.md` before changing entry, risk, sizing, scanner, classifier, or exit logic — it captures this bot's trading identity (top-gainer momentum, candidates-first, catch-runners, paper = live rehearsal).
+You are in a money-making trading research project. Sole objective: find and exploit
+a profitable top-gainer/momentum trading mechanism. No template worship; follow
+evidence. (Full principle in the parent folder AGENTS.md.)
 
-## Rules
+## Read order (small context, current truth first)
+1. `researches/INTENT.md` — objective, stance, discipline (3 min).
+2. `researches/STATE.md` — CURRENT truth snapshot: what's solid, what died, what's open.
+3. `researches/HYPOTHESES.md` — living hypothesis ranking + falsifiers (top header is
+   current; sections A-E below it are archived history).
+4. `factory/STATE.md` — append-only operational chronicle (read the tail, not all).
 
-### Obedience and Precision
-- Do EXACTLY what the user says. Do not reinterpret, extend, or add unsolicited extras.
-- If the user's instruction is ambiguous or you lack critical information to complete it correctly, ASK — do not guess.
-- Never take shortcuts. Verify every claim. No lazy assumptions.
-- Creativity is welcome only within the explicit boundaries of the request. Stay focused on what was asked.
-- Never touch Git (status/diff/log/add/commit/push/etc.) unless the user explicitly asks for Git work.
-- Ask before ambiguous changes affecting trading logic, risk, order execution, broker actions, position sizing, or paper/live behavior.
-- Do not broaden the requested strategy or repository scope without approval.
+## Everything else is history/evidence, clearly marked
+- `researches/CANONICAL_STATE.md`, `researches/07-dominant-leader-program.md` — FROZEN
+  historical snapshots. Do not cite as current.
+- `factory/artifacts/*.json` — committed evidence for every number in STATE/HYPOTHESES.
+- `factory/HYPOTHESES.jsonl` / `factory/EXPERIMENTS.jsonl` — experiment ledgers.
 
+## Working rules (learned expensively)
+- Measurement contract: ET clocks (et_minute in factory/scripts/replay_watchlist.py),
+  causal-only, 1-bar lag, next-bar-open fills, >=100bps friction, pre-registered kills.
+- Power doctrine (post-2026-09-08): any selection/timing test needs >=6 months pooled
+  dev + >=2 pre-registered unseen collision months. Small-n dev positives are 0-for-4.
+- Never resurrect a collision-failed formulation. New formulation + more power only.
+- Forward observer (factory/scripts/forward_observe.py) = primary live evidence engine.
+- Long compute: run detached (nohup) with incremental per-day writes + resume; never
+  write only at the end; verify artifacts exist before reasoning from them.
+- Research memory updates: append a few lines to factory/STATE.md after meaningful
+  work; keep researches/HYPOTHESES.md pruned and current; both before finishing.
+- Producer scripts for all artifacts must be committed under factory/scripts/.
+- Two workstreams: research (factory/, researches/) and the paper bot (src/, tests/).
+  Keep their states separate; the bot implements only validated research.
 
-### Context7 — Mandatory (Web-Based)
-
-Context7 is mandatory. Before touching any file — code, config, test, or doc — that involves a third-party library, you must fetch current docs. Never rely on training data.
-
-**Workflow:**
-
-1. **If you know the library ID** (format `/org/project` or `/org/project/version`):
-   ```
-   webfetch https://context7.com/{org}/{project}/llms.txt
-   ```
-   Example: `webfetch https://context7.com/pytest-dev/pytest/llms.txt`
-
-2. **If you don't know the library ID**, search to find it:
-   - `websearch_web_search_exa "context7 {library name} documentation"` to find the right org/project
-   - OR search `https://context7.com/rankings` for library listings
-   - Then fetch the llms.txt
-
-3. **Fallback**: If Context7 doesn't have the library, `webfetch` the official docs directly.
-
-**Common library IDs:**
-- Python / pytest: `/pytest-dev/pytest`
-- Python / pydantic: `/pydantic/pydantic`
-- Python / SQLAlchemy: `/sqlalchemy/sqlalchemy`
-- JavaScript / React: `/facebook/react`
-- JavaScript / Next.js: `/vercel/next.js`
-- Node.js / Prisma: `/prisma/prisma`
-- APIs / Alpaca: `/alpacahq/alpaca-trade-api-python`
-
-### Sequential Thinking
-Use `sequential-thinking` when it genuinely enhances your reasoning. Not mandatory — skip it when it would slow you down.
-
-### Small Verified Batches
-Work in small, verified batches. Verify every claim against the code itself — what the file actually says, not what a doc claims it says. Example: "wire config risk fields into sizing" is one concern. It touches 2-3 files and ships when verified. It does not also fix emergency exits or refactor Pillar 5 at the same time. Move steadily, never trade thoroughness for speed. A small perfect change beats a large sloppy one.
-
-### Temporary Files
-Temporary or briefing files (like this one) created for a specific task must be deleted after the task is complete. Do not archive files that contain no important or relevant information for the user or for future AI agents. If a file was only created to pass context to you, delete it when you're done with it.
+## Repo state notes (2026-09-08)
+- Main branch is AHEAD of origin (local-only commits; push is clean fast-forward —
+  ask user before pushing). data/ is gitignored by policy (no remote backup of
+  market data — handle with care).
+- Uncommitted src/ workstream exists (paper-bot Phase A/B/C); see git status and
+  SPEC.md §11.19 before touching src/.
