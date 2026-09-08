@@ -49,3 +49,8 @@ factory/artifacts/events_all*.parquet
 factory/artifacts/events_2025-*.parquet
 factory/artifacts/h00*_results*.parquet
 factory/artifacts/h0*/**/*.parquet
+
+# regenerable ml backfill/build logs (kept on disk, not in git)
+factory/artifacts/ml/backfill_*.log
+factory/artifacts/ml/build_feat_*.log
+factory/artifacts/ml/train_*.log
