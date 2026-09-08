@@ -292,8 +292,10 @@ DTW-medoid paths, 10:00-snapshot prediction, reopen buying, thrust-alone anythin
 
 M1 halt-gap A qualifying: pooled +1.57% (dev +2.64%); morning +5.50% med +4.05%
 win 66% (dev +6.28%/+4.43%/69%, n=68->111). REPLICATES.
-M2 causal post-reopen D10 +0.50% / D30 +0.51% pooled; morning D30 -1.54% (dev
--1.54% exact). Anti-scalp check HOLDS: buying reopens ~zero-to-negative pooled.
+M2 causal post-reopen D10 +0.50% / D30 +0.51% pooled; morning D30 -1.54% (n=50).
+Dev-month subset within this scan: -1.73% (n=37) — same sign/structure, magnitude
+close (the earlier -1.54% dev figure came from the ht_ scan's slightly different
+day coverage; no copy-paste, verified 2026-09-08). Anti-scalp check HOLDS.
 M3 schedule shape: morning wave +0.81% by 11:00 (dev +1.24%), dead midday
 (+0.22/+0.40/-0.05), afternoon +0.23%/+0.57% per hour (dev +1.25/+0.77). SHAPE
 REPLICATES at ~half magnitude.

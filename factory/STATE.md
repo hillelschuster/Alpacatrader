@@ -763,3 +763,15 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
   body activates on next supervisor restart. No mid-session restart (would duplicate
   today's promotion rows). SIP snapshot fields null on scans (same as 09-04 — known;
   deep snapshots pull bars separately).
+
+## 2026-09-08f — P2 verification closed (reviewer + verdict script)
+- Reviewer audit (static): producer faithful to pre-reg cohort; halt counting,
+  RTH-only holes, entry anchors all match. No blocking bugs.
+- Closed provenance gap: factory/scripts/moneymap_verdict.py committed — reproduces
+  every M1-M6 number from the artifacts exactly. Morning-D30 "-1.54% exact" flag
+  resolved: rounding coincidence across different day-coverage samples (dev subset
+  in-scan -1.73% n=37; pooled -1.54% n=50). Honest note in HYPOTHESES.
+- Known P3-relevant caveats (cosmetic for P2 description): halt spanning 10:30 ->
+  p0 measured post-gap; halt spanning 13:30 -> p1330 pre-halt close (upward bias on
+  gap days); late-day (et>930) halt events dropped from M1; hourly path drops
+  inter-bucket 1-min moves. P3 entry design must handle all four explicitly.
