@@ -144,8 +144,8 @@ class Phase1Settings(BaseSettings):
     """
 
     # Data freshness
-    scanner_interval_seconds: int = 30
-    monitor_interval_seconds: int = 10
+    scanner_interval_seconds: int = 20
+    monitor_interval_seconds: int = 8
 
     # Scanner
     focus_price_min: float = 1.0
@@ -162,10 +162,6 @@ class Phase1Settings(BaseSettings):
 
     # Liquidity
     dollar_volume_min: float = 50_000.0
-
-    # Spread sizing tiers (SPEC §11.18.4)
-    spread_full_size_threshold: float = 2.0   # ≤2% → 100% size
-    spread_block_threshold: float = 20.0      # >20% → block
 
     # Phase 6 live-readiness
     exiting_timeout_seconds: int = 120

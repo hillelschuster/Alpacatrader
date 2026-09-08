@@ -1,5 +1,55 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "instructions": ["AGENTS.md"],
-  "plugin": ["opencode-ponytail"]
+  "plugin": ["opencode-ponytail"],
+  "provider": {
+    "bai": {
+      "models": {
+        "deepseek-v4-flash": {
+          "modelID": "deepseek-v4-flash"
+        },
+        "deepseek-v4-flash-vision-exp": {
+          "modelID": "deepseek-v4-flash-vision-exp"
+        }
+      }
+    }
+  },
+  "agent": {
+    "explorer": {
+      "model": "bai/deepseek-v4-flash-vision-exp",
+      "reasoningEffort": "xhigh"
+    },
+    "librarian": {
+      "model": "bai/qwen3.8-flash",
+      "reasoningEffort": "xhigh"
+    },
+    "fixer": {
+      "model": "bai/deepseek-v4-flash-vision-exp",
+      "reasoningEffort": "xhigh"
+    },
+    "designer": {
+      "model": "bai/qwen3.8-flash",
+      "reasoningEffort": "xhigh"
+    },
+    "councillor": {
+      "model": "bai/qwen3.8-flash",
+      "reasoningEffort": "xhigh"
+    },
+    "cavecrew-investigator": {
+      "model": "bai/qwen3.8-flash",
+      "reasoningEffort": "xhigh"
+    },
+    "cavecrew-builder": {
+      "model": "bai/deepseek-v4-flash-vision-exp",
+      "reasoningEffort": "xhigh"
+    },
+    "cavecrew-reviewer": {
+      "model": "bai/qwen3.8-flash",
+      "reasoningEffort": "xhigh"
+    },
+    "oracle": {
+      "model": "bai/qwen3.8-flash",
+      "reasoningEffort": "xhigh"
+    }
+  }
 }

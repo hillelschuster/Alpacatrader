@@ -82,7 +82,8 @@ class TestBuildMarketSnapshots:
         assert 0.0 <= dsy.quote_age_seconds < 15.0
         assert dsy.bars[0].close == 10.50
         assert dsy.day_high == 11.20
-        assert dsy.prior_hod == 9.90
+        # ponytail: bars-derived prior_hod (10.80) — no longer overwritten by previous_daily_bar.high per BUG 4 fix
+        assert dsy.prior_hod == 10.80
         assert snapshots["MISS"] is None
 
     def test_batch_snapshot_failure_returns_explicit_none_per_candidate(self, monkeypatch):
@@ -327,7 +328,8 @@ class TestBuildMarketSnapshots:
         assert dsy.candidate.price == pytest.approx(10.50), "Quote mid-price preserved"
         assert dsy.spread_pct == pytest.approx(1.9047619), "Spread preserved"
         assert dsy.day_high == 11.20, "Daily bar high preserved"
-        assert dsy.prior_hod == 9.90, "Prior HOD preserved"
+        # ponytail: bars-derived prior_hod (10.80) — no longer overwritten by previous_daily_bar.high per BUG 4 fix
+        assert dsy.prior_hod == 10.80, "Prior HOD from bars enrichment"
         # Bars fall back to minute_bar since initial_bars=None
         assert dsy.bars is not None, "Bars fallback to minute_bar"
         assert len(dsy.bars) == 1, "Expected 1 bar (minute_bar fallback)"

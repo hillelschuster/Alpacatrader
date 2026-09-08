@@ -29,7 +29,6 @@ from src.hard_filters import (
     is_watch_only_window,
     quote_age_tier,
     run_hard_filters,
-    spread_tier,
 )
 from src.models.schemas import AccountRiskState, Candidate, HardFilterResult
 
@@ -70,35 +69,6 @@ class TestQuoteAgeTier:
     def test_custom_thresholds(self):
         assert quote_age_tier(8.0, fresh_s=3.0, max_s=10.0) == "stale_warning"
         assert quote_age_tier(11.0, fresh_s=3.0, max_s=10.0) == "hard_reject"
-
-
-# ──────────────────────────────────────────────────────────────────
-#  Spread tiers
-# ──────────────────────────────────────────────────────────────────
-
-
-class TestSpreadTier:
-    def test_normal(self):
-        assert spread_tier(0.0) == "normal"
-        assert spread_tier(0.5) == "normal"
-        assert spread_tier(1.0) == "normal"
-
-    def test_caution(self):
-        assert spread_tier(1.1) == "caution"
-        assert spread_tier(2.0) == "caution"
-        assert spread_tier(3.0) == "caution"
-
-    def test_tiny_scalp(self):
-        assert spread_tier(3.1) == "tiny_scalp"
-        assert spread_tier(4.0) == "tiny_scalp"
-        assert spread_tier(5.0) == "tiny_scalp"
-
-    def test_hard_reject(self):
-        assert spread_tier(5.1) == "hard_reject"
-        assert spread_tier(10.0) == "hard_reject"
-
-    def test_none_is_hard_reject(self):
-        assert spread_tier(None) == "hard_reject"
 
 
 # ──────────────────────────────────────────────────────────────────

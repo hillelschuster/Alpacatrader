@@ -12,6 +12,8 @@ import json
 from pathlib import Path
 from typing import Optional
 
+from src._atomic import write_json_atomically
+
 
 class PnLLedger:
     """Session P&L ledger with optional JSON checkpointing.
@@ -61,10 +63,8 @@ class PnLLedger:
         )
 
     def save_to_disk(self, path: str | Path) -> None:
-        """Persist ledger to JSON file.  Creates parent dirs if needed."""
-        p = Path(path) if isinstance(path, str) else path
-        p.parent.mkdir(parents=True, exist_ok=True)
-        p.write_text(json.dumps(self.to_dict(), indent=2))
+        """Atomically persist ledger to JSON file.  Creates parent dirs if needed."""
+        write_json_atomically(self.to_dict(), path, indent=2)
 
     @classmethod
     def load_from_disk(cls, path: str | Path) -> "PnLLedger":

@@ -8,6 +8,7 @@ top-gainer trade discovery.
 
 from typing import Optional
 from dataclasses import dataclass
+import time
 
 import requests
 from loguru import logger
@@ -17,6 +18,10 @@ _FINVIZ_HEADERS = {
 }
 _FINVIZ_URL = "https://finviz.com/screener.ashx?v=111&s=ta_topgainers"
 _FINVIZ_TIMEOUT = 10
+
+# Monotonic cooldown: time.monotonic() threshold until which HTTP calls
+# to Finviz are skipped and {} is returned. Reset to 0 after expiry.
+_finviz_cooldown_until: float = 0.0
 
 
 # ──────────────────────────────────────────────────────────────────
@@ -65,6 +70,13 @@ def scrape_finviz_gainers() -> dict[str, FinvizRow]:
 
     RVOL, Float, and Short Float are NOT available in the free tier.
     """
+    # ── Monotonic cooldown check ──────────────────────────────────────
+    global _finviz_cooldown_until
+    now = time.monotonic()
+    if now < _finviz_cooldown_until:
+        logger.debug("Finviz cooldown active — skipping HTTP call")
+        return {}
+
     try:
         resp = requests.get(_FINVIZ_URL, headers=_FINVIZ_HEADERS, timeout=_FINVIZ_TIMEOUT)
     except requests.RequestException as e:
@@ -76,7 +88,8 @@ def scrape_finviz_gainers() -> dict[str, FinvizRow]:
         return {}
 
     if "Too many requests" in resp.text:
-        logger.warning("Finviz rate limit hit — skipping this cycle")
+        logger.warning("Finviz rate limit hit — entering 60s cooldown")
+        _finviz_cooldown_until = time.monotonic() + 60.0
         return {}
 
     try:

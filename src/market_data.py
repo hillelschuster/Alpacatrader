@@ -63,6 +63,7 @@ def fetch_avg_daily_volume(
         from alpaca.data.requests import StockBarsRequest
         from alpaca.data.timeframe import TimeFrame, TimeFrameUnit
         from alpaca.data.enums import DataFeed
+        from alpaca.common.enums import Sort
     except ImportError:
         return None
 
@@ -71,6 +72,7 @@ def fetch_avg_daily_volume(
         req = StockBarsRequest(
             symbol_or_symbols=symbol,
             timeframe=TimeFrame(amount=1, unit=TimeFrameUnit.Day),
+            sort=Sort.DESC,
             limit=lookback,
             feed=DataFeed.IEX,
         )
@@ -194,8 +196,8 @@ def _snapshot_from_alpaca_snapshot(
     previous_daily_bar = getattr(alpaca_snapshot, "previous_daily_bar", None)
     if daily_bar is not None and getattr(daily_bar, "high", None) is not None:
         day_high = daily_bar.high
-    if previous_daily_bar is not None and getattr(previous_daily_bar, "high", None) is not None:
-        prior_hod = previous_daily_bar.high
+    # REMOVED: prior_hod overwrite from previous_daily_bar.high — diverged from single path.
+    # Both paths now use bars-derived prior_hod from derive_bar_enrichment (consistent).
     daily_volume = getattr(daily_bar, "volume", None) if daily_bar else None
 
     # Compute RVOL: today's cumulative volume / 20-day average daily volume.
@@ -238,6 +240,7 @@ def build_market_snapshots(
         from alpaca.data.requests import StockSnapshotRequest, StockBarsRequest
         from alpaca.data.timeframe import TimeFrame, TimeFrameUnit
         from alpaca.data.enums import DataFeed
+        from alpaca.common.enums import Sort
     except ImportError:
         logger.info(
             "alpaca-py not installed — batch market data enrichment unavailable. "
@@ -270,6 +273,7 @@ def build_market_snapshots(
             bars_req = StockBarsRequest(
                 symbol_or_symbols=symbols,
                 timeframe=TimeFrame.Minute,
+                sort=Sort.DESC,
                 limit=BAR_LIMIT,
                 feed=DataFeed.IEX,
             )
@@ -283,6 +287,7 @@ def build_market_snapshots(
             five_min_bars_req = StockBarsRequest(
                 symbol_or_symbols=symbols,
                 timeframe=TimeFrame(amount=5, unit=TimeFrameUnit.Minute),
+                sort=Sort.DESC,
                 limit=BAR_LIMIT,
                 feed=DataFeed.IEX,
             )
@@ -343,6 +348,7 @@ def build_market_snapshot(
         from alpaca.data.requests import StockLatestQuoteRequest, StockBarsRequest
         from alpaca.data.timeframe import TimeFrame, TimeFrameUnit
         from alpaca.data.enums import DataFeed
+        from alpaca.common.enums import Sort
     except ImportError:
         logger.info(
             "alpaca-py not installed — market data enrichment unavailable. "
@@ -395,6 +401,7 @@ def build_market_snapshot(
         bars_req = StockBarsRequest(
             symbol_or_symbols=candidate.symbol,
             timeframe=TimeFrame.Minute,
+            sort=Sort.DESC,
             limit=BAR_LIMIT,
             feed=DataFeed.IEX,
         )
@@ -405,6 +412,7 @@ def build_market_snapshot(
             five_min_bars_req = StockBarsRequest(
                 symbol_or_symbols=candidate.symbol,
                 timeframe=TimeFrame(amount=5, unit=TimeFrameUnit.Minute),
+                sort=Sort.DESC,
                 limit=BAR_LIMIT,
                 feed=DataFeed.IEX,
             )

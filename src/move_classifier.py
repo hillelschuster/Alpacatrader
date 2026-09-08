@@ -332,8 +332,8 @@ def _is_active(
     elif nearest_stop_distance_pct is not None:
         evidence.append(f"stop_too_far={nearest_stop_distance_pct}pct")
 
-    # Active requires most signals: ≥3 of 5
-    detected = core_signals >= 3
+    # ponytail: 2/5 signals — fresh top gainers with volume + structure are active
+    detected = core_signals >= 2
     return detected, evidence
 
 

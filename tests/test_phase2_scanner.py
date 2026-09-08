@@ -537,3 +537,110 @@ class TestYfinanceWatchlistFilter:
         assert "DSY" in rows, f"Expected DSY kept, got: {list(rows.keys())}"
         assert "SPY" not in rows, "ETF must be filtered"
         assert "VTI" not in rows, "Mutual fund must be filtered"
+
+
+# ──────────────────────────────────────────────────────────────────
+#  Monotonic cooldown after Finviz rate-limit detection
+# ──────────────────────────────────────────────────────────────────
+
+
+class TestFinvizRateLimitCooldown:
+    """60-second monotonic cooldown after 'Too many requests' detection.
+
+    All tests use monkeypatch — no real network calls.
+    """
+
+    def test_cooldown_skips_http_call_and_returns_empty(self, monkeypatch):
+        """Active cooldown → no HTTP request, empty dict returned."""
+        monkeypatch.setattr("src.scanner.enrichment._finviz_cooldown_until", 9999.0)
+        monkeypatch.setattr("src.scanner.enrichment.time.monotonic", lambda: 1000.0)
+
+        call_log: list[str] = []
+
+        def fake_get(*_a, **_k):
+            call_log.append("called")
+            return None  # pragma: no cover
+
+        monkeypatch.setattr("src.scanner.enrichment.requests.get", fake_get)
+
+        rows = scrape_finviz_gainers()
+
+        assert rows == {}
+        assert call_log == [], "requests.get must not be called during cooldown"
+
+    def test_cooldown_expires_after_60_seconds(self, monkeypatch):
+        """Cooldown expired (now >= cooldown_until) → HTTP request proceeds."""
+        monkeypatch.setattr("src.scanner.enrichment._finviz_cooldown_until", 500.0)
+        monkeypatch.setattr("src.scanner.enrichment.time.monotonic", lambda: 600.0)
+
+        class FakeResp:
+            status_code = 200
+            text = "<html>normal</html>"
+
+        call_log: list[str] = []
+
+        def fake_get(*_a, **_k):
+            call_log.append("called")
+            return FakeResp()
+
+        monkeypatch.setattr("src.scanner.enrichment.requests.get", fake_get)
+
+        rows = scrape_finviz_gainers()
+
+        assert isinstance(rows, dict)
+        assert call_log == ["called"], "requests.get must be called after cooldown expires"
+
+    def test_rate_limit_sets_cooldown(self, monkeypatch):
+        """'Too many requests' → cooldown_until set to monotonic + 60."""
+        monkeypatch.setattr("src.scanner.enrichment._finviz_cooldown_until", 0.0)
+        fake_now = 5000.0
+        monkeypatch.setattr("src.scanner.enrichment.time.monotonic", lambda: fake_now)
+
+        class RateLimitResp:
+            status_code = 200
+            text = "Too many requests"
+
+        monkeypatch.setattr("src.scanner.enrichment.requests.get", lambda *a, **k: RateLimitResp())
+
+        rows = scrape_finviz_gainers()
+
+        assert rows == {}
+        from src.scanner.enrichment import _finviz_cooldown_until
+        assert _finviz_cooldown_until == fake_now + 60.0
+
+    def test_successful_scrape_does_not_change_cooldown(self, monkeypatch):
+        """Normal 200 (no rate-limit text) → cooldown_until unchanged."""
+        monkeypatch.setattr("src.scanner.enrichment._finviz_cooldown_until", 0.0)
+        monkeypatch.setattr("src.scanner.enrichment.time.monotonic", lambda: 1000.0)
+
+        class NormalResp:
+            status_code = 200
+            text = "<html>ok</html>"
+
+        monkeypatch.setattr("src.scanner.enrichment.requests.get", lambda *a, **k: NormalResp())
+
+        rows = scrape_finviz_gainers()
+
+        assert isinstance(rows, dict)
+        from src.scanner.enrichment import _finviz_cooldown_until
+        assert _finviz_cooldown_until == 0.0
+
+    def test_two_calls_during_same_cooldown_both_skip_http(self, monkeypatch):
+        """Multiple calls within same cooldown period all skip HTTP."""
+        monkeypatch.setattr("src.scanner.enrichment._finviz_cooldown_until", 9999.0)
+        monkeypatch.setattr("src.scanner.enrichment.time.monotonic", lambda: 1000.0)
+
+        call_log: list[str] = []
+
+        def fake_get(*_a, **_k):
+            call_log.append("called")
+            return None  # pragma: no cover
+
+        monkeypatch.setattr("src.scanner.enrichment.requests.get", fake_get)
+
+        r1 = scrape_finviz_gainers()
+        r2 = scrape_finviz_gainers()
+
+        assert r1 == {}
+        assert r2 == {}
+        assert call_log == [], "requests.get must not be called on either attempt"

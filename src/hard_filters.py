@@ -9,7 +9,7 @@ Exports
 -------
 - ``run_hard_filters()`` — the main entry point
 - ``check_quote_age()``, ``check_spread()``, ``check_time_gate()`` — per-category helpers
-- ``quote_age_tier()``, ``spread_tier()`` — classification utilities
+- ``quote_age_tier()`` — classification utility
 """
 
 from __future__ import annotations
@@ -35,22 +35,6 @@ def quote_age_tier(age_seconds: Optional[float], fresh_s: float = 5.0, max_s: fl
         return "normal"
     if age_seconds <= max_s:
         return "stale_warning"
-    return "hard_reject"
-
-
-def spread_tier(spread_pct: Optional[float]) -> str:
-    """Classify spread per SPEC §7.3.
-
-    Returns one of: ``"normal"``, ``"caution"``, ``"tiny_scalp"``, ``"hard_reject"``.
-    """
-    if spread_pct is None:
-        return "hard_reject"  # cannot calculate
-    if spread_pct <= 1.0:
-        return "normal"
-    if spread_pct <= 3.0:
-        return "caution"
-    if spread_pct <= 5.0:
-        return "tiny_scalp"
     return "hard_reject"
 
 

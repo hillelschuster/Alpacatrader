@@ -155,22 +155,31 @@ def check_hard_stop(
     current_price: Optional[float],
     quote_age_seconds: Optional[float] = None,
     risk_per_share: Optional[float] = None,
+    bars: Optional[list[Bar]] = None,
 ) -> Optional[ExitDecision]:
     """P3 — Hard stop triggers when price trades at or below stop (SPEC §12.2)."""
-    if (
-        current_price is None
-        or position.stop_price is None
-        or quote_age_seconds is None
-        or quote_age_seconds > 15
-    ):
+    if position.stop_price is None:
         return None
 
-    if current_price <= position.stop_price:
-        pnl = calculate_pnl(position, current_price)
-        pnl_r = calculate_pnl_r(position, current_price, risk_per_share or 0.01)
+    # ponytail: stale quote → use latest bar close, not skip the check
+    if quote_age_seconds is not None and quote_age_seconds <= 15.0:
+        price = current_price
+    elif bars and len(bars) > 0:
+        price = bars[-1].close
+        logger.debug("Hard stop check using bar close (quote age {}s)", quote_age_seconds)
+    else:
+        return None  # no price data at all — can't check
+
+    if price is None:
+        return None
+
+    if price <= position.stop_price:
+        # ponytail: use `price` (bar close fallback) for P&L, not stale current_price
+        pnl = calculate_pnl(position, price)
+        pnl_r = calculate_pnl_r(position, price, risk_per_share or 0.01)
         return _exit_decision(
-            position.symbol, 100, f"hard_stop:price={current_price}<=stop={position.stop_price}",
-            exit_price=current_price, pnl=pnl, pnl_r=pnl_r,
+            position.symbol, 100, f"hard_stop:price={price}<=stop={position.stop_price}",
+            exit_price=price, pnl=pnl, pnl_r=pnl_r,
         )
     return None
 

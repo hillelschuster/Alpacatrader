@@ -23,6 +23,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
+from src._atomic import write_json_atomically
 from src.models.schemas import PositionState, PositionStateModel, PendingOrder
 
 
@@ -47,8 +48,9 @@ _VALID_TRANSITIONS: dict[PositionState, set[PositionState]] = {
         PositionState.UNPROTECTED, PositionState.CLOSED, PositionState.ERROR,
     },
     # ponytail: EXITING → UNPROTECTED for mark_unprotected on exit/protect failure
+    # ponytail: EXITING → OPEN for partial-exit confirm (remaining shares stay open)
     PositionState.EXITING: {
-        PositionState.CLOSED, PositionState.ERROR, PositionState.UNPROTECTED,
+        PositionState.CLOSED, PositionState.ERROR, PositionState.UNPROTECTED, PositionState.OPEN,
     },
     PositionState.UNPROTECTED: {
         PositionState.OPEN, PositionState.EXITING, PositionState.CLOSED, PositionState.ERROR,
@@ -120,8 +122,6 @@ def is_symbol_locked_for_entries(
     if position.state not in (PositionState.NONE, PositionState.CLOSED):
         return True
     if has_pending_buy:
-        return True
-    if position.state == PositionState.EXITING:
         return True
     return False
 
@@ -231,10 +231,8 @@ class PositionStore:
         return store
 
     def save_to_disk(self, path: str | Path) -> None:
-        """Persist all positions to a JSON file."""
-        p = Path(path)
-        p.parent.mkdir(parents=True, exist_ok=True)
-        p.write_text(json.dumps(self.to_dict(), default=str, indent=2))
+        """Atomically persist all positions to a JSON file."""
+        write_json_atomically(self.to_dict(), path, default=str, indent=2)
 
     @classmethod
     def load_from_disk(cls, path: str | Path) -> "PositionStore":
@@ -301,3 +299,21 @@ class PendingOrderStore:
                 if o.order_id == order_id:
                     return True
         return False
+
+    # ── Persistence ────────────────────────────────────────────
+
+    def save_to_disk(self, path: str | Path) -> None:
+        """ponytail: atomically persist pending orders alongside positions."""
+        data = [o.model_dump() for orders in self._orders.values() for o in orders]
+        write_json_atomically(data, path, default=str)
+
+    def load_from_disk(self, path: str | Path) -> list[PendingOrder]:
+        """ponytail: restore pending orders from disk. Returns restored list."""
+        p = Path(path)
+        if not p.exists():
+            return []
+        data = json.loads(p.read_text())
+        orders = [PendingOrder(**d) for d in data]
+        for o in orders:
+            self.add(o)
+        return orders

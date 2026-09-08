@@ -17,6 +17,7 @@ Covers:
 import inspect
 import json
 import tempfile
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Optional
 
@@ -24,7 +25,9 @@ import pytest
 from pydantic import ValidationError
 
 from src.decision_pipeline import (
+    evaluate_candidate,
     evaluate_exits,
+    execute_entry,
     MarketSnapshot,
     PipelineResult,
     run_pipeline,
@@ -70,24 +73,30 @@ def _candidate(
 def _surge_bars() -> list[Bar]:
     bars = []
     price = 10.0
+    now = datetime.now(timezone.utc)
+    base = now.replace(second=0, microsecond=0)
     for i in range(10):
         o = price
         c = price + 0.02
-        bars.append(Bar(o, c + 0.01, o - 0.01, c, 500))
+        bars.append(Bar(o, c + 0.01, o - 0.01, c, 500,
+                        timestamp=base - timedelta(minutes=18 - i)))
         price = c
     # Surge
     for i in range(5):
         o = bars[-1].close
         c = o + 0.12
-        bars.append(Bar(o, c + 0.02, o - 0.01, c, 2500))
+        bars.append(Bar(o, c + 0.02, o - 0.01, c, 2500,
+                        timestamp=base - timedelta(minutes=18 - (10 + i))))
     # Pullback
     for i in range(3):
         o = bars[-1].close
         c = o - 0.06
-        bars.append(Bar(o, o + 0.01, c - 0.01, c, 800))
-    # Reclaim
+        bars.append(Bar(o, o + 0.01, c - 0.01, c, 800,
+                        timestamp=base - timedelta(minutes=18 - (15 + i))))
+    # Reclaim — latest bar is "now"
     o = bars[-1].close
-    bars.append(Bar(o, o + 0.15, o - 0.01, o + 0.12, 3000))
+    bars.append(Bar(o, o + 0.15, o - 0.01, o + 0.12, 3000,
+                    timestamp=base))
     return bars
 
 
@@ -757,11 +766,11 @@ class TestBatch2Sizing:
         )
 
     def test_pipeline_places_protection_after_fill(self, force_entry, high_att_candidate, gw):
-        """Pipeline confirms fill and places stop protection after submit_entry.
+        """Pipeline submits entry; confirm_fill deferred to monitor loop.
 
-        The full lifecycle per SPEC §22.17.4:
-          submit_entry → confirm_fill → protect_position
-        Position ends in OPEN state with stop protection in place.
+        Per Task #22: submit_entry → PENDING_ENTRY. The monitor loop
+        calls confirm_fill and protect_position. Position stays PENDING_ENTRY
+        until the monitor loop processes it.
         """
         result = run_pipeline(
             high_att_candidate, bars=_surge_bars(), vwap=10.20, spread_pct=0.8,
@@ -774,11 +783,11 @@ class TestBatch2Sizing:
         )
         pos = gw.positions.get("DSY")
         assert pos is not None
-        assert pos.state == PositionState.OPEN, (
-            f"Expected OPEN after fill, got {pos.state.value}"
+        assert pos.state == PositionState.PENDING_ENTRY, (
+            f"Expected PENDING_ENTRY after submit, got {pos.state.value}"
         )
-        # Stop should be placed after fill
-        assert pos.stop_price is not None, "Stop not placed after fill"
+        # Stop protection is placed later by the monitor loop
+        assert pos.current_shares > 0, "Shares not allocated"
 
 
 class TestBatch2Lifecycle:
@@ -1228,8 +1237,8 @@ class TestPreSubmitQuoteRecheck:
         )
         assert result.decision == "enter"
 
-    def test_none_recheck_snapshot_proceeds(self, force_entry, gw):
-        """pre_submit_quote_fn returns None → no recheck → proceeds to enter."""
+    def test_none_pre_submit_quote_aborts_to_watch(self, force_entry, gw):
+        """pre_submit_quote_fn returns None → failed freshness check → watch."""
         def recheck(c):
             return None
         result = run_pipeline(
@@ -1248,7 +1257,31 @@ class TestPreSubmitQuoteRecheck:
             starter_risk_pct=0.01,
             pre_submit_quote_fn=recheck,
         )
-        assert result.decision == "enter"
+        assert result.decision == "watch"
+        assert result.decision_reason == "stale_pre_submit_quote"
+
+    def test_raising_pre_submit_quote_aborts_to_watch(self, force_entry, gw):
+        """pre_submit_quote_fn raises → caught → watch."""
+        def recheck(c):
+            raise RuntimeError("connection lost")
+        result = run_pipeline(
+            _candidate(symbol="DSY", price=10.50),
+            bars=_surge_bars(),
+            vwap=10.20,
+            ema9=10.10,
+            day_high=10.55,
+            quote_age_seconds=2.0,
+            spread_pct=0.5,
+            rvol=5.0,
+            dollar_volume_5m=500_000,
+            equity=100_000,
+            execution_gw=gw,
+            position_store=gw.positions,
+            starter_risk_pct=0.01,
+            pre_submit_quote_fn=recheck,
+        )
+        assert result.decision == "watch"
+        assert result.decision_reason == "stale_pre_submit_quote"
 
 
 # ──────────────────────────────────────────────────────────────────
@@ -1262,16 +1295,18 @@ def _micro_pullback_bars() -> list[Bar]:
     Pattern: gentle uptick → surge (≥1.5·avg_range) → 2 red dip candles
     with lower volume → green reclaim candle above surge peak.
     """
+    now = datetime.now(timezone.utc)
+    base = now.replace(second=0, microsecond=0)
     return [
-        Bar(10.00, 10.05, 9.99, 10.04, 800),
-        Bar(10.04, 10.10, 10.02, 10.08, 900),
-        Bar(10.08, 10.20, 10.06, 10.18, 1500),
-        Bar(10.18, 10.35, 10.16, 10.30, 2000),
+        Bar(10.00, 10.05, 9.99, 10.04, 800, timestamp=base - timedelta(minutes=8)),
+        Bar(10.04, 10.10, 10.02, 10.08, 900, timestamp=base - timedelta(minutes=7)),
+        Bar(10.08, 10.20, 10.06, 10.18, 1500, timestamp=base - timedelta(minutes=6)),
+        Bar(10.18, 10.35, 10.16, 10.30, 2000, timestamp=base - timedelta(minutes=5)),
         # Dip: 2 red candles with lower volume
-        Bar(10.30, 10.32, 10.22, 10.24, 800),
-        Bar(10.24, 10.26, 10.20, 10.22, 600),
+        Bar(10.30, 10.32, 10.22, 10.24, 800, timestamp=base - timedelta(minutes=4)),
+        Bar(10.24, 10.26, 10.20, 10.22, 600, timestamp=base - timedelta(minutes=3)),
         # Reclaim: green above surge peak
-        Bar(10.22, 10.42, 10.20, 10.40, 2500),
+        Bar(10.22, 10.42, 10.20, 10.40, 2500, timestamp=base - timedelta(minutes=2)),
     ]
 
 
@@ -1399,3 +1434,232 @@ class TestRuntimeClassifierWiring:
             f"Fading bars below VWAP must be BACKSIDE, got {result.move_state}: "
             f"{result.state_evidence}"
         )
+
+
+# ──────────────────────────────────────────────────────────────────
+#  Task — bars_timestamp wired into calculate_data_confidence
+#  + stale/missing 1m bar blocks entry
+# ──────────────────────────────────────────────────────────────────
+
+
+class _FakeDatetime:
+    """Replace src.decision_pipeline.datetime with this to freeze now()."""
+
+    def __init__(self, frozen_now: datetime):
+        self._frozen = frozen_now
+
+    @staticmethod
+    def fromtimestamp(*a, **kw):
+        return datetime.fromtimestamp(*a, **kw)
+
+    @staticmethod
+    def fromisoformat(*a, **kw):
+        return datetime.fromisoformat(*a, **kw)
+
+    def now(self, tz=timezone.utc):
+        return self._frozen.astimezone(tz) if self._frozen.tzinfo else self._frozen.replace(tzinfo=tz)
+
+    def __getattr__(self, name):
+        return getattr(datetime, name)
+
+
+class TestBarsTimestampWired:
+    """evaluate_candidate passes latest bar timestamp into calculate_data_confidence."""
+
+    def test_bars_timestamp_passed_to_confidence(self, monkeypatch):
+        """bars_timestamp from last bar flows into calculate_data_confidence kwargs."""
+        from src.scanner.confidence import calculate_data_confidence as orig
+        captured_kwargs = {}
+
+        def tracking_fn(*args, **kwargs):
+            captured_kwargs.update(kwargs)
+            return orig(*args, **kwargs)
+
+        monkeypatch.setattr(
+            "src.decision_pipeline.calculate_data_confidence", tracking_fn,
+        )
+        bar_dt = datetime(2026, 7, 16, 14, 30, 0, tzinfo=timezone.utc)
+        bars = [Bar(10.0, 10.1, 9.9, 10.05, 500, timestamp=bar_dt)]
+        c = _candidate()
+        evaluate_candidate(c, bars=bars, bars_available=True)
+        assert captured_kwargs.get("bars_timestamp") == bar_dt, (
+            f"Expected bars_timestamp={bar_dt}, got {captured_kwargs.get('bars_timestamp')}"
+        )
+
+    def test_bars_timestamp_none_when_no_bars(self, monkeypatch):
+        """bars_timestamp is None when bars are not provided."""
+        from src.scanner.confidence import calculate_data_confidence as orig
+        captured_kwargs = {}
+
+        def tracking_fn(*args, **kwargs):
+            captured_kwargs.update(kwargs)
+            return orig(*args, **kwargs)
+
+        monkeypatch.setattr(
+            "src.decision_pipeline.calculate_data_confidence", tracking_fn,
+        )
+        c = _candidate()
+        evaluate_candidate(c, bars=None, bars_available=False)
+        assert captured_kwargs.get("bars_timestamp") is None
+
+
+class TestBarFreshnessBlocksEntry:
+    """Entry is blocked/watched when latest 1m bar timestamp is missing or >5 min old."""
+
+    def test_fresh_bars_boundary_allows_entry(self, force_entry, gw):
+        """Bar timestamp exactly 300s old is the boundary — fresh enough."""
+        now = datetime(2026, 7, 16, 14, 30, 0, tzinfo=timezone.utc)
+        bar_dt = datetime(2026, 7, 16, 14, 25, 0, tzinfo=timezone.utc)  # exactly 300s ago
+        bars = [Bar(10.0, 10.1, 9.9, 10.05, 500, timestamp=bar_dt)]
+        with pytest.MonkeyPatch.context() as mp:
+            mp.setattr("src.decision_pipeline.datetime", _FakeDatetime(now))
+            result = evaluate_candidate(
+                _candidate(price=10.50), bars=bars, bars_available=True,
+                quote_age_seconds=2.0, spread_pct=0.5,
+                rvol=5.0, dollar_volume_5m=500_000,
+            )
+        result = execute_entry(result, execution_gw=gw)
+        assert result.decision == "enter", (
+            f"Expected enter for fresh bars, got {result.decision}: {result.decision_reason}"
+        )
+
+    def test_stale_bars_over_5min_blocks_entry(self, force_entry, gw):
+        """Bar timestamp 301s old (>5 min) → watch with stale_bars reason."""
+        now = datetime(2026, 7, 16, 14, 30, 0, tzinfo=timezone.utc)
+        bar_dt = datetime(2026, 7, 16, 14, 24, 59, tzinfo=timezone.utc)  # 301s ago
+        bars = [Bar(10.0, 10.1, 9.9, 10.05, 500, timestamp=bar_dt)]
+        with pytest.MonkeyPatch.context() as mp:
+            mp.setattr("src.decision_pipeline.datetime", _FakeDatetime(now))
+            result = evaluate_candidate(
+                _candidate(price=10.50), bars=bars, bars_available=True,
+                quote_age_seconds=2.0, spread_pct=0.5,
+                rvol=5.0, dollar_volume_5m=500_000,
+            )
+        assert result.decision == "watch", (
+            f"Expected watch for stale bars, got {result.decision}: {result.decision_reason}"
+        )
+        assert "stale_bars" in result.decision_reason
+
+    def test_stale_bars_no_timestamp_blocks_entry(self, force_entry, gw):
+        """Bars without timestamps → missing timestamp → watch."""
+        bars = [Bar(10.0, 10.1, 9.9, 10.05, 500, timestamp=None)]
+        result = evaluate_candidate(
+            _candidate(price=10.50), bars=bars, bars_available=True,
+            quote_age_seconds=2.0, spread_pct=0.5,
+            rvol=5.0, dollar_volume_5m=500_000,
+        )
+        assert result.decision == "watch", (
+            f"Expected watch for bars with no timestamp, got {result.decision}: {result.decision_reason}"
+        )
+        assert "stale_bars" in result.decision_reason
+
+    def test_no_bars_at_all_blocks_entry(self, force_entry, gw):
+        """No bars provided → missing data → watch with no_bars_for_entry (not stale_bars)."""
+        result = evaluate_candidate(
+            _candidate(price=10.50), bars=None, bars_available=False,
+            quote_age_seconds=2.0, spread_pct=0.5,
+            rvol=5.0, dollar_volume_5m=500_000,
+        )
+        assert result.decision == "watch", (
+            f"Expected watch for no bars, got {result.decision}: {result.decision_reason}"
+        )
+        assert "no_bars_for_entry" in result.decision_reason, (
+            f"Expected no_bars_for_entry reason, got: {result.decision_reason}"
+        )
+
+    def test_hard_block_precedes_stale_bars(self, force_entry, gw):
+        """Hard-block failure must produce decision=skip even when bars are stale.
+
+        Regression: stale bars previously took priority over hard blocks in step 6.
+        Now hard-block failure is checked first → decision=skip with hard_blocks:*."""
+        now = datetime(2026, 7, 16, 14, 30, 0, tzinfo=timezone.utc)
+        bar_dt = datetime(2026, 7, 16, 14, 20, 0, tzinfo=timezone.utc)  # 600s old → stale
+        bars = [Bar(10.0, 10.1, 9.9, 10.05, 500, timestamp=bar_dt)]
+        with pytest.MonkeyPatch.context() as mp:
+            mp.setattr("src.decision_pipeline.datetime", _FakeDatetime(now))
+            result = evaluate_candidate(
+                _candidate(price=10.50), bars=bars, bars_available=True,
+                quote_age_seconds=2.0, spread_pct=0.5,
+                rvol=5.0, dollar_volume_5m=500_000,
+                per_symbol_loss_capped=True,
+            )
+        assert result.decision == "skip", (
+            f"Expected skip (hard-block precedence), got {result.decision}: {result.decision_reason}"
+        )
+        assert "hard_blocks:" in result.decision_reason
+        assert "per_symbol_loss_cap_breached" in result.decision_reason
+        assert "stale_bars" not in result.decision_reason
+
+    def test_stale_bars_with_naive_timestamp(self, force_entry, gw):
+        """Naive bar timestamp is handled safely (treated as UTC)."""
+        now = datetime(2026, 7, 16, 14, 30, 0, tzinfo=timezone.utc)
+        bar_dt = datetime(2026, 7, 16, 14, 20, 0)  # naive, 600s ago
+        bars = [Bar(10.0, 10.1, 9.9, 10.05, 500, timestamp=bar_dt)]
+        with pytest.MonkeyPatch.context() as mp:
+            mp.setattr("src.decision_pipeline.datetime", _FakeDatetime(now))
+            result = evaluate_candidate(
+                _candidate(price=10.50), bars=bars, bars_available=True,
+                quote_age_seconds=2.0, spread_pct=0.5,
+                rvol=5.0, dollar_volume_5m=500_000,
+            )
+        assert result.decision == "watch", (
+            f"Expected watch for stale naive bar, got {result.decision}: {result.decision_reason}"
+        )
+        assert "stale_bars" in result.decision_reason
+
+    def test_pre_submit_quote_none_blocked(self, force_entry, gw):
+        """execute_entry: pre_submit_quote_fn returns None → watch, no submit."""
+        c = _candidate(price=10.50)
+        bar_dt = datetime(2026, 7, 16, 14, 30, 0, tzinfo=timezone.utc)
+        bars = [Bar(10.0, 10.1, 9.9, 10.05, 500, timestamp=bar_dt)]
+        with pytest.MonkeyPatch.context() as mp:
+            mp.setattr("src.decision_pipeline.datetime", _FakeDatetime(bar_dt))
+            result = evaluate_candidate(
+                c, bars=bars, bars_available=True,
+                quote_age_seconds=2.0, spread_pct=0.5,
+                rvol=5.0, dollar_volume_5m=500_000,
+            )
+        assert result.entry_signal is not None, "evaluate_candidate must produce entry signal"
+
+        def recheck(c):
+            return None
+
+        result = execute_entry(result, execution_gw=gw, pre_submit_quote_fn=recheck)
+        assert result.decision == "watch"
+        assert result.decision_reason == "stale_pre_submit_quote"
+
+    def test_pre_submit_quote_raises_blocked(self, force_entry, gw):
+        """execute_entry: pre_submit_quote_fn raises → watch, no submit."""
+        c = _candidate(price=10.50)
+        bar_dt = datetime(2026, 7, 16, 14, 30, 0, tzinfo=timezone.utc)
+        bars = [Bar(10.0, 10.1, 9.9, 10.05, 500, timestamp=bar_dt)]
+        with pytest.MonkeyPatch.context() as mp:
+            mp.setattr("src.decision_pipeline.datetime", _FakeDatetime(bar_dt))
+            result = evaluate_candidate(
+                c, bars=bars, bars_available=True,
+                quote_age_seconds=2.0, spread_pct=0.5,
+                rvol=5.0, dollar_volume_5m=500_000,
+            )
+        assert result.entry_signal is not None, "evaluate_candidate must produce entry signal"
+
+        def recheck(c):
+            raise RuntimeError("timeout")
+
+        result = execute_entry(result, execution_gw=gw, pre_submit_quote_fn=recheck)
+        assert result.decision == "watch"
+        assert result.decision_reason == "stale_pre_submit_quote"
+
+    def test_no_callback_skips_recheck(self, force_entry, gw):
+        """execute_entry: no pre_submit_quote_fn → no recheck → enter proceeds."""
+        c = _candidate(price=10.50)
+        bars = [Bar(10.0, 10.1, 9.9, 10.05, 500)]
+        result = evaluate_candidate(
+            c, bars=bars, bars_available=True,
+            quote_age_seconds=2.0, spread_pct=0.5,
+            rvol=5.0, dollar_volume_5m=500_000,
+        )
+        result.decision = "enter"
+        result.decision_reason = "setup=first_pullback shares=100"
+
+        result = execute_entry(result, execution_gw=gw, pre_submit_quote_fn=None)
+        assert result.decision == "enter"

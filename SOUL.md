@@ -27,7 +27,7 @@ Top gainer + attention + definable risk + verified execution safety = possible t
 
 4. **Protection without paralysis.** Daily loss cap, per-symbol loss cap, open-risk cap, and max-trade-risk cap are guardrails, not trade-avoidance devices. If the bot "never loses" because it sizes every trade to irrelevance, it has failed its mission. Sizing penalties exist to protect the account, not to avoid trading. A floor prevents zero; the target sizing for a typical top gainer (attention ≥ 70) should be meaningful, not microscopic.
 
-5. **Runners are the goal; scaling-in is the mechanism.** The bot exists to catch runners, not just to scalp single entries. Scaling *in* when a position proves itself matters as much as scaling out. **This is central to the identity but deferred, not abandoned** — see Current Reality below. Future sessions must not treat single-entry-and-scale-out as the final design.
+5. **Runners are the goal; scaling-in is the mechanism.** The bot exists to catch runners, not just to scalp single entries. Scaling *in* when a position proves itself matters as much as scaling out. **Implemented (v0.5.0) — see Current Reality for status.** Future sessions must not treat single-entry-and-scale-out as the final design.
 
 6. **Paper mode is live rehearsal, not a sandbox.** Paper mode must behave as close to live as data/tool limits allow: real market hours, real spread/slippage gating, real decision logging, real reconciliation against broker truth. Sloppy paper mode becomes dangerous live mode. Treat every paper trade as a live rehearsal.
 
@@ -48,18 +48,20 @@ Top gainer + attention + definable risk + verified execution safety = possible t
 
 The soul is correctly specified but not yet fully realized. These are known limitations, not contradictions:
 
-- **Runner capture is not implemented.** Runner state exists in the schema but no runtime transition creates a runner. Runner trailing accepts `highest_price_seen` but does not use it. v0.4.0 is a single-entry momentum bot wearing a "catch runners" label. This is honest *if acknowledged*; it is dishonest if shipped as final. **v0.5.0 delivers runtime runner transitions, ATR Chandelier trailing exits, and scaling-in — see `SPEC.md §11`.**
-- **Scaling-in is unimplemented.** No module, no state transitions, no sizing logic for adding to winning positions. Specified in the mental model (`SPEC.md §1.1`), deferred in `SPEC.md §10.1`.
+- **Runner capture IS implemented.** `should_promote_to_runner()`, `_promote_to_runner()`, `_update_runner_trail()`, `check_runner_trail()` all wired. ATR Chandelier trailing active. BUT: MoveState ACTIVE required for promotion — classifier biased to EARLY (relaxed in §11.19 for high-R positions).
+- **Scaling-in IS implemented.** `should_add_to_runner()`, `add_sizing()`, `submit_add()`, full add lifecycle with re-protection. BUT: immediate confirm_fill after submit_add fixed in §11.19 (deferred to monitor loop).
 - **yfinance fallback is a static watchlist**, not dynamic top-gainer discovery. When Finviz is unavailable, the bot degrades from "today's top gainers" to a curated basket of volatile names. This is a fallback, not a substitute. The primary edge comes from Finviz-driven discovery. Future: wire a second dynamic scanner source, or accept that data-absent days are watch-only days.
-- **News/catalyst awareness is unwired.** `has_news`/`has_catalyst` are never populated at runtime, so the attention-dependent `no_news`/`no_catalyst` sizing penalty never fires; candidates always receive `news_unknown`/`catalyst_unknown` (1.0x). Acceptable v0.4.0 simplification — top-gainer momentum is the primary signal — but the declared penalty is currently dead code.
+- **News/catalyst awareness unwired.** `has_news`/`has_catalyst` are never populated at runtime, so the attention-dependent `no_news`/`no_catalyst` sizing penalty never fires; candidates always receive `news_unknown`/`catalyst_unknown` (1.0x). Acceptable v0.4.0 simplification — top-gainer momentum is the primary signal — but the declared penalty is currently dead code.
 - **Sizing can crush to trivial size.** Stacked multipliers (attention × float_unknown × parabolic × lunch × price_below_2 × data_confidence) can reduce a $250 starter risk to single-digit dollars before the 0.25 floor. If the bot watches far more than it trades, the multipliers need recalibration, not the philosophy.
 - **Paper-mode realism gaps.** No US holiday calendar, no pre-market scanning, no half-day early-close handling, 60s poll (not true sleep-until-open), and `paper_mode` flag is stored but never gates behavior. Holiday integration and a live `paper_mode` distinction are live-mode prerequisites.
+- **scalp_reclaim entry setup effectively disabled.** Requires `quote_age <= 5s` with 10s polling → never fires. Will unblock with WebSocket (Phase 8).
 
 ## Future Direction
 
-- **v0.5.0 mandate:** runner capture + scaling-in + live readiness. See `SPEC.md §11` for the full researched implementation plan (7 phases, dependency-ordered).
+- **v0.5.0:** Runner capture + scaling-in **implemented**. Live readiness in progress (§11.19 Phase C). Paper validation next.
 - **VPS running 24/7:** wake 30–60 min before market open, monitor premarket/top gainers, trade market hours with discipline.
 - **SIP data feed** (~$99/mo) if the cost/logic tradeoff is worth it for execution quality. Deferred to v0.6 — test with IEX first.
+- **WebSocket streaming** (Phase 8): real-time quotes + trades for sub-second entry detection. After v0.5.0 stable. See SPEC.md §11.19 Task #39.
 - **Broker/data stack flexibility:** Alpaca is the current target; if IBKR or another stack becomes economically/logically better later, the system may move — but for now it must fit Alpaca perfectly.
 - **LLM ecosystem:** pre-market catalyst annotation (Anthropic Claude Haiku, ~$0.03/day, disabled by default, annotation-only). See `SPEC.md §11.8`. Never in the execution path, never an approval gate.
 

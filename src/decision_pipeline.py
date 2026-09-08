@@ -43,9 +43,6 @@ from src.scanner.confidence import calculate_data_confidence, compute_scanner_ag
 from src.sizing import attention_multiplier, entry_sizing
 from src.state_machine import PositionStore
 
-import loguru
-
-
 def _roc_pct_from_bars(bars: Optional[list[Bar]], lookback_bars: int) -> Optional[float]:
     """Return close-to-close ROC over ``lookback_bars`` 1-minute bars."""
     if not bars or len(bars) <= lookback_bars:
@@ -278,14 +275,37 @@ def evaluate_candidate(
 
     # ── 1. Data confidence ─────────────────────────────────────
     now = datetime.now(timezone.utc)
+    # Extract the latest bar timestamp and ensure it's timezone-aware (UTC convention)
+    raw_ts = bars[-1].timestamp if bars and bars[-1].timestamp is not None else None
+    bars_timestamp: Optional[datetime] = None
+    if raw_ts is not None:
+        bars_timestamp = raw_ts if raw_ts.tzinfo is not None else raw_ts.replace(tzinfo=timezone.utc)
     result.data_confidence = calculate_data_confidence(
         candidate, now=now, bars_available=bars_available,
+        bars_timestamp=bars_timestamp,
     )
     result.scanner_age_seconds = compute_scanner_age_seconds(candidate, now=now)
     result.quote_age_seconds = quote_age_seconds
     result.spread_pct = spread_pct
     result.rvol = rvol
     result.daily_volume = daily_volume
+
+    # ── 1b. Bar freshness check (blocks entry when 1m bar data is stale/missing) ──
+    # Computed here for use in entry detection; stored as _bar_stale_reason so the
+    # entry-detection step can set decision/reason without duplicating the logic.
+    # Only set when bars exist — absence of bars flows to `no_bars_for_entry` via
+    # the normal entry path (step 6).
+    _bar_stale_reason: Optional[str] = None
+    if bars:
+        ts = bars[-1].timestamp
+        if ts is None:
+            _bar_stale_reason = "stale_bars:missing_timestamp"
+        else:
+            # Handle naive timestamps — treat as UTC (convention throughout this codebase)
+            ts_aware = ts if ts.tzinfo is not None else ts.replace(tzinfo=timezone.utc)
+            bar_age = (now - ts_aware).total_seconds()
+            if bar_age > 300:  # 5 minutes
+                _bar_stale_reason = f"stale_bars:{int(bar_age)}s_old"
 
     # ── 2. Attention ────────────────────────────────────────────
     is_runner = (
@@ -315,6 +335,7 @@ def evaluate_candidate(
         data_confidence=result.data_confidence,
         halt_history_today=halt_count_today > 0,
         has_news=has_news, has_catalyst=has_catalyst,
+        et_time=et_time,
     )
 
     # ── 4. Hard filters ─────────────────────────────────────────
@@ -380,9 +401,15 @@ def evaluate_candidate(
     result.state_evidence = evidence
 
     # ── 6. Entry detection ──────────────────────────────────────
-    if result.hard_filter_passed and result.attention_score is not None:
+    if not result.hard_filter_passed:
+        result.decision = "skip"
+        result.decision_reason = f"hard_blocks:{','.join(result.hard_blocks)}"
+    elif _bar_stale_reason is not None:
+        result.decision = "watch"
+        result.decision_reason = _bar_stale_reason
+    elif result.hard_filter_passed and result.attention_score is not None:
         att_mult = attention_multiplier(result.attention_score)
-        if att_mult > 0.25 and bars:
+        if att_mult >= 0.25 and bars:  # ponytail: >= not > — 49.9 attention still gets 0.25x sizing
             allowed_setups = get_allowed_setups(state) if state else set()
             signal = find_entry(
                 candidate, bars, state=state,
@@ -401,9 +428,6 @@ def evaluate_candidate(
         else:
             result.decision = "watch"
             result.decision_reason = "attention_too_low" if att_mult <= 0.25 else "no_bars_for_entry"
-    elif not result.hard_filter_passed:
-        result.decision = "skip"
-        result.decision_reason = f"hard_blocks:{','.join(result.hard_blocks)}"
     else:
         result.decision = "watch"
         result.decision_reason = "no_attention_score"
@@ -455,17 +479,25 @@ def execute_entry(
     if shares > 0 and execution_gw is not None:
         # ── 8-pre. Pre-submit quote recheck (SPEC §14) ──
         if pre_submit_quote_fn is not None:
-            refreshed = pre_submit_quote_fn(result.candidate)
-            if refreshed is not None:
-                r_valid, r_missing = refreshed.validate_for_entry()
-                stale = (
-                    refreshed.quote_age_seconds is not None
-                    and refreshed.quote_age_seconds > 5.0
-                )
-                if not r_valid or stale:
-                    result.decision = "watch"
-                    result.decision_reason = "stale_pre_submit_quote"
-                    return result
+            try:
+                refreshed = pre_submit_quote_fn(result.candidate)
+            except Exception:
+                result.decision = "watch"
+                result.decision_reason = "stale_pre_submit_quote"
+                return result
+            if refreshed is None:
+                result.decision = "watch"
+                result.decision_reason = "stale_pre_submit_quote"
+                return result
+            r_valid, r_missing = refreshed.validate_for_entry()
+            stale = (
+                refreshed.quote_age_seconds is not None
+                and refreshed.quote_age_seconds > 5.0
+            )
+            if not r_valid or stale:
+                result.decision = "watch"
+                result.decision_reason = "stale_pre_submit_quote"
+                return result
         try:
             sized_signal = EntrySignal.model_validate({
                 **signal.model_dump(),
@@ -474,43 +506,7 @@ def execute_entry(
             })
             order, pos = execution_gw.submit_entry(sized_signal)
 
-            # ── 8a. Fill confirmation ──
-            fill_confirmed = True
-            try:
-                execution_gw.confirm_fill(order.order_id)
-            except Exception:
-                loguru.logger.exception(
-                    "confirm_fill failed for %s order %s — position stays PENDING_ENTRY",
-                    sized_signal.symbol, order.order_id,
-                )
-                fill_confirmed = False
-
-            # ── 8b. Place stop protection ──────────
-            if fill_confirmed:
-                try:
-                    execution_gw.protect_position(
-                        sized_signal.symbol,
-                        sized_signal.stop_price,
-                        sized_signal.proposed_shares,
-                    )
-                except Exception:
-                    try:
-                        execution_gw.mark_unprotected(sized_signal.symbol)
-                    except Exception:
-                        loguru.logger.exception(
-                            "mark_unprotected failed for %s after protection failure",
-                            sized_signal.symbol,
-                        )
-            else:
-                # ponytail: fill not confirmed → skip protection, mark unprotected
-                try:
-                    execution_gw.mark_unprotected(sized_signal.symbol)
-                except Exception:
-                    loguru.logger.exception(
-                        "mark_unprotected failed for %s after confirm_fill failure",
-                        sized_signal.symbol,
-                    )
-
+            # ponytail: confirm_fill deferred to monitor loop — position stays PENDING_ENTRY
             result.decision = "enter"
             result.decision_reason = f"setup={signal.entry_setup.value} shares={shares}"
         except ValueError:

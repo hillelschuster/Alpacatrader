@@ -88,6 +88,7 @@ def should_promote_to_runner(
     activation_r_multiple: float = 1.5,
     higher_lows_required: int = 2,
     volume_confirm_multiplier: float = 1.5,
+    rvol: Optional[float] = None,
 ) -> bool:
     """Check if an OPEN position should be promoted to RUNNER.
 
@@ -105,9 +106,9 @@ def should_promote_to_runner(
         return False
     if pos.entry_price is None or pos.stop_price is None:
         return False
-    if move_state is not None and move_state != MoveState.ACTIVE:
-        return False
     if move_state is None:
+        return False
+    if move_state != MoveState.ACTIVE and move_state != MoveState.EARLY:
         return False
 
     # R = original entry risk per share
@@ -121,20 +122,26 @@ def should_promote_to_runner(
     if pnl_r < activation_r_multiple:
         return False
 
-    # Criterion 3: higher lows
-    if bars is None or len(bars) < 4:
-        return False
-    higher_lows = _count_higher_lows(bars)
-    if higher_lows < higher_lows_required:
-        return False
+    # Criterion 3 + 4: structure checks (skipped for EARLY — high R compensates)
+    if move_state != MoveState.EARLY:
+        if bars is None or len(bars) < 4:
+            return False
+        higher_lows = _count_higher_lows(bars)
+        if higher_lows < higher_lows_required:
+            return False
+        if not _volume_confirms(bars, volume_confirm_multiplier):
+            return False
 
-    # Criterion 4: volume confirmation on latest push
-    if not _volume_confirms(bars, volume_confirm_multiplier):
-        return False
-
-    # Criterion 5: price >= VWAP
+    # Criterion 5: price >= VWAP (unconditional)
     if vwap is not None and current_price < vwap:
         return False
+
+    # ponytail: EARLY promotion needs 2R + RVOL >= 2.0
+    if move_state == MoveState.EARLY:
+        if pnl_r < 2.0:
+            return False
+        if rvol is None or rvol < 2.0:
+            return False
 
     return True
 

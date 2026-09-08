@@ -10,6 +10,8 @@ Also filters unavoidable third-party warnings.
 from __future__ import annotations
 
 import warnings
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 import pytest
 
@@ -32,6 +34,22 @@ def _filter_third_party_warnings() -> None:
         "ignore",
         message="websockets.legacy is deprecated",
         category=DeprecationWarning,
+    )
+
+
+@pytest.fixture(autouse=True)
+def _mock_market_hours(monkeypatch) -> None:
+    """Pin ET time to market hours so tests don't depend on real clock.
+
+    ponytail: tests that need market-closed behavior set market_session_fn explicitly,
+    which takes precedence over the _now_et fallback in _is_market_open().
+    """
+    from src.app import TradingApp
+
+    monkeypatch.setattr(
+        TradingApp,
+        "_now_et",
+        lambda self: datetime(2026, 1, 5, 10, 0, tzinfo=ZoneInfo("US/Eastern")),  # Mon 10:00 AM ET
     )
 
 

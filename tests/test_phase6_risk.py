@@ -258,12 +258,10 @@ class TestRiskLedgerDailyLossCap:
         from src.app import TradingApp
 
         gw = PaperExecutionGateway()
-        # Position with massive realized loss
         pos = PositionStateModel(
             symbol="LOSS", state=PositionState.OPEN,
             entry_price=10.00, stop_price=9.00,
             current_shares=10, average_entry=10.00,
-            realized_pnl=-5000.0,  # > $3000 daily cap at 3% of 100k
         )
         gw.positions.upsert(pos)
 
@@ -272,6 +270,8 @@ class TestRiskLedgerDailyLossCap:
             equity=100_000,
             max_daily_loss_pct=0.03,  # $3000 cap
         )
+        # ponytail: realized P&L flows through _session_realized_pnl (canonical per BUG 1 fix)
+        app._session_realized_pnl = -5000.0  # > $3000 daily cap at 3% of 100k
         state = app._build_risk_state()
 
         assert state.daily_loss_breached is True, (
@@ -293,7 +293,7 @@ class TestRiskLedgerPerSymbolCaps:
     """T8.5: Per-symbol loss caps accumulate and block re-entry."""
 
     def test_per_symbol_loss_tracked(self):
-        """Each symbol's losses are tracked independently."""
+        """Each symbol's realized losses are tracked independently (SPEC §11.19.17 — realized only)."""
         from src.paper_execution import PaperExecutionGateway
         from src.models.schemas import PositionState, PositionStateModel
         from src.app import TradingApp
@@ -315,6 +315,9 @@ class TestRiskLedgerPerSymbolCaps:
         gw.positions.upsert(pos_b)
 
         app = TradingApp(execution_gw=gw, equity=100_000)
+        # ponytail: record realized losses — per-symbol cap is realized-only per Task #37
+        app._record_realized_trade_pnl("A", -2000.0)
+        app._record_realized_trade_pnl("B", -500.0)
         state = app._build_risk_state()
 
         assert "A" in state.per_symbol_daily_loss
@@ -324,7 +327,7 @@ class TestRiskLedgerPerSymbolCaps:
         )
 
     def test_per_symbol_loss_block_reentry(self):
-        """Same-symbol accumulated loss blocks re-entry via daily loss cap check."""
+        """Same-symbol accumulated realized loss blocks re-entry via daily loss cap check (SPEC §11.19.17 — realized only)."""
         from src.paper_execution import PaperExecutionGateway
         from src.models.schemas import PositionState, PositionStateModel
         from src.app import TradingApp
@@ -334,16 +337,18 @@ class TestRiskLedgerPerSymbolCaps:
             symbol="DSY", state=PositionState.OPEN,
             entry_price=10.00, stop_price=9.00,
             current_shares=10, average_entry=10.00,
-            unrealized_pnl=-4000.0,  # > 3% of 100k ($3000)
+            unrealized_pnl=-4000.0,  # unrealized — doesn't trigger cap anymore
         )
         gw.positions.upsert(pos)
 
         app = TradingApp(
             execution_gw=gw, equity=100_000, max_daily_loss_pct=0.03,
         )
+        # ponytail: record realized loss — per-symbol cap is realized-only per Task #37
+        app._record_realized_trade_pnl("DSY", -4000.0)
         state = app._build_risk_state()
 
-        # DSY loss exceeds $3000 → should appear in per-symbol losses
+        # DSY realized loss exceeds $3000 → should appear in per-symbol losses
         dsy_loss = state.per_symbol_daily_loss.get("DSY", 0)
         assert dsy_loss <= -3000, (
             f"Expected DSY loss >= $3000 to trigger cap, got {dsy_loss}"

@@ -138,28 +138,29 @@ class TestLLMPreMarketAnnotator:
 
 class TestPriceAttention:
     def test_100pct_gain_reaches_full_price_weight(self):
-        """SPEC §11.18.5: cap raised to 100% — top gainers get primary ranking."""
+        """SPEC §11.19.8: cap reverted to 25% — 25%+ gainers get full price points."""
         pts, available = _price_attention(percent_gain=100.0, premarket_gap_pct=None)
         assert available is True
         assert pts == _PRICE_WEIGHT
 
-    def test_50pct_gain_gets_half_price_attention(self):
+    def test_50pct_gain_gets_full_price_attention(self):
+        """50% > 25% cap → full price points."""
         pts, available = _price_attention(percent_gain=50.0, premarket_gap_pct=None)
         assert available is True
-        assert pts == pytest.approx(_PRICE_WEIGHT * 0.5, abs=0.1)
+        assert pts == _PRICE_WEIGHT
 
     def test_250pct_gain_capped_at_full_weight(self):
         pts, available = _price_attention(percent_gain=250.0, premarket_gap_pct=None)
         assert available is True
         assert pts == _PRICE_WEIGHT
 
-    def test_scales_linearly(self):
-        pts, _ = _price_attention(percent_gain=25.0, premarket_gap_pct=None)
-        assert pts == pytest.approx(7.5, abs=0.1)  # 25/100 * 30 = 7.5
+    def test_scales_linearly_below_cap(self):
+        pts, _ = _price_attention(percent_gain=12.5, premarket_gap_pct=None)
+        assert pts == pytest.approx(15.0, abs=0.1)  # 12.5/25 * 30 = 15.0
 
     def test_uses_best_of_gain_and_gap(self):
         pts, _ = _price_attention(percent_gain=10.0, premarket_gap_pct=30.0)
-        assert pts == pytest.approx(9.0, abs=0.1)  # 30/100 * 30 = 9
+        assert pts == _PRICE_WEIGHT  # 30 > 25% cap → full points
 
     def test_zero_or_negative_gain_returns_zero(self):
         pts, available = _price_attention(percent_gain=0.0, premarket_gap_pct=None)
@@ -178,7 +179,7 @@ class TestPriceAttention:
     def test_only_gap_available_works(self):
         pts, available = _price_attention(percent_gain=None, premarket_gap_pct=20.0)
         assert available is True
-        assert pts == pytest.approx(6.0, abs=0.1)  # 20/100 * 30 = 6
+        assert pts == pytest.approx(24.0, abs=0.1)  # 20/25 * 30 = 24
 
 
 # ──────────────────────────────────────────────────────────────────
@@ -384,8 +385,8 @@ class TestScoreAttention:
         c = _candidate(percent_gain=15.0, current_volume=None, relative_volume=None)
         result = score_attention(c)
         # price_attention weight=30, available_weight=30
-        # raw = 15/100*30 = 4.5, base = 4.5 * (100/30) = 15.0
-        assert result.score == pytest.approx(15.0, abs=2.0)
+        # raw = 15/25*30 = 18, base = 18 * (100/30) = 60.0
+        assert result.score == pytest.approx(60.0, abs=2.0)
 
     def test_theme_bonus_applied(self):
         c = _candidate(percent_gain=30.0)

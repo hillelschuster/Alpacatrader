@@ -199,13 +199,13 @@ class TestExtended:
 
 
 class TestActive:
-    def test_two_signals_not_active(self):
-        """Two core signals alone are not enough to trigger ACTIVE (needs ≥3)."""
+    def test_two_signals_is_active(self):
+        """SPEC §11.19.28: threshold lowered to 2/5 — fresh top gainers with volume + structure are active."""
         detected, evidence = _is_active(
             higher_low_structure=True,
             pullbacks_bought=True,
         )
-        assert detected is False
+        assert detected is True
 
     def test_all_signals_active(self):
         detected, evidence = _is_active(

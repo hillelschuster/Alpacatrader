@@ -237,27 +237,28 @@ def test_stop_never_below_original_entry_for_add_order():
 
 def test_alpaca_add_partial_fill_cancels_remainder_and_resizes_stop():
     class FakeAlpacaOrder:
-        id = "add-1"
-        status = "partially_filled"
-        filled_qty = "10"
-        filled_avg_price = "11.00"
+        def __init__(self, id="add-1", status="partially_filled", filled_qty="10", filled_avg_price="11.00"):
+            self.id = id
+            self.status = status
+            self.filled_qty = filled_qty
+            self.filled_avg_price = filled_avg_price
 
     class FakeClient:
         def __init__(self):
             self.cancelled: list[str] = []
+            self._post_cancel: set[str] = set()
 
         def get_order_by_id(self, order_id: str):
-            assert order_id == "add-1"
-            return FakeAlpacaOrder()
+            if order_id in self._post_cancel:
+                return FakeAlpacaOrder(id=order_id, status="canceled")
+            return FakeAlpacaOrder(id=order_id)
 
         def cancel_order_by_id(self, order_id: str):
             self.cancelled.append(order_id)
+            self._post_cancel.add(order_id)
 
         def submit_order(self, req):
-            order = FakeAlpacaOrder()
-            order.id = "stop-new"
-            order.status = "new"
-            return order
+            return FakeAlpacaOrder(id="stop-new", status="new")
 
     gw = AlpacaExecutionGateway(api_key="key", secret_key="secret")
     fake_client = FakeClient()

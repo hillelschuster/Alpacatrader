@@ -39,9 +39,9 @@ _HOD_WEIGHT = 30
 _TOTAL_WEIGHT = _PRICE_WEIGHT + _VOLUME_WEIGHT + _HOD_WEIGHT  # 100
 
 # ponytail: Top-gainer bot — % gain is the primary signal.
-# Cap at 100% so a 250% gainer scores full 30 pts, not capped at 25%.
-# A 50% gainer gets 15 pts, a 100%+ gainer gets full 30 pts.
-_PRICE_NORMALIZATION_CAP_PCT = 100.0
+# Cap at 25% so a 25%+ gainer scores full 30 pts.
+# A 12.5% gainer gets 15 pts, a 25%+ gainer gets full 30 pts.
+_PRICE_NORMALIZATION_CAP_PCT = 25.0
 
 # Bonuses (capped so total never exceeds 100)
 _THEME_BONUS = 10

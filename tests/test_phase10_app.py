@@ -395,6 +395,7 @@ class TestBatch3Enrichment:
             scanner_fn=lambda: [_c()],
             enrichment_fn=lambda c: c,
             market_data_fn=market_data_fn,
+            market_session_fn=lambda: MarketSession(is_open=True),  # ponytail: mock market open — test must not depend on real market hours
             logger=logger,
             execution_gw=gw,
             starter_risk_pct=0.01,
@@ -592,7 +593,7 @@ class TestBatch4MonitorExits:
                 pos.state = PositionState.CLOSED
                 self.positions.upsert(pos)
                 self.pending.resolve(order_id, "filled")
-                return pos
+                return pos.model_copy(deep=True)  # return copy so delta is incremental not 0
 
         gw = BrokerFillGateway()
         pos = PositionStateModel(
@@ -1143,6 +1144,13 @@ class TestBatch4MonitorExits:
 
         pos_after = gw.positions.get("DSY")
         assert pos_after is not None
+        # ponytail: after submit_add, position is ADDING (confirm_fill deferred to monitor loop)
+        assert pos_after.state == PositionState.ADDING
+        assert pos_after.pending_order_id is not None
+
+        # Simulate fill confirmation (monitor loop would do this next cycle)
+        gw.confirm_fill(pos_after.pending_order_id)
+        pos_after = gw.positions.get("DSY")
         assert pos_after.state == PositionState.RUNNER
         assert pos_after.add_count == 1
         assert pos_after.current_shares > 100
@@ -1151,7 +1159,6 @@ class TestBatch4MonitorExits:
 
         reasons = [r.reason for r in logger.read()]
         assert "add_submitted" in reasons
-        assert "add_filled" in reasons
 
     def test_runner_add_failure_logs_and_returns_to_runner(self, tmp_path, monkeypatch):
         class RejectingAddGateway(PaperExecutionGateway):
@@ -1271,7 +1278,7 @@ class TestBatch4MonitorExits:
         pos_after = gw.positions.get("DSY")
         assert pos_after is not None
         assert pos_after.state == PositionState.ADDING
-        assert [r.reason for r in logger.read()] == ["add_submitted", "add_pending"]
+        assert [r.reason for r in logger.read()] == ["add_submitted"]  # confirm_fill deferred
 
     def test_runner_add_uses_original_risk_after_trail_sync(self, tmp_path, monkeypatch):
         """ADD logic must not use ratcheted broker stop as original risk."""
@@ -1322,8 +1329,13 @@ class TestBatch4MonitorExits:
 
         pos_after = gw.positions.get("DSY")
         assert pos_after is not None
+        # ponytail: confirm_fill deferred — simulate fill to verify add completed
+        assert pos_after.state == PositionState.ADDING
+        assert pos_after.pending_order_id is not None
+        gw.confirm_fill(pos_after.pending_order_id)
+        pos_after = gw.positions.get("DSY")
         assert pos_after.add_count == 1
-        assert "add_filled" in [r.reason for r in logger.read()]
+        assert "add_submitted" in [r.reason for r in logger.read()]
 
     def test_adding_state_counts_as_emergency(self):
         gw = PaperExecutionGateway()
@@ -1454,7 +1466,8 @@ class TestBatch5StartupReconciliation:
         assert pos is not None
         assert pos.current_shares == 50
         assert pos.average_entry == 10.50
-        assert pos.state == PositionState.OPEN
+        # ponytail: insert_protect with no stop_price marks UNPROTECTED per BUG 2 fix
+        assert pos.state == PositionState.UNPROTECTED
 
     def test_broker_position_qty_less_than_local(self):
         """Case 3: broker qty < local qty → update local."""
@@ -1598,7 +1611,6 @@ class TestBatch5AccountRiskEnforcement:
             symbol="LOSS", state=PositionState.OPEN,
             entry_price=100.0, stop_price=99.0,
             current_shares=10, average_entry=100.0,
-            realized_pnl=-4000.0,  # > 3% of 100k = 3000
         ))
 
         app = TradingApp(
@@ -1610,6 +1622,8 @@ class TestBatch5AccountRiskEnforcement:
             equity=100_000,
             max_daily_loss_pct=0.03,  # $3000 daily loss cap
         )
+        # ponytail: realized P&L flows through _session_realized_pnl (canonical per BUG 1 fix)
+        app._session_realized_pnl = -4000.0  # > 3% of 100k = 3000
         app._scan_and_process()
 
         records = list(logger.read())
@@ -1782,7 +1796,7 @@ class TestPhase6ReconciliationActions:
         assert resolved.current_shares == 0
 
     def test_insert_protect_without_stop_price_no_crash(self):
-        """insert_protect with no stop_price → log warning, don't crash."""
+        """insert_protect with no stop_price → mark UNPROTECTED, don't crash."""
         gw = PaperExecutionGateway()
         # Scenario: broker snapshot has a position but no stop info available
         app = TradingApp(
@@ -1791,10 +1805,10 @@ class TestPhase6ReconciliationActions:
         )
         app._reconcile_on_startup()
 
-        # Position was inserted with no stop_price → should not crash
+        # ponytail: insert_protect with no stop_price marks UNPROTECTED per BUG 2 fix
         pos = gw.positions.get("DSY")
         assert pos is not None
-        assert pos.state == PositionState.OPEN
+        assert pos.state == PositionState.UNPROTECTED
         # stop_price is None (default), so protect_position was not called
         assert not gw._has_pending_stop("DSY")
 
@@ -2217,7 +2231,7 @@ class TestPreSubmitQuoteRecheckApp:
         def market_data_fn(c):
             return MarketSnapshot(
                 candidate=c,
-                bars=[Bar(10.0, 10.1, 9.9, 10.05, 1000)],
+                bars=[Bar(10.0, 10.1, 9.9, 10.05, 1000, timestamp=datetime.now(timezone.utc))],
                 vwap=10.0,
                 spread_pct=0.5,
                 quote_age_seconds=10.0,  # stale_warning at scan, >5s at recheck
@@ -2270,7 +2284,7 @@ class TestPreSubmitQuoteRecheckApp:
         def market_data_fn(c):
             return MarketSnapshot(
                 candidate=c,
-                bars=[Bar(10.0, 10.1, 9.9, 10.05, 1000)],
+                bars=[Bar(10.0, 10.1, 9.9, 10.05, 1000, timestamp=datetime.now(timezone.utc))],
                 vwap=10.0,
                 spread_pct=0.5,
                 quote_age_seconds=2.0,  # fresh at scan AND recheck
@@ -3426,11 +3440,11 @@ class TestRunnerStopBrokerSync:
 
         gw.protect_position = original_protect
 
-        # Old stop was cancelled (cancel succeeded)
-        assert not any(
+        # Old stop remains in new flow (protect first, cancel second)
+        assert any(
             o.order_id == old_stop_id
             for o in gw.pending.all_pending()
-        ), "Old stop must be cancelled before protect attempt"
+        ), "Old stop must remain since protect_position was attempted first in new flow"
 
         # Position must be UNPROTECTED (new stop not placed)
         pos_after = gw.positions.get("DSY")
@@ -3438,9 +3452,9 @@ class TestRunnerStopBrokerSync:
         assert pos_after.state == PositionState.UNPROTECTED, (
             f"Expected UNPROTECTED after protect_position failure, got {pos_after.state}"
         )
-        # No pending stop exists
-        assert not gw._has_pending_stop("DSY"), (
-            "No stop should be pending after protect_position failure"
+        # Old stop still pending (protect failed before cancel ran)
+        assert gw._has_pending_stop("DSY"), (
+            "Old stop should still be pending since protect failed before cancel"
         )
 
     def test_unchanged_trail_does_not_sync(self, tmp_path):
@@ -3726,3 +3740,813 @@ class TestWeeklyDrawdownLossThrottle:
 
         assert app._weekly_realized_pnl == 0.0
         assert app._consecutive_losses == 0
+
+
+# ══════════════════════════════════════════════════════════════════
+#  Phase 10 — Pending timeout, uncertainty reconciliation, retry-after
+# ══════════════════════════════════════════════════════════════════
+
+
+class TestPendingTimeoutAndReconciliation:
+    """Phase 10 app integration: PENDING_ENTRY/ADDING timeout with cancel
+    truthiness, on-uncertainty reconciliation, exit-submit broker truth,
+    and per-symbol retry-after map."""
+
+    def setup_method(self) -> None:
+        import src.app
+        src.app._shutdown_requested = False
+
+    # ── PENDING_ENTRY timeout ────────────────────────────────────
+
+    def test_pending_entry_timeout_cancel_true_transitions_error(self):
+        """cancel_order returns True → transition to ERROR, clear pending_order_id."""
+        gw = PaperExecutionGateway()
+        pos = PositionStateModel(
+            symbol="DSY", state=PositionState.PENDING_ENTRY,
+            current_shares=0, entry_price=10.50, stop_price=10.30,
+            average_entry=10.50, pending_order_id="entry-1",
+            updated_at=datetime(2000, 1, 1, tzinfo=timezone.utc),
+        )
+        # upsert overwrites updated_at — set directly on the store dict
+        gw.positions._positions[pos.symbol] = pos
+
+        # cancel_order returns True
+        original_cancel = gw.cancel_order
+        def cancel_true(oid):
+            gw.pending.resolve(oid, "cancelled")
+            return True
+        gw.cancel_order = cancel_true
+
+        app = TradingApp(execution_gw=gw)
+        app._monitor_positions()
+
+        gw.cancel_order = original_cancel
+        pos_after = gw.positions.get("DSY")
+        assert pos_after is not None
+        assert pos_after.state in (PositionState.ERROR, PositionState.CLOSED), (
+            f"Expected ERROR or CLOSED after cancel-True timeout, got {pos_after.state}"
+        )
+        assert pos_after.pending_order_id is None
+
+    def test_pending_entry_timeout_cancel_false_keeps_state(self):
+        """cancel_order returns False → keep state, order_id, symbol lock."""
+        gw = PaperExecutionGateway()
+        pos = PositionStateModel(
+            symbol="DSY", state=PositionState.PENDING_ENTRY,
+            current_shares=0, entry_price=10.50, stop_price=10.30,
+            average_entry=10.50, pending_order_id="entry-1",
+            updated_at=datetime(2000, 1, 1, tzinfo=timezone.utc),
+        )
+        gw.positions._positions[pos.symbol] = pos
+
+        # cancel_order returns False
+        original_cancel = gw.cancel_order
+        def cancel_false(oid):
+            return False
+        gw.cancel_order = cancel_false
+
+        app = TradingApp(execution_gw=gw)
+        app._monitor_positions()
+
+        gw.cancel_order = original_cancel
+        pos_after = gw.positions.get("DSY")
+        # cancel was NOT confirmed → timeout handler did NOT clear pending_order_id
+        assert pos_after is not None
+        assert pos_after.pending_order_id == "entry-1", (
+            "pending_order_id must be preserved when cancel is not confirmed"
+        )
+        # State may be PENDING_ENTRY, UNPROTECTED, or CLOSED depending on
+        # the normal monitor path. The key invariant: timeout did NOT clear
+        # pending_order_id.
+
+    def test_pending_entry_timeout_cancel_raises_keeps_state(self):
+        """cancel_order raises → keep state, order_id, symbol lock."""
+        gw = PaperExecutionGateway()
+        pos = PositionStateModel(
+            symbol="DSY", state=PositionState.PENDING_ENTRY,
+            current_shares=0, entry_price=10.50, stop_price=10.30,
+            average_entry=10.50, pending_order_id="entry-1",
+            updated_at=datetime(2000, 1, 1, tzinfo=timezone.utc),
+        )
+        gw.positions._positions[pos.symbol] = pos
+
+        original_cancel = gw.cancel_order
+        def cancel_raise(oid):
+            raise RuntimeError("broker unreachable")
+        gw.cancel_order = cancel_raise
+
+        app = TradingApp(execution_gw=gw)
+        app._monitor_positions()
+
+        gw.cancel_order = original_cancel
+        pos_after = gw.positions.get("DSY")
+        # cancel raised exception → timeout handler did NOT clear pending_order_id
+        assert pos_after is not None
+        assert pos_after.pending_order_id == "entry-1", (
+            "pending_order_id must be preserved when cancel raises"
+        )
+
+    # ── ADDING timeout ───────────────────────────────────────────
+
+    def test_adding_timeout_cancel_true_transitions_runner(self):
+        """ADDING timeout + cancel True → RUNNER (not ERROR)."""
+        gw = PaperExecutionGateway()
+        pos = PositionStateModel(
+            symbol="DSY", state=PositionState.ADDING,
+            current_shares=100, entry_price=10.00, stop_price=9.50,
+            average_entry=10.00, pending_order_id="add-1",
+            updated_at=datetime(2000, 1, 1, tzinfo=timezone.utc),
+        )
+        gw.positions._positions[pos.symbol] = pos
+
+        original_cancel = gw.cancel_order
+        def cancel_true(oid):
+            gw.pending.resolve(oid, "cancelled")
+            return True
+        gw.cancel_order = cancel_true
+
+        app = TradingApp(execution_gw=gw)
+        app._monitor_positions()
+
+        gw.cancel_order = original_cancel
+        pos_after = gw.positions.get("DSY")
+        assert pos_after is not None
+        # State may be RUNNER, UNPROTECTED, or CLOSED depending on market-data
+        # path. The key invariant: pending_order_id was cleared by the timeout
+        # handler (cancel confirmed terminal).
+        assert pos_after.pending_order_id is None, (
+            "pending_order_id cleared when cancel confirmed terminal"
+        )
+        # Should not be PENDING_ENTRY/ADDING (timeout handler transitioned)
+        assert pos_after.state not in (PositionState.PENDING_ENTRY, PositionState.ADDING)
+
+    def test_adding_timeout_cancel_false_keeps_adding(self):
+        """ADDING timeout + cancel False → stay ADDING, order_id intact."""
+        gw = PaperExecutionGateway()
+        pos = PositionStateModel(
+            symbol="DSY", state=PositionState.ADDING,
+            current_shares=100, entry_price=10.00, stop_price=9.50,
+            average_entry=10.00, pending_order_id="add-1",
+            updated_at=datetime(2000, 1, 1, tzinfo=timezone.utc),
+        )
+        gw.positions._positions[pos.symbol] = pos
+
+        original_cancel = gw.cancel_order
+        def cancel_false(oid):
+            return False
+        gw.cancel_order = cancel_false
+
+        app = TradingApp(execution_gw=gw)
+        app._monitor_positions()
+
+        gw.cancel_order = original_cancel
+        pos_after = gw.positions.get("DSY")
+        assert pos_after is not None
+        assert pos_after.pending_order_id == "add-1", (
+            "pending_order_id preserved when cancel not confirmed"
+        )
+
+    # ── confirm_fill uncertainty → immediate reconciliation ──────
+
+    # ── confirm_fill uncertainty → immediate reconciliation ──────
+
+    def test_confirm_fill_uncertainty_triggers_immediate_reconciliation(self):
+        """RuntimeError from confirm_fill (partial-fill uncertainty) →
+        broker_snapshot_fn called (immediate reconciliation)."""
+        gw = PaperExecutionGateway()
+        pos = PositionStateModel(
+            symbol="DSY", state=PositionState.PENDING_ENTRY,
+            current_shares=0, entry_price=10.50, stop_price=10.30,
+            average_entry=10.50, pending_order_id="entry-1",
+        )
+        gw.positions.upsert(pos)
+
+        def failing_confirm(oid):
+            raise RuntimeError("partial fill uncertainty")
+
+        original_confirm = gw.confirm_fill
+        gw.confirm_fill = failing_confirm
+
+        reconcile_calls = [0]
+
+        def broker_snapshot():
+            reconcile_calls[0] += 1
+            return {}
+
+        app = TradingApp(
+            execution_gw=gw,
+            broker_snapshot_fn=broker_snapshot,
+        )
+        app._monitor_positions()
+
+        gw.confirm_fill = original_confirm
+        assert reconcile_calls[0] >= 1, (
+            "Expected broker_snapshot_fn to be called after confirm_fill uncertainty"
+        )
+
+    # ── submit_exit exception → immediate reconciliation ─────────
+
+    def test_submit_exit_exception_triggers_immediate_reconciliation(self):
+        """RuntimeError from submit_exit → broker_snapshot_fn called immediately."""
+        gw = PaperExecutionGateway()
+        pos = PositionStateModel(
+            symbol="DSY", state=PositionState.OPEN,
+            current_shares=50, entry_price=10.50, stop_price=10.30,
+            average_entry=10.50,
+        )
+        gw.positions.upsert(pos)
+        gw.place_stop("DSY", 10.30, 50)
+
+        def market_data_fn(c):
+            return MarketSnapshot(
+                candidate=Candidate(symbol=c.symbol, price=10.20),
+                quote_age_seconds=2.0,
+                spread_pct=0.5,
+            )
+
+        class FailingSubmitGateway(PaperExecutionGateway):
+            def submit_exit(self, symbol, reason, *, exit_pct=100, exit_price=None, pnl=None):
+                raise RuntimeError("exit submit failed")
+
+        exit_gw = FailingSubmitGateway()
+        exit_gw.positions.upsert(PositionStateModel(
+            symbol="DSY", state=PositionState.OPEN,
+            current_shares=50, entry_price=10.50, stop_price=10.30,
+            average_entry=10.50,
+        ))
+        exit_gw.place_stop("DSY", 10.30, 50)
+
+        reconcile_calls = [0]
+
+        def broker_snapshot():
+            reconcile_calls[0] += 1
+            return {}
+
+        app = TradingApp(
+            execution_gw=exit_gw,
+            market_data_fn=market_data_fn,
+            broker_snapshot_fn=broker_snapshot,
+        )
+        app._monitor_positions()
+
+        assert reconcile_calls[0] >= 1, (
+            "Expected broker_snapshot_fn to be called after submit_exit failure"
+        )
+
+    # ── Add failure does not set exit cooldown ──────────────────
+
+    def test_add_failure_does_not_set_exit_cooldown(self, tmp_path, monkeypatch):
+        """submit_add rejection must NOT set exit_retry_after."""
+        log_path = tmp_path / "decisions.jsonl"
+        logger = DecisionLogger(log_path)
+
+        # Use the same bar setup as phase4 scaling tests
+        from tests.test_phase4_scaling import _add_setup_bars
+        bars = _add_setup_bars()
+
+        class FailingAddGateway(PaperExecutionGateway):
+            def submit_add(self, symbol, qty, entry_price, stop_price):
+                pos = self.positions.get(symbol)
+                if pos is not None:
+                    pos.state = PositionState.ADDING
+                    self.positions.upsert(pos)
+                raise RuntimeError("AXTL rejection")
+
+        add_gw = FailingAddGateway()
+        add_gw.positions.upsert(PositionStateModel(
+            symbol="DSY", state=PositionState.RUNNER,
+            entry_price=10.00, stop_price=9.50,
+            current_shares=100, average_entry=10.00,
+            highest_price_seen=11.50, trailing_stop_price=10.00,
+        ))
+        add_gw.place_stop("DSY", 10.00, 100)
+
+        def market_data_fn(c):
+            return MarketSnapshot(
+                candidate=Candidate(symbol=c.symbol, price=11.28),
+                bars=bars,
+                vwap=11.00, quote_age_seconds=2.0,
+                spread_pct=0.5,
+            )
+
+        from src.models.schemas import EntrySetupType
+
+        monkeypatch.setattr("src.app.evaluate_exits", lambda *args, **kwargs: None)
+        monkeypatch.setattr(
+            "src.app.evaluate_candidate",
+            lambda candidate, **kwargs: _make_result(candidate, MoveState.ACTIVE),
+        )
+        # Force add signal so submit_add is called (and fails)
+        monkeypatch.setattr(
+            "src.app.should_add_to_runner",
+            lambda *args, **kwargs: EntrySignal(
+                symbol="DSY", entry_setup=EntrySetupType.FIRST_PULLBACK,
+                entry_price=11.29, stop_price=10.80,
+                risk_per_share=0.50, target_price=12.00,
+                proposed_shares=50, risk_amount=25.0,
+                invalidation="test",
+            ),
+        )
+
+        app = TradingApp(
+            execution_gw=add_gw,
+            logger=logger,
+            market_data_fn=market_data_fn,
+            add_risk_pct=0.0025,
+        )
+
+        # First monitor cycle → add fails
+        app._monitor_positions()
+        # Verify exit cooldown is NOT set by add failure
+        assert "DSY" not in app._exit_retry_after, (
+            "Add failure must not set exit retry cooldown"
+        )
+        pos_after = add_gw.positions.get("DSY")
+        assert pos_after.state == PositionState.RUNNER
+
+        records = list(logger.read())
+        add_failed = [r for r in records if r.reason == "add_failed"]
+        assert len(add_failed) == 1, (
+            f"Expected exactly 1 add_failed log, got {len(add_failed)}"
+        )
+
+    def test_successful_exit_fill_clears_exit_cooldown(self, tmp_path, monkeypatch):
+        """A confirmed exit fill clears the exit_retry_after entry."""
+        from datetime import datetime, timezone
+        gw = PaperExecutionGateway()
+        pos = PositionStateModel(
+            symbol="DSY", state=PositionState.OPEN,
+            current_shares=50, entry_price=10.50, stop_price=10.30,
+            average_entry=10.50,
+        )
+        gw.positions.upsert(pos)
+        gw.place_stop("DSY", 10.30, 50)
+
+        def market_data_fn(c):
+            return MarketSnapshot(
+                candidate=Candidate(symbol=c.symbol, price=10.20),
+                bars=[Bar(10.50, 10.55, 10.20, 10.20, 2000)],
+                quote_age_seconds=2.0,
+                spread_pct=0.5,
+            )
+
+        app = TradingApp(execution_gw=gw, market_data_fn=market_data_fn)
+
+        # Pin evaluate_candidate to avoid bars-dependency issues
+        monkeypatch.setattr(
+            "src.app.evaluate_candidate",
+            lambda candidate, **kwargs: _make_result(candidate, MoveState.ACTIVE),
+        )
+
+        # Set an expired cooldown to verify exit proceeds and clears it
+        app._exit_retry_after["DSY"] = time.monotonic() - 1.0
+
+        app._monitor_positions()
+
+        # Position exited → cooldown should be cleared
+        assert "DSY" not in app._exit_retry_after, (
+            "exit_retry_after should be cleared after successful exit fill"
+        )
+        pos_after = gw.positions.get("DSY")
+        assert pos_after.state == PositionState.CLOSED
+
+
+# ══════════════════════════════════════════════════════════════════
+#  Exit retry-after cooldown
+# ══════════════════════════════════════════════════════════════════
+
+
+class TestExitRetryAfter:
+    """_exit_retry_after cooldown for failed exit attempts.
+
+    - First exit failure sets 60s cooldown.
+    - Second monitor cycle respects cooldown (no re-submit).
+    - Expired cooldown allows retry.
+    - Add failures do NOT set exit cooldown.
+    - Terminal pending exit rejection: reconcile, clean tracker, set cooldown.
+    - Closed symbols have their cooldown entries cleaned.
+    - Successful exit fill clears cooldown.
+    """
+
+    def setup_method(self) -> None:
+        import src.app
+        src.app._shutdown_requested = False
+
+    def test_exit_submit_failure_sets_cooldown(self, tmp_path, monkeypatch):
+        """First exit submit failure sets 60s cooldown."""
+        log_path = tmp_path / "decisions.jsonl"
+        logger = DecisionLogger(log_path)
+
+        class FailingExitGateway(PaperExecutionGateway):
+            def submit_exit(self, symbol, reason, *, exit_pct=100, exit_price=None, pnl=None):
+                raise RuntimeError("exit reject")
+
+        gw = FailingExitGateway()
+        gw.positions.upsert(PositionStateModel(
+            symbol="DSY", state=PositionState.OPEN,
+            current_shares=50, entry_price=10.50, stop_price=10.30,
+            average_entry=10.50,
+        ))
+        gw.place_stop("DSY", 10.30, 50)
+
+        def market_data_fn(c):
+            return MarketSnapshot(
+                candidate=Candidate(symbol=c.symbol, price=10.20),
+                quote_age_seconds=2.0,
+                spread_pct=0.5,
+            )
+
+        monkeypatch.setattr(
+            "src.app.evaluate_candidate",
+            lambda candidate, **kwargs: _make_result(candidate, MoveState.ACTIVE),
+        )
+
+        app = TradingApp(
+            execution_gw=gw,
+            logger=logger,
+            market_data_fn=market_data_fn,
+        )
+
+        now = time.monotonic()
+        app._monitor_positions()
+
+        assert "DSY" in app._exit_retry_after, (
+            "DSY should be in exit_retry_after after submit failure"
+        )
+        cooldown = app._exit_retry_after["DSY"]
+        assert cooldown > now + 50.0, (
+            f"Expected 60s cooldown, got {cooldown - now:.1f}s"
+        )
+
+    def test_cooldown_blocks_second_monitor_cycle(self, tmp_path, monkeypatch):
+        """Two monitor cycles: first fails and sets cooldown, second skips."""
+        log_path = tmp_path / "decisions.jsonl"
+        logger = DecisionLogger(log_path)
+
+        submit_calls = [0]
+
+        class CountingExitGateway(PaperExecutionGateway):
+            def submit_exit(self, symbol, reason, *, exit_pct=100, exit_price=None, pnl=None):
+                submit_calls[0] += 1
+                raise RuntimeError("exit reject")
+
+        gw = CountingExitGateway()
+        gw.positions.upsert(PositionStateModel(
+            symbol="DSY", state=PositionState.OPEN,
+            current_shares=50, entry_price=10.50, stop_price=10.30,
+            average_entry=10.50,
+        ))
+        gw.place_stop("DSY", 10.30, 50)
+
+        def market_data_fn(c):
+            return MarketSnapshot(
+                candidate=Candidate(symbol=c.symbol, price=10.20),
+                quote_age_seconds=2.0,
+                spread_pct=0.5,
+            )
+
+        monkeypatch.setattr(
+            "src.app.evaluate_candidate",
+            lambda candidate, **kwargs: _make_result(candidate, MoveState.ACTIVE),
+        )
+
+        app = TradingApp(
+            execution_gw=gw,
+            logger=logger,
+            market_data_fn=market_data_fn,
+        )
+
+        # First cycle → submit fails → sets cooldown
+        app._monitor_positions()
+        assert submit_calls[0] == 1, "submit_exit should be called exactly once"
+
+        # Second cycle → cooldown active → skip (no additional submit)
+        app._monitor_positions()
+        assert submit_calls[0] == 1, (
+            "submit_exit should not be called again during cooldown"
+        )
+        assert "DSY" in app._exit_retry_after, "Cooldown should remain active"
+
+    def test_expired_cooldown_allows_retry(self, tmp_path, monkeypatch):
+        """Expired cooldown entry is cleaned and exit proceeds."""
+        log_path = tmp_path / "decisions.jsonl"
+        logger = DecisionLogger(log_path)
+
+        gw = PaperExecutionGateway()
+        gw.positions.upsert(PositionStateModel(
+            symbol="DSY", state=PositionState.OPEN,
+            current_shares=50, entry_price=10.50, stop_price=10.30,
+            average_entry=10.50,
+        ))
+        gw.place_stop("DSY", 10.30, 50)
+
+        def market_data_fn(c):
+            return MarketSnapshot(
+                candidate=Candidate(symbol=c.symbol, price=10.20),
+                bars=[Bar(10.50, 10.55, 10.20, 10.20, 2000)],
+                quote_age_seconds=2.0,
+                spread_pct=0.5,
+            )
+
+        monkeypatch.setattr(
+            "src.app.evaluate_candidate",
+            lambda candidate, **kwargs: _make_result(candidate, MoveState.ACTIVE),
+        )
+
+        app = TradingApp(
+            execution_gw=gw,
+            logger=logger,
+            market_data_fn=market_data_fn,
+        )
+
+        # Set expired cooldown (1 second in the past)
+        app._exit_retry_after["DSY"] = time.monotonic() - 1.0
+
+        app._monitor_positions()
+
+        # Exit should proceed and clear the expired cooldown
+        assert "DSY" not in app._exit_retry_after, (
+            "Expired cooldown should be cleaned on entry"
+        )
+        pos_after = gw.positions.get("DSY")
+        assert pos_after.state == PositionState.CLOSED, (
+            "Exit should proceed after expired cooldown"
+        )
+
+    def test_add_failure_does_not_set_exit_cooldown(self, tmp_path, monkeypatch):
+        """submit_add failure must not affect _exit_retry_after."""
+        from tests.test_phase4_scaling import _add_setup_bars
+        from src.models.schemas import EntrySetupType
+
+        log_path = tmp_path / "decisions.jsonl"
+        logger = DecisionLogger(log_path)
+        bars = _add_setup_bars()
+
+        class FailingAddGateway(PaperExecutionGateway):
+            def submit_add(self, symbol, qty, entry_price, stop_price):
+                pos = self.positions.get(symbol)
+                if pos is not None:
+                    pos.state = PositionState.ADDING
+                    self.positions.upsert(pos)
+                raise RuntimeError("AXTL rejection")
+
+        add_gw = FailingAddGateway()
+        add_gw.positions.upsert(PositionStateModel(
+            symbol="DSY", state=PositionState.RUNNER,
+            entry_price=10.00, stop_price=9.50,
+            current_shares=100, average_entry=10.00,
+            highest_price_seen=11.50, trailing_stop_price=10.00,
+        ))
+        add_gw.place_stop("DSY", 10.00, 100)
+
+        monkeypatch.setattr("src.app.evaluate_exits", lambda *args, **kwargs: None)
+        monkeypatch.setattr(
+            "src.app.evaluate_candidate",
+            lambda candidate, **kwargs: _make_result(candidate, MoveState.ACTIVE),
+        )
+        monkeypatch.setattr(
+            "src.app.should_add_to_runner",
+            lambda *args, **kwargs: EntrySignal(
+                symbol="DSY", entry_setup=EntrySetupType.FIRST_PULLBACK,
+                entry_price=11.29, stop_price=10.80,
+                risk_per_share=0.50, target_price=12.00,
+                proposed_shares=50, risk_amount=25.0,
+                invalidation="test",
+            ),
+        )
+
+        app = TradingApp(
+            execution_gw=add_gw,
+            logger=logger,
+            market_data_fn=lambda c: MarketSnapshot(
+                candidate=Candidate(symbol=c.symbol, price=11.28),
+                bars=bars, vwap=11.00,
+                quote_age_seconds=2.0, spread_pct=0.5,
+            ),
+            add_risk_pct=0.0025,
+        )
+
+        app._monitor_positions()
+        assert "DSY" not in app._exit_retry_after, (
+            "Add failure must not set exit_retry_after"
+        )
+
+    def test_pending_exit_confirm_raises_reconciles_and_sets_cooldown(self, monkeypatch):
+        """Pending exit confirm raises → reconcile → tracker cleaned → cooldown set."""
+        class PendingRejectGateway(PaperExecutionGateway):
+            def confirm_exit_fill(self, order_id):
+                raise ValueError("order not found")
+
+        gw = PendingRejectGateway()
+        gw.positions.upsert(PositionStateModel(
+            symbol="DSY", state=PositionState.OPEN,
+            current_shares=50, entry_price=10.50, stop_price=10.30,
+            average_entry=10.50,
+        ))
+        gw.place_stop("DSY", 10.30, 50)
+
+        def market_data_fn(c):
+            return MarketSnapshot(
+                candidate=Candidate(symbol=c.symbol, price=10.20),
+                quote_age_seconds=2.0,
+                spread_pct=0.5,
+            )
+
+        monkeypatch.setattr(
+            "src.app.evaluate_candidate",
+            lambda candidate, **kwargs: _make_result(candidate, MoveState.ACTIVE),
+        )
+
+        app = TradingApp(
+            execution_gw=gw,
+            market_data_fn=market_data_fn,
+        )
+
+        # Set up a pending exit tracker (simulates a prior submit that stored the order)
+        app._pending_exit_orders["DSY"] = "nonexistent-order-id"
+
+        now = time.monotonic()
+        app._monitor_positions()
+
+        # Pending confirm raised → reconcile called → order not in pending store
+        # → tracker cleaned, cooldown set
+        assert "DSY" not in app._pending_exit_orders, (
+            "Pending exit tracker should be cleaned"
+        )
+        assert "DSY" in app._exit_retry_after, (
+            "Exit retry cooldown should be set after pending rejection"
+        )
+        assert app._exit_retry_after["DSY"] > now + 50.0, (
+            "Cooldown should be ~60s in future"
+        )
+
+    def test_closed_symbols_clean_cooldown(self, tmp_path):
+        """Monitor start removes cooldown entries for symbols no longer open."""
+        gw = PaperExecutionGateway()
+
+        # Position that is already CLOSED
+        gw.positions.upsert(PositionStateModel(
+            symbol="DSY", state=PositionState.CLOSED,
+            current_shares=0, entry_price=10.00, average_entry=10.00,
+        ))
+
+        app = TradingApp(execution_gw=gw)
+        app._exit_retry_after["DSY"] = time.monotonic() + 60.0
+        app._exit_retry_after["OTHER"] = time.monotonic() + 60.0
+
+        app._monitor_positions()
+
+        # DSY is closed → cooldown cleaned. OTHER never existed → also cleaned.
+        assert "DSY" not in app._exit_retry_after, (
+            "Cooldown should be cleaned for closed symbol"
+        )
+        assert "OTHER" not in app._exit_retry_after, (
+            "Cooldown should be cleaned for nonexistent symbol"
+        )
+
+    def test_open_symbol_cooldown_preserved(self, tmp_path):
+        """Cooldown entries for still-open symbols are preserved at monitor start."""
+        gw = PaperExecutionGateway()
+        gw.positions.upsert(PositionStateModel(
+            symbol="DSY", state=PositionState.OPEN,
+            current_shares=50, entry_price=10.50, stop_price=10.30,
+            average_entry=10.50,
+        ))
+        gw.place_stop("DSY", 10.30, 50)
+
+        def market_data_fn(c):
+            return MarketSnapshot(
+                candidate=Candidate(symbol=c.symbol, price=10.60),
+                quote_age_seconds=2.0,
+                spread_pct=0.5,
+            )
+
+        app = TradingApp(execution_gw=gw, market_data_fn=market_data_fn)
+        app._exit_retry_after["DSY"] = time.monotonic() + 60.0
+
+        app._monitor_positions()
+
+        assert "DSY" in app._exit_retry_after, (
+            "Cooldown for open symbol should be preserved"
+        )
+
+    # ── Tracker preservation tests (Task #21 fix) ────────────────
+
+    def test_pending_initial_confirm_keeps_tracker(self, tmp_path, monkeypatch):
+        """After submit_exit + confirm_exit_fill with no fill (still EXITING),
+        tracker preserved. Second cycle enters pending-exit recovery path
+        and calls confirm_exit_fill again (not submit_exit).
+        """
+        gw = PaperExecutionGateway()
+        gw.positions.upsert(PositionStateModel(
+            symbol="DSY", state=PositionState.OPEN,
+            current_shares=50, entry_price=10.50, stop_price=10.30,
+            average_entry=10.50,
+        ))
+        gw.place_stop("DSY", 10.30, 50)
+
+        submit_calls = [0]
+        confirm_calls = [0]
+
+        class KeepPendingExitGateway(PaperExecutionGateway):
+            def submit_exit(self, symbol, reason, *, exit_pct=100, exit_price=None, pnl=None):
+                submit_calls[0] += 1
+                return super().submit_exit(
+                    symbol, reason, exit_pct=exit_pct, exit_price=exit_price, pnl=pnl,
+                )
+
+            def confirm_exit_fill(self, order_id: str) -> PositionStateModel:
+                confirm_calls[0] += 1
+                pos = self.positions.get("DSY")
+                if pos is None:
+                    raise ValueError("No position for DSY")
+                # Return position unchanged — still EXITING, same shares
+                return pos
+
+        exit_gw = KeepPendingExitGateway()
+        exit_gw.positions.upsert(PositionStateModel(
+            symbol="DSY", state=PositionState.OPEN,
+            current_shares=50, entry_price=10.50, stop_price=10.30,
+            average_entry=10.50,
+        ))
+        exit_gw.place_stop("DSY", 10.30, 50)
+
+        def market_data_fn(c):
+            return MarketSnapshot(
+                candidate=Candidate(symbol=c.symbol, price=10.20),
+                quote_age_seconds=2.0,
+                spread_pct=0.5,
+            )
+
+        monkeypatch.setattr(
+            "src.app.evaluate_candidate",
+            lambda candidate, **kwargs: _make_result(candidate, MoveState.ACTIVE),
+        )
+
+        app = TradingApp(
+            execution_gw=exit_gw,
+            market_data_fn=market_data_fn,
+        )
+
+        # ── First cycle: submit_exit + confirm_exit_fill, no fill → tracker kept
+        app._monitor_positions()
+        assert submit_calls[0] == 1, "submit_exit should be called once"
+        assert confirm_calls[0] == 1, "confirm_exit_fill should be called once"
+        assert "DSY" in app._pending_exit_orders, (
+            "Tracker should be preserved after no-fill confirm"
+        )
+        assert "DSY" not in app._exit_retry_after, (
+            "Cooldown should NOT be set when tracker is preserved"
+        )
+
+        # ── Second cycle: hits pending-exit recovery path → re-confirms, no re-submit
+        app._monitor_positions()
+        assert submit_calls[0] == 1, "submit_exit should NOT be called again"
+        assert confirm_calls[0] == 2, "confirm_exit_fill should be called again"
+        assert "DSY" in app._pending_exit_orders, (
+            "Tracker should still be preserved after second cycle"
+        )
+
+    def test_confirm_exception_with_pending_order_keeps_tracker(self, monkeypatch):
+        """When confirm_exit_fill raises but order stays in execution.pending,
+        tracker preserved — no pop, no cooldown.
+        """
+        class FailingConfirmKeepOrderGateway(PaperExecutionGateway):
+            def confirm_exit_fill(self, order_id: str) -> PositionStateModel:
+                raise RuntimeError("broker confirm failed")
+
+        gw = FailingConfirmKeepOrderGateway()
+        gw.positions.upsert(PositionStateModel(
+            symbol="DSY", state=PositionState.OPEN,
+            current_shares=50, entry_price=10.50, stop_price=10.30,
+            average_entry=10.50,
+        ))
+        gw.place_stop("DSY", 10.30, 50)
+
+        def market_data_fn(c):
+            return MarketSnapshot(
+                candidate=Candidate(symbol=c.symbol, price=10.20),
+                quote_age_seconds=2.0,
+                spread_pct=0.5,
+            )
+
+        monkeypatch.setattr(
+            "src.app.evaluate_candidate",
+            lambda candidate, **kwargs: _make_result(candidate, MoveState.ACTIVE),
+        )
+
+        app = TradingApp(
+            execution_gw=gw,
+            market_data_fn=market_data_fn,
+        )
+
+        # First cycle: submit_exit succeeds (creates order in execution.pending),
+        # confirm_exit_fill raises → preserve tracker since order still in pending
+        app._monitor_positions()
+        assert "DSY" in app._pending_exit_orders, (
+            "Tracker should be preserved when order still in execution.pending"
+        )
+        assert "DSY" not in app._exit_retry_after, (
+            "Cooldown should NOT be set when order still in pending"
+        )
+

@@ -134,7 +134,7 @@ def test_alpaca_confirmed_fills_use_broker_fill_price_in_trade_ledger(tmp_path):
     assert exit_record["r_multiple"] == 0.75
 
 
-def test_add_fill_is_logged_and_combined_position_exit_defers_r_multiple(tmp_path):
+def test_add_fill_is_logged_and_combined_position_exit_computes_r_multiple(tmp_path):
     ledger_path = tmp_path / "executed_trades.jsonl"
     gw = PaperExecutionGateway(trade_ledger=TradeLedger(ledger_path))
 
@@ -156,4 +156,4 @@ def test_add_fill_is_logged_and_combined_position_exit_defers_r_multiple(tmp_pat
     assert add_record["quantity"] == 5
     assert add_record["current_shares"] == 15
     assert exit_record["realized_pnl"] == 25.05
-    assert exit_record["r_multiple"] is None
+    assert exit_record["r_multiple"] == 1.67

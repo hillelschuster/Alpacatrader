@@ -496,9 +496,10 @@ class TestAlpacaConfirmFill:
         mock_alpaca_client.submit_order.return_value = MockAlpacaOrder(id="a1")
         order, _ = alpaca_gw.submit_entry(_signal(shares=100))
 
-        mock_alpaca_client.get_order_by_id.return_value = MockAlpacaOrder(
-            id="a1", status="partially_filled", filled_qty="30", filled_avg_price="10.50",
-        )
+        mock_alpaca_client.get_order_by_id.side_effect = [
+            MockAlpacaOrder(id="a1", status="partially_filled", filled_qty="30", filled_avg_price="10.50"),
+            MockAlpacaOrder(id="a1", status="canceled"),
+        ]
         pos = alpaca_gw.confirm_fill(order.order_id)
 
         assert pos.state == PositionState.OPEN
@@ -705,9 +706,13 @@ class TestAlpacaExit:
         mock_alpaca_client.submit_order.return_value = MockAlpacaOrder(id="stop-1")
         alpaca_gw.place_stop("DSY", 10.30, 50)
 
+        # Cancel verification must confirm stop-1 cancelled before exit proceeds
+        mock_alpaca_client.get_order_by_id.side_effect = [
+            MockAlpacaOrder(id="stop-1", status="canceled"),
+        ]
         mock_alpaca_client.submit_order.side_effect = [
-            ConnectionError("API down"),
-            MockAlpacaOrder(id="restored-stop"),
+            ConnectionError("API down"),  # exit submit fails
+            MockAlpacaOrder(id="restored-stop"),  # stop restore succeeds
         ]
 
         with pytest.raises(RuntimeError, match="exit failed"):
@@ -737,11 +742,16 @@ class TestAlpacaExit:
         self._open_position(alpaca_gw, mock_alpaca_client)
 
         mock_alpaca_client.submit_order.return_value = MockAlpacaOrder(id="exit-1")
+        # stop-1 cancel verification during submit_exit
+        mock_alpaca_client.get_order_by_id.side_effect = [
+            MockAlpacaOrder(id="stop-1", status="canceled"),
+        ]
         exit_order, _ = alpaca_gw.submit_exit("DSY", "partial", exit_pct=100)
 
-        mock_alpaca_client.get_order_by_id.return_value = MockAlpacaOrder(
-            id="exit-1", status="partially_filled", filled_qty="20", filled_avg_price="11.00",
-        )
+        mock_alpaca_client.get_order_by_id.side_effect = [
+            MockAlpacaOrder(id="exit-1", status="partially_filled", filled_qty="20", filled_avg_price="11.00"),
+            MockAlpacaOrder(id="exit-1", status="canceled"),
+        ]
         pos = alpaca_gw.confirm_exit_fill(exit_order.order_id)
 
         assert pos.current_shares == 30  # 50 - 20
@@ -758,11 +768,16 @@ class TestAlpacaExit:
             MockAlpacaOrder(id="exit-1"),
             MockAlpacaOrder(id="stop-2"),
         ]
+        # stop-1 cancel verification during submit_exit
+        mock_alpaca_client.get_order_by_id.side_effect = [
+            MockAlpacaOrder(id="stop-1", status="canceled"),
+        ]
         exit_order, _ = alpaca_gw.submit_exit("DSY", "test")
 
-        mock_alpaca_client.get_order_by_id.return_value = MockAlpacaOrder(
-            id="exit-1", status="partially_filled", filled_qty="20", filled_avg_price="11.00",
-        )
+        mock_alpaca_client.get_order_by_id.side_effect = [
+            MockAlpacaOrder(id="exit-1", status="partially_filled", filled_qty="20", filled_avg_price="11.00"),
+            MockAlpacaOrder(id="exit-1", status="canceled"),
+        ]
         pos = alpaca_gw.confirm_exit_fill(exit_order.order_id)
         pending_stops = [
             o for o in alpaca_gw.pending.get_for_symbol("DSY")
@@ -774,12 +789,13 @@ class TestAlpacaExit:
         assert len(pending_stops) == 1
         assert pending_stops[0].qty == 30
 
-    def test_confirm_exit_rejected_sets_error(self, alpaca_gw, mock_alpaca_client):
-        """T6.7: rejected exit → ERROR, shares preserved, pending cleared.
+    def test_confirm_exit_rejected_marks_unprotected(self, alpaca_gw, mock_alpaca_client):
+        """T6.7: rejected exit with positive shares → UNPROTECTED, shares preserved, pending cleared.
 
-        Strengthened per Task 11 Step 4: verify shares preserved (not
-        zeroed) and pending order store cleared so the position doesn't
-        leak a stale exit order.
+        Safety defect fix: terminal exit rejection must never put a positive-share
+        position into ERROR — the stop was cancelled during submit_exit, so ERROR
+        would lose share visibility. UNPROTECTED keeps _has_emergency() true so
+        the app can reconcile/retry.
         """
         self._open_position(alpaca_gw, mock_alpaca_client)
 
@@ -789,17 +805,59 @@ class TestAlpacaExit:
         mock_alpaca_client.get_order_by_id.return_value = MockAlpacaOrder(
             id="exit-1", status="rejected",
         )
-        with pytest.raises(RuntimeError, match="rejected"):
+        with pytest.raises(RuntimeError, match="UNPROTECTED"):
             alpaca_gw.confirm_exit_fill(exit_order.order_id)
 
         pos = alpaca_gw.positions.get("DSY")
-        assert pos.state == PositionState.ERROR
+        assert pos.state == PositionState.UNPROTECTED, (
+            f"Rejected exit with shares must go to UNPROTECTED, got {pos.state}"
+        )
         assert pos.current_shares == 50, (
             f"Rejected exit must preserve shares, got {pos.current_shares}"
         )
         assert len(alpaca_gw.pending) == 0, (
             f"Rejected exit must clear pending store, got {len(alpaca_gw.pending)}"
         )
+
+    def test_confirm_exit_canceled_marks_unprotected(self, alpaca_gw, mock_alpaca_client):
+        """canceled exit with positive shares → UNPROTECTED, shares preserved."""
+        self._open_position(alpaca_gw, mock_alpaca_client)
+
+        mock_alpaca_client.submit_order.return_value = MockAlpacaOrder(id="exit-1")
+        exit_order, _ = alpaca_gw.submit_exit("DSY", "test")
+
+        mock_alpaca_client.get_order_by_id.return_value = MockAlpacaOrder(
+            id="exit-1", status="canceled",
+        )
+        with pytest.raises(RuntimeError, match="UNPROTECTED"):
+            alpaca_gw.confirm_exit_fill(exit_order.order_id)
+
+        pos = alpaca_gw.positions.get("DSY")
+        assert pos.state == PositionState.UNPROTECTED
+        assert pos.current_shares == 50
+        assert len(alpaca_gw.pending) == 0
+
+    def test_confirm_exit_rejected_zero_shares_sets_error(self, alpaca_gw, mock_alpaca_client):
+        """rejected exit with zero shares → ERROR (zero-share semantics preserved)."""
+        self._open_position(alpaca_gw, mock_alpaca_client)
+
+        mock_alpaca_client.submit_order.return_value = MockAlpacaOrder(id="exit-1")
+        exit_order, _ = alpaca_gw.submit_exit("DSY", "test")
+
+        # Force zero shares on position
+        pos = alpaca_gw.positions.get("DSY")
+        pos.current_shares = 0
+        alpaca_gw.positions.upsert(pos)
+
+        mock_alpaca_client.get_order_by_id.return_value = MockAlpacaOrder(
+            id="exit-1", status="rejected",
+        )
+        with pytest.raises(RuntimeError, match="ERROR"):
+            alpaca_gw.confirm_exit_fill(exit_order.order_id)
+
+        pos = alpaca_gw.positions.get("DSY")
+        assert pos.state == PositionState.ERROR
+        assert pos.current_shares == 0
 
     def test_confirm_exit_pending_stays_exiting(self, alpaca_gw, mock_alpaca_client):
         """T6.7: pending exit → stays EXITING, order not resolved."""
@@ -911,7 +969,8 @@ class TestBuildAlpacaBrokerSnapshot:
         pos = alpaca_gw.positions.get("DSY")
         assert pos is not None
         assert pos.current_shares == 50
-        assert pos.state == PositionState.OPEN
+        # ponytail: insert_protect with no stop_price marks UNPROTECTED per BUG 2 fix
+        assert pos.state == PositionState.UNPROTECTED
 
     def test_unreachable_snapshot_marks_positions_unprotected(self, alpaca_gw, mock_alpaca_client):
         """Unreachable broker via snapshot → marks OPEN positions UNPROTECTED."""
@@ -1120,6 +1179,10 @@ class TestAlpacaBrokerCancel:
         assert alpaca_gw._has_pending_stop("DSY")
 
         mock_alpaca_client.submit_order.return_value = MockAlpacaOrder(id="exit-1")
+        # stop-1 cancel verification for cancel_stale_orders during submit_exit
+        mock_alpaca_client.get_order_by_id.side_effect = [
+            MockAlpacaOrder(id="stop-1", status="canceled"),
+        ]
         alpaca_gw.submit_exit("DSY", "target hit")
 
         # Broker was asked to cancel the stop
@@ -1133,6 +1196,10 @@ class TestAlpacaBrokerCancel:
         mock_alpaca_client.submit_order.return_value = MockAlpacaOrder(id="stop-1")
         alpaca_gw.place_stop("DSY", 10.30, 50)
         mock_alpaca_client.submit_order.return_value = MockAlpacaOrder(id="exit-1")
+        # stop-1 cancel verification for cancel_stale_orders during submit_exit
+        mock_alpaca_client.get_order_by_id.side_effect = [
+            MockAlpacaOrder(id="stop-1", status="canceled"),
+        ]
         alpaca_gw.submit_exit("DSY", "target hit")
         assert mock_alpaca_client.cancel_order_by_id.called
 
@@ -1143,9 +1210,13 @@ class TestAlpacaBrokerCancel:
         alpaca_gw.place_stop("DSY", 10.30, 50)
         assert alpaca_gw._has_pending_stop("DSY")
 
-        # Make broker cancel raise
+        # Make broker cancel raise (already terminal), verify still works
         mock_alpaca_client.cancel_order_by_id.side_effect = RuntimeError("order terminal")
         mock_alpaca_client.submit_order.return_value = MockAlpacaOrder(id="exit-1")
+        # stop-1 verification after cancel raises — get_order_by_id confirms terminal
+        mock_alpaca_client.get_order_by_id.side_effect = [
+            MockAlpacaOrder(id="stop-1", status="canceled"),
+        ]
 
         exit_order, pos = alpaca_gw.submit_exit("DSY", "target hit")
 
@@ -1177,6 +1248,10 @@ class TestBrokerStaleStopCancellation:
 
         # Submit exit — should cancel stop
         mock_alpaca_client.submit_order.return_value = MockAlpacaOrder(id="exit-1")
+        # stop-1 cancel verification for cancel_stale_orders during submit_exit
+        mock_alpaca_client.get_order_by_id.side_effect = [
+            MockAlpacaOrder(id="stop-1", status="canceled"),
+        ]
         alpaca_gw.submit_exit("DSY", "target hit")
 
         # Stop should be cancelled
@@ -1247,3 +1322,543 @@ class TestAlpacaGatewayPaperParam:
             gw = AlpacaExecutionGateway(api_key="test", secret_key="test", paper=False)
             _ = gw.client
             mock_tc.assert_called_once_with("test", "test", paper=False)
+
+
+# ══════════════════════════════════════════════════════════════════
+#  Phase 7 — cancel_order requires broker verification (Req 1)
+# ══════════════════════════════════════════════════════════════════
+
+
+class TestAlpacaCancelOrderVerification:
+    """cancel_order returns True only when broker verification confirms terminal."""
+
+    def _open_position(self, alpaca_gw, mock_alpaca_client, symbol="DSY"):
+        mock_alpaca_client.submit_order.return_value = MockAlpacaOrder(id="entry-1")
+        order, _ = alpaca_gw.submit_entry(_signal(symbol=symbol))
+        mock_alpaca_client.get_order_by_id.return_value = MockAlpacaOrder(
+            id="entry-1", status="filled", filled_qty="50", filled_avg_price="10.50",
+        )
+        alpaca_gw.confirm_fill(order.order_id)
+        mock_alpaca_client.submit_order.return_value = MockAlpacaOrder(id="stop-1")
+        alpaca_gw.place_stop(symbol, 10.20, 50)
+        return alpaca_gw.positions.get(symbol)
+
+    def test_cancel_confirmed_canceled_returns_true(self, alpaca_gw, mock_alpaca_client):
+        """Broker cancel + verify canceled → True, pending resolved."""
+        self._open_position(alpaca_gw, mock_alpaca_client)
+        stop = list(alpaca_gw.pending.all_pending())[0]
+        mock_alpaca_client.cancel_order_by_id.return_value = None
+        mock_alpaca_client.get_order_by_id.return_value = MockAlpacaOrder(
+            id=stop.order_id, status="canceled",
+        )
+        assert alpaca_gw.cancel_order(stop.order_id) is True
+        assert len(alpaca_gw.pending) == 0
+
+    def test_cancel_confirmed_rejected_returns_true(self, alpaca_gw, mock_alpaca_client):
+        """cancel + verify rejected → True."""
+        self._open_position(alpaca_gw, mock_alpaca_client)
+        stop = list(alpaca_gw.pending.all_pending())[0]
+        mock_alpaca_client.get_order_by_id.return_value = MockAlpacaOrder(
+            id=stop.order_id, status="rejected",
+        )
+        assert alpaca_gw.cancel_order(stop.order_id) is True
+        assert len(alpaca_gw.pending) == 0
+
+    def test_cancel_confirmed_expired_returns_true(self, alpaca_gw, mock_alpaca_client):
+        """cancel + verify expired → True."""
+        self._open_position(alpaca_gw, mock_alpaca_client)
+        stop = list(alpaca_gw.pending.all_pending())[0]
+        mock_alpaca_client.get_order_by_id.return_value = MockAlpacaOrder(
+            id=stop.order_id, status="expired",
+        )
+        assert alpaca_gw.cancel_order(stop.order_id) is True
+        assert len(alpaca_gw.pending) == 0
+
+    def test_cancel_confirmed_done_for_day_returns_true(self, alpaca_gw, mock_alpaca_client):
+        """cancel + verify done_for_day → True."""
+        self._open_position(alpaca_gw, mock_alpaca_client)
+        stop = list(alpaca_gw.pending.all_pending())[0]
+        mock_alpaca_client.get_order_by_id.return_value = MockAlpacaOrder(
+            id=stop.order_id, status="done_for_day",
+        )
+        assert alpaca_gw.cancel_order(stop.order_id) is True
+
+    def test_cancel_verify_filled_returns_false(self, alpaca_gw, mock_alpaca_client):
+        """cancel + verify filled → False, pending NOT resolved."""
+        self._open_position(alpaca_gw, mock_alpaca_client)
+        stop = list(alpaca_gw.pending.all_pending())[0]
+        mock_alpaca_client.get_order_by_id.return_value = MockAlpacaOrder(
+            id=stop.order_id, status="filled",
+        )
+        assert alpaca_gw.cancel_order(stop.order_id) is False
+        assert len(alpaca_gw.pending) == 1  # NOT resolved
+
+    def test_cancel_verify_partially_filled_returns_false(self, alpaca_gw, mock_alpaca_client):
+        """cancel + verify partially_filled → False, pending NOT resolved."""
+        self._open_position(alpaca_gw, mock_alpaca_client)
+        stop = list(alpaca_gw.pending.all_pending())[0]
+        mock_alpaca_client.get_order_by_id.return_value = MockAlpacaOrder(
+            id=stop.order_id, status="partially_filled",
+        )
+        assert alpaca_gw.cancel_order(stop.order_id) is False
+        assert len(alpaca_gw.pending) == 1
+
+    def test_cancel_verify_still_live_returns_false(self, alpaca_gw, mock_alpaca_client):
+        """cancel + verify still pending → False, pending NOT resolved."""
+        self._open_position(alpaca_gw, mock_alpaca_client)
+        stop = list(alpaca_gw.pending.all_pending())[0]
+        mock_alpaca_client.get_order_by_id.return_value = MockAlpacaOrder(
+            id=stop.order_id, status="new",
+        )
+        assert alpaca_gw.cancel_order(stop.order_id) is False
+        assert len(alpaca_gw.pending) == 1
+
+    def test_cancel_verify_failure_returns_false(self, alpaca_gw, mock_alpaca_client):
+        """cancel + verify raises → False (unverifiable), pending NOT resolved."""
+        self._open_position(alpaca_gw, mock_alpaca_client)
+        stop = list(alpaca_gw.pending.all_pending())[0]
+        mock_alpaca_client.get_order_by_id.side_effect = ConnectionError("API down")
+        assert alpaca_gw.cancel_order(stop.order_id) is False
+        assert len(alpaca_gw.pending) == 1
+
+
+# ══════════════════════════════════════════════════════════════════
+#  Phase 7 — partial fill does not commit until cancel confirmed (Req 2)
+# ══════════════════════════════════════════════════════════════════
+
+
+class TestAlpacaPartialFillNoCommitWithoutCancelConfirm:
+    """Partial fills do not commit local quantities until cancel verified terminal."""
+
+    def test_entry_partial_cancel_confirmed_commits(self, alpaca_gw, mock_alpaca_client):
+        """partially_filled + cancel verified canceled → commits filled qty."""
+        mock_alpaca_client.submit_order.return_value = MockAlpacaOrder(id="entry-1")
+        order, _ = alpaca_gw.submit_entry(_signal(shares=100))
+        mock_alpaca_client.get_order_by_id.side_effect = [
+            MockAlpacaOrder(id="entry-1", status="partially_filled", filled_qty="30", filled_avg_price="10.50"),
+            MockAlpacaOrder(id="entry-1", status="canceled"),
+        ]
+        pos = alpaca_gw.confirm_fill(order.order_id)
+        assert pos.state == PositionState.OPEN
+        assert pos.current_shares == 30
+        assert len(alpaca_gw.pending) == 0
+
+    def test_entry_partial_cancel_verify_filled_does_not_commit(self, alpaca_gw, mock_alpaca_client):
+        """partially_filled + cancel verify filled → RuntimeError, state preserved."""
+        mock_alpaca_client.submit_order.return_value = MockAlpacaOrder(id="entry-1")
+        order, _ = alpaca_gw.submit_entry(_signal(shares=100))
+        mock_alpaca_client.get_order_by_id.return_value = MockAlpacaOrder(
+            id="entry-1", status="partially_filled", filled_qty="30", filled_avg_price="10.50",
+        )
+        # Cancel verify returns filled (remainder filled before cancel took)
+        side_effect = [
+            None,
+            MockAlpacaOrder(id="entry-1", status="filled", filled_qty="100"),
+        ]
+        mock_alpaca_client.cancel_order_by_id.side_effect = side_effect
+        with pytest.raises(RuntimeError, match="not confirmed terminal"):
+            alpaca_gw.confirm_fill(order.order_id)
+        pos = alpaca_gw.positions.get("DSY")
+        assert pos.state == PositionState.PENDING_ENTRY  # not committed
+        assert pos.current_shares == 100  # original proposed, not reduced
+        assert len(alpaca_gw.pending) == 1  # NOT resolved
+
+    def test_entry_partial_cancel_verify_unverifiable_does_not_commit(self, alpaca_gw, mock_alpaca_client):
+        """partially_filled + cancel verify fails → RuntimeError, state preserved."""
+        mock_alpaca_client.submit_order.return_value = MockAlpacaOrder(id="entry-1")
+        order, _ = alpaca_gw.submit_entry(_signal(shares=100))
+        mock_alpaca_client.get_order_by_id.return_value = MockAlpacaOrder(
+            id="entry-1", status="partially_filled", filled_qty="30", filled_avg_price="10.50",
+        )
+        # Cancel verify raises
+        mock_alpaca_client.cancel_order_by_id.side_effect = ConnectionError("API down")
+        with pytest.raises(RuntimeError, match="not confirmed terminal"):
+            alpaca_gw.confirm_fill(order.order_id)
+        pos = alpaca_gw.positions.get("DSY")
+        assert pos.state == PositionState.PENDING_ENTRY
+        assert len(alpaca_gw.pending) == 1
+
+    def test_add_partial_cancel_confirmed_commits(self, alpaca_gw, mock_alpaca_client):
+        """ADD partial + cancel verified → commits filled qty, RUNNER."""
+        mock_alpaca_client.submit_order.side_effect = [
+            MockAlpacaOrder(id="entry-1"),
+            MockAlpacaOrder(id="stop-1"),
+            MockAlpacaOrder(id="add-1"),
+            MockAlpacaOrder(id="stop-2"),
+        ]
+        order, _ = alpaca_gw.submit_entry(_signal(shares=50))
+        mock_alpaca_client.get_order_by_id.side_effect = [
+            MockAlpacaOrder(id="entry-1", status="filled", filled_qty="50", filled_avg_price="10.50"),
+            MockAlpacaOrder(id="stop-1", status="canceled"),  # cancel_stale_orders verify during submit_exit
+        ]
+        alpaca_gw.confirm_fill(order.order_id)
+        alpaca_gw.place_stop("DSY", 10.20, 50)
+        pos = alpaca_gw.positions.get("DSY")
+        pos.state = PositionState.RUNNER
+        pos.highest_price_seen = 11.50
+        pos.trailing_stop_price = 10.00
+        alpaca_gw.positions.upsert(pos)
+        add_order, _ = alpaca_gw.submit_add("DSY", qty=25, entry_price=11.00, stop_price=10.00)
+        # add_order verified + cancel verify returns canceled
+        mock_alpaca_client.cancel_order_by_id.return_value = None
+        mock_alpaca_client.get_order_by_id.side_effect = [
+            MockAlpacaOrder(id="add-1", status="partially_filled", filled_qty="10", filled_avg_price="11.00"),
+            MockAlpacaOrder(id="add-1", status="canceled"),
+            MockAlpacaOrder(id="stop-1", status="canceled"),  # verify stop-1 cancel during cancel_stale_orders
+        ]
+        pos = alpaca_gw.confirm_fill(add_order.order_id)
+        assert pos.state == PositionState.RUNNER
+        assert pos.current_shares == 60  # 50 + 10
+        assert len(alpaca_gw.pending) == 1  # only the new stop
+
+    def test_add_partial_cancel_verify_filled_does_not_commit(self, alpaca_gw, mock_alpaca_client):
+        """ADD partial + cancel verify filled → RuntimeError, state preserved."""
+        mock_alpaca_client.submit_order.side_effect = [
+            MockAlpacaOrder(id="entry-1"),
+            MockAlpacaOrder(id="stop-1"),
+            MockAlpacaOrder(id="add-1"),
+        ]
+        order, _ = alpaca_gw.submit_entry(_signal(shares=50))
+        mock_alpaca_client.get_order_by_id.side_effect = [
+            MockAlpacaOrder(id="entry-1", status="filled", filled_qty="50", filled_avg_price="10.50"),
+        ]
+        alpaca_gw.confirm_fill(order.order_id)
+        alpaca_gw.place_stop("DSY", 10.20, 50)
+        pos = alpaca_gw.positions.get("DSY")
+        pos.state = PositionState.RUNNER
+        pos.highest_price_seen = 11.50
+        pos.trailing_stop_price = 10.00
+        alpaca_gw.positions.upsert(pos)
+        add_order, _ = alpaca_gw.submit_add("DSY", qty=25, entry_price=11.00, stop_price=10.00)
+        mock_alpaca_client.get_order_by_id.side_effect = [
+            MockAlpacaOrder(id="add-1", status="partially_filled", filled_qty="10", filled_avg_price="11.00"),
+            MockAlpacaOrder(id="add-1", status="filled", filled_qty="25"),
+        ]
+        mock_alpaca_client.cancel_order_by_id.return_value = None
+        with pytest.raises(RuntimeError, match="not confirmed terminal"):
+            alpaca_gw.confirm_fill(add_order.order_id)
+        pos = alpaca_gw.positions.get("DSY")
+        assert pos.state == PositionState.ADDING  # not advanced
+        assert pos.current_shares == 50  # unchanged
+        assert len(alpaca_gw.pending.get_for_symbol("DSY")) == 2  # add still pending + stop
+
+    def test_exit_partial_cancel_verify_filled_does_not_commit(self, alpaca_gw, mock_alpaca_client):
+        """EXIT partial + cancel verify filled → RuntimeError, state preserved."""
+        mock_alpaca_client.submit_order.side_effect = [
+            MockAlpacaOrder(id="entry-1"),
+            MockAlpacaOrder(id="stop-1"),
+            MockAlpacaOrder(id="exit-1"),
+        ]
+        order, _ = alpaca_gw.submit_entry(_signal(shares=50))
+        mock_alpaca_client.get_order_by_id.side_effect = [
+            MockAlpacaOrder(id="entry-1", status="filled", filled_qty="50", filled_avg_price="10.50"),
+            MockAlpacaOrder(id="stop-1", status="canceled"),  # cancel_stale_orders verify during submit_exit
+        ]
+        alpaca_gw.confirm_fill(order.order_id)
+        alpaca_gw.place_stop("DSY", 10.20, 50)
+        exit_order, _ = alpaca_gw.submit_exit("DSY", "test")
+        mock_alpaca_client.get_order_by_id.side_effect = [
+            MockAlpacaOrder(id="exit-1", status="partially_filled", filled_qty="20", filled_avg_price="11.00"),
+            MockAlpacaOrder(id="exit-1", status="filled", filled_qty="50"),
+        ]
+        mock_alpaca_client.cancel_order_by_id.return_value = None
+        with pytest.raises(RuntimeError, match="not confirmed terminal"):
+            alpaca_gw.confirm_exit_fill(exit_order.order_id)
+        pos = alpaca_gw.positions.get("DSY")
+        assert pos.state == PositionState.EXITING  # not advanced
+        assert pos.current_shares == 50  # unchanged
+        assert len(alpaca_gw.pending) == 1  # exit still pending
+
+
+# ══════════════════════════════════════════════════════════════════
+#  Phase 7 — exit fail + stop restore fail → UNPROTECTED (Req 3)
+# ══════════════════════════════════════════════════════════════════
+
+
+class TestExitFailWithRestoreFailMarksUnprotected:
+    """When exit submission fails AND stop restoration also fails → UNPROTECTED."""
+
+    def test_exit_fail_and_restore_fail_marks_unprotected(self, alpaca_gw, mock_alpaca_client):
+        """submit_exit API fails + restore_stop API fails → position UNPROTECTED."""
+        # Open position with stop
+        mock_alpaca_client.submit_order.side_effect = [
+            MockAlpacaOrder(id="entry-1"),
+            MockAlpacaOrder(id="stop-1"),
+        ]
+        order, _ = alpaca_gw.submit_entry(_signal(shares=50))
+        mock_alpaca_client.get_order_by_id.side_effect = [
+            MockAlpacaOrder(id="entry-1", status="filled", filled_qty="50", filled_avg_price="10.50"),
+        ]
+        alpaca_gw.confirm_fill(order.order_id)
+        alpaca_gw.place_stop("DSY", 10.20, 50)
+
+        # Cancel verification must confirm stop-1 cancelled before exit proceeds
+        mock_alpaca_client.get_order_by_id.side_effect = [
+            MockAlpacaOrder(id="stop-1", status="canceled"),
+        ]
+        # Exit submit fails, stop restore also fails
+        mock_alpaca_client.submit_order.side_effect = [
+            ConnectionError("API down"),  # exit submit
+            ConnectionError("restore also down"),  # stop restore also fails
+        ]
+        with pytest.raises(RuntimeError, match="exit failed"):
+            alpaca_gw.submit_exit("DSY", "test")
+
+        pos = alpaca_gw.positions.get("DSY")
+        assert pos.state == PositionState.UNPROTECTED, (
+            f"Expected UNPROTECTED, got {pos.state}"
+        )
+        assert pos.current_shares == 50  # shares preserved
+
+    def test_exit_fail_restore_succeeds_stays_open(self, alpaca_gw, mock_alpaca_client):
+        """submit_exit fails but stop restore succeeds → stays OPEN, NOT UNPROTECTED."""
+        mock_alpaca_client.submit_order.side_effect = [
+            MockAlpacaOrder(id="entry-1"),
+            MockAlpacaOrder(id="stop-1"),
+        ]
+        order, _ = alpaca_gw.submit_entry(_signal(shares=50))
+        mock_alpaca_client.get_order_by_id.side_effect = [
+            MockAlpacaOrder(id="entry-1", status="filled", filled_qty="50", filled_avg_price="10.50"),
+        ]
+        alpaca_gw.confirm_fill(order.order_id)
+        alpaca_gw.place_stop("DSY", 10.20, 50)
+
+        # Cancel verification must confirm stop-1 cancelled before exit proceeds
+        mock_alpaca_client.get_order_by_id.side_effect = [
+            MockAlpacaOrder(id="stop-1", status="canceled"),
+        ]
+        # Exit submit fails, but restore succeeds
+        mock_alpaca_client.submit_order.side_effect = [
+            ConnectionError("API down"),  # exit submit
+            MockAlpacaOrder(id="restored-stop"),  # restore succeeds
+        ]
+        with pytest.raises(RuntimeError, match="exit failed"):
+            alpaca_gw.submit_exit("DSY", "test")
+
+        pos = alpaca_gw.positions.get("DSY")
+        assert pos.state == PositionState.OPEN  # not UNPROTECTED
+        assert alpaca_gw._has_pending_stop("DSY")
+
+
+# ══════════════════════════════════════════════════════════════════
+#  Phase 7 — terminal ENTRY status sets current_shares=0 (Req 4)
+# ══════════════════════════════════════════════════════════════════
+
+
+class TestTerminalEntrySetsCurrentSharesZero:
+    """Rejected/canceled/expired ENTRY sets current_shares=0 before ERROR."""
+
+    def _submit_pending_entry(self, alpaca_gw, mock_alpaca_client):
+        """Submit entry and return the order."""
+        mock_alpaca_client.submit_order.return_value = MockAlpacaOrder(id="entry-1")
+        order, _ = alpaca_gw.submit_entry(_signal(shares=100))
+        return order
+
+    def test_rejected_entry_sets_current_shares_zero(self, alpaca_gw, mock_alpaca_client):
+        """rejected ENTRY → current_shares=0 before ERROR."""
+        order = self._submit_pending_entry(alpaca_gw, mock_alpaca_client)
+        mock_alpaca_client.get_order_by_id.return_value = MockAlpacaOrder(
+            id="entry-1", status="rejected",
+        )
+        with pytest.raises(RuntimeError, match="rejected"):
+            alpaca_gw.confirm_fill(order.order_id)
+        pos = alpaca_gw.positions.get("DSY")
+        assert pos.state == PositionState.ERROR
+        assert pos.current_shares == 0, (
+            f"Expected current_shares=0 after rejected entry, got {pos.current_shares}"
+        )
+
+    def test_canceled_entry_sets_current_shares_zero(self, alpaca_gw, mock_alpaca_client):
+        """canceled ENTRY → current_shares=0 before ERROR."""
+        order = self._submit_pending_entry(alpaca_gw, mock_alpaca_client)
+        mock_alpaca_client.get_order_by_id.return_value = MockAlpacaOrder(
+            id="entry-1", status="canceled",
+        )
+        with pytest.raises(RuntimeError, match="canceled"):
+            alpaca_gw.confirm_fill(order.order_id)
+        pos = alpaca_gw.positions.get("DSY")
+        assert pos.state == PositionState.ERROR
+        assert pos.current_shares == 0
+
+    def test_expired_entry_sets_current_shares_zero(self, alpaca_gw, mock_alpaca_client):
+        """expired ENTRY → current_shares=0 before ERROR."""
+        order = self._submit_pending_entry(alpaca_gw, mock_alpaca_client)
+        mock_alpaca_client.get_order_by_id.return_value = MockAlpacaOrder(
+            id="entry-1", status="expired",
+        )
+        with pytest.raises(RuntimeError, match="expired"):
+            alpaca_gw.confirm_fill(order.order_id)
+        pos = alpaca_gw.positions.get("DSY")
+        assert pos.state == PositionState.ERROR
+        assert pos.current_shares == 0
+
+
+# ══════════════════════════════════════════════════════════════════
+#  Correction 1 — partial fill cancel unconfirmed raises RuntimeError
+# ══════════════════════════════════════════════════════════════════
+
+
+class TestPartialFillCancelUnconfirmedRaises:
+    """When _cancel_remainder_and_verify returns False, RuntimeError is raised
+    and all state/pending/quantities remain unchanged, so TradingApp can
+    trigger immediate reconciliation."""
+
+    def test_entry_partial_cancel_unconfirmed_raises_and_preserves_state(self, alpaca_gw, mock_alpaca_client):
+        """ENTRY partial fill, cancel verify not terminal → RuntimeError, state unchanged."""
+        mock_alpaca_client.submit_order.return_value = MockAlpacaOrder(id="entry-1")
+        order, _ = alpaca_gw.submit_entry(_signal(shares=100))
+        mock_alpaca_client.get_order_by_id.side_effect = [
+            MockAlpacaOrder(id="entry-1", status="partially_filled", filled_qty="30", filled_avg_price="10.50"),
+            MockAlpacaOrder(id="entry-1", status="filled"),  # cancel verify shows filled (not terminal)
+        ]
+        with pytest.raises(RuntimeError, match="not confirmed terminal"):
+            alpaca_gw.confirm_fill(order.order_id)
+
+        pos = alpaca_gw.positions.get("DSY")
+        assert pos.state == PositionState.PENDING_ENTRY  # unchanged
+        assert pos.current_shares == 100  # unchanged (original proposed)
+        assert len(alpaca_gw.pending) == 1  # order still pending
+
+    def test_add_partial_cancel_unconfirmed_raises_and_preserves_state(self, alpaca_gw, mock_alpaca_client):
+        """ADD partial fill, cancel verify not terminal → RuntimeError, state unchanged."""
+        mock_alpaca_client.submit_order.side_effect = [
+            MockAlpacaOrder(id="entry-1"),
+            MockAlpacaOrder(id="stop-1"),
+            MockAlpacaOrder(id="add-1"),
+        ]
+        order, _ = alpaca_gw.submit_entry(_signal(shares=50))
+        mock_alpaca_client.get_order_by_id.side_effect = [
+            MockAlpacaOrder(id="entry-1", status="filled", filled_qty="50", filled_avg_price="10.50"),
+        ]
+        alpaca_gw.confirm_fill(order.order_id)
+        alpaca_gw.place_stop("DSY", 10.20, 50)
+        pos = alpaca_gw.positions.get("DSY")
+        pos.state = PositionState.RUNNER
+        pos.highest_price_seen = 11.50
+        pos.trailing_stop_price = 10.00
+        alpaca_gw.positions.upsert(pos)
+        add_order, _ = alpaca_gw.submit_add("DSY", qty=25, entry_price=11.00, stop_price=10.00)
+        mock_alpaca_client.get_order_by_id.side_effect = [
+            MockAlpacaOrder(id="add-1", status="partially_filled", filled_qty="10", filled_avg_price="11.00"),
+            MockAlpacaOrder(id="add-1", status="filled"),  # cancel verify shows filled (not terminal)
+        ]
+        mock_alpaca_client.cancel_order_by_id.return_value = None
+        with pytest.raises(RuntimeError, match="not confirmed terminal"):
+            alpaca_gw.confirm_fill(add_order.order_id)
+
+        pos = alpaca_gw.positions.get("DSY")
+        assert pos.state == PositionState.ADDING  # unchanged
+        assert pos.current_shares == 50  # unchanged
+        assert len(alpaca_gw.pending.get_for_symbol("DSY")) == 2  # add + stop still pending
+
+    def test_exit_partial_cancel_unconfirmed_raises_and_preserves_state(self, alpaca_gw, mock_alpaca_client):
+        """EXIT partial fill, cancel verify not terminal → RuntimeError, state unchanged."""
+        mock_alpaca_client.submit_order.side_effect = [
+            MockAlpacaOrder(id="entry-1"),
+            MockAlpacaOrder(id="stop-1"),
+            MockAlpacaOrder(id="exit-1"),
+        ]
+        order, _ = alpaca_gw.submit_entry(_signal(shares=50))
+        mock_alpaca_client.get_order_by_id.side_effect = [
+            MockAlpacaOrder(id="entry-1", status="filled", filled_qty="50", filled_avg_price="10.50"),
+            MockAlpacaOrder(id="stop-1", status="canceled"),  # cancel_stale_orders verify during submit_exit
+        ]
+        alpaca_gw.confirm_fill(order.order_id)
+        alpaca_gw.place_stop("DSY", 10.20, 50)
+        exit_order, _ = alpaca_gw.submit_exit("DSY", "test")
+        mock_alpaca_client.get_order_by_id.side_effect = [
+            MockAlpacaOrder(id="exit-1", status="partially_filled", filled_qty="20", filled_avg_price="11.00"),
+            MockAlpacaOrder(id="exit-1", status="filled"),  # cancel verify shows filled (not terminal)
+        ]
+        mock_alpaca_client.cancel_order_by_id.return_value = None
+        with pytest.raises(RuntimeError, match="not confirmed terminal"):
+            alpaca_gw.confirm_exit_fill(exit_order.order_id)
+
+        pos = alpaca_gw.positions.get("DSY")
+        assert pos.state == PositionState.EXITING  # unchanged
+        assert pos.current_shares == 50  # unchanged
+        assert len(alpaca_gw.pending) == 1  # exit still pending
+
+
+# ══════════════════════════════════════════════════════════════════
+#  Correction 2 — submit_exit aborts when stop cancel not confirmed
+# ══════════════════════════════════════════════════════════════════
+
+
+class TestAlpacaExitAbortsOnUnconfirmedStopCancel:
+    """When cancel_stale_orders cannot broker-confirm a stop cancellation,
+    submit_exit aborts before submitting the market sell to prevent
+    stale-stop unintended short exposure."""
+
+    def _open_position_with_stop(self, alpaca_gw, mock_alpaca_client):
+        """Helper: open position and place stop."""
+        mock_alpaca_client.submit_order.side_effect = [
+            MockAlpacaOrder(id="entry-1"),
+            MockAlpacaOrder(id="stop-1"),
+        ]
+        order, _ = alpaca_gw.submit_entry(_signal(shares=50))
+        mock_alpaca_client.get_order_by_id.side_effect = [
+            MockAlpacaOrder(id="entry-1", status="filled", filled_qty="50", filled_avg_price="10.50"),
+        ]
+        alpaca_gw.confirm_fill(order.order_id)
+        alpaca_gw.place_stop("DSY", 10.20, 50)
+
+    def test_exit_aborts_when_stop_cancel_not_confirmed(self, alpaca_gw, mock_alpaca_client):
+        """submit_exit raises RuntimeError when stop cancel not broker-confirmed."""
+        self._open_position_with_stop(alpaca_gw, mock_alpaca_client)
+        assert alpaca_gw._has_pending_stop("DSY")
+
+        # Cancel verification returns non-terminal status — stop remains pending
+        mock_alpaca_client.get_order_by_id.side_effect = [
+            MockAlpacaOrder(id="stop-1", status="filled"),  # not a terminal cancel status
+        ]
+        mock_alpaca_client.cancel_order_by_id.return_value = None
+
+        with pytest.raises(RuntimeError, match="stop cancellation not confirmed by broker"):
+            alpaca_gw.submit_exit("DSY", "test")
+
+        # Stop still present and position unchanged
+        assert alpaca_gw._has_pending_stop("DSY")
+        pos = alpaca_gw.positions.get("DSY")
+        assert pos.state == PositionState.OPEN  # not EXITING
+        assert pos.current_shares == 50  # unchanged
+        assert pos.stop_price == 10.20  # intact
+
+    def test_exit_proceeds_when_stop_cancel_confirmed(self, alpaca_gw, mock_alpaca_client):
+        """submit_exit proceeds normally when stop cancel is broker-confirmed."""
+        self._open_position_with_stop(alpaca_gw, mock_alpaca_client)
+        assert alpaca_gw._has_pending_stop("DSY")
+
+        # Cancel verification returns terminal status
+        mock_alpaca_client.get_order_by_id.side_effect = [
+            MockAlpacaOrder(id="stop-1", status="canceled"),
+        ]
+        # Reset submit_order side_effect (consumed by helper) before setting return_value
+        mock_alpaca_client.submit_order.side_effect = None
+        mock_alpaca_client.submit_order.return_value = MockAlpacaOrder(id="exit-1")
+
+        exit_order, pos = alpaca_gw.submit_exit("DSY", "target hit")
+
+        assert exit_order.order_type == OrderActionType.EXIT
+        assert pos.state == PositionState.EXITING
+        assert not alpaca_gw._has_pending_stop("DSY")  # stop resolved
+
+    def test_exit_aborts_when_no_prior_stop_allows_clean_exit(self, alpaca_gw, mock_alpaca_client):
+        """Exit proceeds normally when there was never a stop (no had_stop)."""
+        mock_alpaca_client.submit_order.side_effect = [
+            MockAlpacaOrder(id="entry-1"),
+        ]
+        order, _ = alpaca_gw.submit_entry(_signal(shares=50))
+        mock_alpaca_client.get_order_by_id.side_effect = [
+            MockAlpacaOrder(id="entry-1", status="filled", filled_qty="50", filled_avg_price="10.50"),
+        ]
+        alpaca_gw.confirm_fill(order.order_id)
+
+        assert not alpaca_gw._has_pending_stop("DSY")
+        # Reset submit_order side_effect (consumed by submit_entry) before setting return_value
+        mock_alpaca_client.submit_order.side_effect = None
+        mock_alpaca_client.submit_order.return_value = MockAlpacaOrder(id="exit-1")
+
+        exit_order, pos = alpaca_gw.submit_exit("DSY", "no stop to worry about")
+        assert exit_order.order_type == OrderActionType.EXIT
+        assert pos.state == PositionState.EXITING

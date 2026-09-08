@@ -22,13 +22,11 @@ from loguru import logger
 
 from src.decision_pipeline import (
     MarketSnapshot,
-    PipelineResult,
     _new_hod_recent_from_bars,
     _roc_pct_from_bars,
     evaluate_candidate,
     evaluate_exits,
     execute_entry,
-    run_pipeline,
 )
 from src.paper_execution import (
     MarketSession,
@@ -224,6 +222,8 @@ class TradingApp:
         self._last_position_reconcile: float = 0.0
         self._last_position_save: float = 0.0
         self._pending_exit_orders: dict[str, str] = {}  # symbol → exit order_id (Task #21)
+        self._last_session_check: float = 0.0  # ponytail: cache market session, 60s TTL
+        self._exit_retry_after: dict[str, float] = {}  # ponytail: per-symbol exit retry cooldown
 
         self._cycle_count: int = 0
         self._started_at: Optional[datetime] = None
@@ -293,7 +293,15 @@ class TradingApp:
 
         Updates ``_active_flatten_time`` from the market session so
         the monitor path can use it for time-based flattening.
+
+        ponytail: cache session with 60s TTL — calendar/clock don't change intraday.
         """
+        import time as _time
+        now_mono = _time.monotonic()
+        if now_mono - self._last_session_check < 60.0 and self._last_market_session is not None:
+            return self._last_market_session.is_open
+        self._last_session_check = now_mono
+
         if self._market_session_fn is not None:
             try:
                 session = self._market_session_fn()
@@ -408,8 +416,12 @@ class TradingApp:
                     )
                 elif pos is not None:
                     logger.warning(
-                        "insert_protect for %s: position has no stop_price — left UNPROTECTED", symbol
+                        "insert_protect for %s: position has no stop_price — marking UNPROTECTED", symbol
                     )
+                    try:
+                        self._execution.mark_unprotected(symbol)
+                    except Exception:
+                        logger.exception("Failed to mark %s UNPROTECTED after insert_protect", symbol)
 
             elif action_type == "verify_stop":
                 pos = self._positions.get(symbol)
@@ -451,7 +463,10 @@ class TradingApp:
                 avg_entry = action.get("avg_entry")
                 pos = self._positions.get(symbol)
                 if pos is not None:
-                    transition_position(pos, PositionState.RUNNER, force=True)
+                    try:
+                        transition_position(pos, PositionState.RUNNER)
+                    except ValueError:
+                        pass  # already RUNNER — no transition needed
                     # Increment add_count since this was a missed ADD fill
                     pos.add_count += 1
                     pos.current_shares = qty
@@ -605,6 +620,92 @@ class TradingApp:
                     action.get("order_id", "?"), symbol,
                 )
 
+    def _reconcile_positions_periodic(self) -> None:
+        """Periodic position reconciliation against broker truth — Task #25."""
+        if self._broker_snapshot_fn is None:
+            return
+        try:
+            broker_snapshot = self._broker_snapshot_fn()
+        except Exception:
+            logger.warning("Periodic position reconciliation — broker snapshot failed")
+            return
+        if broker_snapshot is None:
+            return
+        try:
+            from src.paper_execution import reconcile_positions
+            actions = reconcile_positions(
+                broker_positions=broker_snapshot,
+                local_store=self._positions,
+                pending_store=self._execution.pending,
+            )
+            for action in actions:
+                # ponytail: key is "action" not "type" — match actual reconcile_positions output
+                action_type = action.get("action", "")
+                symbol = action.get("symbol", "?")
+                if action_type == "close_local":
+                    logger.warning("Periodic reconcile: closed local position for %s — broker has no position", symbol)
+                elif action_type == "insert_protect":
+                    logger.info("Periodic reconcile: imported broker position for %s", symbol)
+                    # Place stop protection for imported position
+                    try:
+                        pos = self._positions.get(symbol)
+                        if pos and pos.stop_price and pos.current_shares > 0:
+                            self._execution.protect_position(symbol, pos.stop_price, pos.current_shares)
+                    except Exception:
+                        logger.warning("Periodic reconcile: failed to protect imported position %s", symbol)
+                elif action_type == "update_qty_reprotect_add_missed":
+                    # ponytail: mirror startup handler — transition to RUNNER, increment add_count, re-protect
+                    qty = action.get("qty", 0)
+                    avg_entry = action.get("avg_entry")
+                    pos = self._positions.get(symbol)
+                    if pos is not None:
+                        try:
+                            transition_position(pos, PositionState.RUNNER)
+                        except ValueError:
+                            pass  # already in a valid state
+                        pos.add_count += 1
+                        pos.current_shares = qty
+                        if avg_entry and avg_entry > 0:
+                            pos.average_entry = avg_entry
+                        self._positions.upsert(pos)
+                        logger.warning(
+                            "Periodic reconcile: missed ADD fill for %s → %d shares, add_count=%d",
+                            symbol, qty, pos.add_count,
+                        )
+                        stop = pos.trailing_stop_price or pos.stop_price
+                        if stop is not None and qty > 0:
+                            try:
+                                self._execution.protect_position(symbol, stop, qty)
+                            except Exception:
+                                logger.warning("Periodic reconcile: failed to re-protect %s", symbol)
+                elif action_type in ("update_qty_reprotect", "update_qty_reprotect_warning"):
+                    logger.info("Periodic reconcile: updated qty for %s (%s)", symbol, action_type)
+                    # Re-protect with updated qty
+                    try:
+                        pos = self._positions.get(symbol)
+                        if pos and pos.stop_price and pos.current_shares > 0:
+                            self._execution.protect_position(symbol, pos.stop_price, pos.current_shares)
+                    except Exception:
+                        logger.warning("Periodic reconcile: failed to re-protect %s", symbol)
+                elif action_type == "irreconcilable":
+                    logger.error("Periodic reconcile: irreconcilable position for %s", symbol)
+                elif action_type == "verify_stop":
+                    logger.debug("Periodic reconcile: verified stop for %s", symbol)
+                elif action_type == "cancel_stale_order":
+                    logger.info("Periodic reconcile: cancelled stale order for %s", symbol)
+                elif action_type == "missing_broker_stop":
+                    logger.warning("Periodic reconcile: missing broker stop for %s — re-protecting", symbol)
+                    try:
+                        pos = self._positions.get(symbol)
+                        if pos and pos.stop_price and pos.current_shares > 0:
+                            self._execution.protect_position(symbol, pos.stop_price, pos.current_shares)
+                    except Exception:
+                        logger.warning("Periodic reconcile: failed to re-protect %s", symbol)
+                elif action_type in ("drop_local_missing_broker_order", "import_broker_order", "cancel_orphan_broker_order"):
+                    logger.info("Periodic reconcile: %s for %s", action_type, symbol)
+        except Exception:
+            logger.warning("Periodic position reconciliation failed")
+
     def _record_monitor_failure(self, symbol: str) -> bool:
         """Track monitor exceptions; escalate after configured consecutive failures."""
         count = self._monitor_failures.get(symbol, 0) + 1
@@ -642,6 +743,13 @@ class TradingApp:
         ``_session_realized_pnl`` across the session.  Open positions
         are marked to market when fresh prices are available.
         """
+        # ponytail: check week boundary in-session — 24/7 bots cross Sunday/Monday
+        current_week = _current_week_id()
+        if current_week != self._pnl_week_id:
+            self._pnl_week_id = current_week
+            self._weekly_realized_pnl = 0.0
+            logger.info("Weekly P&L reset — new trading week: {}", current_week)
+
         open_positions = self._positions.all_open()
         total_risk = 0.0
         unrealized = 0.0
@@ -658,16 +766,15 @@ class TradingApp:
                 )
             up = pos.unrealized_pnl or 0.0
             unrealized += up
-            per_symbol[pos.symbol] = round(
-                per_symbol.get(pos.symbol, 0.0) + min(0.0, up), 2
-            )
+            # ponytail: per_symbol tracks realized only — unrealized drawdown shouldn't block re-entry
+            # (realized per-symbol P&L is already in _session_per_symbol_pnl via _record_realized_trade_pnl)
 
-        realized = self._session_realized_pnl + sum(
-            pos.realized_pnl or 0.0 for pos in open_positions
-        )
-        daily_pnl_val = realized + unrealized
+        # ponytail: _session_realized_pnl is the canonical realized P&L source.
+        # pos.realized_pnl on OPEN positions is already captured in _session_realized_pnl via _record_realized_trade_pnl.
+        realized = self._session_realized_pnl
+        # Hard cap: realized-only (ponytail: realized = money actually lost)
         daily_loss_breached = (
-            daily_pnl_val < -self._equity * self._max_daily_loss_pct
+            realized < -self._equity * self._max_daily_loss_pct
         )
         kill_switch_active = False
         kill_switch_reason = ""
@@ -683,13 +790,11 @@ class TradingApp:
         ):
             kill_switch_active = True
             kill_switch_reason = "weekly_drawdown_throttle"
-        # Per-symbol loss cap: check each symbol's accumulated loss
-        per_symbol_cap = self._max_daily_loss_pct * self._equity  # reuse daily cap per symbol
-        per_symbol_loss_capped: dict[str, bool] = {
-            sym: abs(loss) >= per_symbol_cap
-            for sym, loss in per_symbol.items()
-            if loss < 0
-        }
+        # Soft caution: realized + unrealized (logs warning, doesn't block)
+        if realized + unrealized < -self._equity * self._max_daily_loss_pct:
+            logger.warning(
+                "Daily P&L (incl unrealized) below threshold — caution",
+            )
 
         return AccountRiskState(
             daily_realized_pnl=round(realized, 2),
@@ -735,6 +840,16 @@ class TradingApp:
                     )
             except Exception:
                 logger.exception("Failed to restore position state from %s", self._persist_path)
+
+        # ponytail: restore pending orders alongside positions
+        if self._persist_path:
+            pending_path = self._persist_path.replace(".json", "_pending.json")
+            try:
+                restored = self._execution.pending.load_from_disk(pending_path)
+                if restored:
+                    logger.info("Restored {} pending order(s) from {}", len(restored), pending_path)
+            except Exception:
+                logger.debug("No pending orders to restore")
 
         # ══ Restore P&L ledger (roadmap #2) ═════════════════════
         self._restore_pnl_ledger()
@@ -801,6 +916,9 @@ class TradingApp:
             if self._persist_path and now - self._last_position_save >= 30.0:
                 try:
                     self._positions.save_to_disk(self._persist_path)
+                    # ponytail: save pending orders alongside positions
+                    pending_path = self._persist_path.replace(".json", "_pending.json")
+                    self._execution.pending.save_to_disk(pending_path)
                 except Exception:
                     logger.warning("Periodic position save failed")
                 self._last_position_save = now
@@ -826,12 +944,86 @@ class TradingApp:
         self._cleanup_error_positions()
         self._risk_state = self._build_risk_state()
 
+        # ponytail: clean exit cooldown entries for symbols no longer open
+        _open_symbols = {p.symbol for p in self._positions.all_open() if p.current_shares > 0}
+        for sym in list(self._exit_retry_after):
+            if sym not in _open_symbols:
+                self._exit_retry_after.pop(sym, None)
+
+        # ── PENDING_ENTRY / ADDING: defer fill confirmation to monitor loop (Task #22) ──
+        for pos in list(self._positions.all_open()):
+            if pos.state in (PositionState.PENDING_ENTRY, PositionState.ADDING) and pos.pending_order_id:
+                try:
+                    self._execution.confirm_fill(pos.pending_order_id)
+                    # Fill confirmed — for ENTRY, place stop protection.
+                    # ADD confirm_fill handles its own stop placement internally.
+                    if pos.state == PositionState.OPEN and pos.stop_price and pos.current_shares > 0:
+                        try:
+                            self._execution.protect_position(
+                                pos.symbol, pos.stop_price, pos.current_shares,
+                            )
+                        except Exception:
+                            try:
+                                self._execution.mark_unprotected(pos.symbol)
+                            except Exception:
+                                logger.exception(
+                                    "mark_unprotected failed for %s after protection failure",
+                                    pos.symbol,
+                                )
+                except RuntimeError:
+                    # Uncertainty from partial-fill remainder not broker-confirmed terminal
+                    logger.warning(
+                        "confirm_fill uncertainty for {} ({}) — "
+                        "triggering immediate broker truth reconciliation",
+                        pos.symbol, pos.pending_order_id,
+                    )
+                    self._reconcile_positions_periodic()
+                except Exception:
+                    pass  # still pending — retry next cycle
+
+        # ── Pending entry/add timeout (Tasks #27, #38g) ──
+        PENDING_TIMEOUT = 300.0
+        _now = datetime.now(timezone.utc)
+        for pos in list(self._positions.all_open()):
+            if pos.state in (PositionState.PENDING_ENTRY, PositionState.ADDING):
+                # ponytail: use updated_at (set on each transition) not opened_at (set once at entry).
+                # opened_at breaks ADDING timeout — any add on a position held >5min immediately times out.
+                age = (_now - pos.updated_at).total_seconds() if pos.updated_at else 0
+                if age > PENDING_TIMEOUT:
+                    if pos.pending_order_id:
+                        try:
+                            cancelled = self._execution.cancel_order(pos.pending_order_id)
+                        except Exception:
+                            logger.exception(
+                                "Cancel failed for pending {} {} — keeping state intact",
+                                pos.state.value, pos.symbol,
+                            )
+                            cancelled = False
+                        if not cancelled:
+                            logger.warning(
+                                "Pending {} {} timed out after {}s "
+                                "but cancel_order did NOT confirm terminal — "
+                                "keeping state/order_id/lock intact; "
+                                "performing immediate broker truth check",
+                                pos.state.value, pos.symbol, age,
+                            )
+                            self._reconcile_positions_periodic()
+                            continue
+                    target_state = PositionState.RUNNER if pos.state == PositionState.ADDING else PositionState.ERROR
+                    orig_state = pos.state
+                    pos.state = target_state
+                    pos.pending_order_id = None  # ponytail: clear stale order reference
+                    pos.updated_at = _now
+                    self._positions.upsert(pos)
+                    logger.warning("Pending {} {} timed out after {}s — escalated to {}",
+                                  orig_state.value, pos.symbol, age, target_state.value)
+
         for pos in self._positions.all_open():
             # Try to get fresh market data for this position
             snapshot = None
             if self._market_data_fn:
                 try:
-                    temp = Candidate(symbol=pos.symbol, price=pos.average_entry or 0)
+                    temp = Candidate(symbol=pos.symbol, price=pos.average_entry)  # ponytail: None if no entry yet — snapshot overwrites with real mid-price
                     snapshot = self._market_data_fn(temp)
                 except Exception:
                     logger.exception("Market-data fetch failed for %s during monitor", pos.symbol)
@@ -975,7 +1167,7 @@ class TradingApp:
                             bars=bars,
                             vwap=snapshot.vwap if snapshot else None,
                             move_state=result.move_state,
-                            entry_setup=None,
+                            entry_setup=pos_current.entry_setup,
                             prior_hod=snapshot.prior_hod if snapshot else None,
                             daily_loss_breached=self._risk_state.daily_loss_breached,
                             per_symbol_loss_capped=self._risk_state.per_symbol_daily_loss.get(pos.symbol, 0) < 0 and abs(self._risk_state.per_symbol_daily_loss.get(pos.symbol, 0)) >= self._max_daily_loss_pct * self._equity,
@@ -998,6 +1190,7 @@ class TradingApp:
                         vwap=snapshot.vwap if snapshot else None,
                         move_state=result.move_state,
                         activation_r_multiple=self._runner_activation_r,
+                        rvol=snapshot.rvol if snapshot else None,
                     )
                 ):
                     self._promote_to_runner(
@@ -1017,91 +1210,87 @@ class TradingApp:
                     and pos_current.state == PositionState.RUNNER
                     and bars is not None
                 ):
-                    add_signal = should_add_to_runner(
-                        pos_current,
-                        bars=bars,
-                        current_price=current_price,
-                        vwap=snapshot.vwap if snapshot else None,
-                        move_state=result.move_state,
-                        activation_r_multiple=self._add_activation_r_multiple,
-                        max_adds=self._max_adds,
-                        risk_per_share=risk_per_share,
-                    )
-                    if add_signal is not None:
-                        add_shares, _, _ = add_sizing(
-                            equity=self._equity,
-                            add_risk_pct=self._add_risk_pct,
-                            add_count=pos_current.add_count,
-                            risk_per_share_at_add=add_signal.risk_per_share,
-                            max_open_risk_pct=self._max_open_risk_pct,
-                            total_open_risk=self._risk_state.total_open_risk,
-                            add_size_multiplier=self._add_size_multiplier,
+                        add_signal = should_add_to_runner(
+                            pos_current,
+                            bars=bars,
+                            current_price=current_price,
+                            vwap=snapshot.vwap if snapshot else None,
+                            move_state=result.move_state,
+                            activation_r_multiple=self._add_activation_r_multiple,
+                            max_adds=self._max_adds,
+                            risk_per_share=risk_per_share,
                         )
-                        if add_shares > 0:
-                            _add_attempted = True
-                            add_stop = max(
-                                add_signal.entry_price,
-                                pos_current.entry_price or 0,
+                        if add_signal is not None:
+                            add_shares, _, _ = add_sizing(
+                                equity=self._equity,
+                                add_risk_pct=self._add_risk_pct,
+                                add_count=pos_current.add_count,
+                                risk_per_share_at_add=add_signal.risk_per_share,
+                                max_open_risk_pct=self._max_open_risk_pct,
+                                total_open_risk=self._risk_state.total_open_risk,
+                                add_size_multiplier=self._add_size_multiplier,
                             )
-
-                            try:
-                                add_order, _ = self._execution.submit_add(
-                                    pos_current.symbol,
-                                    qty=add_shares,
-                                    entry_price=add_signal.entry_price,
-                                    stop_price=add_stop,
-                                )
-                                # Log add_submitted after successful submission
-                                result.decision = "watch"
-                                result.decision_reason = "add_submitted"
-                                if self._logger is not None:
-                                    self._logger.write(result.to_decision_record())
-
-                                filled_state = self._execution.confirm_fill(add_order.order_id)
-                                # Log add_filled or add_pending based on resulting state
-                                if filled_state.state == PositionState.RUNNER:
-                                    result.decision_reason = "add_filled"
-                                else:
-                                    result.decision_reason = "add_pending"
-                                result.decision = "watch"
-                                if self._logger is not None:
-                                    self._logger.write(result.to_decision_record())
-                            except Exception:
-                                logger.exception(
-                                    "Add failed for %s — returning to RUNNER",
-                                    pos_current.symbol,
-                                )
-                                failed_pos = self._positions.get(pos_current.symbol)
-                                if failed_pos is not None:
-                                    transition_position(
-                                        failed_pos, PositionState.RUNNER, force=True,
+                            if add_shares > 0:
+                                _add_attempted = True
+                                if not self._is_market_open():
+                                    logger.warning(
+                                        "Market closed — skipping add for {}", pos_current.symbol,
                                     )
-                                    self._positions.upsert(failed_pos)
-                                    # Ensure position has a verified stop after failure
-                                    if (
-                                        failed_pos.stop_price is not None
-                                        and failed_pos.current_shares > 0
-                                        and not self._execution._has_pending_stop(failed_pos.symbol)
-                                    ):
-                                        try:
-                                            self._execution.protect_position(
-                                                failed_pos.symbol,
-                                                failed_pos.stop_price,
-                                                failed_pos.current_shares,
-                                            )
-                                        except Exception:
-                                            logger.exception(
-                                                "Failed to restore stop for %s after add failure",
-                                                failed_pos.symbol,
-                                            )
+                                    continue
+                                add_stop = max(
+                                    add_signal.entry_price,
+                                    pos_current.entry_price or 0,
+                                )
+
+                                try:
+                                    add_order, _ = self._execution.submit_add(
+                                        pos_current.symbol,
+                                        qty=add_shares,
+                                        entry_price=add_signal.entry_price,
+                                        stop_price=add_stop,
+                                    )
+                                    # Log add_submitted after successful submission
+                                    result.decision = "watch"
+                                    result.decision_reason = "add_submitted"
+                                    if self._logger is not None:
+                                        self._logger.write(result.to_decision_record())
+                                    # ponytail: confirm_fill deferred — ADDING timeout handler resolves it
+                                except Exception:
+                                    logger.exception(
+                                        "Add failed for %s — returning to RUNNER",
+                                        pos_current.symbol,
+                                    )
+                                    failed_pos = self._positions.get(pos_current.symbol)
+                                    if failed_pos is not None:
+                                        transition_position(
+                                            failed_pos, PositionState.RUNNER,
+                                        )
+                                        self._positions.upsert(failed_pos)
+                                        # Ensure position has a verified stop after failure
+                                        if (
+                                            failed_pos.stop_price is not None
+                                            and failed_pos.current_shares > 0
+                                            and not self._execution._has_pending_stop(failed_pos.symbol)
+                                        ):
                                             try:
-                                                self._execution.mark_unprotected(failed_pos.symbol)
-                                            except ValueError:
-                                                pass
-                                result.decision = "watch"
-                                result.decision_reason = "add_failed"
-                                if self._logger is not None:
-                                    self._logger.write(result.to_decision_record())
+                                                self._execution.protect_position(
+                                                    failed_pos.symbol,
+                                                    failed_pos.stop_price,
+                                                    failed_pos.current_shares,
+                                                )
+                                            except Exception:
+                                                logger.exception(
+                                                    "Failed to restore stop for %s after add failure",
+                                                    failed_pos.symbol,
+                                                )
+                                                try:
+                                                    self._execution.mark_unprotected(failed_pos.symbol)
+                                                except ValueError:
+                                                    pass
+                                    result.decision = "watch"
+                                    result.decision_reason = "add_failed"
+                                    if self._logger is not None:
+                                        self._logger.write(result.to_decision_record())
 
                 if _add_attempted:
                     # Skip generic watch log and exit path for this position
@@ -1120,29 +1309,104 @@ class TradingApp:
                 if self._logger is not None:
                     self._logger.write(result.to_decision_record())
 
-                # Execute exit if pipeline detected one
+                # ── Pending exit recovery (Task #21) ──
+                # Runs regardless of exit_decision so EXITING positions within
+                # timeout still get their pending exits confirmed. Never
+                # resubmits or cancels the same broker order.
+                if pos.symbol in self._pending_exit_orders:
+                    pending_id = self._pending_exit_orders[pos.symbol]
+                    shares_before_exit = pos.current_shares
+                    # ponytail: capture pre-exit realized_pnl before confirm_exit_fill mutates the store object
+                    realized_before = pos.realized_pnl or 0.0
+                    try:
+                        pos_after = self._execution.confirm_exit_fill(pending_id)
+                    except Exception:
+                        # confirm_exit_fill raised → immediately reconcile
+                        self._reconcile_positions_periodic()
+                        # If the execution pending store no longer contains this order,
+                        # it was resolved externally: pop tracker, start 60s exit retry cooldown
+                        if pending_id not in self._execution.pending:
+                            self._pending_exit_orders.pop(pos.symbol, None)
+                            self._exit_retry_after[pos.symbol] = time.monotonic() + 60.0
+                        continue
+                    filled_qty = max(shares_before_exit - pos_after.current_shares, 0)
+                    if filled_qty > 0:
+                        self._exit_retry_after.pop(pos.symbol, None)
+                        self._pending_exit_orders.pop(pos.symbol, None)
+                        if result.decision == "trail_exit":
+                            self._former_runners.mark(pos.symbol)
+                        # ponytail: compute incremental realized P&L (delta), not accumulated pos.realized_pnl
+                        realized = (pos_after.realized_pnl or 0.0) - realized_before
+                        if realized:
+                            self._record_realized_trade_pnl(pos.symbol, realized)
+                    # either filled or pending — skip normal submit path
+                    continue
+
+                # ── Execute exit ──
                 if result.exit_decision is not None and result.exit_decision.should_exit:
                     try:
+                        _mono_now = time.monotonic()
+                        _cooldown = self._exit_retry_after.get(pos.symbol)
+                        if _cooldown is not None:
+                            if _mono_now < _cooldown:
+                                logger.debug(
+                                    "Exit retry-after active for {} — skipping exit",
+                                    pos.symbol,
+                                )
+                                continue  # cooldown active — skip
+                            else:
+                                self._exit_retry_after.pop(pos.symbol, None)  # expired — clean up
+
+                        if not self._is_market_open():
+                            logger.warning(
+                                "Market closed — skipping exit for {}", pos.symbol,
+                            )
+                            continue
                         shares_before_exit = pos.current_shares
+                        # ponytail: capture pre-exit realized_pnl before submit_exit/confirm_exit_fill mutate the store object
+                        realized_before = pos.realized_pnl or 0.0
                         order, pos_after = self._execution.submit_exit(
                             pos.symbol,
                             reason=result.exit_decision.reason,
                             exit_pct=result.exit_decision.exit_pct,
                             exit_price=current_price,
                         )
+                        self._pending_exit_orders[pos.symbol] = order.order_id
                         pos_after = self._execution.confirm_exit_fill(order.order_id)
                         filled_qty = max(shares_before_exit - pos_after.current_shares, 0)
-                        if result.decision == "trail_exit" and filled_qty > 0:
-                            self._former_runners.mark(pos.symbol)
-                        # Accumulate realized P&L from confirmed execution fill, not quote snapshot.
-                        if filled_qty > 0 and (pos_after.realized_pnl or current_price is not None):
-                            realized = pos_after.realized_pnl or 0.0
-                            self._record_realized_trade_pnl(pos.symbol, realized)
+                        # ponytail: preserve tracker if still pending — next cycle
+                        # re-confirms the same broker order, never resubmits/cancels.
+                        if filled_qty > 0 or order.order_id not in self._execution.pending:
+                            self._pending_exit_orders.pop(pos.symbol, None)
+                            if result.decision == "trail_exit" and filled_qty > 0:
+                                self._former_runners.mark(pos.symbol)
+                            if filled_qty > 0:
+                                self._exit_retry_after.pop(pos.symbol, None)
+                                # ponytail: compute incremental realized P&L (delta), not accumulated pos.realized_pnl
+                                realized = (pos_after.realized_pnl or 0.0) - realized_before
+                                if realized:
+                                    self._record_realized_trade_pnl(pos.symbol, realized)
                     except Exception:
+                        # ponytail: preserve tracker if order still in execution.pending — next
+                        # cycle re-confirms the same broker order. Only pop + cooldown when the
+                        # tracked order is gone (submit failed before creation, or terminal
+                        # rejection resolved it).
+                        _exit_order_id = self._pending_exit_orders.get(pos.symbol)
+                        if _exit_order_id is None or _exit_order_id not in self._execution.pending:
+                            self._pending_exit_orders.pop(pos.symbol, None)
+                            self._exit_retry_after[pos.symbol] = time.monotonic() + 60.0
+                        else:
+                            logger.warning(
+                                "Exit exception for {} but order {} still in execution.pending — "
+                                "preserving tracker for next cycle",
+                                pos.symbol, _exit_order_id,
+                            )
                         logger.exception(
-                            "Exit execution failed for %s — position may remain OPEN",
+                            "Exit execution failed for {} — position may remain OPEN; "
+                            "triggering immediate broker truth reconciliation",
                             pos.symbol,
                         )
+                        self._reconcile_positions_periodic()
                 else:
                     # Mark-to-market: update unrealized P&L for open positions (T4.5)
                     if (
@@ -1224,7 +1488,7 @@ class TradingApp:
     # ── Broker stop sync (SPEC §11.17.13 roadmap #1) ──────────────
 
     def _sync_runner_stop_to_broker(self, pos: PositionStateModel) -> None:
-        """Cancel stale orders for symbol, then place new stop at trailing price.
+        """Place new stop first, then cancel old stops (except the new one).
 
         On failure, conservatively mark the position UNPROTECTED so emergency
         handling or manual review can catch it.  Never raises.
@@ -1236,8 +1500,11 @@ class TradingApp:
         if stop_price is None or qty <= 0:
             return
         try:
-            self._execution.cancel_stale_orders(symbol)
-            self._execution.protect_position(symbol, stop_price, qty)
+            # ponytail: place new stop FIRST, then cancel old stops (keeping the new one)
+            # If protect_position returns None, stop already exists at correct price — don't cancel anything
+            new_order = self._execution.protect_position(symbol, stop_price, qty)
+            if new_order is not None:
+                self._execution.cancel_stale_orders(symbol, except_order_id=new_order.order_id)
             logger.debug(
                 "runner_stop_synced symbol={} stop={} qty={}",
                 symbol, stop_price, qty,
@@ -1247,7 +1514,7 @@ class TradingApp:
                 "Runner stop sync failed for {} — marking UNPROTECTED", symbol,
             )
             try:
-                transition_position(pos, PositionState.UNPROTECTED, force=True)
+                transition_position(pos, PositionState.UNPROTECTED)
                 self._positions.upsert(pos)
             except Exception:
                 logger.exception(
@@ -1391,14 +1658,18 @@ class TradingApp:
 
                 # Steps 7-8: sizing + order submission
                 if result.entry_signal is not None:
-                    result = execute_entry(
-                        result,
-                        execution_gw=self._execution,
-                        equity=self._equity,
-                        starter_risk_pct=self._starter_risk_pct,
-                        max_trade_risk_pct=self._max_trade_risk_pct,
-                        pre_submit_quote_fn=self._market_data_fn,
-                    )
+                    if not self._is_market_open():
+                        result.decision = "skip"
+                        result.decision_reason = "market_closed"
+                    else:
+                        result = execute_entry(
+                            result,
+                            execution_gw=self._execution,
+                            equity=self._equity,
+                            starter_risk_pct=self._starter_risk_pct,
+                            max_trade_risk_pct=self._max_trade_risk_pct,
+                            pre_submit_quote_fn=self._market_data_fn,
+                        )
 
                 # Step 10: Log
                 if self._logger is not None:
@@ -1487,5 +1758,10 @@ class TradingApp:
                 )
             except Exception:
                 logger.exception("Failed to persist position state to %s", self._persist_path)
+            try:
+                pending_path = self._persist_path.replace(".json", "_pending.json")
+                self._execution.pending.save_to_disk(pending_path)
+            except Exception:
+                logger.exception("Failed to persist pending orders to %s", self._persist_path)
 
         # Future: reconcile broker state, log shutdown event via self._logger.

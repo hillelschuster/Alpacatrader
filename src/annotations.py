@@ -11,7 +11,10 @@ Provides:
 
 from __future__ import annotations
 
+from datetime import time
 from typing import Optional
+
+from src.hard_filters import is_lunch_window
 
 
 # ──────────────────────────────────────────────────────────────────
@@ -102,6 +105,7 @@ def map_soft_warnings(
     data_confidence: Optional[float] = None,
     has_news: Optional[bool] = None,
     has_catalyst: Optional[bool] = None,
+    et_time: Optional[time] = None,
 ) -> list[str]:
     """Map a candidate to soft-annotation labels per SPEC §8.
 
@@ -197,6 +201,9 @@ def map_soft_warnings(
     # ── Session / time warnings ───────────────────────────
     if halt_history_today:
         warnings.append("halt_history_today")
+    # ponytail: lunch = lower participation, reduce size, don't block
+    if et_time is not None and is_lunch_window(et_time):
+        warnings.append("lunch_window")
 
     # ── Confidence-based ──────────────────────────────────
     if data_confidence is not None and data_confidence < 0.7:
@@ -272,6 +279,7 @@ def soft_warning_multiplier(
         "no_catalyst": 1.0,  # handled by attention-dependent logic below
         "news_unknown": 1.0,  # annotation only
         "catalyst_unknown": 1.0,  # annotation only
+        "lunch_window": 0.75,  # ponytail: 25% reduction during lunch
     }
 
     multiplier = 1.0
