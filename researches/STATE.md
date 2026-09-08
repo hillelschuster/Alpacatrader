@@ -111,3 +111,8 @@ failed); plus historical: E1/E2/E3, gain-rank, health, Ridge, DTW, 10:00 snapsho
   scratch. CLEAN 2026-04..08 NOW IN BACKFILL (was orphaned; P2 unblocked).
 - Bot docs: SOUL/SPEC current (header version stale); README stale (pre-runner era);
   bot = separate workstream, implements only validated research.
+
+## P2 verdict (2026-09-08, pooled 13mo)
+Map structure replicates at ~half magnitude; M4 level (+0.59% gross) is
+all-tail (excl top-5 -> -0.09%) and cannot survive friction. H11 death confirmed
+structural. P3 restricted to replicated components; own pre-reg required.

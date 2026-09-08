@@ -286,3 +286,25 @@ single-month slicing), pre-register >= 2 unseen collision months, report at
 H11 afternoon rental (collision-failed 2026-09-08) — along with the historical
 retirements: E1/E2/E3 conditionality, gain-rank, health filters, Ridge x2,
 DTW-medoid paths, 10:00-snapshot prediction, reopen buying, thrust-alone anything.
+
+---
+## 2026-09-08e — P2 POOLED VERDICT (13 months, n=383 gate name-days, 49k halt events)
+
+M1 halt-gap A qualifying: pooled +1.57% (dev +2.64%); morning +5.50% med +4.05%
+win 66% (dev +6.28%/+4.43%/69%, n=68->111). REPLICATES.
+M2 causal post-reopen D10 +0.50% / D30 +0.51% pooled; morning D30 -1.54% (dev
+-1.54% exact). Anti-scalp check HOLDS: buying reopens ~zero-to-negative pooled.
+M3 schedule shape: morning wave +0.81% by 11:00 (dev +1.24%), dead midday
+(+0.22/+0.40/-0.05), afternoon +0.23%/+0.57% per hour (dev +1.25/+0.77). SHAPE
+REPLICATES at ~half magnitude.
+M4 13:30->close: pooled +0.59% gross (dev +2.39%), 9/13 months positive, med
++0.30% win 52%. Excl top-5 -> -0.09%; excl top-10 -> -0.39%. Entire level is tail.
+M6 green +1.57% vs red -0.29% (wider separation pooled than dev).
+Artifact: factory/artifacts/moneymap_pooled_gate.json + moneymap_pooled_halt.json.
+
+VERDICT per pre-reg gates: MIXED-leaning-replicate. Structure replicates (gaps to
+already-long; morning wave; dead midday; afternoon wave; post-reopen dead) at
+~half dev magnitude. M4 LEVEL (+0.59% gross) cannot survive 100bps friction as a
+rule (net ≈ -0.41%) — H11's collision death confirmed structurally, not a fluke.
+P3 may use ONLY: morning-gap structure + schedule shape + post-reopen-dead as
+constraints. No afternoon-rental level rule. P3 needs its own pre-reg.
