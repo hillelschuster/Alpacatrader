@@ -751,3 +751,15 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
 ## 2026-09-08d — forward-day checks + scorer verified
 - 2026-09-07 (Mon) NOT captured (observer only launched today) — coverage starts 2026-09-08. P1 ops gap noted.
 - score_forward_day.py dry-run on 2026-09-04: reproduces scores.json byte-identically (31 rows). Tonight's pipeline green. Needed: pip install alpaca-py (done) + .env keys present.
+
+## 2026-09-08e — observer outage + recovery (honest ops log)
+- 13:25-15:05 UTC: observer alive but every poll crashed (No module named 'loguru').
+  Detached supervisor's python != shell python env. ~100 min of today's tape LOST.
+- Fixed by pip install loguru (+yfinance for float enrichment) into hermes venv;
+  running process self-healed (failed imports aren't cached). First good poll
+  15:05:17 UTC (cands=50, watch=5). Supervisor hardened: pinned interpreter path
+  + dep preflight check (loud MISSING DEPS instead of silent poll-error loop).
+- Running loop still holds old script body (bash parses while-loop upfront); new
+  body activates on next supervisor restart. No mid-session restart (would duplicate
+  today's promotion rows). SIP snapshot fields null on scans (same as 09-04 — known;
+  deep snapshots pull bars separately).
