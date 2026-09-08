@@ -735,3 +735,9 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
   data/clean_2026-03 dup deleted. h007/h010 c10/c20 dup parquets pruned; _scratch
   dom studies pruned. Bot workstream committed (Phase A/B/C, SPEC 11.19); ml logs
   gitignored. Working tree clean; 70 commits ahead of origin pending push.
+
+## 2026-09-08 — forward observer running supervised
+- Observer live via factory/scripts/observe_supervisor.sh (auto-restart loop, 5s);
+  single tree, failure-safe. Window 13:25-20:10 UTC today. Scans -> data/forward/.
+- Infra lesson: inspect Windows processes with WMI filters excluding own commands;
+  Stop-Process must be tree-kill (taskkill /T), else supervisors resurrect children.
