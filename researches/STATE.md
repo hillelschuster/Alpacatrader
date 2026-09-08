@@ -47,7 +47,7 @@ failed); plus historical: E1/E2/E3, gain-rank, health, Ridge, DTW, 10:00 snapsho
 1. STOP inventing single-month-sliced selection rules. Statistical power first:
    any new test must pool >= 6 months of name-days in dev AND pre-register >= 2
    unseen collision months.
-2. Forward observer = the honest evidence engine. It runs daily, order-free, and
+2. Forward observer = the honest evidence engine (P2 pre-reg frozen: researches/PRE-REG-P2.md — read before any measurement work). It runs daily, order-free, and
    accumulates live n (no backtest overfit). Priority: keep it running, score every
    session through score_forward_day.py, build the live record.
    RUNBOOK: `python factory/scripts/forward_observe.py --live` during ET market hours
