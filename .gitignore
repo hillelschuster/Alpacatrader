@@ -64,3 +64,6 @@ factory/artifacts/ml/march.log
 factory/artifacts/ml/oos_*.log
 factory/artifacts/ml/refeat_*.log
 factory/artifacts/ml/xvendor_*.log
+
+# oversize evidence json (regenerable via factory/scripts/gate_decompose.py; headline numbers in docs)
+factory/artifacts/halt_reopen_all.json
