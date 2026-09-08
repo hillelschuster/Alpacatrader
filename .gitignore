@@ -54,3 +54,13 @@ factory/artifacts/h0*/**/*.parquet
 factory/artifacts/ml/backfill_*.log
 factory/artifacts/ml/build_feat_*.log
 factory/artifacts/ml/train_*.log
+factory/artifacts/ml/cert_chain.log
+factory/artifacts/ml/chain_*.log
+factory/artifacts/ml/clean_*.log
+factory/artifacts/ml/download.log
+factory/artifacts/ml/exposure_2025.log
+factory/artifacts/ml/fresh2026*.log
+factory/artifacts/ml/march.log
+factory/artifacts/ml/oos_*.log
+factory/artifacts/ml/refeat_*.log
+factory/artifacts/ml/xvendor_*.log
