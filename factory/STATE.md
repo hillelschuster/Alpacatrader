@@ -747,3 +747,7 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
   2026-04..08 holdout (with ML-lineage overlap disclosed), frozen gate cohort,
   fixed M1-M6 metrics, three decision gates. No edits allowed; new file for changes.
 - Next sequential: check/score 2026-09-07 forward day.
+
+## 2026-09-08d — forward-day checks + scorer verified
+- 2026-09-07 (Mon) NOT captured (observer only launched today) — coverage starts 2026-09-08. P1 ops gap noted.
+- score_forward_day.py dry-run on 2026-09-04: reproduces scores.json byte-identically (31 rows). Tonight's pipeline green. Needed: pip install alpaca-py (done) + .env keys present.
