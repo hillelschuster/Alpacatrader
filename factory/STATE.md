@@ -741,3 +741,9 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
   single tree, failure-safe. Window 13:25-20:10 UTC today. Scans -> data/forward/.
 - Infra lesson: inspect Windows processes with WMI filters excluding own commands;
   Stop-Process must be tree-kill (taskkill /T), else supervisors resurrect children.
+
+## 2026-09-08c — PRE-REG-P2 frozen (sequential step 1)
+- Wrote researches/PRE-REG-P2.md: 13-month dev pool (2025-03..2026-03), sealed
+  2026-04..08 holdout (with ML-lineage overlap disclosed), frozen gate cohort,
+  fixed M1-M6 metrics, three decision gates. No edits allowed; new file for changes.
+- Next sequential: check/score 2026-09-07 forward day.
