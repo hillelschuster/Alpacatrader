@@ -67,7 +67,7 @@ failed); plus historical: E1/E2/E3, gain-rank, health, Ridge, DTW, 10:00 snapsho
   Different horizons/universes; never re-opened head-to-head.
 - FP-penalized recall gate for Stage B (MFE-before-DD target adopted).
 - Harness-path rerun of MFE magnitudes (lane-only provenance currently).
-- 2026-04..08 clean-file provenance (duplicates in data/; backfill clean absent).
+- RESOLVED 2026-09-08: clean 2026-04..08 moved into data/backfill/ (live read path); load_day verified OK on 2026-04 and 2026-08; stale data/clean_2026-03 duplicate deleted.
 - H10a hold-through-halt: the one open capture family (untested, power-caveated).
 
 ## Critical session-semantics (never re-learn these)

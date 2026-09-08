@@ -14,6 +14,8 @@ evidence. (Full principle in the parent folder AGENTS.md.)
 ## Everything else is history/evidence, clearly marked
 - `researches/CANONICAL_STATE.md`, `researches/07-dominant-leader-program.md` — FROZEN
   historical snapshots. Do not cite as current.
+- `researches/history/` — June bot-era audits (00-06) + any archived research docs. Zero
+  constraint on active research.
 - `factory/artifacts/*.json` — committed evidence for every number in STATE/HYPOTHESES.
 - `factory/HYPOTHESES.jsonl` / `factory/EXPERIMENTS.jsonl` — experiment ledgers.
 
