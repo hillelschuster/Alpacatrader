@@ -94,3 +94,20 @@ failed); plus historical: E1/E2/E3, gain-rank, health, Ridge, DTW, 10:00 snapsho
   confusion was a day-coverage gap, not a population difference).
 - Friction is annotated per claim; cross-friction comparisons are void (20bps ML-era
   numbers are not comparable to 100bps H-era numbers).
+
+## File-map doctrine (from 2026-09-08 mapping round — complete order)
+- researches/: INTENT/STATE/HYPOTHESES active; CANONICAL_STATE + 07 frozen history;
+  history/ = June bot-era audits (00-06), zero research constraint.
+- factory/scripts/: ACTIVE = replay_watchlist, forward_observe, score_forward_day,
+  test_forward_observe + data-ops chain (download/audit/clean/certify/validate/
+  run_fresh_window) + ML machinery (build_features, train_ml, live_admission,
+  sequencing, exposure_design, eval_frozen); RETIRED-KEEP = all evidence producers
+  (H-series, path program, runner/gate/halt/h11, stagea, verify_core, feed_fingerprint);
+  DEPRECATED = rank_day, extract_events (lineage only).
+- factory/artifacts/: 8 committed JSONs = EVIDENCE-KEEP; ml/ specs+models = LINEAGE;
+  h006-010 summary/report = EVIDENCE, parquets regenerable (c10/c20 dup pairs pruned).
+- data/: canonical = clean_ohlcv (2025 data/, 2026 backfill/), premarket_2025,
+  forward/ = live evidence; raw ohlcv = rebuild source; _scratch/_superseded =
+  scratch. CLEAN 2026-04..08 NOW IN BACKFILL (was orphaned; P2 unblocked).
+- Bot docs: SOUL/SPEC current (header version stale); README stale (pre-runner era);
+  bot = separate workstream, implements only validated research.

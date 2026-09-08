@@ -727,3 +727,11 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
   certification dirs + ml coverage still uncommitted (next: commit evidence);
   src/ workstream (~3.1k lines, Phase A/B/C paper-bot) uncommitted, reviewed, split
   recommended before commit; data/ gitignored by policy.
+
+## 2026-09-08b — full file mapping round (6 lanes) + repairs
+- Verdicts recorded in researches/STATE.md file-map doctrine. June audits 00-06 ->
+  researches/history/. Clean 2026-04..08 un-orphaned (moved to backfill/, load_day
+  verified 2026-04+2026-08 OK) — P2 pooled re-measure now unblocked. Stale
+  data/clean_2026-03 dup deleted. h007/h010 c10/c20 dup parquets pruned; _scratch
+  dom studies pruned. Bot workstream committed (Phase A/B/C, SPEC 11.19); ml logs
+  gitignored. Working tree clean; 70 commits ahead of origin pending push.
