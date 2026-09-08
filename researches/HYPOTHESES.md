@@ -310,3 +310,35 @@ already-long; morning wave; dead midday; afternoon wave; post-reopen dead) at
 rule (net ≈ -0.41%) — H11's collision death confirmed structurally, not a fluke.
 P3 may use ONLY: morning-gap structure + schedule shape + post-reopen-dead as
 constraints. No afternoon-rental level rule. P3 needs its own pre-reg.
+
+---
+## 2026-09-09 — H12 HOT-WINDOW PATTERN MINING (raw 1-min features, causal top-5)
+
+Pre-registered (researches/PRE-REG-H12.md, written before model runs). Question:
+among causal top-5 gainers (prev-close gain, scanner semantics, eligibility
+>=10 bars + first open $1-50, no split-suspects) sampled every 5 min 9:45-10:30 ET,
+does raw local 1-min OHLCV action (22 features: thrust/pullback/volume/attention
+age, NO engineered stacks) discriminate first-touch +4% before -2% within 30 min
+(next-bar-open entry)? LightGBM, fixed hyperparams, LOMO dev 2025-03..12, collision
+2026-01..03, 100bps friction.
+
+RESULT (n=9074 dev / 2793 collision samples; 273 days):
+- LOMO dev AUC 0.60 (gate >=0.55 PASS) but top-decile net = -50bps (gate >=+30
+  FAIL). AUC lift does NOT convert to tradable economics: dev base mean T2
+  already -9.9bps; even the top decile nets negative after friction.
+- Collision: AUC 0.565 (ranking persists OOS) but decile ordering of T2 is FLAT/
+  INVERTED — top decile WORST (-285bps), all deciles negative. All 3 collision
+  months negative. Deduped per ticker-day: -187bps.
+- Importances diffuse (log_pc 637, ret15 588, log_dv 569 — price level and
+  recency dominate, no coherent pattern family).
+- Interpretation: the model ranks P(first-touch-up) fine, but in 2026 the
+  conditional drift after a top-decile score is negative — same collision regime
+  shift that killed every prior formulation. Rank information without positive
+  conditional drift is unexploitable at 100bps friction.
+
+VERDICT: H12 DEAD (dev gate failed; collision confirmed). H12 formulation
+(causal top-5 population, raw OHLCV features, first-touch 30-min target) is
+RETIRED — do not resurrect without new formulation + more power. 2026-04..08
+remain sealed/untouched. Artifact: factory/artifacts/hot_window_ml_H12_dev.json.
+Producer: factory/scripts/hot_window_ml.py (+ data/cache_h12/ per-day sample
+cache, resumable).

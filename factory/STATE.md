@@ -775,3 +775,23 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
   p0 measured post-gap; halt spanning 13:30 -> p1330 pre-halt close (upward bias on
   gap days); late-day (et>930) halt events dropped from M1; hourly path drops
   inter-bucket 1-min moves. P3 entry design must handle all four explicitly.
+
+## 2026-09-09a — H12 hot-window pattern-mining: BUILT, RUN, DEAD (pre-registered)
+- New lane from user directive: causal top-5 gainers (prev-close gain, scanner
+  semantics), sampled 9:45-10:30 ET every 5 min, 22 raw 1-min OHLCV features,
+  LightGBM target = first-touch +4% before -2% in 30 min, next-bar-open entry.
+- Pre-registered BEFORE any run: researches/PRE-REG-H12.md (gates: dev LOMO AUC
+  >=0.55 AND top-decile net >= +30bps; collision AUC >=0.53 AND net >= +30bps AND
+  positive in >=2/3 months; 100bps friction).
+- Producer: factory/scripts/hot_window_ml.py (imports harness snapshot semantics;
+  sample cache data/cache_h12/ per-day parquet, resumable; H12_STAGE=/tmp staging
+  because /mnt/c parquet reads are ~10x slower on ext4). Data: 273 days,
+  13 months (2025-03..2026-03), n=9074 dev + 2793 collision samples.
+- Verdict: DEV GATE FAIL (AUC 0.60 pass, top-decile net -50bps fail — rank info
+  without tradable drift), COLLISION FAIL (AUC 0.565 but deciles flat/inverted,
+  top decile worst at -285bps, 3/3 months negative, dedup -187bps). H12 RETIRED.
+  2026-04..08 still sealed. Artifact: factory/artifacts/hot_window_ml_H12_dev.json.
+- Env notes for future long jobs: WSL OOM kills came from et_minute's dt.date
+  object-array on 23M-row months (fixed via tz_convert path in hot_window_ml);
+  bash-tool detached processes get reaped between calls — run long caches in
+  ~14-min chunks with per-day incremental writes (resume by design) instead.

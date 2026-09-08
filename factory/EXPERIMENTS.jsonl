@@ -32,3 +32,4 @@
 {"id": "EXP-32", "date": "2026-09-07", "experiment": "halt temporal decomposition", "data": "32,159 live events", "result": "gap accrues to already-long only; D30 causal negative"}
 {"id": "EXP-33", "date": "2026-09-08", "experiment": "H11 capture pricing + full-cohort merge", "data": "n=180 gate cohort", "result": "dumb +1.24%; 13:30 rental +2.39%; tail-concentrated"}
 {"id": "EXP-34", "date": "2026-09-08", "experiment": "H11 collision (frozen rule)", "data": "2025-03/04 + 2026-01/02 unseen", "result": "FAIL: pooled net -2.13%, 2 consec neg months, RETIRED"}
+{"id": "EXP-35", "date": "2026-09-09", "experiment": "H12 hot-window pattern-mining (LightGBM, causal top-5, raw 1-min features)", "data": "273 days 2025-03..2026-03; n=9074 dev (10mo LOMO) + 2793 collision (3mo)", "result": "dev AUC 0.60 but top-decile net -50bps; collision AUC 0.565, deciles flat/inverted (top dec -285bps, 3/3 months neg, dedup -187bps)"}
