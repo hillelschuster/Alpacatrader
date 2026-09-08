@@ -1,0 +1,27 @@
+# Environment
+.env
+.git
+.gitattributes
+
+# Python caches / bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+
+# Runtime data
+logs/
+data/
+*.db
+*.sqlite3
+
+# Local virtualenvs
+.venv/
+venv/
+env/
+
+# Project artifacts
+.slim/
+.pytest_cache/
