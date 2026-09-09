@@ -857,3 +857,20 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
 - Contract written into researches/STATE.md (Leaderboard contract section).
   Live source = scanner API (no key). Leaderboard ONLY — no sampling/targets/
   horizons chosen. Research design deferred to user.
+
+## 2026-09-09f — leaderboard preprocessing FINISHED (grid gone, PIT universe)
+- --ts mandatory everywhere (hist/verify error without it; the 585..630/5
+  H12 grid is deleted from the codebase, not just defaulted).
+- PIT check: universe_tags.parquet = single CURRENT yfinance snapshot, NOT
+  point-in-time (no date dimension). Real PIT source per factory/AGENTS.md:
+  yolo22/stock-pit-archives. Downloaded the 492MB US-Stock-Symbols bundle,
+  extracted 369 daily vintages x (nasdaq|nyse|amex) symbol lists with junk-name
+  exclusion (warrant/right/unit/preferred/note) at extract time ->
+  data/pit/pit_symbols.parquet (2.1M rows, 2.5MB). Survivorship verified:
+  845 delistings + 940 new listings across 2025-03..2026-08.
+- eligible_set(day) now = PIT symbols as of that date. First catch: JNVR,
+  the TRUE #1 gainer (+249% at 9:45) on 2025-04-07, was invisible to the old
+  yfinance tags (NaN exchange / NONE quote type). Old tag filter also
+  survivorship-biased in reverse (kept later-delisted names as eligible via
+  stale rows). Leaderboard cache purged again; rebuilds use PIT.
+- Live fetcher unchanged (scanner API is inherently current-date PIT).

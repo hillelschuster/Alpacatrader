@@ -23,7 +23,6 @@ import sys
 import urllib.request
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -43,9 +42,6 @@ TV_BODY = {
     "range": [0, 5],
 }
 
-YF_EXCHANGE = {"NMS": "NASDAQ", "NGM": "NASDAQ", "NCM": "NASDAQ",
-               "NYQ": "NYSE", "ASE": "AMEX"}
-JUNK = re.compile(r".{3}[A-Z]?[WU]|^.{4}(W|WS|WW|WT|U|UN|UNN|UT|UU|UW|RT|PR|R)$")
 
 
 def cmd_live(k=3):
@@ -64,12 +60,23 @@ def cmd_live(k=3):
               f"mcap={v[4]} {v[5]}/{v[6]} {v[7]}")
 
 
-def eligible_set():
-    tags = pd.read_parquet(ROOT / "data" / "universe_tags.parquet")
-    tags = tags[tags["quote_type"] == "EQUITY"]
-    tags = tags[tags["exchange"].isin(YF_EXCHANGE)]
-    ok = set(tags["ticker"])
-    return {t for t in ok if not JUNK.match(t)}
+def eligible_set(day=None):
+    """PIT eligible symbols as of `day` (YYYY-MM-DD; None = latest vintage).
+    Source: yolo22/stock-pit-archives (rreichel3/US-Stock-Symbols git mirror,
+    daily vintages 2021-02..2026-08) -> data/pit/pit_symbols.parquet.
+    Junk security names (warrants/rights/units/preferreds/notes) excluded at
+    vintage-extract time; this is the dated, survivorship-correct universe.
+    universe_tags.parquet (single current yfinance snapshot) is NOT PIT and
+    is no longer used."""
+    from bisect import bisect_right
+    df = pd.read_parquet(ROOT / "data" / "pit" / "pit_symbols.parquet")
+    vintages = sorted(df["vintage"].unique())
+    if day is None:
+        return set(df[df["vintage"] == vintages[-1]]["symbol"])
+    i = bisect_right(vintages, day) - 1
+    if i < 0:
+        sys.exit(f"no PIT vintage on/before {day}")
+    return set(df[df["vintage"] == vintages[i]]["symbol"])
 
 
 def month_path(month: str) -> Path:
@@ -145,13 +152,15 @@ def board_at(gday: pd.DataFrame, prev: dict, elig: set, t: int, k: int):
 
 
 def cmd_hist(months, k=3, ts=None):
-    elig = eligible_set()
-    ts = ts or list(range(585, 631, 5))  # default grid ONLY when caller passes none
+    if not ts:
+        sys.exit("decision times required: pass --ts (ET minutes). "
+                 "No default grid exists by design.")
     for month in months:
         for day in month_days(month):
             key = CACHE / f"lb_{day.isoformat()}.parquet"
             if key.exists():
                 continue
+            elig = eligible_set(day.isoformat())
             p = month_path(month)
             df = pd.read_parquet(p, columns=["timestamp", "ticker", "close"])
             ts_utc = pd.to_datetime(df["timestamp"], utc=True)
@@ -183,7 +192,7 @@ def cmd_sanity():
     # stability: rank-1 name changes per day (attention turnover)
     per_day = df[df["rank"] == 1].groupby("date")["ticker"].nunique()
     print(f"\nrank-1 unique names/day: mean {per_day.mean():.2f} "
-          f"max {per_day.max()} (of {int((631-585)/5)+1} snapshots)")
+          f"max {per_day.max()}")
 
 
 def main():
@@ -193,7 +202,7 @@ def main():
     p.add_argument("months", nargs="*")
     p.add_argument("--k", type=int, default=3)
     p.add_argument("--ts", nargs="*", type=int, default=None,
-                   help="decision times (ET minutes); default research grid 585..630/5")
+                   help="decision times (ET minutes), REQUIRED for hist")
     p.add_argument("--day", default=None, help="verify: YYYY-MM-DD")
     a = p.parse_args()
     if a.cmd == "live":
@@ -211,8 +220,9 @@ def cmd_verify(day, ts, k):
     gain, resulting top-3 — with bar-level evidence printed."""
     if not day:
         sys.exit("verify needs --day YYYY-MM-DD")
-    elig = eligible_set()
-    ts = ts or [585, 600, 615]
+    if not ts:
+        sys.exit("verify needs --ts ET-minutes (no default grid by design)")
+    elig = eligible_set(day)
     month = day[:7]
     p = month_path(month)
     df = pd.read_parquet(p, columns=["timestamp", "ticker", "close"])
