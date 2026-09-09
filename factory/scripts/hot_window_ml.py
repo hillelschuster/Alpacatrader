@@ -443,9 +443,76 @@ def cmd_probe(dev, collision):
     print(f"\n-> {p}")
 
 
+def cmd_relative(dev, collision):
+    """Within-snapshot relative question: among the <=5 visible names at t,
+    does recent price action rank WHICH one has the better next local move?
+    Cancels day/regime drift by construction (same snapshot, same day).
+    Target: up_first. Metric: pooled AUC of within-snapshot score against
+    within-snapshot up_first labels (ties broken by wider mfe30)."""
+    from sklearn.metrics import roc_auc_score
+    out = {}
+    for tag, months, ref in [("dev", dev, None), ("collision", collision, dev)]:
+        if not months:
+            continue
+        dfp = load_cache(months)
+        if ref is None:
+            outs = []
+            for m in sorted(dfp["month"].unique()):
+                tr = dfp[dfp["month"] != m]
+                te = dfp[dfp["month"] == m]
+                _, p = fit_predict(tr, te)
+                o = te.copy()
+                o["score"] = p
+                outs.append(o)
+            o = pd.concat(outs, ignore_index=True)
+        else:
+            _, p = fit_predict(load_cache(ref), dfp)
+            o = dfp.copy()
+            o["score"] = p
+        # within (date, t) groups of <=5: per-snapshot AUC needs both labels
+        o["up_first"] = ((o["mfe30"] >= UP) & (o["T1"] == 1)).astype(int)
+        aucs, pairs = [], 0
+        for _, g in o.groupby(["date", "t"]):
+            if g["up_first"].nunique() < 2 or len(g) < 2:
+                continue
+            aucs.append(roc_auc_score(g["up_first"], g["score"]))
+            pairs += len(g) * (len(g) - 1) // 2
+        pooled = float(np.mean(aucs)) if aucs else float("nan")
+        # control: same within-snapshot ranking by rng10 alone (vol proxy)
+        vaucs = [roc_auc_score(g["up_first"], g["rng10"])
+                 for _, g in o.groupby(["date", "t"])
+                 if len(g) > 1 and g["up_first"].nunique() == 2
+                 and g["rng10"].notna().all()]
+        vpooled = float(np.mean(vaucs)) if vaucs else float("nan")
+        # pairwise version (all name-pairs within snapshot, 1 = scored pair agrees)
+        agree = disagree = 0
+        for _, g in o.groupby(["date", "t"]):
+            gg = g.sort_values("score")
+            for i in range(len(gg)):
+                for j in range(i + 1, len(gg)):
+                    hi, lo = gg.iloc[j], gg.iloc[i]  # higher score last
+                    if hi["up_first"] == lo["up_first"]:
+                        continue
+                    if hi["up_first"] == 1:
+                        agree += 1
+                    else:
+                        disagree += 1
+        pw = agree / (agree + disagree) if agree + disagree else float("nan")
+        r = {"n_snapshots_scored": len(aucs), "n_pairs": pairs,
+             "mean_snapshot_auc": round(pooled, 4),
+             "mean_snapshot_auc_volrank": round(vpooled, 4),
+             "pairwise_agree_rate": round(float(pw), 4)}
+        print(f"{tag}: {r}")
+        out[tag] = r
+    p = ART / "hot_window_ml_H12_relative.json"
+    p.write_text(json.dumps({"probe": "within-snapshot relative ranking", "gates": "none (inspection)",
+                             "out": out}, indent=1))
+    print(f"-> {p}")
+
+
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("cmd", choices=["cache", "eval", "probe"])
+    p.add_argument("cmd", choices=["cache", "eval", "probe", "relative"])
     p.add_argument("months", nargs="*")
     p.add_argument("--dev", nargs="*")
     p.add_argument("--collision", nargs="*")
@@ -456,6 +523,10 @@ def main():
         if not a.dev:
             sys.exit("probe needs --dev MONTHS")
         cmd_probe(a.dev, a.collision)
+    elif a.cmd == "relative":
+        if not a.dev:
+            sys.exit("relative needs --dev MONTHS")
+        cmd_relative(a.dev, a.collision)
     else:
         if not a.dev:
             sys.exit("eval needs --dev MONTHS")
