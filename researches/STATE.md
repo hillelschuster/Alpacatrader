@@ -116,3 +116,15 @@ failed); plus historical: E1/E2/E3, gain-rank, health, Ridge, DTW, 10:00 snapsho
 Map structure replicates at ~half magnitude; M4 level (+0.59% gross) is
 all-tail (excl top-5 -> -0.09%) and cannot survive friction. H11 death confirmed
 structural. P3 restricted to replicated components; own pre-reg required.
+
+## Leaderboard contract (2026-09-09, binding — do not drift)
+- TradingView-equivalent: US listed stocks (NASDAQ/NYSE/AMEX), stock/common,
+  junk-ticker suffixes excluded; rank causally by gain vs IMMEDIATELY previous
+  trading session close, desc.
+- Causal price at decision time t = close of the last bar stamped et<=t-1
+  (bar t-1 closes at t; no shift(1), no extra staleness).
+- ARBITRARY decision times supplied by the research. The leaderboard function
+  must NOT bake in any H12 grid, target, horizon, or evaluation structure.
+- Live source: TV scanner API (factory/scripts/tv_leaderboard.py, cmd live).
+  Historical: same script, cmd hist — prev-close crosses month files by
+  IMMEDIATELY prior session date, not prior month's last session.

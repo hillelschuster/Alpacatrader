@@ -842,3 +842,18 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
 - Producer: factory/scripts/hot_window_path.py; artifact:
   factory/artifacts/hot_window_ml_H12_path.json (+ relative probe
   hot_window_ml_H12_relative.json).
+
+## 2026-09-09e — leaderboard (TV-equivalent) rebuilt, contract enforced
+- User stopped hist runs mid-way: three defects fixed in tv_leaderboard.py.
+  (1) prev_close_map ranked mid-month days vs the PRIOR MONTH's last close —
+  now searches back by session date for the IMMEDIATELY prior session (April+
+  caches were garbage; purged, 52 files). (2) Lag was double-staled
+  (shift(1)+et<=t-1 => bar t-2); now causal px = close of last bar et<=t-1
+  directly. (3) Grid no longer baked: --ts arbitrary; default 585..630/5 only
+  when caller passes nothing.
+- Verified with explicit traces (verify cmd): 2025-04-07 t=585/600/615
+  (BJDX +138/+122/+159% vs prev_close 3.53 — cross-checked vs raw 2025-04-04
+  bars) and 2025-07-08 t=592/603 (NDRA +171/+159%, arbitrary t works).
+- Contract written into researches/STATE.md (Leaderboard contract section).
+  Live source = scanner API (no key). Leaderboard ONLY — no sampling/targets/
+  horizons chosen. Research design deferred to user.
