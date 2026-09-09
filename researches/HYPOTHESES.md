@@ -366,3 +366,29 @@ itself, not scalars), within-snapshot relative ranking (which of the 5 visible
 names is best), alternative economic questions, finer tape for selected names.
 Any next probe should differ in REPRESENTATION or ECONOMIC QUESTION, not
 re-tune the same scalars.
+
+### 2026-09-09 LANE PROGRESS: both follow-up probes run, both dead OOS
+1. RELATIVE (within-snapshot "which of the 5 visible names is better next",
+   up_first, snapshot-AUC): dev 0.597 vs volrank control 0.562 (real) BUT
+   collision 0.558 vs volrank 0.600 — OOS fully vol-explained. Scalar relative
+   question dead. (EXP-38, hot_window_ml_H12_relative.json)
+2. PATH REPRESENTATION (the literal "can ML read the recent path" question):
+   last 30 bars, 4 scale-free channels/bar (bar return, range, volume ratio,
+   close-position-in-range), 120 features, right-aligned NaN-padded. Dev AUC:
+   scalars 0.601 / path 0.599 / both 0.610 (path adds ~1pt in-dev). Collision:
+   0.565 / 0.550 / 0.557 — path adds NOTHING OOS; path-only worse than scalars.
+   Bracket dec9 net: dev -56..-67, collision -102..-129. (EXP-39,
+   hot_window_ml_H12_path.json, producer hot_window_path.py)
+3. Combined lane verdict as of 2026-09-09: on causal top-5 gainers, 9:45-10:30
+   ET, 30-min first-touch horizon, 1-min bars — scalar summaries AND raw
+   bar-path of the last 30 minutes both fail to carry OOS direction information
+   beyond volatility classification. Three probes, three OOS deaths, all the
+   same shape: real in-sample/in-dev discrimination, vol-explained or gone by
+   collision. This is now a well-tested negative on THIS population/horizon/
+   granularity — not a skipped idea.
+Remaining lane directions (untested): shorter horizons (<30min, incl. scalp
+shapes at 5-15min), halt/event-conditioned states, catalyst/float context
+variables, finer tape for selected names, multi-leg session structures.
+Any next probe must change POPULATION/HORIZON/CONDITIONING — representation
+(scalar vs path) and question (absolute/relative, first-touch/bracket) are now
+both exhausted at this horizon on 1-min bars.
