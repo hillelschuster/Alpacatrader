@@ -795,3 +795,18 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
   object-array on 23M-row months (fixed via tz_convert path in hot_window_ml);
   bash-tool detached processes get reaped between calls — run long caches in
   ~14-min chunks with per-day incremental writes (resume by design) instead.
+
+## 2026-09-09b — H12 SCOPE CORRECTION + post-mortem probe (lane open, probe dead)
+- User directive: H12-as-tested (one probe) may be dead; the thesis "top gainers,
+  hot window, price action -> recurring money-patterns" is NOT refuted by it.
+  Discovery mode stays primary; validation hardens only when something looks
+  monetizable. Recorded in HYPOTHESES.md H12 SCOPE CORRECTION.
+- Probe (hot_window_ml.py probe, artifact hot_window_ml_H12_probe.json):
+  (1) T1-matched bracket exit (+400/-200/30min) dead every month, dev AND
+  collision (-156..-175 net dec8+); excursion-not-terminal story refuted —
+  model's top scores = dn-first states (60-64%). (2) Surviving OOS AUC 0.565 =
+  vol-classification (volrank control 0.572); dev up-specific lift gone in 2026.
+  (3) Within model's top picks no raw scalar separates up_first (max 0.561).
+- Consequence: scalar-summary representation is exhausted on this population.
+  Next probe must change REPRESENTATION (raw path) or ECONOMIC QUESTION, not
+  re-tune scalars. No new lane opened yet — decision with user.

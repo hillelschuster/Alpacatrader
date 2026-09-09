@@ -336,9 +336,30 @@ RESULT (n=9074 dev / 2793 collision samples; 273 days):
   shift that killed every prior formulation. Rank information without positive
   conditional drift is unexploitable at 100bps friction.
 
-VERDICT: H12 DEAD (dev gate failed; collision confirmed). H12 formulation
-(causal top-5 population, raw OHLCV features, first-touch 30-min target) is
-RETIRED — do not resurrect without new formulation + more power. 2026-04..08
-remain sealed/untouched. Artifact: factory/artifacts/hot_window_ml_H12_dev.json.
-Producer: factory/scripts/hot_window_ml.py (+ data/cache_h12/ per-day sample
-cache, resumable).
+VERDICT: H12 formulation (causal top-5 population, raw OHLCV features, first-touch
+30-min target, this feature set) is RETIRED — do not resurrect without new
+formulation + more power. 2026-04..08 remain sealed/untouched. Artifact:
+factory/artifacts/hot_window_ml_H12_dev.json. Producer:
+factory/scripts/hot_window_ml.py (+ data/cache_h12/ per-day sample cache, resumable).
+
+### SCOPE CORRECTION (user directive 2026-09-09): the LANE is open, one probe died
+H12-as-tested = one probe of the broader thesis: "top gainers, hot window, price
+action — find recurring patterns that lead to money." The thesis itself is
+neither confirmed nor refuted by the gates above. Post-mortem probe
+(hot_window_ml.py probe, artifact hot_window_ml_H12_probe.json) established:
+1. MATCHED-EXIT (bracket +400/-200/30min) is DEAD: net -156..-175bps every dev
+   month AND every collision month (dec8+ dedup dev -176, collision -172).
+   Excursion-yes-terminal-no interpretation REFUTED — model's top scores mark
+   dn-first states (60-64%), not up-first. Short mirror = +12bps gross: dead.
+2. The surviving OOS AUC (0.565) = VOLATILITY CLASSIFICATION, not direction:
+   collision score-AUC on T1 0.565 vs pure rng10-volrank 0.572. Dev's up-specific
+   lift (0.601 vs 0.552) evaporated in 2026. Model learned "this will move a lot,"
+   which the friction-free leaderboard already encodes.
+3. Within the model's own top picks (collision dec8+), NO raw scalar separates
+   up_first from dn_first: best = last_rng 0.561; all 22 in [0.47, 0.56].
+   The 22-scalar representation is exhausted for direction on this population.
+What the lane has NOT yet tested: path-representation (recent OHLCV sequence
+itself, not scalars), time-slice-specific structure (t in window interacting with
+features), alternative economic questions (excursion capture per state vs
+first-touch), finer tape for selected names. Any next probe should differ in
+REPRESENTATION or ECONOMIC QUESTION, not re-tune the same scalars.

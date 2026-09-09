@@ -332,15 +332,129 @@ def cmd_eval(dev, collision):
     print(f"\ndev gate: {'PASS' if dev_gate else 'FAIL'} -> {out}")
 
 
+def bracket_ret(r):
+    """Exit matched to T1: +400 limit / -200 stop / else close at window end.
+    Uses cached mfe30/mae30 (entry-bar-inclusive)."""
+    mfe, mae, t2 = r["mfe30"], r["mae30"], r["T2"]
+    if mae <= -200:
+        return -200.0
+    if mfe >= 400:
+        return 400.0
+    return float(t2)
+
+
+UP, DN = 400.0, -200.0
+
+
+def cmd_probe(dev, collision):
+    """Post-mortem of the SURVIVING OOS discrimination (user directive
+    2026-09-09: formulation dead, lane open). No gate — inspection only."""
+    from sklearn.metrics import roc_auc_score
+
+    def scored(dfp, ref_pool):
+        # LOMO when ref_pool==None, else train-on-dev → score dfp
+        outs = []
+        if ref_pool is None:
+            for m in sorted(dfp["month"].unique()):
+                tr = dfp[dfp["month"] != m]
+                te = dfp[dfp["month"] == m]
+                _, p = fit_predict(tr, te)
+                o = te.copy()
+                o["score"] = p
+                outs.append(o)
+        else:
+            _, p = fit_predict(ref_pool, dfp)
+            o = dfp.copy()
+            o["score"] = p
+            outs.append(o)
+        o = pd.concat(outs, ignore_index=True)
+        o["volrank"] = o.groupby("date")["rng10"].rank(pct=True)
+        # up/dn first-touch labels from cached mfe30/mae30 (entry-bar-inclusive,
+        # both-touched-same-bar counts dn-first: conservative)
+        o["up_first"] = ((o["mfe30"] >= UP) & ~(
+            (o["mae30"] <= DN) & (o["T1"] == 0))).astype(int)
+        o["dn_first"] = ((o["mae30"] <= DN) & (o["T1"] == 0)).astype(int)
+        o["bracket"] = o.apply(bracket_ret, axis=1)
+        o["dec"] = np.minimum((o["score"].rank(pct=True) * 10).astype(int), 9)
+        return o
+
+    def report(tag, o, ref_pool=None):
+        print(f"\n===== {tag} =====")
+        for lbl in ["T1", "up_first", "dn_first"]:
+            a = roc_auc_score(o[lbl], o["score"])
+            v = roc_auc_score(o[lbl], o["volrank"])
+            print(f"AUC {lbl:8s} score {a:.3f} | volrank {v:.3f}")
+        g = o.groupby("dec").agg(
+            n=("bracket", "size"), up_first=("up_first", "mean"),
+            dn_first=("dn_first", "mean"), bracket=("bracket", "mean"),
+            t2=("T2", "mean"), mfe=("mfe30", "mean"))
+        g["br_net"] = g["bracket"] - FRICTION
+        g["t2_net"] = g["t2"] - FRICTION
+        print(g.round(2).to_string())
+        top = o[o["dec"] >= 8]
+        tb = top.groupby("month").agg(
+            n=("bracket", "size"), bracket=("bracket", "mean"), t2=("T2", "mean"))
+        tb["br_net"] = tb["bracket"] - FRICTION
+        print("dec8+ by month:"); print(tb.round(1).to_string())
+        d = top.sort_values("t").drop_duplicates(["date", "ticker"])
+        print(f"dec8+ dedup: bracket net {d['bracket'].mean() - FRICTION:.1f} "
+              f"t2 net {d['T2'].mean() - FRICTION:.1f} (n={len(d)})")
+        early = o[o["t"] <= 600]["dec"]
+        late = o[o["t"] > 600]["dec"]
+        print(f"top-dec share t<=600: {(early == 9).mean():.2f} | t>600: {(late == 9).mean():.2f}")
+        return {"auc": {l: round(float(roc_auc_score(o[l], o["score"])), 3)
+                       for l in ["T1", "up_first", "dn_first"]},
+                "auc_volrank": {l: round(float(roc_auc_score(o[l], o["volrank"])), 3)
+                                for l in ["T1", "up_first", "dn_first"]},
+                "deciles": g.round(2).to_dict("index"),
+                "top_month": tb.round(1).to_dict("index")}
+
+    devdf = load_cache(dev)
+    lomo = scored(devdf, None)
+    r_dev = report("DEV LOMO (10 months)", lomo)
+    out = {"probe": "H12 post-mortem: where did the surviving discrimination go?",
+           "friction_bps": FRICTION, "dev": r_dev, "collision": None}
+    if collision:
+        coldf = load_cache(collision)
+        colo = scored(coldf, devdf)
+        r_col = report("COLLISION (2026-01..03, unseen)", colo)
+        out["collision"] = r_col
+        # within-model-picks separation: does any raw feature separate
+        # up_first from dn_first among the model's own top picks?
+        from sklearn.metrics import roc_auc_score
+        top = colo[colo["dec"] >= 8]
+        sig = {}
+        for fcol in FEATURES:
+            sub = top[["up_first", fcol]].dropna()
+            sub = sub[sub[fcol].apply(np.isfinite)]
+            if sub["up_first"].nunique() < 2 or len(sub) < 50:
+                continue
+            a = roc_auc_score(sub["up_first"], sub[fcol])
+            sig[fcol] = round(float(a), 3)
+        sig = dict(sorted(sig.items(), key=lambda kv: -abs(kv[1] - 0.5)))
+        print("\ncollision dec8+: single-feature AUC separating up_first "
+              f"(n={len(top)}, up_first rate {top['up_first'].mean():.2f}):")
+        for k, v in sig.items():
+            print(f"  {k:10s} {v:.3f}")
+        out["collision"]["feature_sep_topdec"] = sig
+    p = ART / "hot_window_ml_H12_probe.json"
+    p.write_text(json.dumps(out, indent=1))
+    print(f"\n-> {p}")
+
+
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("cmd", choices=["cache", "eval"])
+    p.add_argument("cmd", choices=["cache", "eval", "probe"])
     p.add_argument("months", nargs="*")
     p.add_argument("--dev", nargs="*")
     p.add_argument("--collision", nargs="*")
     a = p.parse_args()
     if a.cmd == "cache":
         cmd_cache(a.months)
+    elif a.cmd == "probe":
+        if not a.dev:
+            sys.exit("probe needs --dev MONTHS")
+        cmd_probe(a.dev, a.collision)
     else:
         if not a.dev:
             sys.exit("eval needs --dev MONTHS")
