@@ -346,11 +346,14 @@ factory/scripts/hot_window_ml.py (+ data/cache_h12/ per-day sample cache, resuma
 H12-as-tested = one probe of the broader thesis: "top gainers, hot window, price
 action — find recurring patterns that lead to money." The thesis itself is
 neither confirmed nor refuted by the gates above. Post-mortem probe
-(hot_window_ml.py probe, artifact hot_window_ml_H12_probe.json) established:
-1. MATCHED-EXIT (bracket +400/-200/30min) is DEAD: net -156..-175bps every dev
-   month AND every collision month (dec8+ dedup dev -176, collision -172).
-   Excursion-yes-terminal-no interpretation REFUTED — model's top scores mark
-   dn-first states (60-64%), not up-first. Short mirror = +12bps gross: dead.
+(hot_window_ml.py probe, artifact hot_window_ml_H12_probe.json; numbers below
+are CORRECTED 2026-09-09 after fixing a bracket-ordering bug that charged -200
+to up-first-then-later-break trades):
+1. MATCHED-EXIT (bracket +400/-200/30min, T1 ordering) is net-dead but NOT
+   empty: dev dec9 bracket gross +33.4 (net -66.6), dec8+ months net -46..-102,
+   dedup -80 (n=851); collision dec9 gross -2.1 (net -102), dec8 +18 gross vs
+   T2 -97 (partial rescue of terminal fade is real), dec8+ months net -87..-96,
+   dedup -89 (n=245). Everywhere below +30 net gate at 100bps.
 2. The surviving OOS AUC (0.565) = VOLATILITY CLASSIFICATION, not direction:
    collision score-AUC on T1 0.565 vs pure rng10-volrank 0.572. Dev's up-specific
    lift (0.601 vs 0.552) evaporated in 2026. Model learned "this will move a lot,"
@@ -359,7 +362,7 @@ neither confirmed nor refuted by the gates above. Post-mortem probe
    up_first from dn_first: best = last_rng 0.561; all 22 in [0.47, 0.56].
    The 22-scalar representation is exhausted for direction on this population.
 What the lane has NOT yet tested: path-representation (recent OHLCV sequence
-itself, not scalars), time-slice-specific structure (t in window interacting with
-features), alternative economic questions (excursion capture per state vs
-first-touch), finer tape for selected names. Any next probe should differ in
-REPRESENTATION or ECONOMIC QUESTION, not re-tune the same scalars.
+itself, not scalars), within-snapshot relative ranking (which of the 5 visible
+names is best), alternative economic questions, finer tape for selected names.
+Any next probe should differ in REPRESENTATION or ECONOMIC QUESTION, not
+re-tune the same scalars.

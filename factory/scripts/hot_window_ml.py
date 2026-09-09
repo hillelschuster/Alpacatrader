@@ -333,14 +333,15 @@ def cmd_eval(dev, collision):
 
 
 def bracket_ret(r):
-    """Exit matched to T1: +400 limit / -200 stop / else close at window end.
-    Uses cached mfe30/mae30 (entry-bar-inclusive)."""
-    mfe, mae, t2 = r["mfe30"], r["mae30"], r["T2"]
-    if mae <= -200:
-        return -200.0
-    if mfe >= 400:
-        return 400.0
-    return float(t2)
+    """Exit matched to T1: +400 limit / -200 stop / else window-end close.
+    T1=1 means +4% strictly before -2% (or -2% never) -> the trade is already
+    flat at +400 even if -2% is crossed later in the window. T1=0 with
+    mae<=-200 = -2% first OR same-bar-both (conservative stop-first)."""
+    if r["T1"] == 1:
+        return UP
+    if r["mae30"] <= DN:
+        return DN
+    return float(r["T2"])
 
 
 UP, DN = 400.0, -200.0

@@ -810,3 +810,16 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
 - Consequence: scalar-summary representation is exhausted on this population.
   Next probe must change REPRESENTATION (raw path) or ECONOMIC QUESTION, not
   re-tune scalars. No new lane opened yet — decision with user.
+
+## 2026-09-09c — bracket bug FIXED, probe numbers corrected (verdict unchanged)
+- User caught real ordering bug in bracket_ret: mae-first check charged -200 to
+  up-first-then-later-break trades. Fixed to use T1 ordering (T1=1 -> +400 flat).
+- Corrected numbers: dev dec9 bracket gross +33 (was -55), dedup -80 (n=851);
+  collision dec8 gross +18 vs T2 -97 (partial rescue of terminal fade is real),
+  dec9 gross -2, dedup -89 (n=245). Dev dec8+ months net -46..-102, collision
+  -87..-96. Short mirror no longer computed (bug made it meaningless).
+- Broad verdict unchanged: matched-exit dead at 100bps everywhere, no month
+  clears +30 net. But "model picks = dn-first states" was overstated — top picks
+  carry REAL up-first-then-fade rescue relative to terminal, gross magnitude
+  just 1/3 of friction. Vol-classification finding (#2) and scalar-exhaustion
+  finding (#3) unchanged. Artifacts + H12 SCOPE CORRECTION revised in place.
