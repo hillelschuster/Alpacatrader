@@ -823,3 +823,22 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
   carry REAL up-first-then-fade rescue relative to terminal, gross magnitude
   just 1/3 of friction. Vol-classification finding (#2) and scalar-exhaustion
   finding (#3) unchanged. Artifacts + H12 SCOPE CORRECTION revised in place.
+
+## 2026-09-09d — H12 PATH PROBE (the literal question): raw path adds nothing OOS
+- Representation: last 30 bars right-aligned, 4 scale-free channels/bar (bar
+  ret, range, vol-ratio, close-position) = 120 features; scalars / path / both,
+  same fixed LightGBM, same LOMO dev 2025-03..12 + collision 2026-01..03.
+- Result: dev AUC 0.601 / 0.599 / 0.610 — path alone matches scalars, +path adds
+  ~1pt in dev. COLLISION: 0.565 / 0.550 / 0.557 — path does NOT add OOS; path-
+  only WORSE than scalars. Bracket economics still negative everywhere (dev
+  dec9 -56..-67, collision -102..-129). Early-window (t<=600) dev path lift
+  (0.584 vs scalars 0.568) did not survive collision.
+- Combined with EXP-38 (relative within-snapshot vol-explained OOS): on this
+  population at 30-min first-touch horizon, neither scalar summaries NOR raw
+  bar-path of the last 30 bars carry OOS direction information beyond
+  volatility. The lane's remaining untested directions: different horizons
+  (shorter than 30 min / multi-leg), conditioning objects (halt events, catalyst
+  context), or finer tape. Sequence-shape per se on 1-min bars: tested, dead.
+- Producer: factory/scripts/hot_window_path.py; artifact:
+  factory/artifacts/hot_window_ml_H12_path.json (+ relative probe
+  hot_window_ml_H12_relative.json).
