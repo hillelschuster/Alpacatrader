@@ -874,3 +874,15 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
   survivorship-biased in reverse (kept later-delisted names as eligible via
   stale rows). Leaderboard cache purged again; rebuilds use PIT.
 - Live fetcher unchanged (scanner API is inherently current-date PIT).
+
+## 2026-09-09g — 18-month 1-minute leaderboard + paths COMPLETE (EXP-42)
+- factory/scripts/lb18.py vectorized: per day, per RTH minute t=571..959,
+  causal top-3 by gain vs immediately prior session close, PIT universe;
+  top-3 rows -> lb_YYYY-MM-DD.parquet; union-of-top3 causal paths (o/h/l/c/v,
+  gain_c, n_bars at last completed bar) -> path_YYYY-MM-DD.parquet.
+- Built 2025-03..2026-08: 377 days, 756 files, 41MB, 146k minute-samples.
+- Correctness: vectorized version verified byte-equal vs earlier per-ticker
+  implementation on all of April + JNVR(2025-04-07)/SLBT(2026-06-16) traces.
+  Found + fixed a 1-bar lookahead in the first script version affecting only
+  2025-03-04..07 (rebuilt). Causality contract: bar t-1 completes at t.
+- Storage well under budget (41MB vs 30GB constraint).
