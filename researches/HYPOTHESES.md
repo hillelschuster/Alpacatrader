@@ -470,3 +470,36 @@ fast mean-reversion (median 4 min to breakeven) + runner tail, not in drift.
 Read: flush-recovery is real and conditioning-rich, but the naive aggregate race is
 fade-neutral; any money is in morning rank-1 / violent-thrust subsets and the
 new-leg tail, and must survive gap-through fills + 100bps.
+
+### Corrected episode semantics — instrument repair (lb18_episodes.json, 2026-09-09)
+Reviewer-flagged measurement repairs, all implemented in lb18_episodes.py:
+touches/volume/speed on real NEW bars only (n_bars increments; stale ffill rows
+excluded), native 1-min state minutes (no t%5), unique flush events deduped by
+fill minute (multiplicity reported), speed reindexed (old kd-relative vs
+last_hi-absolute bug), prior_flush as distinct episode starts, per-event race
+with fill-bar ordering bounds (pess=fill-bar high may precede fill; opt=counts
+it), EOD censoring, gap-through split, corrected labels (x20 = +20% vs pre-flush
+c0; bars_so_far = session bars).
+
+Corrected population: 7840 native state minutes -> 5294 fill-minutes -> **1893
+unique flush events** (multiplicity mean 2.8, max 21; 945 singletons). Old
+"1084 flushes" counted snapshot repetitions, not physical episodes.
+Fill realism corrected: gap-through 6.97% (old 17.4% was ffill artifact),
+overshoot med -1.35%, bar closes back above bid 57.7%.
+Race per event (cens 230 excluded): win pess 0.428 / opt 0.521; pay pess_net
+-0.75% / opt_net +1.18%; weak-close abort variant (exit at fill-bar close when
+close<bid) pess -0.06% / opt +0.88%.
+Conditioning that survives the repair:
+- Fill-bar close IS the cleanest at-the-moment separator: close>bid n=968
+  pess_net +1.67% / opt +3.28% / x20 19.8%; close<bid n=695 pess -4.12%.
+- gain 300-600% & depth<=15% (n=267): pess_net +1.04% / opt +3.22%, x20 19.1%,
+  fmax q90 +60%, 13/18 months pess-positive / 15/18 opt.
+- speed_min 0 (flush bar itself last printed >=0.98c0): opt +6.66% 18/18 months,
+  but pess -0.31% — bound-sensitive, do not believe yet.
+- prior_flush=0 still worst (rec winP 0.199-0.235); repeat flushes better.
+- morning edge shrank: g300+ d<=15 am1 pess -0.87% / opt +2.09% — NOT the clean
+  standout old flush3 suggested.
+Read: after repair the aggregate race is still ~fade-neutral; credible money now
+concentrates in (a) fill-bar close>bid as entry/stay confirmation and (b) extreme
+gain 300%+ with shallow depth, where both bounds are positive across most months.
+These two must be combined and pre-registered on frozen months before belief.

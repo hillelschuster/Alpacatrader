@@ -925,3 +925,20 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
 - Descriptive net-of-100bps on best cells ~+1.9..+2.3% (small n) — needs a frozen
   pre-registered test, not belief.
 - Artifact lb18_flush3.json; producer lb18_flush3.py.
+
+## 2026-09-09k — flush measurement repair (reviewer audit) + corrected episode read
+- lb18_episodes.py (new producer, lean): touches/volume/speed use real NEW bars
+  (n_bars increments) only; native 1-min state minutes (no t%5); flush events
+  deduped by (date,ticker,fill-minute) with multiplicity; speed index bug fixed;
+  prior_flush counts distinct episodes; per-event race with fill-bar ordering
+  bounds (pess/opt), EOD censoring flag, gap-through sensitivity; labels fixed
+  (x20 vs pre-flush c0; bars_so_far session count).
+- Corrected: 7840 native state minutes -> 5294 filled -> 1893 UNIQUE flush events
+  (multiplicity mean 2.8/max 21). Fill realism: gap-through 6.97% (not 17.4%),
+  overshoot med -1.35%. Old flush3 numbers were snapshot-inflated + ffill-fake.
+- Race per event (censored excluded, n=1663): win pess 0.428/opt 0.521; pay
+  pess_net -0.75%/opt +1.18%; abort-on-weak-close variant pess -0.06%/opt +0.88%.
+- Survivors: fill-bar close>bid (pess +1.67%/opt +3.28%, x20 19.8%); gain 300-600%
+  & depth<=15% (n=267, pess +1.04%/opt +3.22%, 13/18 months pess+, fmax q90 +60%);
+  repeat-flush > first-flush. Morning edge shrank (pess negative) — revised down.
+- Artifact lb18_episodes.json + lb18_episodes_events.parquet; EXP-46 recorded.
