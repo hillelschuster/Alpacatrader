@@ -432,3 +432,19 @@ Proposed next: mechanical pre-registered test of this formulation with costs
 
 Next discovery question (open): does the flush-recovery edge depend on flush
 depth/speed, hot-window timing, or rank? And symmetric question for the fade side.
+
+### Flush conditioning (lb18_flush2.json, 2026-09-09)
+1079 flush events in the extreme state. Findings:
+- Drop speed: 1078/1079 flushes are FAST (<=3 bars from >=0.98c0) — these are
+  violent air-pocket drops; resting orders are required to catch them.
+- Depth: -10..-15% rec 0.567/newx 0.205; -15..-25% rec 0.596/newx 0.296
+  (deeper flush -> fatter new-leg); < -25% rec collapses to 0.30 (n=30).
+- Time: 9:30-10:30 best (rec 0.688, newx 0.283, med_fmax 0.251), decays by
+  afternoon (rec 0.536). Consistency with earlier hot-window concentration.
+- Rank: rank1 rec 0.587/newx 0.227; rank2 weakest (0.442); rank3 good but n=57.
+- Gain: 300%+ better than 100-300% (rec 0.597 vs 0.555, newx 0.253 vs 0.204).
+- deep x fast (n=80): rec 0.35 — ultra-deep flushes are not bought as reliably.
+Economic read: bid resting into fast flushes of extreme fresh+thrust leaders,
+strongest spot = morning rank-1 300%+, flush -10..-25%; optionality on ~1-in-4
+new +20% leg. Race stats (rec 0.56 vs deeper 0.53) imply the edge lives in the
+fast mean-reversion (median 4 min to breakeven) + runner tail, not in drift.

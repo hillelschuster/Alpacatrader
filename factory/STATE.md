@@ -903,3 +903,10 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
   fresh+thrust leaders, target breakeven recovery — weakness, not strength.
 - Next: mechanical pre-registered test of that formulation with costs, plus
   flush-depth/timing conditioning. Memory: researches/HYPOTHESES.md 2026-09-09g.
+
+## 2026-09-09i — flush conditioning (lb18_flush2)
+- 1079 flush events: fast (1078/1079 <=3 bars), morning best (rec 0.688),
+  rank1 0.587, 300%+ 0.597, -15..-25% depth newx 0.296. Ultra-deep (<-25%)
+  rec 0.30. Artifact lb18_flush2.json. Formulation crystallizing:
+  resting bid into fast flushes of extreme fresh+thrust leaders, hot-window,
+  rank-1 bias, flush depth -10..-25%, target breakeven-recovery + runner tail.

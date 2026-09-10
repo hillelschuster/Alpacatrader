@@ -1,0 +1,137 @@
+{
+ "depth": {
+  "-15..-10": {
+   "n": 836,
+   "rec": 0.567,
+   "rec_first": 0.532,
+   "newx20": 0.205,
+   "med_fmax": 0.151,
+   "med_fmin": -0.102
+  },
+  "-25..-15": {
+   "n": 203,
+   "rec": 0.596,
+   "rec_first": 0.532,
+   "newx20": 0.296,
+   "med_fmax": 0.264,
+   "med_fmin": -0.132
+  },
+  "-40..-25": {
+   "n": 30,
+   "rec": 0.3,
+   "rec_first": 0.3,
+   "newx20": 0.0,
+   "med_fmax": 0.223,
+   "med_fmin": -0.213
+  },
+  "deeper": null
+ },
+ "speed": {
+  "fast<=3": {
+   "n": 1078,
+   "rec": 0.564,
+   "rec_first": 0.525,
+   "newx20": 0.214,
+   "med_fmax": 0.169,
+   "med_fmin": -0.108
+  },
+  "4-10": null,
+  "slow>10": null
+ },
+ "tod": {
+  "570-630": {
+   "n": 138,
+   "rec": 0.688,
+   "rec_first": 0.645,
+   "newx20": 0.283,
+   "med_fmax": 0.251,
+   "med_fmin": -0.126
+  },
+  "630-690": {
+   "n": 235,
+   "rec": 0.574,
+   "rec_first": 0.523,
+   "newx20": 0.238,
+   "med_fmax": 0.178,
+   "med_fmin": -0.129
+  },
+  "690-780": {
+   "n": 284,
+   "rec": 0.535,
+   "rec_first": 0.504,
+   "newx20": 0.208,
+   "med_fmax": 0.168,
+   "med_fmin": -0.104
+  },
+  "780+": {
+   "n": 422,
+   "rec": 0.536,
+   "rec_first": 0.5,
+   "newx20": 0.182,
+   "med_fmax": 0.159,
+   "med_fmin": -0.088
+  }
+ },
+ "rank": {
+  "r1": {
+   "n": 816,
+   "rec": 0.587,
+   "rec_first": 0.545,
+   "newx20": 0.227,
+   "med_fmax": 0.178,
+   "med_fmin": -0.104
+  },
+  "r2": {
+   "n": 206,
+   "rec": 0.442,
+   "rec_first": 0.417,
+   "newx20": 0.17,
+   "med_fmax": 0.138,
+   "med_fmin": -0.121
+  },
+  "r3": {
+   "n": 57,
+   "rec": 0.667,
+   "rec_first": 0.614,
+   "newx20": 0.193,
+   "med_fmax": 0.193,
+   "med_fmin": -0.125
+  }
+ },
+ "gain": {
+  "g100-300": {
+   "n": 858,
+   "rec": 0.555,
+   "rec_first": 0.512,
+   "newx20": 0.204,
+   "med_fmax": 0.164,
+   "med_fmin": -0.108
+  },
+  "g300+": {
+   "n": 221,
+   "rec": 0.597,
+   "rec_first": 0.575,
+   "newx20": 0.253,
+   "med_fmax": 0.216,
+   "med_fmin": -0.104
+  }
+ },
+ "shallow_fast": {
+  "n": 998,
+  "rec": 0.581,
+  "rec_first": 0.542,
+  "newx20": 0.225,
+  "med_fmax": 0.164,
+  "med_fmin": -0.106
+ },
+ "shallow_slow": null,
+ "deep_fast": {
+  "n": 80,
+  "rec": 0.35,
+  "rec_first": 0.312,
+  "newx20": 0.075,
+  "med_fmax": 0.247,
+  "med_fmin": -0.139
+ },
+ "deep_slow": null
+}
