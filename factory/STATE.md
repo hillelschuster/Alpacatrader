@@ -886,3 +886,20 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
   Found + fixed a 1-bar lookahead in the first script version affecting only
   2025-03-04..07 (rebuilt). Causality contract: bar t-1 completes at t.
 - Storage well under budget (41MB vs 30GB constraint).
+
+## 2026-09-09h — 18-month causal top-3 discovery arc (raw path mining)
+- Built 2025-03..2026-08 leaderboards+paths at every RTH minute (377 days,
+  756 files, 41MB) via factory/scripts/lb18.py (vectorized per-month wide
+  matrices; verified byte-equal against independent tv_leaderboard.py traces).
+- Leak rule established: path files include union-of-top3 names; analyses must
+  exclude future_hot rows (names whose first top-3 appearance is after t).
+- Discovery scripts (all causal, month-blocked): lb18_clusters/events/stability/
+  moments/leakcheck/causal/state/dip.py; artifacts lb18_*.json.
+- HEADLINE PHENOMENON: flush-recovery in extreme states. In g100+/fresh/thrust
+  top-3 minutes: 70.5% see >=10% flush within 2h; of those 56.2% recover to
+  breakeven (median 4 min to recovery), 52.3% recover before deeper, 21.3% get
+  a new +20% leg off the low; 18/18 months positive recovery rate.
+- Emerging formulation (NOT yet pre-registered): bid the flush in extreme
+  fresh+thrust leaders, target breakeven recovery — weakness, not strength.
+- Next: mechanical pre-registered test of that formulation with costs, plus
+  flush-depth/timing conditioning. Memory: researches/HYPOTHESES.md 2026-09-09g.

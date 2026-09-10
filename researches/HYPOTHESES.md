@@ -392,3 +392,43 @@ variables, finer tape for selected names, multi-leg session structures.
 Any next probe must change POPULATION/HORIZON/CONDITIONING — representation
 (scalar vs path) and question (absolute/relative, first-touch/bracket) are now
 both exhausted at this horizon on 1-min bars.
+
+---
+## 2026-09-09g — 18-MONTH CAUSAL TOP-3 DISCOVERY ARC (raw path inspection)
+
+Population: every RTH minute of 377 days (2025-03..2026-08), true causal top-3
+(prev-close gain, PIT universe, last-completed-bar price). Paths preserved as-is
+(data/leaderboard/, 756 files, 41MB; producer factory/scripts/lb18.py, EXP-42).
+
+Methodological rule (learned the hard way): path files cover union-of-top3 names
+per day, so naive event studies on them are contaminated by future_hot
+survivorship (a name entering top-3 AFTER t was selected by future info).
+All numbers below are causal: population = in-top3 at t, features <= t.
+
+Raw findings (all month-blocked checked):
+1. Base state is fade-dominant (medians negative, fat right tail). No unconditional
+   positive drift anywhere in the population.
+2. Extreme-at-moment (causal gain >=100%) + fresh (at session running max) + thrust
+   (15m >= +3%) shows a month-stable UP-FIRST ordering: +-20: 44/34, +-30: 35/21,
+   +-40: 26/12 (up-first/dn-first, 120m touch race), 16/18 months up>dn at +-30.
+   Medians still negative — the ordering, not the drift, is what's positive.
+3. THE FLUSH PHENOMENON (headline; lb18_dip.json): within the extreme state,
+   - 70.5% of moments see a >=10% flush within 120m (control g100+: 50.1%)
+   - of those flushes: 56.2% recover to breakeven within 60m of the LOW,
+     median time to recovery = 4 MINUTES (control: 39.7%, 13 min)
+   - 52.3% recover before going another -10% deeper (control 37.1%)
+   - 21.3% spawn a NEW +20% leg off the low (control 9.4%)
+   - median max excursion off the dip low +16.8% (control +11.3%)
+   - monthly rec rate 0.385-0.667, positive 18/18 months; new-leg 17/18 months.
+   Example: 2026-05-27 ASTC t=715 gain +614% -> flush to -10% -> recovered.
+   
+EMERGING ECONOMIC FORMULATION (not yet pre-registered; from the data, not invented):
+"flush-recovery in extreme states" — the money moment is weakness in a violent
+leader, not strength: resting bid into a -8/-10% flush of an extreme
+(100%+ causal) fresh+thrust top-3 name during the hot window, first target the
+breakeven recovery (median 4 min), optionality on the 1-in-5 new-leg runner.
+Proposed next: mechanical pre-registered test of this formulation with costs
+(exact rule frozen before run), versus control states.
+
+Next discovery question (open): does the flush-recovery edge depend on flush
+depth/speed, hot-window timing, or rank? And symmetric question for the fade side.
