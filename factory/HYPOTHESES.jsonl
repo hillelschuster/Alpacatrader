@@ -21,3 +21,4 @@
 {"id": "H021", "date": "2026-09-07", "hypothesis": "halt-reopen continuation was anchor illusion; causal next-open entry negative; reopen buying dead", "status": "INVALIDATED-BY-BUG"}
 {"id": "H022", "date": "2026-09-08", "hypothesis": "H11 afternoon rental: dev +2.39% but collision pooled net -2.13%; retired; power meta-finding adopted", "status": "RETIRED"}
 {"id": "H023", "date": "2026-09-09", "hypothesis": "H12 raw-OHLCV pattern mining on causal top-5: rank info real (AUC 0.60/0.565) but conditional drift negative in collision; unexploitable at 100bps", "status": "RETIRED"}
+{"id": "H024", "date": "2026-09-09", "hypothesis": "Extreme top-3 flush: rolling -10% resting bid while flat (refresh each state minute), fill on new-bar touch, exit sell-all-at-c0 or tl30 hold; pf>=2 conditioning; discovery-grade +1.2%/trade 15/18 months on 18 seen months", "status": "DISCOVERY"}

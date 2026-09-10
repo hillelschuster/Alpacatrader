@@ -531,3 +531,43 @@ This is discovery evidence on the same 18 months used to find it. NOT validated.
 Next: freeze ONE rule (state + bid + fill rules + exit: f1=0.5 at c0, remainder
 trail15-floor) and test on genuinely untouched data (2026-04..08 were used in
 some scans -> prefer new months as they arrive / forward observer).
+
+### 2026-09-09n — canonical reconciliation: the scale-out headline was a sim artifact (CORRECTION)
+
+When the exit sims from lb18_scaleout.py were rebuilt in ONE consistent engine
+(lb18_canon.py: stop checked before target per bar, exit min(open,stop), new-bar
+only, same friction), the scale-out result REVERSED:
+- f100 (sell ALL at c0) beats f50/f67 on the same events: +0.85%/12of18 vs
+  +0.18%/+0.41% for fraction 0.5/0.67. The +2.56% so0.50_t0.15 headline came
+  from S-vs-L sim mismatches, not economics.
+- Strong fills (fc>=2%): f100 +5.29%/18of18 vs f50 +4.28% — partial scale-out
+  was still short of selling everything at c0 under the consistent engine.
+- Management that holds (tl30: 30-bar time limit, exit at close if unresolved)
+  improves: ALL +1.07%/14of18; strong +5.38%/18of18 worst month +0.62%;
+  pf>=2 +1.62%/16of18 worst -0.47%.
+- LOCK variants (move stop to breakeven at c0 / after strong print) DESTROY the
+  edge (strong lock -1.12%/0of18): the runner need room; tight protection kills
+  the tail before it pays.
+- Cutting weak fills early (any tested rule) is WORSE than holding all: the
+  weak tail still recovers to c0 often enough. Absorb-entry (enter only after
+  strong close) much weaker: entry at the bid is where the edge comes from.
+
+### 2026-09-09o — executable lifecycle reconciled: rolling refresh works, blocking doesn't (EXECUTED)
+
+Diff event-level (n=1663) vs strict lifecycle (n=539): on 468 shared fills the
+ret gap is +0.02% (engines agree); the gap is WHICH fills each includes.
+Strict lifecycle L-only fills (71, n.e. seq drops) mean -2.59%; seq-only fills
+(246, strict misses) mean +6.73% — blocking re-arm (require NEW fresh/thrust
+state minute after resolution) skips the best flushes.
+Rolling-bid lifecycle (refresh a resting -10% bid at EVERY state minute while
+flat, fill first new-bar touch, tl30 exit, re-arm after exit):
+- all n=937: +0.39%/11of18, worst -4.5%.
+- pf>=2 n=658: +1.20%/15of18 worst -1.17%; rank1 n=713 +0.96%/13of18.
+- Stay/abort by fill-bar close (fc<0 abort) LOSES under honest exit prices
+  (+0.19% vs +1.20% for hold-all); abort@bid prices are not executable.
+- Sequential one-position-per-day filter on events (no pyramid): +2.23%/16of18
+  (pf2+ +3.38%/17of18 worst -1.27%) — upper bound before lifecycle frictions.
+Current best executable read: extreme leaders + rolling -10% flush bid +
+sell-at-c0 (or tl30 hold, whichever engine) + pf>=2 conditioning; estimate
++1.2%/trade net, 15/18 months, worst month -1.2%, ~35 fills/month.
+Still discovery-grade. Next: freeze + pre-register; forward months only.

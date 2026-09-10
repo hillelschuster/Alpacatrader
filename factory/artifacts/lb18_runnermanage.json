@@ -1,0 +1,102 @@
+{
+ "ALL": {
+  "n": 473,
+  "n_open": 284,
+  "closed_before_dec": 189,
+  "base": {
+   "mean": 0.0576,
+   "med": 0.0425,
+   "months+": "17/18"
+  },
+  "cut": {
+   "mean": 0.0673,
+   "med": 0.0616,
+   "months+": "18/18"
+  },
+  "tight": {
+   "mean": 0.0614,
+   "med": 0.0614,
+   "months+": "17/18"
+  },
+  "wide": {
+   "mean": 0.0706,
+   "med": 0.0143,
+   "months+": "17/18"
+  }
+ },
+ "rt0": {
+  "n": 144,
+  "n_open": 117,
+  "closed_before_dec": 27,
+  "base": {
+   "mean": 0.1121,
+   "med": 0.0812,
+   "months+": "18/18"
+  },
+  "cut": {
+   "mean": 0.128,
+   "med": 0.1003,
+   "months+": "18/18"
+  },
+  "tight": {
+   "mean": 0.1231,
+   "med": 0.0912,
+   "months+": "18/18"
+  },
+  "wide": {
+   "mean": 0.1268,
+   "med": 0.0594,
+   "months+": "18/18"
+  }
+ },
+ "rt1-2": {
+  "n": 76,
+  "n_open": 51,
+  "closed_before_dec": 25,
+  "base": {
+   "mean": 0.0716,
+   "med": 0.046,
+   "months+": "11/17"
+  },
+  "cut": {
+   "mean": 0.078,
+   "med": 0.0719,
+   "months+": "16/17"
+  },
+  "tight": {
+   "mean": 0.0772,
+   "med": 0.066,
+   "months+": "12/17"
+  },
+  "wide": {
+   "mean": 0.0819,
+   "med": 0.021,
+   "months+": "10/17"
+  }
+ },
+ "rt3+": {
+  "n": 253,
+  "n_open": 116,
+  "closed_before_dec": 137,
+  "base": {
+   "mean": -0.0036,
+   "med": -0.0681,
+   "months+": "8/17"
+  },
+  "cut": {
+   "mean": 0.0013,
+   "med": -0.0047,
+   "months+": "8/17"
+  },
+  "tight": {
+   "mean": -0.0079,
+   "med": -0.0397,
+   "months+": "6/17"
+  },
+  "wide": {
+   "mean": 0.009,
+   "med": -0.0446,
+   "months+": "8/17"
+  }
+ }
+}

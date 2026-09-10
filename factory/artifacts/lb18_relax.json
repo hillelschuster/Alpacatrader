@@ -1,0 +1,47 @@
+{
+ "strict": {
+  "n": 539,
+  "mean": -0.0048,
+  "med": -0.0062,
+  "pos": 0.49,
+  "months_pos": 9,
+  "n_months": 18,
+  "worst_month": -0.0564
+ },
+ "relaxed": {
+  "n": 1137,
+  "mean": -0.0137,
+  "med": -0.0207,
+  "pos": 0.443,
+  "months_pos": 4,
+  "n_months": 18,
+  "worst_month": -0.05
+ },
+ "events_all": {
+  "n": 1663,
+  "mean": 0.0107,
+  "med": 0.0462,
+  "pos": 0.564,
+  "months_pos": 14,
+  "n_months": 18,
+  "worst_month": -0.0419
+ },
+ "events_seq": {
+  "n": 714,
+  "mean": 0.0223,
+  "med": 0.1011,
+  "pos": 0.627,
+  "months_pos": 16,
+  "n_months": 18,
+  "worst_month": -0.0458
+ },
+ "events_dropped": {
+  "n": 949,
+  "mean": 0.002,
+  "med": 0.0087,
+  "pos": 0.516,
+  "months_pos": 9,
+  "n_months": 18,
+  "worst_month": -0.036
+ }
+}

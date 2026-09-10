@@ -959,3 +959,19 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
 - Artifacts: lb18_lifecycle.json/.parquet, lb18_runners.parquet,
   lb18_scaleout.parquet (+grid), lb18_absorb_all.parquet, lb18_runner_variants.parquet.
 - Discovery-grade only. Next: freeze the rule + pre-register on untouched months.
+
+## 2026-09-09p — canonical reconciliation + rolling lifecycle (discovery executed)
+- Rebuilt all exits in ONE engine (lb18_canon.py) after finding S/L sim mismatch.
+  CORRECTION: sell-all-at-c0 (f100) beat partial scale-out; scale-out headline
+  (+2.56%) was an artifact of inconsistent sims. Strong fills +5.29%/18of18 (f100);
+  tl30 hold-30min improves to +5.38%/18of18. LOCK variants destroy edge. Cutting
+  weak fills loses to holding all.
+- Lifecycle re-arm diagnosed (lb18_relax.py): blocking re-arm (strict) misses
+  +6.73% seq-only fills; rolling refresh (lb18_roll.py: -10% bid refreshed every
+  state minute while flat) is the correct executable version: all +0.39%/11of18,
+  pf>=2 +1.20%/15of18 worst -1.17%, n=658/18mo (~35 fills/mo).
+- Stay/abort by fill-bar close loses under honest exits; abort@bid assumption
+  rejected. Seq upper bound (no pyramid): +2.23%/16of18.
+- Artifacts: lb18_canon*, canon_*.parquet, lb18_relax*, lb18_roll*, plus prior
+  runnerpath/runnermanage. Scripts: lb18_canon.py, lb18_relax.py, lb18_roll.py.
+- Status: discovery-grade on all seen months; freeze + forward test is the next step.

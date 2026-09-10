@@ -1,0 +1,166 @@
+{
+ "diff": {
+  "counts": {
+   "both": 468,
+   "right_only": 246,
+   "left_only": 71
+  },
+  "both_retL": -0.0016,
+  "both_retS": -0.0014
+ },
+ "all": {
+  "n": 937,
+  "mean": 0.0039,
+  "med": 0.031,
+  "pos": 0.534,
+  "months_pos": 11,
+  "n_months": 18,
+  "worst_month": -0.0452
+ },
+ "pf2": {
+  "n": 658,
+  "mean": 0.012,
+  "med": 0.1011,
+  "pos": 0.562,
+  "months_pos": 15,
+  "n_months": 18,
+  "worst_month": -0.0117
+ },
+ "rank1": {
+  "n": 713,
+  "mean": 0.0096,
+  "med": 0.1011,
+  "pos": 0.558,
+  "months_pos": 13,
+  "n_months": 18,
+  "worst_month": -0.0482
+ },
+ "rule_all_fc0.0": {
+  "n": 937,
+  "mean": -0.0049,
+  "med": -0.0203,
+  "pos": 0.347,
+  "months_pos": 10,
+  "n_months": 18,
+  "worst_month": -0.0353
+ },
+ "rule_all_fc0.0_abortB": {
+  "n": 937,
+  "mean": 0.0132,
+  "med": -0.01,
+  "pos": 0.347,
+  "months_pos": 16,
+  "n_months": 18,
+  "worst_month": -0.005
+ },
+ "rule_pf2_fc0.0": {
+  "n": 658,
+  "mean": 0.0019,
+  "med": -0.0177,
+  "pos": 0.374,
+  "months_pos": 10,
+  "n_months": 18,
+  "worst_month": -0.0189
+ },
+ "rule_pf2_fc0.0_abortB": {
+  "n": 658,
+  "mean": 0.0148,
+  "med": -0.01,
+  "pos": 0.374,
+  "months_pos": 17,
+  "n_months": 18,
+  "worst_month": -0.0065
+ },
+ "rule_all_fc0.02": {
+  "n": 937,
+  "mean": -0.0097,
+  "med": -0.0126,
+  "pos": 0.32,
+  "months_pos": 3,
+  "n_months": 18,
+  "worst_month": -0.0414
+ },
+ "rule_all_fc0.02_abortB": {
+  "n": 937,
+  "mean": 0.0059,
+  "med": -0.01,
+  "pos": 0.197,
+  "months_pos": 15,
+  "n_months": 18,
+  "worst_month": -0.0095
+ },
+ "rule_pf2_fc0.02": {
+  "n": 658,
+  "mean": -0.0049,
+  "med": -0.0103,
+  "pos": 0.339,
+  "months_pos": 7,
+  "n_months": 18,
+  "worst_month": -0.0301
+ },
+ "rule_pf2_fc0.02_abortB": {
+  "n": 658,
+  "mean": 0.005,
+  "med": -0.01,
+  "pos": 0.191,
+  "months_pos": 10,
+  "n_months": 18,
+  "worst_month": -0.0091
+ },
+ "rule_all_fc0.05": {
+  "n": 937,
+  "mean": -0.0124,
+  "med": -0.0096,
+  "pos": 0.375,
+  "months_pos": 1,
+  "n_months": 18,
+  "worst_month": -0.0393
+ },
+ "rule_all_fc0.05_abortB": {
+  "n": 937,
+  "mean": -0.0023,
+  "med": -0.01,
+  "pos": 0.076,
+  "months_pos": 4,
+  "n_months": 18,
+  "worst_month": -0.01
+ },
+ "rule_pf2_fc0.05": {
+  "n": 658,
+  "mean": -0.0082,
+  "med": -0.0062,
+  "pos": 0.401,
+  "months_pos": 2,
+  "n_months": 18,
+  "worst_month": -0.0259
+ },
+ "rule_pf2_fc0.05_abortB": {
+  "n": 658,
+  "mean": -0.0047,
+  "med": -0.01,
+  "pos": 0.053,
+  "months_pos": 1,
+  "n_months": 18,
+  "worst_month": -0.0144
+ },
+ "monthly_pf2_rule": {
+  "2025-03": -0.0084,
+  "2025-04": 0.0067,
+  "2025-05": 0.0021,
+  "2025-06": 0.0018,
+  "2025-07": -0.0158,
+  "2025-08": 0.0011,
+  "2025-09": -0.0157,
+  "2025-10": 0.0018,
+  "2025-11": -0.0301,
+  "2025-12": -0.0096,
+  "2026-01": -0.0108,
+  "2026-02": -0.0071,
+  "2026-03": 0.002,
+  "2026-04": -0.0093,
+  "2026-05": -0.0142,
+  "2026-06": -0.0047,
+  "2026-07": -0.0066,
+  "2026-08": 0.0118
+ }
+}
