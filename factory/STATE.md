@@ -910,3 +910,18 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
   rec 0.30. Artifact lb18_flush2.json. Formulation crystallizing:
   resting bid into fast flushes of extreme fresh+thrust leaders, hot-window,
   rank-1 bias, flush depth -10..-25%, target breakeven-recovery + runner tail.
+
+## 2026-09-09j — flush context + fill realism (lb18_flush3)
+- 1084 flushes of 1537 state moments (70.5% incidence). Fill realism: 17.4% gap
+  through the -10% bid; median overshoot past bid -2.3% (q75 -0.85%); 55.5% of
+  flush bars close back above the bid.
+- Race (win = recover to c0, stop = -10% from fill): p_win 0.484 (clean 0.480),
+  mean win +12.4%, descriptive EV +0.87% gross (~-0.13% at 100bps). Aggregate race
+  is a coin flip, net-negative at doctrine friction.
+- Conditioning that helps rec_first: morning rank-1 0.592 (6/8 months), thrust15
+  20%+ 0.577 (newx 0.283), gain 300-600% 0.553, nbar<20 0.552 (newx 0.315, also
+  deepest 0.776). First flush of day NOT bought (0.136, n=44). Depth 15-25% recovers
+  worse (0.407) but fatter new leg (0.294). rank2 weakest (0.380).
+- Descriptive net-of-100bps on best cells ~+1.9..+2.3% (small n) — needs a frozen
+  pre-registered test, not belief.
+- Artifact lb18_flush3.json; producer lb18_flush3.py.

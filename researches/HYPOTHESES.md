@@ -448,3 +448,25 @@ Economic read: bid resting into fast flushes of extreme fresh+thrust leaders,
 strongest spot = morning rank-1 300%+, flush -10..-25%; optionality on ~1-in-4
 new +20% leg. Race stats (rec 0.56 vs deeper 0.53) imply the edge lives in the
 fast mean-reversion (median 4 min to breakeven) + runner tail, not in drift.
+
+### Flush context + fill realism (lb18_flush3.json, 2026-09-09)
+1084 flushes of 1537 state moments (incidence 70.5%). New axes:
+- Fill realism: 17.4% GAP THROUGH the -10% bid (flush bar opens below it); median
+  overshoot past the bid -2.3% (q75 -0.85%); 55.5% of flush bars close back above
+  the bid. Resting-limit fills are realistic but not free.
+- Race (win = recover to c0, stop = -10% from FILL): p_win 0.484 (clean-fill 0.480),
+  mean win +12.4%, descriptive EV +0.87% gross -> ~-0.13% at 100bps. The aggregate
+  race is a coin flip and NOT net-positive; conditioning is what moves it.
+- rec_first by bucket: rank1 0.506 / rank2 0.380 / rank3 0.559; morning 9:30-10:30
+  0.537; gain 300-600% 0.553; thrust15 20%+ 0.577 (newx 0.283); nbar<20 0.552
+  (newx 0.315); volx q3/q4 ~0.51; depth 10-15% 0.517 vs 15-25% 0.407 (fatter newx
+  0.294); px 2-5 bad; FIRST flush of day NOT bought (prior_flush=0 rec_first 0.136,
+  n=44) — flushes get bought on repeat, not the first.
+- Month stability: all-flush rec_first mean 0.468 (>=50% in 8/18); morning 0.541
+  (6/10); morning rank-1 0.592 (6/8).
+- Descriptive net-of-100bps on best cells: morning_rank1 ~+2.3%, thrust15 20%+
+  ~+1.9% (small n). Must be validated by a frozen pre-registered test, not believed
+  from this.
+Read: flush-recovery is real and conditioning-rich, but the naive aggregate race is
+fade-neutral; any money is in morning rank-1 / violent-thrust subsets and the
+new-leg tail, and must survive gap-through fills + 100bps.
