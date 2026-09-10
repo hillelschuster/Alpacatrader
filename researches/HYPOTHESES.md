@@ -503,3 +503,31 @@ Read: after repair the aggregate race is still ~fade-neutral; credible money now
 concentrates in (a) fill-bar close>bid as entry/stay confirmation and (b) extreme
 gain 300%+ with shallow depth, where both bounds are positive across most months.
 These two must be combined and pre-registered on frozen months before belief.
+
+### 2026-09-09m — lifecycle + runner capture (EXECUTED, discovery-grade; NOT pre-registered)
+
+Instrument: lb18_lifecycle.py (one resting bid per ticker at a time: state minute
+-> bid -10% under decision close, rests 120m, no mid-rest replacement; fill on
+first NEW bar low<=bid; at fill-bar close decide stay/abort; re-arm only at a
+state minute after resolution). lb18_runners.py / lb18_scaleout.py study exits.
+Population: 744 orders -> 541 fills (203 no-fill) / events file 1893.
+
+Headline discovery (scale-out): **sell f1 at c0 (pre-flush close) + trail the
+remainder** transforms the economics vs plain trailing stop:
+- ALL 1663 non-censored events: so0.50_t0.15 mean +2.56% / med +3.06% / 63% pos
+  / 15/18 months positive (vs t20f mean +0.71% / med -11%).
+- Strong subset (fill-close >= +2% above bid, n=474): so0.50_t0.15 mean +5.86%
+  / med +4.40% / 77% pos / 17-18/18 months positive; c0 hit rate 77%.
+- Weak subset (fill-close < 0, n=695): so0.50_t0.15 ~breakeven (-0.03%) — the
+  scale-out converts the old -3.8% weak tail into ~0 because half the position
+  monetizes any later return to c0.
+- On the tradeable lifecycle population (n=489 consistent rows): so0.50_t0.15
+  mean +1.04% / med +2.55% / 11/18 months (vs t15f -1.8%). Bounded but positive.
+Interpretation: the flush runner tail (+20% from bid reached by 59% of strong
+fills, +50% by 31%) is real but needs a partial scale-out at c0 to pay for the
+ones that never get there. Trailing everything gives the tail back; selling all
+at c0 caps winners. Half at c0 + half trailing is the balance point.
+This is discovery evidence on the same 18 months used to find it. NOT validated.
+Next: freeze ONE rule (state + bid + fill rules + exit: f1=0.5 at c0, remainder
+trail15-floor) and test on genuinely untouched data (2026-04..08 were used in
+some scans -> prefer new months as they arrive / forward observer).

@@ -942,3 +942,20 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
   & depth<=15% (n=267, pess +1.04%/opt +3.22%, 13/18 months pess+, fmax q90 +60%);
   repeat-flush > first-flush. Morning edge shrank (pess negative) — revised down.
 - Artifact lb18_episodes.json + lb18_episodes_events.parquet; EXP-46 recorded.
+
+## 2026-09-09l — lifecycle + runner capture (scale-out discovery)
+- Built lb18_lifecycle.py: one-order-at-a-time lifecycle (bid -10% under decision
+  close, rests 120m, no mid-rest replace; fill on first NEW bar; stay/abort at
+  fill-bar close; re-arm at next state minute after resolution). 744 orders,
+  541 fills, 203 no-fills. Strong fills (close>=bid) 271; weak 270.
+- Exit study (lb18_runners.py, lb18_scaleout.py) across all 1663 unique events:
+  plain trail20 mean +0.71%; **scale-out (sell half at pre-flush c0, trail
+  remainder 15%, floor -10%) mean +2.56%, med +3.06%, 15/18 months positive**.
+  Strong subset (fill-close>=+2%): mean +5.86%, med +4.40%, 77% pos, 17-18/18
+  months; c0 hit rate 77%. Weak subset: ~breakeven (was -3.8%).
+- Tradeable lifecycle population (n=489): so0.50_t0.15 mean +1.04%, med +2.55%,
+  11/18 months positive. Positive but thin — needs freeze + fresh months.
+- L=0.15 bid depth variant worse on aggregate; keep L=0.10.
+- Artifacts: lb18_lifecycle.json/.parquet, lb18_runners.parquet,
+  lb18_scaleout.parquet (+grid), lb18_absorb_all.parquet, lb18_runner_variants.parquet.
+- Discovery-grade only. Next: freeze the rule + pre-register on untouched months.

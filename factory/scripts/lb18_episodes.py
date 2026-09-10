@@ -348,6 +348,43 @@ def main():
     }
     print(" ", out["runner"])
 
+    print("\n# absorption split (fill-bar close vs bid; post-fill info)")
+    nc = d[~d["censored"]]
+    out["absorption"] = {
+        "close_ge_bid": cell(nc[nc["fill_close"] >= 0]),
+        "close_lt_bid": cell(nc[nc["fill_close"] < 0]),
+    }
+    for k_, v_ in out["absorption"].items():
+        print(f"  {k_:14s} n={v_['n']:5d} winP={v_.get('win_pess')} "
+              f"payP_net={v_.get('pay_pess_net')} payO_net={v_.get('pay_opt_net')} "
+              f"x20={v_.get('x20')}")
+
+    print("\n# headline cells (exact defs, non-censored)")
+    stages = {
+        "g>=3 & depth<=15": (d["gain"] >= 3) & (d["depth"] <= 0.15),
+        "g>=3 & depth<=15 & r1": ((d["gain"] >= 3) & (d["depth"] <= 0.15)
+                                  & (d["rank"] == 1)),
+        "g>=3 & depth<=15 & pf>=1": ((d["gain"] >= 3) & (d["depth"] <= 0.15)
+                                     & (d["prior_flush"] >= 1)),
+        "g>=3 & volx>=med": (d["gain"] >= 3) & (d["volx"] >= d["volx"].median()),
+        "speed==0": d["speed_min"] == 0,
+    }
+    out["headline"] = {}
+    for name, mask in stages.items():
+        c = cell(d[mask.fillna(False)])
+        out["headline"][name] = c
+        resx = d[mask.fillna(False) & ~d["censored"]]
+        if len(resx):
+            mp = resx.groupby("month")["ret_pess"].mean()
+            mo = resx.groupby("month")["ret_opt"].mean()
+            out["headline"][name]["months_pess_pos"] = int((mp > 0).sum())
+            out["headline"][name]["months_opt_pos"] = int((mo > 0).sum())
+            out["headline"][name]["n_months"] = int(len(mp))
+        print(f"  {name:26s} n={c['n']:5d} winP={c.get('win_pess')} "
+              f"payP_net={c.get('pay_pess_net')} payO_net={c.get('pay_opt_net')} "
+              f"x20={c.get('x20')} monthsP={c.get('months_pess_pos')}/{c.get('n_months')} "
+              f"monthsO={c.get('months_opt_pos')}/{c.get('n_months')}")
+
     print("\n# month stability (win_pess / pay_pess_net / n)")
     cells = {
         "all": d, "am1": d[d["tf"] <= 630],
