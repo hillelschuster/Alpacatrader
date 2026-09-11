@@ -1095,3 +1095,15 @@ Deliberate fidelity choices (not bugs): tick-only replacement; current-rank
 alignment via latest-completed-bar state; cancel owned resting buys on restart.
 Deferred: parity/ledger semantics (findings 17-24) to fix before trusting
 reconciliation numbers.
+
+## 2026-09-11k — parity/ledger semantics fixed (audit findings 17-24, partial)
+Parity: reconstructed scans gated to rank<=3 (live gate); engine fills matched to
+journal fills by nearest minute (<=5) instead of greedy first-match; artifact
+records dmin plus an explicit "approx" list (one-bar scan timing and
+POS_MAX/15:30/anchor guards NOT replicated).
+Ledger: attribution now uses ET days on both sides (was UTC prefix -> late-day
+fills would have been dropped as foreign); get_orders paginated; friction charged
+once per round-trip on the closing leg; bids keyed by (ET day, symbol). Entry
+cost remains weighted-average (not FIFO) — acceptable for v0 single-lot trades.
+Regression: parity on the fabricated 2026-09-09 journal still reproduces the known
+FTFT fill (tf=678, +10.11%); ledger baseline fills=0 / 54 foreign ignored.

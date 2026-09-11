@@ -54,6 +54,8 @@ def main():
         return
     by_t = {}
     for e in scan_rows:
+        if int(e.get("rank", 99)) > 3:
+            continue
         t, d = et_minute(e["ts"])
         if d != day or not (570 <= t <= 959):
             continue
@@ -82,23 +84,26 @@ def main():
     act = []
     for f in fills:
         t, d = et_minute(f["ts"])
-        act.append({"symbol": f.get("symbol"), "t": t, "price": f.get("price"),
-                    "B": f.get("B"), "c0": f.get("c0")})
+        act.append({"symbol": f.get("symbol"), "oid": f.get("oid"), "t": t,
+                    "price": f.get("price"), "B": f.get("B"), "c0": f.get("c0")})
     exp = expected.to_dict("records") if len(expected) else []
     matches, unmatched_exp, unmatched_act = [], [], []
     used = set()
     for x in exp:
         hit = None
+        best = None
         for i, aa in enumerate(act):
             if i in used or aa["symbol"] != x["ticker"]:
                 continue
-            if abs(aa["t"] - int(x["tf"])) <= 5:
-                hit = (i, aa)
-                break
+            dt = abs(int(aa["t"]) - int(x["tf"]))
+            if dt <= 5 and (best is None or dt < best[0]):
+                best = (dt, i, aa)
+        if best:
+            hit = (best[1], best[2])
         if hit:
             used.add(hit[0])
             matches.append({"engine": {k: x[k] for k in ("ticker", "tf", "ret")},
-                            "actual": hit[1]})
+                            "actual": hit[1], "dmin": best[0]})
         else:
             unmatched_exp.append({k: x[k] for k in ("ticker", "tf", "ret")})
     for i, aa in enumerate(act):
@@ -106,7 +111,9 @@ def main():
             unmatched_act.append(aa)
     out = {"day": day, "n_scan_rows": len(scan_rows), "n_syms": len(syms),
            "n_expected": len(exp), "n_actual": len(act), "matches": matches,
-           "expected_no_fill": unmatched_exp, "actual_not_expected": unmatched_act}
+           "expected_no_fill": unmatched_exp, "actual_not_expected": unmatched_act,
+           "approx": ["scan assigned to its own minute (live decision bar t-1 not modeled)",
+                      "engine replay does not replicate POS_MAX/15:30/refresh-anchor guards"]}
     (ART / f"flush_bot_parity_{day}.json").write_text(
         json.dumps(out, indent=1, default=str))
     print(f"expected {len(exp)} | actual {len(act)} | matched {len(matches)}")

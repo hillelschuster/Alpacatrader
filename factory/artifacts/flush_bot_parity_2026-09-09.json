@@ -1,7 +1,7 @@
 {
  "day": "2026-09-09",
  "n_scan_rows": 890,
- "n_syms": 24,
+ "n_syms": 17,
  "n_expected": 1,
  "n_actual": 0,
  "matches": [],
@@ -12,5 +12,9 @@
    "ret": 0.10111111111111117
   }
  ],
- "actual_not_expected": []
+ "actual_not_expected": [],
+ "approx": [
+  "scan assigned to its own minute (live decision bar t-1 not modeled)",
+  "engine replay does not replicate POS_MAX/15:30/refresh-anchor guards"
+ ]
 }
