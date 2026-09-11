@@ -1122,3 +1122,10 @@ FTFT fill (tf=678, +10.11%); ledger baseline fills=0 / 54 foreign ignored.
   change later read +57.9% — TV-side reference shift, not ours).
 - Watch midday for +100%-gain qualifying candidates; parity tonight uses IEX
   bars for today's session.
+
+## 2026-09-11m — observer feed fix staged (IEX-first intraday)
+forward_observe.py log_new_bars + deep_snapshot now try IEX before SIP (SIP
+intraday returns ~2 stale rows on this plan). The edit is dormant: the running
+observer keeps the old code until its next restart, deliberately deferred to
+post-close to avoid duplicate promotion rows. The bot's equivalent fix is
+already live (5f6dcc5).

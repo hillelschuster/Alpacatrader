@@ -195,7 +195,8 @@ def deep_snapshot(day_dir: Path, symbol: str, now: str):
         from alpaca.data.enums import DataFeed
         from alpaca.common.enums import Sort
         hc = StockHistoricalDataClient(api_key, secret)
-        for feed in (DataFeed.SIP, DataFeed.IEX):
+        # intraday: SIP returns ~2 stale rows on this plan; IEX has the live session
+        for feed in (DataFeed.IEX, DataFeed.SIP):
             try:
                 bs = hc.get_stock_bars(StockBarsRequest(
                     symbol_or_symbols=[symbol], timeframe=TimeFrame.Minute,
@@ -257,7 +258,8 @@ def log_new_bars(day_dir: Path, promoted_state: dict) -> int:
     hc = StockHistoricalDataClient(os.getenv("ALPACA_API_KEY"),
                                    os.getenv("ALPACA_SECRET_KEY"))
     added = 0
-    for feed in (DataFeed.SIP, DataFeed.IEX):
+    # intraday: SIP returns ~2 stale rows on this plan; IEX has the live session
+    for feed in (DataFeed.IEX, DataFeed.SIP):
         try:
             res = hc.get_stock_bars(StockBarsRequest(
                 symbol_or_symbols=syms, timeframe=TimeFrame.Minute,
