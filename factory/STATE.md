@@ -1157,3 +1157,13 @@ already live (5f6dcc5).
   use the IEX-based replay (forward_backfill_bars already patched).
 - Journal place_bid count = 0; zero error events. Day-1 remains a no-trade session,
   which is rule-correct given the candidates and the tape available.
+
+## 2026-09-11n — Alpaca /clock outage hardening (live)
+- 12:16-13:02 ET: Alpaca Trading API returned 500 on /clock for ~46 consecutive
+  polls -> the bot logged 44 error tracebacks and aborted each poll (it was flat,
+  so no risk, but a live position would have been unmanaged during the outage).
+- Fix: Broker.clock() retries once (1s) then falls back to the local ET session
+  clock (weekday + 570<=minute<960); a single API hiccup no longer blinds the
+  poll cycle. Restarted live:true via KILL after the edit.
+- Also noted: one error event at 15:22 was an offline test invocation missing
+  pyarrow (my shell), not the bot (the bot venv has pyarrow 25.0.1).

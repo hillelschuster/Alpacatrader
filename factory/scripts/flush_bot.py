@@ -217,8 +217,21 @@ class Broker:
         self.dc = StockHistoricalDataClient(key, sec)
 
     def clock(self):
-        c = self.tc.get_clock()
-        return bool(c.is_open), c.timestamp
+        # Alpaca /clock can 500 transiently (observed 2026-09-11 12:16-13:02 ET);
+        # retry once, then fall back to the local ET session clock so a single
+        # API hiccup doesn't blind the whole poll cycle.
+        for attempt in (1, 2):
+            try:
+                c = self.tc.get_clock()
+                return bool(c.is_open), c.timestamp
+            except Exception as e:
+                if attempt == 1:
+                    time.sleep(1)
+                    continue
+                jlog("clock_fallback", msg=str(e)[:160])
+        n = now_et()
+        m = n.hour * 60 + n.minute
+        return n.weekday() < 5 and 570 <= m < 960, n
 
     def open_orders(self):
         from alpaca.trading.requests import GetOrdersRequest
