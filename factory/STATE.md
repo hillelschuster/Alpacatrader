@@ -1043,3 +1043,16 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
   while True. To reload code or flip --live: touch data/KILL (bot exits within ~60s),
   rm data/KILL, supervisor relaunches within 5s. Used to load scan_row journaling; bot
   now runs the new code, dry-run, market closed.
+
+## 2026-09-11g — flush-bot pre-open hardening (exit tracking + bid concurrency)
+Audit of the live order paths found four defects, all fixed before market open:
+1. Exits were never detected: when the OCO sold, meta kept entry_bars -> no exit journalled,
+   re-arm gate never armed, and a later re-entry on the same symbol SKIPPED its protective
+   OCO (fill branch required entry_bars is None). Fix: each poll, entry_bars set but no
+   broker position -> journal 'exit', set last_exit_bars, clear entry/oco/order state.
+2. Buy-order concurrency: POS_MAX capped positions but not resting bids (up to 10 bids for 3
+   slots). Fix: len(positions)+len(buys) >= POS_MAX.
+3. tl30 exit and EOD flatten never cleared/reset state (last_exit_bars, entry_*, oco_id).
+   Fix: both paths clear state and set last_exit_bars.
+4. OCO id was logged but not stored; micro guard for missing filled_at.
+Bot restarted via KILL switch to run the hardened code (dry-run, live:false).

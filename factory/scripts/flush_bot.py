@@ -245,6 +245,18 @@ def poll(br: Broker, meta: dict, probe=False):
     for o in orders:
         if o.side.value == "buy":
             buys[o.symbol] = o
+    for sym, m in list(meta.items()):
+        if m.get("entry_bars") is not None and sym not in positions:
+            jlog("exit", symbol=sym,
+                 held=m.get("n_bars", 0) - int(m["entry_bars"]),
+                 oco=m.get("oco_id"))
+            m["last_exit_bars"] = m.get("n_bars", 0)
+            m["entry_bars"] = None
+            m["entry_B"] = None
+            m["entry_c0"] = None
+            m["oco_id"] = None
+            m["order_id"] = None
+            m["order_t"] = None
     et_now = now_et()
     minutes_now = et_now.hour * 60 + et_now.minute
 
@@ -255,6 +267,14 @@ def poll(br: Broker, meta: dict, probe=False):
         for o in orders:
             jlog("cancel_eod", symbol=o.symbol, oid=str(o.id))
             br.cancel(str(o.id))
+        for sym, m in meta.items():
+            m["last_exit_bars"] = m.get("n_bars", 0)
+            m["entry_bars"] = None
+            m["entry_B"] = None
+            m["entry_c0"] = None
+            m["oco_id"] = None
+            m["order_id"] = None
+            m["order_t"] = None
         return
 
     for r in cands.itertuples():
@@ -301,7 +321,11 @@ def poll(br: Broker, meta: dict, probe=False):
             if m.get("n_bars", 0) - filled_b >= TL_BARS:
                 jlog("tl30_exit", symbol=sym)
                 br.close_market(sym)
+                m["last_exit_bars"] = m.get("n_bars", 0)
                 m["entry_bars"] = None
+                m["entry_B"] = None
+                m["entry_c0"] = None
+                m["oco_id"] = None
             continue
 
         if ord_buy is not None:
@@ -322,7 +346,7 @@ def poll(br: Broker, meta: dict, probe=False):
                     m["order_id"] = str(o.id) if o else None
             continue
 
-        if len(positions) >= POS_MAX or minutes_now >= ENTRY_CUTOFF:
+        if len(positions) + len(buys) >= POS_MAX or minutes_now >= ENTRY_CUTOFF:
             continue
         if m.get("last_exit_bars") is not None and \
                 m["n_bars"] - m["last_exit_bars"] < 1:
@@ -354,9 +378,11 @@ def reconcile_fills(br: Broker, meta: dict):
                  qty=str(o.filled_qty), B=B, c0=c0)
             qty = int(float(o.filled_qty))
             oc = br.sell_oco(sym, qty, B * (1 - STOP_L), c0)
-            jlog("oco", symbol=sym,
-                 oco_id=str(oc.id) if oc else None,
+            m["oco_id"] = str(oc.id) if oc else None
+            jlog("oco", symbol=sym, oco_id=m["oco_id"],
                  stop=round(B * (1 - STOP_L), 2), target=c0)
+            if o.filled_at is None:
+                continue
             t0 = o.filled_at - timedelta(minutes=2)
             t1 = o.filled_at + timedelta(minutes=2)
             micro = br.trades_at_bid(sym, B, t0, t1)
