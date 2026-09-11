@@ -1180,3 +1180,11 @@ already live (5f6dcc5).
 - Windows missed while feeds were broken: TNON +117% (09:42), SWRD ~+120%
   (09:54). Post-fix max mover ~+44%. Day 1 was pipeline validation, not edge
   evidence; accumulation continues next session.
+
+## 2026-09-11p — offline verification: day-roll + clock fallback (pre-Monday)
+Two live-critical paths had never been exercised: the ET day-roll (the bot
+crosses midnight tonight and over the weekend) and the new /clock fallback.
+Added T6 (day-roll: stale meta + owned resting buy + open position -> cancel,
+close, meta reset to today, day_roll logged) and T7 (clock: retry once then
+local-ET fallback; a transient failure retries without fallback) to the mock
+harness. All 7 tests pass; harness preserved at factory/scripts/test_flush_bot.py.
