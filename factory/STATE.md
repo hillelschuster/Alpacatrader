@@ -1010,3 +1010,10 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
   sessions. n far too small; live candidate net is 50-name alpaca_movers.
 - Continuous bars logging starts on next observer/supervisor restart.
 - NOTE: Alpaca paper API keys appeared in a tool output during recon — rotate.
+
+## 2026-09-11d — fill-realism microstructure evidence (SIP)
+- lb18_fills_micro.py: per frozen-rule fill, SIP trades at/below resting bid +
+  NBBO snapshot. OOS n=541: touch 98.9%, through 98.3%, at-bid vol med 52.6k sh,
+  dwell med 15.3s (strong fills 4.5s/18.9k). Gap fills 2.6x volume (adverse
+  selection real). Fill assumption evidence-backed at small size; queue position
+  unmeasured until paper/live.

@@ -656,3 +656,28 @@ First live replay, real sessions 2026-09-04/08/09 (09-05/06 weekend, 09-07 Labor
   the full-market historical leaderboard); bars need SIP; sample far too small
   for inference. Continuous logging activates on next observer/supervisor restart.
 Verdict: pipeline verified; live evidence accumulating; no confirm/refute yet.
+
+---
+## 2026-09-11d — FILL REALISM: SIP MICROSTRUCTURE EVIDENCE (lb18_fills_micro)
+
+Method: for every frozen-rule OOS fill (n=541), recovered the resting bid level B
+and pulled SIP trades for the flush minute (+next) and NBBO around the first
+at-bid print. Tool: factory/scripts/lb18_fills_micro.py (resumable; --pool dev
+runnable). Artifact: factory/artifacts/lb18_fills_micro.parquet/.json.
+
+Findings (OOS):
+- touch 98.9% (99.3% within next minute), through 98.3% (trades strictly below
+  B). The resting-bid fill assumption is microstructurally supported.
+- Size at/below B: median 52.6k shares (q25 15.9k / q75 141.8k). At 10%
+  participation ~5.3k shares at the median — small-size fills plausible.
+- Dwell at/below B: median 15.3s (clean 8.8s, gap 22.6s). Best fills are fast:
+  strong fc>=2% dwell med 4.5s, at-bid vol med 18.9k — queue position matters
+  most exactly where the edge is.
+- Adverse selection quantified: gap fills run 2.6x at-bid volume and dwell vs
+  clean — when we fill on a collapse, the market is really trading through.
+- NBBO at first at-bid print: spread med $0.10 (q75 $0.25); displayed bid size
+  tiny (med 2) — treat book depth numbers cautiously.
+- Truncation: 3.3% windows hit the 10k trade cap (strong 7.1%) — undercounts.
+CAVEAT: queue position / fill probability still unmeasured. Paper = software
+test; preserve SIP around paper fills; small live orders are eventual ground
+truth. No rule change.
