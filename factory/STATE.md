@@ -1167,3 +1167,16 @@ already live (5f6dcc5).
   poll cycle. Restarted live:true via KILL after the edit.
 - Also noted: one error event at 15:22 was an offline test invocation missing
   pyarrow (my shell), not the bot (the bot venv has pyarrow 25.0.1).
+
+## 2026-09-11o — DAY-1 LIVE SESSION RECORD (zero fills)
+- Bot live:true from 04:23 ET; the first session produced 0 bids/fills (no PIT
+  name reached causal +100% with fresh+thrust while the fixed pipeline was live).
+- Parity 2026-09-11 (IEX replay): 1369 bars, 14/14 syms, expected 0/actual 0.
+  Ledger: fills=0, closed_trades=0. First live day closed flat.
+- Live bugs found/fixed on day 1: SIP intraday sparse -> IEX-first (5f6dcc5);
+  TV scanner stale -> Alpaca movers + PIT/$2 pre-rank filter (c45b07f); observer
+  IEX fix activated post-close (bcd9b02; observer restarted 20:04Z); Alpaca
+  /clock 500s -> retry + local-ET fallback (32dd271).
+- Windows missed while feeds were broken: TNON +117% (09:42), SWRD ~+120%
+  (09:54). Post-fix max mover ~+44%. Day 1 was pipeline validation, not edge
+  evidence; accumulation continues next session.
