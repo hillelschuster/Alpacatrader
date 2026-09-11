@@ -637,3 +637,22 @@ clean; bars logger validated 767 session bars AAPL+MSFT; scorer plumbing OK).
 Activates at next observer/supervisor restart (no mid-session restart done).
 Artifacts: lb18_exec.json/.parquet; live evidence accumulates at
 factory/artifacts/flush_forward_live.json.
+
+---
+## 2026-09-11c — LIVE CONFIRMATION PIPELINE (wired + first replay)
+
+Tools: `forward_backfill_bars.py` (fetch Alpaca SIP→IEX 1-min session bars for a
+live scan day from its scans.jsonl symbols → `data/forward/<day>/bars.jsonl`);
+`flush_forward_score.py` (rebuild causal top-3 lb from scans, run the frozen
+`lb18_oos.run_engine`, artifact `flush_forward_live.json`).
+
+First live replay, real sessions 2026-09-04/08/09 (09-05/06 weekend, 09-07 Labor Day):
+- UNIT BUG found and fixed: Alpaca `percent_gain` is percent units, engine `gain`
+  is a fraction; the first replay filtered `gain>=1.0` as +1% instead of +100%
+  (14 spurious fills). Fixed (scale /100).
+- Corrected: 09-04 0 fills, 09-08 0 fills, 09-09 exactly 1 fill (FTFT) +10.1%
+  (c0 target hit); pf2 n=0. Pooled n=1.
+- Caveats: live candidate net = observer's 50-name alpaca_movers (narrower than
+  the full-market historical leaderboard); bars need SIP; sample far too small
+  for inference. Continuous logging activates on next observer/supervisor restart.
+Verdict: pipeline verified; live evidence accumulating; no confirm/refute yet.

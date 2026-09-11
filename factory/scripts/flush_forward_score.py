@@ -60,7 +60,7 @@ def load_day(dd, day, elig):
         for rank, r in enumerate(rows[:3], 1):
             lb_rows.append({"date": day, "t": t, "rank": rank,
                             "ticker": r["symbol"],
-                            "gain": float(r["percent_gain"]),
+                            "gain": float(r["percent_gain"]) / 100.0,
                             "px": float(r.get("price") or 0.0)})
     if not lb_rows:
         return paths, pd.DataFrame()

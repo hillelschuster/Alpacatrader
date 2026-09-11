@@ -1001,3 +1001,12 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
   re-verified exact. Smoke-tested via Windows venv; activates at next observer
   restart (no mid-session restart performed).
 - Artifacts: lb18_exec.json/.parquet.
+
+## 2026-09-11c — live confirmation pipeline + first replay
+- forward_backfill_bars.py: Alpaca SIP 1-min session bars for live scan days
+  (09-04: 158 names/23.7k bars; 09-08: 87/14.4k; 09-09: 231/34k).
+- flush_forward_score.py unit bug fixed (percent vs fraction gain); first
+  corrected live replay = 1 qualifying fill (FTFT +10.1%), 0 on the other two
+  sessions. n far too small; live candidate net is 50-name alpaca_movers.
+- Continuous bars logging starts on next observer/supervisor restart.
+- NOTE: Alpaca paper API keys appeared in a tool output during recon — rotate.
