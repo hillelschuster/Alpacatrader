@@ -182,7 +182,10 @@ class Broker:
         from alpaca.data.requests import StockBarsRequest
         from alpaca.data.timeframe import TimeFrame
         from alpaca.data.enums import DataFeed
-        for feed in (DataFeed.SIP, DataFeed.IEX):
+        # IEX first: real-time intraday on this plan. SIP intraday minute data
+        # is stale/limited (2 rows at 09:45) and previously starved the state
+        # eval of its 16-bar minimum; SIP stays as fallback for gaps.
+        for feed in (DataFeed.IEX, DataFeed.SIP):
             try:
                 r = StockBarsRequest(symbol_or_symbols=symbol,
                                      timeframe=TimeFrame.Minute, start=start,

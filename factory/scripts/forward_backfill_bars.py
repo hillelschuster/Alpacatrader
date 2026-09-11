@@ -52,7 +52,10 @@ def fetch_day(day: str, syms, log=print):
     start = datetime.combine(d, dtime(9, 30), tzinfo=et)
     hc = StockHistoricalDataClient(os.getenv("ALPACA_API_KEY"),
                                    os.getenv("ALPACA_SECRET_KEY"))
-    for feed in (DataFeed.SIP, DataFeed.IEX):
+    today_et = datetime.now(et).date().isoformat()
+    feeds = ((DataFeed.IEX, DataFeed.SIP) if day == today_et
+             else (DataFeed.SIP, DataFeed.IEX))
+    for feed in feeds:
         got: dict = {}
         ok = True
         for i in range(0, len(syms), BATCH):

@@ -1107,3 +1107,18 @@ once per round-trip on the closing leg; bids keyed by (ET day, symbol). Entry
 cost remains weighted-average (not FIFO) — acceptable for v0 single-lot trades.
 Regression: parity on the fabricated 2026-09-09 journal still reproduces the known
 FTFT fill (tf=678, +10.11%); ledger baseline fills=0 / 54 foreign ignored.
+
+## 2026-09-11l — LIVE BUG: SIP intraday sparse -> zero bids; IEX fix
+- First live session check (09:44 ET): bot scanning every 60s, zero errors, but NO
+  bids and no orders. Cause: broker.bars() returned on the first non-empty feed;
+  SIP intraday on this plan returns only ~2 stale bars (13:30-13:31Z at 09:44)
+  while IEX returns the full live session (16 bars by 09:45). With <16 bars the
+  strict-state evaluator never fires -> zero state minutes -> zero bids.
+- Fixed: flush_bot.bars() now tries IEX first (SIP fallback for gaps);
+  forward_backfill_bars.fetch_day() uses IEX for the current ET day, SIP for
+  history (tonight's parity depends on it).
+- Restart 09:50:28 ET (live:true); 09:51 candidates all <+100% so no bids yet
+  (TNON's brief +117% at 09:42 was missed during the SIP window; its scanner
+  change later read +57.9% — TV-side reference shift, not ours).
+- Watch midday for +100%-gain qualifying candidates; parity tonight uses IEX
+  bars for today's session.
