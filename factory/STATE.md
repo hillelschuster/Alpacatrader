@@ -1064,3 +1064,13 @@ Bot restarted via KILL switch to run the hardened code (dry-run, live:false).
 - Observer supervisor running; paper account clean (0 positions/orders) at arm time.
 - After the session: run flush_bot_parity.py --day <day> and inspect the journal
   (scans, bids, fills, OCO hits, tl30 exits, micro stats).
+
+## 2026-09-11i — paper-fill ledger built (account hygiene catch)
+- flush_bot_ledger.py: per-trade P&L from Alpaca paper orders (get_orders;
+  get_account_activities does not exist in this alpaca-py) joined to the bot
+  journal's intended B/c0; artifact factory/artifacts/flush_bot_ledger.json.
+- Hygiene catch: the paper account holds 54 foreign fills / 33 trades from
+  2026-06-09, 06-11 and 07-14..17 (RNAC/BMNG/BMNU/BATL; mean -4.07%) — not ours
+  (bot armed 04:23 ET today, market closed). Ledger filters fills to symbols
+  present in the journal on the same date and reports n_foreign_ignored.
+  Pre-session truth for our bot: fills=0, trades=0.
