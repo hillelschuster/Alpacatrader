@@ -281,3 +281,45 @@ Recent commit map (origin/main): `33e2943` pre-reg → `8c8f3d2` OOS runner → 
 - When in doubt: **follow the money** — but never at the cost of the integrity rules that produced it.
 
 Welcome aboard. The mechanism passed OOS. Now find out if the market actually pays for it.
+
+---
+
+## 13. v2.1 execution fixes (2026-09-12, market closed) — read before trusting live numbers
+
+Advisor audit → 5 material fixes in `factory/scripts/flush_bot.py`; the frozen
+alpha is untouched. Mock tests T1–T10 (11/11) in `factory/scripts/test_flush_bot.py`.
+A `flush_bot.py` edit still requires the KILL-toggle restart (supervisor only
+restarts on exit).
+
+| What | Before | After |
+|---|---|---|
+| r15 parity | `shift(15)` on raw IEX rows = 15 printed bars | forward-filled 1-min grid = 15 CLOCK minutes (matches `lb18.py:97-103`) |
+| tl30 parity | count of IEX bars from fill | 30 clock minutes from `filled_at` (≈30 new bars on the complete tape) |
+| partial fills | working orders skipped; remainder unprotected | `sync_fills()` inspects each poll, cancels remainder, books the fill, protects held qty; `protect_resize` if the remainder slips in before the cancel |
+| restart | in-memory meta; orphan risk | `startup_reconcile()` cancels owned resting buys, re-adopts positions, rehydrates entry_B/c0/ts from journal + broker |
+| KILL | exit only | cancel owned entry buys, LEAVE protective OCO sells, warn unprotected, exit (idempotent on relaunch) |
+
+`pf_est` now tags `place_bid`/`fill` with the causal prior-flush count
+(IEX-undercounted, TAG only — never an entry gate). Paper deliberately trades
+the broad population; partition fills ex-post into pf0 / pf1 / pf>=2. The frozen
+pf result is unchanged; a corrected pf definition is a separate research variant.
+
+Production-overlay measurement (seen data, NOT an alpha claim):
+`factory/artifacts/lb18_overlay.json` (+ `factory/scripts/lb18_overlay.py`).
+Frozen parity reproduced exactly. Overlay drops 30/541 fills (5.55%, all late-day,
+`tf>=15:30`), flatten changes 0 exits, POS_MAX rejects 0 (concurrency never
+binds). pf2 retained: n=355, +1.23%/trade, 12/14 months, 25.4 fills/month
+(93% of frozen frequency). So the production policy does NOT degrade the edge —
+if anything the 15:30 cutoff drops net-negative late fills. Do not retrofit that
+observation as a refinement.
+
+### Terminology (advisor #8)
+Micro artifact "gap" = fill-bar close BELOW the bid (`fc<0`, i.e. traded through
+B). Execution-study "gap-through" = the bar gapped past B so the resting bid
+never controlled the fill. Related concepts, not the same; no bot bug.
+
+### Ownership
+The paper account is assumed DEDICATED to this bot; any position found is
+adopted. If that assumption breaks, adopt only journal-attributed symbols
+instead. Known caveat: 54 foreign paper fills Jun/Jul 2026 (filtered by
+journal symbol-days).

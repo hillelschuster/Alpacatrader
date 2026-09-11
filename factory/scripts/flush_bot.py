@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Flush-bid paper-trading bot v0 — frozen rule PRE-REG-FLUSH-01.
+"""Flush-bid paper-trading bot v2.1 — frozen rule PRE-REG-FLUSH-01.
 
 Position/order lifecycle is managed for ALL tracked symbols every poll,
 independent of whether the symbol still appears in the scanner (fixes
@@ -11,10 +11,23 @@ latest strict-state minute (strict state: gain >= 1.0 vs prev close, pullback
 120-min expiry refresh at every strict-state minute; the broker order is only
 replaced when the executable tick changes (no queue model in the backtest;
 reposting every minute would degrade live fills). Fill -> OCO sell
-(stop 0.90*B, limit B/0.90) + tl30 time-stop (bars from filled_at) + paper
-micro capture. Guards: $2 price floor, POS_MAX concurrent, NOTIONAL sizing,
-no entries after 15:30 ET, flatten 15:55 ET, KILL file, ownership via
-client_order_id prefix, broker-truth reconciliation every poll.
+(stop 0.90*B, limit B/0.90) + tl30 time-stop + paper micro capture. Guards:
+$2 price floor, POS_MAX concurrent, NOTIONAL sizing, no entries after 15:30
+ET, flatten 15:55 ET, KILL file, ownership via client_order_id prefix,
+broker-truth reconciliation every poll.
+
+Live translations of the frozen tape (deliberate, see function docstrings):
+- r15 runs on a forward-filled minute grid => 15 CLOCK minutes, not 15 bars.
+- tl30 is 30 clock minutes from filled_at (30 new bars on the complete
+  historical tape); a bare IEX bar count would stretch the hold.
+- pf_est tags the anchor with the causal prior-flush count (sparse IEX
+  undercounts). It is a journal TAG, never an entry gate: paper trades the
+  broad population on purpose and fills are partitioned ex-post.
+- Restart: owned resting buys are cancelled and re-placed on the next
+  strict-state minute; held positions rehydrate from the journal.
+- KILL cancels owned entry buys and leaves protective OCO sells in place so
+  existing positions stay covered; nothing is auto-flattened.
+- The paper account is dedicated to this bot: any position in it is adopted.
 
 DRY RUN by default. --live uses the Alpaca paper keys from .env.
 Journal: data/forward/bot/<ET-day>/journal.jsonl
@@ -172,15 +185,29 @@ def scan_candidates():
 
 
 def state_minutes(bars, prev_close):
+    """Strict-state minutes: gain >= 1.00, pullback >= -0.01, r15 >= 0.03.
+
+    r15 is evaluated on a forward-filled 1-minute grid: the research tape is a
+    regular minute grid whose stale rows carry the last completed bar
+    (lb18.py:97-103), so `c.shift(15)` there means 15 CLOCK minutes. Shifting
+    the live IEX frame directly would make it 15 *printed* IEX bars, which on
+    sparse IEX can span far longer and mislabels thrust. Only close is ffilled
+    (pullback/cummax and gain are unaffected)."""
     b = bars[(bars["et"] >= 570) & (bars["et"] <= 959)].sort_values("ts")
-    if len(b) < 16:
+    if len(b) < 2:
         return b.iloc[0:0]
-    c = b["close"]
+    b = b.drop_duplicates("et", keep="last").set_index("et")
+    g = b.reindex(range(570, int(b.index.max()) + 1))
+    g["close"] = g["close"].ffill()
+    g = g[g["close"].notna()]
+    if len(g) < 16:
+        return b.iloc[0:0]
+    c = g["close"]
     gain = c / prev_close - 1
     pullback = c / c.cummax() - 1
     r15 = c / c.shift(15) - 1
     m = (gain >= 1.0) & (pullback >= -0.01) & (r15 >= 0.03)
-    return b[m.fillna(False)]
+    return g[m.fillna(False)].reset_index()
 
 
 def completed(bars, minutes_now):
@@ -190,6 +217,35 @@ def completed(bars, minutes_now):
     if len(bars) == 0 or minutes_now < 570:
         return bars
     return bars[bars["et"] <= minutes_now - 1]
+
+
+def _et_dt(t):
+    """Normalize a filled_at / journal timestamp to tz-aware ET."""
+    if isinstance(t, str):
+        t = datetime.fromisoformat(t)
+    if isinstance(t, pd.Timestamp):
+        t = t.to_pydatetime()
+    if t.tzinfo is None:
+        return t.replace(tzinfo=ET)
+    return t.astimezone(ET)
+
+
+def prior_flush_est(bars, anchor_et):
+    """Causal count of flush-episode starts before the anchor minute, mirroring
+    lb18_episodes.py:50-71 on the live tape: a start is a NEW bar with
+    low <= 0.9 * running session max close (distinct starts, no window).
+
+    Live IEX bars are sparse, so this UNDERCOUNTS flushes printed off-IEX.
+    pf_est is a journal TAG only, never an entry gate (paper trades the broad
+    population on purpose); partition fills ex-post by pf_est >= 2."""
+    if bars is None or len(bars) == 0:
+        return 0
+    b = bars[bars["et"] < anchor_et].sort_values("ts")
+    if len(b) == 0 or "low" not in b:
+        return 0
+    under = b["low"] <= b["close"].cummax() * (1 - L)
+    starts = under & ~under.shift(1, fill_value=False)
+    return int(starts.sum())
 
 
 def qty_for(price):
@@ -383,27 +439,42 @@ def manage_symbol(br, sym, m, bars, positions, orders, minutes_now, et_now):
 
     # -- position present -------------------------------------------------
     if pos is not None and float(pos.qty) != 0:
+        held = int(float(pos.qty))
         if not m.get("entry_ts"):
             # adopted (restart/foreign-to-meta): reconstruct from avg entry
             B_est = float(pos.avg_entry_price)
             m["entry_B"] = B_est
             m["entry_c0"] = round(B_est / (1 - L), 2)
             m["entry_ts"] = et_now
-            m["entry_bar_i"] = bar_index_at(bars, et_now)
-            jlog("adopt_position", symbol=sym, qty=str(pos.qty), entry=B_est)
+            jlog("adopt_position", symbol=sym, qty=str(held), entry=B_est)
+        # Protection must cover the WHOLE position: a partially filled entry
+        # we cancelled can still fill its remainder before the cancel lands,
+        # leaving an OCO sized for the old quantity.
+        prot = max((int(float(o.qty or 0)) for o in sells), default=0)
+        if sells and prot and prot < held:
+            for o in sells:
+                br.cancel(str(o.id))
+            m["oco_id"] = None
+            jlog("protect_resize", symbol=sym, was=prot, now=held)
+            protect(br, sym, m, held)
+            return
         if not sells and (m.get("protect_pending") or not m.get("oco_id")):
-            protect(br, sym, m, int(float(pos.qty)))
-        # tl30 from filled bar
-        ei = m.get("entry_bar_i")
-        if ei is not None and nb > 0 and (nb - 1 - ei) + 1 >= TL_BARS:
-            if sells:
-                for o in sells:
-                    br.cancel(str(o.id))
-                jlog("tl30_cancel_oco", symbol=sym)
-            else:
-                jlog("tl30_exit", symbol=sym)
-                br.close_market(sym)
-                m["last_exit_ts"] = et_now
+            protect(br, sym, m, held)
+        # tl30: 30 new bars on the near-complete research tape ~= 30 clock
+        # minutes; on sparse IEX a bar count stretches the hold, so time from
+        # filled_at instead.
+        ets = m.get("entry_ts")
+        if ets is not None:
+            held_min = (et_now - _et_dt(ets)).total_seconds() / 60.0
+            if held_min >= TL_BARS:
+                if sells:
+                    for o in sells:
+                        br.cancel(str(o.id))
+                    jlog("tl30_cancel_oco", symbol=sym)
+                else:
+                    jlog("tl30_exit", symbol=sym)
+                    br.close_market(sym)
+                    m["last_exit_ts"] = et_now
         return
 
     # -- no position: exit bookkeeping ------------------------------------
@@ -435,6 +506,7 @@ def manage_symbol(br, sym, m, bars, positions, orders, minutes_now, et_now):
         new_B = round(float(bars["close"].iloc[-1]) * (1 - L), 2)
         m["anchor_ts"] = et_now
         m["refresh_B"] = new_B
+        m["pf_est"] = prior_flush_est(bars, last_bar_et)
     anchor = m.get("anchor_ts")
     if anchor and (et_now - anchor).total_seconds() / 60 > WIN_MIN:
         jlog("expire", symbol=sym, oid=str(resting.id))
@@ -454,6 +526,141 @@ def manage_symbol(br, sym, m, bars, positions, orders, minutes_now, et_now):
         else:
             m["order_id"] = None
             m["entry_B"] = m["refresh_B"]
+
+
+def read_journal(path):
+    events = []
+    try:
+        with open(path) as f:
+            for line in f:
+                line = line.strip()
+                if line:
+                    events.append(json.loads(line))
+    except FileNotFoundError:
+        pass
+    return events
+
+
+def startup_reconcile(br, meta):
+    """Broker-truth restart semantics: owned resting entry buys are cancelled
+    and re-placed from the next strict-state minute (frozen fidelity choice,
+    no persistent local state). Positions are re-adopted with lifecycle
+    metadata rehydrated from today's journal / broker so protection and tl30
+    keep the original anchor instead of resetting to restart time."""
+    meta["_day"] = day_dir().name
+    try:
+        orders = br.open_orders()
+    except Exception as e:
+        jlog("startup_reconcile_error", where="open_orders", msg=str(e)[:200])
+        return
+    canceled = 0
+    for o in orders:
+        if owned(o) and o.side.value == "buy":
+            br.cancel(str(o.id))
+            jlog("startup_cancel_entry", symbol=o.symbol, oid=str(o.id))
+            canceled += 1
+    try:
+        positions = br.positions()
+    except Exception:
+        positions = {}
+    filled = {}
+    for e in read_journal(day_dir() / "journal.jsonl"):
+        if e.get("event") == "fill" and e.get("symbol"):
+            filled[e["symbol"]] = e
+    rehydrated = 0
+    for sym, p in positions.items():
+        if float(p.qty) == 0 or sym not in filled:
+            continue
+        m = meta.setdefault(sym, {})
+        m["entry_B"] = filled[sym].get("B")
+        m["entry_c0"] = filled[sym].get("c0")
+        t = filled[sym].get("ts")
+        oid = filled[sym].get("oid")
+        o = br.order(oid) if oid else None
+        if o is not None and getattr(o, "filled_at", None):
+            t = o.filled_at
+        m["entry_ts"] = t
+        rehydrated += 1
+    jlog("startup_reconcile", canceled_entries=canceled, rehydrated=rehydrated,
+         day=meta["_day"], live=br.live)
+
+
+def kill_cleanup(br):
+    """KILL stops decisions and new-entry risk only: owned resting buys are
+    cancelled, protective OCO sells stay at the broker so existing positions
+    remain covered. Positions are not flattened (market-sweeping illiquid
+    microcaps is worse than holding a bracketed position). Returns the number
+    of entry orders cancelled."""
+    try:
+        orders = br.open_orders()
+    except Exception as e:
+        jlog("kill_error", where="open_orders", msg=str(e)[:200])
+        return 0
+    n = 0
+    for o in orders:
+        if owned(o) and o.side.value == "buy":
+            jlog("kill_cancel_entry", symbol=o.symbol, oid=str(o.id))
+            br.cancel(str(o.id))
+            n += 1
+    for sym in br.positions():
+        if not any(owned(o) and o.symbol == sym and o.side.value == "sell"
+                   for o in orders):
+            jlog("kill_warning", symbol=sym,
+                 note="position without owned protective sell")
+    return n
+
+
+def sync_fills(br, meta, orders, positions, bars_cache, et_now):
+    """Book owned entry fills, full or partial, and keep protection in step.
+
+    A partially filled limit order stays OPEN, so it never reaches the
+    'left the open book' path: inspect every tracked order each poll, cancel
+    the remainder once any quantity fills, book the broker-reported fill, and
+    protect the quantity actually held."""
+    open_by_id = {str(o.id): o for o in orders}
+    for sym, m in list(meta.items()):
+        if sym == "_day":
+            continue
+        oid = m.get("order_id")
+        if not oid:
+            continue
+        o = open_by_id.get(oid)
+        if o is None:
+            o = br.order(oid)  # resolved while we were away
+            if o is None:
+                continue
+        st = str(o.status.value)
+        fq = int(float(o.filled_qty or 0))
+        if fq > 0 and not m.get("entry_ts"):
+            m["entry_B"] = round(float(o.limit_price), 2)
+            m["entry_c0"] = round(float(o.limit_price) / (1 - L), 2)
+            m["entry_ts"] = getattr(o, "filled_at", None) or et_now
+            jlog("fill", symbol=sym, oid=oid, price=str(o.filled_avg_price),
+                 qty=str(fq), B=m["entry_B"], c0=m["entry_c0"],
+                 pf_est=m.get("pf_est"))
+            if not m.get("micro_done") and getattr(o, "filled_at", None) is not None:
+                micro = br.trades_at_bid(sym, m["entry_B"],
+                                         o.filled_at - timedelta(minutes=2),
+                                         o.filled_at + timedelta(minutes=2))
+                m["micro_done"] = True
+                if micro:
+                    jlog("micro", symbol=sym, **micro)
+        if st == "partially_filled":
+            jlog("partial", symbol=sym, oid=oid, filled=fq)
+            br.cancel(oid)
+            m["order_id"] = None
+        elif st == "filled":
+            m["order_id"] = None
+        elif st in TERMINAL:
+            m["order_id"] = None
+        if m.get("entry_ts"):
+            held = fq
+            p = positions.get(sym)
+            if p is not None and float(p.qty) != 0:
+                held = int(float(p.qty))
+            if not own_sells(sym, orders) and (
+                    m.get("protect_pending") or not m.get("oco_id")):
+                protect(br, sym, m, held)
 
 
 def poll(br: Broker, meta: dict, probe=False):
@@ -509,47 +716,7 @@ def poll(br: Broker, meta: dict, probe=False):
         bars = completed(bars, minutes_now)
         bars_cache[sym] = bars
 
-    # fills: owned entry orders that left the open book -> query by id
-    open_ids = {str(o.id) for o in orders}
-    for sym, m in list(meta.items()):
-        if sym == "_day":
-            continue
-        oid = m.get("order_id")
-        if not oid or oid in open_ids:
-            continue
-        o = br.order(oid)
-        if o is None:
-            continue
-        st = str(o.status.value)
-        if st in ("filled", "partially_filled"):
-            fq = int(float(o.filled_qty or 0))
-            if fq <= 0:
-                continue
-            if st == "partially_filled":
-                jlog("partial", symbol=sym, oid=oid, filled=fq)
-                br.cancel(oid)
-            if not m.get("entry_ts"):
-                m["entry_B"] = round(float(o.limit_price), 2)
-                m["entry_c0"] = round(float(o.limit_price) / (1 - L), 2)
-                m["entry_ts"] = o.filled_at or et_now
-                jlog("fill", symbol=sym, oid=oid,
-                     price=str(o.filled_avg_price), qty=str(fq),
-                     B=m["entry_B"], c0=m["entry_c0"])
-                m["entry_bar_i"] = bar_index_at(bars_cache.get(sym), m["entry_ts"])
-            if not own_sells(sym, orders) and (
-                    m.get("protect_pending") or not m.get("oco_id")):
-                protect(br, sym, m, fq)
-            if not m.get("micro_done") and getattr(o, "filled_at", None) is not None:
-                micro = br.trades_at_bid(sym, m["entry_B"],
-                                         o.filled_at - timedelta(minutes=2),
-                                         o.filled_at + timedelta(minutes=2))
-                m["micro_done"] = True
-                if micro:
-                    jlog("micro", symbol=sym, **micro)
-            if st == "filled":
-                m["order_id"] = None
-        elif st in TERMINAL:
-            m["order_id"] = None
+    sync_fills(br, meta, orders, positions, bars_cache, et_now)
 
     # lifecycle for every tracked symbol
     for sym in list(tracked):
@@ -625,13 +792,15 @@ def poll(br: Broker, meta: dict, probe=False):
         q = qty_for(B)
         if q <= 0:
             continue
+        pf = prior_flush_est(b, last_bar_et)
         o = br.submit_buy(sym, q, B)
         m["entry_B"] = B
         m["entry_c0"] = round(float(b["close"].iloc[-1]), 2)
         m["anchor_ts"] = et_now
+        m["pf_est"] = pf
         m["order_id"] = str(o.id) if o else None
         jlog("place_bid", symbol=sym, B=B, c0=m["entry_c0"], qty=q, rank=int(r.rank),
-             oid=m["order_id"], live=br.live)
+             pf_est=pf, oid=m["order_id"], live=br.live)
         slots -= 1
 
 
@@ -642,15 +811,17 @@ def main():
     ap.add_argument("--probe", action="store_true")
     ap.add_argument("--seconds", type=int, default=POLL_S)
     a = ap.parse_args()
-    if KILL.exists():
-        sys.exit("kill file present")
     br = Broker(a.live)
     jlog("start", live=a.live, once=a.once, probe=a.probe)
     meta: dict = {}
+    if KILL.exists():
+        jlog("kill_file", note="stopping at startup", canceled=kill_cleanup(br))
+        return
+    startup_reconcile(br, meta)
     while True:
         try:
             if KILL.exists():
-                jlog("kill_file", note="stopping")
+                jlog("kill_file", note="stopping", canceled=kill_cleanup(br))
                 break
             poll(br, meta, probe=a.probe)
         except Exception:

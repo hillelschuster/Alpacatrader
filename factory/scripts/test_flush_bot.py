@@ -1,4 +1,4 @@
-import sys, pathlib
+import sys, pathlib, json, tempfile
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 import pandas as pd
@@ -14,10 +14,11 @@ class S:
 class Side:
     def __init__(self, v): self.value = v
 class Order:
-    def __init__(self, sym, side, oid, px, status="new", fq=0, cid="flushbot-b-x"):
+    def __init__(self, sym, side, oid, px, status="new", fq=0, cid="flushbot-b-x", qty=0):
         self.symbol=sym; self.side=Side(side); self.id=oid
         self.limit_price=px; self.status=S(status); self.filled_qty=fq
         self.client_order_id=cid; self.filled_avg_price=px; self.filled_at=None
+        self.qty=qty
 class Pos:
     def __init__(self, sym, qty, avg): self.symbol=sym; self.qty=qty; self.avg_entry_price=avg
 class Br:
@@ -26,9 +27,10 @@ class Br:
     def cancel(self, oid): self.canceled.append(oid)
     def submit_buy(self, sym, q, p):
         o=Order(sym,"buy",f"b{len(self.buys)}",p); self.buys.append(o); return o
-    def sell_oco(self, sym, q, stop, lim): return Order(sym,"sell","oco1",lim)
+    def sell_oco(self, sym, q, stop, lim): return Order(sym,"sell","oco1",lim, qty=q)
     def close_market(self, sym): self.closed.append(sym)
     def order(self, oid): return None
+    def trades_at_bid(self, *a, **k): return {}
 
 et_now = datetime(2026,9,11,11,0,tzinfo=ET)
 bars = pd.DataFrame({
@@ -121,5 +123,61 @@ b2=fb.Broker.__new__(fb.Broker); b2.tc=TCfail(1); b2.dc=None; LOGS.clear()
 o2, t2 = b2.clock()
 assert o2 is True and t2=="T" and not any(l["event"]=="clock_fallback" for l in LOGS)
 print("T7 clock retry/fallback OK")
+
+# T8 partial fill on a still-open order: book fill, cancel remainder, protect
+o=Order("AAA","buy","p1",1.80,status="partially_filled",fq=100); o.filled_at=et_now
+m={"prev_close":1.0,"order_id":"p1","entry_B":1.8,"pf_est":3}
+metaP={"AAA":m}; brp=Br(); LOGS.clear()
+fb.sync_fills(brp, metaP, [o], {"AAA":Pos("AAA",100,1.80)}, {"AAA":bars}, et_now)
+assert "p1" in brp.canceled, brp.canceled
+assert m["order_id"] is None and m["entry_ts"] is not None
+assert m["oco_id"]=="oco1", m
+assert any(l["event"]=="fill" for l in LOGS) and any(l["event"]=="partial" for l in LOGS)
+print("T8 partial fill OK")
+
+# T8b overfill race: remaining buy filled after protection -> resize OCO
+sell=Order("AAA","sell","s1",2.0,cid="flushbot-s-1",qty=100)
+m={"prev_close":1.0,"entry_ts":et_now,"entry_B":1.8,"entry_c0":2.0,"oco_id":"oco1"}
+br3=Br(); LOGS.clear()
+fb.manage_symbol(br3,"AAA",m,bars,{"AAA":Pos("AAA",300,1.80)},[sell],600,et_now)
+assert "s1" in br3.canceled and any(l["event"]=="protect_resize" for l in LOGS), LOGS
+print("T8b protect_resize OK")
+
+# T9 startup reconcile: cancel owned entry buy, keep sell, rehydrate held fill
+d=pathlib.Path(tempfile.mkdtemp()); fb.day_dir=lambda: d
+(d/"journal.jsonl").write_text(json.dumps(
+    {"ts":et_now.isoformat(),"event":"fill","symbol":"AAA","B":1.8,"c0":2.0,"oid":"x"})+"\n")
+class BrS(Br):
+    def __init__(self):
+        super().__init__()
+        self.open=[Order("ZZZ","buy","b1",1.5,cid="flushbot-b-1"),
+                   Order("AAA","sell","s1",2.0,cid="flushbot-s-1")]
+    def open_orders(self): return list(self.open)
+    def positions(self): return {"AAA":Pos("AAA",100,1.8)}
+    def cancel(self, oid):
+        self.canceled.append(oid)
+        self.open=[o for o in self.open if str(o.id)!=str(oid)]
+brs=BrS(); metaS={}; LOGS.clear()
+fb.startup_reconcile(brs, metaS)
+assert "b1" in brs.canceled and "s1" not in brs.canceled, brs.canceled
+assert metaS["AAA"]["entry_B"]==1.8 and metaS["AAA"]["entry_c0"]==2.0
+assert metaS["AAA"]["entry_ts"] is not None
+assert any(l["event"]=="startup_reconcile" for l in LOGS)
+print("T9 startup reconcile OK")
+
+# T10 KILL cleanup: cancel owned entry buys, keep OCO, warn unprotected
+class BrK(Br):
+    def __init__(self):
+        super().__init__()
+        self.open=[Order("AAA","buy","b1",1.5,cid="flushbot-b-1"),
+                   Order("AAA","sell","s1",2.0,cid="flushbot-s-1")]
+    def open_orders(self): return list(self.open)
+    def positions(self): return {"AAA":Pos("AAA",100,1.8),"BBB":Pos("BBB",50,3.0)}
+    def cancel(self, oid): self.canceled.append(oid)
+brk=BrK(); LOGS.clear()
+n=fb.kill_cleanup(brk)
+assert n==1 and "b1" in brk.canceled and "s1" not in brk.canceled, (n,brk.canceled)
+assert any(l["event"]=="kill_warning" and l.get("symbol")=="BBB" for l in LOGS), LOGS
+print("T10 kill cleanup OK")
 
 print("ALL MOCK TESTS PASS")

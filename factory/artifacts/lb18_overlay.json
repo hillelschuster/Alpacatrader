@@ -1,0 +1,107 @@
+{
+  "measurement": true,
+  "seen_data": true,
+  "not_an_alpha_claim": true,
+  "months": [
+    "2024-01",
+    "2024-02",
+    "2024-03",
+    "2024-04",
+    "2024-05",
+    "2024-06",
+    "2024-07",
+    "2024-08",
+    "2024-09",
+    "2024-10",
+    "2024-11",
+    "2024-12",
+    "2025-01",
+    "2025-02"
+  ],
+  "overlay": {
+    "entry_cutoff": 930,
+    "flatten_time": 955,
+    "pos_max": 3,
+    "same_minute_priority": "rank_then_ticker"
+  },
+  "exit_priority": "stop, then target, then tl30; flatten replaces only exits after 15:55 ET",
+  "frozen": {
+    "all": {
+      "n": 541,
+      "mean_net_per_trade": 0.0091,
+      "median": 0.1011,
+      "months_positive": 11,
+      "n_months": 14,
+      "worst_month": -0.0251,
+      "worst_month_name": "2024-01",
+      "fills_per_month": 38.64
+    },
+    "pf2": {
+      "n": 381,
+      "mean_net_per_trade": 0.0114,
+      "median": 0.0474,
+      "months_positive": 12,
+      "n_months": 14,
+      "worst_month": -0.0203,
+      "worst_month_name": "2024-03",
+      "fills_per_month": 27.21
+    }
+  },
+  "with_overlay": {
+    "all": {
+      "n": 511,
+      "mean_net_per_trade": 0.0099,
+      "median": 0.1011,
+      "months_positive": 11,
+      "n_months": 14,
+      "worst_month": -0.0251,
+      "worst_month_name": "2024-01",
+      "fills_per_month": 36.5
+    },
+    "pf2": {
+      "n": 355,
+      "mean_net_per_trade": 0.0123,
+      "median": 0.1011,
+      "months_positive": 12,
+      "n_months": 14,
+      "worst_month": -0.014,
+      "worst_month_name": "2024-03",
+      "fills_per_month": 25.36
+    }
+  },
+  "dropped_by_cutoff": {
+    "n": 30,
+    "fraction_of_frozen_fills": 0.0555
+  },
+  "exits_changed_to_flatten": {
+    "n": 0,
+    "fraction_of_overlay_fills": 0.0
+  },
+  "pos_max_rejections": {
+    "n": 0,
+    "binding_frequency": 0.0
+  },
+  "parity_check": {
+    "pass": true,
+    "expected": {
+      "all": {
+        "n": 541,
+        "mean": 0.0091
+      },
+      "pf2": {
+        "n": 381,
+        "mean": 0.0114
+      }
+    },
+    "observed_overlay_off": {
+      "all": {
+        "n": 541,
+        "mean": 0.0091
+      },
+      "pf2": {
+        "n": 381,
+        "mean": 0.0114
+      }
+    }
+  }
+}

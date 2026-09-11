@@ -1203,3 +1203,41 @@ watch), live systems inventory, environment commands (KILL restart, cmd.exe
 quoting, uv patterns), Alpaca/WSL landmines, research discipline, immediate
 roadmap (Monday session -> 30+ fills -> tiny sizing), do-not list, and explicit
 context-discipline instructions: compress big and often.
+
+## 2026-09-12 — execution-semantics audit + v2.1 fixes (market closed)
+Advisor's 8-item audit triaged against code; 5 material fixes applied to
+`factory/scripts/flush_bot.py`, all mock-tested (T1-T10, 11/11 pass). Frozen
+alpha untouched; only the fidelity of the live translation changed.
+
+Fixed:
+- Parity r15: `state_minutes()` now evaluates r15 on a forward-filled 1-minute
+  grid, matching the research tape (`lb18.py:97-103`). Previous `shift(15)` on
+  raw IEX rows meant 15 *printed* bars, which on sparse IEX spans far longer
+  than 15 clock minutes and mislabels thrust.
+- Parity tl30: time-stop is now 30 clock minutes from `filled_at` (30 new bars
+  on the near-complete tape); a bare IEX bar count over-held.
+- Partial fills: `sync_fills()` inspects working orders each poll (previously
+  skipped while still in the open book), cancels the remainder, books the
+  broker-reported fill, and protects held qty; `manage_symbol()` resizes the
+  OCO if the remainder filled before the cancel landed (protect_resize).
+- Restart: `startup_reconcile()` cancels owned resting entry buys, re-adopts
+  broker positions, and rehydrates entry_B/entry_c0/entry_ts from today's
+  journal (+broker filled_at) so protection/tl30 keep the original anchor.
+- KILL: now intentional — cancel owned entry buys, leave protective OCO sells
+  in place, warn on unprotected positions, exit. No auto-flatten. Idempotent
+  on supervisor relaunch.
+- pf_est: journal tag on `place_bid`/`fill` only (causal prior-flush count,
+  IEX-undercounted). Not an entry gate: paper deliberately trades the broad
+  population; fills partition ex-post into pf0/pf1/pf>=2. Frozen result
+  preserved; a corrected pf definition stays a separate research variant.
+
+Not changed (assessed, intentional): fill detection = broker truth (no sim);
+scanner already Alpaca-movers + PIT/$2; ownership = dedicated paper account
+(now stated in the module docstring); micro `fc<0` label is "filled at/below
+bid", a different concept from the execution study's "gap-through" (see
+HANDOFF §13 terminology note) — a research-labeling clarification, not a bot bug.
+
+Pending: production-overlay measurement (fill cutoff 15:30 / flatten 15:55 /
+POS_MAX=3 on historical fills -> retained EV + frequency) delegated as a
+measurement (seen data, not an alpha claim); artifact `lb18_overlay.json`.
+Next: Monday pre-open health check, then accumulate paper fills tagged pf_est.
