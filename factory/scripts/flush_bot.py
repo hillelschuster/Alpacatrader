@@ -477,14 +477,16 @@ def poll(br: Broker, meta: dict, probe=False):
         meta.clear()
         meta["_day"] = today
 
-    scan, scan_src = scan_candidates()
-    if probe:
-        jlog("scan", n=int(len(scan)), src=scan_src)
-    for r in scan.head(5).itertuples():
-        jlog("scan_row", rank=int(r.rank), symbol=r.symbol,
-             close=float(r.close), change=float(r.change), src=scan_src)
-
-    cands = scan[scan["change"] >= CAND_MIN].head(TOPN)
+    if open_ or probe:
+        scan, scan_src = scan_candidates()
+        if probe:
+            jlog("scan", n=int(len(scan)), src=scan_src)
+        for r in scan.head(5).itertuples():
+            jlog("scan_row", rank=int(r.rank), symbol=r.symbol,
+                 close=float(r.close), change=float(r.change), src=scan_src)
+        cands = scan[scan["change"] >= CAND_MIN].head(TOPN)
+    else:
+        cands = pd.DataFrame(columns=["rank", "symbol", "close", "change"])
     positions = br.positions()
     orders = br.open_orders()
 

@@ -1188,3 +1188,10 @@ Added T6 (day-roll: stale meta + owned resting buy + open position -> cancel,
 close, meta reset to today, day_roll logged) and T7 (clock: retry once then
 local-ET fallback; a transient failure retries without fallback) to the mock
 harness. All 7 tests pass; harness preserved at factory/scripts/test_flush_bot.py.
+
+## 2026-09-11p — post-close scan gating (cosmetic noise fix)
+poll() scanned before the market-open gate, so movers/bars calls and scan_rows
+continued after the close (125 rows after 15:55 on day 1; no orders possible —
+entry cutoff 15:30 + EOD return). Scans now run only when the broker clock
+reports open (or --probe); closed sessions emit market_closed and stay quiet.
+Restarted live:true for the weekend.
