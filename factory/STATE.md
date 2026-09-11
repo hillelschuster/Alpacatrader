@@ -1143,3 +1143,17 @@ already live (5f6dcc5).
   (FTFT +45.8 r1, TNON +45.7 r2, ACVA +44.4 r3).
 - No bids yet: no name has held causal gain >= +100% with fresh+thrust; SWRD's
   >=100% window (~09:5x-10:0x) was missed during the TV-blind period.
+
+## 2026-09-11n — day-1 live verification: missed window accounted; IEX coverage caveat
+- Verified end-to-end at ~10:15 ET: scan_candidates() sources Alpaca movers (PIT/$2
+  filtered); BENF +123.65% rank1 but only 2 IEX bars (fresh listing/halt) -> cannot
+  qualify (16-bar minimum, consistent with the r15 requirement).
+- SWRD DID trade >=+100% intraday (33 IEX bars; max +103.8% session-relative,
+  +120.6% vs its prior close at 09:54) — the first genuine qualifying opportunity
+  was MISSED because the two feed bugs overlapped it: SIP-sparsity until 09:50
+  (no bars) and stale-TV candidates until ~10:10 (SWRD showed +59.6%).
+- IEX intraday coverage gaps observed (COLA/MKDW: 0 bars despite being top movers)
+  => the live paper tape differs from the SIP historical tape; today's parity must
+  use the IEX-based replay (forward_backfill_bars already patched).
+- Journal place_bid count = 0; zero error events. Day-1 remains a no-trade session,
+  which is rule-correct given the candidates and the tape available.
