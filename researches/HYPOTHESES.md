@@ -571,3 +571,37 @@ Current best executable read: extreme leaders + rolling -10% flush bid +
 sell-at-c0 (or tl30 hold, whichever engine) + pf>=2 conditioning; estimate
 +1.2%/trade net, 15/18 months, worst month -1.2%, ~35 fills/month.
 Still discovery-grade. Next: freeze + pre-register; forward months only.
+
+---
+## 2026-09-11 — FLUSH RULE: TRUE OOS PASS (first pre-registered OOS pass in project)
+
+Rule frozen BEFORE any OOS computation (PRE-REG-FLUSH-01, commit 33e2943):
+extreme causal top-3 leader (gain>=1.00, pullback>=-0.01, r15>=0.03) ->
+rolling resting bid at -10% below latest state-minute close while flat
+(refreshed at each new state minute, 120-min expiry) -> fill on first NEW bar
+low<=B at B -> tl30 exit (stop B*0.9 first, else target c0, else 30-bar close)
+-> re-arm after exit. 100bps friction. Primary subset: prior_flush>=2.
+
+Parity gate honored first: lb18_oos.py (commit 8c8f3d2) reproduced dev stats
+EXACTLY before OOS months were touched (all n=937 +0.39%/11of18; pf2 n=658
++1.20%/15of18; rank1 n=713 +0.96%/13of18).
+
+OOS span 2024-01..2025-02 (14 untouched months; same pipeline; PIT vintages
+extended 2023-11..2025-02 from the same source):
+- PRIMARY pf>=2: n=381, mean +1.14%/trade net, median +4.74%, 12/14 months
+  positive, worst month -2.03% -> **GATE PASS** (>=+0.30% and >=10/14).
+- all fills: n=541, +0.91%, 11/14, worst -2.51%. rank1: n=443, +0.76%, 11/14.
+- OOS magnitude ~95% of dev (+1.14 vs +1.20); month-hit 86% vs 83%.
+- Worst 5 OOS fills: CHSN -22.9%, XPDB -21.5%, ZJYL -21.2%, TELO -20.6%,
+  LPA -17.5% (halt/gap-through-stop class; stop is not a hard floor).
+- Distribution: p5 -11%, median +10.1% (c0 target), p95 +10.1%.
+
+Verdict: the flush-bid mechanism survived its first genuine out-of-sample
+test at full magnitude. This is evidence of real, replicable structure in
+top-gainer liquidity-vacuum snapbacks. NOT yet a live strategy: fill
+microstructure (queue/partial fills/halts), capacity vs ADV, borrow/short
+irrelevance (long-only), venue/execution design and decay monitoring remain
+unproven. Next: forward observer live confirmation + execution design.
+
+Artifacts: factory/artifacts/lb18_oos_oos.json + .parquet;
+factory/artifacts/lb18_oos_dev.json (parity). Script: factory/scripts/lb18_oos.py.

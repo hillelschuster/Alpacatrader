@@ -975,3 +975,15 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
 - Artifacts: lb18_canon*, canon_*.parquet, lb18_relax*, lb18_roll*, plus prior
   runnerpath/runnermanage. Scripts: lb18_canon.py, lb18_relax.py, lb18_roll.py.
 - Status: discovery-grade on all seen months; freeze + forward test is the next step.
+
+## 2026-09-11 — FLUSH RULE OOS PASS (pre-registered; first true OOS pass)
+- PRE-REG-FLUSH-01 frozen/committed (33e2943) before any OOS computation; OOS
+  runner parity-verified exact on dev (8c8f3d2) before touching OOS months.
+- Built 2024-01..2025-02 (14 months) through the unchanged pipeline; PIT
+  vintages extended 2023-11..2025-02 from yolo22/stock-pit-archives mirror
+  (data/pit/pit_symbols.parquet now 3.94M rows, 2023-11..2026-08).
+- OOS result: pf>=2 n=381 +1.14%/trade net, 12/14 months positive, worst month
+  -2.03% -> PRE-REG GATE PASS (dev +1.20%/15of18). all +0.91%/11of14.
+- Caveats: paper sim; fills-at-bid assumption; halt/gap tails (worst OOS fill
+  -22.9%); capacity/execution unproven. Next: forward observer + execution design.
+- Artifacts: lb18_oos_oos.json/.parquet (OOS), lb18_oos_dev.json (parity).
