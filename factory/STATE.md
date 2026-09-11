@@ -1017,3 +1017,16 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
   dwell med 15.3s (strong fills 4.5s/18.9k). Gap fills 2.6x volume (adverse
   selection real). Fill assumption evidence-backed at small size; queue position
   unmeasured until paper/live.
+
+## 2026-09-11e — flush bot + observer supervisors LIVE (dry-run)
+- flush_bot.py committed 45acbde; flush_bot_supervisor.sh launched from WSL via
+  cmd.exe /c start "flush bot" /min git-bash -lc "bash .../flush_bot_supervisor.sh"
+  (the start title MUST contain a space or WSL interop strips quotes and cmd errors).
+- Running since 07:56 UTC; polls every 60s; dry-run default (no orders); scans/bids from
+  09:30 ET; enable paper orders by creating data/forward/bot/LIVE
+  (supervisor relaunches with --live within 5s).
+- Observer supervisor restarted too (07:59 UTC) -> bars logging + scans resume; previous
+  observer had been down since 2026-09-08.
+- Bot: TV scanner candidates; Alpaca SIP bars; broker-truth reconciliation; journal at
+  data/forward/bot/<ET-day>/journal.jsonl; guards POS_MAX=3, $2k qty, 15:30 cutoff,
+  15:55 flatten, KILL file.
