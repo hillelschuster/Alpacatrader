@@ -1056,3 +1056,11 @@ Audit of the live order paths found four defects, all fixed before market open:
    Fix: both paths clear state and set last_exit_bars.
 4. OCO id was logged but not stored; micro guard for missing filled_at.
 Bot restarted via KILL switch to run the hardened code (dry-run, live:false).
+
+## 2026-09-11h — first live paper session armed
+- Pre-open: bot on hardened code; LIVE flag set (start 04:23:51 ET, live:true) -> it will
+  paper-trade unattended from 09:30 ET. Revert to dry-run: rm data/forward/bot/LIVE then
+  KILL-restart (touch data/KILL, rm, supervisor relaunches within 5s).
+- Observer supervisor running; paper account clean (0 positions/orders) at arm time.
+- After the session: run flush_bot_parity.py --day <day> and inspect the journal
+  (scans, bids, fills, OCO hits, tl30 exits, micro stats).
