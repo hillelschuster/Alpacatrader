@@ -114,6 +114,63 @@ def tv_scan():
     return pd.DataFrame(rows)
 
 
+_PIT = None
+
+
+def pit_symbols():
+    global _PIT
+    if _PIT is None:
+        p = ROOT / "data" / "pit" / "pit_symbols.parquet"
+        df = pd.read_parquet(p, columns=["vintage", "symbol"])
+        v = df["vintage"].max()
+        _PIT = set(df[df["vintage"] == v]["symbol"])
+    return _PIT
+
+
+def alpaca_movers(n=50):
+    """Live top-gainer list from Alpaca's screener. The TV scanner lags
+    microcaps intraday (verified 2026-09-11: SWRD TV 3.56/+59.6% while the
+    IEX last trade was 4.92 => +120.6%), which blinds the bot to qualifying
+    candidates. The raw movers include warrants/rights/units and sub-$2 names
+    (APURR 0.39, CHPGR 0.15, AENTW 0.43, BRLSW 0.05) which would crowd the
+    rank gate, so rows are filtered to the latest PIT universe and the frozen
+    $2 floor BEFORE ranks are assigned. Same frame shape as tv_scan()."""
+    import os as _os
+    from alpaca.data.historical.screener import ScreenerClient
+    from alpaca.data.requests import MarketMoversRequest
+    c = ScreenerClient(_os.environ["ALPACA_API_KEY"],
+                       _os.environ["ALPACA_SECRET_KEY"])
+    mv = c.get_market_movers(MarketMoversRequest(top=n))
+    pit = pit_symbols()
+    rows = []
+    for g in (getattr(mv, "gainers", []) or []):
+        sym = str(getattr(g, "symbol", "") or "").strip().upper()
+        px = getattr(g, "price", None)
+        pc = getattr(g, "percent_change", None)
+        if not sym or px is None or pc is None:
+            continue
+        if sym not in pit or float(px) < MIN_PRICE:
+            continue
+        rows.append({"symbol": sym, "rank": len(rows) + 1, "close": float(px),
+                     "change": float(pc), "market_cap": 0.0})
+    return pd.DataFrame(rows)
+
+
+def scan_candidates():
+    try:
+        df = alpaca_movers(50)
+        if len(df):
+            return df, "alpaca"
+    except Exception as e:
+        jlog("error", where="alpaca_movers", msg=str(e))
+    df = tv_scan()
+    if len(df):
+        pit = pit_symbols()
+        df = df[df["symbol"].isin(pit) & (df["close"] >= MIN_PRICE)].copy()
+        df["rank"] = range(1, len(df) + 1)
+    return df, "tv"
+
+
 def state_minutes(bars, prev_close):
     b = bars[(bars["et"] >= 570) & (bars["et"] <= 959)].sort_values("ts")
     if len(b) < 16:
@@ -407,12 +464,12 @@ def poll(br: Broker, meta: dict, probe=False):
         meta.clear()
         meta["_day"] = today
 
-    scan = tv_scan()
+    scan, scan_src = scan_candidates()
     if probe:
-        jlog("scan", n=int(len(scan)))
+        jlog("scan", n=int(len(scan)), src=scan_src)
     for r in scan.head(5).itertuples():
         jlog("scan_row", rank=int(r.rank), symbol=r.symbol,
-             close=float(r.close), change=float(r.change))
+             close=float(r.close), change=float(r.change), src=scan_src)
 
     cands = scan[scan["change"] >= CAND_MIN].head(TOPN)
     positions = br.positions()

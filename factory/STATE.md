@@ -1129,3 +1129,17 @@ intraday returns ~2 stale rows on this plan). The edit is dormant: the running
 observer keeps the old code until its next restart, deliberately deferred to
 post-close to avoid duplicate promotion rows. The bot's equivalent fix is
 already live (5f6dcc5).
+
+## 2026-09-11n — live candidate source: Alpaca movers (TV scanner stale) + PIT/$2 filter
+- Found live: the TV scanner returns stale/frozen rows for microcaps intraday
+  (SWRD frozen at 3.56/+59.6% for 6+ min while the IEX last trade was 4.92 =>
+  +120.6% vs the 2.23 prior close). The bot's change-based gain was therefore
+  blind to a qualifying >=+100% name.
+- Fix: scan_candidates() uses Alpaca's screener movers (live) as the primary
+  source, TV as fallback; rows filtered to the latest PIT universe and the $2
+  floor BEFORE ranks are assigned (raw movers are full of warrants/rights/units:
+  APURR 0.39, CHPGR 0.15, AENTW 0.43, BRLSW 0.05, crowding the rank gate).
+  Restarted live:true 10:10:26 ET; zero errors; 10:11 rows are clean PIT names
+  (FTFT +45.8 r1, TNON +45.7 r2, ACVA +44.4 r3).
+- No bids yet: no name has held causal gain >= +100% with fresh+thrust; SWRD's
+  >=100% window (~09:5x-10:0x) was missed during the TV-blind period.
