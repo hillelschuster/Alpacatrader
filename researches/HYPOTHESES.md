@@ -605,3 +605,35 @@ unproven. Next: forward observer live confirmation + execution design.
 
 Artifacts: factory/artifacts/lb18_oos_oos.json + .parquet;
 factory/artifacts/lb18_oos_dev.json (parity). Script: factory/scripts/lb18_oos.py.
+
+## 2026-09-11b — EXECUTION REALISM + LIVE CONFIRMATION WIRING (lb18_exec)
+
+Pooled dev+OOS frozen-rule fills n=1478 (lb18_exec.json/.parquet):
+- Fill classes: clean touch n=1363, mean +1.27%, med +10.1%, 27/32 months;
+  gap-through n=115, mean -7.64%, 4/29 months. Gap share 7.8%. All money is in
+  clean touches; gap fills are adverse selection.
+- Halt-gap share 0.0% (n_bars never skipped at fill bars): the bad tail is fast
+  collapse through the stop, NOT missing-bar halts. "halt/gap" wording corrected
+  to gap/cascade risk.
+- Stop breaches beyond -11%: 135 fills (9.1%); 26.7% of breaches are gap fills.
+  Worst: AFJK -35.9%, CRML -27.5%, JLHL -26.8%, DIST -23.3%. Stop is not a floor.
+- Capacity: fill-bar shares p25/med/p75 = 126k/316k/633k; dollar volume
+  $1.67M/$3.45M/$6.40M; at 5% participation $84k/$173k/$320k per fill (10%:
+  median $345k). Small-size feasible; not institutional.
+- Decay: all-fills half1 +1.08% -> half2 -0.05% (2024-01..2025-06 vs
+  2025-07..2026-08); pf>=2 +1.31% -> +0.96% (~27% fade, stays positive).
+- Robustness (diagnostic, rule unchanged): tl20/30/45/60 = +0.53/+0.58/+0.42/
+  +0.40 (tl30 best); stop -8/-10/-12/-15 = +0.36/+0.58/+0.61/+0.62 (broad
+  plateau -10..-15). pf2 clean-touch-only +1.39%/28of32 vs base +1.17%/27of32
+  (excluding gap fills helps modestly, fewer fills).
+
+Live confirmation wiring (order-free): forward_observe.py now logs session
+1-min bars for promoted names (log_new_bars; SIP->IEX; ET-session filter;
+per-symbol cumulative n_bars). flush_forward_score.py replays the SAME engine
+(lb18_oos.run_engine) over the live logs (scans -> causal top-3; bars -> paths).
+lb18_oos.py refactored to expose run_engine(); dev parity re-verified EXACT
+after refactor. Smoke-tested via the supervisor's Windows venv (observer --once
+clean; bars logger validated 767 session bars AAPL+MSFT; scorer plumbing OK).
+Activates at next observer/supervisor restart (no mid-session restart done).
+Artifacts: lb18_exec.json/.parquet; live evidence accumulates at
+factory/artifacts/flush_forward_live.json.

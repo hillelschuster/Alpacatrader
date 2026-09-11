@@ -174,7 +174,13 @@ def poll_once(day_dir: Path, promoted_state: dict, symbols_override=None) -> dic
                "diff_pp": (g - nxt) if (g and nxt is not None) else None,
                "dollar_volume": r.get("dollar_volume"), "price": r.get("price"),
                "day_high": r.get("day_high"), "bid": r.get("bid"), "ask": r.get("ask")})
-    return {"ts": now, "candidates": len(rows), "promoted": promoted}
+    new_bars = 0
+    try:
+        new_bars = log_new_bars(day_dir, promoted_state)
+    except Exception as e:
+        new_bars = f"err {str(e)[:80]}"
+    return {"ts": now, "candidates": len(rows), "promoted": promoted,
+            "new_bars": new_bars}
 
 
 def deep_snapshot(day_dir: Path, symbol: str, now: str):
@@ -226,6 +232,64 @@ def deep_snapshot(day_dir: Path, symbol: str, now: str):
 
 def in_window(now_min: int) -> bool:
     return SESSION_START_MIN <= now_min <= SESSION_END_MIN
+
+
+_SEEN_BARS: set = set()
+
+
+def log_new_bars(day_dir: Path, promoted_state: dict) -> int:
+    """Append newly completed SESSION 1-min bars for today's promoted names.
+    Enables offline replay of the frozen flush rule (PRE-FLUSH-01) on live
+    data. Never places orders."""
+    syms = sorted(promoted_state)
+    if not syms:
+        return 0
+    from datetime import datetime as _dt, time as _time, timezone as _tz
+    from zoneinfo import ZoneInfo
+    from alpaca.data.historical import StockHistoricalDataClient
+    from alpaca.data.requests import StockBarsRequest
+    from alpaca.data.timeframe import TimeFrame
+    from alpaca.data.enums import DataFeed
+    from alpaca.common.enums import Sort
+    et = ZoneInfo("America/New_York")
+    today = _dt.now(et).date()
+    start = _dt.combine(today, _time(9, 30), tzinfo=et)
+    hc = StockHistoricalDataClient(os.getenv("ALPACA_API_KEY"),
+                                   os.getenv("ALPACA_SECRET_KEY"))
+    added = 0
+    for feed in (DataFeed.SIP, DataFeed.IEX):
+        try:
+            res = hc.get_stock_bars(StockBarsRequest(
+                symbol_or_symbols=syms, timeframe=TimeFrame.Minute,
+                start=start, sort=Sort.ASC, limit=1000, feed=feed)).data
+        except Exception:
+            continue
+        per: dict = {}
+        batch = []
+        for sym, blist in (res or {}).items():
+            sess = []
+            for b in blist:
+                bt = b.timestamp
+                if bt.tzinfo is None:
+                    bt = bt.replace(tzinfo=_tz.utc)
+                be = bt.astimezone(et)
+                if be.date() != today or not (570 <= be.hour * 60 + be.minute <= 959):
+                    continue
+                sess.append((bt, b))
+            sess.sort(key=lambda x: x[0])
+            for i, (bt, b) in enumerate(sess, 1):
+                key = (sym, str(b.timestamp))
+                if key in _SEEN_BARS:
+                    continue
+                _SEEN_BARS.add(key)
+                batch.append({"ts": str(b.timestamp), "symbol": sym,
+                              "o": b.open, "h": b.high, "l": b.low,
+                              "c": b.close, "v": b.volume, "n_bars": i})
+        for r in batch:
+            _jlog(day_dir / "bars.jsonl", r)
+        added += len(batch)
+        break
+    return added
 
 
 def main():

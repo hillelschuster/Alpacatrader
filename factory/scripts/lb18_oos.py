@@ -80,12 +80,8 @@ def stats(df, tag):
     return d
 
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--months", nargs="+", required=True)
-    ap.add_argument("--tag", default="")
-    a = ap.parse_args()
-    paths, lb = load_months(a.months)
+def run_engine(paths, lb):
+    """Frozen rolling-bid lifecycle engine (PRE-REG-FLUSH-01). Returns fills."""
     A = build(paths)
     gpb = paths.groupby(["date", "ticker"], sort=False)
     paths["pullback"] = paths["c"] / gpb["c"].transform("cummax") - 1
@@ -152,7 +148,16 @@ def main():
                 exit_t = int(ex)
                 B = None
                 c0 = None
-    dr = pd.DataFrame(rows)
+    return pd.DataFrame(rows)
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--months", nargs="+", required=True)
+    ap.add_argument("--tag", default="")
+    a = ap.parse_args()
+    paths, lb = load_months(a.months)
+    dr = run_engine(paths, lb)
     suffix = f"_{a.tag}" if a.tag else ""
     dr.to_parquet(ART / f"lb18_oos{suffix}.parquet")
     out = {"months": sorted(a.months), "rule": "rolling-bid tl30 (PRE-REG-FLUSH-01)"}

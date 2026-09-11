@@ -987,3 +987,17 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
 - Caveats: paper sim; fills-at-bid assumption; halt/gap tails (worst OOS fill
   -22.9%); capacity/execution unproven. Next: forward observer + execution design.
 - Artifacts: lb18_oos_oos.json/.parquet (OOS), lb18_oos_dev.json (parity).
+
+## 2026-09-11b — execution realism + live confirmation wiring
+- lb18_exec.py on pooled dev+OOS frozen-rule fills (n=1478): clean-touch +1.27%
+  (n=1363) vs gap-through -7.64% (n=115, 7.8%); halt-gap share 0.0% (tail is
+  collapse, not missing bars); stop breaches 9.1% (worst -35.9%); capacity
+  median $3.45M fill-bar volume (5% participation -> $173k); decay all-fills
+  half1 +1.08% -> half2 -0.05%, pf2 +1.31% -> +0.96%; tl30 and stop -10..-15
+  on broad plateaus (robustness only; rule unchanged).
+- Live confirmation wired: forward_observe.py logs session bars for promoted
+  names (log_new_bars); flush_forward_score.py replays the frozen engine
+  (lb18_oos.run_engine) on those logs. lb18_oos refactored; dev parity
+  re-verified exact. Smoke-tested via Windows venv; activates at next observer
+  restart (no mid-session restart performed).
+- Artifacts: lb18_exec.json/.parquet.
