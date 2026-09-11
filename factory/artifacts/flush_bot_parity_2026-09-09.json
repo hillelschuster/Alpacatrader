@@ -1,0 +1,16 @@
+{
+ "day": "2026-09-09",
+ "n_scan_rows": 890,
+ "n_syms": 24,
+ "n_expected": 1,
+ "n_actual": 0,
+ "matches": [],
+ "expected_no_fill": [
+  {
+   "ticker": "FTFT",
+   "tf": 678,
+   "ret": 0.10111111111111117
+  }
+ ],
+ "actual_not_expected": []
+}

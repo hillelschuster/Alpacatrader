@@ -235,6 +235,9 @@ def poll(br: Broker, meta: dict, probe=False):
     scan = tv_scan()
     if probe:
         jlog("scan", n=int(len(scan)))
+    for r in scan.head(5).itertuples():
+        jlog("scan_row", rank=int(r.rank), symbol=r.symbol,
+             close=float(r.close), change=float(r.change))
     cands = scan[scan["change"] >= CAND_MIN].head(TOPN)
     positions = br.positions()
     orders = br.open_orders()

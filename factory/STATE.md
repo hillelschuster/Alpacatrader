@@ -1030,3 +1030,16 @@ Next: implement v0 paper bot per spec; live rvol baseline table needs 20 session
 - Bot: TV scanner candidates; Alpaca SIP bars; broker-truth reconciliation; journal at
   data/forward/bot/<ET-day>/journal.jsonl; guards POS_MAX=3, $2k qty, 15:30 cutoff,
   15:55 flatten, KILL file.
+
+## 2026-09-11f — flush-bot parity tooling + restart procedure
+- flush_bot.py now journals scan_row (rank/symbol/close/change) for the top-5 each poll;
+  required to replay the bot's own decisions.
+- flush_bot_parity.py: reads data/forward/bot/<day>/journal.jsonl, rebuilds
+  observer-schema scans/bars in a temp dir, runs the frozen engine (lb18_oos.run_engine),
+  diffs expected vs journal fills (symbol +-5 min). Verified on a fabricated 2026-09-09
+  journal built from observer scans: engine reproduced the known live fill exactly
+  (FTFT tf=678 = 11:18 ET, +10.11%).
+- Restart semantics: the supervisor restarts the bot ONLY on process exit; the bot loops
+  while True. To reload code or flip --live: touch data/KILL (bot exits within ~60s),
+  rm data/KILL, supervisor relaunches within 5s. Used to load scan_row journaling; bot
+  now runs the new code, dry-run, market closed.
