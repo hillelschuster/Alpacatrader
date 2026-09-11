@@ -1195,3 +1195,11 @@ continued after the close (125 rows after 15:55 on day 1; no orders possible —
 entry cutoff 15:30 + EOD return). Scans now run only when the broker clock
 reports open (or --probe); closed sessions emit market_closed and stay quiet.
 Restarted live:true for the weekend.
+
+## 2026-09-11q — HANDOFF.md written (project root)
+Comprehensive prompt-style handoff for the next agent at HANDOFF.md: frozen-rule
+spec, evidence base (OOS +1.14%/trade pf>=2, 12/14; execution realism; decay
+watch), live systems inventory, environment commands (KILL restart, cmd.exe
+quoting, uv patterns), Alpaca/WSL landmines, research discipline, immediate
+roadmap (Monday session -> 30+ fills -> tiny sizing), do-not list, and explicit
+context-discipline instructions: compress big and often.
