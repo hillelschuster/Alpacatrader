@@ -1,26 +1,24 @@
 #!/usr/bin/env python3
 """Flush-bid paper-trading bot v0 — frozen rule PRE-REG-FLUSH-01.
 
-Per poll (market open only):
-  1. TradingView scanner -> top gainers (exchange-filtered, change desc):
-     candidates = change >= CAND_MIN, scanner position = causal gain rank.
-  2. Alpaca SIP minute bars (today's ET session) per tracked candidate.
-  3. Strict state per completed bar: gain >= 1.00 vs prev close (derived from
-     first-sight close/change and cached), pullback >= -0.01, r15 >= 0.03;
-     live approximation: scanner rank <= 3 at poll time.
-  4. Flat symbols with a strict state minute -> resting bid at 0.90 * latest
-     strict close; refresh if level moved >0.5%; expire after WIN_MIN.
-  5. Fill -> OCO exits: stop sell at 0.90*B, limit sell at c0 = B/0.90;
-     tl30 time-stop closes the remainder at market after 30 new bars.
-  6. Guards: max POS_MAX concurrent, NOTIONAL per entry, no entries after
-     15:30 ET, flatten 15:55 ET, kill file data/KILL, broker-truth resync
-     every poll (orders/positions are read from the broker, not local state).
+Position/order lifecycle is managed for ALL tracked symbols every poll,
+independent of whether the symbol still appears in the scanner (fixes
+unmanaged bids/positions when a name drops out of the top-N).
 
-DRY RUN by default (logs intended actions, places nothing). --live uses the
-Alpaca paper keys from .env. Journal: data/forward/bot/<ET-day>/journal.jsonl
-(order/fill/exit/micro events; micro = SIP trades at/below B around a fill).
+Rule: while flat, maintain a resting buy limit at B = 0.90 * close of the
+latest strict-state minute (strict state: gain >= 1.0 vs prev close, pullback
+>= -0.01, r15 >= 0.03) and scanner rank <= 3 at that same minute. Anchor and
+120-min expiry refresh at every strict-state minute; the broker order is only
+replaced when the executable tick changes (no queue model in the backtest;
+reposting every minute would degrade live fills). Fill -> OCO sell
+(stop 0.90*B, limit B/0.90) + tl30 time-stop (bars from filled_at) + paper
+micro capture. Guards: $2 price floor, POS_MAX concurrent, NOTIONAL sizing,
+no entries after 15:30 ET, flatten 15:55 ET, KILL file, ownership via
+client_order_id prefix, broker-truth reconciliation every poll.
 
-Usage: python flush_bot.py [--live] [--once] [--seconds 60]
+DRY RUN by default. --live uses the Alpaca paper keys from .env.
+Journal: data/forward/bot/<ET-day>/journal.jsonl
+Usage: python flush_bot.py [--live] [--once] [--probe] [--seconds 60]
 """
 from __future__ import annotations
 
@@ -52,6 +50,7 @@ STOP_L = 0.10
 WIN_MIN = 120
 TL_BARS = 30
 CAND_MIN = 50.0
+MIN_PRICE = 2.0
 POS_MAX = 3
 NOTIONAL = 2000.0
 ENTRY_CUTOFF = 15 * 60 + 30
@@ -59,6 +58,9 @@ FLAT_ET = 15 * 60 + 55
 POLL_S = 60
 REFRESH_EPS = 0.005
 TOPN = 10
+OWN_PREFIX = "flushbot-"
+TERMINAL = {"canceled", "expired", "rejected", "replaced", "done_for_day",
+            "stopped", "calculated", "suspended"}
 
 TV_URL = "https://scanner.tradingview.com/america/scan"
 TV_BODY = {
@@ -124,15 +126,37 @@ def state_minutes(bars, prev_close):
     return b[m.fillna(False)]
 
 
+def completed(bars, minutes_now):
+    """Bars strictly before the current ET minute (Alpaca may include the
+    in-progress minute; the frozen rule only consumes completed bars).
+    Pre-open, the frame holds the previous session and is fully completed."""
+    if len(bars) == 0 or minutes_now < 570:
+        return bars
+    return bars[bars["et"] <= minutes_now - 1]
+
+
+def qty_for(price):
+    if price < MIN_PRICE or price <= 0:
+        return 0
+    q = int(NOTIONAL / price)
+    return q if q >= 1 else 0
+
+
+def owned(o):
+    cid = getattr(o, "client_order_id", None) or ""
+    return str(cid).startswith(OWN_PREFIX)
+
+
 class Broker:
     def __init__(self, live):
         from alpaca.trading.client import TradingClient
-        key = __import__("os").environ["ALPACA_API_KEY"]
-        sec = __import__("os").environ["ALPACA_SECRET_KEY"]
-        paper = __import__("os").environ.get("ALPACA_PAPER", "true") != "false"
+        import os
+        key = os.environ["ALPACA_API_KEY"]
+        sec = os.environ["ALPACA_SECRET_KEY"]
+        paper = os.environ.get("ALPACA_PAPER", "true") != "false"
         self.live = live
         self.tc = TradingClient(key, sec, paper=paper)
-        from alpaca.data.historical import (StockHistoricalDataClient)
+        from alpaca.data.historical import StockHistoricalDataClient
         self.dc = StockHistoricalDataClient(key, sec)
 
     def clock(self):
@@ -147,6 +171,12 @@ class Broker:
 
     def positions(self):
         return {p.symbol: p for p in self.tc.get_all_positions()}
+
+    def order(self, oid):
+        try:
+            return self.tc.get_order_by_id(oid)
+        except Exception:
+            return None
 
     def bars(self, symbol, start):
         from alpaca.data.requests import StockBarsRequest
@@ -186,211 +216,348 @@ class Broker:
                 "through": bool((px < B).any()),
                 "vol_at": int(at["size"].sum()) if len(at) else 0}
 
-    def buy_limit(self, symbol, qty, price):
+    def submit_buy(self, symbol, qty, price):
         if not self.live:
             return None
         from alpaca.trading.requests import LimitOrderRequest
         from alpaca.trading.enums import OrderSide, TimeInForce
+        cid = f"{OWN_PREFIX}b-{symbol}-{int(time.time() * 1000) % 10**9}"
         return self.tc.submit_order(LimitOrderRequest(
             symbol=symbol, qty=qty, side=OrderSide.BUY,
-            time_in_force=TimeInForce.DAY, limit_price=round(price, 2)))
+            time_in_force=TimeInForce.DAY, limit_price=round(price, 2),
+            client_order_id=cid))
 
     def sell_oco(self, symbol, qty, stop_price, limit_price):
         if not self.live:
             return None
         from alpaca.trading.requests import (LimitOrderRequest,
-                                             StopLossRequest,
-                                             TakeProfitRequest)
+                                            StopLossRequest,
+                                            TakeProfitRequest)
         from alpaca.trading.enums import OrderSide, TimeInForce, OrderClass
+        stop = round(stop_price, 2)
+        lim = round(limit_price, 2)
+        if stop >= lim:
+            stop = round(lim - 0.01, 2)
+        cid = f"{OWN_PREFIX}s-{symbol}-{int(time.time() * 1000) % 10**9}"
         return self.tc.submit_order(LimitOrderRequest(
             symbol=symbol, qty=qty, side=OrderSide.SELL,
             time_in_force=TimeInForce.GTC, order_class=OrderClass.OCO,
-            take_profit=TakeProfitRequest(limit_price=round(limit_price, 2)),
-            stop_loss=StopLossRequest(stop_price=round(stop_price, 2))))
+            take_profit=TakeProfitRequest(limit_price=lim),
+            stop_loss=StopLossRequest(stop_price=stop),
+            client_order_id=cid))
 
     def cancel(self, oid):
         if not self.live:
-            return None
+            return
         try:
-            return self.tc.cancel_order_by_id(oid)
-        except Exception as e:
-            return str(e)
+            self.tc.cancel_order_by_id(oid)
+        except Exception:
+            pass
 
     def close_market(self, symbol):
         if not self.live:
-            return None
-        return self.tc.close_position(symbol)
+            return
+        try:
+            self.tc.close_position(symbol)
+        except Exception as e:
+            jlog("close_error", symbol=symbol, err=str(e)[:200])
 
 
-def qty_for(price):
-    return max(1, int(NOTIONAL / max(price, 0.01)))
+def own_sells(sym, orders):
+    return [o for o in orders if o.symbol == sym and o.side.value == "sell"
+            and owned(o)]
+
+
+def bar_index_at(bars, t):
+    """Index of the first completed bar at/after timestamp t (for tl30)."""
+    if bars is None or len(bars) == 0:
+        return 0
+    ts = (pd.to_datetime(bars["ts"], utc=True).dt.tz_convert("UTC")
+          .dt.tz_localize(None).to_numpy())
+    ft = pd.Timestamp(t)
+    if ft.tzinfo is None:
+        ft = ft.tz_localize("UTC")
+    ft = ft.tz_convert("UTC").tz_localize(None).to_numpy()
+    mask = ts >= ft
+    return int(mask.argmax()) if mask.any() else len(bars) - 1
+
+
+def protect(br, sym, m, qty):
+    """Place the OCO for a filled position; retry until accepted."""
+    B = m.get("entry_B")
+    if not B:
+        return False
+    oc = br.sell_oco(sym, qty, B * (1 - STOP_L), B / (1 - L))
+    if oc is None and br.live:
+        m["protect_pending"] = True
+        jlog("protect_retry", symbol=sym, qty=qty, B=B)
+        return False
+    m["oco_id"] = str(oc.id) if oc else "dryrun"
+    m["protect_pending"] = False
+    jlog("oco", symbol=sym, oco_id=m["oco_id"],
+         stop=round(B * (1 - STOP_L), 2), target=round(B / (1 - L), 2))
+    return True
+
+
+def manage_symbol(br, sym, m, bars, positions, orders, minutes_now, et_now):
+    """Lifecycle for one tracked symbol: fill/idle, protect, tl30, refresh,
+    expiry, re-arm. Runs regardless of scanner membership."""
+    pos = positions.get(sym)
+    buys = [o for o in orders if o.symbol == sym and o.side.value == "buy"]
+    sells = own_sells(sym, orders)
+    resting = buys[0] if buys else None
+    nb = len(bars)
+
+    # -- position present -------------------------------------------------
+    if pos is not None and float(pos.qty) != 0:
+        if not m.get("entry_ts"):
+            # adopted (restart/foreign-to-meta): reconstruct from avg entry
+            B_est = float(pos.avg_entry_price)
+            m["entry_B"] = B_est
+            m["entry_c0"] = round(B_est / (1 - L), 2)
+            m["entry_ts"] = et_now
+            m["entry_bar_i"] = bar_index_at(bars, et_now)
+            jlog("adopt_position", symbol=sym, qty=str(pos.qty), entry=B_est)
+        if not sells and (m.get("protect_pending") or not m.get("oco_id")):
+            protect(br, sym, m, int(float(pos.qty)))
+        # tl30 from filled bar
+        ei = m.get("entry_bar_i")
+        if ei is not None and nb > 0 and (nb - 1 - ei) + 1 >= TL_BARS:
+            if sells:
+                for o in sells:
+                    br.cancel(str(o.id))
+                jlog("tl30_cancel_oco", symbol=sym)
+            else:
+                jlog("tl30_exit", symbol=sym)
+                br.close_market(sym)
+                m["last_exit_ts"] = et_now
+        return
+
+    # -- no position: exit bookkeeping ------------------------------------
+    if m.get("entry_ts") and not sells:
+        jlog("exit", symbol=sym, oco=m.get("oco_id"))
+        m["last_exit_ts"] = et_now
+        m["entry_ts"] = None
+        m["entry_B"] = None
+        m["entry_c0"] = None
+        m["entry_bar_i"] = None
+        m["oco_id"] = None
+        m["protect_pending"] = False
+
+    if resting is None:
+        return
+
+    # -- resting bid management (no position) ------------------------------
+    if minutes_now >= ENTRY_CUTOFF:
+        jlog("cancel_cutoff", symbol=sym, oid=str(resting.id))
+        br.cancel(str(resting.id))
+        return
+
+    if nb == 0:
+        return
+    last_bar_et = int(bars["et"].iloc[-1])
+    sm = state_minutes(bars, m["prev_close"])
+    strict_now = len(sm) > 0 and int(sm["et"].iloc[-1]) == last_bar_et
+    if strict_now:
+        new_B = round(float(bars["close"].iloc[-1]) * (1 - L), 2)
+        m["anchor_ts"] = et_now
+        m["refresh_B"] = new_B
+    anchor = m.get("anchor_ts")
+    if anchor and (et_now - anchor).total_seconds() / 60 > WIN_MIN:
+        jlog("expire", symbol=sym, oid=str(resting.id))
+        br.cancel(str(resting.id))
+        m["order_id"] = None
+        return
+    cur = float(resting.limit_price)
+    m["refresh_B"] = m.get("refresh_B", cur)
+    if abs(m["refresh_B"] - cur) / cur > REFRESH_EPS and strict_now:
+        jlog("refresh", symbol=sym, oid=str(resting.id), old=cur,
+             new=m["refresh_B"])
+        br.cancel(str(resting.id))
+        o = br.submit_buy(sym, qty_for(m["refresh_B"]), m["refresh_B"])
+        if o is not None:
+            m["order_id"] = str(o.id)
+            m["entry_B"] = round(float(o.limit_price), 2)
+        else:
+            m["order_id"] = None
+            m["entry_B"] = m["refresh_B"]
 
 
 def poll(br: Broker, meta: dict, probe=False):
     open_, _ = br.clock()
-    d = day_dir()
-    if not open_ and not probe:
-        jlog("market_closed", note="no action")
-        return
+    et_now = now_et()
+    minutes_now = et_now.hour * 60 + et_now.minute
+    today = day_dir().name
+    if meta.get("_day") is None:
+        meta["_day"] = today
+    if meta.get("_day") != today:
+        jlog("day_roll", old=meta.get("_day"), new=today)
+        try:
+            for o in br.open_orders():
+                if owned(o):
+                    br.cancel(str(o.id))
+            for sym in [k for k in meta if k != "_day"]:
+                if sym in br.positions():
+                    br.close_market(sym)
+        except Exception:
+            pass
+        meta.clear()
+        meta["_day"] = today
+
     scan = tv_scan()
     if probe:
         jlog("scan", n=int(len(scan)))
     for r in scan.head(5).itertuples():
         jlog("scan_row", rank=int(r.rank), symbol=r.symbol,
              close=float(r.close), change=float(r.change))
+
     cands = scan[scan["change"] >= CAND_MIN].head(TOPN)
     positions = br.positions()
     orders = br.open_orders()
-    buys = {}
-    for o in orders:
-        if o.side.value == "buy":
-            buys[o.symbol] = o
-    for sym, m in list(meta.items()):
-        if m.get("entry_bars") is not None and sym not in positions:
-            jlog("exit", symbol=sym,
-                 held=m.get("n_bars", 0) - int(m["entry_bars"]),
-                 oco=m.get("oco_id"))
-            m["last_exit_bars"] = m.get("n_bars", 0)
-            m["entry_bars"] = None
-            m["entry_B"] = None
-            m["entry_c0"] = None
-            m["oco_id"] = None
-            m["order_id"] = None
-            m["order_t"] = None
-    et_now = now_et()
-    minutes_now = et_now.hour * 60 + et_now.minute
 
-    if minutes_now >= FLAT_ET and (positions or orders):
-        for sym in list(positions.keys()):
-            jlog("flatten", symbol=sym)
-            br.close_market(sym)
-        for o in orders:
-            jlog("cancel_eod", symbol=o.symbol, oid=str(o.id))
-            br.cancel(str(o.id))
-        for sym, m in meta.items():
-            m["last_exit_bars"] = m.get("n_bars", 0)
-            m["entry_bars"] = None
-            m["entry_B"] = None
-            m["entry_c0"] = None
-            m["oco_id"] = None
-            m["order_id"] = None
-            m["order_t"] = None
-        return
-
-    for r in cands.itertuples():
-        sym = r.symbol
+    tracked = {k for k in meta if k != "_day"} | set(cands["symbol"]) | set(positions)
+    bars_cache = {}
+    for sym in tracked:
         if sym not in meta:
             meta[sym] = {}
         m = meta[sym]
-        if "prev_close" not in m:
-            if r.change and r.close > 0:
-                m["prev_close"] = r.close / (1 + r.change / 100.0)
+        row = cands[cands["symbol"] == sym]
+        if "prev_close" not in m and len(row):
+            r0 = row.iloc[0]
+            if r0["change"] and r0["close"] > 0:
+                m["prev_close"] = float(r0["close"]) / (1 + float(r0["change"]) / 100.0)
             else:
                 continue
-        start_day = et_now
-        if minutes_now < 570:
-            start_day = et_now - timedelta(days=1)
+        start_day = et_now if minutes_now >= 570 else et_now - timedelta(days=1)
         start = start_day.replace(hour=9, minute=30, second=0, microsecond=0)
         bars = br.bars(sym, start)
-        if len(bars) == 0:
-            continue
-        sm = state_minutes(bars, m["prev_close"])
-        m["n_bars"] = int(len(bars))
-        if len(sm) == 0:
-            continue
-        last = sm.iloc[-1]
-        if int(r.rank) > 3:
-            continue
-        B = round(float(last["close"]) * (1 - L), 2)
-        c0 = round(float(last["close"]), 2)
+        bars = completed(bars, minutes_now)
+        bars_cache[sym] = bars
 
-        pos = positions.get(sym)
-        ord_buy = buys.get(sym)
-
-        if probe:
-            jlog("probe", symbol=sym, rank=int(r.rank),
-                 state_min=int(last["et"]), B=B, c0=c0)
-            continue
-
-        if pos is not None and float(pos.qty) != 0:
-            filled_b = m.get("entry_bars")
-            if filled_b is None:
-                jlog("adopt_position", symbol=sym, qty=pos.qty,
-                     entry=pos.avg_entry_price)
-                continue
-            if m.get("n_bars", 0) - filled_b >= TL_BARS:
-                jlog("tl30_exit", symbol=sym)
-                br.close_market(sym)
-                m["last_exit_bars"] = m.get("n_bars", 0)
-                m["entry_bars"] = None
-                m["entry_B"] = None
-                m["entry_c0"] = None
-                m["oco_id"] = None
-            continue
-
-        if ord_buy is not None:
-            placed = m.get("order_t")
-            if placed and (et_now - placed).total_seconds() / 60 > WIN_MIN:
-                jlog("expire", symbol=sym, oid=str(ord_buy.id))
-                br.cancel(str(ord_buy.id))
-                m["order_t"] = None
-                continue
-            cur = float(ord_buy.limit_price)
-            if abs(B - cur) / cur > REFRESH_EPS:
-                jlog("refresh", symbol=sym, oid=str(ord_buy.id),
-                     old=cur, new=B)
-                res = br.cancel(str(ord_buy.id))
-                if res is not None and not isinstance(res, str):
-                    o = br.buy_limit(sym, qty_for(B), B)
-                    m["order_t"] = et_now
-                    m["order_id"] = str(o.id) if o else None
-            continue
-
-        if len(positions) + len(buys) >= POS_MAX or minutes_now >= ENTRY_CUTOFF:
-            continue
-        if m.get("last_exit_bars") is not None and \
-                m["n_bars"] - m["last_exit_bars"] < 1:
-            continue
-        q = qty_for(B)
-        o = br.buy_limit(sym, q, B)
-        m["order_t"] = et_now
-        m["order_id"] = str(o.id) if o else None
-        m["entry_B"] = B
-        m["entry_c0"] = c0
-        jlog("place_bid", symbol=sym, B=B, c0=c0, qty=q, oid=m["order_id"],
-             live=br.live)
-
-
-def reconcile_fills(br: Broker, meta: dict):
+    # fills: owned entry orders that left the open book -> query by id
+    open_ids = {str(o.id) for o in orders}
     for sym, m in list(meta.items()):
+        if sym == "_day":
+            continue
         oid = m.get("order_id")
-        if not oid:
+        if not oid or oid in open_ids:
+            continue
+        o = br.order(oid)
+        if o is None:
+            continue
+        st = str(o.status.value)
+        if st in ("filled", "partially_filled"):
+            fq = int(float(o.filled_qty or 0))
+            if fq <= 0:
+                continue
+            if st == "partially_filled":
+                jlog("partial", symbol=sym, oid=oid, filled=fq)
+                br.cancel(oid)
+            if not m.get("entry_ts"):
+                m["entry_B"] = round(float(o.limit_price), 2)
+                m["entry_c0"] = round(float(o.limit_price) / (1 - L), 2)
+                m["entry_ts"] = o.filled_at or et_now
+                jlog("fill", symbol=sym, oid=oid,
+                     price=str(o.filled_avg_price), qty=str(fq),
+                     B=m["entry_B"], c0=m["entry_c0"])
+                m["entry_bar_i"] = bar_index_at(bars_cache.get(sym), m["entry_ts"])
+            if not own_sells(sym, orders) and (
+                    m.get("protect_pending") or not m.get("oco_id")):
+                protect(br, sym, m, fq)
+            if not m.get("micro_done") and getattr(o, "filled_at", None) is not None:
+                micro = br.trades_at_bid(sym, m["entry_B"],
+                                         o.filled_at - timedelta(minutes=2),
+                                         o.filled_at + timedelta(minutes=2))
+                m["micro_done"] = True
+                if micro:
+                    jlog("micro", symbol=sym, **micro)
+            if st == "filled":
+                m["order_id"] = None
+        elif st in TERMINAL:
+            m["order_id"] = None
+
+    # lifecycle for every tracked symbol
+    for sym in list(tracked):
+        m = meta.get(sym)
+        if m is None:
             continue
         try:
-            o = br.tc.get_order_by_id(oid)
+            manage_symbol(br, sym, m, bars_cache.get(sym, pd.DataFrame()),
+                          positions, orders, minutes_now, et_now)
         except Exception:
+            jlog("error", where=f"manage:{sym}",
+                 traceback=traceback.format_exc()[-500:])
+
+    # EOD flatten (owned only)
+    if minutes_now >= FLAT_ET:
+        if positions or orders:
+            for o in orders:
+                if owned(o):
+                    jlog("cancel_eod", symbol=o.symbol, oid=str(o.id))
+                    br.cancel(str(o.id))
+            for sym in list(positions):
+                if sym in meta:
+                    jlog("flatten", symbol=sym)
+                    br.close_market(sym)
+        return
+
+    if probe or not open_:
+        if not open_ and not probe:
+            jlog("market_closed", note="no action")
+        if probe:
+            for r in cands.itertuples():
+                sym = r.symbol
+                b = bars_cache.get(sym)
+                m = meta.get(sym, {})
+                if b is None or not len(b) or not m.get("prev_close"):
+                    continue
+                sm = state_minutes(b, m["prev_close"])
+                if len(sm) == 0:
+                    continue
+                if int(r.rank) > 3:
+                    continue
+                last = sm.iloc[-1]
+                jlog("probe", symbol=sym, rank=int(r.rank),
+                     state_min=int(last["et"]),
+                     B=round(float(last["close"]) * (1 - L), 2),
+                     c0=round(float(last["close"]), 2))
+        return
+    if minutes_now >= ENTRY_CUTOFF:
+        return
+
+    # new bids
+    n_orders = len([o for o in orders if o.side.value == "buy" and owned(o)])
+    slots = POS_MAX - len(positions) - n_orders
+    for r in cands.itertuples():
+        if slots <= 0:
+            break
+        sym = r.symbol
+        m = meta.get(sym, {})
+        if sym in positions or any(o.symbol == sym for o in orders):
             continue
-        if o.status.value == "filled" and m.get("entry_bars") is None:
-            B = m.get("entry_B")
-            c0 = m.get("entry_c0")
-            m["entry_bars"] = m.get("n_bars", 0)
-            jlog("fill", symbol=sym, oid=oid, price=str(o.filled_avg_price),
-                 qty=str(o.filled_qty), B=B, c0=c0)
-            qty = int(float(o.filled_qty))
-            oc = br.sell_oco(sym, qty, B * (1 - STOP_L), c0)
-            m["oco_id"] = str(oc.id) if oc else None
-            jlog("oco", symbol=sym, oco_id=m["oco_id"],
-                 stop=round(B * (1 - STOP_L), 2), target=c0)
-            if o.filled_at is None:
-                continue
-            t0 = o.filled_at - timedelta(minutes=2)
-            t1 = o.filled_at + timedelta(minutes=2)
-            micro = br.trades_at_bid(sym, B, t0, t1)
-            if micro:
-                jlog("micro", symbol=sym, **micro)
-        if o.status.value in ("canceled", "expired", "rejected"):
-            m["order_id"] = None
-            m["order_t"] = None
+        if int(r.rank) > 3 or float(r.close) < MIN_PRICE:
+            continue
+        b = bars_cache.get(sym)
+        if b is None or not len(b) or not m.get("prev_close"):
+            continue
+        sm = state_minutes(b, m["prev_close"])
+        last_bar_et = int(b["et"].iloc[-1])
+        if len(sm) == 0 or int(sm["et"].iloc[-1]) != last_bar_et:
+            continue  # require strict state at the latest completed bar
+        if m.get("last_exit_ts") and m["last_exit_ts"] >= et_now - timedelta(seconds=60):
+            continue
+        B = round(float(b["close"].iloc[-1]) * (1 - L), 2)
+        q = qty_for(B)
+        if q <= 0:
+            continue
+        o = br.submit_buy(sym, q, B)
+        m["entry_B"] = B
+        m["entry_c0"] = round(float(b["close"].iloc[-1]), 2)
+        m["anchor_ts"] = et_now
+        m["order_id"] = str(o.id) if o else None
+        jlog("place_bid", symbol=sym, B=B, c0=m["entry_c0"], qty=q, rank=int(r.rank),
+             oid=m["order_id"], live=br.live)
+        slots -= 1
 
 
 def main():
@@ -410,7 +577,6 @@ def main():
             if KILL.exists():
                 jlog("kill_file", note="stopping")
                 break
-            reconcile_fills(br, meta)
             poll(br, meta, probe=a.probe)
         except Exception:
             jlog("error", traceback=traceback.format_exc()[-800:])

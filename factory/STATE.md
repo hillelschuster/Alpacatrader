@@ -1074,3 +1074,24 @@ Bot restarted via KILL switch to run the hardened code (dry-run, live:false).
   (bot armed 04:23 ET today, market closed). Ledger filters fills to symbols
   present in the journal on the same date and reports n_foreign_ignored.
   Pre-session truth for our bot: fills=0, trades=0.
+
+## 2026-09-11j — flush bot hardening v2 (audit fixes) + restart
+Independent audit (16 blocker + 8 major). Triage: fixed the order/lifecycle
+correctness set; deferred 8 parity/ledger (analysis-side) findings.
+Fixes: lifecycle managed for all tracked symbols every poll (independent of
+scanner membership); ownership via client_order_id prefix (flushbot-);
+fills detected by order-id lookup (filled orders leave the open book) with
+partial-fill cancel + protect; OCO protection retried until accepted; anchor
+and 120-min expiry refreshed at every strict-state minute, broker order
+replaced only on a tick change; tl30 counted from filled_at; 15:30 cancels
+resting buys; EOD cancels owned OCOs before closing; ET day-roll resets meta
+and cancels owned leftovers; $2 price floor + qty guard; terminal-status
+classification; strict state required at the latest completed bar so the live
+rank applies to the same minute.
+Verified: py_compile + 5 mock-broker lifecycle tests (refresh-on-tick, expiry,
+protect, tl30, exit bookkeeping) pass; live bot restarted (start live:true
+05:12:29 ET, no error events).
+Deliberate fidelity choices (not bugs): tick-only replacement; current-rank
+alignment via latest-completed-bar state; cancel owned resting buys on restart.
+Deferred: parity/ledger semantics (findings 17-24) to fix before trusting
+reconciliation numbers.
