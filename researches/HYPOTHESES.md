@@ -736,3 +736,31 @@ pass (Sec.5) is unrun and user-gated. Any continuation requires a NEW pre-reg:
 a learned sequence embedding, or a different unit of analysis (event-anchored
 windows). Artifacts: pattern_digest*.{json,parquet,png}; scripts/pattern_digest.py;
 EXP-67/68.
+
+---
+## 2026-09-13 — H029 DAY-BREADTH CONDITIONING (candidate: OOS pass, dev caveat)
+
+Pre-registered as PRE-REG-DAYTYPE-01 before any computation (5 frozen cuts, no
+search). Day aggregates built causally from `data/leaderboard`; population =
+frozen rule fills (OOS 541, dev 937).
+
+Finding: fills taken on a day that has already produced >=2 strict-state top-3
+names ("busy tape") are materially worse on OOS: rank1-only -0.69% vs +1.33%
+for <=1 strict name; rank1&pf2 -1.41% vs +1.57%; below population in 3/3 OOS
+blocks; monotone dose (2 → -0.49%, 3 → -0.04%, 4+ → -5.79%); independent of
+session. Interpretation: multiple simultaneous strict leaders mark a crowded
+momo tape / unwind regime, where the flush does not snap back; the lone leader's
+flush is idiosyncratic and does.
+
+Caveat that keeps this a candidate, not a rule: within rank1 the dev period does
+NOT replicate the cut (1:+0.98%, 2:+1.22%, 3:+0.26%), though pooled dev agrees
+(+0.93% vs -0.16%). The OOS evidence is strong; the dev evidence is weak, so the
+honest status is CANDIDATE pending forward paper.
+
+Also falsified here: day composition does NOT explain the H1→H2 fade (share2+
+0.422 vs 0.457; monthly corr -0.08). The fade lives elsewhere.
+
+Falsifier / kill: forward paper fills tagged with `n_strict_est` fail to show a
+worse busy-tape bucket after >=30 fills → retire H029. Adoption of any gating
+requires a new pre-reg + forward OOS; nothing is gated now.
+Artifacts: `factory/artifacts/lb18_daytype.json`/.parquet; EXP-69.

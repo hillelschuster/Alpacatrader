@@ -1430,3 +1430,23 @@ would let the bot start and silently degrade candidate scanning. Gate now
 includes pyarrow (activates on the next supervisor start; the running process is
 untouched). Bot otherwise healthy: LIVE armed, no KILL, startup_reconcile ran
 (canceled 0 / rehydrated 0), weekend-idle on market_closed.
+
+## 2026-09-13 — PRE-REG-DAYTYPE-01: day-context candidate (OOS pass, dev caveat)
+Five pre-declared causal day/session cuts over 1478 frozen fills (OOS 541 +
+dev 937), day aggregates built from data/leaderboard (strict-state names,
+flush names; producer `factory/scripts/lb18_daytype.py`). Result: the day-breadth
+cut `n_strict_names_sofar >= 2` (distinct strict-state top-3 names already seen
+strictly before the fill minute) formally PASSES the frozen 5-condition gate on
+OOS: mean +0.46% (n=207) vs +1.20% (n=334) for <=1; rank1-only -0.69% vs
++1.33%; rank1&pf2 -1.41% vs +1.57%; below population in 3/3 OOS blocks
+(5/5/4 months); dose-response monotone (rank1 OOS: 1 → +1.33%, 2 → -0.49%,
+3 → -0.04%, 4+ → -5.79% n=7); session-independent. Caveat: NOT replicated
+within rank1 on dev (1:+0.98%, 2:+1.22%, 3:+0.26%) although pooled dev agrees
+(+0.93% vs -0.16%). Other four cuts fail the gate (n_flush quiet days n=19;
+rank2-3 negative OOS but dev opposite; prior_stop_today ~flat; session
+direction agrees but gate fails). Falsified the convenient composition story:
+share2+ H1 0.422 vs H2 0.457; corr(monthly share2+, monthly mean) -0.08 dev,
++0.01 OOS — the H2 fade is NOT day-composition. No adoption: H029 = CANDIDATE,
+needs forward paper validation. Next: journal `n_strict_est` in flush_bot.py
+(IEX-estimated day breadth at bid/fill, behavior-neutral tag) so Monday+ fills
+test the candidate in the only uncontaminated arena. EXP-69.
