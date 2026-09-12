@@ -1482,3 +1482,10 @@ remains unrun and user-gated. Lane status: all shape-clustering units
 remaining branch is a learned sequence embedding under its own pre-reg.
 Artifacts: pattern_digest_events.json/_assignments.parquet/
 _cards_E1_flush_touch.png/_cards_E3_volume_spike.png. EXP-71, H030.
+
+## 2026-09-13d — ledger tag partitions for the forward-paper judge
+flush_bot_ledger.py now attaches `pf_est` / `n_strict_est` to each round trip
+(read from place_bid/fill journal events) and prints `summary_by_tag`
+partitions (pf 0-1 vs 2+, n_strict 0-1 vs 2+) plus the A3b baseline
+(+1.13% pf2 mean net) for the forward comparison. Smoke test on the flat
+account: fills=0 closed_trades=0, artifact written.

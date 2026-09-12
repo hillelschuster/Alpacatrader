@@ -93,6 +93,7 @@ def main():
     j = journal_events()
     allowed = set()
     bids = {}
+    tags = {}
     for e in j:
         ev = e.get("event")
         if ev in ("place_bid", "fill", "exit", "oco") and e.get("symbol"):
@@ -100,6 +101,13 @@ def main():
         if ev == "place_bid":
             bids[(et_day(e.get("ts")), e.get("symbol"))] = {
                 "B": e.get("B"), "c0": e.get("c0")}
+        if ev in ("place_bid", "fill") and e.get("symbol"):
+            key = (et_day(e.get("ts")), str(e["symbol"]))
+            current = tags.get(key, {})
+            for tag in ("pf_est", "n_strict_est"):
+                if e.get(tag) is not None:
+                    current[tag] = e[tag]
+            tags[key] = current
     n_all = len(fills)
     fills = [f for f in fills if (f["day_et"], f["symbol"]) in allowed]
     n_foreign = n_all - len(fills)
@@ -138,6 +146,7 @@ def main():
         b = bids.get((et_day(t["t_exit"]), t["symbol"]))
         if b:
             t["rule_B"], t["rule_c0"] = b["B"], b["c0"]
+        t.update(tags.get((et_day(t["t_exit"]), t["symbol"]), {}))
 
     out = {"n_fills": len(fills), "n_trades": len(trades),
            "n_foreign_ignored": n_foreign,
@@ -149,6 +158,22 @@ def main():
         out["summary"] = {"n": len(rets), "mean_net": round(st.mean(rets), 4),
                           "median_net": round(st.median(rets), 4),
                           "pos": round(sum(1 for x in rets if x > 0) / len(rets), 3)}
+        def partition(field, keep):
+            values = [t["ret_net"] for t in covered if keep(t.get(field))]
+            return {"n": len(values),
+                    "mean_net": round(st.mean(values), 4) if values else None}
+        out["summary_by_tag"] = {
+            "pf_est": {
+                "0_1": partition("pf_est", lambda v: v is not None and int(v) <= 1),
+                "2plus": partition("pf_est", lambda v: v is not None and int(v) >= 2),
+            },
+            "n_strict_est": {
+                "0_1": partition("n_strict_est", lambda v: v is not None and int(v) <= 1),
+                "2plus": partition("n_strict_est", lambda v: v is not None and int(v) >= 2),
+            },
+            "baseline": {"a3b_pf2_mean_net": 0.0113,
+                         "note": "judge live paper vs A3b once n >= 30 fills"},
+        }
     art = ROOT / "factory" / "artifacts" / "flush_bot_ledger.json"
     art.write_text(json.dumps(out, indent=1, default=str))
     print(f"fills={len(fills)} closed_trades={len(trades)}")
@@ -157,6 +182,8 @@ def main():
               f"qty={t['qty']} ret_net={t['ret_net']}")
     if out.get("summary"):
         print("summary:", out["summary"])
+    if out.get("summary_by_tag"):
+        print("by tag:", json.dumps(out["summary_by_tag"]))
     print("artifact ->", art)
 
 
