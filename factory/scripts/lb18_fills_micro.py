@@ -66,16 +66,20 @@ def trade_metrics(df, B):
     return out
 
 
+TRADE_CAP = 200_000
+QUOTE_CAP = 20_000
+
+
 def fetch(c, sym, s, e, kind):
     req = (StockTradesRequest(symbol_or_symbols=sym, start=s, end=e,
-                              feed=DataFeed.SIP, limit=10000) if kind == "trades"
+                              feed=DataFeed.SIP, limit=TRADE_CAP) if kind == "trades"
            else StockQuotesRequest(symbol_or_symbols=sym, start=s, end=e,
-                                   feed=DataFeed.SIP, limit=1000))
+                                   feed=DataFeed.SIP, limit=QUOTE_CAP))
     for attempt in range(2):
         try:
             df = c.get_stock_trades(req).df if kind == "trades" else c.get_stock_quotes(req).df
             df = df.reset_index()
-            trunc = int(len(df) >= (10000 if kind == "trades" else 1000))
+            trunc = int(len(df) >= (TRADE_CAP if kind == "trades" else QUOTE_CAP))
             return df, trunc
         except Exception as ex:
             if attempt == 0:
