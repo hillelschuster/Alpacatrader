@@ -355,3 +355,31 @@ pf2 ≈ +1.13%/trade, 10/14 months, ~19 fills/mo post-overlay, worst month ≈ �
 Open priced decision (user): real-time SIP (Algo Trader Plus, ~$99/mo) is the only
 way to restore the frozen schedule. Not adopted. Study B (post-fill tail
 management) does not need it.
+
+**Fragility profile (A3b pf2, OOS — know this before trusting +1.13%):**
+win 55.0%, mean win +9.24%, mean loss −8.77%, breakeven win-rate 48.7% ⇒ cushion
+≈ 6.3pp of win rate. Exit mix: 48% exactly at target (+10.1% net), 28% exactly at
+stop (−11%), 23% tl30/other. Bootstrap 95% CI of the mean [+0.01%, +2.21%] — the
+lower bound touches zero; frozen CI [+0.18%, +2.09%]. Worst 5 fills = −75.9pp of a
++318pp total. H1 +2.18% (n=130) → H2 +0.23% (n=152): the live-model recent half is
+flat. At ~19 fills/mo, ~14 months of forward fills are needed for the CI to
+exclude zero. $/mo: ~$422 at $2k/trade, ~$2.1k at $10k, ~$5.3k at $25k (capacity
+p25 ≈ $84k at 5% participation). 30 forward fills validate mechanics, not edge.
+
+---
+
+## 15. Post-fill management lane is CLOSED (2026-09-12)
+
+Study B appeared to pass its gate with a ~60s post-fill exit (pf2 +1.14%→+1.73%),
+but it priced the exit at the last SIP print with the same flat 1% friction as the
+baseline. `PRE-REG-EXIT-01` re-ran it conservatively — exit at the **NBBO bid**
+plus 50bps — over H ∈ {instant..30m} and four slippage levels. Every flat and
+conditional time-stop fails: R1 −3.77% (instant) to −4.12% (30m), 0-1/14 months,
+versus the frozen baseline +0.914%/+1.136% on the same fills. At the touch instant
+the bid already sits below B (mean 0.967·B). The edge requires the RESTING limit
+target at c0; a market time-stop sells the winners into a falling bid.
+
+Consequences: keep the frozen exit unchanged; do NOT add a time-stop; no
+real-time SIP needed for this question. Post-fill management is a well-tested
+negative (Study B + EXIT-01). Files: `factory/scripts/lb18_exit.py`,
+`factory/artifacts/lb18_exit.json`/.parquet, `researches/PRE-REG-EXIT-01.md`.

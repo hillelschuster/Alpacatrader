@@ -1301,6 +1301,45 @@ so any 60s-exit rule needs a NEW pre-reg + fresh/forward OOS. Next experiment
 model and a small candidate set (flat time-stop; "exit if depth below B < −1%"),
 then forward paper validation.
 
+## 2026-09-12v — live-observable data surface (deployability inventory)
+Checked what `flush_bot.py` can actually see live (from code, not assumption):
+- `Broker.bars()` = `DataFeed.IEX` first, SIP fallback (lines 307-319) → 1-min IEX
+  OHLCV, polled every `POLL_S=60`.
+- `Broker.trades_at_bid()` = `DataFeed.SIP` (lines 331-337) → returns nothing live
+  (SIP intraday blocked on this key); harmless, used for post-fill micro only.
+- No quotes/NBBO fetch anywhere in the bot.
+Consequence for rescue rules: every Study B sub-minute feature
+(touch_trade_count/volume/size_median, below_span_s, touch_episodes,
+max_depth_below, snapback at 5-30s) is NOT live-observable; only fill-time and
+IEX 1-min bar features (e.g. `iex_above_B`) are.
+- R1 (flat time-stop at H) is deployable today with zero new data.
+- Any feature-based rescue needs either an IEX websocket trades/quotes consumer
+  (code only, no purchase) or real-time SIP (Algo Trader Plus, ~$99/mo).
+- `trades_at_bid` still passes `limit=10000` (the old total-cap pattern); moot
+  live, but fix it if it is ever pointed at historical fetches.
+
+## 2026-09-12w — PRE-REG-EXIT-01: flat time-stop DEAD; keep the frozen exit
+Conservative exit test on the 541 frozen OOS fills: exit priced at the NBBO
+**bid** (not the last print) plus 50bps extra slippage. Result: every flat or
+conditional time-stop fails — the Study B "gate PASS" was exit-pricing optimism
+(last SIP trade + flat 1%).
+- At the touch instant the bid is already below B: mean `bid_H/B` 0.967, median
+  0.992, p05 0.866. Filling a flush and then selling at the market means hitting
+  a bid below entry, worst on exactly the names that keep falling.
+- EV (SLIP=50bps): R1 flat H=0 −3.77%, H=60 −3.93%, H=1800 −4.12%; R2 conditional
+  (exit iff price<B*0.99) −3.77%..−4.90%. Months+ 0-1/14. Frozen baseline on the
+  same fills: +0.914% (all) / +1.136% (pf2).
+- Mechanism: the edge lives in the RESTING limit target at c0 (48% of fills exit
+  at +10.11% net). A time-stop sells the winners into a falling bid; it sacrifices
+  ~112% of aggregate target P&L. Survivors are stop-heavy (~1.8:1) yet exiting
+  them costs more than the stops saved once priced at the bid.
+- Coverage: 499/541 anchored, 0 quote errors/truncations; 42 anchor-missing; 88
+  trade fallbacks (mostly H=1800). A3b secondary not run (cache 361/507).
+VERDICT: post-fill time-stop lane **CLOSED** (the Study B deprioritization rule
+fires — no rung beats the baseline). Keep the frozen resting exit unchanged. No
+SIP needed for this question. Files: `factory/scripts/lb18_exit.py`,
+`factory/artifacts/lb18_exit.json`/.parquet, `researches/PRE-REG-EXIT-01.md`.
+
 ## 2026-09-12s — Study A decomposition (Amendment A1): IEX state costs frequency, not edge
 2×2 over (state/anchor source) × (exec source), frozen `lb` gate, `lb18_iex_hybrid.py`:
 parity (frozen,frozen) reproduced 541/+0.91%, 381/+1.14% exactly.

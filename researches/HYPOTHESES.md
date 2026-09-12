@@ -681,3 +681,35 @@ Findings (OOS):
 CAVEAT: queue position / fill probability still unmeasured. Paper = software
 test; preserve SIP around paper fills; small live orders are eventual ground
 truth. No rule change.
+
+---
+## 2026-09-12 — POST-FILL TIME-STOP LANE CLOSED (Study B + PRE-REG-EXIT-01)
+
+Study B (decision-anchored sub-minute features, rescue 2x2, latency ladder)
+reported a passing gate for a ~60s post-fill exit (pf2 +1.14% -> +1.73%; LOMO
+lag=60 positive in 8/8 configs). Verification flagged that its exit was priced at
+the LAST SIP TRADE with the flat 1% friction, and that rule identity was unstable
+across configs (6 unrelated rules; value in the feature family, not a rule).
+
+PRE-REG-EXIT-01 then tested it conservatively: exit at the NBBO BID plus 50bps,
+horizons {instant, 60s, 2m, 5m, 10m, 15m, 30m}, exactly two rules (flat R1,
+conditional R2). Every configuration FAILS: R1 -3.77% (instant) to -4.12% (30m),
+R2 -3.77% to -4.90%, months+ 0-1/14, versus the frozen baseline +0.914% (all) and
++1.136% (pf2) on the same fills. At the touch instant the bid is already 3.3%
+below B on average (median 0.8%, p05 13.4% below) — the fill marks adverse
+selection, and a market exit pays it.
+
+Mechanism: the flush edge is carried by the RESTING limit target at c0 (48% of
+fills exit there at +10.11% net). A time-stop aborts the snapback and sells into a
+falling bid; it sacrifices ~112% of aggregate target P&L. Survivors are stop-heavy
+(~1.8:1) but the saved stops cost more than the sacrificed targets once the exit
+is priced honestly.
+
+VERDICT: post-fill management (simple and feature-conditional) is a tested
+negative; keep the frozen resting exit. Do not resurrect without a new
+formulation that prices exits at the bid and satisfies a forward OOS. Realtime
+SIP (~$99/mo) is NOT needed for this question.
+
+Files: factory/scripts/lb18_subminute.py, factory/scripts/lb18_exit.py,
+factory/artifacts/lb18_subminute.json/.parquet, factory/artifacts/lb18_exit.json/.parquet,
+researches/PRE-REG-EXIT-01.md. Ledgers: EXP-65, EXP-66, H028 (RETIRED).
