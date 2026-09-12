@@ -1241,3 +1241,21 @@ Pending: production-overlay measurement (fill cutoff 15:30 / flatten 15:55 /
 POS_MAX=3 on historical fills -> retained EV + frequency) delegated as a
 measurement (seen data, not an alpha claim); artifact `lb18_overlay.json`.
 Next: Monday pre-open health check, then accumulate paper fills tagged pf_est.
+
+## 2026-09-12r — Study A (IEX feed fidelity) + Amendment A1
+PRE-REG-MICRO-01 Study A: replayed the frozen rolling-bid engine on an IEX-only
+tape built for all candidate symbol-days (667 days cached, 170 zero-bar pairs
+logged in `data/iex_tape/_missing.jsonl`). Parity reproduced the frozen numbers
+exactly (all 541/+0.91%; pf2 381/+1.14%; dev 937/+0.39%, 658/+1.20%), so the
+substitution machinery is sound. The IEX-everything arm FAILED Gate A: OOS all
+n=456 −2.54%, pf2 n=256 −1.56% (3/14); dev pf2 −1.25%. Failure signature is
+asymmetric: the 174 missed frozen fills (118 pf2) were target winners (median
+frozen ret +10.11%) and the 89 spurious IEX fills were stop losers (median
+−11.00%). IEX-only fill detection is adversely selected; live fills are
+consolidated (real broker order), so this arm is stricter than live. Amendment
+A1 (pre-registered before running) decomposes into (IEX state, frozen exec) =
+deployable hybrid, (frozen state, IEX exec) = fill-venue control, plus an
+IEX-anchor/frozen-B sub-variant, each with frozen gates and a decision rule
+(A3 PASS ⇒ state feed not implicated). Files: `factory/scripts/lb18_iex_tape.py`,
+`lb18_iex_feed.py`, `factory/artifacts/lb18_iex_feed.json`/.parquet. Verdict
+pending the hybrid run.
