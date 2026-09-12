@@ -1450,3 +1450,16 @@ share2+ H1 0.422 vs H2 0.457; corr(monthly share2+, monthly mean) -0.08 dev,
 needs forward paper validation. Next: journal `n_strict_est` in flush_bot.py
 (IEX-estimated day breadth at bid/fill, behavior-neutral tag) so Monday+ fills
 test the candidate in the only uncontaminated arena. EXP-69.
+
+## 2026-09-13b — H029 robustness (Amendment A1): downgraded to OOS-only
+Six frozen robustness checks on the day-breadth candidate. R1 leave-one-month-out:
+14/14 OOS folds positive (+0.50..+1.22pp). R5: the difference survives removing
+the top-3 (date,ticker) contributors (+0.44pp). R3: the A3b deployable population
+agrees in direction and larger (quiet +1.29% n=315 vs busy -1.30% n=192).
+BUT R2: day-clustered bootstrap 95% CI = [-1.14%, +2.42%] pooled and
+[-0.06%, +4.02%] rank1 — both include zero; R6 permutation p=0.194 pooled
+(0.026 rank1); R4's alternative breadth definition has almost no variation
+(OOS quiet n=13) and is inconclusive. Verdict per the frozen rule: H029 is an
+OOS-only association, NOT robust — no gating, no adoption. The live bot's
+behavior-neutral `n_strict_est` tag stays for forward paper comparison.
+Artifacts: lb18_daytype_robust.py/.json. EXP-70, H029r.

@@ -764,3 +764,13 @@ Falsifier / kill: forward paper fills tagged with `n_strict_est` fail to show a
 worse busy-tape bucket after >=30 fills → retire H029. Adoption of any gating
 requires a new pre-reg + forward OOS; nothing is gated now.
 Artifacts: `factory/artifacts/lb18_daytype.json`/.parquet; EXP-69.
+
+### 2026-09-13 — H029 robustness (Amendment A1): DOWNGRADED to OOS-only
+R1 LOMO 14/14 folds positive; R5 sign survives excluding the top-3 names;
+R3 the A3b deployable population agrees (quiet +1.29% n=315 vs busy -1.30%
+n=192). But the day-clustered bootstrap CI includes zero (pooled
+[-1.14,+2.42]pp; rank1 [-0.06,+4.02]pp) and the permutation p is 0.194 pooled
+(0.026 rank1); the alternative breadth definition has no variation in this
+population. Status: OOS-only association, not robust; no gating. The forward
+paper `n_strict_est` tag remains the only test that can resurrect it. EXP-70,
+H029r. Do not build on H029 without forward evidence.
