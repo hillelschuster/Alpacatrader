@@ -23,6 +23,8 @@ Live translations of the frozen tape (deliberate, see function docstrings):
 - pf_est tags the anchor with the causal prior-flush count (sparse IEX
   undercounts). It is a journal TAG, never an entry gate: paper trades the
   broad population on purpose and fills are partitioned ex-post.
+- n_strict_est tags day breadth (distinct strict-state symbols seen so far
+  today, IEX-estimated, reset on restart) on place_bid/fill. TAG only.
 - Restart: owned resting buys are cancelled and re-placed on the next
   strict-state minute; held positions rehydrate from the journal.
 - KILL cancels owned entry buys and leaves protective OCO sells in place so
@@ -246,6 +248,18 @@ def prior_flush_est(bars, anchor_et):
     under = b["low"] <= b["close"].cummax() * (1 - L)
     starts = under & ~under.shift(1, fill_value=False)
     return int(starts.sum())
+
+
+def note_strict(meta, sym, m, bars):
+    """Record `sym` as strict-state-seen today (latest completed bar), the live
+    estimate of PRE-REG-DAYTYPE-01's day-breadth feature. Journal tag only, no
+    behavior change; IEX-derived and reset on restart, so it undercounts."""
+    if not len(bars) or not m.get("prev_close"):
+        return
+    sm = state_minutes(bars, m["prev_close"])
+    if len(sm) and int(sm["et"].iloc[-1]) == int(bars["et"].iloc[-1]):
+        meta.setdefault("_strict_seen", set()).add(sym)
+        m["n_strict_est"] = len(meta["_strict_seen"])
 
 
 def qty_for(price):
@@ -637,7 +651,7 @@ def sync_fills(br, meta, orders, positions, bars_cache, et_now):
             m["entry_ts"] = getattr(o, "filled_at", None) or et_now
             jlog("fill", symbol=sym, oid=oid, price=str(o.filled_avg_price),
                  qty=str(fq), B=m["entry_B"], c0=m["entry_c0"],
-                 pf_est=m.get("pf_est"))
+                 pf_est=m.get("pf_est"), n_strict_est=m.get("n_strict_est"))
             if not m.get("micro_done") and getattr(o, "filled_at", None) is not None:
                 micro = br.trades_at_bid(sym, m["entry_B"],
                                          o.filled_at - timedelta(minutes=2),
@@ -715,6 +729,7 @@ def poll(br: Broker, meta: dict, probe=False):
         bars = br.bars(sym, start)
         bars = completed(bars, minutes_now)
         bars_cache[sym] = bars
+        note_strict(meta, sym, m, bars)
 
     sync_fills(br, meta, orders, positions, bars_cache, et_now)
 
@@ -800,7 +815,7 @@ def poll(br: Broker, meta: dict, probe=False):
         m["pf_est"] = pf
         m["order_id"] = str(o.id) if o else None
         jlog("place_bid", symbol=sym, B=B, c0=m["entry_c0"], qty=q, rank=int(r.rank),
-             pf_est=pf, oid=m["order_id"], live=br.live)
+             pf_est=pf, n_strict_est=m.get("n_strict_est"), oid=m["order_id"], live=br.live)
         slots -= 1
 
 

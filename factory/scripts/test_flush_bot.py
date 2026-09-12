@@ -180,4 +180,13 @@ assert n==1 and "b1" in brk.canceled and "s1" not in brk.canceled, (n,brk.cancel
 assert any(l["event"]=="kill_warning" and l.get("symbol")=="BBB" for l in LOGS), LOGS
 print("T10 kill cleanup OK")
 
+# T11 strict-seen tag: day-breadth estimate recorded once per symbol
+metaT={"AAA":{"prev_close":1.0}}; LOGS.clear()
+fb.note_strict(metaT,"AAA",metaT["AAA"],bars)
+fb.note_strict(metaT,"AAA",metaT["AAA"],bars)
+assert metaT["_strict_seen"]=={"AAA"} and metaT["AAA"]["n_strict_est"]==1, metaT
+fb.note_strict(metaT,"BBB",{"prev_close":1.0},[])
+assert metaT["AAA"]["n_strict_est"]==1
+print("T11 strict-seen tag OK")
+
 print("ALL MOCK TESTS PASS")
