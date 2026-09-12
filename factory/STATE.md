@@ -1398,3 +1398,21 @@ Amendment A1 freezes v2 (time-of-day excluded, per-window z-scored shape) with a
 stopping rule: best silhouette < 0.05 => representation class exhausted.
 Artifacts: factory/scripts/pattern_digest.py,
 factory/artifacts/pattern_digest.json/.parquet/_cards.png. EXP-67.
+
+## 2026-09-12y — Pattern digest v2 (Amendment A1): EXHAUSTED
+Per-window z-scored five-channel shape clustering (time-of-day removed from the
+vector). Silhouettes: k=8 0.0206 (best/selected), k=16 -0.0358, k=24 -0.1452.
+Best < 0.05 => the frozen stopping rule declares the flattened-Euclidean shape
+class EXHAUSTED; no further variants/k were run. The z-scored envelopes render
+as interpretable archetypes (C0 spike-and-fade, C1 broad-V, C5
+ramp-to-plateau, C7 plateau-decline; C4/C6 near-duplicate late ramps), but the
+partition does not separate: silhouette ~0.02 means within-cluster variance
+dominates 300-D flattened distance. Interpretable k-means medians are NOT
+evidence of recoverable structure — do not read these as patterns unless the
+Scoring pass (still unrun, user-gated) says otherwise. Month stability TV
+0.0168; 2,133,120 assignments; one degenerate cluster (n=3). No outcomes or
+labels used. Artifacts: pattern_digest_v2.json/.parquet/_cards.png (producer
+pattern_digest.py --variant v2). EXP-68. Lane status: unsupervised shape
+discovery at 1-min/60-min granularity on the top-3 population is a tested
+negative; continuation needs a separate pre-reg with a different representation
+(learned embedding) or unit of analysis (event-anchored windows).

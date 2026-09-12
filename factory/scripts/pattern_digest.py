@@ -36,6 +36,9 @@ ARTIFACTS: Final = ROOT / "factory" / "artifacts"
 JSON_OUT: Final = ARTIFACTS / "pattern_digest.json"
 ASSIGNMENTS_OUT: Final = ARTIFACTS / "pattern_digest_assignments.parquet"
 CARDS_OUT: Final = ARTIFACTS / "pattern_digest_cards.png"
+V2_JSON_OUT: Final = ARTIFACTS / "pattern_digest_v2.json"
+V2_ASSIGNMENTS_OUT: Final = ARTIFACTS / "pattern_digest_v2_assignments.parquet"
+V2_CARDS_OUT: Final = ARTIFACTS / "pattern_digest_v2_cards.png"
 SEED: Final = 20260912
 LENGTHS: Final = (30, 60)
 K_VALUES: Final = (8, 16, 24)
@@ -47,6 +50,9 @@ CHANNELS: Final = (
     "cumulative_gain_session_open",
     "minute_index",
 )
+V2_CHANNELS: Final = CHANNELS[:-1]
+V2_LENGTH: Final = 60
+V2_STOPPING_THRESHOLD: Final = 0.05
 PATH_COLUMNS: Final = ["date", "t", "ticker", "o", "h", "l", "c", "v"]
 LB_COLUMNS: Final = ["date", "t", "rank", "ticker"]
 FIT_LIMIT: Final = 80_000
@@ -245,12 +251,37 @@ def standardized_flat(paths: np.ndarray, scale: ChannelScale) -> np.ndarray:
     return np.ascontiguousarray(normalized.reshape(len(paths), -1), dtype=np.float32)
 
 
-def evaluate_candidates(samples: dict[int, WindowBatch]) -> list[Candidate]:
+def shape_normalized(paths: np.ndarray) -> np.ndarray:
+    """Return five-channel within-window z-scores, mapping constant channels to zero."""
+    selected = paths[:, :, : len(V2_CHANNELS)]
+    means = selected.mean(axis=1, keepdims=True)
+    scales = selected.std(axis=1, keepdims=True)
+    return np.divide(
+        selected - means,
+        scales,
+        out=np.zeros_like(selected),
+        where=scales > 1e-8,
+    )
+
+
+def clustering_flat(paths: np.ndarray, scale: ChannelScale, variant: str) -> np.ndarray:
+    if variant == "v2":
+        normalized = shape_normalized(paths)
+        return np.ascontiguousarray(normalized.reshape(len(paths), -1), dtype=np.float32)
+    return standardized_flat(paths, scale)
+
+
+def evaluate_candidates(samples: dict[int, WindowBatch], variant: str) -> list[Candidate]:
     candidates: list[Candidate] = []
-    for length in LENGTHS:
+    lengths = (V2_LENGTH,) if variant == "v2" else LENGTHS
+    for length in lengths:
         sample = samples[length]
-        scale = channel_scale(sample.paths)
-        matrix = standardized_flat(sample.paths, scale)
+        scale = (
+            ChannelScale(np.zeros(len(V2_CHANNELS), dtype=np.float32), np.ones(len(V2_CHANNELS), dtype=np.float32))
+            if variant == "v2"
+            else channel_scale(sample.paths)
+        )
+        matrix = clustering_flat(sample.paths, scale, variant)
         rng = np.random.default_rng(SEED + length)
         silhouette_indices = rng.choice(
             len(matrix), size=min(SILHOUETTE_LIMIT, len(matrix)), replace=False
@@ -286,6 +317,10 @@ def evaluate_candidates(samples: dict[int, WindowBatch]) -> list[Candidate]:
                 f"candidate L={length} k={clusters}: silhouette={silhouette:.4f} "
                 f"entropy={entropy:.4f} min_share={minimum_share:.4f}"
             )
+    if variant == "v2":
+        winner = max(candidates, key=lambda item: (item.silhouette, -item.clusters))
+        candidates.remove(winner)
+        return [winner, *candidates]
     balanced = [candidate for candidate in candidates if candidate.balanced]
     if balanced:
         winner = max(
@@ -301,14 +336,18 @@ def evaluate_candidates(samples: dict[int, WindowBatch]) -> list[Candidate]:
     return [winner, *candidates]
 
 
-def assign_full(paths: list[Path], winner: Candidate) -> tuple[pd.DataFrame, WindowBatch]:
+def assign_full(
+    paths: list[Path], winner: Candidate, variant: str
+) -> tuple[pd.DataFrame, WindowBatch, int, int]:
     """Assign every eligible window and retain a deterministic profile sample."""
     assignment_parts: list[pd.DataFrame] = []
     profile_paths: list[np.ndarray] = []
     profile_rows: list[pd.DataFrame] = []
+    recomputed_days = 0
+    reused_days = 0
     for position, path in enumerate(paths):
         day = path.stem.removeprefix("path_")
-        cache_tag = f"{CACHE_VERSION}_L{winner.length}_k{winner.clusters}_s{SEED}"
+        cache_tag = f"{variant}_{CACHE_VERSION}_L{winner.length}_k{winner.clusters}_s{SEED}"
         assignment_cache = SCRATCH / f"assign_{cache_tag}_{day}.parquet"
         profile_cache = SCRATCH / f"profile_{cache_tag}_{day}.npz"
         if assignment_cache.exists() and profile_cache.exists():
@@ -323,20 +362,27 @@ def assign_full(paths: list[Path], winner: Candidate) -> tuple[pd.DataFrame, Win
                         "cluster": saved["cluster"],
                     }
                 )
-                profile_paths.append(saved["paths"])
+                cached_paths = saved["paths"]
+            represented = set(sampled_rows["cluster"].astype(int))
+            required = set(assignment["cluster"].astype(int))
+            if required.issubset(represented):
+                profile_paths.append(cached_paths)
                 profile_rows.append(sampled_rows)
-            assignment_parts.append(assignment)
-            continue
+                assignment_parts.append(assignment)
+                reused_days += 1
+                continue
         batch = day_windows(path, winner.length)
         if batch is None:
             continue
-        labels = winner.model.predict(standardized_flat(batch.paths, winner.scale)).astype(np.int16)
+        labels = winner.model.predict(clustering_flat(batch.paths, winner.scale, variant)).astype(np.int16)
         assignment = batch.rows.copy()
         assignment["L"] = np.int16(winner.length)
         assignment["cluster"] = labels
         assignment = assignment[["date", "ticker", "window_end_min", "L", "cluster", "rank"]]
         assignment.to_parquet(assignment_cache, index=False)
         take = np.arange(len(batch.paths)) % PROFILE_STRIDE == position % PROFILE_STRIDE
+        for cluster in np.unique(labels):
+            take[int(np.flatnonzero(labels == cluster)[0])] = True
         sampled_rows = assignment.loc[take, ["date", "ticker", "window_end_min", "rank", "cluster"]]
         np.savez_compressed(
             profile_cache,
@@ -350,13 +396,14 @@ def assign_full(paths: list[Path], winner: Candidate) -> tuple[pd.DataFrame, Win
         assignment_parts.append(assignment)
         profile_paths.append(batch.paths[take])
         profile_rows.append(sampled_rows)
+        recomputed_days += 1
         if (position + 1) % 100 == 0:
             print(f"assigned {position + 1}/{len(paths)} day files")
     assignments = pd.concat(assignment_parts, ignore_index=True).sort_values(
         ["date", "ticker", "window_end_min", "L", "cluster"]
     )
     profiles = WindowBatch(np.concatenate(profile_paths), pd.concat(profile_rows, ignore_index=True))
-    return assignments.reset_index(drop=True), profiles
+    return assignments.reset_index(drop=True), profiles, recomputed_days, reused_days
 
 
 def time_bucket(minute: int) -> str:
@@ -384,18 +431,36 @@ def summary_statistics(paths: np.ndarray) -> dict[str, dict[str, float]]:
 
 
 def cluster_digest(
-    assignments: pd.DataFrame, profiles: WindowBatch, winner: Candidate
+    assignments: pd.DataFrame, profiles: WindowBatch, winner: Candidate, variant: str
 ) -> list[dict[str, int | float | str | list | dict]]:
     """Describe each cluster without linking membership to later observations."""
     rows: list[dict[str, int | float | str | list | dict]] = []
     profile_labels = profiles.rows["cluster"].to_numpy()
-    profile_matrix = standardized_flat(profiles.paths, winner.scale)
+    profile_matrix = clustering_flat(profiles.paths, winner.scale, variant)
     timed = assignments.assign(
         time_bucket=[time_bucket(int(value)) for value in assignments["window_end_min"]]
     )
     for cluster in range(winner.clusters):
         assigned = timed[timed["cluster"] == cluster]
         selected = profiles.paths[profile_labels == cluster]
+        if not len(selected):
+            rows.append(
+                {
+                    "cluster": cluster,
+                    "n_windows": int(len(assigned)),
+                    "share": round(float(len(assigned) / len(assignments)), 6),
+                    "profile_sample_n": 0,
+                    "time_of_day": {},
+                    "rank": {},
+                    "examples": [],
+                    "path_envelope": {},
+                    "shape_envelope_zscored": {},
+                    "volume_profile": {},
+                    "summary_statistics_view": {},
+                    "degenerate_empty_cluster": True,
+                }
+            )
+            continue
         quantiles = np.quantile(selected, (0.25, 0.5, 0.75), axis=0)
         profile_indices = np.flatnonzero(profile_labels == cluster)
         distances = np.square(
@@ -429,6 +494,17 @@ def cluster_digest(
             }
             for channel, name in enumerate(CHANNELS)
         }
+        shape_envelope: dict[str, dict[str, list[float]]] = {}
+        if variant == "v2":
+            shape_quantiles = np.quantile(shape_normalized(selected), (0.25, 0.5, 0.75), axis=0)
+            shape_envelope = {
+                name: {
+                    "q25": shape_quantiles[0, :, channel].round(6).tolist(),
+                    "median": shape_quantiles[1, :, channel].round(6).tolist(),
+                    "q75": shape_quantiles[2, :, channel].round(6).tolist(),
+                }
+                for channel, name in enumerate(V2_CHANNELS)
+            }
         rows.append(
             {
                 "cluster": cluster,
@@ -448,6 +524,7 @@ def cluster_digest(
                 },
                 "examples": examples,
                 "path_envelope": envelope,
+                "shape_envelope_zscored": shape_envelope,
                 "volume_profile": envelope["volume_trailing20_median_ratio"],
                 "summary_statistics_view": summary_statistics(selected),
             }
@@ -488,12 +565,18 @@ def dtw_distance(left: np.ndarray, right: np.ndarray, band: int) -> float:
     return float(np.sqrt(previous[size] / size))
 
 
-def dtw_medoids(profiles: WindowBatch, winner: Candidate) -> dict[str, int | str | list]:
+def dtw_medoids(
+    profiles: WindowBatch, winner: Candidate, variant: str
+) -> dict[str, int | str | list]:
     """Build illustration-only approximate DTW medoids on at most 2,000 windows."""
     take = np.linspace(0, len(profiles.paths) - 1, min(DTW_LIMIT, len(profiles.paths)), dtype=np.int64)
     raw = profiles.paths[take]
     metadata = profiles.rows.iloc[take].reset_index(drop=True)
-    trajectories = (raw - winner.scale.mean) / winner.scale.scale
+    trajectories = (
+        shape_normalized(raw)
+        if variant == "v2"
+        else (raw - winner.scale.mean) / winner.scale.scale
+    )
     flat = trajectories.reshape(len(trajectories), -1)
     medoids: list[int] = []
     for cluster in range(winner.clusters):
@@ -556,7 +639,7 @@ def dtw_medoids(profiles: WindowBatch, winner: Candidate) -> dict[str, int | str
         )
     return {
         "purpose": "illustration only; not used for fitting or full-set assignment",
-        "method": f"multichannel standardized DTW, Sakoe-Chiba band={band}, candidate-refined medoids",
+        "method": f"multichannel {variant} representation DTW, Sakoe-Chiba band={band}, candidate-refined medoids",
         "sample_n": len(raw),
         "medoids": medoid_rows,
         "assignments": assignment_rows,
@@ -612,9 +695,54 @@ def iex_coverage(path_files: list[Path]) -> dict[str, int | float | str | list]:
     }
 
 
-def plot_cards(clusters: list[dict[str, int | float | str | list | dict]], winner: Candidate) -> None:
+def plot_cards(
+    clusters: list[dict[str, int | float | str | list | dict]],
+    winner: Candidate,
+    variant: str,
+) -> None:
     columns = 4
     rows = int(np.ceil(winner.clusters / columns))
+    if variant == "v2":
+        figure, axes = plt.subplots(rows, columns * 2, figsize=(24, rows * 3.5), squeeze=False)
+        x = np.arange(winner.length)
+        colors = plt.cm.tab10(np.linspace(0, 1, len(V2_CHANNELS)))
+        for cluster in range(winner.clusters):
+            row, column = divmod(cluster, columns)
+            shape_axis = axes[row, column * 2]
+            gain_axis = axes[row, column * 2 + 1]
+            item = clusters[cluster]
+            if int(item["profile_sample_n"]) == 0:
+                shape_axis.text(0.5, 0.5, "empty cluster", ha="center", va="center")
+                gain_axis.text(0.5, 0.5, "empty cluster", ha="center", va="center")
+                shape_axis.set_title(f"C{cluster} shape  n=0")
+                gain_axis.set_title("raw cumulative gain")
+                continue
+            shape_envelope = item["shape_envelope_zscored"]
+            for name, color in zip(V2_CHANNELS, colors, strict=True):
+                values = shape_envelope[name]
+                shape_axis.fill_between(x, values["q25"], values["q75"], color=color, alpha=0.08)
+                shape_axis.plot(x, values["median"], color=color, linewidth=1.0, label=name)
+            raw_gain = item["path_envelope"]["cumulative_gain_session_open"]
+            gain_axis.fill_between(x, raw_gain["q25"], raw_gain["q75"], color="black", alpha=0.12)
+            gain_axis.plot(x, raw_gain["median"], color="black", linewidth=1.2)
+            shape_axis.axhline(0, color="black", linewidth=0.4, alpha=0.5)
+            shape_axis.set_title(f"C{cluster} shape  n={int(item['n_windows']):,} ({float(item['share']):.1%})")
+            gain_axis.set_title("raw cumulative gain")
+            shape_axis.set_xlim(0, winner.length - 1)
+            gain_axis.set_xlim(0, winner.length - 1)
+            shape_axis.grid(alpha=0.15)
+            gain_axis.grid(alpha=0.15)
+        handles, legend_labels = axes.flat[0].get_legend_handles_labels()
+        figure.legend(handles, legend_labels, loc="lower center", ncol=3, fontsize=8)
+        figure.suptitle(
+            f"A1 v2 shape digest — L={winner.length}, k={winner.clusters}\n"
+            "within-window z-scored five-channel envelopes | raw cumulative-gain descriptor",
+            fontsize=14,
+        )
+        figure.tight_layout(rect=(0, 0.06, 1, 0.95))
+        figure.savefig(V2_CARDS_OUT, dpi=160)
+        plt.close(figure)
+        return
     figure, axes = plt.subplots(rows, columns, figsize=(18, rows * 3.4), squeeze=False)
     x = np.arange(winner.length)
     colors = plt.cm.tab10(np.linspace(0, 1, len(CHANNELS)))
@@ -676,12 +804,17 @@ def self_test() -> None:
     second = labels[60:]
     recovered = max((first == 0).mean() + (second == 1).mean(), (first == 1).mean() + (second == 0).mean()) / 2
     assert recovered >= 0.95, f"synthetic family recovery={recovered:.3f}"
+    shape = shape_normalized(paths[:2])
+    assert shape.shape == (2, 30, 5)
+    assert np.allclose(shape.mean(axis=1), 0.0, atol=3e-6)
+    assert np.allclose(shape[:, :, 2], 0.0)
     print(f"self-test PASS: recovered two synthetic path families ({recovered:.1%})")
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--self-test", action="store_true")
+    parser.add_argument("--variant", choices=("v1", "v2"), default="v1")
     args = parser.parse_args()
     if args.self_test:
         self_test()
@@ -689,19 +822,41 @@ def main() -> None:
     SCRATCH.mkdir(parents=True, exist_ok=True)
     ARTIFACTS.mkdir(parents=True, exist_ok=True)
     path_files = sorted(LEADERBOARD.glob("path_*.parquet"))
-    samples = {length: fit_sample(path_files, length) for length in LENGTHS}
-    candidates = evaluate_candidates(samples)
+    lengths = (V2_LENGTH,) if args.variant == "v2" else LENGTHS
+    samples = {length: fit_sample(path_files, length) for length in lengths}
+    candidates = evaluate_candidates(samples, args.variant)
     winner = candidates[0]
     print(f"FROZEN before illustration: L={winner.length}, k={winner.clusters}")
-    assignments, profiles = assign_full(path_files, winner)
-    assignments.drop(columns="rank").to_parquet(ASSIGNMENTS_OUT, index=False)
-    clusters = cluster_digest(assignments, profiles, winner)
+    exhausted = args.variant == "v2" and winner.silhouette < V2_STOPPING_THRESHOLD
+    if exhausted:
+        print(
+            f"STOPPING RULE: best silhouette {winner.silhouette:.4f} < "
+            f"{V2_STOPPING_THRESHOLD:.2f}; flattened-Euclidean shape class EXHAUSTED"
+        )
+    assignments, profiles, recomputed_days, reused_days = assign_full(
+        path_files, winner, args.variant
+    )
+    assignments_out = V2_ASSIGNMENTS_OUT if args.variant == "v2" else ASSIGNMENTS_OUT
+    json_out = V2_JSON_OUT if args.variant == "v2" else JSON_OUT
+    cards_out = V2_CARDS_OUT if args.variant == "v2" else CARDS_OUT
+    assignments.drop(columns="rank").to_parquet(assignments_out, index=False)
+    clusters = cluster_digest(assignments, profiles, winner, args.variant)
     stability = month_stability(assignments, winner.clusters)
-    dtw = dtw_medoids(profiles, winner)
+    dtw = dtw_medoids(profiles, winner, args.variant)
     coverage = iex_coverage(path_files)
-    plot_cards(clusters, winner)
+    plot_cards(clusters, winner, args.variant)
+    selection_rule = (
+        "A1: at fixed L=60, freeze the k in {8,16,24} with maximum silhouette; ties prefer smaller k."
+        if args.variant == "v2"
+        else SELECTION_RULE
+    )
     artifact = {
-        "study": "PRE-REG-PATTERN-01 FROZEN v1 phase 1",
+        "study": (
+            "PRE-REG-PATTERN-01 Amendment A1 representation v2"
+            if args.variant == "v2"
+            else "PRE-REG-PATTERN-01 FROZEN v1 phase 1"
+        ),
+        "variant": args.variant,
         "scope": {
             "description": "Unsupervised description and illustration of causal top-3 minute-path shapes.",
             "interpretation_limit": "Shape structure only. No monetary or directional inference is made.",
@@ -711,21 +866,35 @@ def main() -> None:
             "L": winner.length,
             "k": winner.clusters,
             "seed": SEED,
-            "channels": list(CHANNELS),
+            "clustering_channels": list(V2_CHANNELS if args.variant == "v2" else CHANNELS),
+            "descriptor_channels": list(CHANNELS),
+            "time_of_day_in_clustering_vector": args.variant != "v2",
             "fit_sample_n": len(samples[winner.length].paths),
             "full_assignment_n": len(assignments),
             "profile_stride": PROFILE_STRIDE,
             "profile_sample_n": len(profiles.paths),
+            "per_window_shape_normalization": (
+                "Each of five channels independently z-scored within each window; zero variance maps to 0."
+                if args.variant == "v2"
+                else "none"
+            ),
             "price_normalization": "Return/range/close-position are algebraically invariant to dividing OHLC by each window's first close; cumulative gain remains session-open anchored.",
             "algorithm": "scikit-learn MiniBatchKMeans (k-means objective), n_init=10, batch_size=4096, max_iter=100",
             "volume_normalization": "current minute volume / trailing 20-grid-minute median, retained as-is",
             "standardization_mean": winner.scale.mean.round(8).tolist(),
             "standardization_scale": winner.scale.scale.round(8).tolist(),
+            "v2_day_chunks_recomputed_from_v1": (
+                recomputed_days + reused_days if args.variant == "v2" else 0
+            ),
+            "this_invocation_recomputed_day_chunks": recomputed_days,
+            "this_invocation_reused_day_chunks": reused_days,
         },
         "configuration_selection": {
-            "rule": SELECTION_RULE,
+            "rule": selection_rule,
             "reason": (
-                f"Selected among balanced candidates by maximum silhouette ({winner.silhouette:.6f}); "
+                f"A1 selected maximum silhouette ({winner.silhouette:.6f}) across the three frozen k values."
+                if args.variant == "v2"
+                else f"Selected among balanced candidates by maximum silhouette ({winner.silhouette:.6f}); "
                 f"normalized occupancy entropy={winner.entropy:.6f}."
                 if winner.balanced
                 else f"No candidate met the occupancy-balance floor; the frozen fallback selected "
@@ -745,6 +914,12 @@ def main() -> None:
                 for candidate in candidates
             ],
         },
+        "stopping_rule": {
+            "threshold": V2_STOPPING_THRESHOLD,
+            "best_silhouette": round(winner.silhouette, 6),
+            "flattened_euclidean_shape_class_exhausted": exhausted,
+            "verdict": "EXHAUSTED" if exhausted else "NOT_EXHAUSTED",
+        },
         "corpus": {
             "date_start": str(assignments["date"].min()),
             "date_end": str(assignments["date"].max()),
@@ -763,10 +938,11 @@ def main() -> None:
         "dtw_medoid_assignments": dtw,
         "iex_coverage": coverage,
     }
-    JSON_OUT.write_text(json.dumps(artifact, indent=2), encoding="utf-8")
-    print(f"wrote {JSON_OUT}")
-    print(f"wrote {ASSIGNMENTS_OUT} ({len(assignments):,} rows)")
-    print(f"wrote {CARDS_OUT}")
+    json_out.write_text(json.dumps(artifact, indent=2), encoding="utf-8")
+    print(f"day chunks: recomputed={recomputed_days}, reused={reused_days}")
+    print(f"wrote {json_out}")
+    print(f"wrote {assignments_out} ({len(assignments):,} rows)")
+    print(f"wrote {cards_out}")
 
 
 if __name__ == "__main__":

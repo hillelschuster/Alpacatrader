@@ -713,3 +713,26 @@ SIP (~$99/mo) is NOT needed for this question.
 Files: factory/scripts/lb18_subminute.py, factory/scripts/lb18_exit.py,
 factory/artifacts/lb18_subminute.json/.parquet, factory/artifacts/lb18_exit.json/.parquet,
 researches/PRE-REG-EXIT-01.md. Ledgers: EXP-65, EXP-66, H028 (RETIRED).
+
+---
+## 2026-09-12 — PATTERN DIGEST LANE (top-3 minute windows): representation tested negative
+
+Per the user directive (top-3 only, every minute, no target; digest + illustrate),
+two unsupervised representations were frozen and tested on 2,133,120 60-minute
+windows (667 days / 7,015 top-3 symbol-days):
+- v1 (flattened raw channels incl. minute_index): silhouette 0.0058; clusters
+  degenerated into clock-slice/level offsets; only C12 (ramp-then-plateau) was
+  visually recognizable.
+- v2 (Amendment A1: time-of-day removed, per-window z-scored shape): best
+  silhouette 0.0206 (k=8; k=16 -0.036, k=24 -0.145) < the frozen 0.05 threshold
+  => stopping rule: flattened-Euclidean shape class EXHAUSTED.
+
+The v2 median z-scored envelopes look like archetypes (spike-fade, broad-V,
+ramp-plateau, plateau-decline) but the partition does not separate — those are
+averages of overlapping clouds, not recoverable structure. Verdict: minute-bar
+shape families are not separable on this population/granularity by
+flattened-Euclidean clustering, raw or z-scored. The pre-registered scoring
+pass (Sec.5) is unrun and user-gated. Any continuation requires a NEW pre-reg:
+a learned sequence embedding, or a different unit of analysis (event-anchored
+windows). Artifacts: pattern_digest*.{json,parquet,png}; scripts/pattern_digest.py;
+EXP-67/68.
