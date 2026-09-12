@@ -1259,3 +1259,33 @@ IEX-anchor/frozen-B sub-variant, each with frozen gates and a decision rule
 (A3 PASS ⇒ state feed not implicated). Files: `factory/scripts/lb18_iex_tape.py`,
 `lb18_iex_feed.py`, `factory/artifacts/lb18_iex_feed.json`/.parquet. Verdict
 pending the hybrid run.
+
+## 2026-09-12s — Study A decomposition (Amendment A1): IEX state costs frequency, not edge
+2×2 over (state/anchor source) × (exec source), frozen `lb` gate, `lb18_iex_hybrid.py`:
+parity (frozen,frozen) reproduced 541/+0.91%, 381/+1.14% exactly.
+
+| variant | pf2 n | pf2 EV | months+ | missed_pf2 | note |
+|---|---|---|---|---|---|
+| frozen | 381 | +1.14% | 12/14 | 0 | reference |
+| **A3b IEX state+B, frozen exec** | **282** | **+1.13%** | **10/14** | **77 (20.2%)** | deployable live model |
+| A3a IEX state, frozen B, frozen exec | 267 | +1.59% | 9/14 | 64 (16.8%) | anchor/state only |
+| A4 frozen state+B, IEX exec | 335 | −3.03% | 1/14 | 89 (23.4%) | fill-venue control |
+
+Verdict: A4 confirms IEX-only *fill detection* drove Study A's FAIL (catastrophic,
+and not the live model — live fills are consolidated). For the deployable model
+A3b, **per-trade EV is preserved (+1.13% vs +1.14%)** but ~20% of frozen pf2
+fills are not captured, and month stability drops to 10/14 (worst −3.09%).
+The loss is dominated by the IEX state/anchor schedule (anchor_lost 31 +
+lifecycle_lost 36 + fill_lost 10 pf2), not by B: A3a (frozen B) recovers 13 pf2
+fills (EV +1.59%) but is *less* month-stable (9/14). So the IEX B/c0 drift is
+minor; the sparser IEX tape simply arms fewer anchors. IEX `prior_flush` also
+undercounts: variant pf2 n=282 vs 304 frozen-pf2 matched pairs ⇒ the live pf_est
+tag undercounts true-pf2 fills by ~7%. Matched-fill paired delta (frozen−IEX
+ret) n=367 mean +2.30% p95 +21.1% ⇒ same-fill exit paths differ enough to flip
+target→stop in a chunk of cases.
+
+Consequence: judge the live paper bot against the A3b baseline (**pf2 ≈ +1.13%,
+10/14, ~19 fills/mo post-overlay, worst month ≈ −3.1%**), NOT the frozen
+reference. Real-time SIP (Algo Trader Plus ~$99/mo) is the only way to restore
+the frozen schedule; a separate priced decision, not adopted. Study B (tail
+management on the frozen population) remains valid and needs no subscription.

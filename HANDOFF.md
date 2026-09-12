@@ -323,3 +323,35 @@ The paper account is assumed DEDICATED to this bot; any position found is
 adopted. If that assumption breaks, adopt only journal-attributed symbols
 instead. Known caveat: 54 foreign paper fills Jun/Jul 2026 (filtered by
 journal symbol-days).
+
+---
+
+## 14. Study A decomposition (2026-09-12) — what the live IEX feed actually costs
+
+The frozen engine was replayed with independently sourced tapes (Amendment A1,
+`factory/scripts/lb18_iex_hybrid.py`; artifact `lb18_iex_hybrid.json`). Parity
+(frozen/frozen) is exact.
+
+| variant | pf2 n | pf2 EV | months+ | missed_pf2 |
+|---|---|---|---|---|
+| frozen reference | 381 | +1.14% | 12/14 | 0 |
+| **A3b (IEX state+B, consolidated exec) — deployable live model** | **282** | **+1.13%** | **10/14** | **77 (20%)** |
+| A3a (IEX state, frozen B, consolidated exec) | 267 | +1.59% | 9/14 | 64 (17%) |
+| A4 (frozen state+B, IEX exec) — control | 335 | −3.03% | 1/14 | 89 (23%) |
+
+- A4 shows Study A's original failure was IEX-only *fill detection* — and that is
+  NOT the live model (the bot's order rests at the broker and fills on the
+  consolidated tape).
+- A3b is the live model: **per-trade pf2 EV is preserved (+1.13% vs +1.14%)**,
+  but ~20% of frozen pf2 fills are never taken and months+ drops to 10/14
+  (worst −3.09%). The loss is the IEX state/anchor schedule (the sparser tape
+  arms fewer anchors), not B — A3a (frozen B) recovers only 13 pf2 fills.
+- IEX `prior_flush`/`pf_est` undercounts ~7% (variant pf2 282 vs 304 matched
+  frozen pf2), so the live pf tag is conservative.
+
+**Judge live paper fills against the A3b baseline, NOT the frozen one:
+pf2 ≈ +1.13%/trade, 10/14 months, ~19 fills/mo post-overlay, worst month ≈ −3.1%.**
+
+Open priced decision (user): real-time SIP (Algo Trader Plus, ~$99/mo) is the only
+way to restore the frozen schedule. Not adopted. Study B (post-fill tail
+management) does not need it.

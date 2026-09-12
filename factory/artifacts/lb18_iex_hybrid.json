@@ -1,0 +1,690 @@
+{
+ "study": "PRE-REG-MICRO-01 Amendment A1 \u2014 Study A decomposition",
+ "months": [
+  "2024-01",
+  "2024-02",
+  "2024-03",
+  "2024-04",
+  "2024-05",
+  "2024-06",
+  "2024-07",
+  "2024-08",
+  "2024-09",
+  "2024-10",
+  "2024-11",
+  "2024-12",
+  "2025-01",
+  "2025-02"
+ ],
+ "design": "frozen lb gate; independently sourced anchor/state, execution, and B/c0 tapes",
+ "friction": 0.01,
+ "flags": {
+  "measurement": true,
+  "seen_data": true,
+  "not_an_alpha_claim": true
+ },
+ "a2_matched_frozen_minus_iex_ret": {
+  "n": 367,
+  "mean": 0.023,
+  "median": 0.0,
+  "p05": -0.0241,
+  "p95": 0.2113,
+  "min": -0.2111,
+  "max": 0.2718
+ },
+ "variants": {
+  "A3b": {
+   "stats": {
+    "all": {
+     "n": 507,
+     "mean": 0.0031,
+     "med": 0.0238,
+     "pos": 0.525,
+     "months_pos": 9,
+     "n_months": 14,
+     "worst_month": -0.0394
+    },
+    "pf2": {
+     "n": 282,
+     "mean": 0.0113,
+     "med": 0.0396,
+     "pos": 0.55,
+     "months_pos": 10,
+     "n_months": 14,
+     "worst_month": -0.0309
+    },
+    "rank1": {
+     "n": 417,
+     "mean": 0.0063,
+     "med": 0.039,
+     "pos": 0.542,
+     "months_pos": 9,
+     "n_months": 14,
+     "worst_month": -0.0348
+    },
+    "monthly_pf2": {
+     "2024-01": {
+      "n": 15,
+      "mean": 0.012
+     },
+     "2024-02": {
+      "n": 30,
+      "mean": 0.0391
+     },
+     "2024-03": {
+      "n": 15,
+      "mean": -0.0309
+     },
+     "2024-04": {
+      "n": 16,
+      "mean": 0.0336
+     },
+     "2024-05": {
+      "n": 16,
+      "mean": 0.0483
+     },
+     "2024-06": {
+      "n": 19,
+      "mean": 0.0001
+     },
+     "2024-07": {
+      "n": 19,
+      "mean": 0.0331
+     },
+     "2024-08": {
+      "n": 19,
+      "mean": 0.0206
+     },
+     "2024-09": {
+      "n": 20,
+      "mean": 0.0158
+     },
+     "2024-10": {
+      "n": 27,
+      "mean": -0.0052
+     },
+     "2024-11": {
+      "n": 16,
+      "mean": 0.0155
+     },
+     "2024-12": {
+      "n": 20,
+      "mean": -0.0132
+     },
+     "2025-01": {
+      "n": 24,
+      "mean": -0.024
+     },
+     "2025-02": {
+      "n": 26,
+      "mean": 0.0144
+     }
+    },
+    "worst5": [
+     {
+      "date": "2024-07-23",
+      "ticker": "RGC",
+      "t0": 835,
+      "tf": 841,
+      "ret": -0.32839978079188936,
+      "B": 29.195999999999998,
+      "c0": 32.44
+     },
+     {
+      "date": "2024-10-04",
+      "ticker": "CHSN",
+      "t0": 877,
+      "tf": 878,
+      "ret": -0.24747276688453157,
+      "B": 12.852,
+      "c0": 14.28
+     },
+     {
+      "date": "2024-03-06",
+      "ticker": "SWIN",
+      "t0": 801,
+      "tf": 802,
+      "ret": -0.2229083038173948,
+      "B": 38.115,
+      "c0": 42.35
+     },
+     {
+      "date": "2025-01-23",
+      "ticker": "RNAZ",
+      "t0": 913,
+      "tf": 924,
+      "ret": -0.2136540562009731,
+      "B": 10.071,
+      "c0": 11.19
+     },
+     {
+      "date": "2025-01-10",
+      "ticker": "MSW",
+      "t0": 693,
+      "tf": 704,
+      "ret": -0.20025875190258757,
+      "B": 8.2125,
+      "c0": 9.125
+     }
+    ]
+   },
+   "classification": {
+    "matched": 429,
+    "anchor_lost": 55,
+    "fill_lost": 10,
+    "lifecycle_lost": 47,
+    "matched_pf2": 304,
+    "anchor_lost_pf2": 31,
+    "fill_lost_pf2": 10,
+    "lifecycle_lost_pf2": 36,
+    "missed": 112,
+    "missed_pf2": 77,
+    "spurious": 78,
+    "missed_rate": 0.207,
+    "missed_pf2_rate": 0.2021,
+    "definitions": {
+     "matched": "same date,ticker and abs(tf_variant-tf_frozen)<=5; chronological one-to-one",
+     "anchor_lost": "unmatched frozen fill with no strict anchor at its frozen t0",
+     "fill_lost": "unmatched frozen fill with anchor present but no execution-tape B touch before expiry",
+     "lifecycle_lost": "unmatched despite anchor and raw B touch because rolling lifecycle timing differed"
+    }
+   },
+   "gate": {
+    "verdict": "FAIL",
+    "checks": {
+     "pf2 EV within +-0.30pp of frozen +1.14%": true,
+     "months+>=12/14": false,
+     "frozen pf2 fills lost to IEX anchor/B drift<=10%": false
+    }
+   }
+  },
+  "A3a": {
+   "stats": {
+    "all": {
+     "n": 504,
+     "mean": 0.0146,
+     "med": 0.1011,
+     "pos": 0.575,
+     "months_pos": 13,
+     "n_months": 14,
+     "worst_month": -0.0019
+    },
+    "pf2": {
+     "n": 267,
+     "mean": 0.0159,
+     "med": 0.1011,
+     "pos": 0.573,
+     "months_pos": 9,
+     "n_months": 14,
+     "worst_month": -0.0192
+    },
+    "rank1": {
+     "n": 409,
+     "mean": 0.0137,
+     "med": 0.1011,
+     "pos": 0.57,
+     "months_pos": 12,
+     "n_months": 14,
+     "worst_month": -0.007
+    },
+    "monthly_pf2": {
+     "2024-01": {
+      "n": 14,
+      "mean": 0.0211
+     },
+     "2024-02": {
+      "n": 26,
+      "mean": 0.0394
+     },
+     "2024-03": {
+      "n": 15,
+      "mean": -0.0192
+     },
+     "2024-04": {
+      "n": 12,
+      "mean": 0.0586
+     },
+     "2024-05": {
+      "n": 12,
+      "mean": 0.0131
+     },
+     "2024-06": {
+      "n": 20,
+      "mean": 0.0289
+     },
+     "2024-07": {
+      "n": 18,
+      "mean": 0.0423
+     },
+     "2024-08": {
+      "n": 20,
+      "mean": 0.036
+     },
+     "2024-09": {
+      "n": 18,
+      "mean": 0.0306
+     },
+     "2024-10": {
+      "n": 26,
+      "mean": -0.0084
+     },
+     "2024-11": {
+      "n": 13,
+      "mean": -0.0036
+     },
+     "2024-12": {
+      "n": 21,
+      "mean": -0.0111
+     },
+     "2025-01": {
+      "n": 26,
+      "mean": -0.0047
+     },
+     "2025-02": {
+      "n": 26,
+      "mean": 0.0138
+     }
+    },
+    "worst5": [
+     {
+      "date": "2024-10-04",
+      "ticker": "CHSN",
+      "t0": 877,
+      "tf": 878,
+      "ret": -0.2192310175098846,
+      "B": 12.393,
+      "c0": 13.77
+     },
+     {
+      "date": "2024-03-11",
+      "ticker": "XPDB",
+      "t0": 871,
+      "tf": 872,
+      "ret": -0.2147331387587954,
+      "B": 44.199,
+      "c0": 49.11
+     },
+     {
+      "date": "2024-02-14",
+      "ticker": "TELO",
+      "t0": 871,
+      "tf": 902,
+      "ret": -0.20562419562419565,
+      "B": 18.648,
+      "c0": 20.72
+     },
+     {
+      "date": "2024-07-23",
+      "ticker": "RGC",
+      "t0": 835,
+      "tf": 841,
+      "ret": -0.1768759943062882,
+      "B": 23.886,
+      "c0": 26.54
+     },
+     {
+      "date": "2024-03-06",
+      "ticker": "SWIN",
+      "t0": 801,
+      "tf": 818,
+      "ret": -0.16973447609444592,
+      "B": 35.703,
+      "c0": 39.67
+     }
+    ]
+   },
+   "classification": {
+    "matched": 451,
+    "anchor_lost": 62,
+    "fill_lost": 0,
+    "lifecycle_lost": 28,
+    "matched_pf2": 317,
+    "anchor_lost_pf2": 40,
+    "fill_lost_pf2": 0,
+    "lifecycle_lost_pf2": 24,
+    "missed": 90,
+    "missed_pf2": 64,
+    "spurious": 53,
+    "missed_rate": 0.1664,
+    "missed_pf2_rate": 0.168,
+    "definitions": {
+     "matched": "same date,ticker and abs(tf_variant-tf_frozen)<=5; chronological one-to-one",
+     "anchor_lost": "unmatched frozen fill with no strict anchor at its frozen t0",
+     "fill_lost": "unmatched frozen fill with anchor present but no execution-tape B touch before expiry",
+     "lifecycle_lost": "unmatched despite anchor and raw B touch because rolling lifecycle timing differed"
+    }
+   },
+   "gate": {
+    "verdict": "DESCRIPTIVE",
+    "checks": {}
+   }
+  },
+  "A4": {
+   "stats": {
+    "all": {
+     "n": 463,
+     "mean": -0.0311,
+     "med": -0.0643,
+     "pos": 0.404,
+     "months_pos": 1,
+     "n_months": 14,
+     "worst_month": -0.0614
+    },
+    "pf2": {
+     "n": 335,
+     "mean": -0.0303,
+     "med": -0.0663,
+     "pos": 0.385,
+     "months_pos": 1,
+     "n_months": 14,
+     "worst_month": -0.0759
+    },
+    "rank1": {
+     "n": 381,
+     "mean": -0.0291,
+     "med": -0.0573,
+     "pos": 0.412,
+     "months_pos": 1,
+     "n_months": 14,
+     "worst_month": -0.0653
+    },
+    "monthly_pf2": {
+     "2024-01": {
+      "n": 15,
+      "mean": -0.0447
+     },
+     "2024-02": {
+      "n": 31,
+      "mean": -0.0212
+     },
+     "2024-03": {
+      "n": 18,
+      "mean": -0.0759
+     },
+     "2024-04": {
+      "n": 22,
+      "mean": -0.0404
+     },
+     "2024-05": {
+      "n": 20,
+      "mean": -0.0387
+     },
+     "2024-06": {
+      "n": 23,
+      "mean": -0.0298
+     },
+     "2024-07": {
+      "n": 24,
+      "mean": -0.0042
+     },
+     "2024-08": {
+      "n": 20,
+      "mean": -0.0254
+     },
+     "2024-09": {
+      "n": 25,
+      "mean": 0.0004
+     },
+     "2024-10": {
+      "n": 29,
+      "mean": -0.0468
+     },
+     "2024-11": {
+      "n": 20,
+      "mean": -0.013
+     },
+     "2024-12": {
+      "n": 26,
+      "mean": -0.0375
+     },
+     "2025-01": {
+      "n": 32,
+      "mean": -0.0213
+     },
+     "2025-02": {
+      "n": 30,
+      "mean": -0.0411
+     }
+    },
+    "worst5": [
+     {
+      "date": "2024-05-31",
+      "ticker": "LPA",
+      "t0": 626,
+      "tf": 736,
+      "ret": -0.5455449735449736,
+      "B": 472.5,
+      "c0": 525.0
+     },
+     {
+      "date": "2024-07-23",
+      "ticker": "RGC",
+      "t0": 760,
+      "tf": 782,
+      "ret": -0.3485098909225366,
+      "B": 27.045,
+      "c0": 30.05
+     },
+     {
+      "date": "2024-07-23",
+      "ticker": "RGC",
+      "t0": 804,
+      "tf": 841,
+      "ret": -0.34578104138851806,
+      "B": 26.964000000000002,
+      "c0": 29.96
+     },
+     {
+      "date": "2024-10-04",
+      "ticker": "CHSN",
+      "t0": 872,
+      "tf": 878,
+      "ret": -0.29395061728395055,
+      "B": 12.555,
+      "c0": 13.95
+     },
+     {
+      "date": "2024-02-14",
+      "ticker": "TELO",
+      "t0": 871,
+      "tf": 907,
+      "ret": -0.2828442728442728,
+      "B": 18.648,
+      "c0": 20.72
+     }
+    ]
+   },
+   "classification": {
+    "matched": 407,
+    "anchor_lost": 0,
+    "fill_lost": 45,
+    "lifecycle_lost": 89,
+    "matched_pf2": 292,
+    "anchor_lost_pf2": 0,
+    "fill_lost_pf2": 24,
+    "lifecycle_lost_pf2": 65,
+    "missed": 134,
+    "missed_pf2": 89,
+    "spurious": 56,
+    "missed_rate": 0.2477,
+    "missed_pf2_rate": 0.2336,
+    "definitions": {
+     "matched": "same date,ticker and abs(tf_variant-tf_frozen)<=5; chronological one-to-one",
+     "anchor_lost": "unmatched frozen fill with no strict anchor at its frozen t0",
+     "fill_lost": "unmatched frozen fill with anchor present but no execution-tape B touch before expiry",
+     "lifecycle_lost": "unmatched despite anchor and raw B touch because rolling lifecycle timing differed"
+    }
+   },
+   "gate": {
+    "verdict": "FAIL",
+    "checks": {
+     "pf2 EV within +-0.30pp of frozen +1.14%": false,
+     "missed<=10%": false
+    }
+   }
+  },
+  "parity": {
+   "stats": {
+    "all": {
+     "n": 541,
+     "mean": 0.0091,
+     "med": 0.1011,
+     "pos": 0.558,
+     "months_pos": 11,
+     "n_months": 14,
+     "worst_month": -0.0251
+    },
+    "pf2": {
+     "n": 381,
+     "mean": 0.0114,
+     "med": 0.0474,
+     "pos": 0.559,
+     "months_pos": 12,
+     "n_months": 14,
+     "worst_month": -0.0203
+    },
+    "rank1": {
+     "n": 443,
+     "mean": 0.0076,
+     "med": 0.07,
+     "pos": 0.549,
+     "months_pos": 11,
+     "n_months": 14,
+     "worst_month": -0.0226
+    },
+    "monthly_pf2": {
+     "2024-01": {
+      "n": 18,
+      "mean": 0.0036
+     },
+     "2024-02": {
+      "n": 33,
+      "mean": 0.0223
+     },
+     "2024-03": {
+      "n": 26,
+      "mean": -0.0203
+     },
+     "2024-04": {
+      "n": 25,
+      "mean": 0.0164
+     },
+     "2024-05": {
+      "n": 22,
+      "mean": 0.0033
+     },
+     "2024-06": {
+      "n": 25,
+      "mean": 0.0282
+     },
+     "2024-07": {
+      "n": 26,
+      "mean": 0.0497
+     },
+     "2024-08": {
+      "n": 25,
+      "mean": 0.0181
+     },
+     "2024-09": {
+      "n": 27,
+      "mean": 0.011
+     },
+     "2024-10": {
+      "n": 32,
+      "mean": -0.0012
+     },
+     "2024-11": {
+      "n": 22,
+      "mean": 0.0067
+     },
+     "2024-12": {
+      "n": 35,
+      "mean": 0.0089
+     },
+     "2025-01": {
+      "n": 34,
+      "mean": 0.0054
+     },
+     "2025-02": {
+      "n": 31,
+      "mean": 0.0072
+     }
+    },
+    "worst5": [
+     {
+      "date": "2024-10-04",
+      "ticker": "CHSN",
+      "t0": 872,
+      "tf": 878,
+      "ret": -0.22943448825169244,
+      "B": 12.555,
+      "c0": 13.95
+     },
+     {
+      "date": "2024-03-11",
+      "ticker": "XPDB",
+      "t0": 871,
+      "tf": 872,
+      "ret": -0.2147331387587954,
+      "B": 44.199,
+      "c0": 49.11
+     },
+     {
+      "date": "2024-01-23",
+      "ticker": "ZJYL",
+      "t0": 864,
+      "tf": 866,
+      "ret": -0.21153920153920158,
+      "B": 207.9,
+      "c0": 231.0
+     },
+     {
+      "date": "2024-02-14",
+      "ticker": "TELO",
+      "t0": 871,
+      "tf": 902,
+      "ret": -0.20562419562419565,
+      "B": 18.648,
+      "c0": 20.72
+     },
+     {
+      "date": "2024-06-04",
+      "ticker": "LPA",
+      "t0": 658,
+      "tf": 674,
+      "ret": -0.1745068423775129,
+      "B": 369.243,
+      "c0": 410.27
+     }
+    ]
+   },
+   "classification": {
+    "matched": 541,
+    "anchor_lost": 0,
+    "fill_lost": 0,
+    "lifecycle_lost": 0,
+    "matched_pf2": 381,
+    "anchor_lost_pf2": 0,
+    "fill_lost_pf2": 0,
+    "lifecycle_lost_pf2": 0,
+    "missed": 0,
+    "missed_pf2": 0,
+    "spurious": 0,
+    "missed_rate": 0.0,
+    "missed_pf2_rate": 0.0,
+    "definitions": {
+     "matched": "same date,ticker and abs(tf_variant-tf_frozen)<=5; chronological one-to-one",
+     "anchor_lost": "unmatched frozen fill with no strict anchor at its frozen t0",
+     "fill_lost": "unmatched frozen fill with anchor present but no execution-tape B touch before expiry",
+     "lifecycle_lost": "unmatched despite anchor and raw B touch because rolling lifecycle timing differed"
+    }
+   },
+   "gate": {
+    "verdict": "PASS",
+    "checks": {
+     "exact frozen parity": true
+    }
+   }
+  }
+ }
+}
