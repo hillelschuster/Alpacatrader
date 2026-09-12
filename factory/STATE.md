@@ -1416,3 +1416,17 @@ pattern_digest.py --variant v2). EXP-68. Lane status: unsupervised shape
 discovery at 1-min/60-min granularity on the top-3 population is a tested
 negative; continuation needs a separate pre-reg with a different representation
 (learned embedding) or unit of analysis (event-anchored windows).
+
+## 2026-09-12z — live-path audit: pyarrow dependency gap in the supervisor gate
+Journal audit of day 1: 46 error events = 45 `/clock` 500s (the known Alpaca
+outage 12:16-13:02 ET, handled by retry + local-ET fallback) + 1 real live-path
+failure at 15:22:17 ET: `alpaca_movers` raised "pyarrow is required for parquet
+support" while reading `data/pit/pit_symbols.parquet` (flush_bot.py:136-137), so
+that movers poll produced no candidates. pyarrow (25.0.1) is present in the
+hermes venv now and the read works (3,944,234 rows / 703 vintages / 1.72s); the
+failure window was environment drift, not code. The supervisor's dependency gate
+checked loguru/pandas/dotenv/alpaca but NOT pyarrow, so a missing parquet engine
+would let the bot start and silently degrade candidate scanning. Gate now
+includes pyarrow (activates on the next supervisor start; the running process is
+untouched). Bot otherwise healthy: LIVE armed, no KILL, startup_reconcile ran
+(canceled 0 / rehydrated 0), weekend-idle on market_closed.
