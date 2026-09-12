@@ -1260,6 +1260,47 @@ IEX-anchor/frozen-B sub-variant, each with frozen gates and a decision rule
 `lb18_iex_feed.py`, `factory/artifacts/lb18_iex_feed.json`/.parquet. Verdict
 pending the hybrid run.
 
+## 2026-09-12u — Study B (post-fill tail rescue) + independent verification
+Study B's gate technically PASSES; my replication of the raw rows sharpens what is
+real and what is selection noise.
+
+Artifacts: `factory/scripts/lb18_subminute.py`, `factory/artifacts/lb18_subminute.json`
+/`.parquet` (541 fills x 6 configs = 3246 rows; SIP anchors 499/541; 2 truncated
+trade windows, 0 errors). Counterfactual exits are friction-consistent
+(`exit = action_price/B - 1 - 0.01`, same 1% as the baseline).
+
+Agent's best seen-data rules: all Δ=5s+60s EV +0.91% -> +1.34%; pf2 Δ=30s+60s
++1.14% -> +1.73% vs clean-touch +1.39%. But 25,272 rules were searched on the
+same 14 OOS months; winning-rule identity reshuffles completely across adjacent
+Δ/lag (unrelated features and directions) and the all-population winner improves
+only 5/14 months.
+
+Independent verification (mine, from the per-fill parquet):
+- 7-month train / 7-month test re-selection: lag=0 transfers positive in only
+  1/12 configs; lag=60 in 11/12.
+- leave-one-month-out (select on 13 months, apply to the held-out month):
+  lag=0 negative/weak (−0.41..+0.26pp); lag=60 positive in 8/8 configs
+  (all +0.09..+0.50pp; pf2 +0.47..+1.00pp). pf2 Δ=15s+60s = +0.997pp, 12/14
+  months. Rule identity stays unstable (9-14 distinct rules/fold) ⇒ the value is
+  in the feature FAMILY (participation size/volume at B, dwell/below-span, max
+  depth below B, snapback at ~60s), not one rule.
+- unconditional action on EVERY fill: strongly negative at lag=0 (−1.2..−1.8pp),
+  POSITIVE at lag=60 (all +0.44..+0.66pp; pf2 +0.74..+0.82pp, 10/14 months,
+  worst month −0.55% vs −2.03%, std 7.2 vs ~10). The simple "exit ~60s after
+  first touch" knob captures most of the gate; the 25k-rule search adds little.
+- Mechanism: among fills still alive at the action point, later-stops outnumber
+  later-targets ~1.8:1, so a flat early exit wins on base rates. Instant action
+  is noise; ~60s is where the conditional odds turn.
+
+Verdict: measurement only, NOT adoptable. Blockers: (1) exit execution is
+optimistic — it fills at the last SIP print with the same flat 1% friction as
+the baseline, while real market-exit slippage on these names is the known killer
+(gap-through −7.64%); (2) the 14 OOS months are now seen for this exit question,
+so any 60s-exit rule needs a NEW pre-reg + fresh/forward OOS. Next experiment
+(pre-reg first): unconditional exit-time sweep with a conservative exit-slippage
+model and a small candidate set (flat time-stop; "exit if depth below B < −1%"),
+then forward paper validation.
+
 ## 2026-09-12s — Study A decomposition (Amendment A1): IEX state costs frequency, not edge
 2×2 over (state/anchor source) × (exec source), frozen `lb` gate, `lb18_iex_hybrid.py`:
 parity (frozen,frozen) reproduced 541/+0.91%, 381/+1.14% exactly.
@@ -1289,3 +1330,16 @@ Consequence: judge the live paper bot against the A3b baseline (**pf2 ≈ +1.13%
 reference. Real-time SIP (Algo Trader Plus ~$99/mo) is the only way to restore
 the frozen schedule; a separate priced decision, not adopted. Study B (tail
 management on the frozen population) remains valid and needs no subscription.
+
+## 2026-09-12t — fragility profile of the live flush edge (descriptive, seen data)
+A3b pf2 (the deployable live model), OOS 2024-01..2025-02, from lb18_iex_hybrid.parquet:
+win 55.0%, mean win +9.24%, mean loss −8.77%, payoff 1.05, breakeven win-rate
+48.7% => cushion ~6.3pp. Exit mix: 48% exactly target (+10.1% net), 28% exactly
+stop (−11%), 23% tl30/other. Bootstrap 95% CI of mean [+0.01%, +2.21%] (frozen
+[+0.18%, +2.09%]) — lower bound touches zero; ~14 months of forward fills needed
+to exclude zero at ~19/mo. Worst 5 fills −75.9pp of +318pp total; ex-worst5 mean
++0.97%. H1 +2.18% (n=130) -> H2 +0.23% (n=152): recent half flat. $/mo ≈ $422 at
+$2k/trade, $2.1k at $10k, $5.3k at $25k (5%-participation capacity p25 ≈ $84k).
+Implication: thin, fat-tailed, decaying edge; Study B (tail) is the highest-
+leverage lever; paper fills validate mechanics, not the edge; no more untouched
+data remains for the frozen rule (forward is the only true OOS).

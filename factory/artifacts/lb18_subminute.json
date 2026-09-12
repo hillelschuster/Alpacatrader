@@ -1,0 +1,4607 @@
+{
+ "study": "PRE-REG-MICRO-01 Study B \u2014 decision-anchored post-fill microstructure",
+ "population": "frozen OOS fills; primary gate",
+ "flags": {
+  "measurement": true,
+  "seen_data": true,
+  "not_an_alpha_claim": true
+ },
+ "friction": 0.01,
+ "latency_ladder": {
+  "5": {
+   "earliest_possible_action_s": 5,
+   "live_poll_action_s": 65
+  },
+  "15": {
+   "earliest_possible_action_s": 15,
+   "live_poll_action_s": 75
+  },
+  "30": {
+   "earliest_possible_action_s": 30,
+   "live_poll_action_s": 90
+  }
+ },
+ "coverage": {
+  "population_n": 541,
+  "anchored_n": 499,
+  "anchor_missing_n": 42,
+  "trade_error_n": 0,
+  "quote_error_n": 0,
+  "trade_truncated_n": 2,
+  "quote_truncated_n": 0,
+  "quotes_requested_only_after_anchor": true,
+  "trade_cap_total": 200000,
+  "quote_cap_total": 100000,
+  "secondary_A3b": "not fetched: different B values imply different anchors/quote windows, so overlap is not a free cache reuse"
+ },
+ "feature_stats": {
+  "5": {
+   "touch_trade_count": {
+    "n": 499,
+    "null_rate": 0.0776,
+    "mean": 260.891784,
+    "p25": 47.0,
+    "median": 164.0,
+    "p75": 342.5
+   },
+   "touch_volume": {
+    "n": 499,
+    "null_rate": 0.0776,
+    "mean": 36681.903808,
+    "p25": 4931.0,
+    "median": 18621.0,
+    "p75": 50657.0
+   },
+   "touch_size_p25": {
+    "n": 499,
+    "null_rate": 0.0776,
+    "mean": 17.902806,
+    "p25": 5.625,
+    "median": 10.0,
+    "p75": 19.0
+   },
+   "touch_size_median": {
+    "n": 499,
+    "null_rate": 0.0776,
+    "mean": 53.324649,
+    "p25": 25.0,
+    "median": 50.0,
+    "p75": 70.25
+   },
+   "touch_size_p75": {
+    "n": 499,
+    "null_rate": 0.0776,
+    "mean": 112.08517,
+    "p25": 89.625,
+    "median": 100.0,
+    "p75": 100.0
+   },
+   "touch_size_max": {
+    "n": 499,
+    "null_rate": 0.0776,
+    "mean": 4648.685371,
+    "p25": 954.0,
+    "median": 2000.0,
+    "p75": 4000.0
+   },
+   "dwell_since_first_touch_s": {
+    "n": 499,
+    "null_rate": 0.0776,
+    "mean": 5.0,
+    "p25": 5.0,
+    "median": 5.0,
+    "p75": 5.0
+   },
+   "below_span_s": {
+    "n": 499,
+    "null_rate": 0.0776,
+    "mean": 4.16553,
+    "p25": 4.227239,
+    "median": 4.90706,
+    "p75": 4.979808
+   },
+   "touch_episodes": {
+    "n": 499,
+    "null_rate": 0.0776,
+    "mean": 8.432866,
+    "p25": 1.0,
+    "median": 3.0,
+    "p75": 12.0
+   },
+   "max_depth_below": {
+    "n": 499,
+    "null_rate": 0.0776,
+    "mean": -0.039269,
+    "p25": -0.047698,
+    "median": -0.021089,
+    "p75": -0.007473
+   },
+   "snapback": {
+    "n": 499,
+    "null_rate": 0.0776,
+    "mean": -0.024563,
+    "p25": -0.036315,
+    "median": -0.009009,
+    "p75": 0.003409
+   },
+   "snapped_back": {
+    "n": 499,
+    "null_rate": 0.0776,
+    "mean": 0.324649,
+    "p25": 0.0,
+    "median": 0.0,
+    "p75": 1.0
+   },
+   "sip_bid": {
+    "n": 494,
+    "null_rate": 0.0869,
+    "mean": 14.614454,
+    "p25": 6.0725,
+    "median": 8.6,
+    "p75": 14.29
+   },
+   "sip_ask": {
+    "n": 494,
+    "null_rate": 0.0869,
+    "mean": 15.57044,
+    "p25": 6.14,
+    "median": 8.665,
+    "p75": 14.495
+   },
+   "sip_bid_ge_B": {
+    "n": 494,
+    "null_rate": 0.0869,
+    "mean": 0.230769,
+    "p25": 0.0,
+    "median": 0.0,
+    "p75": 0.0
+   },
+   "nbbo_spread": {
+    "n": 494,
+    "null_rate": 0.0869,
+    "mean": 0.955986,
+    "p25": 0.03,
+    "median": 0.065,
+    "p75": 0.17
+   },
+   "nbbo_spread_bps": {
+    "n": 494,
+    "null_rate": 0.0869,
+    "mean": 145.584272,
+    "p25": 37.535289,
+    "median": 74.766616,
+    "p75": 140.734978
+   },
+   "sip_bid_size": {
+    "n": 494,
+    "null_rate": 0.0869,
+    "mean": 5.834008,
+    "p25": 1.0,
+    "median": 2.0,
+    "p75": 5.0
+   },
+   "sip_ask_size": {
+    "n": 494,
+    "null_rate": 0.0869,
+    "mean": 12.109312,
+    "p25": 1.0,
+    "median": 3.0,
+    "p75": 8.0
+   },
+   "iex_close": {
+    "n": 489,
+    "null_rate": 0.0961,
+    "mean": 13.751949,
+    "p25": 6.19,
+    "median": 9.03,
+    "p75": 14.66
+   },
+   "iex_above_B": {
+    "n": 489,
+    "null_rate": 0.0961,
+    "mean": 0.562372,
+    "p25": 0.0,
+    "median": 1.0,
+    "p75": 1.0
+   }
+  },
+  "15": {
+   "touch_trade_count": {
+    "n": 499,
+    "null_rate": 0.0776,
+    "mean": 605.745491,
+    "p25": 98.5,
+    "median": 374.0,
+    "p75": 867.5
+   },
+   "touch_volume": {
+    "n": 499,
+    "null_rate": 0.0776,
+    "mean": 82279.234469,
+    "p25": 9433.5,
+    "median": 44423.0,
+    "p75": 123506.5
+   },
+   "touch_size_p25": {
+    "n": 499,
+    "null_rate": 0.0776,
+    "mean": 16.797094,
+    "p25": 6.0,
+    "median": 10.0,
+    "p75": 18.5
+   },
+   "touch_size_median": {
+    "n": 499,
+    "null_rate": 0.0776,
+    "mean": 52.646293,
+    "p25": 25.0,
+    "median": 50.0,
+    "p75": 67.0
+   },
+   "touch_size_p75": {
+    "n": 499,
+    "null_rate": 0.0776,
+    "mean": 109.602705,
+    "p25": 95.75,
+    "median": 100.0,
+    "p75": 100.0
+   },
+   "touch_size_max": {
+    "n": 499,
+    "null_rate": 0.0776,
+    "mean": 5323.843687,
+    "p25": 1306.0,
+    "median": 3000.0,
+    "p75": 5000.0
+   },
+   "dwell_since_first_touch_s": {
+    "n": 499,
+    "null_rate": 0.0776,
+    "mean": 15.0,
+    "p25": 15.0,
+    "median": 15.0,
+    "p75": 15.0
+   },
+   "below_span_s": {
+    "n": 499,
+    "null_rate": 0.0776,
+    "mean": 12.010404,
+    "p25": 10.350316,
+    "median": 14.866793,
+    "p75": 14.967737
+   },
+   "touch_episodes": {
+    "n": 499,
+    "null_rate": 0.0776,
+    "mean": 13.829659,
+    "p25": 1.0,
+    "median": 6.0,
+    "p75": 19.0
+   },
+   "max_depth_below": {
+    "n": 499,
+    "null_rate": 0.0776,
+    "mean": -0.046002,
+    "p25": -0.05636,
+    "median": -0.028219,
+    "p75": -0.009901
+   },
+   "snapback": {
+    "n": 499,
+    "null_rate": 0.0776,
+    "mean": -0.022331,
+    "p25": -0.037116,
+    "median": -0.011299,
+    "p75": 0.008551
+   },
+   "snapped_back": {
+    "n": 499,
+    "null_rate": 0.0776,
+    "mean": 0.356713,
+    "p25": 0.0,
+    "median": 0.0,
+    "p75": 1.0
+   },
+   "sip_bid": {
+    "n": 488,
+    "null_rate": 0.098,
+    "mean": 14.60748,
+    "p25": 6.0575,
+    "median": 8.415,
+    "p75": 14.1425
+   },
+   "sip_ask": {
+    "n": 488,
+    "null_rate": 0.098,
+    "mean": 15.566778,
+    "p25": 6.09,
+    "median": 8.45,
+    "p75": 14.38
+   },
+   "sip_bid_ge_B": {
+    "n": 488,
+    "null_rate": 0.098,
+    "mean": 0.297131,
+    "p25": 0.0,
+    "median": 0.0,
+    "p75": 1.0
+   },
+   "nbbo_spread": {
+    "n": 488,
+    "null_rate": 0.098,
+    "mean": 0.959298,
+    "p25": 0.02,
+    "median": 0.06,
+    "p75": 0.16
+   },
+   "nbbo_spread_bps": {
+    "n": 488,
+    "null_rate": 0.098,
+    "mean": 138.941243,
+    "p25": 33.264463,
+    "median": 71.750322,
+    "p75": 137.019474
+   },
+   "sip_bid_size": {
+    "n": 488,
+    "null_rate": 0.098,
+    "mean": 5.940574,
+    "p25": 1.0,
+    "median": 2.0,
+    "p75": 5.0
+   },
+   "sip_ask_size": {
+    "n": 488,
+    "null_rate": 0.098,
+    "mean": 18.848361,
+    "p25": 1.0,
+    "median": 3.0,
+    "p75": 7.0
+   },
+   "iex_close": {
+    "n": 489,
+    "null_rate": 0.0961,
+    "mean": 13.72653,
+    "p25": 6.19,
+    "median": 9.0,
+    "p75": 14.66
+   },
+   "iex_above_B": {
+    "n": 489,
+    "null_rate": 0.0961,
+    "mean": 0.550102,
+    "p25": 0.0,
+    "median": 1.0,
+    "p75": 1.0
+   }
+  },
+  "30": {
+   "touch_trade_count": {
+    "n": 499,
+    "null_rate": 0.0776,
+    "mean": 967.320641,
+    "p25": 159.5,
+    "median": 599.0,
+    "p75": 1358.0
+   },
+   "touch_volume": {
+    "n": 499,
+    "null_rate": 0.0776,
+    "mean": 129505.795591,
+    "p25": 13859.0,
+    "median": 75919.0,
+    "p75": 190632.0
+   },
+   "touch_size_p25": {
+    "n": 499,
+    "null_rate": 0.0776,
+    "mean": 14.237475,
+    "p25": 5.75,
+    "median": 10.0,
+    "p75": 16.5
+   },
+   "touch_size_median": {
+    "n": 499,
+    "null_rate": 0.0776,
+    "mean": 50.290581,
+    "p25": 25.0,
+    "median": 50.0,
+    "p75": 63.75
+   },
+   "touch_size_p75": {
+    "n": 499,
+    "null_rate": 0.0776,
+    "mean": 106.709419,
+    "p25": 99.875,
+    "median": 100.0,
+    "p75": 100.0
+   },
+   "touch_size_max": {
+    "n": 499,
+    "null_rate": 0.0776,
+    "mean": 5815.148297,
+    "p25": 1724.5,
+    "median": 3400.0,
+    "p75": 5455.5
+   },
+   "dwell_since_first_touch_s": {
+    "n": 499,
+    "null_rate": 0.0776,
+    "mean": 30.0,
+    "p25": 30.0,
+    "median": 30.0,
+    "p75": 30.0
+   },
+   "below_span_s": {
+    "n": 499,
+    "null_rate": 0.0776,
+    "mean": 22.89054,
+    "p25": 16.787456,
+    "median": 29.607407,
+    "p75": 29.949917
+   },
+   "touch_episodes": {
+    "n": 499,
+    "null_rate": 0.0776,
+    "mean": 18.557114,
+    "p25": 1.0,
+    "median": 10.0,
+    "p75": 25.0
+   },
+   "max_depth_below": {
+    "n": 499,
+    "null_rate": 0.0776,
+    "mean": -0.050147,
+    "p25": -0.059963,
+    "median": -0.032574,
+    "p75": -0.013689
+   },
+   "snapback": {
+    "n": 499,
+    "null_rate": 0.0776,
+    "mean": -0.020681,
+    "p25": -0.037888,
+    "median": -0.010741,
+    "p75": 0.009783
+   },
+   "snapped_back": {
+    "n": 499,
+    "null_rate": 0.0776,
+    "mean": 0.390782,
+    "p25": 0.0,
+    "median": 0.0,
+    "p75": 1.0
+   },
+   "sip_bid": {
+    "n": 449,
+    "null_rate": 0.1701,
+    "mean": 14.901827,
+    "p25": 5.93,
+    "median": 8.3,
+    "p75": 13.85
+   },
+   "sip_ask": {
+    "n": 449,
+    "null_rate": 0.1701,
+    "mean": 15.770729,
+    "p25": 5.99,
+    "median": 8.35,
+    "p75": 14.01
+   },
+   "sip_bid_ge_B": {
+    "n": 449,
+    "null_rate": 0.1701,
+    "mean": 0.358575,
+    "p25": 0.0,
+    "median": 0.0,
+    "p75": 1.0
+   },
+   "nbbo_spread": {
+    "n": 449,
+    "null_rate": 0.1701,
+    "mean": 0.868903,
+    "p25": 0.03,
+    "median": 0.06,
+    "p75": 0.15
+   },
+   "nbbo_spread_bps": {
+    "n": 449,
+    "null_rate": 0.1701,
+    "mean": 134.708384,
+    "p25": 37.593985,
+    "median": 72.595281,
+    "p75": 135.615111
+   },
+   "sip_bid_size": {
+    "n": 449,
+    "null_rate": 0.1701,
+    "mean": 6.761693,
+    "p25": 1.0,
+    "median": 2.0,
+    "p75": 6.0
+   },
+   "sip_ask_size": {
+    "n": 449,
+    "null_rate": 0.1701,
+    "mean": 8.821826,
+    "p25": 1.0,
+    "median": 3.0,
+    "p75": 7.0
+   },
+   "iex_close": {
+    "n": 489,
+    "null_rate": 0.0961,
+    "mean": 13.692951,
+    "p25": 6.19,
+    "median": 8.95,
+    "p75": 14.61
+   },
+   "iex_above_B": {
+    "n": 489,
+    "null_rate": 0.0961,
+    "mean": 0.531697,
+    "p25": 0.0,
+    "median": 1.0,
+    "p75": 1.0
+   }
+  }
+ },
+ "rescue_2x2": {
+  "5": {
+   "0": {
+    "unresolved": 225,
+    "alive-later-stop": 146,
+    "alive-later-target": 82,
+    "early-stop": 44,
+    "anchor-missing": 42,
+    "early-target": 2,
+    "action_alive": 400,
+    "resolved_between_feature_and_action": 0
+   },
+   "60": {
+    "unresolved": 225,
+    "alive-later-stop": 146,
+    "alive-later-target": 82,
+    "early-stop": 44,
+    "anchor-missing": 42,
+    "early-target": 2,
+    "action_alive": 278,
+    "resolved_between_feature_and_action": 34
+   }
+  },
+  "15": {
+   "0": {
+    "unresolved": 221,
+    "alive-later-stop": 136,
+    "alive-later-target": 80,
+    "early-stop": 57,
+    "anchor-missing": 42,
+    "early-target": 5,
+    "action_alive": 386,
+    "resolved_between_feature_and_action": 0
+   },
+   "60": {
+    "unresolved": 221,
+    "alive-later-stop": 136,
+    "alive-later-target": 80,
+    "early-stop": 57,
+    "anchor-missing": 42,
+    "early-target": 5,
+    "action_alive": 275,
+    "resolved_between_feature_and_action": 25
+   }
+  },
+  "30": {
+   "0": {
+    "unresolved": 218,
+    "alive-later-stop": 130,
+    "alive-later-target": 77,
+    "early-stop": 64,
+    "anchor-missing": 42,
+    "early-target": 10,
+    "action_alive": 375,
+    "resolved_between_feature_and_action": 0
+   },
+   "60": {
+    "unresolved": 218,
+    "alive-later-stop": 130,
+    "alive-later-target": 77,
+    "early-stop": 64,
+    "anchor-missing": 42,
+    "early-target": 10,
+    "action_alive": 271,
+    "resolved_between_feature_and_action": 20
+   }
+  }
+ },
+ "baselines": {
+  "source": "factory/artifacts/lb18_exec.json; pooled dev+OOS, reused not re-derived",
+  "baseline_stop10": {
+   "n": 1478,
+   "mean": 0.0058,
+   "med": 0.043,
+   "pos": 0.543,
+   "months_pos": 22,
+   "n_months": 32,
+   "worst": -0.0452
+  },
+  "stop08": {
+   "n": 1478,
+   "mean": 0.0036,
+   "med": 0.0023,
+   "pos": 0.502,
+   "months_pos": 19,
+   "n_months": 32,
+   "worst": -0.0397
+  },
+  "stop12": {
+   "n": 1478,
+   "mean": 0.0061,
+   "med": 0.1011,
+   "pos": 0.566,
+   "months_pos": 19,
+   "n_months": 32,
+   "worst": -0.0426
+  },
+  "stop15": {
+   "n": 1478,
+   "mean": 0.0062,
+   "med": 0.1011,
+   "pos": 0.585,
+   "months_pos": 21,
+   "n_months": 32,
+   "worst": -0.0437
+  },
+  "pf2_clean_touch_only": {
+   "n": 1016,
+   "mean": 0.0139,
+   "med": 0.1011,
+   "pos": 0.569,
+   "months_pos": 28,
+   "n_months": 32,
+   "worst": -0.0242
+  },
+  "gap_share_among_breaches": 0.2667
+ },
+ "rule_search": {
+  "grid": "numeric features at empirical q25/q50/q75 with <= and >=; boolean 0/1; all cross-feature 2-rule ANDs; exit-now and tighten-to-action-price",
+  "features": {
+   "numeric": [
+    "touch_trade_count",
+    "touch_volume",
+    "touch_size_median",
+    "below_span_s",
+    "touch_episodes",
+    "max_depth_below",
+    "snapback"
+   ],
+   "boolean": [
+    "snapped_back",
+    "sip_bid_ge_B",
+    "iex_above_B"
+   ]
+  },
+  "multiple_comparison_warning": "All rules were searched on fully seen OOS data; winners are descriptive and cannot be adopted without a new pre-registration and fresh OOS.",
+  "counts": {
+   "one_feature_rules": 576,
+   "two_feature_rules": 12240,
+   "evaluations": 25272
+  },
+  "per_rung": {
+   "all": {
+    "5": {
+     "0": {
+      "n": 541,
+      "earliest_action_s": 5,
+      "live_poll_action_s": 65,
+      "baseline_comparators": {
+       "stop08": 0.0036,
+       "stop12": 0.0061,
+       "stop15": 0.0062
+      },
+      "best": {
+       "rule": "(touch_trade_count<=47) AND (touch_size_median<=25)",
+       "mode": "tighten",
+       "n_selected": 48,
+       "baseline_ev": 0.00913887,
+       "intervention_ev": 0.01032063,
+       "ev_change": 0.00118176,
+       "baseline_pnl_sum": 4.94413,
+       "intervention_pnl_sum": 5.583462,
+       "tail_before": 45,
+       "tail_after": 37,
+       "tail_reduced": 9,
+       "target_hit_n": 82,
+       "target_hit_selected": 7,
+       "target_cost_sum": 0.769429,
+       "target_economics_erosion": 0.09455,
+       "material_target_erosion": false,
+       "months_improved": 5,
+       "n_months": 14,
+       "monthly": {
+        "2024-01": {
+         "n": 26,
+         "baseline_ev": -0.025147,
+         "intervention_ev": -0.00627,
+         "ev_change": 0.018877
+        },
+        "2024-02": {
+         "n": 49,
+         "baseline_ev": 0.006608,
+         "intervention_ev": 0.011273,
+         "ev_change": 0.004665
+        },
+        "2024-03": {
+         "n": 39,
+         "baseline_ev": -0.008955,
+         "intervention_ev": -0.009626,
+         "ev_change": -0.000672
+        },
+        "2024-04": {
+         "n": 33,
+         "baseline_ev": 0.011311,
+         "intervention_ev": 0.01516,
+         "ev_change": 0.003849
+        },
+        "2024-05": {
+         "n": 34,
+         "baseline_ev": -0.013009,
+         "intervention_ev": -0.013009,
+         "ev_change": 0.0
+        },
+        "2024-06": {
+         "n": 34,
+         "baseline_ev": 0.031473,
+         "intervention_ev": 0.032185,
+         "ev_change": 0.000712
+        },
+        "2024-07": {
+         "n": 35,
+         "baseline_ev": 0.026591,
+         "intervention_ev": 0.022745,
+         "ev_change": -0.003846
+        },
+        "2024-08": {
+         "n": 33,
+         "baseline_ev": 0.027607,
+         "intervention_ev": 0.026704,
+         "ev_change": -0.000903
+        },
+        "2024-09": {
+         "n": 42,
+         "baseline_ev": 0.015736,
+         "intervention_ev": 0.011557,
+         "ev_change": -0.004179
+        },
+        "2024-10": {
+         "n": 46,
+         "baseline_ev": 0.006031,
+         "intervention_ev": 0.013141,
+         "ev_change": 0.00711
+        },
+        "2024-11": {
+         "n": 30,
+         "baseline_ev": 0.024827,
+         "intervention_ev": 0.024827,
+         "ev_change": 0.0
+        },
+        "2024-12": {
+         "n": 52,
+         "baseline_ev": 0.008697,
+         "intervention_ev": 0.006093,
+         "ev_change": -0.002604
+        },
+        "2025-01": {
+         "n": 48,
+         "baseline_ev": 0.012337,
+         "intervention_ev": 0.01216,
+         "ev_change": -0.000177
+        },
+        "2025-02": {
+         "n": 40,
+         "baseline_ev": 0.001327,
+         "intervention_ev": 0.000119,
+         "ev_change": -0.001208
+        }
+       },
+       "ev_vs_baselines": {
+        "stop08": 0.00672063,
+        "stop12": 0.00422063,
+        "stop15": 0.00412063
+       }
+      },
+      "best_gate_eligible": {
+       "rule": "(touch_trade_count<=47) AND (touch_size_median<=25)",
+       "mode": "tighten",
+       "n_selected": 48,
+       "baseline_ev": 0.00913887,
+       "intervention_ev": 0.01032063,
+       "ev_change": 0.00118176,
+       "baseline_pnl_sum": 4.94413,
+       "intervention_pnl_sum": 5.583462,
+       "tail_before": 45,
+       "tail_after": 37,
+       "tail_reduced": 9,
+       "target_hit_n": 82,
+       "target_hit_selected": 7,
+       "target_cost_sum": 0.769429,
+       "target_economics_erosion": 0.09455,
+       "material_target_erosion": false,
+       "months_improved": 5,
+       "n_months": 14,
+       "monthly": {
+        "2024-01": {
+         "n": 26,
+         "baseline_ev": -0.025147,
+         "intervention_ev": -0.00627,
+         "ev_change": 0.018877
+        },
+        "2024-02": {
+         "n": 49,
+         "baseline_ev": 0.006608,
+         "intervention_ev": 0.011273,
+         "ev_change": 0.004665
+        },
+        "2024-03": {
+         "n": 39,
+         "baseline_ev": -0.008955,
+         "intervention_ev": -0.009626,
+         "ev_change": -0.000672
+        },
+        "2024-04": {
+         "n": 33,
+         "baseline_ev": 0.011311,
+         "intervention_ev": 0.01516,
+         "ev_change": 0.003849
+        },
+        "2024-05": {
+         "n": 34,
+         "baseline_ev": -0.013009,
+         "intervention_ev": -0.013009,
+         "ev_change": 0.0
+        },
+        "2024-06": {
+         "n": 34,
+         "baseline_ev": 0.031473,
+         "intervention_ev": 0.032185,
+         "ev_change": 0.000712
+        },
+        "2024-07": {
+         "n": 35,
+         "baseline_ev": 0.026591,
+         "intervention_ev": 0.022745,
+         "ev_change": -0.003846
+        },
+        "2024-08": {
+         "n": 33,
+         "baseline_ev": 0.027607,
+         "intervention_ev": 0.026704,
+         "ev_change": -0.000903
+        },
+        "2024-09": {
+         "n": 42,
+         "baseline_ev": 0.015736,
+         "intervention_ev": 0.011557,
+         "ev_change": -0.004179
+        },
+        "2024-10": {
+         "n": 46,
+         "baseline_ev": 0.006031,
+         "intervention_ev": 0.013141,
+         "ev_change": 0.00711
+        },
+        "2024-11": {
+         "n": 30,
+         "baseline_ev": 0.024827,
+         "intervention_ev": 0.024827,
+         "ev_change": 0.0
+        },
+        "2024-12": {
+         "n": 52,
+         "baseline_ev": 0.008697,
+         "intervention_ev": 0.006093,
+         "ev_change": -0.002604
+        },
+        "2025-01": {
+         "n": 48,
+         "baseline_ev": 0.012337,
+         "intervention_ev": 0.01216,
+         "ev_change": -0.000177
+        },
+        "2025-02": {
+         "n": 40,
+         "baseline_ev": 0.001327,
+         "intervention_ev": 0.000119,
+         "ev_change": -0.001208
+        }
+       },
+       "ev_vs_baselines": {
+        "stop08": 0.00672063,
+        "stop12": 0.00422063,
+        "stop15": 0.00412063
+       }
+      }
+     },
+     "60": {
+      "n": 541,
+      "earliest_action_s": 5,
+      "live_poll_action_s": 65,
+      "baseline_comparators": {
+       "stop08": 0.0036,
+       "stop12": 0.0061,
+       "stop15": 0.0062
+      },
+      "best": {
+       "rule": "(touch_trade_count<=47) AND (touch_size_median<=70.25)",
+       "mode": "exit_now",
+       "n_selected": 53,
+       "baseline_ev": 0.00913887,
+       "intervention_ev": 0.0133616,
+       "ev_change": 0.00422272,
+       "baseline_pnl_sum": 4.94413,
+       "intervention_pnl_sum": 7.228624,
+       "tail_before": 45,
+       "tail_after": 32,
+       "tail_reduced": 13,
+       "target_hit_n": 82,
+       "target_hit_selected": 9,
+       "target_cost_sum": 0.615461,
+       "target_economics_erosion": 0.07563,
+       "material_target_erosion": false,
+       "months_improved": 11,
+       "n_months": 14,
+       "monthly": {
+        "2024-01": {
+         "n": 26,
+         "baseline_ev": -0.025147,
+         "intervention_ev": -0.006648,
+         "ev_change": 0.018499
+        },
+        "2024-02": {
+         "n": 49,
+         "baseline_ev": 0.006608,
+         "intervention_ev": 0.017947,
+         "ev_change": 0.01134
+        },
+        "2024-03": {
+         "n": 39,
+         "baseline_ev": -0.008955,
+         "intervention_ev": -0.002603,
+         "ev_change": 0.006351
+        },
+        "2024-04": {
+         "n": 33,
+         "baseline_ev": 0.011311,
+         "intervention_ev": 0.01629,
+         "ev_change": 0.00498
+        },
+        "2024-05": {
+         "n": 34,
+         "baseline_ev": -0.013009,
+         "intervention_ev": -0.013009,
+         "ev_change": 0.0
+        },
+        "2024-06": {
+         "n": 34,
+         "baseline_ev": 0.031473,
+         "intervention_ev": 0.035053,
+         "ev_change": 0.00358
+        },
+        "2024-07": {
+         "n": 35,
+         "baseline_ev": 0.026591,
+         "intervention_ev": 0.028715,
+         "ev_change": 0.002123
+        },
+        "2024-08": {
+         "n": 33,
+         "baseline_ev": 0.027607,
+         "intervention_ev": 0.032726,
+         "ev_change": 0.005119
+        },
+        "2024-09": {
+         "n": 42,
+         "baseline_ev": 0.015736,
+         "intervention_ev": 0.01662,
+         "ev_change": 0.000884
+        },
+        "2024-10": {
+         "n": 46,
+         "baseline_ev": 0.006031,
+         "intervention_ev": 0.015637,
+         "ev_change": 0.009606
+        },
+        "2024-11": {
+         "n": 30,
+         "baseline_ev": 0.024827,
+         "intervention_ev": 0.026494,
+         "ev_change": 0.001667
+        },
+        "2024-12": {
+         "n": 52,
+         "baseline_ev": 0.008697,
+         "intervention_ev": 0.008614,
+         "ev_change": -8.3e-05
+        },
+        "2025-01": {
+         "n": 48,
+         "baseline_ev": 0.012337,
+         "intervention_ev": 0.009837,
+         "ev_change": -0.002501
+        },
+        "2025-02": {
+         "n": 40,
+         "baseline_ev": 0.001327,
+         "intervention_ev": 0.002982,
+         "ev_change": 0.001655
+        }
+       },
+       "ev_vs_baselines": {
+        "stop08": 0.0097616,
+        "stop12": 0.0072616,
+        "stop15": 0.0071616
+       }
+      },
+      "best_gate_eligible": {
+       "rule": "(touch_trade_count<=47) AND (touch_size_median<=70.25)",
+       "mode": "exit_now",
+       "n_selected": 53,
+       "baseline_ev": 0.00913887,
+       "intervention_ev": 0.0133616,
+       "ev_change": 0.00422272,
+       "baseline_pnl_sum": 4.94413,
+       "intervention_pnl_sum": 7.228624,
+       "tail_before": 45,
+       "tail_after": 32,
+       "tail_reduced": 13,
+       "target_hit_n": 82,
+       "target_hit_selected": 9,
+       "target_cost_sum": 0.615461,
+       "target_economics_erosion": 0.07563,
+       "material_target_erosion": false,
+       "months_improved": 11,
+       "n_months": 14,
+       "monthly": {
+        "2024-01": {
+         "n": 26,
+         "baseline_ev": -0.025147,
+         "intervention_ev": -0.006648,
+         "ev_change": 0.018499
+        },
+        "2024-02": {
+         "n": 49,
+         "baseline_ev": 0.006608,
+         "intervention_ev": 0.017947,
+         "ev_change": 0.01134
+        },
+        "2024-03": {
+         "n": 39,
+         "baseline_ev": -0.008955,
+         "intervention_ev": -0.002603,
+         "ev_change": 0.006351
+        },
+        "2024-04": {
+         "n": 33,
+         "baseline_ev": 0.011311,
+         "intervention_ev": 0.01629,
+         "ev_change": 0.00498
+        },
+        "2024-05": {
+         "n": 34,
+         "baseline_ev": -0.013009,
+         "intervention_ev": -0.013009,
+         "ev_change": 0.0
+        },
+        "2024-06": {
+         "n": 34,
+         "baseline_ev": 0.031473,
+         "intervention_ev": 0.035053,
+         "ev_change": 0.00358
+        },
+        "2024-07": {
+         "n": 35,
+         "baseline_ev": 0.026591,
+         "intervention_ev": 0.028715,
+         "ev_change": 0.002123
+        },
+        "2024-08": {
+         "n": 33,
+         "baseline_ev": 0.027607,
+         "intervention_ev": 0.032726,
+         "ev_change": 0.005119
+        },
+        "2024-09": {
+         "n": 42,
+         "baseline_ev": 0.015736,
+         "intervention_ev": 0.01662,
+         "ev_change": 0.000884
+        },
+        "2024-10": {
+         "n": 46,
+         "baseline_ev": 0.006031,
+         "intervention_ev": 0.015637,
+         "ev_change": 0.009606
+        },
+        "2024-11": {
+         "n": 30,
+         "baseline_ev": 0.024827,
+         "intervention_ev": 0.026494,
+         "ev_change": 0.001667
+        },
+        "2024-12": {
+         "n": 52,
+         "baseline_ev": 0.008697,
+         "intervention_ev": 0.008614,
+         "ev_change": -8.3e-05
+        },
+        "2025-01": {
+         "n": 48,
+         "baseline_ev": 0.012337,
+         "intervention_ev": 0.009837,
+         "ev_change": -0.002501
+        },
+        "2025-02": {
+         "n": 40,
+         "baseline_ev": 0.001327,
+         "intervention_ev": 0.002982,
+         "ev_change": 0.001655
+        }
+       },
+       "ev_vs_baselines": {
+        "stop08": 0.0097616,
+        "stop12": 0.0072616,
+        "stop15": 0.0071616
+       }
+      }
+     }
+    },
+    "15": {
+     "0": {
+      "n": 541,
+      "earliest_action_s": 15,
+      "live_poll_action_s": 75,
+      "baseline_comparators": {
+       "stop08": 0.0036,
+       "stop12": 0.0061,
+       "stop15": 0.0062
+      },
+      "best": {
+       "rule": "(touch_trade_count<=98.5) AND (touch_size_median<=25)",
+       "mode": "tighten",
+       "n_selected": 42,
+       "baseline_ev": 0.00913887,
+       "intervention_ev": 0.01029727,
+       "ev_change": 0.0011584,
+       "baseline_pnl_sum": 4.94413,
+       "intervention_pnl_sum": 5.570822,
+       "tail_before": 45,
+       "tail_after": 38,
+       "tail_reduced": 7,
+       "target_hit_n": 80,
+       "target_hit_selected": 6,
+       "target_cost_sum": 0.57509,
+       "target_economics_erosion": 0.07247,
+       "material_target_erosion": false,
+       "months_improved": 6,
+       "n_months": 14,
+       "monthly": {
+        "2024-01": {
+         "n": 26,
+         "baseline_ev": -0.025147,
+         "intervention_ev": -0.008618,
+         "ev_change": 0.016529
+        },
+        "2024-02": {
+         "n": 49,
+         "baseline_ev": 0.006608,
+         "intervention_ev": 0.006202,
+         "ev_change": -0.000406
+        },
+        "2024-03": {
+         "n": 39,
+         "baseline_ev": -0.008955,
+         "intervention_ev": -0.002457,
+         "ev_change": 0.006497
+        },
+        "2024-04": {
+         "n": 33,
+         "baseline_ev": 0.011311,
+         "intervention_ev": 0.014978,
+         "ev_change": 0.003667
+        },
+        "2024-05": {
+         "n": 34,
+         "baseline_ev": -0.013009,
+         "intervention_ev": -0.013009,
+         "ev_change": 0.0
+        },
+        "2024-06": {
+         "n": 34,
+         "baseline_ev": 0.031473,
+         "intervention_ev": 0.033131,
+         "ev_change": 0.001658
+        },
+        "2024-07": {
+         "n": 35,
+         "baseline_ev": 0.026591,
+         "intervention_ev": 0.026307,
+         "ev_change": -0.000285
+        },
+        "2024-08": {
+         "n": 33,
+         "baseline_ev": 0.027607,
+         "intervention_ev": 0.031368,
+         "ev_change": 0.003761
+        },
+        "2024-09": {
+         "n": 42,
+         "baseline_ev": 0.015736,
+         "intervention_ev": 0.013391,
+         "ev_change": -0.002345
+        },
+        "2024-10": {
+         "n": 46,
+         "baseline_ev": 0.006031,
+         "intervention_ev": 0.008957,
+         "ev_change": 0.002926
+        },
+        "2024-11": {
+         "n": 30,
+         "baseline_ev": 0.024827,
+         "intervention_ev": 0.020202,
+         "ev_change": -0.004626
+        },
+        "2024-12": {
+         "n": 52,
+         "baseline_ev": 0.008697,
+         "intervention_ev": 0.006025,
+         "ev_change": -0.002673
+        },
+        "2025-01": {
+         "n": 48,
+         "baseline_ev": 0.012337,
+         "intervention_ev": 0.010898,
+         "ev_change": -0.00144
+        },
+        "2025-02": {
+         "n": 40,
+         "baseline_ev": 0.001327,
+         "intervention_ev": 0.000892,
+         "ev_change": -0.000435
+        }
+       },
+       "ev_vs_baselines": {
+        "stop08": 0.00669727,
+        "stop12": 0.00419727,
+        "stop15": 0.00409727
+       }
+      },
+      "best_gate_eligible": {
+       "rule": "(touch_trade_count<=98.5) AND (touch_size_median<=25)",
+       "mode": "tighten",
+       "n_selected": 42,
+       "baseline_ev": 0.00913887,
+       "intervention_ev": 0.01029727,
+       "ev_change": 0.0011584,
+       "baseline_pnl_sum": 4.94413,
+       "intervention_pnl_sum": 5.570822,
+       "tail_before": 45,
+       "tail_after": 38,
+       "tail_reduced": 7,
+       "target_hit_n": 80,
+       "target_hit_selected": 6,
+       "target_cost_sum": 0.57509,
+       "target_economics_erosion": 0.07247,
+       "material_target_erosion": false,
+       "months_improved": 6,
+       "n_months": 14,
+       "monthly": {
+        "2024-01": {
+         "n": 26,
+         "baseline_ev": -0.025147,
+         "intervention_ev": -0.008618,
+         "ev_change": 0.016529
+        },
+        "2024-02": {
+         "n": 49,
+         "baseline_ev": 0.006608,
+         "intervention_ev": 0.006202,
+         "ev_change": -0.000406
+        },
+        "2024-03": {
+         "n": 39,
+         "baseline_ev": -0.008955,
+         "intervention_ev": -0.002457,
+         "ev_change": 0.006497
+        },
+        "2024-04": {
+         "n": 33,
+         "baseline_ev": 0.011311,
+         "intervention_ev": 0.014978,
+         "ev_change": 0.003667
+        },
+        "2024-05": {
+         "n": 34,
+         "baseline_ev": -0.013009,
+         "intervention_ev": -0.013009,
+         "ev_change": 0.0
+        },
+        "2024-06": {
+         "n": 34,
+         "baseline_ev": 0.031473,
+         "intervention_ev": 0.033131,
+         "ev_change": 0.001658
+        },
+        "2024-07": {
+         "n": 35,
+         "baseline_ev": 0.026591,
+         "intervention_ev": 0.026307,
+         "ev_change": -0.000285
+        },
+        "2024-08": {
+         "n": 33,
+         "baseline_ev": 0.027607,
+         "intervention_ev": 0.031368,
+         "ev_change": 0.003761
+        },
+        "2024-09": {
+         "n": 42,
+         "baseline_ev": 0.015736,
+         "intervention_ev": 0.013391,
+         "ev_change": -0.002345
+        },
+        "2024-10": {
+         "n": 46,
+         "baseline_ev": 0.006031,
+         "intervention_ev": 0.008957,
+         "ev_change": 0.002926
+        },
+        "2024-11": {
+         "n": 30,
+         "baseline_ev": 0.024827,
+         "intervention_ev": 0.020202,
+         "ev_change": -0.004626
+        },
+        "2024-12": {
+         "n": 52,
+         "baseline_ev": 0.008697,
+         "intervention_ev": 0.006025,
+         "ev_change": -0.002673
+        },
+        "2025-01": {
+         "n": 48,
+         "baseline_ev": 0.012337,
+         "intervention_ev": 0.010898,
+         "ev_change": -0.00144
+        },
+        "2025-02": {
+         "n": 40,
+         "baseline_ev": 0.001327,
+         "intervention_ev": 0.000892,
+         "ev_change": -0.000435
+        }
+       },
+       "ev_vs_baselines": {
+        "stop08": 0.00669727,
+        "stop12": 0.00419727,
+        "stop15": 0.00409727
+       }
+      }
+     },
+     "60": {
+      "n": 541,
+      "earliest_action_s": 15,
+      "live_poll_action_s": 75,
+      "baseline_comparators": {
+       "stop08": 0.0036,
+       "stop12": 0.0061,
+       "stop15": 0.0062
+      },
+      "best": {
+       "rule": "(touch_volume<=44423) AND (touch_size_median<=25)",
+       "mode": "exit_now",
+       "n_selected": 48,
+       "baseline_ev": 0.00913887,
+       "intervention_ev": 0.01275501,
+       "ev_change": 0.00361614,
+       "baseline_pnl_sum": 4.94413,
+       "intervention_pnl_sum": 6.900461,
+       "tail_before": 45,
+       "tail_after": 35,
+       "tail_reduced": 10,
+       "target_hit_n": 80,
+       "target_hit_selected": 7,
+       "target_cost_sum": 0.587613,
+       "target_economics_erosion": 0.074048,
+       "material_target_erosion": false,
+       "months_improved": 11,
+       "n_months": 14,
+       "monthly": {
+        "2024-01": {
+         "n": 26,
+         "baseline_ev": -0.025147,
+         "intervention_ev": -0.005335,
+         "ev_change": 0.019812
+        },
+        "2024-02": {
+         "n": 49,
+         "baseline_ev": 0.006608,
+         "intervention_ev": 0.013407,
+         "ev_change": 0.006799
+        },
+        "2024-03": {
+         "n": 39,
+         "baseline_ev": -0.008955,
+         "intervention_ev": 0.00222,
+         "ev_change": 0.011174
+        },
+        "2024-04": {
+         "n": 33,
+         "baseline_ev": 0.011311,
+         "intervention_ev": 0.017156,
+         "ev_change": 0.005845
+        },
+        "2024-05": {
+         "n": 34,
+         "baseline_ev": -0.013009,
+         "intervention_ev": -0.013009,
+         "ev_change": 0.0
+        },
+        "2024-06": {
+         "n": 34,
+         "baseline_ev": 0.031473,
+         "intervention_ev": 0.035244,
+         "ev_change": 0.003771
+        },
+        "2024-07": {
+         "n": 35,
+         "baseline_ev": 0.026591,
+         "intervention_ev": 0.028833,
+         "ev_change": 0.002241
+        },
+        "2024-08": {
+         "n": 33,
+         "baseline_ev": 0.027607,
+         "intervention_ev": 0.029833,
+         "ev_change": 0.002226
+        },
+        "2024-09": {
+         "n": 42,
+         "baseline_ev": 0.015736,
+         "intervention_ev": 0.015488,
+         "ev_change": -0.000248
+        },
+        "2024-10": {
+         "n": 46,
+         "baseline_ev": 0.006031,
+         "intervention_ev": 0.009049,
+         "ev_change": 0.003019
+        },
+        "2024-11": {
+         "n": 30,
+         "baseline_ev": 0.024827,
+         "intervention_ev": 0.018232,
+         "ev_change": -0.006596
+        },
+        "2024-12": {
+         "n": 52,
+         "baseline_ev": 0.008697,
+         "intervention_ev": 0.010829,
+         "ev_change": 0.002131
+        },
+        "2025-01": {
+         "n": 48,
+         "baseline_ev": 0.012337,
+         "intervention_ev": 0.012422,
+         "ev_change": 8.5e-05
+        },
+        "2025-02": {
+         "n": 40,
+         "baseline_ev": 0.001327,
+         "intervention_ev": 0.005171,
+         "ev_change": 0.003845
+        }
+       },
+       "ev_vs_baselines": {
+        "stop08": 0.00915501,
+        "stop12": 0.00665501,
+        "stop15": 0.00655501
+       }
+      },
+      "best_gate_eligible": {
+       "rule": "(touch_volume<=44423) AND (touch_size_median<=25)",
+       "mode": "exit_now",
+       "n_selected": 48,
+       "baseline_ev": 0.00913887,
+       "intervention_ev": 0.01275501,
+       "ev_change": 0.00361614,
+       "baseline_pnl_sum": 4.94413,
+       "intervention_pnl_sum": 6.900461,
+       "tail_before": 45,
+       "tail_after": 35,
+       "tail_reduced": 10,
+       "target_hit_n": 80,
+       "target_hit_selected": 7,
+       "target_cost_sum": 0.587613,
+       "target_economics_erosion": 0.074048,
+       "material_target_erosion": false,
+       "months_improved": 11,
+       "n_months": 14,
+       "monthly": {
+        "2024-01": {
+         "n": 26,
+         "baseline_ev": -0.025147,
+         "intervention_ev": -0.005335,
+         "ev_change": 0.019812
+        },
+        "2024-02": {
+         "n": 49,
+         "baseline_ev": 0.006608,
+         "intervention_ev": 0.013407,
+         "ev_change": 0.006799
+        },
+        "2024-03": {
+         "n": 39,
+         "baseline_ev": -0.008955,
+         "intervention_ev": 0.00222,
+         "ev_change": 0.011174
+        },
+        "2024-04": {
+         "n": 33,
+         "baseline_ev": 0.011311,
+         "intervention_ev": 0.017156,
+         "ev_change": 0.005845
+        },
+        "2024-05": {
+         "n": 34,
+         "baseline_ev": -0.013009,
+         "intervention_ev": -0.013009,
+         "ev_change": 0.0
+        },
+        "2024-06": {
+         "n": 34,
+         "baseline_ev": 0.031473,
+         "intervention_ev": 0.035244,
+         "ev_change": 0.003771
+        },
+        "2024-07": {
+         "n": 35,
+         "baseline_ev": 0.026591,
+         "intervention_ev": 0.028833,
+         "ev_change": 0.002241
+        },
+        "2024-08": {
+         "n": 33,
+         "baseline_ev": 0.027607,
+         "intervention_ev": 0.029833,
+         "ev_change": 0.002226
+        },
+        "2024-09": {
+         "n": 42,
+         "baseline_ev": 0.015736,
+         "intervention_ev": 0.015488,
+         "ev_change": -0.000248
+        },
+        "2024-10": {
+         "n": 46,
+         "baseline_ev": 0.006031,
+         "intervention_ev": 0.009049,
+         "ev_change": 0.003019
+        },
+        "2024-11": {
+         "n": 30,
+         "baseline_ev": 0.024827,
+         "intervention_ev": 0.018232,
+         "ev_change": -0.006596
+        },
+        "2024-12": {
+         "n": 52,
+         "baseline_ev": 0.008697,
+         "intervention_ev": 0.010829,
+         "ev_change": 0.002131
+        },
+        "2025-01": {
+         "n": 48,
+         "baseline_ev": 0.012337,
+         "intervention_ev": 0.012422,
+         "ev_change": 8.5e-05
+        },
+        "2025-02": {
+         "n": 40,
+         "baseline_ev": 0.001327,
+         "intervention_ev": 0.005171,
+         "ev_change": 0.003845
+        }
+       },
+       "ev_vs_baselines": {
+        "stop08": 0.00915501,
+        "stop12": 0.00665501,
+        "stop15": 0.00655501
+       }
+      }
+     }
+    },
+    "30": {
+     "0": {
+      "n": 541,
+      "earliest_action_s": 30,
+      "live_poll_action_s": 90,
+      "baseline_comparators": {
+       "stop08": 0.0036,
+       "stop12": 0.0061,
+       "stop15": 0.0062
+      },
+      "best": {
+       "rule": "(touch_episodes<=1) AND (snapback>=-0.037887943)",
+       "mode": "exit_now",
+       "n_selected": 63,
+       "baseline_ev": 0.00913887,
+       "intervention_ev": 0.01172452,
+       "ev_change": 0.00258565,
+       "baseline_pnl_sum": 4.94413,
+       "intervention_pnl_sum": 6.342967,
+       "tail_before": 45,
+       "tail_after": 39,
+       "tail_reduced": 6,
+       "target_hit_n": 77,
+       "target_hit_selected": 6,
+       "target_cost_sum": 0.738899,
+       "target_economics_erosion": 0.096813,
+       "material_target_erosion": false,
+       "months_improved": 11,
+       "n_months": 14,
+       "monthly": {
+        "2024-01": {
+         "n": 26,
+         "baseline_ev": -0.025147,
+         "intervention_ev": -0.026436,
+         "ev_change": -0.00129
+        },
+        "2024-02": {
+         "n": 49,
+         "baseline_ev": 0.006608,
+         "intervention_ev": 0.007603,
+         "ev_change": 0.000995
+        },
+        "2024-03": {
+         "n": 39,
+         "baseline_ev": -0.008955,
+         "intervention_ev": -0.004,
+         "ev_change": 0.004954
+        },
+        "2024-04": {
+         "n": 33,
+         "baseline_ev": 0.011311,
+         "intervention_ev": 0.018367,
+         "ev_change": 0.007056
+        },
+        "2024-05": {
+         "n": 34,
+         "baseline_ev": -0.013009,
+         "intervention_ev": -0.009238,
+         "ev_change": 0.003771
+        },
+        "2024-06": {
+         "n": 34,
+         "baseline_ev": 0.031473,
+         "intervention_ev": 0.032118,
+         "ev_change": 0.000645
+        },
+        "2024-07": {
+         "n": 35,
+         "baseline_ev": 0.026591,
+         "intervention_ev": 0.030151,
+         "ev_change": 0.003559
+        },
+        "2024-08": {
+         "n": 33,
+         "baseline_ev": 0.027607,
+         "intervention_ev": 0.024555,
+         "ev_change": -0.003051
+        },
+        "2024-09": {
+         "n": 42,
+         "baseline_ev": 0.015736,
+         "intervention_ev": 0.012438,
+         "ev_change": -0.003298
+        },
+        "2024-10": {
+         "n": 46,
+         "baseline_ev": 0.006031,
+         "intervention_ev": 0.0101,
+         "ev_change": 0.004069
+        },
+        "2024-11": {
+         "n": 30,
+         "baseline_ev": 0.024827,
+         "intervention_ev": 0.030519,
+         "ev_change": 0.005691
+        },
+        "2024-12": {
+         "n": 52,
+         "baseline_ev": 0.008697,
+         "intervention_ev": 0.009562,
+         "ev_change": 0.000865
+        },
+        "2025-01": {
+         "n": 48,
+         "baseline_ev": 0.012337,
+         "intervention_ev": 0.015452,
+         "ev_change": 0.003114
+        },
+        "2025-02": {
+         "n": 40,
+         "baseline_ev": 0.001327,
+         "intervention_ev": 0.010568,
+         "ev_change": 0.009241
+        }
+       },
+       "ev_vs_baselines": {
+        "stop08": 0.00812452,
+        "stop12": 0.00562452,
+        "stop15": 0.00552452
+       }
+      },
+      "best_gate_eligible": {
+       "rule": "(touch_episodes<=1) AND (snapback>=-0.037887943)",
+       "mode": "exit_now",
+       "n_selected": 63,
+       "baseline_ev": 0.00913887,
+       "intervention_ev": 0.01172452,
+       "ev_change": 0.00258565,
+       "baseline_pnl_sum": 4.94413,
+       "intervention_pnl_sum": 6.342967,
+       "tail_before": 45,
+       "tail_after": 39,
+       "tail_reduced": 6,
+       "target_hit_n": 77,
+       "target_hit_selected": 6,
+       "target_cost_sum": 0.738899,
+       "target_economics_erosion": 0.096813,
+       "material_target_erosion": false,
+       "months_improved": 11,
+       "n_months": 14,
+       "monthly": {
+        "2024-01": {
+         "n": 26,
+         "baseline_ev": -0.025147,
+         "intervention_ev": -0.026436,
+         "ev_change": -0.00129
+        },
+        "2024-02": {
+         "n": 49,
+         "baseline_ev": 0.006608,
+         "intervention_ev": 0.007603,
+         "ev_change": 0.000995
+        },
+        "2024-03": {
+         "n": 39,
+         "baseline_ev": -0.008955,
+         "intervention_ev": -0.004,
+         "ev_change": 0.004954
+        },
+        "2024-04": {
+         "n": 33,
+         "baseline_ev": 0.011311,
+         "intervention_ev": 0.018367,
+         "ev_change": 0.007056
+        },
+        "2024-05": {
+         "n": 34,
+         "baseline_ev": -0.013009,
+         "intervention_ev": -0.009238,
+         "ev_change": 0.003771
+        },
+        "2024-06": {
+         "n": 34,
+         "baseline_ev": 0.031473,
+         "intervention_ev": 0.032118,
+         "ev_change": 0.000645
+        },
+        "2024-07": {
+         "n": 35,
+         "baseline_ev": 0.026591,
+         "intervention_ev": 0.030151,
+         "ev_change": 0.003559
+        },
+        "2024-08": {
+         "n": 33,
+         "baseline_ev": 0.027607,
+         "intervention_ev": 0.024555,
+         "ev_change": -0.003051
+        },
+        "2024-09": {
+         "n": 42,
+         "baseline_ev": 0.015736,
+         "intervention_ev": 0.012438,
+         "ev_change": -0.003298
+        },
+        "2024-10": {
+         "n": 46,
+         "baseline_ev": 0.006031,
+         "intervention_ev": 0.0101,
+         "ev_change": 0.004069
+        },
+        "2024-11": {
+         "n": 30,
+         "baseline_ev": 0.024827,
+         "intervention_ev": 0.030519,
+         "ev_change": 0.005691
+        },
+        "2024-12": {
+         "n": 52,
+         "baseline_ev": 0.008697,
+         "intervention_ev": 0.009562,
+         "ev_change": 0.000865
+        },
+        "2025-01": {
+         "n": 48,
+         "baseline_ev": 0.012337,
+         "intervention_ev": 0.015452,
+         "ev_change": 0.003114
+        },
+        "2025-02": {
+         "n": 40,
+         "baseline_ev": 0.001327,
+         "intervention_ev": 0.010568,
+         "ev_change": 0.009241
+        }
+       },
+       "ev_vs_baselines": {
+        "stop08": 0.00812452,
+        "stop12": 0.00562452,
+        "stop15": 0.00552452
+       }
+      }
+     },
+     "60": {
+      "n": 541,
+      "earliest_action_s": 30,
+      "live_poll_action_s": 90,
+      "baseline_comparators": {
+       "stop08": 0.0036,
+       "stop12": 0.0061,
+       "stop15": 0.0062
+      },
+      "best": {
+       "rule": "(touch_trade_count<=599) AND (touch_episodes<=10)",
+       "mode": "exit_now",
+       "n_selected": 57,
+       "baseline_ev": 0.00913887,
+       "intervention_ev": 0.01333713,
+       "ev_change": 0.00419826,
+       "baseline_pnl_sum": 4.94413,
+       "intervention_pnl_sum": 7.215388,
+       "tail_before": 45,
+       "tail_after": 34,
+       "tail_reduced": 11,
+       "target_hit_n": 77,
+       "target_hit_selected": 8,
+       "target_cost_sum": 0.582238,
+       "target_economics_erosion": 0.076287,
+       "material_target_erosion": false,
+       "months_improved": 12,
+       "n_months": 14,
+       "monthly": {
+        "2024-01": {
+         "n": 26,
+         "baseline_ev": -0.025147,
+         "intervention_ev": -0.014385,
+         "ev_change": 0.010762
+        },
+        "2024-02": {
+         "n": 49,
+         "baseline_ev": 0.006608,
+         "intervention_ev": 0.015202,
+         "ev_change": 0.008594
+        },
+        "2024-03": {
+         "n": 39,
+         "baseline_ev": -0.008955,
+         "intervention_ev": 0.002277,
+         "ev_change": 0.011232
+        },
+        "2024-04": {
+         "n": 33,
+         "baseline_ev": 0.011311,
+         "intervention_ev": 0.014605,
+         "ev_change": 0.003294
+        },
+        "2024-05": {
+         "n": 34,
+         "baseline_ev": -0.013009,
+         "intervention_ev": -0.013009,
+         "ev_change": 0.0
+        },
+        "2024-06": {
+         "n": 34,
+         "baseline_ev": 0.031473,
+         "intervention_ev": 0.034196,
+         "ev_change": 0.002723
+        },
+        "2024-07": {
+         "n": 35,
+         "baseline_ev": 0.026591,
+         "intervention_ev": 0.02915,
+         "ev_change": 0.002559
+        },
+        "2024-08": {
+         "n": 33,
+         "baseline_ev": 0.027607,
+         "intervention_ev": 0.028014,
+         "ev_change": 0.000407
+        },
+        "2024-09": {
+         "n": 42,
+         "baseline_ev": 0.015736,
+         "intervention_ev": 0.017459,
+         "ev_change": 0.001723
+        },
+        "2024-10": {
+         "n": 46,
+         "baseline_ev": 0.006031,
+         "intervention_ev": 0.015673,
+         "ev_change": 0.009642
+        },
+        "2024-11": {
+         "n": 30,
+         "baseline_ev": 0.024827,
+         "intervention_ev": 0.024069,
+         "ev_change": -0.000759
+        },
+        "2024-12": {
+         "n": 52,
+         "baseline_ev": 0.008697,
+         "intervention_ev": 0.009904,
+         "ev_change": 0.001206
+        },
+        "2025-01": {
+         "n": 48,
+         "baseline_ev": 0.012337,
+         "intervention_ev": 0.013425,
+         "ev_change": 0.001087
+        },
+        "2025-02": {
+         "n": 40,
+         "baseline_ev": 0.001327,
+         "intervention_ev": 0.006825,
+         "ev_change": 0.005498
+        }
+       },
+       "ev_vs_baselines": {
+        "stop08": 0.00973713,
+        "stop12": 0.00723713,
+        "stop15": 0.00713713
+       }
+      },
+      "best_gate_eligible": {
+       "rule": "(touch_trade_count<=599) AND (touch_episodes<=10)",
+       "mode": "exit_now",
+       "n_selected": 57,
+       "baseline_ev": 0.00913887,
+       "intervention_ev": 0.01333713,
+       "ev_change": 0.00419826,
+       "baseline_pnl_sum": 4.94413,
+       "intervention_pnl_sum": 7.215388,
+       "tail_before": 45,
+       "tail_after": 34,
+       "tail_reduced": 11,
+       "target_hit_n": 77,
+       "target_hit_selected": 8,
+       "target_cost_sum": 0.582238,
+       "target_economics_erosion": 0.076287,
+       "material_target_erosion": false,
+       "months_improved": 12,
+       "n_months": 14,
+       "monthly": {
+        "2024-01": {
+         "n": 26,
+         "baseline_ev": -0.025147,
+         "intervention_ev": -0.014385,
+         "ev_change": 0.010762
+        },
+        "2024-02": {
+         "n": 49,
+         "baseline_ev": 0.006608,
+         "intervention_ev": 0.015202,
+         "ev_change": 0.008594
+        },
+        "2024-03": {
+         "n": 39,
+         "baseline_ev": -0.008955,
+         "intervention_ev": 0.002277,
+         "ev_change": 0.011232
+        },
+        "2024-04": {
+         "n": 33,
+         "baseline_ev": 0.011311,
+         "intervention_ev": 0.014605,
+         "ev_change": 0.003294
+        },
+        "2024-05": {
+         "n": 34,
+         "baseline_ev": -0.013009,
+         "intervention_ev": -0.013009,
+         "ev_change": 0.0
+        },
+        "2024-06": {
+         "n": 34,
+         "baseline_ev": 0.031473,
+         "intervention_ev": 0.034196,
+         "ev_change": 0.002723
+        },
+        "2024-07": {
+         "n": 35,
+         "baseline_ev": 0.026591,
+         "intervention_ev": 0.02915,
+         "ev_change": 0.002559
+        },
+        "2024-08": {
+         "n": 33,
+         "baseline_ev": 0.027607,
+         "intervention_ev": 0.028014,
+         "ev_change": 0.000407
+        },
+        "2024-09": {
+         "n": 42,
+         "baseline_ev": 0.015736,
+         "intervention_ev": 0.017459,
+         "ev_change": 0.001723
+        },
+        "2024-10": {
+         "n": 46,
+         "baseline_ev": 0.006031,
+         "intervention_ev": 0.015673,
+         "ev_change": 0.009642
+        },
+        "2024-11": {
+         "n": 30,
+         "baseline_ev": 0.024827,
+         "intervention_ev": 0.024069,
+         "ev_change": -0.000759
+        },
+        "2024-12": {
+         "n": 52,
+         "baseline_ev": 0.008697,
+         "intervention_ev": 0.009904,
+         "ev_change": 0.001206
+        },
+        "2025-01": {
+         "n": 48,
+         "baseline_ev": 0.012337,
+         "intervention_ev": 0.013425,
+         "ev_change": 0.001087
+        },
+        "2025-02": {
+         "n": 40,
+         "baseline_ev": 0.001327,
+         "intervention_ev": 0.006825,
+         "ev_change": 0.005498
+        }
+       },
+       "ev_vs_baselines": {
+        "stop08": 0.00973713,
+        "stop12": 0.00723713,
+        "stop15": 0.00713713
+       }
+      }
+     }
+    }
+   },
+   "pf2": {
+    "5": {
+     "0": {
+      "n": 381,
+      "earliest_action_s": 5,
+      "live_poll_action_s": 65,
+      "baseline_comparators": {
+       "pf2_clean_touch_only": 0.0139
+      },
+      "best": {
+       "rule": "(below_span_s>=4.980174) AND (snapback>=-0.0062451812)",
+       "mode": "exit_now",
+       "n_selected": 16,
+       "baseline_ev": 0.01135542,
+       "intervention_ev": 0.01320693,
+       "ev_change": 0.00185151,
+       "baseline_pnl_sum": 4.326417,
+       "intervention_pnl_sum": 5.031842,
+       "tail_before": 20,
+       "tail_after": 20,
+       "tail_reduced": 0,
+       "target_hit_n": 51,
+       "target_hit_selected": 0,
+       "target_cost_sum": -0.0,
+       "target_economics_erosion": -0.0,
+       "material_target_erosion": false,
+       "months_improved": 7,
+       "n_months": 14,
+       "monthly": {
+        "2024-01": {
+         "n": 18,
+         "baseline_ev": 0.003557,
+         "intervention_ev": 0.000533,
+         "ev_change": -0.003023
+        },
+        "2024-02": {
+         "n": 33,
+         "baseline_ev": 0.022349,
+         "intervention_ev": 0.022349,
+         "ev_change": 0.0
+        },
+        "2024-03": {
+         "n": 26,
+         "baseline_ev": -0.02032,
+         "intervention_ev": -0.016508,
+         "ev_change": 0.003812
+        },
+        "2024-04": {
+         "n": 25,
+         "baseline_ev": 0.016352,
+         "intervention_ev": 0.016352,
+         "ev_change": 0.0
+        },
+        "2024-05": {
+         "n": 22,
+         "baseline_ev": 0.003301,
+         "intervention_ev": 0.007829,
+         "ev_change": 0.004527
+        },
+        "2024-06": {
+         "n": 25,
+         "baseline_ev": 0.028205,
+         "intervention_ev": 0.028205,
+         "ev_change": 0.0
+        },
+        "2024-07": {
+         "n": 26,
+         "baseline_ev": 0.049683,
+         "intervention_ev": 0.049453,
+         "ev_change": -0.00023
+        },
+        "2024-08": {
+         "n": 25,
+         "baseline_ev": 0.018106,
+         "intervention_ev": 0.013428,
+         "ev_change": -0.004678
+        },
+        "2024-09": {
+         "n": 27,
+         "baseline_ev": 0.011016,
+         "intervention_ev": 0.017367,
+         "ev_change": 0.006352
+        },
+        "2024-10": {
+         "n": 32,
+         "baseline_ev": -0.00119,
+         "intervention_ev": 0.003252,
+         "ev_change": 0.004442
+        },
+        "2024-11": {
+         "n": 22,
+         "baseline_ev": 0.006684,
+         "intervention_ev": 0.015523,
+         "ev_change": 0.008839
+        },
+        "2024-12": {
+         "n": 35,
+         "baseline_ev": 0.008872,
+         "intervention_ev": 0.011639,
+         "ev_change": 0.002767
+        },
+        "2025-01": {
+         "n": 34,
+         "baseline_ev": 0.005353,
+         "intervention_ev": 0.004809,
+         "ev_change": -0.000544
+        },
+        "2025-02": {
+         "n": 31,
+         "baseline_ev": 0.007204,
+         "intervention_ev": 0.010353,
+         "ev_change": 0.003149
+        }
+       },
+       "ev_vs_baselines": {
+        "pf2_clean_touch_only": -0.00069307
+       }
+      },
+      "best_gate_eligible": {
+       "rule": "(touch_size_median>=50) AND (below_span_s>=4.980174)",
+       "mode": "exit_now",
+       "n_selected": 41,
+       "baseline_ev": 0.01135542,
+       "intervention_ev": 0.01282557,
+       "ev_change": 0.00147014,
+       "baseline_pnl_sum": 4.326417,
+       "intervention_pnl_sum": 4.886541,
+       "tail_before": 20,
+       "tail_after": 19,
+       "tail_reduced": 1,
+       "target_hit_n": 51,
+       "target_hit_selected": 2,
+       "target_cost_sum": 0.291303,
+       "target_economics_erosion": 0.057069,
+       "material_target_erosion": false,
+       "months_improved": 8,
+       "n_months": 14,
+       "monthly": {
+        "2024-01": {
+         "n": 18,
+         "baseline_ev": 0.003557,
+         "intervention_ev": 0.002342,
+         "ev_change": -0.001215
+        },
+        "2024-02": {
+         "n": 33,
+         "baseline_ev": 0.022349,
+         "intervention_ev": 0.015856,
+         "ev_change": -0.006493
+        },
+        "2024-03": {
+         "n": 26,
+         "baseline_ev": -0.02032,
+         "intervention_ev": -0.02032,
+         "ev_change": 0.0
+        },
+        "2024-04": {
+         "n": 25,
+         "baseline_ev": 0.016352,
+         "intervention_ev": 0.01908,
+         "ev_change": 0.002728
+        },
+        "2024-05": {
+         "n": 22,
+         "baseline_ev": 0.003301,
+         "intervention_ev": 0.011631,
+         "ev_change": 0.008329
+        },
+        "2024-06": {
+         "n": 25,
+         "baseline_ev": 0.028205,
+         "intervention_ev": 0.017968,
+         "ev_change": -0.010237
+        },
+        "2024-07": {
+         "n": 26,
+         "baseline_ev": 0.049683,
+         "intervention_ev": 0.048583,
+         "ev_change": -0.001101
+        },
+        "2024-08": {
+         "n": 25,
+         "baseline_ev": 0.018106,
+         "intervention_ev": 0.016254,
+         "ev_change": -0.001852
+        },
+        "2024-09": {
+         "n": 27,
+         "baseline_ev": 0.011016,
+         "intervention_ev": 0.013516,
+         "ev_change": 0.0025
+        },
+        "2024-10": {
+         "n": 32,
+         "baseline_ev": -0.00119,
+         "intervention_ev": 0.003044,
+         "ev_change": 0.004234
+        },
+        "2024-11": {
+         "n": 22,
+         "baseline_ev": 0.006684,
+         "intervention_ev": 0.011006,
+         "ev_change": 0.004322
+        },
+        "2024-12": {
+         "n": 35,
+         "baseline_ev": 0.008872,
+         "intervention_ev": 0.013285,
+         "ev_change": 0.004413
+        },
+        "2025-01": {
+         "n": 34,
+         "baseline_ev": 0.005353,
+         "intervention_ev": 0.00938,
+         "ev_change": 0.004027
+        },
+        "2025-02": {
+         "n": 31,
+         "baseline_ev": 0.007204,
+         "intervention_ev": 0.016437,
+         "ev_change": 0.009233
+        }
+       },
+       "ev_vs_baselines": {
+        "pf2_clean_touch_only": -0.00107443
+       }
+      }
+     },
+     "60": {
+      "n": 381,
+      "earliest_action_s": 5,
+      "live_poll_action_s": 65,
+      "baseline_comparators": {
+       "pf2_clean_touch_only": 0.0139
+      },
+      "best": {
+       "rule": "(touch_size_median>=33) AND (below_span_s>=4.980174)",
+       "mode": "exit_now",
+       "n_selected": 36,
+       "baseline_ev": 0.01135542,
+       "intervention_ev": 0.01568819,
+       "ev_change": 0.00433277,
+       "baseline_pnl_sum": 4.326417,
+       "intervention_pnl_sum": 5.977202,
+       "tail_before": 20,
+       "tail_after": 20,
+       "tail_reduced": 0,
+       "target_hit_n": 51,
+       "target_hit_selected": 3,
+       "target_cost_sum": 0.281241,
+       "target_economics_erosion": 0.055097,
+       "material_target_erosion": false,
+       "months_improved": 13,
+       "n_months": 14,
+       "monthly": {
+        "2024-01": {
+         "n": 18,
+         "baseline_ev": 0.003557,
+         "intervention_ev": 0.005362,
+         "ev_change": 0.001805
+        },
+        "2024-02": {
+         "n": 33,
+         "baseline_ev": 0.022349,
+         "intervention_ev": 0.024938,
+         "ev_change": 0.002589
+        },
+        "2024-03": {
+         "n": 26,
+         "baseline_ev": -0.02032,
+         "intervention_ev": -0.017549,
+         "ev_change": 0.002771
+        },
+        "2024-04": {
+         "n": 25,
+         "baseline_ev": 0.016352,
+         "intervention_ev": 0.019264,
+         "ev_change": 0.002912
+        },
+        "2024-05": {
+         "n": 22,
+         "baseline_ev": 0.003301,
+         "intervention_ev": 0.017941,
+         "ev_change": 0.014639
+        },
+        "2024-06": {
+         "n": 25,
+         "baseline_ev": 0.028205,
+         "intervention_ev": 0.028205,
+         "ev_change": 0.0
+        },
+        "2024-07": {
+         "n": 26,
+         "baseline_ev": 0.049683,
+         "intervention_ev": 0.050946,
+         "ev_change": 0.001263
+        },
+        "2024-08": {
+         "n": 25,
+         "baseline_ev": 0.018106,
+         "intervention_ev": 0.02238,
+         "ev_change": 0.004274
+        },
+        "2024-09": {
+         "n": 27,
+         "baseline_ev": 0.011016,
+         "intervention_ev": 0.013098,
+         "ev_change": 0.002083
+        },
+        "2024-10": {
+         "n": 32,
+         "baseline_ev": -0.00119,
+         "intervention_ev": 0.003561,
+         "ev_change": 0.004751
+        },
+        "2024-11": {
+         "n": 22,
+         "baseline_ev": 0.006684,
+         "intervention_ev": 0.01687,
+         "ev_change": 0.010187
+        },
+        "2024-12": {
+         "n": 35,
+         "baseline_ev": 0.008872,
+         "intervention_ev": 0.0131,
+         "ev_change": 0.004228
+        },
+        "2025-01": {
+         "n": 34,
+         "baseline_ev": 0.005353,
+         "intervention_ev": 0.00812,
+         "ev_change": 0.002767
+        },
+        "2025-02": {
+         "n": 31,
+         "baseline_ev": 0.007204,
+         "intervention_ev": 0.015329,
+         "ev_change": 0.008125
+        }
+       },
+       "ev_vs_baselines": {
+        "pf2_clean_touch_only": 0.00178819
+       }
+      },
+      "best_gate_eligible": {
+       "rule": "(below_span_s<=4.91865) AND (max_depth_below<=-0.017713366)",
+       "mode": "exit_now",
+       "n_selected": 27,
+       "baseline_ev": 0.01135542,
+       "intervention_ev": 0.01546939,
+       "ev_change": 0.00411396,
+       "baseline_pnl_sum": 4.326417,
+       "intervention_pnl_sum": 5.893837,
+       "tail_before": 20,
+       "tail_after": 12,
+       "tail_reduced": 8,
+       "target_hit_n": 51,
+       "target_hit_selected": 2,
+       "target_cost_sum": 0.216358,
+       "target_economics_erosion": 0.042386,
+       "material_target_erosion": false,
+       "months_improved": 10,
+       "n_months": 14,
+       "monthly": {
+        "2024-01": {
+         "n": 18,
+         "baseline_ev": 0.003557,
+         "intervention_ev": 0.010069,
+         "ev_change": 0.006512
+        },
+        "2024-02": {
+         "n": 33,
+         "baseline_ev": 0.022349,
+         "intervention_ev": 0.030453,
+         "ev_change": 0.008104
+        },
+        "2024-03": {
+         "n": 26,
+         "baseline_ev": -0.02032,
+         "intervention_ev": 7.2e-05,
+         "ev_change": 0.020392
+        },
+        "2024-04": {
+         "n": 25,
+         "baseline_ev": 0.016352,
+         "intervention_ev": 0.021065,
+         "ev_change": 0.004713
+        },
+        "2024-05": {
+         "n": 22,
+         "baseline_ev": 0.003301,
+         "intervention_ev": 0.011373,
+         "ev_change": 0.008071
+        },
+        "2024-06": {
+         "n": 25,
+         "baseline_ev": 0.028205,
+         "intervention_ev": 0.031592,
+         "ev_change": 0.003387
+        },
+        "2024-07": {
+         "n": 26,
+         "baseline_ev": 0.049683,
+         "intervention_ev": 0.049683,
+         "ev_change": 0.0
+        },
+        "2024-08": {
+         "n": 25,
+         "baseline_ev": 0.018106,
+         "intervention_ev": 0.021554,
+         "ev_change": 0.003448
+        },
+        "2024-09": {
+         "n": 27,
+         "baseline_ev": 0.011016,
+         "intervention_ev": 0.016535,
+         "ev_change": 0.00552
+        },
+        "2024-10": {
+         "n": 32,
+         "baseline_ev": -0.00119,
+         "intervention_ev": 0.004626,
+         "ev_change": 0.005817
+        },
+        "2024-11": {
+         "n": 22,
+         "baseline_ev": 0.006684,
+         "intervention_ev": 0.004663,
+         "ev_change": -0.002021
+        },
+        "2024-12": {
+         "n": 35,
+         "baseline_ev": 0.008872,
+         "intervention_ev": 0.005579,
+         "ev_change": -0.003293
+        },
+        "2025-01": {
+         "n": 34,
+         "baseline_ev": 0.005353,
+         "intervention_ev": 0.005353,
+         "ev_change": 0.0
+        },
+        "2025-02": {
+         "n": 31,
+         "baseline_ev": 0.007204,
+         "intervention_ev": 0.007555,
+         "ev_change": 0.000351
+        }
+       },
+       "ev_vs_baselines": {
+        "pf2_clean_touch_only": 0.00156939
+       }
+      }
+     }
+    },
+    "15": {
+     "0": {
+      "n": 381,
+      "earliest_action_s": 15,
+      "live_poll_action_s": 75,
+      "baseline_comparators": {
+       "pf2_clean_touch_only": 0.0139
+      },
+      "best": {
+       "rule": "(touch_trade_count<=374) AND (touch_episodes<=1)",
+       "mode": "tighten",
+       "n_selected": 36,
+       "baseline_ev": 0.01135542,
+       "intervention_ev": 0.01312035,
+       "ev_change": 0.00176493,
+       "baseline_pnl_sum": 4.326417,
+       "intervention_pnl_sum": 4.998855,
+       "tail_before": 20,
+       "tail_after": 16,
+       "tail_reduced": 4,
+       "target_hit_n": 51,
+       "target_hit_selected": 2,
+       "target_cost_sum": 0.213096,
+       "target_economics_erosion": 0.041747,
+       "material_target_erosion": false,
+       "months_improved": 10,
+       "n_months": 14,
+       "monthly": {
+        "2024-01": {
+         "n": 18,
+         "baseline_ev": 0.003557,
+         "intervention_ev": -0.008282,
+         "ev_change": -0.011839
+        },
+        "2024-02": {
+         "n": 33,
+         "baseline_ev": 0.022349,
+         "intervention_ev": 0.022386,
+         "ev_change": 3.7e-05
+        },
+        "2024-03": {
+         "n": 26,
+         "baseline_ev": -0.02032,
+         "intervention_ev": -0.011246,
+         "ev_change": 0.009074
+        },
+        "2024-04": {
+         "n": 25,
+         "baseline_ev": 0.016352,
+         "intervention_ev": 0.020403,
+         "ev_change": 0.004051
+        },
+        "2024-05": {
+         "n": 22,
+         "baseline_ev": 0.003301,
+         "intervention_ev": -0.000788,
+         "ev_change": -0.00409
+        },
+        "2024-06": {
+         "n": 25,
+         "baseline_ev": 0.028205,
+         "intervention_ev": 0.028205,
+         "ev_change": 0.0
+        },
+        "2024-07": {
+         "n": 26,
+         "baseline_ev": 0.049683,
+         "intervention_ev": 0.049683,
+         "ev_change": 0.0
+        },
+        "2024-08": {
+         "n": 25,
+         "baseline_ev": 0.018106,
+         "intervention_ev": 0.023071,
+         "ev_change": 0.004965
+        },
+        "2024-09": {
+         "n": 27,
+         "baseline_ev": 0.011016,
+         "intervention_ev": 0.017364,
+         "ev_change": 0.006348
+        },
+        "2024-10": {
+         "n": 32,
+         "baseline_ev": -0.00119,
+         "intervention_ev": 0.00226,
+         "ev_change": 0.00345
+        },
+        "2024-11": {
+         "n": 22,
+         "baseline_ev": 0.006684,
+         "intervention_ev": 0.01068,
+         "ev_change": 0.003996
+        },
+        "2024-12": {
+         "n": 35,
+         "baseline_ev": 0.008872,
+         "intervention_ev": 0.009814,
+         "ev_change": 0.000942
+        },
+        "2025-01": {
+         "n": 34,
+         "baseline_ev": 0.005353,
+         "intervention_ev": 0.006487,
+         "ev_change": 0.001134
+        },
+        "2025-02": {
+         "n": 31,
+         "baseline_ev": 0.007204,
+         "intervention_ev": 0.009518,
+         "ev_change": 0.002315
+        }
+       },
+       "ev_vs_baselines": {
+        "pf2_clean_touch_only": -0.00077965
+       }
+      },
+      "best_gate_eligible": {
+       "rule": "(touch_trade_count<=374) AND (touch_episodes<=1)",
+       "mode": "tighten",
+       "n_selected": 36,
+       "baseline_ev": 0.01135542,
+       "intervention_ev": 0.01312035,
+       "ev_change": 0.00176493,
+       "baseline_pnl_sum": 4.326417,
+       "intervention_pnl_sum": 4.998855,
+       "tail_before": 20,
+       "tail_after": 16,
+       "tail_reduced": 4,
+       "target_hit_n": 51,
+       "target_hit_selected": 2,
+       "target_cost_sum": 0.213096,
+       "target_economics_erosion": 0.041747,
+       "material_target_erosion": false,
+       "months_improved": 10,
+       "n_months": 14,
+       "monthly": {
+        "2024-01": {
+         "n": 18,
+         "baseline_ev": 0.003557,
+         "intervention_ev": -0.008282,
+         "ev_change": -0.011839
+        },
+        "2024-02": {
+         "n": 33,
+         "baseline_ev": 0.022349,
+         "intervention_ev": 0.022386,
+         "ev_change": 3.7e-05
+        },
+        "2024-03": {
+         "n": 26,
+         "baseline_ev": -0.02032,
+         "intervention_ev": -0.011246,
+         "ev_change": 0.009074
+        },
+        "2024-04": {
+         "n": 25,
+         "baseline_ev": 0.016352,
+         "intervention_ev": 0.020403,
+         "ev_change": 0.004051
+        },
+        "2024-05": {
+         "n": 22,
+         "baseline_ev": 0.003301,
+         "intervention_ev": -0.000788,
+         "ev_change": -0.00409
+        },
+        "2024-06": {
+         "n": 25,
+         "baseline_ev": 0.028205,
+         "intervention_ev": 0.028205,
+         "ev_change": 0.0
+        },
+        "2024-07": {
+         "n": 26,
+         "baseline_ev": 0.049683,
+         "intervention_ev": 0.049683,
+         "ev_change": 0.0
+        },
+        "2024-08": {
+         "n": 25,
+         "baseline_ev": 0.018106,
+         "intervention_ev": 0.023071,
+         "ev_change": 0.004965
+        },
+        "2024-09": {
+         "n": 27,
+         "baseline_ev": 0.011016,
+         "intervention_ev": 0.017364,
+         "ev_change": 0.006348
+        },
+        "2024-10": {
+         "n": 32,
+         "baseline_ev": -0.00119,
+         "intervention_ev": 0.00226,
+         "ev_change": 0.00345
+        },
+        "2024-11": {
+         "n": 22,
+         "baseline_ev": 0.006684,
+         "intervention_ev": 0.01068,
+         "ev_change": 0.003996
+        },
+        "2024-12": {
+         "n": 35,
+         "baseline_ev": 0.008872,
+         "intervention_ev": 0.009814,
+         "ev_change": 0.000942
+        },
+        "2025-01": {
+         "n": 34,
+         "baseline_ev": 0.005353,
+         "intervention_ev": 0.006487,
+         "ev_change": 0.001134
+        },
+        "2025-02": {
+         "n": 31,
+         "baseline_ev": 0.007204,
+         "intervention_ev": 0.009518,
+         "ev_change": 0.002315
+        }
+       },
+       "ev_vs_baselines": {
+        "pf2_clean_touch_only": -0.00077965
+       }
+      }
+     },
+     "60": {
+      "n": 381,
+      "earliest_action_s": 15,
+      "live_poll_action_s": 75,
+      "baseline_comparators": {
+       "pf2_clean_touch_only": 0.0139
+      },
+      "best": {
+       "rule": "(touch_volume<=49134) AND (touch_episodes<=7)",
+       "mode": "exit_now",
+       "n_selected": 48,
+       "baseline_ev": 0.01135542,
+       "intervention_ev": 0.01601774,
+       "ev_change": 0.00466231,
+       "baseline_pnl_sum": 4.326417,
+       "intervention_pnl_sum": 6.102757,
+       "tail_before": 20,
+       "tail_after": 13,
+       "tail_reduced": 7,
+       "target_hit_n": 51,
+       "target_hit_selected": 4,
+       "target_cost_sum": 0.397022,
+       "target_economics_erosion": 0.07778,
+       "material_target_erosion": false,
+       "months_improved": 12,
+       "n_months": 14,
+       "monthly": {
+        "2024-01": {
+         "n": 18,
+         "baseline_ev": 0.003557,
+         "intervention_ev": 0.007512,
+         "ev_change": 0.003955
+        },
+        "2024-02": {
+         "n": 33,
+         "baseline_ev": 0.022349,
+         "intervention_ev": 0.029037,
+         "ev_change": 0.006688
+        },
+        "2024-03": {
+         "n": 26,
+         "baseline_ev": -0.02032,
+         "intervention_ev": -0.003781,
+         "ev_change": 0.016538
+        },
+        "2024-04": {
+         "n": 25,
+         "baseline_ev": 0.016352,
+         "intervention_ev": 0.009827,
+         "ev_change": -0.006525
+        },
+        "2024-05": {
+         "n": 22,
+         "baseline_ev": 0.003301,
+         "intervention_ev": 0.006953,
+         "ev_change": 0.003651
+        },
+        "2024-06": {
+         "n": 25,
+         "baseline_ev": 0.028205,
+         "intervention_ev": 0.033807,
+         "ev_change": 0.005602
+        },
+        "2024-07": {
+         "n": 26,
+         "baseline_ev": 0.049683,
+         "intervention_ev": 0.049683,
+         "ev_change": 0.0
+        },
+        "2024-08": {
+         "n": 25,
+         "baseline_ev": 0.018106,
+         "intervention_ev": 0.019088,
+         "ev_change": 0.000982
+        },
+        "2024-09": {
+         "n": 27,
+         "baseline_ev": 0.011016,
+         "intervention_ev": 0.015304,
+         "ev_change": 0.004288
+        },
+        "2024-10": {
+         "n": 32,
+         "baseline_ev": -0.00119,
+         "intervention_ev": 0.007084,
+         "ev_change": 0.008274
+        },
+        "2024-11": {
+         "n": 22,
+         "baseline_ev": 0.006684,
+         "intervention_ev": 0.011452,
+         "ev_change": 0.004768
+        },
+        "2024-12": {
+         "n": 35,
+         "baseline_ev": 0.008872,
+         "intervention_ev": 0.012241,
+         "ev_change": 0.003369
+        },
+        "2025-01": {
+         "n": 34,
+         "baseline_ev": 0.005353,
+         "intervention_ev": 0.009326,
+         "ev_change": 0.003973
+        },
+        "2025-02": {
+         "n": 31,
+         "baseline_ev": 0.007204,
+         "intervention_ev": 0.014758,
+         "ev_change": 0.007554
+        }
+       },
+       "ev_vs_baselines": {
+        "pf2_clean_touch_only": 0.00211774
+       }
+      },
+      "best_gate_eligible": {
+       "rule": "(touch_volume<=49134) AND (touch_episodes<=7)",
+       "mode": "exit_now",
+       "n_selected": 48,
+       "baseline_ev": 0.01135542,
+       "intervention_ev": 0.01601774,
+       "ev_change": 0.00466231,
+       "baseline_pnl_sum": 4.326417,
+       "intervention_pnl_sum": 6.102757,
+       "tail_before": 20,
+       "tail_after": 13,
+       "tail_reduced": 7,
+       "target_hit_n": 51,
+       "target_hit_selected": 4,
+       "target_cost_sum": 0.397022,
+       "target_economics_erosion": 0.07778,
+       "material_target_erosion": false,
+       "months_improved": 12,
+       "n_months": 14,
+       "monthly": {
+        "2024-01": {
+         "n": 18,
+         "baseline_ev": 0.003557,
+         "intervention_ev": 0.007512,
+         "ev_change": 0.003955
+        },
+        "2024-02": {
+         "n": 33,
+         "baseline_ev": 0.022349,
+         "intervention_ev": 0.029037,
+         "ev_change": 0.006688
+        },
+        "2024-03": {
+         "n": 26,
+         "baseline_ev": -0.02032,
+         "intervention_ev": -0.003781,
+         "ev_change": 0.016538
+        },
+        "2024-04": {
+         "n": 25,
+         "baseline_ev": 0.016352,
+         "intervention_ev": 0.009827,
+         "ev_change": -0.006525
+        },
+        "2024-05": {
+         "n": 22,
+         "baseline_ev": 0.003301,
+         "intervention_ev": 0.006953,
+         "ev_change": 0.003651
+        },
+        "2024-06": {
+         "n": 25,
+         "baseline_ev": 0.028205,
+         "intervention_ev": 0.033807,
+         "ev_change": 0.005602
+        },
+        "2024-07": {
+         "n": 26,
+         "baseline_ev": 0.049683,
+         "intervention_ev": 0.049683,
+         "ev_change": 0.0
+        },
+        "2024-08": {
+         "n": 25,
+         "baseline_ev": 0.018106,
+         "intervention_ev": 0.019088,
+         "ev_change": 0.000982
+        },
+        "2024-09": {
+         "n": 27,
+         "baseline_ev": 0.011016,
+         "intervention_ev": 0.015304,
+         "ev_change": 0.004288
+        },
+        "2024-10": {
+         "n": 32,
+         "baseline_ev": -0.00119,
+         "intervention_ev": 0.007084,
+         "ev_change": 0.008274
+        },
+        "2024-11": {
+         "n": 22,
+         "baseline_ev": 0.006684,
+         "intervention_ev": 0.011452,
+         "ev_change": 0.004768
+        },
+        "2024-12": {
+         "n": 35,
+         "baseline_ev": 0.008872,
+         "intervention_ev": 0.012241,
+         "ev_change": 0.003369
+        },
+        "2025-01": {
+         "n": 34,
+         "baseline_ev": 0.005353,
+         "intervention_ev": 0.009326,
+         "ev_change": 0.003973
+        },
+        "2025-02": {
+         "n": 31,
+         "baseline_ev": 0.007204,
+         "intervention_ev": 0.014758,
+         "ev_change": 0.007554
+        }
+       },
+       "ev_vs_baselines": {
+        "pf2_clean_touch_only": 0.00211774
+       }
+      }
+     }
+    },
+    "30": {
+     "0": {
+      "n": 381,
+      "earliest_action_s": 30,
+      "live_poll_action_s": 90,
+      "baseline_comparators": {
+       "pf2_clean_touch_only": 0.0139
+      },
+      "best": {
+       "rule": "(touch_trade_count<=637) AND (touch_episodes<=11)",
+       "mode": "tighten",
+       "n_selected": 71,
+       "baseline_ev": 0.01135542,
+       "intervention_ev": 0.01412304,
+       "ev_change": 0.00276762,
+       "baseline_pnl_sum": 4.326417,
+       "intervention_pnl_sum": 5.380879,
+       "tail_before": 20,
+       "tail_after": 15,
+       "tail_reduced": 5,
+       "target_hit_n": 49,
+       "target_hit_selected": 5,
+       "target_cost_sum": 0.455735,
+       "target_economics_erosion": 0.092965,
+       "material_target_erosion": false,
+       "months_improved": 10,
+       "n_months": 14,
+       "monthly": {
+        "2024-01": {
+         "n": 18,
+         "baseline_ev": 0.003557,
+         "intervention_ev": 0.012421,
+         "ev_change": 0.008864
+        },
+        "2024-02": {
+         "n": 33,
+         "baseline_ev": 0.022349,
+         "intervention_ev": 0.019818,
+         "ev_change": -0.002531
+        },
+        "2024-03": {
+         "n": 26,
+         "baseline_ev": -0.02032,
+         "intervention_ev": -0.007611,
+         "ev_change": 0.012709
+        },
+        "2024-04": {
+         "n": 25,
+         "baseline_ev": 0.016352,
+         "intervention_ev": 0.021496,
+         "ev_change": 0.005144
+        },
+        "2024-05": {
+         "n": 22,
+         "baseline_ev": 0.003301,
+         "intervention_ev": 0.003301,
+         "ev_change": 0.0
+        },
+        "2024-06": {
+         "n": 25,
+         "baseline_ev": 0.028205,
+         "intervention_ev": 0.035799,
+         "ev_change": 0.007594
+        },
+        "2024-07": {
+         "n": 26,
+         "baseline_ev": 0.049683,
+         "intervention_ev": 0.03987,
+         "ev_change": -0.009813
+        },
+        "2024-08": {
+         "n": 25,
+         "baseline_ev": 0.018106,
+         "intervention_ev": 0.023685,
+         "ev_change": 0.005579
+        },
+        "2024-09": {
+         "n": 27,
+         "baseline_ev": 0.011016,
+         "intervention_ev": 0.014778,
+         "ev_change": 0.003762
+        },
+        "2024-10": {
+         "n": 32,
+         "baseline_ev": -0.00119,
+         "intervention_ev": 0.004644,
+         "ev_change": 0.005834
+        },
+        "2024-11": {
+         "n": 22,
+         "baseline_ev": 0.006684,
+         "intervention_ev": 0.008881,
+         "ev_change": 0.002197
+        },
+        "2024-12": {
+         "n": 35,
+         "baseline_ev": 0.008872,
+         "intervention_ev": 0.006723,
+         "ev_change": -0.002149
+        },
+        "2025-01": {
+         "n": 34,
+         "baseline_ev": 0.005353,
+         "intervention_ev": 0.005729,
+         "ev_change": 0.000376
+        },
+        "2025-02": {
+         "n": 31,
+         "baseline_ev": 0.007204,
+         "intervention_ev": 0.01272,
+         "ev_change": 0.005517
+        }
+       },
+       "ev_vs_baselines": {
+        "pf2_clean_touch_only": 0.00022304
+       }
+      },
+      "best_gate_eligible": {
+       "rule": "(touch_trade_count<=637) AND (touch_episodes<=11)",
+       "mode": "tighten",
+       "n_selected": 71,
+       "baseline_ev": 0.01135542,
+       "intervention_ev": 0.01412304,
+       "ev_change": 0.00276762,
+       "baseline_pnl_sum": 4.326417,
+       "intervention_pnl_sum": 5.380879,
+       "tail_before": 20,
+       "tail_after": 15,
+       "tail_reduced": 5,
+       "target_hit_n": 49,
+       "target_hit_selected": 5,
+       "target_cost_sum": 0.455735,
+       "target_economics_erosion": 0.092965,
+       "material_target_erosion": false,
+       "months_improved": 10,
+       "n_months": 14,
+       "monthly": {
+        "2024-01": {
+         "n": 18,
+         "baseline_ev": 0.003557,
+         "intervention_ev": 0.012421,
+         "ev_change": 0.008864
+        },
+        "2024-02": {
+         "n": 33,
+         "baseline_ev": 0.022349,
+         "intervention_ev": 0.019818,
+         "ev_change": -0.002531
+        },
+        "2024-03": {
+         "n": 26,
+         "baseline_ev": -0.02032,
+         "intervention_ev": -0.007611,
+         "ev_change": 0.012709
+        },
+        "2024-04": {
+         "n": 25,
+         "baseline_ev": 0.016352,
+         "intervention_ev": 0.021496,
+         "ev_change": 0.005144
+        },
+        "2024-05": {
+         "n": 22,
+         "baseline_ev": 0.003301,
+         "intervention_ev": 0.003301,
+         "ev_change": 0.0
+        },
+        "2024-06": {
+         "n": 25,
+         "baseline_ev": 0.028205,
+         "intervention_ev": 0.035799,
+         "ev_change": 0.007594
+        },
+        "2024-07": {
+         "n": 26,
+         "baseline_ev": 0.049683,
+         "intervention_ev": 0.03987,
+         "ev_change": -0.009813
+        },
+        "2024-08": {
+         "n": 25,
+         "baseline_ev": 0.018106,
+         "intervention_ev": 0.023685,
+         "ev_change": 0.005579
+        },
+        "2024-09": {
+         "n": 27,
+         "baseline_ev": 0.011016,
+         "intervention_ev": 0.014778,
+         "ev_change": 0.003762
+        },
+        "2024-10": {
+         "n": 32,
+         "baseline_ev": -0.00119,
+         "intervention_ev": 0.004644,
+         "ev_change": 0.005834
+        },
+        "2024-11": {
+         "n": 22,
+         "baseline_ev": 0.006684,
+         "intervention_ev": 0.008881,
+         "ev_change": 0.002197
+        },
+        "2024-12": {
+         "n": 35,
+         "baseline_ev": 0.008872,
+         "intervention_ev": 0.006723,
+         "ev_change": -0.002149
+        },
+        "2025-01": {
+         "n": 34,
+         "baseline_ev": 0.005353,
+         "intervention_ev": 0.005729,
+         "ev_change": 0.000376
+        },
+        "2025-02": {
+         "n": 31,
+         "baseline_ev": 0.007204,
+         "intervention_ev": 0.01272,
+         "ev_change": 0.005517
+        }
+       },
+       "ev_vs_baselines": {
+        "pf2_clean_touch_only": 0.00022304
+       }
+      }
+     },
+     "60": {
+      "n": 381,
+      "earliest_action_s": 30,
+      "live_poll_action_s": 90,
+      "baseline_comparators": {
+       "pf2_clean_touch_only": 0.0139
+      },
+      "best": {
+       "rule": "(touch_volume<=81056) AND (touch_episodes<=11)",
+       "mode": "exit_now",
+       "n_selected": 53,
+       "baseline_ev": 0.01135542,
+       "intervention_ev": 0.01727076,
+       "ev_change": 0.00591533,
+       "baseline_pnl_sum": 4.326417,
+       "intervention_pnl_sum": 6.580158,
+       "tail_before": 20,
+       "tail_after": 13,
+       "tail_reduced": 7,
+       "target_hit_n": 49,
+       "target_hit_selected": 4,
+       "target_cost_sum": 0.30933,
+       "target_economics_erosion": 0.0631,
+       "material_target_erosion": false,
+       "months_improved": 12,
+       "n_months": 14,
+       "monthly": {
+        "2024-01": {
+         "n": 18,
+         "baseline_ev": 0.003557,
+         "intervention_ev": 0.017787,
+         "ev_change": 0.014231
+        },
+        "2024-02": {
+         "n": 33,
+         "baseline_ev": 0.022349,
+         "intervention_ev": 0.029245,
+         "ev_change": 0.006896
+        },
+        "2024-03": {
+         "n": 26,
+         "baseline_ev": -0.02032,
+         "intervention_ev": -0.005689,
+         "ev_change": 0.014631
+        },
+        "2024-04": {
+         "n": 25,
+         "baseline_ev": 0.016352,
+         "intervention_ev": 0.016919,
+         "ev_change": 0.000567
+        },
+        "2024-05": {
+         "n": 22,
+         "baseline_ev": 0.003301,
+         "intervention_ev": 0.003301,
+         "ev_change": 0.0
+        },
+        "2024-06": {
+         "n": 25,
+         "baseline_ev": 0.028205,
+         "intervention_ev": 0.039798,
+         "ev_change": 0.011593
+        },
+        "2024-07": {
+         "n": 26,
+         "baseline_ev": 0.049683,
+         "intervention_ev": 0.049035,
+         "ev_change": -0.000648
+        },
+        "2024-08": {
+         "n": 25,
+         "baseline_ev": 0.018106,
+         "intervention_ev": 0.022538,
+         "ev_change": 0.004432
+        },
+        "2024-09": {
+         "n": 27,
+         "baseline_ev": 0.011016,
+         "intervention_ev": 0.016676,
+         "ev_change": 0.005661
+        },
+        "2024-10": {
+         "n": 32,
+         "baseline_ev": -0.00119,
+         "intervention_ev": 0.010555,
+         "ev_change": 0.011745
+        },
+        "2024-11": {
+         "n": 22,
+         "baseline_ev": 0.006684,
+         "intervention_ev": 0.010219,
+         "ev_change": 0.003535
+        },
+        "2024-12": {
+         "n": 35,
+         "baseline_ev": 0.008872,
+         "intervention_ev": 0.011291,
+         "ev_change": 0.00242
+        },
+        "2025-01": {
+         "n": 34,
+         "baseline_ev": 0.005353,
+         "intervention_ev": 0.007725,
+         "ev_change": 0.002372
+        },
+        "2025-02": {
+         "n": 31,
+         "baseline_ev": 0.007204,
+         "intervention_ev": 0.014298,
+         "ev_change": 0.007094
+        }
+       },
+       "ev_vs_baselines": {
+        "pf2_clean_touch_only": 0.00337076
+       }
+      },
+      "best_gate_eligible": {
+       "rule": "(touch_volume<=81056) AND (touch_episodes<=11)",
+       "mode": "exit_now",
+       "n_selected": 53,
+       "baseline_ev": 0.01135542,
+       "intervention_ev": 0.01727076,
+       "ev_change": 0.00591533,
+       "baseline_pnl_sum": 4.326417,
+       "intervention_pnl_sum": 6.580158,
+       "tail_before": 20,
+       "tail_after": 13,
+       "tail_reduced": 7,
+       "target_hit_n": 49,
+       "target_hit_selected": 4,
+       "target_cost_sum": 0.30933,
+       "target_economics_erosion": 0.0631,
+       "material_target_erosion": false,
+       "months_improved": 12,
+       "n_months": 14,
+       "monthly": {
+        "2024-01": {
+         "n": 18,
+         "baseline_ev": 0.003557,
+         "intervention_ev": 0.017787,
+         "ev_change": 0.014231
+        },
+        "2024-02": {
+         "n": 33,
+         "baseline_ev": 0.022349,
+         "intervention_ev": 0.029245,
+         "ev_change": 0.006896
+        },
+        "2024-03": {
+         "n": 26,
+         "baseline_ev": -0.02032,
+         "intervention_ev": -0.005689,
+         "ev_change": 0.014631
+        },
+        "2024-04": {
+         "n": 25,
+         "baseline_ev": 0.016352,
+         "intervention_ev": 0.016919,
+         "ev_change": 0.000567
+        },
+        "2024-05": {
+         "n": 22,
+         "baseline_ev": 0.003301,
+         "intervention_ev": 0.003301,
+         "ev_change": 0.0
+        },
+        "2024-06": {
+         "n": 25,
+         "baseline_ev": 0.028205,
+         "intervention_ev": 0.039798,
+         "ev_change": 0.011593
+        },
+        "2024-07": {
+         "n": 26,
+         "baseline_ev": 0.049683,
+         "intervention_ev": 0.049035,
+         "ev_change": -0.000648
+        },
+        "2024-08": {
+         "n": 25,
+         "baseline_ev": 0.018106,
+         "intervention_ev": 0.022538,
+         "ev_change": 0.004432
+        },
+        "2024-09": {
+         "n": 27,
+         "baseline_ev": 0.011016,
+         "intervention_ev": 0.016676,
+         "ev_change": 0.005661
+        },
+        "2024-10": {
+         "n": 32,
+         "baseline_ev": -0.00119,
+         "intervention_ev": 0.010555,
+         "ev_change": 0.011745
+        },
+        "2024-11": {
+         "n": 22,
+         "baseline_ev": 0.006684,
+         "intervention_ev": 0.010219,
+         "ev_change": 0.003535
+        },
+        "2024-12": {
+         "n": 35,
+         "baseline_ev": 0.008872,
+         "intervention_ev": 0.011291,
+         "ev_change": 0.00242
+        },
+        "2025-01": {
+         "n": 34,
+         "baseline_ev": 0.005353,
+         "intervention_ev": 0.007725,
+         "ev_change": 0.002372
+        },
+        "2025-02": {
+         "n": 31,
+         "baseline_ev": 0.007204,
+         "intervention_ev": 0.014298,
+         "ev_change": 0.007094
+        }
+       },
+       "ev_vs_baselines": {
+        "pf2_clean_touch_only": 0.00337076
+       }
+      }
+     }
+    }
+   }
+  }
+ },
+ "gate": {
+  "passed": true,
+  "verdict": "A simple post-fill management rule clears the frozen Study B gate.",
+  "material_erosion_definition": "more than 10% loss of aggregate positive baseline P&L among alive\u2192later-target cases",
+  "comparison": "all-fill rules must exceed max(stop08, stop12, stop15) pooled EV; pf2 rules must exceed pf2 clean-touch-only pooled EV",
+  "qualifying_rules": [
+   {
+    "population": "all",
+    "delta_s": 5,
+    "lag_s": 0,
+    "comparator_ev": 0.0062,
+    "rule": "(touch_trade_count<=47) AND (touch_size_median<=25)",
+    "mode": "tighten",
+    "n_selected": 48,
+    "baseline_ev": 0.00913887,
+    "intervention_ev": 0.01032063,
+    "ev_change": 0.00118176,
+    "baseline_pnl_sum": 4.94413,
+    "intervention_pnl_sum": 5.583462,
+    "tail_before": 45,
+    "tail_after": 37,
+    "tail_reduced": 9,
+    "target_hit_n": 82,
+    "target_hit_selected": 7,
+    "target_cost_sum": 0.769429,
+    "target_economics_erosion": 0.09455,
+    "material_target_erosion": false,
+    "months_improved": 5,
+    "n_months": 14,
+    "monthly": {
+     "2024-01": {
+      "n": 26,
+      "baseline_ev": -0.025147,
+      "intervention_ev": -0.00627,
+      "ev_change": 0.018877
+     },
+     "2024-02": {
+      "n": 49,
+      "baseline_ev": 0.006608,
+      "intervention_ev": 0.011273,
+      "ev_change": 0.004665
+     },
+     "2024-03": {
+      "n": 39,
+      "baseline_ev": -0.008955,
+      "intervention_ev": -0.009626,
+      "ev_change": -0.000672
+     },
+     "2024-04": {
+      "n": 33,
+      "baseline_ev": 0.011311,
+      "intervention_ev": 0.01516,
+      "ev_change": 0.003849
+     },
+     "2024-05": {
+      "n": 34,
+      "baseline_ev": -0.013009,
+      "intervention_ev": -0.013009,
+      "ev_change": 0.0
+     },
+     "2024-06": {
+      "n": 34,
+      "baseline_ev": 0.031473,
+      "intervention_ev": 0.032185,
+      "ev_change": 0.000712
+     },
+     "2024-07": {
+      "n": 35,
+      "baseline_ev": 0.026591,
+      "intervention_ev": 0.022745,
+      "ev_change": -0.003846
+     },
+     "2024-08": {
+      "n": 33,
+      "baseline_ev": 0.027607,
+      "intervention_ev": 0.026704,
+      "ev_change": -0.000903
+     },
+     "2024-09": {
+      "n": 42,
+      "baseline_ev": 0.015736,
+      "intervention_ev": 0.011557,
+      "ev_change": -0.004179
+     },
+     "2024-10": {
+      "n": 46,
+      "baseline_ev": 0.006031,
+      "intervention_ev": 0.013141,
+      "ev_change": 0.00711
+     },
+     "2024-11": {
+      "n": 30,
+      "baseline_ev": 0.024827,
+      "intervention_ev": 0.024827,
+      "ev_change": 0.0
+     },
+     "2024-12": {
+      "n": 52,
+      "baseline_ev": 0.008697,
+      "intervention_ev": 0.006093,
+      "ev_change": -0.002604
+     },
+     "2025-01": {
+      "n": 48,
+      "baseline_ev": 0.012337,
+      "intervention_ev": 0.01216,
+      "ev_change": -0.000177
+     },
+     "2025-02": {
+      "n": 40,
+      "baseline_ev": 0.001327,
+      "intervention_ev": 0.000119,
+      "ev_change": -0.001208
+     }
+    },
+    "ev_vs_baselines": {
+     "stop08": 0.00672063,
+     "stop12": 0.00422063,
+     "stop15": 0.00412063
+    }
+   },
+   {
+    "population": "all",
+    "delta_s": 5,
+    "lag_s": 60,
+    "comparator_ev": 0.0062,
+    "rule": "(touch_trade_count<=47) AND (touch_size_median<=70.25)",
+    "mode": "exit_now",
+    "n_selected": 53,
+    "baseline_ev": 0.00913887,
+    "intervention_ev": 0.0133616,
+    "ev_change": 0.00422272,
+    "baseline_pnl_sum": 4.94413,
+    "intervention_pnl_sum": 7.228624,
+    "tail_before": 45,
+    "tail_after": 32,
+    "tail_reduced": 13,
+    "target_hit_n": 82,
+    "target_hit_selected": 9,
+    "target_cost_sum": 0.615461,
+    "target_economics_erosion": 0.07563,
+    "material_target_erosion": false,
+    "months_improved": 11,
+    "n_months": 14,
+    "monthly": {
+     "2024-01": {
+      "n": 26,
+      "baseline_ev": -0.025147,
+      "intervention_ev": -0.006648,
+      "ev_change": 0.018499
+     },
+     "2024-02": {
+      "n": 49,
+      "baseline_ev": 0.006608,
+      "intervention_ev": 0.017947,
+      "ev_change": 0.01134
+     },
+     "2024-03": {
+      "n": 39,
+      "baseline_ev": -0.008955,
+      "intervention_ev": -0.002603,
+      "ev_change": 0.006351
+     },
+     "2024-04": {
+      "n": 33,
+      "baseline_ev": 0.011311,
+      "intervention_ev": 0.01629,
+      "ev_change": 0.00498
+     },
+     "2024-05": {
+      "n": 34,
+      "baseline_ev": -0.013009,
+      "intervention_ev": -0.013009,
+      "ev_change": 0.0
+     },
+     "2024-06": {
+      "n": 34,
+      "baseline_ev": 0.031473,
+      "intervention_ev": 0.035053,
+      "ev_change": 0.00358
+     },
+     "2024-07": {
+      "n": 35,
+      "baseline_ev": 0.026591,
+      "intervention_ev": 0.028715,
+      "ev_change": 0.002123
+     },
+     "2024-08": {
+      "n": 33,
+      "baseline_ev": 0.027607,
+      "intervention_ev": 0.032726,
+      "ev_change": 0.005119
+     },
+     "2024-09": {
+      "n": 42,
+      "baseline_ev": 0.015736,
+      "intervention_ev": 0.01662,
+      "ev_change": 0.000884
+     },
+     "2024-10": {
+      "n": 46,
+      "baseline_ev": 0.006031,
+      "intervention_ev": 0.015637,
+      "ev_change": 0.009606
+     },
+     "2024-11": {
+      "n": 30,
+      "baseline_ev": 0.024827,
+      "intervention_ev": 0.026494,
+      "ev_change": 0.001667
+     },
+     "2024-12": {
+      "n": 52,
+      "baseline_ev": 0.008697,
+      "intervention_ev": 0.008614,
+      "ev_change": -8.3e-05
+     },
+     "2025-01": {
+      "n": 48,
+      "baseline_ev": 0.012337,
+      "intervention_ev": 0.009837,
+      "ev_change": -0.002501
+     },
+     "2025-02": {
+      "n": 40,
+      "baseline_ev": 0.001327,
+      "intervention_ev": 0.002982,
+      "ev_change": 0.001655
+     }
+    },
+    "ev_vs_baselines": {
+     "stop08": 0.0097616,
+     "stop12": 0.0072616,
+     "stop15": 0.0071616
+    }
+   },
+   {
+    "population": "all",
+    "delta_s": 15,
+    "lag_s": 0,
+    "comparator_ev": 0.0062,
+    "rule": "(touch_trade_count<=98.5) AND (touch_size_median<=25)",
+    "mode": "tighten",
+    "n_selected": 42,
+    "baseline_ev": 0.00913887,
+    "intervention_ev": 0.01029727,
+    "ev_change": 0.0011584,
+    "baseline_pnl_sum": 4.94413,
+    "intervention_pnl_sum": 5.570822,
+    "tail_before": 45,
+    "tail_after": 38,
+    "tail_reduced": 7,
+    "target_hit_n": 80,
+    "target_hit_selected": 6,
+    "target_cost_sum": 0.57509,
+    "target_economics_erosion": 0.07247,
+    "material_target_erosion": false,
+    "months_improved": 6,
+    "n_months": 14,
+    "monthly": {
+     "2024-01": {
+      "n": 26,
+      "baseline_ev": -0.025147,
+      "intervention_ev": -0.008618,
+      "ev_change": 0.016529
+     },
+     "2024-02": {
+      "n": 49,
+      "baseline_ev": 0.006608,
+      "intervention_ev": 0.006202,
+      "ev_change": -0.000406
+     },
+     "2024-03": {
+      "n": 39,
+      "baseline_ev": -0.008955,
+      "intervention_ev": -0.002457,
+      "ev_change": 0.006497
+     },
+     "2024-04": {
+      "n": 33,
+      "baseline_ev": 0.011311,
+      "intervention_ev": 0.014978,
+      "ev_change": 0.003667
+     },
+     "2024-05": {
+      "n": 34,
+      "baseline_ev": -0.013009,
+      "intervention_ev": -0.013009,
+      "ev_change": 0.0
+     },
+     "2024-06": {
+      "n": 34,
+      "baseline_ev": 0.031473,
+      "intervention_ev": 0.033131,
+      "ev_change": 0.001658
+     },
+     "2024-07": {
+      "n": 35,
+      "baseline_ev": 0.026591,
+      "intervention_ev": 0.026307,
+      "ev_change": -0.000285
+     },
+     "2024-08": {
+      "n": 33,
+      "baseline_ev": 0.027607,
+      "intervention_ev": 0.031368,
+      "ev_change": 0.003761
+     },
+     "2024-09": {
+      "n": 42,
+      "baseline_ev": 0.015736,
+      "intervention_ev": 0.013391,
+      "ev_change": -0.002345
+     },
+     "2024-10": {
+      "n": 46,
+      "baseline_ev": 0.006031,
+      "intervention_ev": 0.008957,
+      "ev_change": 0.002926
+     },
+     "2024-11": {
+      "n": 30,
+      "baseline_ev": 0.024827,
+      "intervention_ev": 0.020202,
+      "ev_change": -0.004626
+     },
+     "2024-12": {
+      "n": 52,
+      "baseline_ev": 0.008697,
+      "intervention_ev": 0.006025,
+      "ev_change": -0.002673
+     },
+     "2025-01": {
+      "n": 48,
+      "baseline_ev": 0.012337,
+      "intervention_ev": 0.010898,
+      "ev_change": -0.00144
+     },
+     "2025-02": {
+      "n": 40,
+      "baseline_ev": 0.001327,
+      "intervention_ev": 0.000892,
+      "ev_change": -0.000435
+     }
+    },
+    "ev_vs_baselines": {
+     "stop08": 0.00669727,
+     "stop12": 0.00419727,
+     "stop15": 0.00409727
+    }
+   },
+   {
+    "population": "all",
+    "delta_s": 15,
+    "lag_s": 60,
+    "comparator_ev": 0.0062,
+    "rule": "(touch_volume<=44423) AND (touch_size_median<=25)",
+    "mode": "exit_now",
+    "n_selected": 48,
+    "baseline_ev": 0.00913887,
+    "intervention_ev": 0.01275501,
+    "ev_change": 0.00361614,
+    "baseline_pnl_sum": 4.94413,
+    "intervention_pnl_sum": 6.900461,
+    "tail_before": 45,
+    "tail_after": 35,
+    "tail_reduced": 10,
+    "target_hit_n": 80,
+    "target_hit_selected": 7,
+    "target_cost_sum": 0.587613,
+    "target_economics_erosion": 0.074048,
+    "material_target_erosion": false,
+    "months_improved": 11,
+    "n_months": 14,
+    "monthly": {
+     "2024-01": {
+      "n": 26,
+      "baseline_ev": -0.025147,
+      "intervention_ev": -0.005335,
+      "ev_change": 0.019812
+     },
+     "2024-02": {
+      "n": 49,
+      "baseline_ev": 0.006608,
+      "intervention_ev": 0.013407,
+      "ev_change": 0.006799
+     },
+     "2024-03": {
+      "n": 39,
+      "baseline_ev": -0.008955,
+      "intervention_ev": 0.00222,
+      "ev_change": 0.011174
+     },
+     "2024-04": {
+      "n": 33,
+      "baseline_ev": 0.011311,
+      "intervention_ev": 0.017156,
+      "ev_change": 0.005845
+     },
+     "2024-05": {
+      "n": 34,
+      "baseline_ev": -0.013009,
+      "intervention_ev": -0.013009,
+      "ev_change": 0.0
+     },
+     "2024-06": {
+      "n": 34,
+      "baseline_ev": 0.031473,
+      "intervention_ev": 0.035244,
+      "ev_change": 0.003771
+     },
+     "2024-07": {
+      "n": 35,
+      "baseline_ev": 0.026591,
+      "intervention_ev": 0.028833,
+      "ev_change": 0.002241
+     },
+     "2024-08": {
+      "n": 33,
+      "baseline_ev": 0.027607,
+      "intervention_ev": 0.029833,
+      "ev_change": 0.002226
+     },
+     "2024-09": {
+      "n": 42,
+      "baseline_ev": 0.015736,
+      "intervention_ev": 0.015488,
+      "ev_change": -0.000248
+     },
+     "2024-10": {
+      "n": 46,
+      "baseline_ev": 0.006031,
+      "intervention_ev": 0.009049,
+      "ev_change": 0.003019
+     },
+     "2024-11": {
+      "n": 30,
+      "baseline_ev": 0.024827,
+      "intervention_ev": 0.018232,
+      "ev_change": -0.006596
+     },
+     "2024-12": {
+      "n": 52,
+      "baseline_ev": 0.008697,
+      "intervention_ev": 0.010829,
+      "ev_change": 0.002131
+     },
+     "2025-01": {
+      "n": 48,
+      "baseline_ev": 0.012337,
+      "intervention_ev": 0.012422,
+      "ev_change": 8.5e-05
+     },
+     "2025-02": {
+      "n": 40,
+      "baseline_ev": 0.001327,
+      "intervention_ev": 0.005171,
+      "ev_change": 0.003845
+     }
+    },
+    "ev_vs_baselines": {
+     "stop08": 0.00915501,
+     "stop12": 0.00665501,
+     "stop15": 0.00655501
+    }
+   },
+   {
+    "population": "all",
+    "delta_s": 30,
+    "lag_s": 0,
+    "comparator_ev": 0.0062,
+    "rule": "(touch_episodes<=1) AND (snapback>=-0.037887943)",
+    "mode": "exit_now",
+    "n_selected": 63,
+    "baseline_ev": 0.00913887,
+    "intervention_ev": 0.01172452,
+    "ev_change": 0.00258565,
+    "baseline_pnl_sum": 4.94413,
+    "intervention_pnl_sum": 6.342967,
+    "tail_before": 45,
+    "tail_after": 39,
+    "tail_reduced": 6,
+    "target_hit_n": 77,
+    "target_hit_selected": 6,
+    "target_cost_sum": 0.738899,
+    "target_economics_erosion": 0.096813,
+    "material_target_erosion": false,
+    "months_improved": 11,
+    "n_months": 14,
+    "monthly": {
+     "2024-01": {
+      "n": 26,
+      "baseline_ev": -0.025147,
+      "intervention_ev": -0.026436,
+      "ev_change": -0.00129
+     },
+     "2024-02": {
+      "n": 49,
+      "baseline_ev": 0.006608,
+      "intervention_ev": 0.007603,
+      "ev_change": 0.000995
+     },
+     "2024-03": {
+      "n": 39,
+      "baseline_ev": -0.008955,
+      "intervention_ev": -0.004,
+      "ev_change": 0.004954
+     },
+     "2024-04": {
+      "n": 33,
+      "baseline_ev": 0.011311,
+      "intervention_ev": 0.018367,
+      "ev_change": 0.007056
+     },
+     "2024-05": {
+      "n": 34,
+      "baseline_ev": -0.013009,
+      "intervention_ev": -0.009238,
+      "ev_change": 0.003771
+     },
+     "2024-06": {
+      "n": 34,
+      "baseline_ev": 0.031473,
+      "intervention_ev": 0.032118,
+      "ev_change": 0.000645
+     },
+     "2024-07": {
+      "n": 35,
+      "baseline_ev": 0.026591,
+      "intervention_ev": 0.030151,
+      "ev_change": 0.003559
+     },
+     "2024-08": {
+      "n": 33,
+      "baseline_ev": 0.027607,
+      "intervention_ev": 0.024555,
+      "ev_change": -0.003051
+     },
+     "2024-09": {
+      "n": 42,
+      "baseline_ev": 0.015736,
+      "intervention_ev": 0.012438,
+      "ev_change": -0.003298
+     },
+     "2024-10": {
+      "n": 46,
+      "baseline_ev": 0.006031,
+      "intervention_ev": 0.0101,
+      "ev_change": 0.004069
+     },
+     "2024-11": {
+      "n": 30,
+      "baseline_ev": 0.024827,
+      "intervention_ev": 0.030519,
+      "ev_change": 0.005691
+     },
+     "2024-12": {
+      "n": 52,
+      "baseline_ev": 0.008697,
+      "intervention_ev": 0.009562,
+      "ev_change": 0.000865
+     },
+     "2025-01": {
+      "n": 48,
+      "baseline_ev": 0.012337,
+      "intervention_ev": 0.015452,
+      "ev_change": 0.003114
+     },
+     "2025-02": {
+      "n": 40,
+      "baseline_ev": 0.001327,
+      "intervention_ev": 0.010568,
+      "ev_change": 0.009241
+     }
+    },
+    "ev_vs_baselines": {
+     "stop08": 0.00812452,
+     "stop12": 0.00562452,
+     "stop15": 0.00552452
+    }
+   },
+   {
+    "population": "all",
+    "delta_s": 30,
+    "lag_s": 60,
+    "comparator_ev": 0.0062,
+    "rule": "(touch_trade_count<=599) AND (touch_episodes<=10)",
+    "mode": "exit_now",
+    "n_selected": 57,
+    "baseline_ev": 0.00913887,
+    "intervention_ev": 0.01333713,
+    "ev_change": 0.00419826,
+    "baseline_pnl_sum": 4.94413,
+    "intervention_pnl_sum": 7.215388,
+    "tail_before": 45,
+    "tail_after": 34,
+    "tail_reduced": 11,
+    "target_hit_n": 77,
+    "target_hit_selected": 8,
+    "target_cost_sum": 0.582238,
+    "target_economics_erosion": 0.076287,
+    "material_target_erosion": false,
+    "months_improved": 12,
+    "n_months": 14,
+    "monthly": {
+     "2024-01": {
+      "n": 26,
+      "baseline_ev": -0.025147,
+      "intervention_ev": -0.014385,
+      "ev_change": 0.010762
+     },
+     "2024-02": {
+      "n": 49,
+      "baseline_ev": 0.006608,
+      "intervention_ev": 0.015202,
+      "ev_change": 0.008594
+     },
+     "2024-03": {
+      "n": 39,
+      "baseline_ev": -0.008955,
+      "intervention_ev": 0.002277,
+      "ev_change": 0.011232
+     },
+     "2024-04": {
+      "n": 33,
+      "baseline_ev": 0.011311,
+      "intervention_ev": 0.014605,
+      "ev_change": 0.003294
+     },
+     "2024-05": {
+      "n": 34,
+      "baseline_ev": -0.013009,
+      "intervention_ev": -0.013009,
+      "ev_change": 0.0
+     },
+     "2024-06": {
+      "n": 34,
+      "baseline_ev": 0.031473,
+      "intervention_ev": 0.034196,
+      "ev_change": 0.002723
+     },
+     "2024-07": {
+      "n": 35,
+      "baseline_ev": 0.026591,
+      "intervention_ev": 0.02915,
+      "ev_change": 0.002559
+     },
+     "2024-08": {
+      "n": 33,
+      "baseline_ev": 0.027607,
+      "intervention_ev": 0.028014,
+      "ev_change": 0.000407
+     },
+     "2024-09": {
+      "n": 42,
+      "baseline_ev": 0.015736,
+      "intervention_ev": 0.017459,
+      "ev_change": 0.001723
+     },
+     "2024-10": {
+      "n": 46,
+      "baseline_ev": 0.006031,
+      "intervention_ev": 0.015673,
+      "ev_change": 0.009642
+     },
+     "2024-11": {
+      "n": 30,
+      "baseline_ev": 0.024827,
+      "intervention_ev": 0.024069,
+      "ev_change": -0.000759
+     },
+     "2024-12": {
+      "n": 52,
+      "baseline_ev": 0.008697,
+      "intervention_ev": 0.009904,
+      "ev_change": 0.001206
+     },
+     "2025-01": {
+      "n": 48,
+      "baseline_ev": 0.012337,
+      "intervention_ev": 0.013425,
+      "ev_change": 0.001087
+     },
+     "2025-02": {
+      "n": 40,
+      "baseline_ev": 0.001327,
+      "intervention_ev": 0.006825,
+      "ev_change": 0.005498
+     }
+    },
+    "ev_vs_baselines": {
+     "stop08": 0.00973713,
+     "stop12": 0.00723713,
+     "stop15": 0.00713713
+    }
+   },
+   {
+    "population": "pf2",
+    "delta_s": 5,
+    "lag_s": 60,
+    "comparator_ev": 0.0139,
+    "rule": "(below_span_s<=4.91865) AND (max_depth_below<=-0.017713366)",
+    "mode": "exit_now",
+    "n_selected": 27,
+    "baseline_ev": 0.01135542,
+    "intervention_ev": 0.01546939,
+    "ev_change": 0.00411396,
+    "baseline_pnl_sum": 4.326417,
+    "intervention_pnl_sum": 5.893837,
+    "tail_before": 20,
+    "tail_after": 12,
+    "tail_reduced": 8,
+    "target_hit_n": 51,
+    "target_hit_selected": 2,
+    "target_cost_sum": 0.216358,
+    "target_economics_erosion": 0.042386,
+    "material_target_erosion": false,
+    "months_improved": 10,
+    "n_months": 14,
+    "monthly": {
+     "2024-01": {
+      "n": 18,
+      "baseline_ev": 0.003557,
+      "intervention_ev": 0.010069,
+      "ev_change": 0.006512
+     },
+     "2024-02": {
+      "n": 33,
+      "baseline_ev": 0.022349,
+      "intervention_ev": 0.030453,
+      "ev_change": 0.008104
+     },
+     "2024-03": {
+      "n": 26,
+      "baseline_ev": -0.02032,
+      "intervention_ev": 7.2e-05,
+      "ev_change": 0.020392
+     },
+     "2024-04": {
+      "n": 25,
+      "baseline_ev": 0.016352,
+      "intervention_ev": 0.021065,
+      "ev_change": 0.004713
+     },
+     "2024-05": {
+      "n": 22,
+      "baseline_ev": 0.003301,
+      "intervention_ev": 0.011373,
+      "ev_change": 0.008071
+     },
+     "2024-06": {
+      "n": 25,
+      "baseline_ev": 0.028205,
+      "intervention_ev": 0.031592,
+      "ev_change": 0.003387
+     },
+     "2024-07": {
+      "n": 26,
+      "baseline_ev": 0.049683,
+      "intervention_ev": 0.049683,
+      "ev_change": 0.0
+     },
+     "2024-08": {
+      "n": 25,
+      "baseline_ev": 0.018106,
+      "intervention_ev": 0.021554,
+      "ev_change": 0.003448
+     },
+     "2024-09": {
+      "n": 27,
+      "baseline_ev": 0.011016,
+      "intervention_ev": 0.016535,
+      "ev_change": 0.00552
+     },
+     "2024-10": {
+      "n": 32,
+      "baseline_ev": -0.00119,
+      "intervention_ev": 0.004626,
+      "ev_change": 0.005817
+     },
+     "2024-11": {
+      "n": 22,
+      "baseline_ev": 0.006684,
+      "intervention_ev": 0.004663,
+      "ev_change": -0.002021
+     },
+     "2024-12": {
+      "n": 35,
+      "baseline_ev": 0.008872,
+      "intervention_ev": 0.005579,
+      "ev_change": -0.003293
+     },
+     "2025-01": {
+      "n": 34,
+      "baseline_ev": 0.005353,
+      "intervention_ev": 0.005353,
+      "ev_change": 0.0
+     },
+     "2025-02": {
+      "n": 31,
+      "baseline_ev": 0.007204,
+      "intervention_ev": 0.007555,
+      "ev_change": 0.000351
+     }
+    },
+    "ev_vs_baselines": {
+     "pf2_clean_touch_only": 0.00156939
+    }
+   },
+   {
+    "population": "pf2",
+    "delta_s": 15,
+    "lag_s": 60,
+    "comparator_ev": 0.0139,
+    "rule": "(touch_volume<=49134) AND (touch_episodes<=7)",
+    "mode": "exit_now",
+    "n_selected": 48,
+    "baseline_ev": 0.01135542,
+    "intervention_ev": 0.01601774,
+    "ev_change": 0.00466231,
+    "baseline_pnl_sum": 4.326417,
+    "intervention_pnl_sum": 6.102757,
+    "tail_before": 20,
+    "tail_after": 13,
+    "tail_reduced": 7,
+    "target_hit_n": 51,
+    "target_hit_selected": 4,
+    "target_cost_sum": 0.397022,
+    "target_economics_erosion": 0.07778,
+    "material_target_erosion": false,
+    "months_improved": 12,
+    "n_months": 14,
+    "monthly": {
+     "2024-01": {
+      "n": 18,
+      "baseline_ev": 0.003557,
+      "intervention_ev": 0.007512,
+      "ev_change": 0.003955
+     },
+     "2024-02": {
+      "n": 33,
+      "baseline_ev": 0.022349,
+      "intervention_ev": 0.029037,
+      "ev_change": 0.006688
+     },
+     "2024-03": {
+      "n": 26,
+      "baseline_ev": -0.02032,
+      "intervention_ev": -0.003781,
+      "ev_change": 0.016538
+     },
+     "2024-04": {
+      "n": 25,
+      "baseline_ev": 0.016352,
+      "intervention_ev": 0.009827,
+      "ev_change": -0.006525
+     },
+     "2024-05": {
+      "n": 22,
+      "baseline_ev": 0.003301,
+      "intervention_ev": 0.006953,
+      "ev_change": 0.003651
+     },
+     "2024-06": {
+      "n": 25,
+      "baseline_ev": 0.028205,
+      "intervention_ev": 0.033807,
+      "ev_change": 0.005602
+     },
+     "2024-07": {
+      "n": 26,
+      "baseline_ev": 0.049683,
+      "intervention_ev": 0.049683,
+      "ev_change": 0.0
+     },
+     "2024-08": {
+      "n": 25,
+      "baseline_ev": 0.018106,
+      "intervention_ev": 0.019088,
+      "ev_change": 0.000982
+     },
+     "2024-09": {
+      "n": 27,
+      "baseline_ev": 0.011016,
+      "intervention_ev": 0.015304,
+      "ev_change": 0.004288
+     },
+     "2024-10": {
+      "n": 32,
+      "baseline_ev": -0.00119,
+      "intervention_ev": 0.007084,
+      "ev_change": 0.008274
+     },
+     "2024-11": {
+      "n": 22,
+      "baseline_ev": 0.006684,
+      "intervention_ev": 0.011452,
+      "ev_change": 0.004768
+     },
+     "2024-12": {
+      "n": 35,
+      "baseline_ev": 0.008872,
+      "intervention_ev": 0.012241,
+      "ev_change": 0.003369
+     },
+     "2025-01": {
+      "n": 34,
+      "baseline_ev": 0.005353,
+      "intervention_ev": 0.009326,
+      "ev_change": 0.003973
+     },
+     "2025-02": {
+      "n": 31,
+      "baseline_ev": 0.007204,
+      "intervention_ev": 0.014758,
+      "ev_change": 0.007554
+     }
+    },
+    "ev_vs_baselines": {
+     "pf2_clean_touch_only": 0.00211774
+    }
+   },
+   {
+    "population": "pf2",
+    "delta_s": 30,
+    "lag_s": 0,
+    "comparator_ev": 0.0139,
+    "rule": "(touch_trade_count<=637) AND (touch_episodes<=11)",
+    "mode": "tighten",
+    "n_selected": 71,
+    "baseline_ev": 0.01135542,
+    "intervention_ev": 0.01412304,
+    "ev_change": 0.00276762,
+    "baseline_pnl_sum": 4.326417,
+    "intervention_pnl_sum": 5.380879,
+    "tail_before": 20,
+    "tail_after": 15,
+    "tail_reduced": 5,
+    "target_hit_n": 49,
+    "target_hit_selected": 5,
+    "target_cost_sum": 0.455735,
+    "target_economics_erosion": 0.092965,
+    "material_target_erosion": false,
+    "months_improved": 10,
+    "n_months": 14,
+    "monthly": {
+     "2024-01": {
+      "n": 18,
+      "baseline_ev": 0.003557,
+      "intervention_ev": 0.012421,
+      "ev_change": 0.008864
+     },
+     "2024-02": {
+      "n": 33,
+      "baseline_ev": 0.022349,
+      "intervention_ev": 0.019818,
+      "ev_change": -0.002531
+     },
+     "2024-03": {
+      "n": 26,
+      "baseline_ev": -0.02032,
+      "intervention_ev": -0.007611,
+      "ev_change": 0.012709
+     },
+     "2024-04": {
+      "n": 25,
+      "baseline_ev": 0.016352,
+      "intervention_ev": 0.021496,
+      "ev_change": 0.005144
+     },
+     "2024-05": {
+      "n": 22,
+      "baseline_ev": 0.003301,
+      "intervention_ev": 0.003301,
+      "ev_change": 0.0
+     },
+     "2024-06": {
+      "n": 25,
+      "baseline_ev": 0.028205,
+      "intervention_ev": 0.035799,
+      "ev_change": 0.007594
+     },
+     "2024-07": {
+      "n": 26,
+      "baseline_ev": 0.049683,
+      "intervention_ev": 0.03987,
+      "ev_change": -0.009813
+     },
+     "2024-08": {
+      "n": 25,
+      "baseline_ev": 0.018106,
+      "intervention_ev": 0.023685,
+      "ev_change": 0.005579
+     },
+     "2024-09": {
+      "n": 27,
+      "baseline_ev": 0.011016,
+      "intervention_ev": 0.014778,
+      "ev_change": 0.003762
+     },
+     "2024-10": {
+      "n": 32,
+      "baseline_ev": -0.00119,
+      "intervention_ev": 0.004644,
+      "ev_change": 0.005834
+     },
+     "2024-11": {
+      "n": 22,
+      "baseline_ev": 0.006684,
+      "intervention_ev": 0.008881,
+      "ev_change": 0.002197
+     },
+     "2024-12": {
+      "n": 35,
+      "baseline_ev": 0.008872,
+      "intervention_ev": 0.006723,
+      "ev_change": -0.002149
+     },
+     "2025-01": {
+      "n": 34,
+      "baseline_ev": 0.005353,
+      "intervention_ev": 0.005729,
+      "ev_change": 0.000376
+     },
+     "2025-02": {
+      "n": 31,
+      "baseline_ev": 0.007204,
+      "intervention_ev": 0.01272,
+      "ev_change": 0.005517
+     }
+    },
+    "ev_vs_baselines": {
+     "pf2_clean_touch_only": 0.00022304
+    }
+   },
+   {
+    "population": "pf2",
+    "delta_s": 30,
+    "lag_s": 60,
+    "comparator_ev": 0.0139,
+    "rule": "(touch_volume<=81056) AND (touch_episodes<=11)",
+    "mode": "exit_now",
+    "n_selected": 53,
+    "baseline_ev": 0.01135542,
+    "intervention_ev": 0.01727076,
+    "ev_change": 0.00591533,
+    "baseline_pnl_sum": 4.326417,
+    "intervention_pnl_sum": 6.580158,
+    "tail_before": 20,
+    "tail_after": 13,
+    "tail_reduced": 7,
+    "target_hit_n": 49,
+    "target_hit_selected": 4,
+    "target_cost_sum": 0.30933,
+    "target_economics_erosion": 0.0631,
+    "material_target_erosion": false,
+    "months_improved": 12,
+    "n_months": 14,
+    "monthly": {
+     "2024-01": {
+      "n": 18,
+      "baseline_ev": 0.003557,
+      "intervention_ev": 0.017787,
+      "ev_change": 0.014231
+     },
+     "2024-02": {
+      "n": 33,
+      "baseline_ev": 0.022349,
+      "intervention_ev": 0.029245,
+      "ev_change": 0.006896
+     },
+     "2024-03": {
+      "n": 26,
+      "baseline_ev": -0.02032,
+      "intervention_ev": -0.005689,
+      "ev_change": 0.014631
+     },
+     "2024-04": {
+      "n": 25,
+      "baseline_ev": 0.016352,
+      "intervention_ev": 0.016919,
+      "ev_change": 0.000567
+     },
+     "2024-05": {
+      "n": 22,
+      "baseline_ev": 0.003301,
+      "intervention_ev": 0.003301,
+      "ev_change": 0.0
+     },
+     "2024-06": {
+      "n": 25,
+      "baseline_ev": 0.028205,
+      "intervention_ev": 0.039798,
+      "ev_change": 0.011593
+     },
+     "2024-07": {
+      "n": 26,
+      "baseline_ev": 0.049683,
+      "intervention_ev": 0.049035,
+      "ev_change": -0.000648
+     },
+     "2024-08": {
+      "n": 25,
+      "baseline_ev": 0.018106,
+      "intervention_ev": 0.022538,
+      "ev_change": 0.004432
+     },
+     "2024-09": {
+      "n": 27,
+      "baseline_ev": 0.011016,
+      "intervention_ev": 0.016676,
+      "ev_change": 0.005661
+     },
+     "2024-10": {
+      "n": 32,
+      "baseline_ev": -0.00119,
+      "intervention_ev": 0.010555,
+      "ev_change": 0.011745
+     },
+     "2024-11": {
+      "n": 22,
+      "baseline_ev": 0.006684,
+      "intervention_ev": 0.010219,
+      "ev_change": 0.003535
+     },
+     "2024-12": {
+      "n": 35,
+      "baseline_ev": 0.008872,
+      "intervention_ev": 0.011291,
+      "ev_change": 0.00242
+     },
+     "2025-01": {
+      "n": 34,
+      "baseline_ev": 0.005353,
+      "intervention_ev": 0.007725,
+      "ev_change": 0.002372
+     },
+     "2025-02": {
+      "n": 31,
+      "baseline_ev": 0.007204,
+      "intervention_ev": 0.014298,
+      "ev_change": 0.007094
+     }
+    },
+    "ev_vs_baselines": {
+     "pf2_clean_touch_only": 0.00337076
+    }
+   }
+  ]
+ }
+}
