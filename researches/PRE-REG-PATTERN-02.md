@@ -1,8 +1,12 @@
 # PRE-REG-PATTERN-02 — Event-Anchored Attention Digest
 
-Draft written 2026-09-12 by the agent; **freezes on user sign-off**. No
-computation runs before that sign-off. This does not replace PRE-REG-PATTERN-01:
-v1/v2 remain the all-minutes record and stay as they are.
+**FROZEN v1** (agent-encoded 2026-09-13 under the user's standing goal directive:
+"only goal is profitability... work as much as needed and continue with tasks";
+the user may amend). The Sec.6 scoring pass remains **user-gated and unrun**.
+Results: E1 flush-touch EXHAUSTED (best silhouette 0.0411 < 0.05), E3
+volume-spike EXHAUSTED (0.0433), E2 thrust INCONCLUSIVE_POWER (1,783 windows <
+2,000 floor) — see `factory/artifacts/pattern_digest_events.json`, EXP-71, H030.
+This does not replace PRE-REG-PATTERN-01: v1/v2 remain the all-minutes record.
 
 ## Why a new pre-reg
 PATTERN-01 proved the all-minutes unit does not separate: v1 silhouette 0.0058,

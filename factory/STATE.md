@@ -1463,3 +1463,22 @@ BUT R2: day-clustered bootstrap 95% CI = [-1.14%, +2.42%] pooled and
 OOS-only association, NOT robust — no gating, no adoption. The live bot's
 behavior-neutral `n_strict_est` tag stays for forward paper comparison.
 Artifacts: lb18_daytype_robust.py/.json. EXP-70, H029r.
+
+## 2026-09-13c — Pattern digest phase 2 (event-anchored): shape family closed
+PRE-REG-PATTERN-02 frozen agent-side under the standing goal directive; producer
+factory/scripts/pattern_digest_events.py; 668 day caches under
+data/scratch_pattern_events (26MB, gitignored). Results:
+- E1 flush touch: 14,116 / 9,988 / 6,586 windows (L 15/30/60) over 4,560
+  symbol-days; best silhouette 0.0411 (L=15,k=8) < 0.05 => EXHAUSTED.
+- E2 thrust: 1,783 / 1,155 / 750 windows over 714 symbol-days; largest < 2,000
+  power floor => INCONCLUSIVE_POWER (not tested).
+- E3 volume spike: 3,479 / 2,908 / 2,107 windows over 1,232 symbol-days; best
+  0.0433 (L=15,k=8) < 0.05 => EXHAUSTED; occupancy drifts across months (TV 0.123).
+Cards (E1, E3) show a few different medians (hump-fade, fade, hump-reversal) but
+heavy interquartile overlap; as with v1/v2, interpretable medians are not
+recoverable structure. No outcomes or labels anywhere; the Sec.6 scoring pass
+remains unrun and user-gated. Lane status: all shape-clustering units
+(all-minutes v1/v2, event-anchored E1/E3) are tested negatives; the only
+remaining branch is a learned sequence embedding under its own pre-reg.
+Artifacts: pattern_digest_events.json/_assignments.parquet/
+_cards_E1_flush_touch.png/_cards_E3_volume_spike.png. EXP-71, H030.

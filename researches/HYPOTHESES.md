@@ -774,3 +774,13 @@ n=192). But the day-clustered bootstrap CI includes zero (pooled
 population. Status: OOS-only association, not robust; no gating. The forward
 paper `n_strict_est` tag remains the only test that can resurrect it. EXP-70,
 H029r. Do not build on H029 without forward evidence.
+
+### 2026-09-13 — PATTERN-02 event-anchored digest: shape family closed
+E1 flush-touch and E3 volume-spike fail the frozen stopping rule (best
+silhouettes 0.0411 and 0.0433 at L=15,k=8, below 0.05); E2 thrust is
+underpowered (1,783 windows < the 2,000 floor). Together with PATTERN-01 v1/v2
+this closes shape clustering on the top-3 population at minute granularity:
+neither arbitrary minutes nor events (flush touch, volume spike) yield separable
+path families. Cards show a few distinct medians but heavy IQR overlap — k-means
+medians are not structure. Remaining branch: a learned sequence embedding under
+a new pre-reg. Artifacts pattern_digest_events.*; EXP-71, H030; no outcomes used.
