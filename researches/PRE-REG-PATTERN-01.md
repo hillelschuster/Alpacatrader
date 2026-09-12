@@ -1,7 +1,13 @@
 # PRE-REG-PATTERN-01 — Attention-Pattern Digest (top-3 minute paths)
 
-Draft written 2026-09-12 by the agent from the user's directive; **freezes on user
-sign-off**. No computation runs before that sign-off.
+FROZEN v1 — 2026-09-12, agent-encoded from the user's explicit directive
+(top-3 only; every minute; no target; digest + illustrate). The user may amend
+at any time; any change to §1–§4 is a recorded amendment, not a re-read.
+
+Phase 1 (§1–§4, the digest/illustration) proceeds on this freeze.
+**§5 (the scoring pass) does NOT run until the user explicitly confirms it** —
+the user's "no target" objection is preserved: discovery stays unsupervised, and
+the ruler is opt-in.
 
 ## User directive (verbatim anchors)
 - Universe: "1-3 MAX MAX" — top-3 gainers only. Top-5 rejected: "first top
@@ -80,3 +86,26 @@ first, expanding only if phase 1 justifies it. IEX 1-min tape
 ## 8. Artifacts
 `factory/artifacts/pattern_digest_*.json` (+ cluster cards, png/csv) from
 producer `factory/scripts/pattern_digest.py`. Ledgers appended after the cycle.
+
+---
+
+## Amendment A1 — representation v2 (2026-09-12, after the v1 result)
+
+v1 (frozen config L=60, k=16) gave silhouette **0.0058** and one 95-window
+cluster: flattened-Euclidean k-means did not separate path shapes. Two causes:
+`minute_index` was a clustering channel (clusters degenerated into time-of-day
+slices) and level/magnitude differences dominated raw channels.
+
+Frozen before the rerun:
+- Drop time-of-day from the clustering vector; keep it only as a post-hoc
+  descriptor.
+- Per-window shape normalization: z-score each channel within the window, so the
+  representation captures shape, not level.
+- Selection rule unchanged: maximize silhouette over k ∈ {8, 16, 24}; exactly one
+  configuration frozen before illustrations.
+- **Stopping rule:** if the best silhouette < 0.05, declare the
+  flattened-Euclidean / z-scored-shape class EXHAUSTED and run no further
+  variants. The next step then requires a separate pre-reg (learned sequence
+  embedding, or a different unit of analysis) — not another representation tweak.
+- No other changes; v1 artifacts are preserved as the v1 record. v2 writes
+  `pattern_digest_v2.*`.

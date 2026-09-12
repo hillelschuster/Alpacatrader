@@ -1382,3 +1382,19 @@ $2k/trade, $2.1k at $10k, $5.3k at $25k (5%-participation capacity p25 ≈ $84k)
 Implication: thin, fat-tailed, decaying edge; Study B (tail) is the highest-
 leverage lever; paper fills validate mechanics, not the edge; no more untouched
 data remains for the frozen rule (forward is the only true OOS).
+
+## 2026-09-12x — Pattern digest phase 1 (PRE-REG-PATTERN-01 v1)
+Unsupervised top-3 digest (user directive: top-3 only, every minute, no label).
+Corpus: data/leaderboard minute grid, 2,133,120 60-min windows over 667 days /
+7015 symbol-days. Frozen config L=60 k=16: silhouette 0.0058, occupancy entropy
+0.886, one 95-window cluster -> the flattened-Euclidean representation does NOT
+separate path shapes; clusters degenerate into time-of-day and level slices
+(`minute_index` was a clustering channel). Only C12 shows a recognizable
+ramp-then-plateau (51% rank-1, median 60-min +38.8%). Month occupancy TV 0.062.
+IEX coverage (informs the SIP decision): 172/7015 top-3 pairs have zero IEX bars
+all day; median per-pair IEX session-minute share 24.6% (pooled 33.9%) -> an
+IEX-only live feed is materially sparse. No outcomes or targets used anywhere.
+Amendment A1 freezes v2 (time-of-day excluded, per-window z-scored shape) with a
+stopping rule: best silhouette < 0.05 => representation class exhausted.
+Artifacts: factory/scripts/pattern_digest.py,
+factory/artifacts/pattern_digest.json/.parquet/_cards.png. EXP-67.
