@@ -20,8 +20,12 @@ tiny real-money sizing. Protect the research discipline above all: **profitabili
   (correct behavior — no ≥+100% fresh+thrust qualifier while the pipeline was healthy; two qualifying windows
   were missed by feed bugs that are now fixed). Account flat: 0 positions, 0 orders, equity ~$99.3k.
 - **Your immediate job**: Monday session monitoring → post-close parity + ledger → accumulate 30+ fills →
-  compare live vs sim → decay dashboard → (then) tiny live money decision.
-- **Context discipline (user-instructed)**: **compress big and often.** See §13. Do not let the window balloon.
+  compare live vs the **A3b baseline** (§14: pf2 +1.13%, 10/14, ~19/mo, worst −3.1%) → decay dashboard →
+  (then) tiny live money decision. The ledger's `summary_by_tag` partitions fills by `pf_est`/`n_strict_est`
+  (forward test of H029) and prints the A3b row.
+- **Latest state: §16 (2026-09-13).** Sections §13–§16 are newer than this TL;DR and supersede it where
+  they conflict.
+- **Context discipline (user-instructed)**: **compress big and often.** See §10. Do not let the window balloon.
 
 ---
 
@@ -195,6 +199,8 @@ Flags & switches:
 ---
 
 ## 9. Your immediate roadmap
+
+*(Partly superseded by §16 — 2026-09-13. The session-day routine below still applies.)*
 
 **Monday 2026-09-14 (and every session day):**
 1. Pre-open (~16:15 IDT): health check — supervisor alive, `LIVE` flag present, no `KILL`, journal polling,
@@ -383,3 +389,45 @@ Consequences: keep the frozen exit unchanged; do NOT add a time-stop; no
 real-time SIP needed for this question. Post-fill management is a well-tested
 negative (Study B + EXIT-01). Files: `factory/scripts/lb18_exit.py`,
 `factory/artifacts/lb18_exit.json`/.parquet, `researches/PRE-REG-EXIT-01.md`.
+
+---
+
+## 16. Latest state (2026-09-13, market closed) — research lanes closed, forward paper is the live experiment
+
+Where the whole project stands, for an agent reading this cold. **The chronicle lives in
+`factory/STATE.md` (read the tail); this section is the entry-point summary.**
+
+**Live:** `flush_bot.py` v2.1 (IEX state feed, consolidated broker fills), armed `live:true`,
+dedicated paper account, flat, healthy (`data/forward/bot/LIVE` present, no `data/KILL`,
+`startup_reconcile` clean in the journal). Next session Mon 2026-09-14 09:30 ET. Any code edit
+requires the KILL-toggle restart (§5).
+
+**Judging rule:** judge live paper fills against **A3b** (§14), not the frozen engine: pf2
++1.13%, 10/14 months, ~19 fills/mo post-overlay, worst −3.1%; fragility profile in §14
+(55% win, 6.3pp cushion, CI touches zero, ~14 forward months to exclude zero).
+
+**Research lanes CLOSED (all tested negatives — do not reopen without a new pre-reg):**
+- **Post-fill management** (flat and conditional time-stops at any horizon/slippage):
+  `PRE-REG-EXIT-01.md`, `lb18_exit.py/.json`, H028. The edge IS the resting limit at c0;
+  exits that fire early sell winners into a falling bid.
+- **IEX-only feed replay**: Study A failed, but Amendment A1 (`PRE-REG-MICRO-01.md`,
+  `lb18_iex_hybrid.py`) decomposed it — the failure was fill-venue selection, not the state
+  feed. The live model A3b preserves per-trade EV and loses ~20% of pf2 fills to
+  anchor/cadence drift. Real-time SIP (~$99/mo) would recover frequency, not quality — a
+  deferred money decision, NOT needed for the frozen strategy.
+- **Pattern digests** (top-3, every minute, no target — per the user's directive):
+  all-minutes v1/v2 (raw, z-scored shape) and event-anchored E1 flush-touch / E3 volume-spike
+  are all EXHAUSTED (best silhouettes 0.006 / 0.021 / 0.041 / 0.043 < the frozen 0.05 rule);
+  E2 thrust was underpowered (<2,000 windows). `PRE-REG-PATTERN-01/02`,
+  `pattern_digest.py`, `pattern_digest_events.py`, H030. The only remaining branch is a
+  learned sequence embedding — separate pre-reg, not started.
+
+**Open candidate (weak):** H029/H029r day-breadth — quiet days (0–1 strict names) beat busy
+days OOS (+1.20% vs +0.46% all fills; rank1 −0.69% vs +1.33%) but it does NOT survive the
+day-clustered bootstrap or permutation (p=0.19). No gating. The live bot tags `pf_est` +
+`n_strict_est` on every bid/fill and `flush_bot_ledger.py` partitions by them, so forward
+paper tests it for free.
+
+**Next step (the only one that matters):** accumulate ~30 forward fills → judge vs A3b →
+tiny real-money sizing (start far below 5% of fill-bar volume; capacity p25 ≈ $84k/trade).
+More data/power (2021+ backbone staging) and SIP are priced decisions, not defaults.

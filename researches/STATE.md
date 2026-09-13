@@ -1,13 +1,35 @@
-# STATE — current truth (snapshot 2026-09-08). Full chronicle: factory/STATE.md (append-only log).
+# STATE — current truth (snapshot 2026-09-13). Full chronicle: factory/STATE.md (append-only log).
 # Hypothesis ranking + falsifiers: researches/HYPOTHESES.md (living).
 # History before 2026-09-04: researches/CANONICAL_STATE.md (superseded snapshot, kept for trust map).
 
-## Where we are
-Phase: post-collision triage. No live hypothesis currently holds dev+collision support.
-The runner-machine phenomenology is real and well-measured (see below), but every
-tradable formulation of it so far died out-of-sample. The binding constraint is
-STATISTICAL POWER (n per month ~20-30 gate names; tail-driven means) — dev-month
-positives have replicated 0-for-4 on unseen months.
+## Where we are (2026-09-13)
+Phase: LIVE PAPER VALIDATION of the first OOS-passed mechanism; research lanes closed;
+waiting on forward fills.
+- **H025 FLUSH RULE = OOS-PASS-PAPER.** Frozen `PRE-REG-FLUSH-01.md` passed untouched OOS
+  2024-01..2025-02 (pf>=2 n=381, +1.14%/trade net 100bps, 12/14 months). `flush_bot.py`
+  v2.1 is armed `live:true` on a dedicated Alpaca paper account (flat, 0 fills as of
+  2026-09-13). Mechanism: extreme top-3 leader in fresh+thrust state gets a resting -10%
+  bid; fast flush fills at B; exit toward c0 (OCO target at c0, 0.9B stop, tl30).
+- **Judge live fills against the A3b baseline, NOT the frozen one** (HANDOFF §14):
+  pf2 +1.13%, 10/14 months, ~19 fills/mo post-overlay, worst -3.1%; fragility: 55% win,
+  6.3pp cushion, bootstrap CI touches 0, ~14 months of forward fills needed to exclude zero.
+- **Closed (tested negatives):** post-fill management incl. flat/conditional time-stops
+  (`PRE-REG-EXIT-01`, H028 RETIRED) - the edge IS the resting limit at c0; IEX-only feed
+  replay (`PRE-REG-MICRO-01` Study A) - failure was a fill-venue artifact, the state feed
+  survived via A3b; unsupervised pattern digests (all-minutes v1/v2 and event-anchored
+  E1/E3; `PRE-REG-PATTERN-01/02`, H030 RETIRED) - no separable shape families at
+  1-min/60-min on the top-3 population.
+- **H029 day-breadth (user hypothesis) DOWNGRADED** (H029r): quiet days (0-1 strict names)
+  beat busy days OOS (+1.20% vs +0.46% all fills; rank1 -0.69% vs +1.33%) but the
+  day-clustered bootstrap CI includes zero and permutation p=0.19 - OOS-only, not robust,
+  NO gating. Live `n_strict_est` + `pf_est` tags flow into the ledger for a free forward test.
+- **Next:** forward paper accumulation (~30 fills) -> judge vs A3b -> tiny real-money
+  sizing decision. Remaining ML branch = learned sequence embedding (own pre-reg) or more
+  data/power (2021+ backbone staging, real-time SIP); both are priced decisions. SIP
+  ~$99/mo is NOT needed for the frozen strategy (IEX covers a median 24.6% of session
+  minutes per top-3 name; only sub-minute features would justify it).
+- The older sections below (phenomenology, collisions, 2026-09-08 strategy) remain valid
+  history; the 2026-09-08 "current strategy" block is superseded by the flush-rule path.
 
 ## What is solidly established (multiple provenances, harness-verified)
 - Phenomenon: ~1.2-1.5 runner days (+60%+ open->close, $1-50) per day, all 9 months
