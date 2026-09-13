@@ -784,3 +784,32 @@ neither arbitrary minutes nor events (flush touch, volume spike) yield separable
 path families. Cards show a few distinct medians but heavy IQR overlap — k-means
 medians are not structure. Remaining branch: a learned sequence embedding under
 a new pre-reg. Artifacts pattern_digest_events.*; EXP-71, H030; no outcomes used.
+
+---
+## 2026-09-13 — Vacuum-event census (PRE-REG-CENSUS-01): the attention-rank gradient
+
+Measurement only (no trading rule; H025 untouched). 24,655 vacuum events
+(low <= 0.9*running session max close, new bars only) over 667 days.
+
+- Recovery-to-session-max within 30m is MONOTONE in rank: #1 41.4% (7.47
+  events/day, median 3m), #2 29.3% (5.74/day, 5m), #3 24.0% (4.37/day, 5m),
+  off-top-3 13.0% (19.3/day, 11m). Rank-1 vacuums are both more frequent and
+  more recoverable — the user's #1-vs-#3 intuition, confirmed at event level.
+- Event-level prior_flush is INVERSE (pf0 32.0% > pf1 23.4% > pf2+ 19.4%),
+  and pf2+ is dominated by off-rank names in decline (off|2+ n=7466, 8.8%).
+  Resolution: H025's pf>=2 edge is a NAME-LEVEL survivor/state conjunction
+  (top-3 attention + a demonstrated recovery habit + strict state), not
+  "more vacuums is better" at event level. Both results are compatible.
+- Halt-adjacent vacuums (>=5 min bar gap) recover more often (36.2%) but carry
+  fatter tails (p05 -23.8%) and only ~2.5 events/day.
+- AM (before 12:00) 29.9% recovery vs PM 13.7% — matches the flush rule's AM
+  economics (+2.08% vs +0.18%).
+- Frequency headroom: H025 executes ~1.9 fills/day; top-3 vacuum events are
+  ~17.6/day, rank1 alone 7.5/day. The constraint on dollars is ENTRY
+  QUALIFICATION, not event supply.
+- Frozen gate licenses cells for a future rule pre-reg (candidate only; n>=500,
+  >=3 events/day, recovery not worse than pooled, replicated): rank1/2/3,
+  pf0/1, seq1/2, AM, rank1|pf2+ (5.52/day, 38.0%), rank2|pf2+, off|0,
+  pf0|seq1, pf1|seq2. No adoption path except a new pre-reg + forward test.
+Artifacts: factory/scripts/event_census.py, factory/artifacts/event_census.json/.parquet.
+EXP-72, H031.

@@ -1489,3 +1489,20 @@ flush_bot_ledger.py now attaches `pf_est` / `n_strict_est` to each round trip
 partitions (pf 0-1 vs 2+, n_strict 0-1 vs 2+) plus the A3b baseline
 (+1.13% pf2 mean net) for the forward comparison. Smoke test on the flat
 account: fills=0 closed_trades=0, artifact written.
+
+## 2026-09-13e — Vacuum-event census (PRE-REG-CENSUS-01): rank gradient + frequency headroom
+Measurement only, no trading rule. 24,655 vacuum events over 667 days (36.9/day).
+Key numbers: rank1 7.47 events/day, recovery-to-session-max in 30m 41.4%, median
+3m; rank2 5.74/29.3%/5m; rank3 4.37/24.0%/5m; off-top-3 19.33/13.0%/11m.
+Event-level prior_flush is INVERSE (pf0 32.0%, pf1 23.4%, pf2+ 19.4%) and the
+pf2+ pool is dominated by off-rank declining names (off|2+ n=7466, 8.8%) — so
+H025's pf>=2 edge is a name-level survivor/state conjunction, not an
+event-sequence effect. Halt-adjacent vacuums (pre-gap>=5m) recover more often
+(36.2%) with fatter tails (p05 -23.8%) but only 2.48/day. AM strongly better
+than PM (29.9% vs 13.7%). Frequency headroom: H025 executes ~1.9 fills/day vs
+7.5 rank1 vacuum events/day — the entry qualification, not the phenomenon, is
+the constraint on dollars. Frozen gate licenses (candidate only): rank1/2/3,
+pf0/1, seq1/2, AM, rank1|pf2+ (5.52/day, 38.0%), rank2|pf2+, off|0, pf0|seq1,
+pf1|seq2. No rule adopted; H025 and the live bot untouched.
+Artifacts: factory/scripts/event_census.py, factory/artifacts/event_census.json/.parquet
+(cache data/scratch_census/). EXP-72, H031.
