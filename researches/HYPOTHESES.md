@@ -832,3 +832,12 @@ crashes); the event-level rank/recovery gradient does not map to rule-level P&L;
 narrowing buys quality but halves frequency. H025's ~1.9 qualified fills/day sits
 near the frontier of this mechanism on this data. No adoption; H025 untouched.
 EXP-73, H032/H033.
+
+### 2026-09-13 — Data-integrity note: split-fake leaders in the raw tape (and live)
+110/7015 candidate pairs (1.6%) are reverse-split artifacts (exact factors:
+SIRI 1:10, LCID 1:10, GDEV/JDZG/REAX 10x). They enter as fake +900% "top
+gainers" and contribute 37/541 frozen OOS fills at +2.26% average, flattering
+the frozen stats: split-clean pf2 = +1.035% (11/14, worst −3.82% vs −2.03%).
+Alpaca data is verified RAW, so live sees them too. Conclusion: the frozen
+mechanism also works on genuine gainers (+1.03%/pf2), slightly less prettily;
+split certification is mandatory for the 2021–2023 extension. EXP-74.

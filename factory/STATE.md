@@ -1543,3 +1543,20 @@ the blinded protocol: debug on 2024 (burned), freeze, then reveal 2021–2023 on
 as a regime-replication test (REPLICATES/FAILS/MIXED rule; no adoption path).
 Needs user sign-off on the multi-GB staging. H034 (latent survivor-state) opened
 as research workstream 2, separate from the protected H025.
+
+## 2026-09-13h — Split-artifact audit: the tape (and Alpaca live) contain split-fake leaders
+Independent audit of the raw leaderboard tape: 110/7015 pairs (1.6%) are
+reverse-split-like (huge overnight ratio, flat intraday), 42.7% at exact split
+factors — SIRI 1:10 (2024-09-10), LCID 1:10 (2025-09-02), GDEV/JDZG/REAX 10x.
+These enter the tape as fake +900% "top gainers". 37/541 frozen OOS fills
+(6.8%) sit on flagged days and are ABOVE average (+2.26%, pf2 +2.45%), so they
+FLATTER the frozen result: split-clean baselines are all n=504 +0.815%, pf2
+n=354 +1.035%, 11/14 months, worst month −3.82% (vs −2.03% with flags). A3b:
+flagged +1.21% vs +0.24%; clean pf2 +1.00%. Alpaca data certified RAW
+(adjustment=None -> raw default; SIRI 2.67→27.38, LCID 1.985→17.655, IEX+SIP),
+so the live bot sees the same fake split-gainers — a population-definition issue,
+not a live/backtest mismatch. Flag list: data/split_flags.parquet (gitignored,
+reproducible from the artifact). The certification pipeline's split_suspect
+counts (51–91/month) cluster on month starts (boundary artifacts); this
+exact-factor audit is the operative check and is a prerequisite for 2021–2023.
+Artifacts: audit_splits.py/.json/.parquet. EXP-74.

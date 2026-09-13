@@ -1,0 +1,236 @@
+{
+ "study": "split-artifact audit of data/leaderboard",
+ "flags": {
+  "ratio_hi": 2.5,
+  "ratio_lo": 0.4,
+  "flat_intraday": 0.3
+ },
+ "pairs": 7015,
+ "flagged_reverse_like": 110,
+ "flagged_forward_like": 0,
+ "exact_factor_share_reverse": 0.4273,
+ "flagged_in_frozen_fills": 16,
+ "flagged_in_a3b_fills": 14,
+ "per_year": {
+  "2024": {
+   "pairs": 2819,
+   "flagged": 28,
+   "flagged_share": 0.00993
+  },
+  "2025": {
+   "pairs": 2538,
+   "flagged": 54,
+   "flagged_share": 0.02128
+  },
+  "2026": {
+   "pairs": 1658,
+   "flagged": 28,
+   "flagged_share": 0.01689
+  }
+ },
+ "reverse_like_top": [
+  {
+   "date": "2026-06-16",
+   "ticker": "AIFU",
+   "g0": 20.5429,
+   "ratio": 21.5429,
+   "intraday": -0.1008,
+   "factor": NaN
+  },
+  {
+   "date": "2026-06-01",
+   "ticker": "JDZG",
+   "g0": 9.7279,
+   "ratio": 10.3672,
+   "intraday": 0.1476,
+   "factor": 10.0
+  },
+  {
+   "date": "2026-08-25",
+   "ticker": "REAX",
+   "g0": 9.2458,
+   "ratio": 10.0625,
+   "intraday": 0.1556,
+   "factor": 10.0
+  },
+  {
+   "date": "2024-08-29",
+   "ticker": "GDEV",
+   "g0": 8.5251,
+   "ratio": 9.5251,
+   "intraday": 0.0,
+   "factor": 10.0
+  },
+  {
+   "date": "2024-09-10",
+   "ticker": "SIRI",
+   "g0": 8.7378,
+   "ratio": 9.4569,
+   "intraday": 0.0571,
+   "factor": NaN
+  },
+  {
+   "date": "2025-09-02",
+   "ticker": "LCID",
+   "g0": 7.8227,
+   "ratio": 9.3103,
+   "intraday": -0.0137,
+   "factor": NaN
+  },
+  {
+   "date": "2025-07-10",
+   "ticker": "MFI",
+   "g0": 7.4406,
+   "ratio": 8.4406,
+   "intraday": 0.0191,
+   "factor": NaN
+  },
+  {
+   "date": "2025-12-02",
+   "ticker": "HPP",
+   "g0": 6.02,
+   "ratio": 7.02,
+   "intraday": 0.0093,
+   "factor": NaN
+  },
+  {
+   "date": "2025-10-07",
+   "ticker": "GLTO",
+   "g0": 5.1495,
+   "ratio": 6.7636,
+   "intraday": -0.1993,
+   "factor": NaN
+  },
+  {
+   "date": "2025-07-28",
+   "ticker": "VAPE",
+   "g0": 5.5311,
+   "ratio": 6.1093,
+   "intraday": 0.0216,
+   "factor": 6.0
+  },
+  {
+   "date": "2024-09-09",
+   "ticker": "FAX",
+   "g0": 5.0072,
+   "ratio": 5.9784,
+   "intraday": 0.0081,
+   "factor": 6.0
+  },
+  {
+   "date": "2025-06-02",
+   "ticker": "LYRA",
+   "g0": 4.8124,
+   "ratio": 5.7904,
+   "intraday": -0.2984,
+   "factor": 6.0
+  },
+  {
+   "date": "2026-06-29",
+   "ticker": "UPC",
+   "g0": 3.532,
+   "ratio": 5.7811,
+   "intraday": -0.1148,
+   "factor": 6.0
+  },
+  {
+   "date": "2026-02-17",
+   "ticker": "SMX",
+   "g0": 4.5717,
+   "ratio": 5.6731,
+   "intraday": -0.1863,
+   "factor": NaN
+  },
+  {
+   "date": "2025-12-31",
+   "ticker": "RPT",
+   "g0": 4.8796,
+   "ratio": 5.4745,
+   "intraday": 0.0223,
+   "factor": NaN
+  },
+  {
+   "date": "2025-11-11",
+   "ticker": "LXP",
+   "g0": 4.2289,
+   "ratio": 5.2648,
+   "intraday": -0.0351,
+   "factor": NaN
+  },
+  {
+   "date": "2025-01-24",
+   "ticker": "ALUR",
+   "g0": 2.5701,
+   "ratio": 5.1189,
+   "intraday": -0.2904,
+   "factor": 5.0
+  },
+  {
+   "date": "2025-09-22",
+   "ticker": "GMRE",
+   "g0": 4.1095,
+   "ratio": 5.1095,
+   "intraday": -0.0122,
+   "factor": 5.0
+  },
+  {
+   "date": "2025-05-27",
+   "ticker": "SBET",
+   "g0": 3.6866,
+   "ratio": 5.0642,
+   "intraday": 0.1392,
+   "factor": 5.0
+  },
+  {
+   "date": "2026-03-23",
+   "ticker": "XFLT",
+   "g0": 4.0629,
+   "ratio": 5.0629,
+   "intraday": -0.0258,
+   "factor": 5.0
+  },
+  {
+   "date": "2026-01-15",
+   "ticker": "AMCR",
+   "g0": 4.1314,
+   "ratio": 5.0464,
+   "intraday": -0.0291,
+   "factor": 5.0
+  },
+  {
+   "date": "2025-09-08",
+   "ticker": "OXLC",
+   "g0": 3.9794,
+   "ratio": 5.0069,
+   "intraday": -0.0166,
+   "factor": 5.0
+  },
+  {
+   "date": "2026-06-04",
+   "ticker": "STI",
+   "g0": 4.3313,
+   "ratio": 4.9147,
+   "intraday": -0.147,
+   "factor": 5.0
+  },
+  {
+   "date": "2025-12-03",
+   "ticker": "CAPR",
+   "g0": 4.5394,
+   "ratio": 4.7319,
+   "intraday": -0.1409,
+   "factor": NaN
+  },
+  {
+   "date": "2026-08-03",
+   "ticker": "TOP",
+   "g0": 3.8302,
+   "ratio": 4.7217,
+   "intraday": 0.0264,
+   "factor": NaN
+  }
+ ],
+ "note": "reverse_like = huge overnight ratio with no intraday follow-through; real news gaps look similar, so treat as candidates, not proof",
+ "flags_seen_data": true,
+ "not_an_alpha_claim": true
+}
