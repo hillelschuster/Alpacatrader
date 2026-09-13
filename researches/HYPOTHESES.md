@@ -956,3 +956,18 @@ Spearman with t0 −0.087). IEX range5 is compressed (median 0.111 vs 0.132), so
 live deployable rule should threshold on a live quantile. Status: deployable
 proxy measured; adoption still requires its own pre-reg + user go; H025 frozen.
 EXP-81, H037c.
+
+### 2026-09-13 — range5 stability (PRE-REG-ROBUST-RANGE5-01): FRAGILE
+Five frozen tests, 1,392 fills (pf2 952):
+- R1 per-year (pooled threshold 0.13214): 2021 +1.91pp, **2022 -0.87pp
+  (inverted)**, 2023 +3.17pp, 2024 +3.03pp, 2025 +2.36pp (n_lo 26 < 30 floor,
+  not counted) -> counted 4 / positive 3 -> **FAIL**.
+- R2 windows 3/10/20: +1.97/+2.24/+1.95pp -> PASS (not a magic 5).
+- R3 month-blocked LOMO: 22/32 months positive (68.8%); pooled +2.18pp,
+  day-clustered bootstrap [+0.93,+3.29]pp -> PASS.
+- R4 half-year: 8/9 positive (88.9%) -> PASS.
+- R5 threshold profile q.33-.75: +1.12/+2.15/+2.78/+3.03pp, no flips -> PASS.
+Verdict: **FRAGILE** (time-stability fails in the 2022 bear). The conditioner is
+a regime-conditional (fair-weather) filter, not a universal state. Not adopted;
+any use requires forward validation and an explicit bear-regime falsifier.
+EXP-82, H037d.

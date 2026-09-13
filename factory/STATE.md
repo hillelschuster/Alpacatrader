@@ -1695,3 +1695,19 @@ and whether it is just a time-of-day proxy. Population = OOS 541 fills.
   constant. Verdict DEPLOYABLE-PROXY. No adoption; H025 and the bot untouched.
 Artifacts: researches/PRE-REG-TOXICITY-03.md, factory/scripts/range5_live_check.py,
 factory/artifacts/lb18_range5_live.json/.parquet. EXP-81, H037c.
+
+## 2026-09-13q — PRE-REG-ROBUST-RANGE5-01: range5 is FRAGILE (2022 inversion)
+Five frozen stability tests on 1,392 fills (pf2 952). Verdict FRAGILE, failing
+only R1 (time stability): per-year pf2 gaps at the pooled threshold 0.13214 are
+2021 +1.91pp, **2022 -0.87pp (inverted, n=60/68)**, 2023 +3.17pp, 2024 +3.03pp,
+2025 +2.36pp but n_lo=26 < the frozen 30 floor so 2025 cannot count; counted 4,
+positive 3 -> fail. Everything else passes: window sensitivity (win 3/10/20:
++1.97/+2.24/+1.95pp), month-blocked LOMO (22/32 months positive = 68.8%; pooled
+LOMO gap +2.18pp, day-clustered bootstrap [+0.93,+3.29]pp), half-year sign (8/9),
+threshold profile (monotone +1.12/+2.15/+2.78/+3.03pp at q .33-.75, no flips).
+Interpretation: the conditioner is not a knife-edge artifact, but it is
+regime-conditional - it worked in 2021, 2023, 2024, 2025 and inverted in the
+2022 bear. Adoption implication: no; a fair-weather filter with unknown
+next-regime probability is not a safe H025 change. Forward paper remains the
+only test; H037d FRAGILE. Artifacts: range5_robust.py, lb18_range5_robust.json/.parquet.
+EXP-82.
