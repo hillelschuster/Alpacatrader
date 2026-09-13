@@ -1521,3 +1521,25 @@ Lesson: the census's raw vacuum supply is unqualified and toxic when harvested
 to rule-level P&L (rank1 lowers pf2); tightening improves quality but halves
 frequency. H025's ~1.9 qualified fills/day is near the frontier of this mechanism
 on this data. Artifacts: lb18_leader.py/.json/.parquet. EXP-73, H032/H033 RETIRED.
+
+## 2026-09-13g — Outside-review corrections + bonehead fixes + backbone pre-reg
+Corrections owned after review (verified against artifacts): (1) the "1.9/day
+frontier" mixed populations — forward-relevant rates are baseline all 1.859/day,
+frozen pf2 1.309/day, deployable A3b pf2 0.969/day; use ~1/day. (2) V2-AM's dev
+verdict: the ALL-fill dev population failed (+0.21%, 7/18) but dev pf2 is
+solidly positive (n=332, +1.35%, 11/18) — the dev gate was written for adoption,
+not for characterizing quality. (3) V1–V3 are restrictions of H025's anchors and
+cannot add fills by construction: they tested selectivity, not frequency
+existence; only V4 tested frequency expansion and is the strong negative.
+Free, behavior-neutral action taken: `flush_bot_ledger.py` now partitions
+forward trades by session (AM/PM) alongside pf_est / n_strict_est; compile + flat
+smoke test pass. Backbone prerequisites verified: local PIT covers vintages only
+2023-11-01..2026-08-20 (2021–2023 needs yolo22 staging); the leaderboard
+pipeline has no split filter in evidence (clean_month's split exclusion is an
+optional flag; certify_month.py has the overnight-ratio split_suspect check), so
+split certification is required before trusting older-year +100% states — and
+worth auditing on 2024–2026. Draft `researches/PRE-REG-BACKBONE-01.md` freezes
+the blinded protocol: debug on 2024 (burned), freeze, then reveal 2021–2023 once
+as a regime-replication test (REPLICATES/FAILS/MIXED rule; no adoption path).
+Needs user sign-off on the multi-GB staging. H034 (latent survivor-state) opened
+as research workstream 2, separate from the protected H025.

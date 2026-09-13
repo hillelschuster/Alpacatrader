@@ -34,6 +34,14 @@ def et_day(ts):
     return t.astimezone(ET).date().isoformat()
 
 
+def session_of(ts):
+    """Behavior-neutral forward partition: AM (before 12:00 ET) vs PM."""
+    t = datetime.fromisoformat(str(ts).replace("Z", "+00:00"))
+    if t.tzinfo is None:
+        t = t.replace(tzinfo=timezone.utc)
+    return "AM" if t.astimezone(ET).hour < 12 else "PM"
+
+
 def journal_events():
     ev = []
     for jp in sorted((ROOT / "data" / "forward" / "bot").glob("*/journal.jsonl")):
@@ -140,7 +148,8 @@ def main():
             "ret_gross": round(gross, 4) if gross is not None else None,
             # friction charged once per round trip (closing leg)
             "ret_net": round(net, 4) if net is not None else None,
-            "closed": closed, "t_exit": f["time"]})
+            "closed": closed, "session": session_of(f["time"]),
+            "t_exit": f["time"]})
 
     for t in trades:
         b = bids.get((et_day(t["t_exit"]), t["symbol"]))
@@ -170,6 +179,10 @@ def main():
             "n_strict_est": {
                 "0_1": partition("n_strict_est", lambda v: v is not None and int(v) <= 1),
                 "2plus": partition("n_strict_est", lambda v: v is not None and int(v) >= 2),
+            },
+            "session": {
+                "AM": partition("session", lambda v: v == "AM"),
+                "PM": partition("session", lambda v: v == "PM"),
             },
             "baseline": {"a3b_pf2_mean_net": 0.0113,
                          "note": "judge live paper vs A3b once n >= 30 fills"},
