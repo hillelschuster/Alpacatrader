@@ -253,6 +253,50 @@ def run() -> None:
     print("artifact ->", OUT / "lb18_toxicity.json")
 
 
+def _stats(sub: pd.DataFrame) -> dict:
+    if len(sub) == 0:
+        return {"n": 0}
+    m = sub.groupby("month")["ret"].mean()
+    return {"n": int(len(sub)), "mean": round(float(sub["ret"].mean()), 4),
+            "median": round(float(sub["ret"].median()), 4),
+            "months_pos": int((m > 0).sum()), "n_months": int(len(m)),
+            "worst_month": round(float(m.min()), 4)}
+
+
+def pf2_analysis(d: pd.DataFrame) -> dict:
+    d = d[np.isfinite(d["range5"])].copy()
+    med = float(d["range5"].median())
+    x = d[d["prior_flush"] >= 2].copy()
+    x["hi"] = x["range5"] >= med
+    base, hi, lo = _stats(x), _stats(x[x["hi"]]), _stats(x[~x["hi"]])
+    era = {e: {"base": _stats(g), "hi": _stats(g[g["hi"]]), "lo": _stats(g[~g["hi"]])}
+           for e, g in x.groupby("era", observed=True)}
+    rng = np.random.default_rng(SEED)
+    dayv = x["date"].to_numpy()
+    uniq = np.unique(dayv)
+    pos = {dt: np.where(dayv == dt)[0] for dt in uniq}
+    ret = x["ret"].to_numpy()
+    hi_mask = x["hi"].to_numpy()
+    diffs = []
+    for _ in range(N_BOOT):
+        picks = rng.choice(len(uniq), size=len(uniq), replace=True)
+        idx = np.concatenate([pos[uniq[p]] for p in picks])
+        diffs.append(ret[idx][hi_mask[idx]].mean() - ret[idx][~hi_mask[idx]].mean())
+    ci = (float(np.percentile(diffs, 2.5)), float(np.percentile(diffs, 97.5)))
+    checks = {
+        "mean_plus_0.30pp": hi["mean"] >= base["mean"] + 0.003,
+        "months_retained": hi["months_pos"] >= base["months_pos"] - 1,
+        "fill_retention_50": hi["n"] >= 0.5 * base["n"],
+        "bootstrap_ci_positive": ci[0] > 0,
+    }
+    out = {"range5_median_all": round(med, 5), "baseline_pf2": base, "high": hi,
+           "low": lo, "retention_share": round(hi["n"] / base["n"], 3),
+           "eras": era, "bootstrap_diff_ci": [round(v, 4) for v in ci],
+           "checks": checks, "passes": all(checks.values())}
+    print(json.dumps(out, indent=1, default=str))
+    return out
+
+
 def self_test() -> None:
     idx = list(range(10, 30))
     g = pd.DataFrame({
@@ -279,6 +323,7 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--self-test", action="store_true")
     ap.add_argument("--robust", action="store_true")
+    ap.add_argument("--pf2", action="store_true")
     a = ap.parse_args()
     if a.self_test:
         self_test()
@@ -291,5 +336,13 @@ if __name__ == "__main__":
                         "seen_data": True, "not_an_alpha_claim": True}},
                        indent=1, default=str))
         print("artifact ->", OUT / "lb18_toxicity_robust.json")
+    elif a.pf2:
+        d = pd.read_parquet(OUT / "lb18_toxicity.parquet")
+        res = pf2_analysis(d)
+        (OUT / "lb18_toxicity_pf2.json").write_text(
+            json.dumps({"study": "PRE-REG-TOXICITY-02", "results": res,
+                        "flags": {"measurement": True, "seen_data": True,
+                        "not_an_alpha_claim": True}}, indent=1, default=str))
+        print("artifact ->", OUT / "lb18_toxicity_pf2.json")
     else:
         run()

@@ -928,3 +928,21 @@ strata. High pre-anchor activity => better fills (Q4 +2.36%/trade, median
 (Q2 -1.40%). Live-computable from the bot's existing IEX bars at arm time.
 Status: candidate filter only (no adoption); TOXICITY-02 must test the pf2
 combination + practical cut + frequency tradeoff, then forward. EXP-79, H037a.
+
+---
+## 2026-09-13 — range5 filter on pf2 (PRE-REG-TOXICITY-02): passes, +24% dollars/day
+
+Range5 (trailing 5-min range / close at the anchor; >= 0.1321 = median of all
+fills) applied to the deployable pf2 population:
+- Pooled: base +1.29% (n=952, 39/49 months) -> high +2.21% (n=544, 40/48),
+  low +0.06% (n=408, 24/49); retention 57.1%; bootstrap hi-low
+  [+0.94,+3.25]pp; all four frozen checks pass.
+- OOS 2024-25: base +1.14%/12-14/worst -2.03% -> high +2.20%/13-14/worst
+  -0.72%; low -0.73%/6-14/worst -5.32%.
+- 2021-23: base +1.39%/27-35 -> high +2.21%/27-34 (worst month -11%, bear-era
+  tail unchanged); low +0.46%.
+- Dollars/day OOS: 1.49pp vs 1.85pp (+24%) with a far better worst month.
+Status: candidate filter only. Forward validation = reconstruct range5 for
+live fills from IEX historical at t0 and compare the high/low split to this
+expectation; adoption (a real H025 behavior change) requires its own pre-reg
+plus the user's go. EXP-80, H037b.

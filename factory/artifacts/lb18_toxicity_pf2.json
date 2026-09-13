@@ -1,0 +1,101 @@
+{
+ "study": "PRE-REG-TOXICITY-02",
+ "results": {
+  "range5_median_all": 0.13214,
+  "baseline_pf2": {
+   "n": 952,
+   "mean": 0.0129,
+   "median": 0.047,
+   "months_pos": 39,
+   "n_months": 49,
+   "worst_month": -0.0394
+  },
+  "high": {
+   "n": 544,
+   "mean": 0.0221,
+   "median": 0.1011,
+   "months_pos": 40,
+   "n_months": 48,
+   "worst_month": -0.11
+  },
+  "low": {
+   "n": 408,
+   "mean": 0.0006,
+   "median": -0.0006,
+   "months_pos": 24,
+   "n_months": 49,
+   "worst_month": -0.11
+  },
+  "retention_share": 0.571,
+  "eras": {
+   "2021-2023": {
+    "base": {
+     "n": 571,
+     "mean": 0.0139,
+     "median": 0.0465,
+     "months_pos": 27,
+     "n_months": 35,
+     "worst_month": -0.0394
+    },
+    "hi": {
+     "n": 301,
+     "mean": 0.0221,
+     "median": 0.1011,
+     "months_pos": 27,
+     "n_months": 34,
+     "worst_month": -0.11
+    },
+    "lo": {
+     "n": 270,
+     "mean": 0.0046,
+     "median": 0.0062,
+     "months_pos": 18,
+     "n_months": 35,
+     "worst_month": -0.11
+    }
+   },
+   "2024-2025": {
+    "base": {
+     "n": 381,
+     "mean": 0.0114,
+     "median": 0.0474,
+     "months_pos": 12,
+     "n_months": 14,
+     "worst_month": -0.0203
+    },
+    "hi": {
+     "n": 243,
+     "mean": 0.022,
+     "median": 0.1011,
+     "months_pos": 13,
+     "n_months": 14,
+     "worst_month": -0.0072
+    },
+    "lo": {
+     "n": 138,
+     "mean": -0.0073,
+     "median": -0.0113,
+     "months_pos": 6,
+     "n_months": 14,
+     "worst_month": -0.0532
+    }
+   }
+  },
+  "bootstrap_diff_ci": [
+   0.0094,
+   0.0325
+  ],
+  "checks": {
+   "mean_plus_0.30pp": true,
+   "months_retained": true,
+   "fill_retention_50": true,
+   "bootstrap_ci_positive": true
+  },
+  "passes": true
+ },
+ "flags": {
+  "measurement": true,
+  "seen_data": true,
+  "not_an_alpha_claim": true
+ }
+}

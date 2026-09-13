@@ -1659,3 +1659,22 @@ TOXICITY-02 (pf2 combination + practical cut + frequency tradeoff) and a
 forward test still required. No adoption, H025/bot untouched. Artifacts:
 researches/PRE-REG-TOXICITY-01.md (+A1), factory/scripts/toxicity_state.py,
 factory/artifacts/lb18_toxicity.json/.parquet/_robust.json. EXP-79, H037a.
+
+## 2026-09-13o — PRE-REG-TOXICITY-02: range5 filter passes on pf2 (+24% dollars/day, shallower tail)
+The surviving conditioner (range5 = trailing 5-min h-l range / close at the
+anchor; threshold = median of all 1,392 fills = 0.1321) applied to the
+deployable pf2 population. Pooled pf2 n=952: base +1.29% (39/49 months) vs
+high-range n=544 +2.21% (40/48) vs low n=408 +0.06% (24/49); retention 57.1%;
+day-clustered bootstrap of high-low [+0.94,+3.25]pp; all four frozen checks
+pass. OOS 2024-25: base 381/+1.14%/12-14/worst -2.03% -> high
+243/+2.20%/13-14/worst -0.72%; low 138/-0.73%/6-14/-5.32%. 2021-23: base
+571/+1.39%/27-35 -> high 301/+2.21%/27-34 (worst month -11%: the bear-era tail
+is unchanged); low 270/+0.46%. Dollars/day OOS: base 1.31 x 1.14 = 1.49pp vs
+high 0.84 x 2.20 = 1.85pp/day (+24%) with a much shallower worst month.
+CANDIDATE FILTER ONLY: no adoption, no bot change. Forward validation path:
+reconstruct range5 for live fills from Alpaca IEX historical bars at t0
+(no bot edit needed) and partition vs the A3b high/low expectation; adoption
+would need its own pre-reg. Caveats: fixed 0.1321 threshold is research-tape
+specific (live IEX bars are sparser); AM/time-of-day confound untested.
+Artifacts: researches/PRE-REG-TOXICITY-02.md, factory/scripts/toxicity_state.py,
+factory/artifacts/lb18_toxicity_pf2.json. EXP-80, H037b.
