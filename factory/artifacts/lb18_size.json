@@ -1,0 +1,506 @@
+{
+ "n_all": 541,
+ "n_pf2": 381,
+ "baseline": {
+  "all": {
+   "n": 541,
+   "mean": 0.0091,
+   "median": 0.1011,
+   "pos": 0.558,
+   "breach": 0.329,
+   "months_pos": 11,
+   "n_months": 14
+  },
+  "pf2": {
+   "n": 381,
+   "mean": 0.0114,
+   "median": 0.0474,
+   "pos": 0.559,
+   "breach": 0.304,
+   "months_pos": 12,
+   "n_months": 14
+  }
+ },
+ "all": [
+  {
+   "notional": 2000,
+   "opt": {
+    "n": 533,
+    "mean": 0.0096,
+    "median": 0.1011,
+    "pos": 0.559,
+    "breach": 0.326,
+    "months_pos": 11,
+    "n_months": 14
+   },
+   "pes": {
+    "n": 531,
+    "mean": 0.0092,
+    "median": 0.1011,
+    "pos": 0.557,
+    "breach": 0.328,
+    "months_pos": 11,
+    "n_months": 14
+   },
+   "opt_share": 0.985,
+   "pes_share": 0.982,
+   "exit_proxy_share": 0.893
+  },
+  {
+   "notional": 5000,
+   "opt": {
+    "n": 530,
+    "mean": 0.0093,
+    "median": 0.1011,
+    "pos": 0.558,
+    "breach": 0.328,
+    "months_pos": 11,
+    "n_months": 14
+   },
+   "pes": {
+    "n": 522,
+    "mean": 0.0088,
+    "median": 0.0855,
+    "pos": 0.556,
+    "breach": 0.33,
+    "months_pos": 11,
+    "n_months": 14
+   },
+   "opt_share": 0.98,
+   "pes_share": 0.965,
+   "exit_proxy_share": 0.893
+  },
+  {
+   "notional": 10000,
+   "opt": {
+    "n": 522,
+    "mean": 0.0088,
+    "median": 0.0855,
+    "pos": 0.556,
+    "breach": 0.33,
+    "months_pos": 11,
+    "n_months": 14
+   },
+   "pes": {
+    "n": 517,
+    "mean": 0.0086,
+    "median": 0.07,
+    "pos": 0.555,
+    "breach": 0.331,
+    "months_pos": 11,
+    "n_months": 14
+   },
+   "opt_share": 0.965,
+   "pes_share": 0.956,
+   "exit_proxy_share": 0.893
+  },
+  {
+   "notional": 25000,
+   "opt": {
+    "n": 511,
+    "mean": 0.0086,
+    "median": 0.07,
+    "pos": 0.556,
+    "breach": 0.331,
+    "months_pos": 11,
+    "n_months": 14
+   },
+   "pes": {
+    "n": 495,
+    "mean": 0.0091,
+    "median": 0.1011,
+    "pos": 0.558,
+    "breach": 0.331,
+    "months_pos": 11,
+    "n_months": 14
+   },
+   "opt_share": 0.945,
+   "pes_share": 0.915,
+   "exit_proxy_share": 0.884
+  },
+  {
+   "notional": 50000,
+   "opt": {
+    "n": 495,
+    "mean": 0.0091,
+    "median": 0.1011,
+    "pos": 0.558,
+    "breach": 0.331,
+    "months_pos": 11,
+    "n_months": 14
+   },
+   "pes": {
+    "n": 456,
+    "mean": 0.0075,
+    "median": 0.0481,
+    "pos": 0.55,
+    "breach": 0.344,
+    "months_pos": 10,
+    "n_months": 14
+   },
+   "opt_share": 0.915,
+   "pes_share": 0.843,
+   "exit_proxy_share": 0.876
+  },
+  {
+   "notional": 100000,
+   "opt": {
+    "n": 456,
+    "mean": 0.0075,
+    "median": 0.0481,
+    "pos": 0.55,
+    "breach": 0.344,
+    "months_pos": 10,
+    "n_months": 14
+   },
+   "pes": {
+    "n": 387,
+    "mean": 0.0039,
+    "median": 0.0337,
+    "pos": 0.532,
+    "breach": 0.37,
+    "months_pos": 9,
+    "n_months": 14
+   },
+   "opt_share": 0.843,
+   "pes_share": 0.715,
+   "exit_proxy_share": 0.867
+  },
+  {
+   "notional": 200000,
+   "opt": {
+    "n": 387,
+    "mean": 0.0039,
+    "median": 0.0337,
+    "pos": 0.532,
+    "breach": 0.37,
+    "months_pos": 9,
+    "n_months": 14
+   },
+   "pes": {
+    "n": 308,
+    "mean": 0.0045,
+    "median": 0.0326,
+    "pos": 0.536,
+    "breach": 0.364,
+    "months_pos": 9,
+    "n_months": 14
+   },
+   "opt_share": 0.715,
+   "pes_share": 0.569,
+   "exit_proxy_share": 0.854
+  }
+ ],
+ "pf2": [
+  {
+   "notional": 2000,
+   "opt": {
+    "n": 376,
+    "mean": 0.011,
+    "median": 0.0468,
+    "pos": 0.556,
+    "breach": 0.306,
+    "months_pos": 12,
+    "n_months": 14
+   },
+   "pes": {
+    "n": 374,
+    "mean": 0.0105,
+    "median": 0.0449,
+    "pos": 0.553,
+    "breach": 0.307,
+    "months_pos": 12,
+    "n_months": 14
+   },
+   "opt_share": 0.987,
+   "pes_share": 0.982,
+   "exit_proxy_share": 0.919
+  },
+  {
+   "notional": 5000,
+   "opt": {
+    "n": 374,
+    "mean": 0.0105,
+    "median": 0.0449,
+    "pos": 0.553,
+    "breach": 0.307,
+    "months_pos": 12,
+    "n_months": 14
+   },
+   "pes": {
+    "n": 369,
+    "mean": 0.0104,
+    "median": 0.0436,
+    "pos": 0.553,
+    "breach": 0.306,
+    "months_pos": 12,
+    "n_months": 14
+   },
+   "opt_share": 0.982,
+   "pes_share": 0.969,
+   "exit_proxy_share": 0.919
+  },
+  {
+   "notional": 10000,
+   "opt": {
+    "n": 369,
+    "mean": 0.0104,
+    "median": 0.0436,
+    "pos": 0.553,
+    "breach": 0.306,
+    "months_pos": 12,
+    "n_months": 14
+   },
+   "pes": {
+    "n": 367,
+    "mean": 0.0102,
+    "median": 0.0436,
+    "pos": 0.553,
+    "breach": 0.308,
+    "months_pos": 12,
+    "n_months": 14
+   },
+   "opt_share": 0.969,
+   "pes_share": 0.963,
+   "exit_proxy_share": 0.919
+  },
+  {
+   "notional": 25000,
+   "opt": {
+    "n": 363,
+    "mean": 0.0101,
+    "median": 0.0436,
+    "pos": 0.554,
+    "breach": 0.309,
+    "months_pos": 12,
+    "n_months": 14
+   },
+   "pes": {
+    "n": 351,
+    "mean": 0.0106,
+    "median": 0.0461,
+    "pos": 0.556,
+    "breach": 0.308,
+    "months_pos": 12,
+    "n_months": 14
+   },
+   "opt_share": 0.953,
+   "pes_share": 0.921,
+   "exit_proxy_share": 0.911
+  },
+  {
+   "notional": 50000,
+   "opt": {
+    "n": 351,
+    "mean": 0.0106,
+    "median": 0.0461,
+    "pos": 0.556,
+    "breach": 0.308,
+    "months_pos": 12,
+    "n_months": 14
+   },
+   "pes": {
+    "n": 325,
+    "mean": 0.0081,
+    "median": 0.0346,
+    "pos": 0.548,
+    "breach": 0.326,
+    "months_pos": 11,
+    "n_months": 14
+   },
+   "opt_share": 0.921,
+   "pes_share": 0.853,
+   "exit_proxy_share": 0.906
+  },
+  {
+   "notional": 100000,
+   "opt": {
+    "n": 325,
+    "mean": 0.0081,
+    "median": 0.0346,
+    "pos": 0.548,
+    "breach": 0.326,
+    "months_pos": 11,
+    "n_months": 14
+   },
+   "pes": {
+    "n": 269,
+    "mean": 0.0045,
+    "median": 0.0246,
+    "pos": 0.532,
+    "breach": 0.349,
+    "months_pos": 9,
+    "n_months": 14
+   },
+   "opt_share": 0.853,
+   "pes_share": 0.706,
+   "exit_proxy_share": 0.898
+  },
+  {
+   "notional": 200000,
+   "opt": {
+    "n": 269,
+    "mean": 0.0045,
+    "median": 0.0246,
+    "pos": 0.532,
+    "breach": 0.349,
+    "months_pos": 9,
+    "n_months": 14
+   },
+   "pes": {
+    "n": 211,
+    "mean": 0.0044,
+    "median": 0.0243,
+    "pos": 0.531,
+    "breach": 0.346,
+    "months_pos": 7,
+    "n_months": 14
+   },
+   "opt_share": 0.706,
+   "pes_share": 0.554,
+   "exit_proxy_share": 0.89
+  }
+ ],
+ "all_quartiles": {
+  "Q1": {
+   "n": 136,
+   "mean": 0.0154,
+   "median": 0.1011,
+   "pos": 0.603,
+   "breach": 0.279,
+   "months_pos": 11,
+   "n_months": 14
+  },
+  "Q2": {
+   "n": 135,
+   "mean": 0.0138,
+   "median": 0.1011,
+   "pos": 0.585,
+   "breach": 0.304,
+   "months_pos": 9,
+   "n_months": 14
+  },
+  "Q3": {
+   "n": 135,
+   "mean": 0.0198,
+   "median": 0.1011,
+   "pos": 0.607,
+   "breach": 0.281,
+   "months_pos": 11,
+   "n_months": 14
+  },
+  "Q4": {
+   "n": 135,
+   "mean": -0.0125,
+   "median": -0.0584,
+   "pos": 0.437,
+   "breach": 0.452,
+   "months_pos": 6,
+   "n_months": 14
+  }
+ },
+ "pf2_quartiles": {
+  "Q1": {
+   "n": 96,
+   "mean": 0.0268,
+   "median": 0.1011,
+   "pos": 0.625,
+   "breach": 0.219,
+   "months_pos": 11,
+   "n_months": 14
+  },
+  "Q2": {
+   "n": 95,
+   "mean": 0.011,
+   "median": 0.0408,
+   "pos": 0.568,
+   "breach": 0.305,
+   "months_pos": 6,
+   "n_months": 14
+  },
+  "Q3": {
+   "n": 95,
+   "mean": 0.0213,
+   "median": 0.1011,
+   "pos": 0.611,
+   "breach": 0.242,
+   "months_pos": 11,
+   "n_months": 14
+  },
+  "Q4": {
+   "n": 95,
+   "mean": -0.0139,
+   "median": -0.0662,
+   "pos": 0.432,
+   "breach": 0.453,
+   "months_pos": 5,
+   "n_months": 14
+  }
+ },
+ "spearman_vol_ret": {
+  "all": -0.086,
+  "pf2": -0.1415
+ },
+ "verdict": {
+  "size_safe_to": null,
+  "binding_failures": [
+   [
+    2000,
+    true,
+    true,
+    true,
+    false
+   ],
+   [
+    5000,
+    true,
+    true,
+    true,
+    false
+   ],
+   [
+    10000,
+    true,
+    true,
+    true,
+    false
+   ],
+   [
+    25000,
+    true,
+    false,
+    true,
+    false
+   ],
+   [
+    50000,
+    true,
+    true,
+    true,
+    false
+   ],
+   [
+    100000,
+    false,
+    false,
+    true,
+    false
+   ],
+   [
+    200000,
+    false,
+    false,
+    false,
+    false
+   ]
+  ],
+  "baseline_pf2": 0.0114
+ },
+ "flags": {
+  "measurement": true,
+  "seen_data": true,
+  "not_an_alpha_claim": true,
+  "queue_ignored": true,
+  "population": "frozen OOS 2024-01..2025-02"
+ }
+}

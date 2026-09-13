@@ -1626,3 +1626,20 @@ and ~6.8% of historical frozen fills sat on split-flagged days (audit_splits:
 baseline block now records a3b_pf2_mean_net_split_clean=0.010 and
 expected_split_flagged_share=0.068 with that instruction. No strategy change;
 documentation only, so Monday's read is not mis-specified.
+
+## 2026-09-13m — PRE-REG-SIZE-01: the edge is a small-order edge (sizing input)
+Measured on the existing SIP per-fill artifact (541 frozen OOS fills; flush_vol_at
+= shares traded at/below B in the fill minute). Findings: pf2 retained mean stays
++1.01..+1.10% with months+ 12/14 for sizes up to $50k per fill (retention 92-99%);
+it degrades to +0.81%/11-14 at $100k and +0.45%/9-14 at $200k, as larger orders
+can no longer fill the low-volume (better) micro-vacuum fills and retain the
+high-volume (worse) crash fills. Volume-at-bid quartiles: Q1 +2.68% / Q2 +1.10% /
+Q3 +2.13% / Q4 -1.39%, breach 21.9% vs 45.3%; Spearman(vol,ret) pf2 -0.141. The
+gradient is concentrated in cheap names: B in [4,10) rho -0.200, Q4-Q1 -5.5pp;
+B>=$10 rho +0.031, +1.0pp. The frozen gate fails at every N on the cliff term —
+no "size-safe" badge; practical read: current $2k is deep in the flat zone, and
+sizing to ~$25-50k costs ~0.1pp. Exit proxy (next-minute volume >= size) 89-92%
+throughout. No adoption, no bot change; sizing input for the real-money decision.
+H037 opened as an untested lead (pre-anchor activity state as toxicity
+conditioner). Artifacts: researches/PRE-REG-SIZE-01.md, factory/scripts/size_curve.py,
+factory/artifacts/lb18_size.json/.parquet. EXP-78, H036.

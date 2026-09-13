@@ -897,3 +897,20 @@ survivor persistence). EXP-76.
 Reading: intraday repeated-vacuum survival (pf>=2) is load-bearing; cross-day
 recurrence is "yesterday's attention" and underperforms fresh names. H034
 probes 1 and 2 are both retired; no cross-day survivor mechanism. EXP-77, H034b.
+
+---
+## 2026-09-13 — Size-response (PRE-REG-SIZE-01): the edge is a small-order edge
+
+Measured on the existing SIP per-fill artifact (541 frozen OOS fills).
+- Sizing: pf2 retention 98.7% @ $2k, 95.3% @ $25k, 92.1% @ $50k, 85.3% @ $100k,
+  70.6% @ $200k; retained mean flat at +1.01..+1.10% (months+ 12/14) through
+  $50k, then +0.81% (11/14) and +0.45% (9/14). Scaling small→moderate is cheap;
+  beyond ~$100k per fill the retained population degrades.
+- Why: volume-at-bid quartiles Q1 +2.68% / Q2 +1.10% / Q3 +2.13% / Q4 -1.39%
+  (breach 21.9% vs 45.3%). Larger orders cannot fill the low-volume
+  micro-vacuum fills (the better ones) and retain the high-volume crash fills.
+  Gradient concentrated in cheap names (B $4-10: rho -0.200, Q4-Q1 -5.5pp;
+  B>=$10: rho +0.031, +1.0pp).
+- No adoption; sizing input only. H036 recorded; H037 (pre-anchor activity as
+  toxicity conditioner) opened as an untested lead.
+Artifacts: factory/scripts/size_curve.py, factory/artifacts/lb18_size.json/.parquet. EXP-78.
