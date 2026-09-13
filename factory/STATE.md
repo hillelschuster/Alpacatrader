@@ -1560,3 +1560,23 @@ reproducible from the artifact). The certification pipeline's split_suspect
 counts (51–91/month) cluster on month starts (boundary artifacts); this
 exact-factor audit is the operative check and is a prerequisite for 2021–2023.
 Artifacts: audit_splits.py/.json/.parquet. EXP-74.
+
+## 2026-09-13i — BACKBONE REPLICATION: H025 pf>=2 travels across 2021-2023
+PRE-REG-BACKBONE-01 run (frozen engine, PIT-built tape, split-certified,
+reference parity exact 541/+0.91%, 381/+1.14%). VERDICT: REPLICATES.
+pf2: 2021 +1.08%/trade n=243 (8/11 months, worst -0.23%); 2022 +1.08% n=128
+(8/12, worst -3.94%); 2023 +1.95% n=200 (11/12, worst -2.09%). Pooled
+n=571, mean +1.39%, median +4.65%, months+ 27/35, worst -3.94% — comparable to
+or better than the original OOS (+1.14%/12-14) and dev (+1.20%/15-18).
+Split-clean pf2 is similar or stronger (2021 +1.44%, 2022 +1.15%, 2023 +1.97%).
+BUT the broad all-fills rule does not travel: +0.14% (5/11), +0.34% (7/12),
+−0.56% (5/12, worst month −8.19%); rank1 is flat in every year. Census per
+year: monotone rank gradient (1>2>3>>off) in 2021/2022/2023; AM>PM every year;
+event-level prior_flush inverse every year; halt-adjacent recovery higher
+(42.5%/23.9%/26.5%). Read: the pf>=2 SURVIVOR CONDITIONING is the load-bearing
+element of H025 — it is what survives regime change, while the broad form and
+the rank-1 form do not. Replication is backward-in-time, not a fresh OOS; no
+adoption change; H025 stays frozen and the live bot untouched.
+Artifacts: factory/scripts/lb18_backbone.py, factory/artifacts/lb18_backbone.json,
+lb18_backbone_fills.parquet; audit_splits rerun now covers 2021-2023 (167 flags).
+EXP-75, H035.

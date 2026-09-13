@@ -5,13 +5,28 @@
   "ratio_lo": 0.4,
   "flat_intraday": 0.3
  },
- "pairs": 7015,
- "flagged_reverse_like": 110,
+ "pairs": 15882,
+ "flagged_reverse_like": 167,
  "flagged_forward_like": 0,
- "exact_factor_share_reverse": 0.4273,
+ "exact_factor_share_reverse": 0.4551,
  "flagged_in_frozen_fills": 16,
  "flagged_in_a3b_fills": 14,
  "per_year": {
+  "2021": {
+   "pairs": 2695,
+   "flagged": 23,
+   "flagged_share": 0.00853
+  },
+  "2022": {
+   "pairs": 3098,
+   "flagged": 18,
+   "flagged_share": 0.00581
+  },
+  "2023": {
+   "pairs": 3074,
+   "flagged": 16,
+   "flagged_share": 0.0052
+  },
   "2024": {
    "pairs": 2819,
    "flagged": 28,
@@ -46,11 +61,27 @@
    "factor": 10.0
   },
   {
+   "date": "2021-03-15",
+   "ticker": "LEE",
+   "g0": 9.5249,
+   "ratio": 10.2375,
+   "intraday": -0.0794,
+   "factor": 10.0
+  },
+  {
    "date": "2026-08-25",
    "ticker": "REAX",
    "g0": 9.2458,
    "ratio": 10.0625,
    "intraday": 0.1556,
+   "factor": 10.0
+  },
+  {
+   "date": "2021-08-26",
+   "ticker": "PTMN",
+   "g0": 9.0167,
+   "ratio": 10.0167,
+   "intraday": -0.0129,
    "factor": 10.0
   },
   {
@@ -86,6 +117,30 @@
    "factor": NaN
   },
   {
+   "date": "2023-08-24",
+   "ticker": "AMC",
+   "g0": 7.0,
+   "ratio": 8.155,
+   "intraday": -0.1019,
+   "factor": 8.0
+  },
+  {
+   "date": "2021-07-19",
+   "ticker": "AHT",
+   "g0": 7.125,
+   "ratio": 8.095,
+   "intraday": 0.0283,
+   "factor": 8.0
+  },
+  {
+   "date": "2021-08-02",
+   "ticker": "GE",
+   "g0": 7.0308,
+   "ratio": 8.0493,
+   "intraday": -0.0345,
+   "factor": 8.0
+  },
+  {
    "date": "2025-12-02",
    "ticker": "HPP",
    "g0": 6.02,
@@ -99,6 +154,14 @@
    "g0": 5.1495,
    "ratio": 6.7636,
    "intraday": -0.1993,
+   "factor": NaN
+  },
+  {
+   "date": "2023-06-29",
+   "ticker": "SGTX",
+   "g0": 5.3587,
+   "ratio": 6.5897,
+   "intraday": -0.1712,
    "factor": NaN
   },
   {
@@ -150,6 +213,14 @@
    "factor": NaN
   },
   {
+   "date": "2022-02-28",
+   "ticker": "GECC",
+   "g0": 4.3333,
+   "ratio": 5.3333,
+   "intraday": 0.0375,
+   "factor": NaN
+  },
+  {
    "date": "2025-11-11",
    "ticker": "LXP",
    "g0": 4.2289,
@@ -158,76 +229,20 @@
    "factor": NaN
   },
   {
-   "date": "2025-01-24",
-   "ticker": "ALUR",
-   "g0": 2.5701,
-   "ratio": 5.1189,
-   "intraday": -0.2904,
+   "date": "2021-05-28",
+   "ticker": "TRST",
+   "g0": 4.2292,
+   "ratio": 5.2292,
+   "intraday": -0.0271,
    "factor": 5.0
   },
   {
-   "date": "2025-09-22",
-   "ticker": "GMRE",
-   "g0": 4.1095,
-   "ratio": 5.1095,
-   "intraday": -0.0122,
+   "date": "2023-12-04",
+   "ticker": "HUT",
+   "g0": 4.2588,
+   "ratio": 5.2237,
+   "intraday": -0.1226,
    "factor": 5.0
-  },
-  {
-   "date": "2025-05-27",
-   "ticker": "SBET",
-   "g0": 3.6866,
-   "ratio": 5.0642,
-   "intraday": 0.1392,
-   "factor": 5.0
-  },
-  {
-   "date": "2026-03-23",
-   "ticker": "XFLT",
-   "g0": 4.0629,
-   "ratio": 5.0629,
-   "intraday": -0.0258,
-   "factor": 5.0
-  },
-  {
-   "date": "2026-01-15",
-   "ticker": "AMCR",
-   "g0": 4.1314,
-   "ratio": 5.0464,
-   "intraday": -0.0291,
-   "factor": 5.0
-  },
-  {
-   "date": "2025-09-08",
-   "ticker": "OXLC",
-   "g0": 3.9794,
-   "ratio": 5.0069,
-   "intraday": -0.0166,
-   "factor": 5.0
-  },
-  {
-   "date": "2026-06-04",
-   "ticker": "STI",
-   "g0": 4.3313,
-   "ratio": 4.9147,
-   "intraday": -0.147,
-   "factor": 5.0
-  },
-  {
-   "date": "2025-12-03",
-   "ticker": "CAPR",
-   "g0": 4.5394,
-   "ratio": 4.7319,
-   "intraday": -0.1409,
-   "factor": NaN
-  },
-  {
-   "date": "2026-08-03",
-   "ticker": "TOP",
-   "g0": 3.8302,
-   "ratio": 4.7217,
-   "intraday": 0.0264,
-   "factor": NaN
   }
  ],
  "note": "reverse_like = huge overnight ratio with no intraday follow-through; real news gaps look similar, so treat as candidates, not proof",

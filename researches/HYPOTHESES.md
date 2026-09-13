@@ -841,3 +841,25 @@ the frozen stats: split-clean pf2 = +1.035% (11/14, worst −3.82% vs −2.03%).
 Alpaca data is verified RAW, so live sees them too. Conclusion: the frozen
 mechanism also works on genuine gainers (+1.03%/pf2), slightly less prettily;
 split certification is mandatory for the 2021–2023 extension. EXP-74.
+
+---
+## 2026-09-13 — BACKBONE REPLICATION (PRE-REG-BACKBONE-01): pf>=2 travels, the broad rule does not
+
+Frozen H025 engine on the PIT-built 2021-2023 tape (712 new days), split-
+certified, reference parity exact. **VERDICT: REPLICATES** under the frozen rule.
+
+| year | pf2 n | pf2 mean | months+ | worst month | split-clean pf2 |
+|---|---|---|---|---|---|
+| 2021 | 243 | +1.08% | 8/11 | −0.23% | +1.44% |
+| 2022 | 128 | +1.08% | 8/12 | −3.94% | +1.15% |
+| 2023 | 200 | +1.95% | 11/12 | −2.09% | +1.97% |
+
+Pooled: n=571, +1.39%/trade, median +4.65%, 27/35 months positive.
+
+The broad all-fills rule is weak or negative in these regimes (+0.14% / +0.34% /
+−0.56%; 2023 worst month −8.19%) and rank-1 is flat everywhere. The census per
+year shows the same monotone rank gradient, AM>PM, event-level inverse
+prior_flush, and higher halt-adjacent recovery. Conclusion: the pf>=2 survivor
+conditioning is the load-bearing element; it survives regime change while the
+broad and rank-1 forms do not. Replication is backward-in-time, not OOS; no
+adoption change; H025 remains frozen. EXP-75, H035.

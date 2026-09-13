@@ -1,0 +1,433 @@
+{
+ "study": "PRE-REG-BACKBONE-01",
+ "rule": "frozen H025 engine (lb18_oos.run_engine) on PIT-built tape",
+ "reference": {
+  "months": 14,
+  "days": 291,
+  "fills": 541,
+  "all": {
+   "n": 541,
+   "mean": 0.0091,
+   "med": 0.1011,
+   "pos": 0.558,
+   "months_pos": 11,
+   "n_months": 14,
+   "worst_month": -0.0251,
+   "fills_per_day": 1.859
+  },
+  "pf2": {
+   "n": 381,
+   "mean": 0.0114,
+   "med": 0.0474,
+   "pos": 0.559,
+   "months_pos": 12,
+   "n_months": 14,
+   "worst_month": -0.0203,
+   "fills_per_day": 1.309
+  },
+  "rank1": {
+   "n": 443,
+   "mean": 0.0076,
+   "med": 0.07,
+   "pos": 0.549,
+   "months_pos": 11,
+   "n_months": 14,
+   "worst_month": -0.0226,
+   "fills_per_day": 1.522
+  },
+  "clean_all": {
+   "n": 504,
+   "mean": 0.0082,
+   "med": 0.0481,
+   "pos": 0.554,
+   "months_pos": 11,
+   "n_months": 14,
+   "worst_month": -0.0218
+  },
+  "clean_pf2": {
+   "n": 354,
+   "mean": 0.0104,
+   "med": 0.0422,
+   "pos": 0.554,
+   "months_pos": 11,
+   "n_months": 14,
+   "worst_month": -0.0382
+  },
+  "flagged_fills": 37
+ },
+ "split_flags_by_year": {
+  "2021": 23,
+  "2022": 18,
+  "2023": 16,
+  "2024": 28,
+  "2025": 54,
+  "2026": 28
+ },
+ "years": {
+  "2021": {
+   "engine": {
+    "months": 11,
+    "days": 233,
+    "fills": 350,
+    "all": {
+     "n": 350,
+     "mean": 0.0014,
+     "med": 0.0173,
+     "pos": 0.543,
+     "months_pos": 5,
+     "n_months": 11,
+     "worst_month": -0.0197,
+     "fills_per_day": 1.502
+    },
+    "pf2": {
+     "n": 243,
+     "mean": 0.0108,
+     "med": 0.0351,
+     "pos": 0.572,
+     "months_pos": 8,
+     "n_months": 11,
+     "worst_month": -0.0023,
+     "fills_per_day": 1.043
+    },
+    "rank1": {
+     "n": 275,
+     "mean": 0.0008,
+     "med": 0.0117,
+     "pos": 0.538,
+     "months_pos": 5,
+     "n_months": 11,
+     "worst_month": -0.0239,
+     "fills_per_day": 1.18
+    },
+    "clean_all": {
+     "n": 333,
+     "mean": 0.0046,
+     "med": 0.026,
+     "pos": 0.556,
+     "months_pos": 7,
+     "n_months": 11,
+     "worst_month": -0.0197
+    },
+    "clean_pf2": {
+     "n": 233,
+     "mean": 0.0144,
+     "med": 0.0416,
+     "pos": 0.592,
+     "months_pos": 10,
+     "n_months": 11,
+     "worst_month": -0.0018
+    },
+    "flagged_fills": 17
+   },
+   "census": {
+    "days": 233,
+    "n_events": 9451,
+    "events_per_day": 40.562,
+    "recovered_30m": 0.1585,
+    "rank": {
+     "1": {
+      "n": 1683,
+      "rec": 0.3316,
+      "t_rec_med": 6.0,
+      "adv_p05": -0.1721
+     },
+     "2": {
+      "n": 1261,
+      "rec": 0.2522,
+      "t_rec_med": 5.0,
+      "adv_p05": -0.1556
+     },
+     "3": {
+      "n": 1002,
+      "rec": 0.1826,
+      "t_rec_med": 5.0,
+      "adv_p05": -0.1398
+     },
+     "off": {
+      "n": 5505,
+      "rec": 0.0797,
+      "t_rec_med": 13.0,
+      "adv_p05": -0.0916
+     }
+    },
+    "prior_flush": {
+     "0": {
+      "n": 1936,
+      "rec": 0.2366,
+      "t_rec_med": 1.0,
+      "adv_p05": -0.1409
+     },
+     "1": {
+      "n": 1563,
+      "rec": 0.167,
+      "t_rec_med": 9.0,
+      "adv_p05": -0.1381
+     },
+     "2plus": {
+      "n": 5952,
+      "rec": 0.1309,
+      "t_rec_med": 11.0,
+      "adv_p05": -0.1217
+     }
+    },
+    "am_rec": 0.2203,
+    "pm_rec": 0.1019,
+    "halt_share": 0.0366,
+    "halt": {
+     "n": 346,
+     "rec": 0.4249,
+     "t_rec_med": 1.0,
+     "adv_p05": -0.193
+    }
+   }
+  },
+  "2022": {
+   "engine": {
+    "months": 12,
+    "days": 251,
+    "fills": 190,
+    "all": {
+     "n": 190,
+     "mean": 0.0034,
+     "med": 0.0202,
+     "pos": 0.553,
+     "months_pos": 7,
+     "n_months": 12,
+     "worst_month": -0.0264,
+     "fills_per_day": 0.757
+    },
+    "pf2": {
+     "n": 128,
+     "mean": 0.0108,
+     "med": 0.0277,
+     "pos": 0.578,
+     "months_pos": 8,
+     "n_months": 12,
+     "worst_month": -0.0394,
+     "fills_per_day": 0.51
+    },
+    "rank1": {
+     "n": 172,
+     "mean": 0.0015,
+     "med": 0.0197,
+     "pos": 0.547,
+     "months_pos": 7,
+     "n_months": 12,
+     "worst_month": -0.0397,
+     "fills_per_day": 0.685
+    },
+    "clean_all": {
+     "n": 182,
+     "mean": 0.0039,
+     "med": 0.0274,
+     "pos": 0.56,
+     "months_pos": 7,
+     "n_months": 12,
+     "worst_month": -0.0264
+    },
+    "clean_pf2": {
+     "n": 125,
+     "mean": 0.0115,
+     "med": 0.0278,
+     "pos": 0.584,
+     "months_pos": 8,
+     "n_months": 12,
+     "worst_month": -0.0394
+    },
+    "flagged_fills": 8
+   },
+   "census": {
+    "days": 251,
+    "n_events": 8004,
+    "events_per_day": 31.888,
+    "recovered_30m": 0.1204,
+    "rank": {
+     "1": {
+      "n": 1550,
+      "rec": 0.2348,
+      "t_rec_med": 4.0,
+      "adv_p05": -0.1472
+     },
+     "2": {
+      "n": 1082,
+      "rec": 0.1701,
+      "t_rec_med": 5.0,
+      "adv_p05": -0.1314
+     },
+     "3": {
+      "n": 747,
+      "rec": 0.1124,
+      "t_rec_med": 8.0,
+      "adv_p05": -0.1254
+     },
+     "off": {
+      "n": 4625,
+      "rec": 0.0718,
+      "t_rec_med": 13.0,
+      "adv_p05": -0.0895
+     }
+    },
+    "prior_flush": {
+     "0": {
+      "n": 1778,
+      "rec": 0.1766,
+      "t_rec_med": 2.0,
+      "adv_p05": -0.1221
+     },
+     "1": {
+      "n": 1354,
+      "rec": 0.1329,
+      "t_rec_med": 8.0,
+      "adv_p05": -0.1187
+     },
+     "2plus": {
+      "n": 4872,
+      "rec": 0.0965,
+      "t_rec_med": 11.0,
+      "adv_p05": -0.1135
+     }
+    },
+    "am_rec": 0.1679,
+    "pm_rec": 0.0775,
+    "halt_share": 0.0632,
+    "halt": {
+     "n": 506,
+     "rec": 0.2391,
+     "t_rec_med": 1.0,
+     "adv_p05": -0.1404
+    }
+   }
+  },
+  "2023": {
+   "engine": {
+    "months": 12,
+    "days": 250,
+    "fills": 311,
+    "all": {
+     "n": 311,
+     "mean": -0.0056,
+     "med": 0.0078,
+     "pos": 0.514,
+     "months_pos": 5,
+     "n_months": 12,
+     "worst_month": -0.0819,
+     "fills_per_day": 1.244
+    },
+    "pf2": {
+     "n": 200,
+     "mean": 0.0195,
+     "med": 0.1011,
+     "pos": 0.595,
+     "months_pos": 11,
+     "n_months": 12,
+     "worst_month": -0.0209,
+     "fills_per_day": 0.8
+    },
+    "rank1": {
+     "n": 252,
+     "mean": -0.0021,
+     "med": 0.0167,
+     "pos": 0.528,
+     "months_pos": 6,
+     "n_months": 12,
+     "worst_month": -0.0819,
+     "fills_per_day": 1.008
+    },
+    "clean_all": {
+     "n": 307,
+     "mean": -0.0045,
+     "med": 0.0086,
+     "pos": 0.518,
+     "months_pos": 5,
+     "n_months": 12,
+     "worst_month": -0.0759
+    },
+    "clean_pf2": {
+     "n": 199,
+     "mean": 0.0197,
+     "med": 0.1011,
+     "pos": 0.598,
+     "months_pos": 11,
+     "n_months": 12,
+     "worst_month": -0.0215
+    },
+    "flagged_fills": 4
+   },
+   "census": {
+    "days": 250,
+    "n_events": 7822,
+    "events_per_day": 31.288,
+    "recovered_30m": 0.1748,
+    "rank": {
+     "1": {
+      "n": 1535,
+      "rec": 0.3368,
+      "t_rec_med": 2.0,
+      "adv_p05": -0.2108
+     },
+     "2": {
+      "n": 998,
+      "rec": 0.2565,
+      "t_rec_med": 3.0,
+      "adv_p05": -0.1791
+     },
+     "3": {
+      "n": 734,
+      "rec": 0.2071,
+      "t_rec_med": 6.0,
+      "adv_p05": -0.1758
+     },
+     "off": {
+      "n": 4555,
+      "rec": 0.097,
+      "t_rec_med": 13.0,
+      "adv_p05": -0.1088
+     }
+    },
+    "prior_flush": {
+     "0": {
+      "n": 1835,
+      "rec": 0.2414,
+      "t_rec_med": 3.0,
+      "adv_p05": -0.1687
+     },
+     "1": {
+      "n": 1376,
+      "rec": 0.186,
+      "t_rec_med": 8.0,
+      "adv_p05": -0.1644
+     },
+     "2plus": {
+      "n": 4611,
+      "rec": 0.1449,
+      "t_rec_med": 7.0,
+      "adv_p05": -0.1524
+     }
+    },
+    "am_rec": 0.2372,
+    "pm_rec": 0.1035,
+    "halt_share": 0.0969,
+    "halt": {
+     "n": 758,
+     "rec": 0.2652,
+     "t_rec_med": 1.0,
+     "adv_p05": -0.1955
+    }
+   }
+  }
+ },
+ "verdict": "REPLICATES",
+ "verdict_detail": {
+  "gradient": [
+   true,
+   true,
+   true
+  ]
+ },
+ "flags": {
+  "measurement": true,
+  "seen_data": false,
+  "not_an_alpha_claim": true,
+  "note": "2021-2023 were unexamined before this run; replication of a frozen mechanism, not OOS"
+ }
+}
