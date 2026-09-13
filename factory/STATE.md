@@ -1643,3 +1643,19 @@ throughout. No adoption, no bot change; sizing input for the real-money decision
 H037 opened as an untested lead (pre-anchor activity state as toxicity
 conditioner). Artifacts: researches/PRE-REG-SIZE-01.md, factory/scripts/size_curve.py,
 factory/artifacts/lb18_size.json/.parquet. EXP-78, H036.
+
+## 2026-09-13n — PRE-REG-TOXICITY-01 + A1: first surviving conditioner (range5)
+Can causal pre-anchor state mark toxic flush fills? 1,392 fills (541 OOS +
+851 backbone), features from grid bars <= t0. vol5_ratio (trailing 5-min volume
+vs session median) passed the initial gate but DIED on permutation (p=0.3965)
+-> RETIRED. range5 (trailing 5-min high-low range / close at t0) SURVIVED every
+frozen check: extreme-quartile diff +3.76pp (Q4 mean +2.36%/median +10.11%
+target/36-of-46 months vs Q2 -1.40%), day-clustered bootstrap 95% CI
+[+2.15,+5.38]pp, permutation p=0.0000, both eras (+4.50pp 2024-25, +3.16pp
+2021-23), both price bands, >=2 of 3 rank strata. Direction: HIGH pre-anchor
+activity = better fills (attention/battle state), LOW = dead-tape fills.
+Live-computable at arm time from the bot's existing IEX bars. Candidate only;
+TOXICITY-02 (pf2 combination + practical cut + frequency tradeoff) and a
+forward test still required. No adoption, H025/bot untouched. Artifacts:
+researches/PRE-REG-TOXICITY-01.md (+A1), factory/scripts/toxicity_state.py,
+factory/artifacts/lb18_toxicity.json/.parquet/_robust.json. EXP-79, H037a.

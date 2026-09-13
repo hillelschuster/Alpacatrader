@@ -914,3 +914,17 @@ Measured on the existing SIP per-fill artifact (541 frozen OOS fills).
 - No adoption; sizing input only. H036 recorded; H037 (pre-anchor activity as
   toxicity conditioner) opened as an untested lead.
 Artifacts: factory/scripts/size_curve.py, factory/artifacts/lb18_size.json/.parquet. EXP-78.
+
+---
+## 2026-09-13 — Pre-anchor toxicity conditioner (PRE-REG-TOXICITY-01 + A1): range5 survives
+
+1,392 fills (2021-2026). vol5_ratio passed the initial gate but died on
+permutation (p=0.40) -> retired. **range5** (trailing 5-min range / close at the
+anchor) survived every frozen robustness check: extreme-quartile diff +3.76pp,
+day-clustered bootstrap CI [+2.15,+5.38]pp, permutation p=0.0000, positive in
+both eras (+4.50pp 2024-25, +3.16pp 2021-23), both price bands, >=2 rank
+strata. High pre-anchor activity => better fills (Q4 +2.36%/trade, median
++10.11% = target hits, 36/46 months); low-activity anchors are dead-tape fills
+(Q2 -1.40%). Live-computable from the bot's existing IEX bars at arm time.
+Status: candidate filter only (no adoption); TOXICITY-02 must test the pf2
+combination + practical cut + frequency tradeoff, then forward. EXP-79, H037a.

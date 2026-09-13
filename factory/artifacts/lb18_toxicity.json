@@ -1,0 +1,447 @@
+{
+ "study": "PRE-REG-TOXICITY-01",
+ "n_fills": 1392,
+ "pop_mean": 0.0031,
+ "features": {
+  "vol5_ratio": {
+   "feature": "vol5_ratio",
+   "n": 1392,
+   "bins": [
+    {
+     "bin": "0",
+     "n": 348,
+     "mean": -0.0028,
+     "median": 0.0112,
+     "fc_neg": 0.56,
+     "stop_like": 0.33,
+     "months_pos": 25,
+     "n_months": 48
+    },
+    {
+     "bin": "1",
+     "n": 348,
+     "mean": 0.0046,
+     "median": 0.0141,
+     "fc_neg": 0.48,
+     "stop_like": 0.299,
+     "months_pos": 24,
+     "n_months": 49
+    },
+    {
+     "bin": "2",
+     "n": 348,
+     "mean": 0.001,
+     "median": 0.0171,
+     "fc_neg": 0.506,
+     "stop_like": 0.336,
+     "months_pos": 20,
+     "n_months": 48
+    },
+    {
+     "bin": "3",
+     "n": 348,
+     "mean": 0.0097,
+     "median": 0.1011,
+     "fc_neg": 0.509,
+     "stop_like": 0.371,
+     "months_pos": 26,
+     "n_months": 48
+    }
+   ],
+   "eras": {
+    "2021-2023": [
+     {
+      "bin": "0",
+      "n": 213,
+      "mean": -0.0034,
+      "median": 0.017,
+      "fc_neg": 0.577,
+      "stop_like": 0.296,
+      "months_pos": 18,
+      "n_months": 34
+     },
+     {
+      "bin": "1",
+      "n": 214,
+      "mean": 0.0008,
+      "median": 0.0029,
+      "fc_neg": 0.519,
+      "stop_like": 0.313,
+      "months_pos": 17,
+      "n_months": 35
+     },
+     {
+      "bin": "2",
+      "n": 211,
+      "mean": -0.0042,
+      "median": 0.0062,
+      "fc_neg": 0.479,
+      "stop_like": 0.341,
+      "months_pos": 13,
+      "n_months": 34
+     },
+     {
+      "bin": "3",
+      "n": 213,
+      "mean": 0.0039,
+      "median": 0.1011,
+      "fc_neg": 0.512,
+      "stop_like": 0.399,
+      "months_pos": 18,
+      "n_months": 34
+     }
+    ],
+    "2024-2025": [
+     {
+      "bin": "0",
+      "n": 135,
+      "mean": -0.002,
+      "median": -0.002,
+      "fc_neg": 0.533,
+      "stop_like": 0.385,
+      "months_pos": 7,
+      "n_months": 14
+     },
+     {
+      "bin": "1",
+      "n": 134,
+      "mean": 0.0106,
+      "median": 0.0326,
+      "fc_neg": 0.418,
+      "stop_like": 0.276,
+      "months_pos": 7,
+      "n_months": 14
+     },
+     {
+      "bin": "2",
+      "n": 137,
+      "mean": 0.009,
+      "median": 0.1011,
+      "fc_neg": 0.547,
+      "stop_like": 0.328,
+      "months_pos": 7,
+      "n_months": 14
+     },
+     {
+      "bin": "3",
+      "n": 135,
+      "mean": 0.0188,
+      "median": 0.1011,
+      "fc_neg": 0.504,
+      "stop_like": 0.326,
+      "months_pos": 8,
+      "n_months": 14
+     }
+    ]
+   },
+   "spearman": {
+    "2021-2023": 0.0318,
+    "2024-2025": 0.0667,
+    "pooled": 0.0464
+   }
+  },
+  "range5": {
+   "feature": "range5",
+   "n": 1392,
+   "bins": [
+    {
+     "bin": "0",
+     "n": 348,
+     "mean": -0.0029,
+     "median": 0.0062,
+     "fc_neg": 0.506,
+     "stop_like": 0.279,
+     "months_pos": 20,
+     "n_months": 49
+    },
+    {
+     "bin": "1",
+     "n": 348,
+     "mean": -0.014,
+     "median": -0.0149,
+     "fc_neg": 0.58,
+     "stop_like": 0.397,
+     "months_pos": 18,
+     "n_months": 49
+    },
+    {
+     "bin": "2",
+     "n": 348,
+     "mean": 0.0057,
+     "median": 0.0849,
+     "fc_neg": 0.511,
+     "stop_like": 0.348,
+     "months_pos": 31,
+     "n_months": 49
+    },
+    {
+     "bin": "3",
+     "n": 348,
+     "mean": 0.0236,
+     "median": 0.1011,
+     "fc_neg": 0.457,
+     "stop_like": 0.313,
+     "months_pos": 36,
+     "n_months": 46
+    }
+   ],
+   "eras": {
+    "2021-2023": [
+     {
+      "bin": "0",
+      "n": 217,
+      "mean": -0.0044,
+      "median": 0.005,
+      "fc_neg": 0.544,
+      "stop_like": 0.272,
+      "months_pos": 14,
+      "n_months": 35
+     },
+     {
+      "bin": "1",
+      "n": 231,
+      "mean": -0.0151,
+      "median": -0.0186,
+      "fc_neg": 0.55,
+      "stop_like": 0.403,
+      "months_pos": 12,
+      "n_months": 35
+     },
+     {
+      "bin": "2",
+      "n": 202,
+      "mean": 0.0026,
+      "median": 0.0202,
+      "fc_neg": 0.5,
+      "stop_like": 0.342,
+      "months_pos": 21,
+      "n_months": 35
+     },
+     {
+      "bin": "3",
+      "n": 201,
+      "mean": 0.0166,
+      "median": 0.1011,
+      "fc_neg": 0.488,
+      "stop_like": 0.328,
+      "months_pos": 25,
+      "n_months": 32
+     }
+    ],
+    "2024-2025": [
+     {
+      "bin": "0",
+      "n": 131,
+      "mean": -0.0002,
+      "median": 0.0069,
+      "fc_neg": 0.443,
+      "stop_like": 0.29,
+      "months_pos": 6,
+      "n_months": 14
+     },
+     {
+      "bin": "1",
+      "n": 117,
+      "mean": -0.0117,
+      "median": -0.0135,
+      "fc_neg": 0.641,
+      "stop_like": 0.385,
+      "months_pos": 6,
+      "n_months": 14
+     },
+     {
+      "bin": "2",
+      "n": 146,
+      "mean": 0.01,
+      "median": 0.1011,
+      "fc_neg": 0.527,
+      "stop_like": 0.356,
+      "months_pos": 10,
+      "n_months": 14
+     },
+     {
+      "bin": "3",
+      "n": 147,
+      "mean": 0.0332,
+      "median": 0.1011,
+      "fc_neg": 0.415,
+      "stop_like": 0.293,
+      "months_pos": 11,
+      "n_months": 14
+     }
+    ]
+   },
+   "spearman": {
+    "2021-2023": 0.121,
+    "2024-2025": 0.1672,
+    "pooled": 0.1393
+   }
+  },
+  "pullback": {
+   "feature": "pullback",
+   "n": 1392,
+   "bins": [
+    {
+     "bin": "0",
+     "n": 1392,
+     "mean": 0.0031,
+     "median": 0.027,
+     "fc_neg": 0.514,
+     "stop_like": 0.334,
+     "months_pos": 28,
+     "n_months": 49
+    }
+   ],
+   "eras": {
+    "2021-2023": [
+     {
+      "bin": "0",
+      "n": 851,
+      "mean": -0.0007,
+      "median": 0.0165,
+      "fc_neg": 0.522,
+      "stop_like": 0.337,
+      "months_pos": 17,
+      "n_months": 35
+     }
+    ],
+    "2024-2025": [
+     {
+      "bin": "0",
+      "n": 541,
+      "mean": 0.0091,
+      "median": 0.1011,
+      "fc_neg": 0.501,
+      "stop_like": 0.329,
+      "months_pos": 11,
+      "n_months": 14
+     }
+    ]
+   },
+   "spearman": {
+    "2021-2023": 0.015,
+    "2024-2025": 0.0912,
+    "pooled": 0.0457
+   }
+  },
+  "price_band": {
+   "feature": "price_band",
+   "n": 1392,
+   "bins": [
+    {
+     "bin": "$4-10",
+     "n": 601,
+     "mean": 0.0125,
+     "median": 0.0436,
+     "fc_neg": 0.464,
+     "stop_like": 0.298,
+     "months_pos": 36,
+     "n_months": 49
+    },
+    {
+     "bin": ">=$10",
+     "n": 791,
+     "mean": -0.004,
+     "median": 0.0122,
+     "fc_neg": 0.551,
+     "stop_like": 0.362,
+     "months_pos": 21,
+     "n_months": 49
+    }
+   ],
+   "eras": {
+    "2021-2023": [
+     {
+      "bin": "$4-10",
+      "n": 331,
+      "mean": 0.0091,
+      "median": 0.0224,
+      "fc_neg": 0.465,
+      "stop_like": 0.308,
+      "months_pos": 24,
+      "n_months": 35
+     },
+     {
+      "bin": ">=$10",
+      "n": 520,
+      "mean": -0.0069,
+      "median": 0.0101,
+      "fc_neg": 0.558,
+      "stop_like": 0.356,
+      "months_pos": 16,
+      "n_months": 35
+     }
+    ],
+    "2024-2025": [
+     {
+      "bin": "$4-10",
+      "n": 270,
+      "mean": 0.0166,
+      "median": 0.1011,
+      "fc_neg": 0.463,
+      "stop_like": 0.285,
+      "months_pos": 12,
+      "n_months": 14
+     },
+     {
+      "bin": ">=$10",
+      "n": 271,
+      "mean": 0.0017,
+      "median": 0.0297,
+      "fc_neg": 0.539,
+      "stop_like": 0.373,
+      "months_pos": 5,
+      "n_months": 14
+     }
+    ]
+   },
+   "spearman": {}
+  }
+ },
+ "gate": {
+  "vol5_ratio": {
+   "pass": true,
+   "why": [],
+   "best": "3",
+   "worst": "0",
+   "kept_n": 1044,
+   "kept_mean": 0.0051
+  },
+  "range5": {
+   "pass": true,
+   "why": [],
+   "best": "3",
+   "worst": "1",
+   "kept_n": 1044,
+   "kept_mean": 0.0088
+  },
+  "pullback": {
+   "pass": false,
+   "why": [
+    "diff<0.50pp",
+    "direction not in both eras",
+    "retention<60%",
+    "retained mean below population"
+   ],
+   "best": "0",
+   "worst": "0",
+   "kept_n": 0,
+   "kept_mean": NaN
+  },
+  "price_band": {
+   "pass": false,
+   "why": [
+    "retention<60%"
+   ],
+   "best": "$4-10",
+   "worst": ">=$10",
+   "kept_n": 601,
+   "kept_mean": 0.0125
+  }
+ },
+ "flags": {
+  "measurement": true,
+  "seen_data": true,
+  "not_an_alpha_claim": true
+ }
+}

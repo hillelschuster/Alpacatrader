@@ -1,0 +1,60 @@
+{
+ "study": "PRE-REG-TOXICITY-01 Amendment A1",
+ "results": {
+  "vol5_ratio": {
+   "obs_diff": 0.0125,
+   "ci95": [
+    0.0049,
+    0.0313
+   ],
+   "p_perm": 0.3965,
+   "eras": {
+    "2024-2025": 0.0208,
+    "2021-2023": 0.0082
+   },
+   "rank_strata": {
+    "1": 0.0098,
+    "2": 0.033,
+    "3": null,
+    "0": null
+   },
+   "n_rank_positive": "2/2",
+   "price_strata": {
+    "<$4": null,
+    "$4-10": 0.0124,
+    ">=$10": 0.0142
+   },
+   "survives": false
+  },
+  "range5": {
+   "obs_diff": 0.0376,
+   "ci95": [
+    0.0215,
+    0.0538
+   ],
+   "p_perm": 0.0,
+   "eras": {
+    "2024-2025": 0.045,
+    "2021-2023": 0.0316
+   },
+   "rank_strata": {
+    "1": 0.0295,
+    "2": 0.0824,
+    "3": null,
+    "0": null
+   },
+   "n_rank_positive": "2/2",
+   "price_strata": {
+    "<$4": null,
+    "$4-10": 0.0522,
+    ">=$10": 0.027
+   },
+   "survives": true
+  }
+ },
+ "flags": {
+  "measurement": true,
+  "seen_data": true,
+  "not_an_alpha_claim": true
+ }
+}
