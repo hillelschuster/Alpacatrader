@@ -882,3 +882,18 @@ events over 1,401 days (2021-02..2026-08), hold-only net of 1% friction.
   recovery ⇒ event-minute control biased up +6.7%); absolute means used.
 Verdict: RETIRED (H034a). H034 remains open only for probe 2 (cross-day
 survivor persistence). EXP-76.
+
+---
+## 2026-09-13 — H034 probe 2 (PRE-REG-PERSIST-01): cross-day survivor selection NEGATIVE
+
+1,020 consecutive-day pairs; 1,392 frozen fills (2021-2023 + frozen OOS).
+- Persistence is real: survivor-day base 85.7%; P(surv|prev surv) 87.5% vs
+  73.9% for prev non-survivors (+13.6pp lift, both eras).
+- But selecting on it inverts the edge: prev-survivor fills n=105 mean −1.43%
+  (pf2 n=72 +0.66%) vs names absent from yesterday's tape n=1272 +0.47%
+  (pf2 n=869 +1.37%, median +5.09%, 40/49 months, both eras +). 91% of fills
+  are already fresh names, so there is little to filter.
+- Frozen gate NEGATIVE (n<200) and direction wrong.
+Reading: intraday repeated-vacuum survival (pf>=2) is load-bearing; cross-day
+recurrence is "yesterday's attention" and underperforms fresh names. H034
+probes 1 and 2 are both retired; no cross-day survivor mechanism. EXP-77, H034b.

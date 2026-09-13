@@ -1598,3 +1598,20 @@ recovered_30m, so the event-minute control benefits from the known recovery:
 +6.7% at 30m); the gate's diff term is therefore not meaningful and the absolute
 means carry the verdict. Artifacts: drift_survivor.py, lb18_drift.json/.parquet.
 EXP-76, H034a (RETIRED). H025 and the live bot untouched.
+
+## 2026-09-13k — PRE-REG-PERSIST-01 (H034 probe 2): cross-day survivor selection NEGATIVE
+1,020 consecutive-day (date,ticker) pairs from the census tape; 1,392 frozen
+fills joined (851 in 2021–2023 + 541 in 2024-01..2025-02).
+Persistence: survivor-day (>=2 vacuums) base rate 85.7%; P(surv | prev surv)
+87.5% vs P(surv | prev non-surv) 73.9% → lift +13.6pp, both eras. So the
+survivor state *is* partially predictable across days.
+But it does not pay: fills on prev-survivor names n=105 mean −1.43% (pf2 n=72
++0.66%, median −0.07%, 16/30 months) versus fills on names ABSENT from
+yesterday's tape n=1272 +0.47% (pf2 n=869 +1.37%, median +5.09%, 58% win,
+40/49 months, both eras positive). 91% of frozen fills are already fresh names.
+Frozen gate = NEGATIVE (pf2 prev-survivor n=72 < 200) and the direction is
+inverted versus the hypothesis: cross-day recurrence underperforms fresh
+attention, while in-session repeated vacuums (the pf>=2 condition already
+inside H025) remain what pays. Everything is measurement; H025 untouched.
+Artifacts: survivor_persist.py, lb18_persist.json/_fills.parquet. EXP-77,
+H034b (RETIRED).

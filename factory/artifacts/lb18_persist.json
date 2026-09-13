@@ -1,0 +1,117 @@
+{
+ "study": "H034 probe 2 - cross-day survivor persistence",
+ "flags": {
+  "measurement": true,
+  "seen_data": true,
+  "not_an_alpha_claim": true
+ },
+ "disclaimer": "post-hoc split of seen fills; candidate only, forward test required",
+ "n_days": 1401,
+ "persistence": {
+  "n_pairs": 1020,
+  "base_rate": 0.8569,
+  "p_surv_given_prev1": 0.8747,
+  "n_prev1": 886,
+  "p_surv_given_prev0": 0.7388,
+  "n_prev0": 134,
+  "lift": 0.1359,
+  "era_2021-2023": {
+   "n": 523,
+   "base": 0.8585,
+   "p1": 0.8839,
+   "p0": 0.7067
+  },
+  "era_2024+": {
+   "n": 497,
+   "base": 0.8551,
+   "p1": 0.8653,
+   "p0": 0.7797
+  }
+ },
+ "pf2_baseline": {
+  "tag": "pf2:baseline",
+  "n": 952,
+  "mean": 0.0129,
+  "median": 0.047,
+  "pos": 0.572,
+  "months_pos": 39,
+  "n_months": 49,
+  "worst_month": -0.0394
+ },
+ "fill_splits": [
+  {
+   "tag": "all:prev_survivor",
+   "n": 105,
+   "mean": -0.0143,
+   "median": -0.0156,
+   "pos": 0.467,
+   "months_pos": 15,
+   "n_months": 35,
+   "worst_month": -0.2102,
+   "era_2021_2023": -0.0235,
+   "era_2024_2025": 0.0066
+  },
+  {
+   "tag": "all:prev_nonsurvivor",
+   "n": 15,
+   "mean": -0.0123,
+   "median": -0.11,
+   "pos": 0.467,
+   "months_pos": 2,
+   "n_months": 7,
+   "worst_month": -0.1224,
+   "era_2021_2023": -0.0135,
+   "era_2024_2025": -0.0044
+  },
+  {
+   "tag": "all:prev_absent",
+   "n": 1272,
+   "mean": 0.0047,
+   "median": 0.0331,
+   "pos": 0.551,
+   "months_pos": 30,
+   "n_months": 49,
+   "worst_month": -0.0774,
+   "era_2021_2023": 0.0017,
+   "era_2024_2025": 0.0094
+  },
+  {
+   "tag": "pf2:prev_survivor",
+   "n": 72,
+   "mean": 0.0066,
+   "median": -0.0007,
+   "pos": 0.5,
+   "months_pos": 16,
+   "n_months": 30,
+   "worst_month": -0.1387,
+   "era_2021_2023": 0.0099,
+   "era_2024_2025": -0.0013
+  },
+  {
+   "tag": "pf2:prev_nonsurvivor",
+   "n": 11,
+   "mean": -0.0152,
+   "median": -0.11,
+   "pos": 0.455,
+   "months_pos": 1,
+   "n_months": 5,
+   "worst_month": -0.1224,
+   "era_2021_2023": -0.0176,
+   "era_2024_2025": -0.0044
+  },
+  {
+   "tag": "pf2:prev_absent",
+   "n": 869,
+   "mean": 0.0137,
+   "median": 0.0509,
+   "pos": 0.58,
+   "months_pos": 40,
+   "n_months": 49,
+   "worst_month": -0.0511,
+   "era_2021_2023": 0.0148,
+   "era_2024_2025": 0.0122
+  }
+ ],
+ "verdict": "NEGATIVE",
+ "verdict_basis": "insufficient prev-survivor pf2 fills"
+}
