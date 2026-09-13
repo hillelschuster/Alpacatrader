@@ -1615,3 +1615,14 @@ attention, while in-session repeated vacuums (the pf>=2 condition already
 inside H025) remain what pays. Everything is measurement; H025 untouched.
 Artifacts: survivor_persist.py, lb18_persist.json/_fills.parquet. EXP-77,
 H034b (RETIRED).
+
+## 2026-09-13l — Monday judging hazard recorded (raw vs split-clean baseline)
+Live Alpaca bars are raw/unadjusted (verified empirically on SIRI/LCID split
+days), so the live bot's movers and the frozen/backtest population both include
+split-fake gainers. Therefore the live paper fills must be judged against the
+**raw** A3b pf2 baseline (+1.13%, 10/14) — NOT the split-clean variant (+1.00%) —
+and ~6.8% of historical frozen fills sat on split-flagged days (audit_splits:
+37/541), where A3b reads +1.21% flagged vs +0.24% clean. `flush_bot_ledger.py`
+baseline block now records a3b_pf2_mean_net_split_clean=0.010 and
+expected_split_flagged_share=0.068 with that instruction. No strategy change;
+documentation only, so Monday's read is not mis-specified.

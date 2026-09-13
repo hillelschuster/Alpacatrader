@@ -184,8 +184,14 @@ def main():
                 "AM": partition("session", lambda v: v == "AM"),
                 "PM": partition("session", lambda v: v == "PM"),
             },
-            "baseline": {"a3b_pf2_mean_net": 0.0113,
-                         "note": "judge live paper vs A3b once n >= 30 fills"},
+            "baseline": {
+                "a3b_pf2_mean_net": 0.0113,
+                "a3b_pf2_mean_net_split_clean": 0.01,
+                "expected_split_flagged_share": 0.068,
+                "note": ("judge live paper vs the RAW A3b pf2 +1.13% once n>=30; live "
+                         "Alpaca bars are raw/unadjusted, so live fills include split-fake "
+                         "gainers exactly like the backtest - do not compare against the "
+                         "split-clean +1.00%")},
         }
     art = ROOT / "factory" / "artifacts" / "flush_bot_ledger.json"
     art.write_text(json.dumps(out, indent=1, default=str))
