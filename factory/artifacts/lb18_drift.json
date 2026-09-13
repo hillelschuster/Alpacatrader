@@ -1,0 +1,803 @@
+{
+ "study": "PRE-REG-DRIFT-01",
+ "flags": {
+  "measurement": true,
+  "seen_data": true,
+  "not_an_alpha_claim": true
+ },
+ "n_recovered_rows": 28164,
+ "summary": [
+  {
+   "dim": "all",
+   "cell": "all",
+   "H": 15,
+   "n": 9388,
+   "mean_net": -0.0004,
+   "ctrl_net": 0.0436,
+   "diff_pp": -4.391,
+   "months_pos": 28,
+   "n_months": 67,
+   "mfe_med": 0.0827,
+   "mae_med": -0.073,
+   "2021-2023": {
+    "n": 3818,
+    "mean_net": -0.0009
+   },
+   "2024-2026": {
+    "n": 5570,
+    "mean_net": -0.0
+   },
+   "verdict": "n/a"
+  },
+  {
+   "dim": "all",
+   "cell": "all",
+   "H": 30,
+   "n": 9388,
+   "mean_net": 0.0022,
+   "ctrl_net": 0.0673,
+   "diff_pp": -6.504,
+   "months_pos": 32,
+   "n_months": 67,
+   "mfe_med": 0.1052,
+   "mae_med": -0.0933,
+   "2021-2023": {
+    "n": 3818,
+    "mean_net": 0.0044
+   },
+   "2024-2026": {
+    "n": 5570,
+    "mean_net": 0.0008
+   },
+   "verdict": "NEGATIVE"
+  },
+  {
+   "dim": "all",
+   "cell": "all",
+   "H": 60,
+   "n": 9388,
+   "mean_net": -0.0051,
+   "ctrl_net": 0.0664,
+   "diff_pp": -7.15,
+   "months_pos": 28,
+   "n_months": 67,
+   "mfe_med": 0.1249,
+   "mae_med": -0.115,
+   "2021-2023": {
+    "n": 3818,
+    "mean_net": -0.0014
+   },
+   "2024-2026": {
+    "n": 5570,
+    "mean_net": -0.0076
+   },
+   "verdict": "NEGATIVE"
+  },
+  {
+   "dim": "seq",
+   "cell": "1",
+   "H": 15,
+   "n": 2813,
+   "mean_net": -0.0022,
+   "ctrl_net": 0.0293,
+   "diff_pp": -3.157,
+   "months_pos": 27,
+   "n_months": 67,
+   "mfe_med": 0.0865,
+   "mae_med": -0.0782,
+   "2021-2023": {
+    "n": 1215,
+    "mean_net": -0.002
+   },
+   "2024-2026": {
+    "n": 1598,
+    "mean_net": -0.0024
+   },
+   "verdict": "n/a"
+  },
+  {
+   "dim": "seq",
+   "cell": "1",
+   "H": 30,
+   "n": 2813,
+   "mean_net": -0.0003,
+   "ctrl_net": 0.0482,
+   "diff_pp": -4.848,
+   "months_pos": 31,
+   "n_months": 67,
+   "mfe_med": 0.1113,
+   "mae_med": -0.0989,
+   "2021-2023": {
+    "n": 1215,
+    "mean_net": 0.0028
+   },
+   "2024-2026": {
+    "n": 1598,
+    "mean_net": -0.0026
+   },
+   "verdict": "NEGATIVE"
+  },
+  {
+   "dim": "seq",
+   "cell": "1",
+   "H": 60,
+   "n": 2813,
+   "mean_net": -0.0028,
+   "ctrl_net": 0.0493,
+   "diff_pp": -5.204,
+   "months_pos": 31,
+   "n_months": 67,
+   "mfe_med": 0.1304,
+   "mae_med": -0.1153,
+   "2021-2023": {
+    "n": 1215,
+    "mean_net": -0.0039
+   },
+   "2024-2026": {
+    "n": 1598,
+    "mean_net": -0.0019
+   },
+   "verdict": "NEGATIVE"
+  },
+  {
+   "dim": "seq",
+   "cell": "2",
+   "H": 15,
+   "n": 1640,
+   "mean_net": -0.0034,
+   "ctrl_net": 0.0447,
+   "diff_pp": -4.806,
+   "months_pos": 32,
+   "n_months": 67,
+   "mfe_med": 0.088,
+   "mae_med": -0.0753,
+   "2021-2023": {
+    "n": 697,
+    "mean_net": -0.0024
+   },
+   "2024-2026": {
+    "n": 943,
+    "mean_net": -0.0041
+   },
+   "verdict": "n/a"
+  },
+  {
+   "dim": "seq",
+   "cell": "2",
+   "H": 30,
+   "n": 1640,
+   "mean_net": -0.0003,
+   "ctrl_net": 0.0686,
+   "diff_pp": -6.885,
+   "months_pos": 35,
+   "n_months": 67,
+   "mfe_med": 0.1122,
+   "mae_med": -0.0962,
+   "2021-2023": {
+    "n": 697,
+    "mean_net": -0.0024
+   },
+   "2024-2026": {
+    "n": 943,
+    "mean_net": 0.0013
+   },
+   "verdict": "NEGATIVE"
+  },
+  {
+   "dim": "seq",
+   "cell": "2",
+   "H": 60,
+   "n": 1640,
+   "mean_net": -0.007,
+   "ctrl_net": 0.0683,
+   "diff_pp": -7.521,
+   "months_pos": 30,
+   "n_months": 67,
+   "mfe_med": 0.1298,
+   "mae_med": -0.119,
+   "2021-2023": {
+    "n": 697,
+    "mean_net": -0.0114
+   },
+   "2024-2026": {
+    "n": 943,
+    "mean_net": -0.0037
+   },
+   "verdict": "NEGATIVE"
+  },
+  {
+   "dim": "seq",
+   "cell": "3+",
+   "H": 15,
+   "n": 4935,
+   "mean_net": 0.0017,
+   "ctrl_net": 0.0513,
+   "diff_pp": -4.957,
+   "months_pos": 31,
+   "n_months": 67,
+   "mfe_med": 0.0797,
+   "mae_med": -0.0698,
+   "2021-2023": {
+    "n": 1906,
+    "mean_net": 0.0005
+   },
+   "2024-2026": {
+    "n": 3029,
+    "mean_net": 0.0025
+   },
+   "verdict": "n/a"
+  },
+  {
+   "dim": "seq",
+   "cell": "3+",
+   "H": 30,
+   "n": 4935,
+   "mean_net": 0.0045,
+   "ctrl_net": 0.0777,
+   "diff_pp": -7.322,
+   "months_pos": 34,
+   "n_months": 67,
+   "mfe_med": 0.0997,
+   "mae_med": -0.0893,
+   "2021-2023": {
+    "n": 1906,
+    "mean_net": 0.0078
+   },
+   "2024-2026": {
+    "n": 3029,
+    "mean_net": 0.0024
+   },
+   "verdict": "NEGATIVE"
+  },
+  {
+   "dim": "seq",
+   "cell": "3+",
+   "H": 60,
+   "n": 4935,
+   "mean_net": -0.0058,
+   "ctrl_net": 0.0756,
+   "diff_pp": -8.136,
+   "months_pos": 29,
+   "n_months": 67,
+   "mfe_med": 0.1194,
+   "mae_med": -0.1138,
+   "2021-2023": {
+    "n": 1906,
+    "mean_net": 0.0039
+   },
+   "2024-2026": {
+    "n": 3029,
+    "mean_net": -0.0119
+   },
+   "verdict": "NEGATIVE"
+  },
+  {
+   "dim": "rank",
+   "cell": "1",
+   "H": 15,
+   "n": 3494,
+   "mean_net": -0.0006,
+   "ctrl_net": 0.0369,
+   "diff_pp": -3.747,
+   "months_pos": 30,
+   "n_months": 67,
+   "mfe_med": 0.0931,
+   "mae_med": -0.0893,
+   "2021-2023": {
+    "n": 1429,
+    "mean_net": -0.0022
+   },
+   "2024-2026": {
+    "n": 2065,
+    "mean_net": 0.0006
+   },
+   "verdict": "n/a"
+  },
+  {
+   "dim": "rank",
+   "cell": "1",
+   "H": 30,
+   "n": 3494,
+   "mean_net": 0.0023,
+   "ctrl_net": 0.058,
+   "diff_pp": -5.571,
+   "months_pos": 25,
+   "n_months": 67,
+   "mfe_med": 0.1149,
+   "mae_med": -0.1106,
+   "2021-2023": {
+    "n": 1429,
+    "mean_net": 0.0021
+   },
+   "2024-2026": {
+    "n": 2065,
+    "mean_net": 0.0025
+   },
+   "verdict": "NEGATIVE"
+  },
+  {
+   "dim": "rank",
+   "cell": "1",
+   "H": 60,
+   "n": 3494,
+   "mean_net": -0.0081,
+   "ctrl_net": 0.0533,
+   "diff_pp": -6.142,
+   "months_pos": 28,
+   "n_months": 67,
+   "mfe_med": 0.1352,
+   "mae_med": -0.1389,
+   "2021-2023": {
+    "n": 1429,
+    "mean_net": -0.0132
+   },
+   "2024-2026": {
+    "n": 2065,
+    "mean_net": -0.0046
+   },
+   "verdict": "NEGATIVE"
+  },
+  {
+   "dim": "rank",
+   "cell": "2",
+   "H": 15,
+   "n": 1880,
+   "mean_net": -0.0083,
+   "ctrl_net": 0.0347,
+   "diff_pp": -4.299,
+   "months_pos": 21,
+   "n_months": 67,
+   "mfe_med": 0.0833,
+   "mae_med": -0.0805,
+   "2021-2023": {
+    "n": 758,
+    "mean_net": -0.0077
+   },
+   "2024-2026": {
+    "n": 1122,
+    "mean_net": -0.0087
+   },
+   "verdict": "n/a"
+  },
+  {
+   "dim": "rank",
+   "cell": "2",
+   "H": 30,
+   "n": 1880,
+   "mean_net": -0.0149,
+   "ctrl_net": 0.0447,
+   "diff_pp": -5.959,
+   "months_pos": 25,
+   "n_months": 67,
+   "mfe_med": 0.1004,
+   "mae_med": -0.1034,
+   "2021-2023": {
+    "n": 758,
+    "mean_net": -0.0046
+   },
+   "2024-2026": {
+    "n": 1122,
+    "mean_net": -0.0219
+   },
+   "verdict": "NEGATIVE"
+  },
+  {
+   "dim": "rank",
+   "cell": "2",
+   "H": 60,
+   "n": 1880,
+   "mean_net": -0.0244,
+   "ctrl_net": 0.0362,
+   "diff_pp": -6.062,
+   "months_pos": 25,
+   "n_months": 67,
+   "mfe_med": 0.1161,
+   "mae_med": -0.1304,
+   "2021-2023": {
+    "n": 758,
+    "mean_net": -0.0006
+   },
+   "2024-2026": {
+    "n": 1122,
+    "mean_net": -0.0404
+   },
+   "verdict": "NEGATIVE"
+  },
+  {
+   "dim": "rank",
+   "cell": "3",
+   "H": 15,
+   "n": 1119,
+   "mean_net": -0.0168,
+   "ctrl_net": 0.0223,
+   "diff_pp": -3.913,
+   "months_pos": 21,
+   "n_months": 67,
+   "mfe_med": 0.0798,
+   "mae_med": -0.0793,
+   "2021-2023": {
+    "n": 418,
+    "mean_net": -0.0155
+   },
+   "2024-2026": {
+    "n": 701,
+    "mean_net": -0.0176
+   },
+   "verdict": "n/a"
+  },
+  {
+   "dim": "rank",
+   "cell": "3",
+   "H": 30,
+   "n": 1119,
+   "mean_net": -0.0209,
+   "ctrl_net": 0.0436,
+   "diff_pp": -6.454,
+   "months_pos": 21,
+   "n_months": 67,
+   "mfe_med": 0.1028,
+   "mae_med": -0.101,
+   "2021-2023": {
+    "n": 418,
+    "mean_net": -0.0248
+   },
+   "2024-2026": {
+    "n": 701,
+    "mean_net": -0.0186
+   },
+   "verdict": "NEGATIVE"
+  },
+  {
+   "dim": "rank",
+   "cell": "3",
+   "H": 60,
+   "n": 1119,
+   "mean_net": -0.039,
+   "ctrl_net": 0.0285,
+   "diff_pp": -6.755,
+   "months_pos": 20,
+   "n_months": 67,
+   "mfe_med": 0.1125,
+   "mae_med": -0.1272,
+   "2021-2023": {
+    "n": 418,
+    "mean_net": -0.033
+   },
+   "2024-2026": {
+    "n": 701,
+    "mean_net": -0.0427
+   },
+   "verdict": "NEGATIVE"
+  },
+  {
+   "dim": "rank",
+   "cell": "off",
+   "H": 15,
+   "n": 2895,
+   "mean_net": 0.0114,
+   "ctrl_net": 0.0655,
+   "diff_pp": -5.414,
+   "months_pos": 45,
+   "n_months": 67,
+   "mfe_med": 0.0735,
+   "mae_med": -0.0549,
+   "2021-2023": {
+    "n": 1213,
+    "mean_net": 0.01
+   },
+   "2024-2026": {
+    "n": 1682,
+    "mean_net": 0.0124
+   },
+   "verdict": "n/a"
+  },
+  {
+   "dim": "rank",
+   "cell": "off",
+   "H": 30,
+   "n": 2895,
+   "mean_net": 0.0222,
+   "ctrl_net": 0.1022,
+   "diff_pp": -8.003,
+   "months_pos": 53,
+   "n_months": 67,
+   "mfe_med": 0.0981,
+   "mae_med": -0.0655,
+   "2021-2023": {
+    "n": 1213,
+    "mean_net": 0.0227
+   },
+   "2024-2026": {
+    "n": 1682,
+    "mean_net": 0.0218
+   },
+   "verdict": "NEGATIVE"
+  },
+  {
+   "dim": "rank",
+   "cell": "off",
+   "H": 60,
+   "n": 2895,
+   "mean_net": 0.0243,
+   "ctrl_net": 0.1165,
+   "diff_pp": -9.225,
+   "months_pos": 50,
+   "n_months": 67,
+   "mfe_med": 0.1273,
+   "mae_med": -0.0787,
+   "2021-2023": {
+    "n": 1213,
+    "mean_net": 0.023
+   },
+   "2024-2026": {
+    "n": 1682,
+    "mean_net": 0.0252
+   },
+   "verdict": "NEGATIVE"
+  },
+  {
+   "dim": "session",
+   "cell": "AM",
+   "H": 15,
+   "n": 6671,
+   "mean_net": 0.0013,
+   "ctrl_net": 0.0431,
+   "diff_pp": -4.179,
+   "months_pos": 34,
+   "n_months": 67,
+   "mfe_med": 0.0876,
+   "mae_med": -0.0757,
+   "2021-2023": {
+    "n": 2622,
+    "mean_net": 0.0013
+   },
+   "2024-2026": {
+    "n": 4049,
+    "mean_net": 0.0013
+   },
+   "verdict": "n/a"
+  },
+  {
+   "dim": "session",
+   "cell": "AM",
+   "H": 30,
+   "n": 6671,
+   "mean_net": 0.0057,
+   "ctrl_net": 0.0664,
+   "diff_pp": -6.077,
+   "months_pos": 40,
+   "n_months": 67,
+   "mfe_med": 0.1127,
+   "mae_med": -0.0978,
+   "2021-2023": {
+    "n": 2622,
+    "mean_net": 0.0069
+   },
+   "2024-2026": {
+    "n": 4049,
+    "mean_net": 0.0049
+   },
+   "verdict": "NEGATIVE"
+  },
+  {
+   "dim": "session",
+   "cell": "AM",
+   "H": 60,
+   "n": 6671,
+   "mean_net": -0.0036,
+   "ctrl_net": 0.0655,
+   "diff_pp": -6.911,
+   "months_pos": 31,
+   "n_months": 67,
+   "mfe_med": 0.1342,
+   "mae_med": -0.1197,
+   "2021-2023": {
+    "n": 2622,
+    "mean_net": -0.0007
+   },
+   "2024-2026": {
+    "n": 4049,
+    "mean_net": -0.0055
+   },
+   "verdict": "NEGATIVE"
+  },
+  {
+   "dim": "session",
+   "cell": "PM",
+   "H": 15,
+   "n": 2717,
+   "mean_net": -0.0045,
+   "ctrl_net": 0.0447,
+   "diff_pp": -4.914,
+   "months_pos": 26,
+   "n_months": 67,
+   "mfe_med": 0.0722,
+   "mae_med": -0.0679,
+   "2021-2023": {
+    "n": 1196,
+    "mean_net": -0.0055
+   },
+   "2024-2026": {
+    "n": 1521,
+    "mean_net": -0.0036
+   },
+   "verdict": "n/a"
+  },
+  {
+   "dim": "session",
+   "cell": "PM",
+   "H": 30,
+   "n": 2717,
+   "mean_net": -0.0062,
+   "ctrl_net": 0.0693,
+   "diff_pp": -7.553,
+   "months_pos": 26,
+   "n_months": 67,
+   "mfe_med": 0.0887,
+   "mae_med": -0.0855,
+   "2021-2023": {
+    "n": 1196,
+    "mean_net": -0.0012
+   },
+   "2024-2026": {
+    "n": 1521,
+    "mean_net": -0.0101
+   },
+   "verdict": "NEGATIVE"
+  },
+  {
+   "dim": "session",
+   "cell": "PM",
+   "H": 60,
+   "n": 2717,
+   "mean_net": -0.0086,
+   "ctrl_net": 0.0687,
+   "diff_pp": -7.737,
+   "months_pos": 26,
+   "n_months": 67,
+   "mfe_med": 0.1032,
+   "mae_med": -0.1047,
+   "2021-2023": {
+    "n": 1196,
+    "mean_net": -0.0028
+   },
+   "2024-2026": {
+    "n": 1521,
+    "mean_net": -0.0132
+   },
+   "verdict": "NEGATIVE"
+  },
+  {
+   "dim": "key",
+   "cell": "other",
+   "H": 15,
+   "n": 6585,
+   "mean_net": -0.0016,
+   "ctrl_net": 0.0432,
+   "diff_pp": -4.482,
+   "months_pos": 28,
+   "n_months": 67,
+   "mfe_med": 0.0791,
+   "mae_med": -0.0686,
+   "2021-2023": {
+    "n": 2699,
+    "mean_net": -0.0017
+   },
+   "2024-2026": {
+    "n": 3886,
+    "mean_net": -0.0015
+   },
+   "verdict": "n/a"
+  },
+  {
+   "dim": "key",
+   "cell": "other",
+   "H": 30,
+   "n": 6585,
+   "mean_net": 0.0001,
+   "ctrl_net": 0.0665,
+   "diff_pp": -6.639,
+   "months_pos": 31,
+   "n_months": 67,
+   "mfe_med": 0.1023,
+   "mae_med": -0.0867,
+   "2021-2023": {
+    "n": 2699,
+    "mean_net": 0.0039
+   },
+   "2024-2026": {
+    "n": 3886,
+    "mean_net": -0.0025
+   },
+   "verdict": "NEGATIVE"
+  },
+  {
+   "dim": "key",
+   "cell": "other",
+   "H": 60,
+   "n": 6585,
+   "mean_net": -0.0051,
+   "ctrl_net": 0.0669,
+   "diff_pp": -7.195,
+   "months_pos": 30,
+   "n_months": 67,
+   "mfe_med": 0.1219,
+   "mae_med": -0.1058,
+   "2021-2023": {
+    "n": 2699,
+    "mean_net": 0.003
+   },
+   "2024-2026": {
+    "n": 3886,
+    "mean_net": -0.0107
+   },
+   "verdict": "NEGATIVE"
+  },
+  {
+   "dim": "key",
+   "cell": "rank1&seq2+",
+   "H": 15,
+   "n": 2803,
+   "mean_net": 0.0025,
+   "ctrl_net": 0.0443,
+   "diff_pp": -4.178,
+   "months_pos": 34,
+   "n_months": 67,
+   "mfe_med": 0.0917,
+   "mae_med": -0.0866,
+   "2021-2023": {
+    "n": 1119,
+    "mean_net": 0.0011
+   },
+   "2024-2026": {
+    "n": 1684,
+    "mean_net": 0.0035
+   },
+   "verdict": "n/a"
+  },
+  {
+   "dim": "key",
+   "cell": "rank1&seq2+",
+   "H": 30,
+   "n": 2803,
+   "mean_net": 0.0072,
+   "ctrl_net": 0.0691,
+   "diff_pp": -6.188,
+   "months_pos": 32,
+   "n_months": 67,
+   "mfe_med": 0.1127,
+   "mae_med": -0.1079,
+   "2021-2023": {
+    "n": 1119,
+    "mean_net": 0.0055
+   },
+   "2024-2026": {
+    "n": 1684,
+    "mean_net": 0.0084
+   },
+   "verdict": "NEGATIVE"
+  },
+  {
+   "dim": "key",
+   "cell": "rank1&seq2+",
+   "H": 60,
+   "n": 2803,
+   "mean_net": -0.005,
+   "ctrl_net": 0.0654,
+   "diff_pp": -7.044,
+   "months_pos": 29,
+   "n_months": 67,
+   "mfe_med": 0.1346,
+   "mae_med": -0.1362,
+   "2021-2023": {
+    "n": 1119,
+    "mean_net": -0.0118
+   },
+   "2024-2026": {
+    "n": 1684,
+    "mean_net": -0.0005
+   },
+   "verdict": "NEGATIVE"
+  }
+ ]
+}

@@ -863,3 +863,22 @@ prior_flush, and higher halt-adjacent recovery. Conclusion: the pf>=2 survivor
 conditioning is the load-bearing element; it survives regime change while the
 broad and rank-1 forms do not. Replication is backward-in-time, not OOS; no
 adoption change; H025 remains frozen. EXP-75, H035.
+
+---
+## 2026-09-13 — H034 probe 1 (PRE-REG-DRIFT-01): post-recovery drift NEGATIVE
+
+Question: after a top-gainer vacuum fully recovers (high re-touches the
+pre-vacuum running max), does a plain hold earn forward drift? 28,164 recovered
+events over 1,401 days (2021-02..2026-08), hold-only net of 1% friction.
+
+- Absolute net means: all 30m +0.22%, 60m −0.51%. rank1 30m +0.23%
+  (median −3.74%, 39.9% win), rank2 −1.49%, rank3 −2.09%.
+- rank=off is the only positive-mean cell (+2.22% at 30m; 79% of months
+  positive; both eras) but median −0.94%, win 46.3%, tails two-sided
+  (30% >+5% vs 32% <−5%), worst −43% → lottery, not an edge.
+- Monotone fade by rank after recovery (median 30m −3.7/−4.3/−4.9% for
+  rank1/2/3) confirms H025's c0 exit is well timed; extended holds lose.
+- Method flaw: the frozen paired control is invalid (sample conditioned on
+  recovery ⇒ event-minute control biased up +6.7%); absolute means used.
+Verdict: RETIRED (H034a). H034 remains open only for probe 2 (cross-day
+survivor persistence). EXP-76.

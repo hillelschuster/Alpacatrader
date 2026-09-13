@@ -1580,3 +1580,21 @@ adoption change; H025 stays frozen and the live bot untouched.
 Artifacts: factory/scripts/lb18_backbone.py, factory/artifacts/lb18_backbone.json,
 lb18_backbone_fills.parquet; audit_splits rerun now covers 2021-2023 (167 flags).
 EXP-75, H035.
+
+## 2026-09-13j — PRE-REG-DRIFT-01 (H034 probe 1): post-recovery drift NEGATIVE
+Hold-based drift after a recovered vacuum, measured on 28,164 census events
+(2021-02..2026-08, 1,401 days). Absolute net means (the valid read):
+all/30m +0.22%, all/60m −0.51%; rank1/30m +0.23% (median −3.74%, 39.9% win);
+rank2 −1.49%; rank3 −2.09%; rank1&seq2+ +0.72% (12 of 14 OOS-scale half-months
+positive only 32/67). Only rank=off has a positive mean (+2.22% at 30m, +2.43%
+at 60m, 79% months+, both eras) but its median is −0.94%, win 46.3%, 30% of
+events >+5% against 32% <−5%, worst −43% → a tail-driven lottery, not an edge.
+Descriptive monotonicity: post-recovery drift is negative and ordered by rank
+(median 30m: rank1 −3.7%, rank2 −4.3%, rank3 −4.9%, off −0.9%), i.e. the more
+attention, the harder the fade after recovery — which independently justifies
+H025's c0 target exit and matches EXIT-01 (extended holds are worse).
+Method note: the pre-registered paired control is invalid (sample conditioned on
+recovered_30m, so the event-minute control benefits from the known recovery:
++6.7% at 30m); the gate's diff term is therefore not meaningful and the absolute
+means carry the verdict. Artifacts: drift_survivor.py, lb18_drift.json/.parquet.
+EXP-76, H034a (RETIRED). H025 and the live bot untouched.
