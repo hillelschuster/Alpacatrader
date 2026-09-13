@@ -946,3 +946,13 @@ Status: candidate filter only. Forward validation = reconstruct range5 for
 live fills from IEX historical at t0 and compare the high/low split to this
 expectation; adoption (a real H025 behavior change) requires its own pre-reg
 plus the user's go. EXP-80, H037b.
+
+### 2026-09-13 — range5 deployability (PRE-REG-TOXICITY-03): DEPLOYABLE-PROXY
+IEX-only reconstruction of range5 at the anchor (what the live bot actually sees)
+preserves the hi/lo fill-EV separation on the OOS pf2 population: +2.35% vs
+−0.01% (gap +2.36pp) vs the full-tape +2.99pp — 79% retained, coverage 97.8%,
+classification agreement 84.3%. Not a session artifact (AM +2.85pp, PM +1.88pp;
+Spearman with t0 −0.087). IEX range5 is compressed (median 0.111 vs 0.132), so a
+live deployable rule should threshold on a live quantile. Status: deployable
+proxy measured; adoption still requires its own pre-reg + user go; H025 frozen.
+EXP-81, H037c.

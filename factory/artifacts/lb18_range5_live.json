@@ -1,0 +1,94 @@
+{
+ "study": "PRE-REG-TOXICITY-03 range5 live-feed deployability",
+ "flags": {
+  "measurement": true,
+  "seen_data": true,
+  "not_an_alpha_claim": true,
+  "no_adoption": true
+ },
+ "threshold": 0.13214,
+ "q1_iex_proxy": {
+  "population": "OOS 2024-01..2025-02",
+  "n_all": 541,
+  "coverage": 0.9778,
+  "agreement_at_thr": 0.8431,
+  "iex_range5_median": 0.111,
+  "full": {
+   "all": {
+    "n_hi": 291,
+    "n_lo": 238,
+    "mean_hi": 0.022,
+    "mean_lo": -0.0025,
+    "gap": 0.0245
+   },
+   "pf2": {
+    "n_hi": 241,
+    "n_lo": 135,
+    "mean_hi": 0.0224,
+    "mean_lo": -0.0075,
+    "gap": 0.0299
+   }
+  },
+  "iex_thr": {
+   "all": {
+    "n_hi": 218,
+    "n_lo": 311,
+    "mean_hi": 0.0215,
+    "mean_lo": 0.0036,
+    "gap": 0.0179
+   },
+   "pf2": {
+    "n_hi": 187,
+    "n_lo": 189,
+    "mean_hi": 0.0235,
+    "mean_lo": -0.0001,
+    "gap": 0.0236
+   }
+  },
+  "iex_median": {
+   "all": {
+    "n_hi": 264,
+    "n_lo": 265,
+    "mean_hi": 0.017,
+    "mean_lo": 0.005,
+    "gap": 0.012
+   },
+   "pf2": {
+    "n_hi": 222,
+    "n_lo": 154,
+    "mean_hi": 0.0179,
+    "mean_lo": 0.0026,
+    "gap": 0.0153
+   }
+  },
+  "pf2": {},
+  "pass": true
+ },
+ "q2_session_confound": {
+  "AM_range5_mean_median": [
+   0.1525,
+   0.1421
+  ],
+  "PM_range5_mean_median": [
+   0.135,
+   0.12
+  ],
+  "spearman_range5_t0": -0.0866,
+  "AM_split": {
+   "n_hi": 415,
+   "n_lo": 322,
+   "mean_hi": 0.0141,
+   "mean_lo": -0.0144,
+   "gap": 0.0285
+  },
+  "PM_split": {
+   "n_hi": 281,
+   "n_lo": 374,
+   "mean_hi": 0.0155,
+   "mean_lo": -0.0033,
+   "gap": 0.0188
+  },
+  "not_confounded": true
+ },
+ "verdict": "DEPLOYABLE-PROXY"
+}

@@ -1678,3 +1678,20 @@ would need its own pre-reg. Caveats: fixed 0.1321 threshold is research-tape
 specific (live IEX bars are sparser); AM/time-of-day confound untested.
 Artifacts: researches/PRE-REG-TOXICITY-02.md, factory/scripts/toxicity_state.py,
 factory/artifacts/lb18_toxicity_pf2.json. EXP-80, H037b.
+
+## 2026-09-13p — PRE-REG-TOXICITY-03: range5 is a deployable live proxy
+Checked whether the range5 conditioner survives the live feed (IEX-only, sparse)
+and whether it is just a time-of-day proxy. Population = OOS 541 fills.
+- Coverage 97.8% (the IEX tape has the anchor minute), hi/lo agreement at the
+  frozen threshold 0.13214 = 84.3%.
+- pf2: full-tape gap +2.99pp (hi +2.24% n=241 / lo -0.75% n=135); IEX-computed
+  gap +2.36pp (hi +2.35% n=187 / lo -0.01% n=189) → 79% of the gap retained
+  (gate required ≥50%). The IEX-median (0.111) split also separates: +1.79% vs
+  +0.26%.
+- Not a session artifact: AM gap +2.85pp (n 415/322) and PM gap +1.88pp
+  (n 281/374); Spearman(range5, t0) = −0.087.
+- IEX range5 is compressed vs the full tape (median 0.111 vs 0.132) because IEX
+  bars are sparse → the live rule must use a live quantile, not the frozen
+  constant. Verdict DEPLOYABLE-PROXY. No adoption; H025 and the bot untouched.
+Artifacts: researches/PRE-REG-TOXICITY-03.md, factory/scripts/range5_live_check.py,
+factory/artifacts/lb18_range5_live.json/.parquet. EXP-81, H037c.
