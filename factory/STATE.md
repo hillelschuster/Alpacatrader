@@ -1506,3 +1506,18 @@ pf0/1, seq1/2, AM, rank1|pf2+ (5.52/day, 38.0%), rank2|pf2+, off|0, pf0|seq1,
 pf1|seq2. No rule adopted; H025 and the live bot untouched.
 Artifacts: factory/scripts/event_census.py, factory/artifacts/event_census.json/.parquet
 (cache data/scratch_census/). EXP-72, H031.
+
+## 2026-09-13f — PRE-REG-LEADER-01: the frequency axis is tested and negative
+Four frozen variants of the flush mechanics, parity exact (541/+0.91%, 381/+1.14%).
+Baseline OOS = 1.86 fills/day. V1 rank1: n=445 +0.72%, pf2 n=311 +0.69% (8/14) —
+rank1 REDUCES the pf2 edge, and 1.53/day fails the frequency gate. V2 AM(<12:00):
+n=313 +1.25% (11/14), worst month −0.98% vs baseline −2.51%, pf2 n=205 +1.75%
+(10/14) — the best per-trade quality and tail of anything tested, but only
+1.08/day (FAIL freq) and dev disagrees (+0.21%, 7/18). V3 rank1+AM: n=266 +0.96%
+(8/14) FAIL. V4 continuous bid at 0.9×running session max: n=9635, 33.1/day,
+−15.48%/trade, win 7%, 0/14 months → RETIRED.
+Lesson: the census's raw vacuum supply is unqualified and toxic when harvested
+(V4 = selling into crashes); the event-level rank/recovery gradient does NOT map
+to rule-level P&L (rank1 lowers pf2); tightening improves quality but halves
+frequency. H025's ~1.9 qualified fills/day is near the frontier of this mechanism
+on this data. Artifacts: lb18_leader.py/.json/.parquet. EXP-73, H032/H033 RETIRED.

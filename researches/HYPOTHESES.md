@@ -813,3 +813,22 @@ Measurement only (no trading rule; H025 untouched). 24,655 vacuum events
   pf0|seq1, pf1|seq2. No adoption path except a new pre-reg + forward test.
 Artifacts: factory/scripts/event_census.py, factory/artifacts/event_census.json/.parquet.
 EXP-72, H031.
+
+---
+## 2026-09-13 — Frequency axis tested (PRE-REG-LEADER-01): all four variants fail
+
+Frozen variants of the flush mechanics on the same engine (parity exact). OOS
+baseline 1.86 fills/day, +0.91% all / +1.14% pf2.
+- V1 rank1 anchors: 445 fills +0.72%, pf2 +0.69% (8/14) — rank-1 LOWERS the pf2
+  edge. 1.53/day fails the frequency gate.
+- V2 AM anchors (<12:00): 313 fills +1.25% (11/14), worst month −0.98% (vs
+  −2.51%), pf2 +1.75% (10/14) — best quality/tail measured, but 1.08/day fails
+  the frequency gate and dev disagrees (+0.21%, 7/18).
+- V3 rank1+AM: 266 fills +0.96% (8/14) — fails.
+- V4 census-native continuous bid (0.9 × running session max, rank1 AM):
+  9,635 fills, 33.1/day, −15.48%/trade, win 7%, 0/14 → RETIRED.
+Conclusion: raw vacuum supply is not monetizable by broadening (V4 sells into
+crashes); the event-level rank/recovery gradient does not map to rule-level P&L;
+narrowing buys quality but halves frequency. H025's ~1.9 qualified fills/day sits
+near the frontier of this mechanism on this data. No adoption; H025 untouched.
+EXP-73, H032/H033.
