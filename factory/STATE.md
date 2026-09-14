@@ -1761,3 +1761,13 @@ Three-layer verification that the Monday crash cannot recur:
 Suite 15/15 (T12 meta guard, T13 strict-state poll, T14 day-roll with set).
 Running process started 17:40:41 ET 2026-09-14, after the last flush_bot.py
 write; zero journal errors since. Next session: Tue 2026-09-15 09:30 ET.
+
+## 2026-09-15d — Liveness heartbeat (silent death now leaves evidence)
+Post-close polls returned silently by design (the FLAT_ET return precedes the
+market_closed log), so the journal gave no proof the loop was running. Added a
+heartbeat: every 5th poll logs `alive {polls}` (~5 min). Verified live after the
+restart at 18:08:16 ET: `alive polls=5` at 18:12:19 ET, 0 errors, no ALERT.
+Liveness is now observable from the journal alone, and with the ALERT tripwire
+both silent failure modes (crash loop, silent hang) leave visible evidence.
+Interpreter liveness also confirmed independently: PID 7708 (venv python running
+flush_bot) CPU delta 0.02s over 70s = one cheap post-close poll cycle.

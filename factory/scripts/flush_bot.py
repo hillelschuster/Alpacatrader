@@ -835,6 +835,7 @@ def main():
         return
     startup_reconcile(br, meta)
     n_err = 0
+    n_poll = 0
     while True:
         try:
             if KILL.exists():
@@ -850,6 +851,9 @@ def main():
             if n_err >= 3:
                 ALERT.write_text(traceback.format_exc()[-800:])
                 jlog("alert", consecutive_errors=n_err)
+        n_poll += 1
+        if n_poll % 5 == 0:
+            jlog("alive", polls=n_poll)
         if a.once:
             break
         time.sleep(a.seconds)
