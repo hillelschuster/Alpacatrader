@@ -1742,3 +1742,22 @@ cancel - so **the day was a zero-trade day with or without the bug**. All other
 scanned names never reached +100% (BMGL max ~+72%, ELMT ~+51%). Side effect: the
 replay doubles as a pre-open rehearsal and a post-close "did we miss anything"
 check.
+
+## 2026-09-15c — Pre-open certainty battery (for the Tue 2026-09-15 session)
+Three-layer verification that the Monday crash cannot recur:
+1. meta-consumer audit: every access to `meta` in flush_bot.py was enumerated;
+   only sync_fills and the tracked comprehension dereference values (both now
+   isinstance-guarded); the day-roll loop uses membership tests only (safe by
+   construction). No remaining shape assumption anywhere.
+2. Poll rehearsal (`factory/scripts/rehearse_poll.py`, new): ran the REAL poll()
+   in dry-run on the REAL 2026-09-14 tape at the first strict minute - 13:17
+   FTFT, prev 2.88 - reproducing the exact fatal conditions (note_strict creates
+   _strict_seen). Result: zero errors, _strict_seen={'FTFT'}, and place_bid
+   logged B 5.19 / c0 5.77 / qty 385 / rank 1 / pf_est 8. The path that killed
+   Monday now completes and places the intended bid.
+3. Alarm tripwire: 4 injected poll errors produced alert events at 3 and 4 plus
+   the ALERT file (cleared on the next successful poll). The "silent crash
+   loop" failure mode now leaves evidence.
+Suite 15/15 (T12 meta guard, T13 strict-state poll, T14 day-roll with set).
+Running process started 17:40:41 ET 2026-09-14, after the last flush_bot.py
+write; zero journal errors since. Next session: Tue 2026-09-15 09:30 ET.

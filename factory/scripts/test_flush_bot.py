@@ -216,4 +216,20 @@ assert not any(l["event"]=="error" for l in LOGS), [l for l in LOGS if l["event"
 assert br3b.buys and abs(br3b.buys[0].limit_price-2.16)<1e-9, br3b.buys
 print("T13 strict-state poll OK")
 
+# T14 day-roll tolerates non-dict meta keys (e.g. _strict_seen set)
+class Br4(Br):
+    def clock(self): return True, fb.now_et()
+    def open_orders(self): return []
+    def positions(self): return {}
+    def bars(self, sym, start): return pd.DataFrame()
+fb.now_et = lambda: datetime(2026,9,11,11,0,tzinfo=ET)
+fb.day_dir = lambda: pathlib.Path("/tmp/2026-09-11")
+fb.scan_candidates = lambda: (pd.DataFrame({"symbol":[],"close":[],"change":[],"rank":[]}), "test")
+meta4={"_day":"2026-09-10","_strict_seen":{"AAA"},"AAA":{"prev_close":1.0}}
+br4=Br4(); LOGS.clear()
+fb.poll(br4, meta4, probe=False)
+assert not any(l["event"]=="error" for l in LOGS), [l for l in LOGS if l["event"]=="error"][:1]
+assert meta4=={"_day":"2026-09-11"}, meta4
+print("T14 day-roll with _strict_seen OK")
+
 print("ALL MOCK TESTS PASS")
