@@ -189,4 +189,14 @@ fb.note_strict(metaT,"BBB",{"prev_close":1.0},[])
 assert metaT["AAA"]["n_strict_est"]==1
 print("T11 strict-seen tag OK")
 
+# T12 meta may hold non-symbol keys (e.g. _strict_seen set) - sync_fills skips them
+o=Order("AAA","buy","p1",1.80,status="filled",fq=100); o.filled_at=et_now
+m={"prev_close":1.0,"order_id":"p1","entry_B":1.8}
+metaX={"_day":"2026-09-14","_strict_seen":{"AAA"},"AAA":m}
+brx=Br(); LOGS.clear()
+fb.sync_fills(brx, metaX, [o], {"AAA":Pos("AAA",100,1.80)}, {"AAA":bars}, et_now)
+assert m["entry_ts"] is not None and m["oco_id"]=="oco1", (m,)
+assert any(l["event"]=="fill" for l in LOGS)
+print("T12 meta non-dict keys OK")
+
 print("ALL MOCK TESTS PASS")

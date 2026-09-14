@@ -633,7 +633,7 @@ def sync_fills(br, meta, orders, positions, bars_cache, et_now):
     protect the quantity actually held."""
     open_by_id = {str(o.id): o for o in orders}
     for sym, m in list(meta.items()):
-        if sym == "_day":
+        if not isinstance(m, dict):
             continue
         oid = m.get("order_id")
         if not oid:
@@ -711,7 +711,7 @@ def poll(br: Broker, meta: dict, probe=False):
     positions = br.positions()
     orders = br.open_orders()
 
-    tracked = {k for k in meta if k != "_day"} | set(cands["symbol"]) | set(positions)
+    tracked = {k for k, v in meta.items() if isinstance(v, dict)} | set(cands["symbol"]) | set(positions)
     bars_cache = {}
     for sym in tracked:
         if sym not in meta:
