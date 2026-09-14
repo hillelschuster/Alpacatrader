@@ -1711,3 +1711,22 @@ regime-conditional - it worked in 2021, 2023, 2024, 2025 and inverted in the
 next-regime probability is not a safe H025 change. Forward paper remains the
 only test; H037d FRAGILE. Artifacts: range5_robust.py, lb18_range5_robust.json/.parquet.
 EXP-82.
+
+## 2026-09-15a — Monday session: crash-loop bug (fixed) + hardening
+The Monday session placed zero orders because of a bug I introduced with the
+n_strict_est tag (commit d551a47): `note_strict` stores `meta["_strict_seen"]`
+as a set, and `sync_fills` (flush_bot.py:638) assumed every meta value except
+"_day" is a per-symbol dict -> AttributeError every poll. It fired the moment a
+symbol first reached strict state (13:17:14 ET, FTFT) and ran to the close: 246
+crashes, bid placement impossible during exactly the window when FTFT was a
+qualifying leader (+102% at 13:21 -> +205% at 15:17). Account never at risk (0
+orders/positions, ledger fills=0). Latent since 2026-09-12 because no prior
+session produced a strict signal.
+Fixes: (1) structural guard (isinstance dict) in sync_fills and in the tracked
+set - replaces the name-based "_day" special case; (2) T12 regression test;
+(3) T13 poll-level integration test driving the whole path (strict signal ->
+note_strict -> sync_fills -> bid placement); (4) crash alarm - 3 consecutive
+poll errors write `data/forward/bot/ALERT` + an `alert` journal event, cleared
+on recovery. 14/14 mock tests pass. Bot restarted with the fix at 17:40:45 ET
+(`start live:true` + `startup_reconcile`), zero errors since. Commits: 5ec316c,
+this one.

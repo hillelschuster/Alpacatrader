@@ -59,6 +59,7 @@ load_dotenv(ROOT / ".env")
 ET = ZoneInfo("America/New_York")
 JOURNAL = ROOT / "data" / "forward" / "bot"
 KILL = ROOT / "data" / "KILL"
+ALERT = ROOT / "data" / "forward" / "bot" / "ALERT"
 
 L = 0.10
 STOP_L = 0.10
@@ -833,14 +834,22 @@ def main():
         jlog("kill_file", note="stopping at startup", canceled=kill_cleanup(br))
         return
     startup_reconcile(br, meta)
+    n_err = 0
     while True:
         try:
             if KILL.exists():
                 jlog("kill_file", note="stopping", canceled=kill_cleanup(br))
                 break
             poll(br, meta, probe=a.probe)
+            n_err = 0
+            if ALERT.exists():
+                ALERT.unlink()
         except Exception:
+            n_err += 1
             jlog("error", traceback=traceback.format_exc()[-800:])
+            if n_err >= 3:
+                ALERT.write_text(traceback.format_exc()[-800:])
+                jlog("alert", consecutive_errors=n_err)
         if a.once:
             break
         time.sleep(a.seconds)

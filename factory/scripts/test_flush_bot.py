@@ -199,4 +199,21 @@ assert m["entry_ts"] is not None and m["oco_id"]=="oco1", (m,)
 assert any(l["event"]=="fill" for l in LOGS)
 print("T12 meta non-dict keys OK")
 
+# T13 strict-state poll: note_strict creates _strict_seen mid-poll; no crash + bid placed
+class Br3(Br):
+    def clock(self): return True, fb.now_et()
+    def open_orders(self): return []
+    def positions(self): return {}
+    def bars(self, sym, start): return bars
+fb.now_et = lambda: datetime(2026,9,11,11,0,tzinfo=ET)
+fb.day_dir = lambda: pathlib.Path("/tmp/2026-09-11")
+fb.scan_candidates = lambda: (pd.DataFrame({"symbol":["AAA"],"close":[2.4],"change":[140.0],"rank":[1]}), "test")
+meta3={"_day":"2026-09-11"}
+br3b=Br3(); LOGS.clear()
+fb.poll(br3b, meta3, probe=False)
+assert meta3.get("_strict_seen")=={"AAA"}, meta3
+assert not any(l["event"]=="error" for l in LOGS), [l for l in LOGS if l["event"]=="error"][:1]
+assert br3b.buys and abs(br3b.buys[0].limit_price-2.16)<1e-9, br3b.buys
+print("T13 strict-state poll OK")
+
 print("ALL MOCK TESTS PASS")
