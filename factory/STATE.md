@@ -1730,3 +1730,15 @@ poll errors write `data/forward/bot/ALERT` + an `alert` journal event, cleared
 on recovery. 14/14 mock tests pass. Bot restarted with the fix at 17:40:45 ET
 (`start live:true` + `startup_reconcile`), zero errors since. Commits: 5ec316c,
 this one.
+
+## 2026-09-15b — Dry-run replay tool + "what did the crash cost?" answer
+Committed `factory/scripts/replay_decisions.py`: replays a day's journal scan
+history + Alpaca IEX bars through the bot's own strict gate and the frozen
+bid/fill/exit semantics, modelling the live entry cutoff (resting bids cancelled
+at 15:30, flush_bot.py:510). Verdict for 2026-09-14: FTFT was the only strict
+leader (18 strict minutes 13:17-15:17, prev_close 2.88, rank<=3); the rolling bid
+was never touched before the cutoff and the only touch came at 15:31 - after the
+cancel - so **the day was a zero-trade day with or without the bug**. All other
+scanned names never reached +100% (BMGL max ~+72%, ELMT ~+51%). Side effect: the
+replay doubles as a pre-open rehearsal and a post-close "did we miss anything"
+check.
