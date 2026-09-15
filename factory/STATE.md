@@ -1797,3 +1797,20 @@ partitions), `replay_decisions.py` (what the bot would have done, live
 replay: FTFT armed 18x 13:17-15:17, 0 fills; journal key counters incl. error 258
 from the crash loop, alert 0, alive 28). Removes the manual step from the daily
 loop so the close-out cannot be missed.
+
+## 2026-09-15f — FIRST LIVE ROUND TRIP (milestone)
+VEEA: place_bid 09:53:13 ET (rank1, B 4.72, c0 5.25, qty 423, pf_est 0, n_strict_est 1)
+-> 5 refresh cycles on rising ticks (B 4.72 -> 4.87 -> 5.61 -> 5.57 -> 5.60 -> 5.75,
+qty adapting 423 -> 347 to hold ~$2k notional; each refresh cancels + replaces)
+-> fill 10:41:39 ET (347 @ 5.703228, BELOW the 5.75 limit = price improvement;
+pf_est 2 at the fill, n_strict_est 1) -> OCO in the same poll (stop 5.17 /
+target 6.39, cid flushbot-s-VEEA-...) -> tl30 11:11:33 cancel_oco / 11:12:35
+tl30_exit / 11:13:37 exit bookkeeping -> SELL MARKET filled 5.77 -> flat.
+Ledger: closed_trades=1, ret_net +0.17% (+$23.17); equity 99,285.71 -> 99,308.88.
+Tags: pf_est 2plus n=1, n_strict_est 0_1 n=1, session AM n=1.
+One trade carries no inference (55%-win / +9.2% avg-win / -8.8% avg-loss
+population; a near-scratch is ordinary). What IS established: the entire live
+path is exercised end-to-end against the broker - scan -> strict gate on IEX
+bars -> rolling arm at 0.9 x close -> refresh-on-tick -> fill detection below
+limit -> OCO protection -> tl30 time-stop -> market exit -> ledger. Judge live
+fills vs RAW A3b pf2 +1.13% only at n >= 30.
