@@ -12,12 +12,19 @@ mkdir -p "$REPO/logs"
 BASH_WIN='C:\Program Files\Git\bin\bash.exe'
 MODE="${1:-}"
 
-et_hm=$(TZ=America/New_York date +%H%M)
-et_dow=$(TZ=America/New_York date +%u)
-if [ "${WD_FORCE_WINDOW:-}" = "1" ]; then et_hm=1000; et_dow=2; fi
-DAY=$(TZ=America/New_York date +%F)
 log() { echo "$(date -Is) $*" >> "$LOG"; }
 say() { [ "$MODE" = "--check" ] && echo "$*"; log "$([ "$MODE" = "--check" ] && echo 'check:' || echo 'run:') $*"; }
+
+# ET clock via the venv python. git-bash ignores TZ, which made this watchdog act
+# on local time and kill the healthy out-of-window observer every ~30 minutes.
+PYBIN_WD="/c/Users/הלל/AppData/Local/hermes/hermes-agent/venv/Scripts/python"
+et_all=$("$PYBIN_WD" -c "from datetime import datetime; from zoneinfo import ZoneInfo; n=datetime.now(ZoneInfo('America/New_York')); print(n.strftime('%H%M'), n.strftime('%u'), n.strftime('%F'))" 2>/dev/null)
+et_hm=$(printf '%s' "$et_all" | awk '{print $1}')
+et_dow=$(printf '%s' "$et_all" | awk '{print $2}')
+DAY=$(printf '%s' "$et_all" | awk '{print $3}')
+if [ "${WD_FORCE_WINDOW:-}" = "1" ]; then et_hm=1000; et_dow=2; fi
+if [ -z "$DAY" ]; then DAY=$(date +%F); fi
+if [ -z "$et_hm" ] || [ -z "$et_dow" ]; then say "cannot determine ET clock - no action"; exit 0; fi
 
 # weekends: Fri(5) after 17:00 ET through Sat/Sun -> nothing to watch
 if [ "$et_dow" -ge 6 ]; then say "weekend - skip"; exit 0; fi
