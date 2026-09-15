@@ -18,7 +18,12 @@ say() { [ "$MODE" = "--check" ] && echo "$*"; log "$([ "$MODE" = "--check" ] && 
 # ET clock via the venv python. git-bash ignores TZ, which made this watchdog act
 # on local time and kill the healthy out-of-window observer every ~30 minutes.
 PYBIN_WD="/c/Users/הלל/AppData/Local/hermes/hermes-agent/venv/Scripts/python"
-et_all=$("$PYBIN_WD" -c "from datetime import datetime; from zoneinfo import ZoneInfo; n=datetime.now(ZoneInfo('America/New_York')); print(n.strftime('%H%M'), n.strftime('%u'), n.strftime('%F'))" 2>/dev/null)
+read_et() { "$1" -c "from datetime import datetime; from zoneinfo import ZoneInfo; n=datetime.now(ZoneInfo('America/New_York')); print(n.strftime('%H%M'), n.strftime('%u'), n.strftime('%F'))" 2>/dev/null | tr -d '\r'; }
+et_all=$(read_et "$PYBIN_WD")
+if [ -z "$et_all" ]; then   # WSL / Linux context: git-bash style path does not exist
+  PYBIN_WD="/mnt/c/Users/הלל/AppData/Local/hermes/hermes-agent/venv/Scripts/python.exe"
+  et_all=$(read_et "$PYBIN_WD")
+fi
 et_hm=$(printf '%s' "$et_all" | awk '{print $1}')
 et_dow=$(printf '%s' "$et_all" | awk '{print $2}')
 DAY=$(printf '%s' "$et_all" | awk '{print $3}')
@@ -40,13 +45,22 @@ relaunch() { # $1 = script path (windows form), $2 = label
 }
 
 # --- bot: journal heartbeat must be < 12 min old ---
+# Fail-safe asymmetry: killing a healthy bot mid-session is far worse than
+# missing a restart, so a MISSING journal is acted on only when no process runs
+# (process present + no journal = watchdog path problem, not a hang).
 J="$REPO/data/forward/bot/$DAY/journal.jsonl"
-stale=1
+age=-1; stale=0; missing=0
 if [ -f "$J" ]; then
   age=$(( $(date +%s) - $(stat -c %Y "$J") ))
-  [ "$age" -le 720 ] && stale=0
+  [ "$age" -gt 720 ] && stale=1
+else
+  missing=1
 fi
-if [ "$stale" = "1" ]; then
+if [ "$missing" = "1" ]; then
+  n=$(count_proc 'flush_bot.py')
+  if [ "${n:-0}" = "0" ]; then relaunch "$REPO/factory/scripts/flush_bot_supervisor.sh" "bot(journal missing, no process)"
+  else say "bot journal missing ($J) but process present ($n) - no action"; fi
+elif [ "$stale" = "1" ]; then
   n=$(count_proc 'flush_bot.py')
   if [ "${n:-0}" = "0" ]; then relaunch "$REPO/factory/scripts/flush_bot_supervisor.sh" "bot(supervisor absent)"
   else log "bot process present ($n) but journal stale -> kill+relaunch"; [ "$MODE" = "--check" ] || powershell.exe -NoProfile -Command "Get-CimInstance Win32_Process | Where-Object { \$_.CommandLine -like '*flush_bot.py*' } | ForEach-Object { Stop-Process -Id \$_.ProcessId -Force }" 2>/dev/null
@@ -58,8 +72,13 @@ fi
 # --- observer: only during its window 09:25-16:10 ET; log < 20 min old ---
 if [ "$et_hm" -ge 0925 ] && [ "$et_hm" -le 1610 ]; then
   O="$REPO/logs/forward_observe.log"
-  oage=$(( $(date +%s) - $(stat -c %Y "$O" 2>/dev/null || echo 0) ))
-  if [ "$oage" -gt 1200 ]; then
+  oage=-1
+  [ -f "$O" ] && oage=$(( $(date +%s) - $(stat -c %Y "$O") ))
+  if [ "$oage" -lt 0 ]; then
+    n=$(count_proc 'forward_observe.py')
+    if [ "${n:-0}" = "0" ]; then relaunch "$REPO/factory/scripts/observe_supervisor.sh" "observer(log missing, no process)"
+    else say "observer log missing but process present ($n) - no action"; fi
+  elif [ "$oage" -gt 1200 ]; then
     n=$(count_proc 'forward_observe.py')
     if [ "${n:-0}" = "0" ]; then relaunch "$REPO/factory/scripts/observe_supervisor.sh" "observer(absent)"
     else log "observer present ($n) but log stale -> kill+relaunch"; [ "$MODE" = "--check" ] || powershell.exe -NoProfile -Command "Get-CimInstance Win32_Process | Where-Object { \$_.CommandLine -like '*forward_observe.py*' } | ForEach-Object { Stop-Process -Id \$_.ProcessId -Force }" 2>/dev/null
