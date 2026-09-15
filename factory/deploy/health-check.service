@@ -1,0 +1,7 @@
+[Unit]
+Description=Stack health check (journal freshness + ALERT file)
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/alpacatrader
+ExecStart=/bin/bash factory/scripts/health_check.sh

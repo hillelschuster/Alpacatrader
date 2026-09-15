@@ -1,0 +1,18 @@
+[Unit]
+Description=Flush-bot paper trader (frozen rule PRE-REG-FLUSH-01, v2.1)
+Documentation=file:///opt/alpacatrader/factory/deploy/README.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/alpacatrader
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/usr/bin/python3 factory/scripts/flush_bot.py --live --seconds 60
+Restart=always
+RestartSec=5
+StandardOutput=append:/opt/alpacatrader/logs/flush_bot.log
+StandardError=append:/opt/alpacatrader/logs/flush_bot.log
+
+[Install]
+WantedBy=multi-user.target

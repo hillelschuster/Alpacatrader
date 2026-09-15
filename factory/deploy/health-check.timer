@@ -1,0 +1,10 @@
+[Unit]
+Description=Run the stack health check every 10 minutes on weekdays
+
+[Timer]
+OnCalendar=Mon..Fri *:0/10
+Timezone=America/New_York
+Persistent=false
+
+[Install]
+WantedBy=timers.target
