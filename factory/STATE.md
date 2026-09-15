@@ -1787,3 +1787,13 @@ supervisor when the process is absent, kills+relaunches when the process exists
 but the journal is stale; duplicate guard via CIM process count; `--check` mode
 prints decisions only. Log: logs/watchdog.log. Not registered: a logon trigger
 (schtasks /sc onlogon requires elevation) — one elevated command if wanted.
+
+## 2026-09-15f — One-command daily close-out (waiting-period work)
+Added `factory/scripts/daily_close.sh`: runs the three post-close steps I have
+been doing by hand - `flush_bot_ledger.py` (fills + pf_est / n_strict_est / AM-PM
+partitions), `replay_decisions.py` (what the bot would have done, live
+15:30-cancel semantics), and a journal event summary - then appends a marker to
+`logs/daily_close.log`. Verified end to end on 2026-09-14 (rc=0; ledger fills=0;
+replay: FTFT armed 18x 13:17-15:17, 0 fills; journal key counters incl. error 258
+from the crash loop, alert 0, alive 28). Removes the manual step from the daily
+loop so the close-out cannot be missed.
