@@ -1771,3 +1771,19 @@ Liveness is now observable from the journal alone, and with the ALERT tripwire
 both silent failure modes (crash loop, silent hang) leave visible evidence.
 Interpreter liveness also confirmed independently: PID 7708 (venv python running
 flush_bot) CPU delta 0.02s over 70s = one cheap post-close poll cycle.
+
+## 2026-09-15e — Overnight death + stack restart + watchdog
+All processes died overnight (Windows session went down; no supervisor exit
+lines; last bot heartbeat 2026-09-14 20:28:20 ET). Power settings were already
+never-sleep on AC, so the cause was external (reboot/lid/power/user action).
+Stack restarted: bot supervisor 09:05:27Z, observer supervisor 09:13:53Z (after
+fixing the launch chain: ASCII wrapper C:\Users\Public\observe_sup.sh + `start
+""` empty-title form). Live path verified pre-open (scan src=alpaca, FTFT +179%
+rank1, PIT 5633 symbols) and heartbeats flow (`alive polls=10` at 05:14 ET).
+New `factory/scripts/watchdog_stack.sh` + Windows task `algo-stack-watchdog`
+(every 10 min, verified by force-run at 12:19:55 IDT): during 09:10-16:15 ET it
+checks the bot journal (<12 min) and the observer log (<20 min); relaunches the
+supervisor when the process is absent, kills+relaunches when the process exists
+but the journal is stale; duplicate guard via CIM process count; `--check` mode
+prints decisions only. Log: logs/watchdog.log. Not registered: a logon trigger
+(schtasks /sc onlogon requires elevation) — one elevated command if wanted.
