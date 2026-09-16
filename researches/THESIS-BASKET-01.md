@@ -36,13 +36,18 @@ survivor -> potentially concentrated evidence.**
 - Universe U(d): PIT listed common stock, broadest defensible screen; stratification is
   reported, not selected (see PRE-REG §2). The executable Phase-2 universe is frozen later
   for operational reasons — never because a band produced attractive P&L.
-- Population A (coequal): `A_open` ranks by open(09:30 first RTH bar)/prev_close - 1;
-  `A_pm` ranks by last premarket print <= 09:30 / prev_close - 1 (2025 only; freshness
-  rule). Population B (coequal): ranks by close(last completed bar, et <= T-1) /
-  open(09:30) - 1 at T in {09:45, 10:00, 10:30, 11:00}.
-- Intended basket S_d(T) = top-N, N in {1,3,5,10} (descriptive ladder). Filled per causal
-  next-bar-open entry; fewer qualifiers = fewer slots; unfilled slots are cash and remain
-  in denominators; empty days remain in denominators.
+- Population A (coequal): `A_open` ranks from the completed 09:30 bar by open(09:30 first
+  RTH bar)/prev_close - 1, fill at the 09:31 open (1-bar lag); `A_pm` ranks by last
+  premarket print <= 09:30 / prev_close - 1 (known before the bell; 2025 only; freshness
+  rule), fill at the 09:30 bar open — the first realistic RTH participation opportunity
+  (conservative bound: 09:31 open). Population B (coequal): ranks by close(last completed
+  bar, et <= T-1) / open(09:30) - 1 at T in {09:45, 10:00, 10:30, 11:00}, fill at the
+  first bar open with et >= T. Anchors stay per-population (A = prev close, B = RTH open);
+  the other anchor is descriptive only.
+- Intended basket S_d(T) = top-N, N in {1,3,5,10} (descriptive ladder); fewer qualifiers =
+  fewer slots; unfilled slots are cash and remain in denominators; empty days remain in
+  denominators. A name halted at the entry window is a blocked slot, never a silent
+  exclusion; selection-time gain is recorded as a descriptive axis, not a filter.
 - Policy pi uses causal rules only: a release rule, a survivor rule (both frozen in
   PRE-REG-BASKET-02, after Phase 1), and a forced-flat EOD procedure.
 - Basket return `B_d(pi)` = mean of slot returns, net of >=100bps baseline friction
@@ -108,9 +113,11 @@ definitions alone would miss it. Ladder values are measurement rulers only.
 ## 6. Pay-for-team — two concepts, never conflated
 
 1. **EX-POST pay-for-team**: did the eventual best member of the ORIGINAL basket have
-   enough profit to pay the other members' realized losses? Tests whether the raw basket
-   population contains the economics. (Ex-post anatomy — the best member is known only
-   afterward; never a per-trade goal.)
+   enough profit to pay the other members' losses under explicitly labeled stylized cost
+   scenarios (all-hold-to-EOD member outcomes; ruler-based failed-ticket costs)? Tests
+   whether the raw basket population contains the economics. (Ex-post anatomy — the best
+   member is known only afterward; never a per-trade goal. Phase 1 computes only this
+   form.)
 2. **POLICY pay-for-team**: did the member our causal survival rules actually kept exposed
    generate enough realized profit to pay the other members' losses? Tests whether the
    architecture harvested the opportunity.
@@ -120,8 +127,10 @@ definitions alone would miss it. Ladder values are measurement rulers only.
 Intuition (equal notional): k released members at realized loss `lambda` => the survivor
 must return `r* = k * lambda` for the basket to break even. The executable version uses
 actual basket economics — realized peer losses + friction + slippage/gap costs + relevant
-basket costs — then asks whether the *causally held* survivor reaches that required
-profit, using empirical probabilities from the Phase-1 tables.
+basket costs — and asks whether the causally held survivor reaches that required profit.
+Phase 1 reports the policy-free illustration only (all-hold / ruler scenarios); the
+executable policy version exists only after the release rule is frozen in
+PRE-REG-BASKET-02 (there is nothing meaningfully "held" before a rule exists).
 
 ## 8. Last-survivor hypothesis (recorded; deferred; logging-only in Phase 2)
 
@@ -130,18 +139,21 @@ peers increase C's subsequent right-tail opportunity? If yes, cross-sectional at
 itself contains information; if no, "size up the last survivor" may merely be late
 winner-chasing.
 
-**Event** (N=3, rule-relative): the moment the SECOND peer dies under the frozen release
-rule while C survives. Record for C: current return from fill; gain from ranking anchor;
+**Event** (N=3): the moment the SECOND peer dies while C survives — defined by the release
+rule frozen in PRE-REG-BASKET-02 (before that rule exists, "death" has no realized
+meaning). Record for C at that moment: current return from fill; gain from ranking anchor;
 drawdown from C's own peak; MFE/MAE to date; future MFE/MAE; time until C's eventual
 session high; percentage of C's eventual session-max move that still lies AHEAD; whether
 C's ultimate high had already happened. This is essential — LS is useful only if peer
-attrition tends to occur while meaningful opportunity remains.
+attrition tends to occur while meaningful opportunity remains. Phase 1 therefore records
+the rule-free materials (per-member state at fixed times and at illustrative
+ruler-breach events) so this event study can be constructed later without rerunning.
 
 **Design**: strata by peer-death count (0/1/2 at matched times), controlling C's own state
 (gain since fill, time, MFE/MAE to date, drawdown from peak, rank, halt count, liquidity,
-day breadth). Phase 1 measures the raw event relationship only (no optimization of "close
-in time"); a causal add-policy test against a static-survivor comparator requires 6+2
-power later.
+day breadth). Phase 1 records materials only (no optimization of "close in time"); the
+event study runs once the rule is frozen; a causal add-policy test against a
+static-survivor comparator requires 6+2 power later.
 
 **Sizing-up** (deferred to Phase 4, gated on LS): reallocate released risk budget under a
 fixed account-level gap-risk ceiling. Permanent accounting distinction: **cash/principal
@@ -170,6 +182,10 @@ fixed portfolio-risk rules.
 Discipline: verify machinery before interpreting — in both directions. Power doctrine is
 binding: >=6 months pooled dev + >=2 pre-registered unseen collision months for any
 selection/timing claim; collisions are one-shot; never resurrect a failed formulation.
+Evidence boundary (fixed before Phase 1 begins): 2026-06..2026-08 are reserved unseen for
+BASKET-01 — excluded from Phase-1 anatomy and from Phase-2 rule formulation, inspected
+one-shot under the frozen Phase-2 rule; everything else is development; long-run
+validation is forward.
 
 ## 10. Collisions, relatives, boundaries
 
@@ -208,3 +224,8 @@ plus on-demand SIP pulls).
   cash-vs-risk accounting; executable break-even map; A/B coequal; broad PIT universe with
   reported strata; H019 corrected frequency (0.82 genuine runners/day; fallback rows are
   not runners).
+- 2026-09-16 (pre-extractor refinement pass): causal-eligibility hardened (no post-decision
+  fields in selection); A_pm fills at the 09:30 first-trade open, A_open at 09:31;
+  per-population anchors explicit; split handling made flag-based so genuine large news
+  gaps are not deleted; AMBIGUOUS share reported; Phase-1 pay-for-team/break-even/LS forms
+  labeled rule-free; evidence boundary fixed (2026-06..08 reserved).
