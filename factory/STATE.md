@@ -1839,3 +1839,22 @@ compared to +1.13% as if it were the same experiment; (2) this is an
 IMPLEMENTATION-level (fill-semantics) finding, not a verdict on the edge; (3) any
 remedy (deeper bid, wider stop, entry only after the vacuum has stopped printing)
 is a strategy change -> new pre-reg. Artifacts: live_fill_quality.json/.parquet.
+
+## 2026-09-16c — Stack shut down cleanly (user order) + day result
+User ordered the scripts stopped. Executed: KILL placed -> bot logged
+`kill_file {stopping, canceled: 0}` 11:51:43 ET and exited; supervisor relaunch
+attempts each exited immediately via the startup-KILL check (idempotent);
+watchdog task DISABLED; supervisor bash chains + observer python killed;
+verification "none remaining"; broker after shutdown 0 positions / 0 open orders
+(nothing orphaned), equity 98,637.10. KILL left in place and the task left
+disabled until restart.
+Day (09-16, stopped at 11:52 ET): 7 bids -> 19 refreshes -> 7 fills -> 7 OCOs ->
+7 exits, 1 partial, 0 errors, 0 alerts. Ledger cumulative: 14 round trips,
+mean_net -3.17%/trade, median -5.52%, pos 0.286 (AM n=8 -1.43%, PM n=6 -5.49%),
+all tagged pf_est>=2. Equity 99,285.71 -> 98,637.10 (-$648.61 paper, -0.65%).
+Not a verdict on the edge: live fills are a queue-adverse population (fills
+-259bps below our own bid; the tape was already through B before 9/9 fills;
+6 stops / 1 target in the first 10) - the LIVE_FILL_QUALITY finding
+(996668e). Judge remains n>=30 of the *validated* population, which live
+resting bids do not currently produce.
+Restart: rm data/KILL; re-enable algo-stack-watchdog; relaunch both supervisors.
