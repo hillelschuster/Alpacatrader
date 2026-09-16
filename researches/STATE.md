@@ -3,8 +3,9 @@
 # History before 2026-09-04: researches/CANONICAL_STATE.md (superseded snapshot, kept for trust map).
 
 ## Where we are (2026-09-13)
-Phase: LIVE PAPER VALIDATION of the first OOS-passed mechanism; research lanes closed;
-waiting on forward fills.
+Phase: LIVE PAPER VALIDATION of the first OOS-passed mechanism (stack STOPPED per
+factory/STATE 2026-09-16c; restart = rm data/KILL); research lanes closed except the new
+BASKET-01 planning lane (bullet below).
 - **H025 FLUSH RULE = OOS-PASS-PAPER.** Frozen `PRE-REG-FLUSH-01.md` passed untouched OOS
   2024-01..2025-02 (pf>=2 n=381, +1.14%/trade net 100bps, 12/14 months). `flush_bot.py`
   v2.1 is armed `live:true` on a dedicated Alpaca paper account (flat, 0 fills as of
@@ -28,15 +29,23 @@ waiting on forward fills.
   data/power (2021+ backbone staging, real-time SIP); both are priced decisions. SIP
   ~$99/mo is NOT needed for the frozen strategy (IEX covers a median 24.6% of session
   minutes per top-3 name; only sub-minute features would justify it).
+- **New lane (planning only, 2026-09-16): BASKET-01 participation/survival thesis.**
+  Phase 0 docs frozen: `researches/THESIS-BASKET-01.md` + `researches/PRE-REG-BASKET-01.md`
+  (descriptive Phase 1 anatomy next; no code; no release-rule constants; H025 untouched).
 - The older sections below (phenomenology, collisions, 2026-09-08 strategy) remain valid
   history; the 2026-09-08 "current strategy" block is superseded by the flush-rule path.
 
 ## What is solidly established (multiple provenances, harness-verified)
-- Phenomenon: ~1.2-1.5 runner days (+60%+ open->close, $1-50) per day, all 9 months
-  scanned; zero dead months. Frequency is regime-stable.
-- Runner shape: median open->high 322min; half the move completes by ~11:25 only 15%
-  of the time; afternoon contributes median 55% of the move. Halts fingerprint the
-  process (84% of runners halt; dose-response 0 halt -> +83% mean gain, 11+ -> +177%).
+- Phenomenon (canonical, reconciled 2026-09-16; factory/artifacts/runner_phenom_reconcile.json):
+  141 genuine >=60% open->close runners over 172 days (2025-05..12 + 2026-03) = 0.82/day;
+  90/172 days (52%) contain >=1; every month represented (monthly 0.57-1.15/day), no dead
+  months. The source artifact also holds 82 fallback day-#1 rows (days with zero >=60%
+  names; mean +45%) - NOT runners. The old "1.2-1.5/day" was the mixed rows/day (1.30)
+  and is superseded. Frequency is regime-stable across the 9 scanned months.
+- Runner shape (genuine 141 only - uncontaminated): median open->high 322min; median 50%
+  of the move by 11:25; only 15% half-done by 10:00; afternoon contributes median 55%.
+  Halts fingerprint the process (84% of runners halt; dose-response 0 halt -> +83% mean
+  gain, 11+ -> +177%; retrace >30% mid-move didn't kill 24/141, mean +244% finish).
 - Thrust alone is DEAD (+0.3% remainder, n=5,521). Rank/health/E1/E2/E3/Ridge/DTW/
   snapshot selection: all failed conditionality at scale. Retired, thesis-level.
 - Buying halt reopens is DEAD causally (next-bar-open D30 -0.5% to -1.5%). The

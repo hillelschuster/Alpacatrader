@@ -15,6 +15,12 @@ Settled facts: researches/STATE.md (current snapshot; CANONICAL_STATE.md is froz
 Measurement contract: ET clocks, causal-only, 1-bar lag, open-anchored gains,
 conservative same-bar DD-first, pre-registered kills, month-blocked reporting.
 
+NEW LANE (2026-09-16): BASKET-01 participation/survival thesis — Phase 0 frozen
+(`researches/THESIS-BASKET-01.md` + `researches/PRE-REG-BASKET-01.md`). Descriptive
+Phase 1 anatomy next; no code; release/survivor rules deferred to PRE-REG-BASKET-02.
+Read the THESIS doc before mapping this onto H2 (closest relative), H12 (retired), or the
+frozen dominant-leader program.
+
 ## ARCHIVE (2026-09-06 thinking round — planned but NOT executed; superseded by the
 ## 2026-09-08 post-H11 ranking at the bottom of this file. Retained for provenance.)
 
@@ -116,12 +122,18 @@ on H1–H7 all failing month-blocked with FP-denominated scoring. Neither has ha
 ---
 ## 2026-09-07 — runner phenomenology + first positive gate (data-driven)
 
-**Phenomenology (141 runners ≥60% open→close, 2025-05..12 + 2026-03, 172 days):**
-- Stable frequency: 1.2–1.5 such runners/day, every month, no dead months.
-- Move takes ALL DAY: med open→high 322min; half the move done only by 11:25; only 15%
-  half-done by 10:00. Afternoon share of move: median 55%.
+**Phenomenology (141 genuine runners ≥60% open→close, 2025-05..12 + 2026-03, 172 days;
+reconciled 2026-09-16 — factory/artifacts/runner_phenom_reconcile.json):**
+- Frequency (genuine ≥60% only): 0.82/day; 90/172 days (52%) contain ≥1; all 9 months
+  represented (monthly 0.57–1.15/day), no dead months. The source artifact also holds 82
+  fallback day-#1 rows (one per zero-runner day, mean +45%) — NOT runners. The old
+  "1.2–1.5 such runners/day" was the mixed rows/day and is superseded — do not quote it.
+- Move takes ALL DAY: med open→high 322min; median 50% of the move by 11:25; only 15%
+  half-done by 10:00. Afternoon share of move: median 55%. (Shape stats computed on the
+  genuine 141 — uncontaminated by fallback rows.)
 - Halts are the fingerprint: 84% of runners halt; dose-response (0 halts → +83% mean,
-  11+ halts → +177%). Retrace ≥30% mid-move didn't kill 24/141 (mean +244% finish).
+  11+ halts → +177%). Retrace >30% mid-move didn't kill 24/141 (25/141 if inclusive of
+  exactly 30%; mean +244% strict / +239% inclusive).
 - Clock conclusion: 10:00-anchored snapshot designs structurally truncated the object.
 
 **First positive gate (pre-registered next-bar-open from 10:30):**

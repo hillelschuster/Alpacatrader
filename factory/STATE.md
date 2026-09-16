@@ -1858,3 +1858,39 @@ Not a verdict on the edge: live fills are a queue-adverse population (fills
 (996668e). Judge remains n>=30 of the *validated* population, which live
 resting bids do not currently produce.
 Restart: rm data/KILL; re-enable algo-stack-watchdog; relaunch both supervisors.
+
+## 2026-09-16d — H019 reconciliation: one canonical runner-frequency truth (+ basket-thesis planning)
+- Contradiction closed. researches/STATE.md carried "~1.2-1.5 runner days/day"; ledger H019 and
+  INTENT carried 0.82. Root cause: runner_phenom.py selects >=60% open->close names and falls
+  back to the day's #1 when none exist; the artifact (223 rows) mixes 141 genuine runners + 82
+  fallback rows. Genuine = 0.82/day over 172 days; 90/172 days (52%) hold >=1; mixed = 1.30/day
+  (where "1.2-1.5" came from; monthly mixed range 1.14-1.50).
+- All headline shape stats (322min open->high, 15% half-done by 10:00, 55% afternoon, 84% halt,
+  +83%/+177% dose-response) were computed on the genuine 141 - verified, no contamination.
+  Retrace claim clarified: 24/141 strict >30% (+244%), 25/141 inclusive (+239%).
+- Evidence: factory/artifacts/runner_phenom_reconcile.json (counts, per-month table, per-subset
+  stats, raw spot-checks 2025-05-01/02/06); producer factory/scripts/reconcile_runner_phenom.py;
+  EXP-83 appended.
+- Machinery note: the committed artifact is a single-line JSON *array*, while runner_phenom.py
+  appends JSONL with a resume-by-day reader - rerunning the producer against this path would
+  misparse/corrupt it; write to a fresh path if ever rerun.
+- Docs corrected: researches/STATE.md (phenomenon block), researches/HYPOTHESES.md (2026-09-07
+  phenomenology block), researches/INTENT.md (frequency parenthetical). H019 ledger entry already
+  said 0.82 (REPLICATED-DESCRIPTIVE) - untouched. Entries 671/719 kept as history; this entry
+  supersedes their ambiguity.
+- Context: basket/participation thesis moved from concept to prototype plan (planning only, no
+  code, no runs; H025 stack stopped, untouched). Next: Phase 0 thesis + pre-reg docs on user go.
+
+## 2026-09-16e — BASKET-01 Phase 0 artifacts written (planning only)
+- Created researches/THESIS-BASKET-01.md (creed; formal statement; state semantics
+  CANDIDATE/ACTIVE SURVIVOR/LAST SURVIVOR/RELEASED/FORCED FLAT; four label objects;
+  identification-vs-economics split; ex-post vs policy pay-for-team; LS hypothesis with
+  attrition-timing measures; evidence hierarchy; collisions incl. H2/H12/H025/ML boundaries)
+  and researches/PRE-REG-BASKET-01.md (Phase-1 descriptive anatomy contract: broadest
+  defensible PIT universe + reported strata; A/B coequal; A_open + 2025-only A_pm; B grid
+  09:45/10:00/10:30/11:00; rulers only; tables T1-T10 incl. containment, controls with
+  rank-adjacent primary, LS columns; NO release-rule constants).
+- Registered H038 (OPEN-PLANNING) in HYPOTHESES.jsonl; pointers added to researches/STATE.md
+  and researches/HYPOTHESES.md. No code, no runs, no Phase-2 constants; H025 untouched.
+- Sequence locked: measure the race -> survival/death geometry -> ONE simple implementation
+  frozen in PRE-REG-BASKET-02 -> economics test.
