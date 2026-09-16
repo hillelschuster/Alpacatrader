@@ -1814,3 +1814,28 @@ path is exercised end-to-end against the broker - scan -> strict gate on IEX
 bars -> rolling arm at 0.9 x close -> refresh-on-tick -> fill detection below
 limit -> OCO protection -> tl30 time-stop -> market exit -> ledger. Judge live
 fills vs RAW A3b pf2 +1.13% only at n >= 30.
+
+## 2026-09-16b — LIVE FILL SEMANTICS: the resting bid is adversely selected
+`factory/scripts/live_fill_quality.py` (new, read-only) compared each live fill
+against the consolidated SIP tape. 9 of 10 fills analysable (1 too recent for
+SIP; the >=15-min rule):
+- **mean fill = 259 bps BELOW our own bid** (8/9 fills below B; worst -830bps),
+- **the SIP tape had already traded at/below our B before 9/9 fills**, median
+  **203s earlier** (two clusters: fast sweeps 13-38s before, deep -170..-830bps;
+  and long grinds 814-899s before, filled at ~the limit),
+- live resolutions (ledger, authoritative): **6 stops, 1 target, 1 tl30, 1 -1.6%,
+  1 -4.4%** vs the frozen expectation of ~48% target exits.
+Mechanism: the frozen backtest fills on the FIRST new bar whose low <= B and
+credits the fill at exactly B; the live order is not first in line at B, so it
+fills only once the tape has already broken through - i.e. in the middle/end of a
+collapse. Entry is then deeper (2.6% below B), the stop (0.9B) sits only ~7.4%
+under the fill instead of 10%, the first post-fill prints are often already at or
+under the stop, and the snapback that the frozen rule harvests tends to arrive
+AFTER the stop (median max favourable excursion from the fill is +10.2%, but the
+stop is hit in a median 22s in the raw tape read).
+Consequences: (1) live fills are NOT the A3b population - A3b modelled
+consolidated first-touch fills, so the -5.54%/trade over 10 trades cannot be
+compared to +1.13% as if it were the same experiment; (2) this is an
+IMPLEMENTATION-level (fill-semantics) finding, not a verdict on the edge; (3) any
+remedy (deeper bid, wider stop, entry only after the vacuum has stopped printing)
+is a strategy change -> new pre-reg. Artifacts: live_fill_quality.json/.parquet.
