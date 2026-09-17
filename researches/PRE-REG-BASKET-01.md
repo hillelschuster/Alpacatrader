@@ -107,6 +107,28 @@ later for operational reasons only — never because a band produced attractive 
 
 ## 5. Tables (all month-blocked; full reporting; no T/N mining)
 
+**Discovery posture (how these tables are read — frozen with the contract).** This pass is
+a mechanism- and implementation-discovery instrument, not a rejection gauntlet: full
+reporting is mandatory, unfavorable cells included, and the anatomy actively looks for the
+thesis's practical signatures — through the frozen tables only:
+
+1. accessible post-entry right tail -> T7b executable lenses (touch vs exec vs
+   exec-at-or-above), T5 MFE ranks, T3/T4;
+2. potentially multiple valuable survivors -> T7b k>=2 and all-3 day frequencies (touch and
+   exec lenses);
+3. meaningful remaining opportunity after identification improves -> T2 (share of the move
+   ahead of our executable fill; remaining %), read jointly with T1 churn across the frozen
+   timing surface;
+4. asymmetric failure/survival geometry -> T3/T4 retention vs co-member loss, with
+   AMBIGUOUS bars reported as bounds;
+5. a region where failed participation is inexpensive without prematurely eliminating
+   exceptional movers -> the T4/T7b knee together with the T6 execution buckets.
+
+The search is for where/when/under what conditions the mechanism appears strongly enough
+for a simple causal implementation; these tables are the pre-declared way to look.
+Implementation artifacts are never treated as thesis evidence; T/N/T-selection mining
+remains prohibited (the frozen grid is reported in full).
+
 **Evidence boundary (fixed before viewing anything):** Phase-1 tables and every BASKET-01
 computation run on the development span = all available months EXCEPT the reserved unseen
 months **2026-06, 2026-07, 2026-08**. These three months are excluded from every Phase-1
@@ -232,3 +254,7 @@ constructed later without rerunning the anatomy.
   excluded from the accessible lens; rank-adjacent mirror; across the frozen timing
   surface). No fixed number of survivors is assumed; +H rulers remain rulers, not
   survivor definitions.
+- 2026-09-16 (posture lock): §5 preamble added — discovery posture with the five practical
+  signatures mapped to the frozen tables (T7b exec lenses; T5 MFE ranks; T2 remaining
+  opportunity with T1 churn; T3/T4 failure-survival geometry; T4/T6 cheap-failure region);
+  full reporting and no-mining restated. Contract unchanged.

@@ -9,6 +9,13 @@ original top-3 members per +H ruler, touch vs executable lenses, 1st/2nd/3rd MFE
 Measurement only. No release rule, no survivor rule, no policy P&L.
 The +H/-L rulers are descriptive rulers, never definitions or targets.
 
+Discovery posture: these tables are the pre-declared way to look for the mechanism's
+practical signatures (accessible right tail; possibly multiple survivors; remaining
+opportunity after identification improves; asymmetric failure/survival geometry; a
+cheap-failure region that does not eliminate exceptional movers). Full month-blocked
+reporting, unfavorable cells included; no T/N/T mining; implementation artifacts are
+never thesis evidence.
+
 Lenses locked by PRE-REG:
   * touch lens        = minute path opportunity (ladders up[H] present)
   * executable lens   = touch AND a next bar existed (exec not None); the

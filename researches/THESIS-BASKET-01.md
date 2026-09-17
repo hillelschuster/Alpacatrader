@@ -78,6 +78,35 @@ Three questions — never conflated:
 3. **PORTFOLIO VIABILITY**: the full basket-day distribution after friction, gaps, halts,
    unfilled slots, forced-flat, month-blocked.
 
+### Research posture — mechanism & implementation discovery
+
+Phase 1 is a **mechanism-discovery and implementation-discovery exercise**: identify the
+empirical structure through which the thesis can work, measure how strong and persistent it
+is, and determine what simple causal architecture can participate in it. It actively looks
+for the practical signatures implied by the thesis:
+
+1. **accessible post-entry right tail** (executable, not marks-only);
+2. **potentially multiple valuable survivors** — the joint tail of the original basket,
+   never assumed to be a single name;
+3. **meaningful remaining opportunity after identification improves** — containment counts
+   only if a material part of the move still lies ahead of our fill;
+4. **asymmetric failure/survival geometry** — cheap truncation compatible with retaining
+   exceptional movers;
+5. **a region where failed participation can be made inexpensive without prematurely
+   eliminating exceptional movers.**
+
+Measurement stays honest while doing this: contradictory or unfavorable evidence is
+reported directly, and implementation artifacts are never mistaken for thesis evidence. But
+the research is **not** an exercise in constructing increasingly severe tests whose primary
+objective is to reject the idea. The central discovery question:
+
+> **Where, when, and under what observable market conditions does the BASKET-01 mechanism
+> appear strongly enough that a simple causal implementation can exploit it?**
+
+Phase 1 discovers and characterizes that mechanism as clearly as possible; the simplest
+faithful implementation is then built around what the market actually shows (PRE-REG-02) —
+not around a predetermined architecture.
+
 ## 3. State semantics (conceptual state machine — no code)
 
 ```
@@ -268,3 +297,9 @@ plus on-demand SIP pulls).
   relative comparison to a stronger peer); §2 economics question and §6 pay-for-team gain
   the joint multi-member tail lens (PRE-REG T7b); §7 wording de-singularized. Mindset and
   measurement only — adds/replacement/LS remain deferred.
+- 2026-09-16 (posture lock): §2 gains the mechanism & implementation discovery posture —
+  the five practical signatures searched for actively, the honest-measurement clause
+  (unfavorable evidence reported directly; implementation artifacts are not thesis
+  evidence), the explicit "not a rejection gauntlet" statement, and the central discovery
+  question. PRE-REG §5 maps the signatures to the frozen tables; aggregation docstring
+  mirrors the posture.
