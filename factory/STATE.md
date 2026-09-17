@@ -1962,3 +1962,13 @@ open 785.47 -> close 25.14 corrupted both the causal rank and the recorded MFE; 
 member MFE +3.7%), plus 273 susp_expost split-like member-days (0.7%; raw >= +100% tail 697 ->
 691 when excluded, max unchanged apart from BRP). No strategy code; PRE-REG-BASKET-02 remains
 NOT FROZEN.
+
+2026-09-17 (BASKET-01 T11 pairing-bug fix; SIP certification phase begins): basket_dist.py
+sorted members' MFE but kept MAE in original member order, so "others_adverse" could exclude
+the wrong member's adverse excursion. Fixed by preserving per-member pairing (pairs[1:] now
+excludes the best-MFE member's own MAE); self-test extended with a case where the best-MFE
+member is rank 2 (fails under the old code). T11 recomputed: B/600 cover 0.628 -> 0.553
+(669 -> 589 of 1065 days), ratio p50 1.34 -> 1.09; A_open 0.551 -> 0.496; A_pm 0.472 -> 0.520.
+Alpaca SIP historical trades+quotes verified reachable with the .env keys (probe: BRP
+2022-03-10 09:40-10:35 ET window max SIP trade price 25.76 vs the corrupted 1092.71/785 print
+in the clean tape). PRE-REG-BASKET-02 parameter freeze remains PAUSED pending SIP certification.

@@ -77,10 +77,6 @@ def new_pt():
     return d
 
 
-def fill_mfe(n):
-    return float(n["mfe"])
-
-
 def add_rec(rec, per_pt, monthly, extremes):
     month = rec["date"][:7]
     for s in rec["snapshots"]:
@@ -94,16 +90,18 @@ def add_rec(rec, per_pt, monthly, extremes):
         if not filled:
             pt["days_empty"] += 1
             continue
-        mfes = sorted((fill_mfe(n) for n in filled), reverse=True)
-        maes = [float(n["mae"]) for n in filled]
+        # pairs keep each member's MFE and MAE together; pairs[1:] excludes the best-MFE member
+        pairs = sorted(((float(n["mfe"]), float(n["mae"])) for n in filled),
+                       key=lambda x: x[0], reverse=True)
+        mfes = [p[0] for p in pairs]
+        maes = [p[1] for p in pairs]
         pt["max_mfe"].append(mfes[0])
         pt["second_mfe"].append(mfes[1] if len(mfes) > 1 else None)
         pt["third_mfe"].append(mfes[2] if len(mfes) > 2 else None)
         pt["member_mfe"].extend(mfes)
         pt["member_mae"].extend(maes)
         pt["member_eod"].extend(float(n["eod_ret"]) for n in filled)
-        # pay-for-participation arithmetic: best raw excursion vs others' worst adverse
-        others_adverse = sum(-a for a in maes[1:]) if len(maes) > 1 else 0.0
+        others_adverse = sum(-m for _, m in pairs[1:]) if len(pairs) > 1 else 0.0
         pt["cover_ratio"].append(mfes[0] / others_adverse if others_adverse > 0 else None)
         pt["cover_days"] += int(mfes[0] >= others_adverse)
         # ordinary days: day max below 10%
@@ -111,7 +109,7 @@ def add_rec(rec, per_pt, monthly, extremes):
             pt["o_days"] += 1
             pt["o_mfe"].extend(mfes)
             pt["o_mae"].extend(maes)
-        for n, mae in zip(filled, maes):
+        for n in filled:
             for L in DN:
                 pt[f"dn_touch_{L}"] += int(n["ladders"]["dn"][str(L)] is not None)
             for H in LADDER:
@@ -247,6 +245,16 @@ def selftest():
     assert row2["k_touch"]["150"] == [0, 1, 0, 0], row2["k_touch"]["150"]   # mfe-based extension
     assert row2["k_exec"]["150"] is None and row2["reach"]["150"] == 1
     assert out["extremes_top"][0]["exec_max_H"] == 30
+    rec2 = {"date": "2025-06-02", "snapshots": [
+        {"pop": "B", "T": 645, "names": [
+            mk("XXX", 0.10, -0.50, up_max=5),
+            mk("YYY", 0.40, -0.05, up_max=50),
+            mk("ZZZ", 0.05, -0.02, up_max=5)]}]}
+    add_rec(rec2, pt, monthly, extremes)
+    out2 = finalize(pt, monthly, extremes)
+    row3 = next(r for r in out2["per_pop_T"] if r["T"] == 645)
+    assert row3["cover"]["days"] == 0, row3["cover"]
+    assert abs(row3["cover"]["ratio_q"]["p50"] - round(0.40 / 0.52, 4)) < 1e-9, row3["cover"]
     print("self-test OK")
 
 
