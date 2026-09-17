@@ -1896,3 +1896,48 @@ Restart: rm data/KILL; re-enable algo-stack-watchdog; relaunch both supervisors.
   frozen in PRE-REG-BASKET-02 -> economics test.
 
 2026-09-17 (BASKET-01 first read, descriptive only): extraction complete — 1065 days, QA PASS (1 declared skip 2025-02-03; 0 corrupt/structure/bars/tmp; 140,740 candidate rows). Passes: T5 paths (75,005 filled members), T7 overnight shadow (25,609 ok / 262 no_data flagged), T9b matched-random (239 sampled days). Aggregates T1-T10 + T4b frontier committed. Headline descriptive numbers (population B, main top-3, T=600, pooled months unless noted): F(+30% before own -10%) = 0.255; F(+50% before -15%) = 0.162; F(+10% before -3%) = 0.438; member-level Q(+30 first | +30 touched) ~ 0.81; T7b touch lens P(basket has >=1 +30% member) ~ 0.306 (T=585/600); rank-adjacent control (ranks 4-6) F(+30,-10) = 0.127 (top-3 ~2x); matched-random +30% touch base rate ~0.008-0.012. T5 paths (MFE>=30 members): median retracement-before-high -15.9%, time-to-high 134 min, post-high drawdown -27.2%, EOD-vs-high -21.8%. Overnight shadow median gap EOD->next open: -0.7% (all), -4.2% (MFE>=30), -5.7% (MFE>=50). No interpretation registered yet — these are PRE-REG-BASKET-02 inputs only.
+
+2026-09-17 (BASKET-01 PRE-REG-02 drafted — NOT frozen): Phase-2 primitive contract written as
+researches/PRE-REG-BASKET-02.md, derived from the committed anatomy by pre-registered
+mechanical mappings (not by P&L, not by visual choice): population B T*=600 (plateau; LULD
+opening-window past; development-formulated narrowing, not a pre-registered rule) + A_open
+co-primary; N=3; release rule R1 = -10% from fill (pre-declared set {8,10,12,15}; shallowest
+with pessimistic tail-preservation Q>=0.80 — measured L=8 Q=0.743 vs L=10 Q=0.807; note Q is
+H-dependent and B/600-calibrated: A_open Q_30(10)=0.762); permissive survivor rule S1 = 50%
+giveback of post-fill running high; arms Arm-0 (all-hold comparator) / Arm-1 (R1 only, primary
+confirmatory) / Arm-2 (R1+S1); forced flat relative to the session's last bar with involuntary
+halt carry; cash!=risk accounting; decision rules D1-D5 (implementation diagnostic / rule
+adoption / thesis-level conditions / parameter re-point requires fresh unseen months /
+kill-vs-refine). Derived descriptive inputs (pooled, B main, 1065 days, T=600): F(+30,-8)=0.237,
+F(+30,-10)=0.255, F(+30,-15)=0.292; marginal retention per pp falls monotonically 0.0221
+(L3->5) / 0.0191 (L5->8) / 0.0094 (L8->10) / 0.0073 (L10->15); rank-adjacent F(+30,-10)=0.127;
+F(30,-10) by T: 09:35 0.186 -> 09:45 0.256 -> 10:00 0.255 -> 10:30 0.232 -> 12:00 0.199
+(plateau 09:45-10:15, then decay). No Phase-2 P&L computed; LS event study still blocked;
+H025 and reserved months untouched.
+
+2026-09-17 (BASKET-01 PRE-REG-02 adversarial audit, pre-freeze — corrections applied): an
+independent adversarial review of the draft found 12 fatal / 7 material / 3 minor issues; all
+were addressed in the document before any freeze. Corrections of record: (1) arms renamed
+Arm-0/1/2 (the old A/B/C names collided with populations A_open/B and made D1-D5 ambiguous);
+(2) one exact per-population estimand B_{d,p,arm} with carry-slot occupancy (a carried position
+keeps its slot; total exposure never exceeds 3 slots per population — no implicit leverage) and
+no combined-portfolio verdict input; (3) complete event-order precedence (R1 evaluated first;
+S1 against the prior peak; peak updated only after evaluation; R1/S1 collision on the
+forced-flat decision bar priced at min(open, level)); (4) forced flat redefined relative to the
+session's actual last bar using a mandatory committed early-close calendar (this dataset carries
+bars to 16:00 even on known early-close dates, so the calendar cannot be inferred silently;
+truncated sessions 2022-09-30 / 2023-03-10 / 2023-03-13 flagged); (5) pending-release-through-halt
+and no-resumption terminal-value rules defined; (6) friction made computable (100 bps round trip
+per filled slot, charged once including carries, 150 adversary, cash pays nothing, full-fill
+small-notional assumption with capacity explicitly not claimed); (7) D1 denominator fixed to ALL
+dev days, per-population benchmarks (B 25.54%, A_open 29.20%), plus the stricter
+at-or-above-next-open +30% sale rate (B 18.50%; the 30.5% exec lens is an access ceiling, not an
+exit); (8) D2 rewritten as a binary comparison (mean, p10, top-5% P&L share) with no tolerance
+constants; (9) D3 split into dev / reserved one-shot / combined-supplemental verdict roles with
+computable negative conditions; (10) S1's "clips <=10% of tail" justification WITHDRAWN
+(T5_paths.json has no population/T dimension; -0.459/-0.492 are medians of 51 monthly p10s, and
+20/51 resp. 22/51 months have monthly p10 < -0.50) — g=50 retained as an owner-chosen permissive
+rule, not a proven bound; (11) numeric corrections: 600->615 overlap is 1.75/3 (not 2.1), RTH
+remaining at 10:00 ~92% (not two-thirds), LULD clustering marked external and not mechanically
+verified. T*=600, L=10, g=50 unchanged and explicitly labelled owner-decisions whose confirmation
+is reserved/forward only. Still NOT frozen; awaiting user sign-off.
