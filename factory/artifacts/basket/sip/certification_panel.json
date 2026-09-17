@@ -1,0 +1,41 @@
+{
+ "panel": {
+  "days": 1,
+  "selection": {
+   "snapshots": 13,
+   "rank_flip_positions_total": 34,
+   "px_delta_bps_p50_of_p50s": 2.115954
+  },
+  "path": {
+   "members": 38,
+   "fill_delta_bps": {
+    "p50": 0.0,
+    "p90": 53.502984,
+    "max_abs": 469.156322
+   },
+   "mfe_delta_bps": {
+    "p50": 1.165,
+    "p90": 46.991,
+    "max_abs": 492.25
+   },
+   "nonambiguous_order_flips": 21,
+   "amb_cases": 1,
+   "amb_resolved_by_trades": 1
+  },
+  "exec": {
+   "members": 37,
+   "spread_bps": {
+    "p50": 106.656133,
+    "p90": 357.748403
+   }
+  },
+  "tail": {
+   "days": 1,
+   "symbol_tail_diffs_total": 10,
+   "max_abs_delta": 0.093005
+  }
+ },
+ "days": [
+  "2021-02-01"
+ ]
+}

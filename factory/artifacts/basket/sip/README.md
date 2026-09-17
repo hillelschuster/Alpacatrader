@@ -65,6 +65,20 @@ First certification against the provider (2021-02-01, heaviest-era day):
   certification panel must confirm per-day. Impact on ranking/MFE/MAE is measured
   in the pilot comparison, not assumed.
 
+## Certification layer — `factory/scripts/sip_certify.py`
+
+Compares SIP-derived facts against the committed legacy anatomy, per day: re-rank of the
+stored top-10 by SIP prices, fill/MFE/MAE/path deltas, first-passage ordering (including
+resolution of stored AMBIGUOUS cases by trade sequencing; raw and price-updating lenses),
+quote/spread at fill, and RTH price-updating max vs stored day high. Outputs:
+`factory/artifacts/basket/sip/certification_<day>.json`, `certification_panel.json`.
+`--day D --why TICKER` prints legacy-vs-SIP bars around a member's fill for review.
+
+Day-1 (2021-02-01) result and verified disagreement mechanisms — legacy missing minutes,
+single-print minutes, and ranges crossing rulers — are documented in `CERTIFICATION_NOTES.md`.
+Headline: fill deltas to 469bps, MFE deltas to 492bps, 21 non-ambiguous order flips across
+4 members, quoted spread at fill p50 ~107bps / p90 ~358bps, 10 symbol tail diffs to +9.3%.
+
 ## Not in this layer
 
 - No bar construction, no price series, no trade-condition policy (derived layer).

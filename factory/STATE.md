@@ -1942,6 +1942,21 @@ remaining at 10:00 ~92% (not two-thirds), LULD clustering marked external and no
 verified. T*=600, L=10, g=50 unchanged and explicitly labelled owner-decisions whose confirmation
 is reserved/forward only. Still NOT frozen; awaiting user sign-off.
 
+2026-09-18 (BASKET-01 SIP certification layer — pilot day 1): factory/scripts/sip_certify.py
+(+ --why review printer) compares SIP-derived facts with the committed anatomy per day:
+re-rank of stored top-10 by SIP prices; fill/MFE/MAE deltas; non-ambiguous order flips +
+resolution of stored AMBIGUOUS cases via trade sequencing (raw and price-updating lenses);
+quote/spread at fill; RTH price-updating max vs stored day high. Day 1 (2021-02-01):
+34 rank-flip positions / 13 snapshots; fill delta max 469bps; MFE delta max 492bps; 21 order
+flips on 4 members; spreads p50 107bps / p90 358bps; 10 tail diffs, max +9.3%
+(CDE 12.58 -> 13.75). Verified mechanisms (not hypotheses): the legacy tape loses whole minutes
+(DCOM et=571 absent), stores single-print minutes (DCOM et=570 range 24.48-26.0 collapsed to
+25.11; et=572 lone print 24.835 absent from SIP) and understates ranges (YGMZ et=592 low 41.321
+vs 41.811 -> crosses the -3% ruler = ordering flip). Notes:
+factory/artifacts/basket/sip/CERTIFICATION_NOTES.md. Pilot scope limits: candidate-union only,
+prev_close not re-derived, A_pm skipped, quoted spreads not fill models. PRE-REG-BASKET-02
+freeze remains PAUSED; no parameters or rules changed.
+
 2026-09-17 (BASKET-01 re-centering pass, pre-freeze — owner directive): read layer re-centered
 away from ruler-as-ontology. New measurement artifacts: T11_dist.json (full daily basket
 anatomy: continuous member / day-max excursion distributions incl. extremes, 0/1/2/3-mover
