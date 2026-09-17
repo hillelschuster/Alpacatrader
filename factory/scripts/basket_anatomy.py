@@ -337,6 +337,10 @@ def process_day(
         snaps.append({"pop": pop, "T": T, "names": names})
 
     def attach_path(ticker: str, mode: str, T: int, base: dict) -> dict:
+        if ticker not in SL:
+            # Pre-market-only name with no RTH bars that day: known at decision time,
+            # but it cannot participate. Blocked slot, never a silent exclusion.
+            return {"fill": None, "blocked": True, "reason": "no_rth_bars"}
         s, e = SL[ticker]
         ets = A_et[s:e]
         os_ = A_o[s:e]
