@@ -42,11 +42,13 @@ one completed bar with et <= T-1). **No eligibility field may depend on how the 
 the day unfolds**: session bar count, halt count, fillability-after-T, and EOD outcomes
 are outcome/strata fields only. Do NOT inherit another strategy's screen ($2/$5M certify
 filters, runner $1-50 band) as a pre-selection.
-Corporate actions: exclude only (date,ticker) rows flagged in `data/split_flags.parquet`
-(reverse-split-like signature). Deliberately NOT a blanket [0.5,2] ratio guard: genuine
->+100% news gaps are exactly the population under study, so huge-gain candidates are kept
-unless the flag/audit confirms an artifact; exclusions and their classifications are
-reported.
+Corporate actions: `data/split_flags.parquet` entries are **audit/sensitivity metadata
+only — never causal admission criteria**, because the flag's own signature uses the
+stock's full-day intraday behavior, which is future information at decision time. Flagged
+candidates stay in the basket; every table is additionally reportable with flagged names
+removed as a sensitivity cut. No independent corporate-action source exists in the data,
+so there is no causal split filter; candidates with anchor-ratio >= 2.0 remain listed in
+the audit for classification.
 Report every table stratified by price band, dollar volume, decision-time bar count, halt
 count, and warrant/penny flags where inferable. The executable Phase-2 universe is frozen
 later for operational reasons only — never because a band produced attractive P&L.
@@ -78,6 +80,8 @@ later for operational reasons only — never because a band produced attractive 
 - Upside ladder from fill: +5/+10/+20/+30/+50/+100%. Adverse ladder: -3/-5/-8/-10/-15%.
 - Both touch-based (minute extreme) and conservative executable (next-bar-open after
   threshold) forms where applicable. A minute-high touch is an upper bound, never a capture.
+  If the touch occurs on the final available bar, the executable form is N/A (non-executable
+  touch); never substitute that bar's close.
 - Same-bar both-touch: flag AMBIGUOUS; report optimistic and pessimistic bounds; use
   sub-minute evidence where available (`data/subminute/*_exit_quotes`; sampled SIP) — never
   silently decide. Adverse-first is allowed only as a labeled stress bound for execution
@@ -180,3 +184,6 @@ constructed later without rerunning the anatomy.
   handling (genuine news gaps kept); A_pm 09:30 first-trade fill / A_open 09:31; anchors
   per population; selection-time gain axis; AMBIGUOUS share reporting; T6/T7/T10 made
   rule-free; evidence boundary fixed (2026-06..08 reserved unseen).
+- 2026-09-16 (canonical-run correction): split flags demoted to audit/sensitivity metadata
+  (their signature is future-dependent — not causal admission); final-bar ladder touches
+  marked non-executable (never close-substituted); anatomy regenerated from scratch.

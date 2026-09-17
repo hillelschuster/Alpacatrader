@@ -205,13 +205,15 @@ validation is forward.
 ## 11. Measurement contract and data reality
 
 Contract (binding): ET clocks, causal-only, 1-bar lag, open-anchored gains, conservative
-same-bar DD-first for execution; next-bar-open fills; honest friction (100bps+); month-
-blocked reporting; pre-registered kills.
+same-bar DD-first for execution; fills per population (A_pm: 09:30 first-trade open, alt
+bound 09:31; A_open: 09:31; B(T): first bar open et>=T); honest friction (100bps+);
+month-blocked reporting; pre-registered kills.
 
 Data limits to respect: premarket bars **2025 only** (Alpaca SIP, 04:00-09:29:59 ET); no
 official 09:30 auction print (the 09:30 bar open is the first RTH trade); no LULD halt
-flags (halts inferred from >=5-min bar holes); raw/unadjusted prices with the [0.5,2]
-split guard as exclusion; clean bars 2021-2023 + 2025-02..2026-02, backfill 2026-03..08;
+flags (halts inferred from >=5-min bar holes); raw/unadjusted prices; split/corporate-action
+flags are audit/sensitivity metadata only — never causal admission (no independent
+corporate-action source, and the flag's signature uses future full-day behavior); clean bars 2021-2023 + 2025-02..2026-02, backfill 2026-03..08;
 leaderboard/path tape 2021-02..2026-08; no stored NBBO (partial `data/subminute/*_exit_quotes`
 plus on-demand SIP pulls).
 
@@ -229,3 +231,7 @@ plus on-demand SIP pulls).
   per-population anchors explicit; split handling made flag-based so genuine large news
   gaps are not deleted; AMBIGUOUS share reported; Phase-1 pay-for-team/break-even/LS forms
   labeled rule-free; evidence boundary fixed (2026-06..08 reserved).
+- 2026-09-16 (canonical-run correction): split flags demoted to audit/sensitivity metadata
+  (future-dependent signature — cannot gate morning admission); final-bar ladder touches
+  non-executable; §11 fills/split statements aligned with PRE-REG; anatomy regenerated
+  from scratch.

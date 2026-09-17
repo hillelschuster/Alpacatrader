@@ -184,7 +184,7 @@ def ladders(ets, os_, hs, ls, cs, fi: int, fill: float):
             "i": idx - fi,
             "et": int(ets[idx]),
             "touch": round(float(hs[idx]), 6),
-            "exec": round(float(os_[idx + 1] if idx + 1 < n else cs[idx]), 6),
+            "exec": (round(float(os_[idx + 1]), 6) if idx + 1 < n else None),
         }
     for L in DN:
         thr = fill * (1.0 - L / 100.0)
@@ -197,7 +197,7 @@ def ladders(ets, os_, hs, ls, cs, fi: int, fill: float):
             "i": idx - fi,
             "et": int(ets[idx]),
             "touch": round(float(ls[idx]), 6),
-            "exec": round(float(os_[idx + 1] if idx + 1 < n else cs[idx]), 6),
+            "exec": (round(float(os_[idx + 1]), 6) if idx + 1 < n else None),
         }
     seg_h, seg_l = hs[fi:], ls[fi:]
     im = int(np.argmax(seg_h)) + fi
@@ -228,9 +228,10 @@ def R(x):
     return None if x is None else round(float(x), 6)
 
 
-def topk(frame: pl.DataFrame, gaincol: str, split_set: set) -> pl.DataFrame:
-    if split_set:
-        frame = frame.filter(~pl.col("ticker").is_in(list(split_set)))
+def topk(frame: pl.DataFrame, gaincol: str) -> pl.DataFrame:
+    # NOTE: no split exclusion here — split_flags is future-dependent
+    # (its signature uses the stock's full-day intraday behavior at decision time),
+    # so it is audit/sensitivity metadata only, never a causal admission criterion.
     f = frame.sort(gaincol, descending=True).head(K_TOP)
     return f.with_row_index("rank", offset=1)
 
@@ -288,8 +289,6 @@ def process_day(
         (pl.col("open0930").is_null()).alias("delayed_open"),
     )
     w = w.filter((pl.col("anchor") >= MIN_PRICE) & (pl.col("prev_close") > 0))
-    if split_set:
-        w = w.filter(~pl.col("ticker").is_in(list(split_set)))
     w = w.with_columns(
         (pl.col("hi") / pl.col("anchor") - 1).alias("gain_open"),
         (pl.col("hi") / pl.col("prev_close") - 1).alias("gain_prev"),
@@ -300,11 +299,13 @@ def process_day(
     winners_open = [
         {"ticker": r["ticker"], "gain_open": R(r["gain_open"]), "gain_prev": R(r["gain_prev"]),
          "eod_open": R(r["eod_open"]), "et_hi": int(r["etN"]) if False else None,
-         "delayed_open": bool(r["delayed_open"])}
+         "delayed_open": bool(r["delayed_open"]),
+         "split_flag": r["ticker"] in split_set}
         for r in win_o.iter_rows(named=True)
     ]
     winners_prev = [
-        {"ticker": r["ticker"], "gain_prev": R(r["gain_prev"]), "gain_open": R(r["gain_open"])}
+        {"ticker": r["ticker"], "gain_prev": R(r["gain_prev"]), "gain_open": R(r["gain_open"]),
+         "split_flag": r["ticker"] in split_set}
         for r in win_p.iter_rows(named=True)
     ]
 
@@ -325,6 +326,7 @@ def process_day(
                 "px_decision": R(r[pxcol]),
                 "open0930": R(r["open0930"]) if r.get("open0930") is not None else None,
                 "prev_close": R(r["prev_close"]) if r.get("prev_close") is not None else None,
+                "split_flag": r["ticker"] in split_set,
             }
             base.update(attach_path(r["ticker"], pop, T, base))
             names.append(base)
@@ -367,7 +369,7 @@ def process_day(
         (pl.col("open0930") >= MIN_PRICE) & (pl.col("prev_close") > 0)
     )
     ao = ao.with_columns((pl.col("open0930") / pl.col("prev_close") - 1).alias("sel"))
-    emit("A_open", 570, topk(ao, "sel", split_set), "open0930", None)
+    emit("A_open", 570, topk(ao, "sel"), "open0930", None)
 
     # A_pm (2025 only)
     if pm_day is not None and pm_day.height > 0:
@@ -384,7 +386,7 @@ def process_day(
             (pl.col("px") / pl.col("prev_close") - 1).alias("sel"),
             (pl.col("open0930") / pl.col("px") - 1).alias("sel_alt"),
         )
-        emit("A_pm", 570, topk(ap, "sel", split_set), "px", None)
+        emit("A_pm", 570, topk(ap, "sel"), "px", None)
 
     # B(T)
     for T in T_LIST:
@@ -399,7 +401,7 @@ def process_day(
             (pl.col("px") / pl.col("open0930") - 1).alias("sel"),
             (pl.col("px") / pl.col("prev_close") - 1).alias("sel_alt"),
         )
-        emit("B", T, topk(b, "sel", split_set), "px", "prev_close")
+        emit("B", T, topk(b, "sel"), "px", "prev_close")
 
     # ---- audit fields
     ratio2plus = []
@@ -422,7 +424,8 @@ def process_day(
             "n_elig": int(n_elig),
             "n_open0930": int(n_open),
             "missing_0930": int(n_elig - n_open),
-            "split_excl_today": len(split_set),
+            "split_flag_today": len(split_set),
+            "split_flagged_in_basket": sorted(set(cand_tickers) & split_set),
             "ratio2plus": ratio2plus,
         },
         "winners_open": winners_open,
@@ -456,6 +459,12 @@ def selftest() -> None:
     assert L["dn"]["10"]["i"] == 2
     assert L["up"]["100"] is None
     assert im == 1 and ia == 2
+    L2, _, _ = ladders(
+        [570, 571, 572], [1.0, 1.0, 1.0], [1.0, 1.0, 1.2],
+        [0.9, 0.9, 0.9], [1.0, 1.0, 1.2], 1, 1.0,
+    )
+    assert L2["up"]["5"]["i"] == 1
+    assert L2["up"]["5"]["exec"] is None  # final-bar touch is non-executable
     st = states_at([570, 571, 600], [1.0, 1.1, 1.0], [1.0, 1.2, 1.1], 0, 1.0)
     assert st["585"]["ret"] == 0.1
     assert abs(st["585"]["dd"] + 0.083333) < 1e-5
