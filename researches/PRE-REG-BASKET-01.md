@@ -64,7 +64,21 @@ later for operational reasons only — never because a band produced attractive 
   minutes before 09:30; staleness sensitivity reported. 2025 only — never pooled with
   A_open.
 - `B(T)`: rank by close(last completed bar, et <= T-1) / open(09:30) - 1; fill at the
-  first bar open with et >= T; T in {09:45, 10:00, 10:30, 11:00}.
+  first bar open with et >= T. Frozen timing surface (fixed before any aggregate result
+  was viewed): 5-minute resolution through the opening window — 09:35, 09:40, 09:45,
+  09:50, 09:55, 10:00; 15-minute resolution to the end of the first hour — 10:15, 10:30,
+  10:45, 11:00; 30-minute resolution to noon — 11:30, 12:00. Rationale: the first ~30
+  minutes mix opening repricing, stale premarket leadership, violent rank churn and
+  wide spreads/halts with the largest remaining upside, so the open window gets the
+  finest ruler; the coarser later points measure the "identity resolved but tail
+  already consumed" arm. The grid is an anatomical surface for the early-noise vs
+  resolved-identity trade-off, not a P&L search grid; per the DOF rules, T choice
+  consumes development freedom and cannot be selected from these aggregates.
+- Per-T joint reporting (aggregation layer): for each (population, T, N) the tables are
+  read together — eventual-leader containment; remaining post-fill executable upside of
+  that leader; rank churn / new entrants / leadership stability; adverse path and
+  failed-ticket burden of the rest of the basket; execution realism (touch vs exec,
+  blocked slots, gaps). No single metric is interpreted alone.
 - Anchors are per-population by design: A = previous-session close; B = RTH open. The other
   anchor is recorded descriptively per candidate (cross-population comparability); neither
   is forced onto the other population.
@@ -187,3 +201,7 @@ constructed later without rerunning the anatomy.
 - 2026-09-16 (canonical-run correction): split flags demoted to audit/sensitivity metadata
   (their signature is future-dependent — not causal admission); final-bar ladder touches
   marked non-executable (never close-substituted); anatomy regenerated from scratch.
+- 2026-09-16 (timing-surface freeze, pre-aggregate): B grid expanded to the dense surface
+  above (5-min open window, 15-min to 11:00, 30-min to noon) with per-T joint reporting
+  (containment + remaining upside + churn + failed-ticket burden + execution realism read
+  together). Frozen before any aggregate was viewed; not re-selectable from aggregates.

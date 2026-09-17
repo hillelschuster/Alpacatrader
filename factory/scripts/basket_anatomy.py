@@ -43,11 +43,11 @@ OUT = ROOT / "factory" / "artifacts" / "basket"
 
 RESERVED = {"2026-06", "2026-07", "2026-08"}  # evidence boundary (PRE-REG §5)
 DEV_END = "2026-05"
-T_LIST = [585, 600, 630, 660]
+T_LIST = [575, 580, 585, 590, 595, 600, 615, 630, 645, 660, 690, 720]
 K_TOP = 10
 UP = [5, 10, 20, 30, 50, 100]
 DN = [3, 5, 8, 10, 15]
-TIMES = [585, 600, 630, 660]
+TIMES = [575, 580, 585, 590, 595, 600, 615, 630, 645, 660, 690, 720]
 FRESH_MIN = 15
 MIN_PRICE = 1.0
 GAP_BLOCK = 5  # entry gap in minutes >= this = blocked slot
@@ -465,11 +465,14 @@ def selftest() -> None:
     )
     assert L2["up"]["5"]["i"] == 1
     assert L2["up"]["5"]["exec"] is None  # final-bar touch is non-executable
-    st = states_at([570, 571, 600], [1.0, 1.1, 1.0], [1.0, 1.2, 1.1], 0, 1.0)
+    st = states_at([570, 580, 600], [1.0, 1.10, 1.05], [1.0, 1.20, 1.10], 0, 1.0)
+    assert st["575"]["ret"] == 0.0
+    assert st["580"] is None  # bar 580 not completed by 580 under et<=t-1
     assert st["585"]["ret"] == 0.1
     assert abs(st["585"]["dd"] + 0.083333) < 1e-5
-    assert st["600"] is None  # bar 600 not completed by 600 under et<=t-1
-    assert st["630"]["ret"] == 0.0
+    assert st["615"]["ret"] == 0.05  # last completed bar 600 consumed at 10:15
+    assert st["615"]["dd"] == -0.125
+    assert st["630"] is None  # no new bar after 600
     print("self-test OK")
 
 

@@ -41,7 +41,8 @@ survivor -> potentially concentrated evidence.**
   premarket print <= 09:30 / prev_close - 1 (known before the bell; 2025 only; freshness
   rule), fill at the 09:30 bar open — the first realistic RTH participation opportunity
   (conservative bound: 09:31 open). Population B (coequal): ranks by close(last completed
-  bar, et <= T-1) / open(09:30) - 1 at T in {09:45, 10:00, 10:30, 11:00}, fill at the
+  bar, et <= T-1) / open(09:30) - 1 on the frozen dense timing surface (5-min through
+  10:00, 15-min to 11:00, 30-min to noon; PRE-REG §3), fill at the
   first bar open with et >= T. Anchors stay per-population (A = prev close, B = RTH open);
   the other anchor is descriptive only.
 - Intended basket S_d(T) = top-N, N in {1,3,5,10} (descriptive ladder); fewer qualifiers =
@@ -204,8 +205,9 @@ validation is forward.
 
 ## 11. Measurement contract and data reality
 
-Contract (binding): ET clocks, causal-only, 1-bar lag, open-anchored gains, conservative
-same-bar DD-first for execution; fills per population (A_pm: 09:30 first-trade open, alt
+Contract (binding): ET clocks, causal-only, 1-bar lag, open-anchored gains; same-bar
+ambiguity reported as bounds (optimistic/pessimistic — adverse-first only as a stress
+assumption, never as observed fact); fills per population (A_pm: 09:30 first-trade open, alt
 bound 09:31; A_open: 09:31; B(T): first bar open et>=T); honest friction (100bps+);
 month-blocked reporting; pre-registered kills.
 
@@ -235,3 +237,9 @@ plus on-demand SIP pulls).
   (future-dependent signature — cannot gate morning admission); final-bar ladder touches
   non-executable; §11 fills/split statements aligned with PRE-REG; anatomy regenerated
   from scratch.
+- 2026-09-16 (timing-surface freeze, pre-aggregate): B observation surface made dense
+  through the open (5-min through 10:00, 15-min to 11:00, 30-min to noon) to measure the
+  early-noise vs resolved-identity trade-off (containment, remaining upside, churn,
+  failed-ticket burden, execution realism read jointly per T); frozen before any
+  aggregate was viewed. §11 same-bar statement aligned with the PRE-REG bounds
+  convention (AMBIGUOUS, optimistic/pessimistic; adverse-first = stress assumption only).
