@@ -107,25 +107,29 @@ def run(files, force=False):
     resolved = {}  # (next_date, ticker) -> (open, et)
     from datetime import date as _date
 
+    months_need = defaultdict(lambda: {"dates": set(), "tickers": set()})
     for nd in sorted(need):
-        month = nd[:7]
+        months_need[nd[:7]]["dates"].add(nd)
+        months_need[nd[:7]]["tickers"] |= need[nd]
+    for month, mset in sorted(months_need.items()):
         mp = month_path(month)
         if not mp.exists():
             continue
-        nd_d = _date.fromisoformat(nd)
-        tickers = sorted(need[nd])
+        ds = [_date.fromisoformat(x) for x in sorted(mset["dates"])]
+        tickers = sorted(mset["tickers"])
         lf = pl.scan_parquet(mp).select(["timestamp", "ticker", "open"])
         lf = lf.with_columns(pl.col("timestamp").dt.convert_time_zone("America/New_York").alias("tset"))
         lf = lf.with_columns(
             (pl.col("tset").dt.hour().cast(pl.Int32) * 60 + pl.col("tset").dt.minute().cast(pl.Int32)).alias("et"),
             pl.col("tset").dt.date().alias("date"),
         )
-        df = lf.filter((pl.col("date") == nd_d) & pl.col("ticker").is_in(tickers)).collect()
+        df = lf.filter(pl.col("date").is_in(ds) & pl.col("ticker").is_in(tickers)).collect()
         df = df.filter((pl.col("et") >= 570) & (pl.col("et") < 960)).sort("et")
-        first = df.group_by("ticker", maintain_order=True).agg(
+        first = df.group_by(["date", "ticker"], maintain_order=True).agg(
             pl.col("open").first().alias("o"), pl.col("et").first().alias("e"))
-        for t, o, e in zip(first["ticker"].to_list(), first["o"].to_list(), first["e"].to_list()):
-            resolved[(nd, t)] = (float(o), int(e))
+        for d, t, o, e in zip(first["date"].to_list(), first["ticker"].to_list(),
+                              first["o"].to_list(), first["e"].to_list()):
+            resolved[(str(d), t)] = (float(o), int(e))
 
     SHADOW.mkdir(parents=True, exist_ok=True)
     by_day = defaultdict(dict)
