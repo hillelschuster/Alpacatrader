@@ -1,0 +1,111 @@
+{
+  "generated": "2026-09-17",
+  "purpose": "Lineage of every BASKET-01 input family, established before the Alpaca SIP certification layer. Values are either verified from code/files or explicitly marked unknown.",
+  "families": {
+    "ohlcv_YYYY-MM.parquet": {
+      "path": "data/ohlcv_*.parquet",
+      "months_present": "2021-01..2023-12 (36), 2025-03..2025-12 (10), 2026-01..2026-03 (3)",
+      "provider": "mito0o852/OHLCV-1m Hugging Face dataset",
+      "upstream_provider": "Finnhub (documented in factory/AGENTS.md; not independently verifiable from code)",
+      "feed": "unknown (provider bars; no SIP/IEX distinction exposed)",
+      "resolution": "1-minute provider bars",
+      "constructed_by_us": false,
+      "transforms": ["none (raw download via factory/scripts/download_month.py)"],
+      "trade_conditions": "unknown (bar endpoint exposes none)",
+      "cancelled_corrected_trades": "unknown",
+      "quotes": false,
+      "known_breaks": []
+    },
+    "clean_ohlcv_YYYY-MM.parquet": {
+      "path": "data/clean_ohlcv_*.parquet",
+      "months_present": "2021-01..2023-12 (36), 2025-02..2025-12 (11), 2026-01..2026-02 (2)",
+      "producer": "factory/scripts/clean_month.py (defaults price_floor=2.0, min_volume=100)",
+      "provider": "inherits ohlcv family (HF mito0o852)",
+      "feed": "unknown",
+      "resolution": "1-minute provider bars, RTH only",
+      "constructed_by_us": "filtered only",
+      "transforms": [
+        "timestamp -> America/New_York",
+        "RTH filter [09:30,16:00) ET",
+        "dedup (timestamp,ticker) keep-first",
+        "price floor: bar close >= $2.00",
+        "bar volume >= 100"
+      ],
+      "noop_options_never_implemented": [
+        "PIT universe join (TODO in clean_month.py; effective universe is PIT-filtered later inside BASKET, not here)",
+        "split exclusion (TODO in clean_month.py; splits handled downstream by audit/flag logic)"
+      ],
+      "known_breaks": [
+        "2024 entirely absent (raw + clean); 2025-01 absent",
+        "clean_ohlcv_2025-02.parquet exists with no local raw ohlcv_2025-02 sibling (raw deleted or cleaned elsewhere)",
+        "price >= $2 and volume >= 100 filters are baked into the tape BEFORE any BASKET logic"
+      ]
+    },
+    "backfill/clean_ohlcv_2026-03..2026-08": {
+      "path": "data/backfill/clean_ohlcv_2026-03.parquet .. 2026-08.parquet",
+      "producer": "factory/scripts/backfill_alpaca.py (raw) then clean_month.py",
+      "provider": "Alpaca",
+      "feed": "SIP",
+      "resolution": "1-minute Alpaca-constructed bars",
+      "raw_includes": "pre/post bars and all statuses (delisted names kept) before clean_month's RTH filter",
+      "trade_conditions": "not exposed by the Alpaca bars endpoint; internal condition filtering unknown",
+      "known_breaks": [
+        "provenance break at 2026-03: BASKET switches from HF/Finnhub bars to Alpaca SIP bars",
+        "HF ohlcv_2026-03 also exists locally -> one overlapping month available for cross-feed comparison"
+      ]
+    },
+    "premarket_ohlcv_2025-*": {
+      "path": "data/backfill/premarket_ohlcv_2025-01..12.parquet",
+      "producer": "factory/scripts/backfill_premarket_2025.py",
+      "provider": "Alpaca",
+      "feed": "SIP",
+      "window": "04:00:00-09:29:59 ET only",
+      "months_present": "2025 only (no other years)",
+      "known_breaks": ["A_pm population exists only for 2025-02..2025-12 in BASKET (no RTH clean data for 2025-01)"]
+    },
+    "leaderboard": {
+      "path": "data/leaderboard/lb_YYYY-MM-DD.parquet, path_YYYY-MM-DD.parquet",
+      "producer": "factory/scripts/lb18.py; month resolution via tv_leaderboard.month_path: H12_STAGE tmp first, else data/backfill for month >= 2026-03, else data/",
+      "resolution": "1-minute bars rebased to decision grid 571..959; gain = close(last bar et<=t-1) / immediately-prior session close - 1; PIT universe",
+      "provider_feed": "inherits clean_ohlcv mix (HF/Finnhub 2021-02..2026-02, Alpaca SIP 2026-03+)",
+      "coverage": "2021-02-01..2026-08-31 (1402 lb / 1401 path files)",
+      "known_breaks": [
+        "2024 lb/path files exist (252 each) but 2024 raw+clean data is absent locally -> 2024 leaderboard is NOT regenerable/verifiable from local data",
+        "leaderboard feed composition changes at 2026-03"
+      ]
+    },
+    "iex_tape": {
+      "path": "data/iex_tape/path_*.parquet",
+      "producer": "factory/scripts/lb18_iex_tape.py (+ lb18_iex_feed.py, lb18_iex_hybrid.py)",
+      "provider": "Alpaca",
+      "feed": "IEX (not SIP)",
+      "role": "separate experimental tape (A4/IEX-hybrid lineage)",
+      "known_breaks": ["IEX volume share is a small fraction of consolidated; coverage differs from SIP"]
+    },
+    "subminute_quotes": {
+      "path": "data/subminute/*_exit_quotes.parquet",
+      "producer": "factory/scripts/lb18_subminute.py",
+      "provider": "Alpaca",
+      "feed": "SIP quotes on demand",
+      "coverage": "partial: exit-moment quote slices for specific experiments, not a full quote tape"
+    },
+    "pit_universe": {
+      "path": "data/pit/pit_symbols.parquet (+ bundle variants)",
+      "producer": "factory/scripts/build_pit_from_bundle.py",
+      "source": "yolo22/stock-pit-archives exchange universe snapshots",
+      "coverage": "vintages from 2021-01-30; first usable BASKET day 2021-02-01"
+    },
+    "split_flags": {
+      "path": "data/split_flags.parquet",
+      "producer": "factory/scripts/audit_splits.py",
+      "role": "derived reverse-split-like flags; audit/sensitivity instrument (T12 successor), not causal admission"
+    }
+  },
+  "unresolvable_from_local_code_and_files": [
+    "Whether HF mito0o852 bars are exchange-consolidated or provider-constructed, and on which raw feed",
+    "Whether cancelled/corrected trades contaminate the HF months",
+    "Whether Alpaca bar construction applies trade-condition exclusions (not exposed)",
+    "Origin of clean_ohlcv_2025-02 raw input",
+    "How 2024 leaderboard files were produced (raw data no longer local)"
+  ]
+}

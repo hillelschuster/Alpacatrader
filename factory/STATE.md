@@ -1972,3 +1972,12 @@ member is rank 2 (fails under the old code). T11 recomputed: B/600 cover 0.628 -
 Alpaca SIP historical trades+quotes verified reachable with the .env keys (probe: BRP
 2022-03-10 09:40-10:35 ET window max SIP trade price 25.76 vs the corrupted 1092.71/785 print
 in the clean tape). PRE-REG-BASKET-02 parameter freeze remains PAUSED pending SIP certification.
+
+2026-09-17 (BASKET-01 data-provenance audit): every BASKET input family documented
+(provider/feed/resolution/transforms/breaks) -> factory/artifacts/basket/data_provenance.json +
+DATA_PROVENANCE.md. Key facts: HF mito0o852/Finnhub bars for 2021-2023 + 2025-02..2026-02 (feed,
+trade conditions, cancellations unknown); Alpaca SIP bars from 2026-03 (provenance break; HF
+ohlcv_2026-03 also local for cross-feed check); clean_month bakes RTH/dedup/$2 floor/volume>=100
+BEFORE BASKET logic; 2024 raw+clean absent while 2024 leaderboard exists (non-regenerable);
+2025-02 clean without raw sibling; 2025 premarket = SIP; leaderboard inherits clean mix; IEX and
+subminute-quote lanes are separate/experimental. Next: SIP pilot ingestion + certification panel.
