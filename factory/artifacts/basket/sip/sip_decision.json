@@ -1,0 +1,402 @@
+{
+ "days": 20,
+ "A_selection": {
+  "snapshots": 260,
+  "skipped_snapshots": 4,
+  "top3_set_change_share": 0.1538,
+  "top3_order_change_share": 0.25,
+  "rank_flip_positions_total": 763,
+  "px_delta_bps_p50_of_p50s": {
+   "n": 260,
+   "p50": 0.98,
+   "p90": 24.43,
+   "max": 106.0
+  },
+  "px_delta_bps_max": 9766.681004,
+  "outsiders_above_cutoff": 590,
+  "outsider_examples": [
+   {
+    "day": "2021-02-01",
+    "pop": "B",
+    "T": 575,
+    "ticker": "FLGT",
+    "score": 0.067147
+   },
+   {
+    "day": "2021-02-01",
+    "pop": "B",
+    "T": 575,
+    "ticker": "CVCY",
+    "score": 0.057237
+   },
+   {
+    "day": "2021-02-01",
+    "pop": "B",
+    "T": 575,
+    "ticker": "ARLO",
+    "score": 0.056395
+   },
+   {
+    "day": "2021-02-01",
+    "pop": "B",
+    "T": 575,
+    "ticker": "IRTC",
+    "score": 0.051028
+   },
+   {
+    "day": "2021-02-01",
+    "pop": "B",
+    "T": 575,
+    "ticker": "NVAX",
+    "score": 0.048243
+   },
+   {
+    "day": "2021-02-01",
+    "pop": "B",
+    "T": 575,
+    "ticker": "DTEA",
+    "score": 0.038567
+   },
+   {
+    "day": "2021-02-01",
+    "pop": "B",
+    "T": 575,
+    "ticker": "TIRX",
+    "score": 0.035552
+   },
+   {
+    "day": "2021-02-01",
+    "pop": "B",
+    "T": 575,
+    "ticker": "GATO",
+    "score": 0.027311
+   },
+   {
+    "day": "2021-02-01",
+    "pop": "B",
+    "T": 575,
+    "ticker": "ADMS",
+    "score": 0.025602
+   },
+   {
+    "day": "2021-02-01",
+    "pop": "B",
+    "T": 575,
+    "ticker": "PUBM",
+    "score": 0.023866
+   }
+  ]
+ },
+ "B_path": {
+  "member_days": 695,
+  "fill_delta_bps": {
+   "n": 695,
+   "p50": 0.0,
+   "p90": 76.62,
+   "max": 7444.13
+  },
+  "fill_delta_share_gt_100bps": 0.0748,
+  "mfe_delta_bps": {
+   "n": 695,
+   "p50": 0.0,
+   "p90": 95.56,
+   "max": 298713.59
+  },
+  "mae_delta_bps": {
+   "n": 695,
+   "p50": 0.0,
+   "p90": 16.51,
+   "max": 5204.08
+  }
+ },
+ "C_first_passage": {
+  "order_flips_nonamb": 498,
+  "ambiguous_cases": 27,
+  "ambiguous_resolved": 27
+ },
+ "D_execution": {
+  "spread_bps": {
+   "n": 682,
+   "p50": 86.26,
+   "p90": 471.86,
+   "max": 6437.43
+  },
+  "buy_cross_bps": {
+   "n": 685,
+   "p50": 29.41,
+   "p90": 274.22,
+   "max": 120434.78
+  }
+ },
+ "E_tail": {
+  "symbol_diffs_total": 197,
+  "stored_big_members": 50,
+  "confirmed_by_sip": 49,
+  "sip_only_big_new": 0,
+  "stored_only_big_unconfirmed": 1,
+  "largest_revisions": [
+   {
+    "day": "2025-10-30",
+    "ticker": "BNY",
+    "stored_high": 10.26,
+    "sip_rth_po_max": 108.78,
+    "raw_window_max": 108.78,
+    "delta": 9.602339
+   },
+   {
+    "day": "2022-03-10",
+    "ticker": "BRP",
+    "stored_high": 1092.71,
+    "sip_rth_po_max": 26.35,
+    "raw_window_max": 26.47,
+    "delta": -0.975886
+   },
+   {
+    "day": "2021-10-25",
+    "ticker": "BKKT",
+    "stored_high": 31.57,
+    "sip_rth_po_max": 13.86,
+    "raw_window_max": 30.6,
+    "delta": -0.560976
+   },
+   {
+    "day": "2025-03-24",
+    "ticker": "GOLD",
+    "stored_high": 19.065,
+    "sip_rth_po_max": 28.8999,
+    "raw_window_max": 28.8999,
+    "delta": 0.515862
+   },
+   {
+    "day": "2025-10-30",
+    "ticker": "BQ",
+    "stored_high": 56.1,
+    "sip_rth_po_max": 72.7399,
+    "raw_window_max": 72.7399,
+    "delta": 0.296611
+   },
+   {
+    "day": "2021-03-08",
+    "ticker": "CNR",
+    "stored_high": 14.29,
+    "sip_rth_po_max": 11.45,
+    "raw_window_max": 11.45,
+    "delta": -0.19874
+   },
+   {
+    "day": "2021-10-25",
+    "ticker": "MARK",
+    "stored_high": 6.7,
+    "sip_rth_po_max": 7.53,
+    "raw_window_max": 7.53,
+    "delta": 0.123881
+   },
+   {
+    "day": "2023-03-17",
+    "ticker": "IVA",
+    "stored_high": 4.77,
+    "sip_rth_po_max": 5.35,
+    "raw_window_max": 5.35,
+    "delta": 0.121593
+   },
+   {
+    "day": "2021-03-08",
+    "ticker": "MYT",
+    "stored_high": 4.5,
+    "sip_rth_po_max": 4.99,
+    "raw_window_max": 4.99,
+    "delta": 0.108889
+   },
+   {
+    "day": "2021-10-25",
+    "ticker": "BE",
+    "stored_high": 28.13,
+    "sip_rth_po_max": 25.25,
+    "raw_window_max": 27.73,
+    "delta": -0.102382
+   },
+   {
+    "day": "2021-02-01",
+    "ticker": "CDE",
+    "stored_high": 12.58,
+    "sip_rth_po_max": 13.75,
+    "raw_window_max": 13.75,
+    "delta": 0.093005
+   },
+   {
+    "day": "2021-02-01",
+    "ticker": "QTNT",
+    "stored_high": 5.5,
+    "sip_rth_po_max": 6.0,
+    "raw_window_max": 6.0,
+    "delta": 0.090909
+   },
+   {
+    "day": "2025-11-25",
+    "ticker": "MKZR",
+    "stored_high": 4.47,
+    "sip_rth_po_max": 4.86,
+    "raw_window_max": 4.86,
+    "delta": 0.087248
+   },
+   {
+    "day": "2023-12-15",
+    "ticker": "CING",
+    "stored_high": 2.31,
+    "sip_rth_po_max": 2.5,
+    "raw_window_max": 2.5,
+    "delta": 0.082251
+   },
+   {
+    "day": "2025-11-25",
+    "ticker": "WSHP",
+    "stored_high": 225.0,
+    "sip_rth_po_max": 242.92,
+    "raw_window_max": 242.92,
+    "delta": 0.079644
+   }
+  ]
+ },
+ "per_day": [
+  {
+   "day": "2021-02-01",
+   "sel_set_change": 1,
+   "flips": 34,
+   "members": 38,
+   "tail_diffs": 10
+  },
+  {
+   "day": "2021-02-02",
+   "sel_set_change": 2,
+   "flips": 34,
+   "members": 39,
+   "tail_diffs": 6
+  },
+  {
+   "day": "2021-02-09",
+   "sel_set_change": 0,
+   "flips": 30,
+   "members": 38,
+   "tail_diffs": 8
+  },
+  {
+   "day": "2021-03-08",
+   "sel_set_change": 2,
+   "flips": 37,
+   "members": 38,
+   "tail_diffs": 14
+  },
+  {
+   "day": "2021-10-25",
+   "sel_set_change": 4,
+   "flips": 61,
+   "members": 33,
+   "tail_diffs": 9
+  },
+  {
+   "day": "2022-02-17",
+   "sel_set_change": 1,
+   "flips": 57,
+   "members": 27,
+   "tail_diffs": 5
+  },
+  {
+   "day": "2022-03-10",
+   "sel_set_change": 3,
+   "flips": 49,
+   "members": 36,
+   "tail_diffs": 5
+  },
+  {
+   "day": "2023-03-16",
+   "sel_set_change": 2,
+   "flips": 45,
+   "members": 28,
+   "tail_diffs": 14
+  },
+  {
+   "day": "2023-03-17",
+   "sel_set_change": 7,
+   "flips": 53,
+   "members": 31,
+   "tail_diffs": 15
+  },
+  {
+   "day": "2023-08-30",
+   "sel_set_change": 5,
+   "flips": 66,
+   "members": 27,
+   "tail_diffs": 9
+  },
+  {
+   "day": "2023-12-15",
+   "sel_set_change": 3,
+   "flips": 51,
+   "members": 38,
+   "tail_diffs": 10
+  },
+  {
+   "day": "2023-12-28",
+   "sel_set_change": 3,
+   "flips": 41,
+   "members": 37,
+   "tail_diffs": 14
+  },
+  {
+   "day": "2025-03-24",
+   "sel_set_change": 1,
+   "flips": 52,
+   "members": 38,
+   "tail_diffs": 14
+  },
+  {
+   "day": "2025-09-09",
+   "sel_set_change": 1,
+   "flips": 51,
+   "members": 34,
+   "tail_diffs": 14
+  },
+  {
+   "day": "2025-10-30",
+   "sel_set_change": 3,
+   "flips": 50,
+   "members": 35,
+   "tail_diffs": 12
+  },
+  {
+   "day": "2025-11-25",
+   "sel_set_change": 2,
+   "flips": 52,
+   "members": 36,
+   "tail_diffs": 11
+  },
+  {
+   "day": "2026-04-27",
+   "sel_set_change": 0,
+   "flips": 0,
+   "members": 35,
+   "tail_diffs": 6
+  },
+  {
+   "day": "2026-04-29",
+   "sel_set_change": 0,
+   "flips": 0,
+   "members": 35,
+   "tail_diffs": 6
+  },
+  {
+   "day": "2026-05-15",
+   "sel_set_change": 0,
+   "flips": 0,
+   "members": 36,
+   "tail_diffs": 8
+  },
+  {
+   "day": "2026-05-29",
+   "sel_set_change": 0,
+   "flips": 0,
+   "members": 36,
+   "tail_diffs": 7
+  }
+ ]
+}

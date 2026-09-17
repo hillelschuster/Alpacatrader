@@ -1,0 +1,2844 @@
+{
+ "day": "2021-02-02",
+ "symbols": 53,
+ "trades_rows": 2425881,
+ "quotes_rows": 1062909,
+ "selection": [
+  {
+   "pop": "A_open",
+   "T": 570,
+   "stored_top10": [
+    {
+     "rank": 1,
+     "ticker": "MBRX",
+     "px": 7.41,
+     "sel": 0.586724,
+     "prev_close": 4.67
+    },
+    {
+     "rank": 2,
+     "ticker": "SAVA",
+     "px": 33.31,
+     "sel": 0.454585,
+     "prev_close": 22.9
+    },
+    {
+     "rank": 3,
+     "ticker": "HOL",
+     "px": 15.0,
+     "sel": 0.450677,
+     "prev_close": 10.34
+    },
+    {
+     "rank": 4,
+     "ticker": "AREC",
+     "px": 3.4,
+     "sel": 0.36,
+     "prev_close": 2.5
+    },
+    {
+     "rank": 5,
+     "ticker": "PRTA",
+     "px": 14.41,
+     "sel": 0.314781,
+     "prev_close": 10.96
+    },
+    {
+     "rank": 6,
+     "ticker": "DRRX",
+     "px": 2.74,
+     "sel": 0.304762,
+     "prev_close": 2.1
+    },
+    {
+     "rank": 7,
+     "ticker": "BTN",
+     "px": 2.65,
+     "sel": 0.29902,
+     "prev_close": 2.04
+    },
+    {
+     "rank": 8,
+     "ticker": "TLSA",
+     "px": 4.98,
+     "sel": 0.286822,
+     "prev_close": 3.87
+    },
+    {
+     "rank": 9,
+     "ticker": "APPHW",
+     "px": 15.15,
+     "sel": 0.281184,
+     "prev_close": 11.825
+    },
+    {
+     "rank": 10,
+     "ticker": "APPH",
+     "px": 42.46,
+     "sel": 0.270117,
+     "prev_close": 33.43
+    }
+   ],
+   "sip_order_of_stored_top10": [
+    "MBRX",
+    "SAVA",
+    "HOL",
+    "AREC",
+    "PRTA",
+    "DRRX",
+    "BTN",
+    "TLSA",
+    "APPHW",
+    "APPH"
+   ],
+   "rank_flip_positions_within_stored_top10": 0,
+   "outsiders_above_cutoff": [],
+   "px_delta_bps": {
+    "n": 10,
+    "p50": 0.0,
+    "max": 0.0
+   },
+   "note": "re-rank of the stored top-10 by SIP prices; outsiders = fetched symbols above the 10th stored member's SIP score (lower bound; unfetched names not re-ranked)"
+  },
+  {
+   "pop": "B",
+   "T": 575,
+   "stored_top10": [
+    {
+     "rank": 1,
+     "ticker": "GSM",
+     "px": 4.4,
+     "sel": 0.27907,
+     "prev_close": 2.73
+    },
+    {
+     "rank": 2,
+     "ticker": "TESS",
+     "px": 8.21,
+     "sel": 0.094667,
+     "prev_close": 8.31
+    },
+    {
+     "rank": 3,
+     "ticker": "IMVT",
+     "px": 24.96,
+     "sel": 0.090909,
+     "prev_close": 43.3
+    },
+    {
+     "rank": 4,
+     "ticker": "NTN",
+     "px": 4.46,
+     "sel": 0.082524,
+     "prev_close": 4.64
+    },
+    {
+     "rank": 5,
+     "ticker": "NAVB",
+     "px": 2.31,
+     "sel": 0.069444,
+     "prev_close": 2.35
+    },
+    {
+     "rank": 6,
+     "ticker": "ENDP",
+     "px": 9.06,
+     "sel": 0.06338,
+     "prev_close": 8.34
+    },
+    {
+     "rank": 7,
+     "ticker": "ATOS",
+     "px": 2.7,
+     "sel": 0.062992,
+     "prev_close": 2.37
+    },
+    {
+     "rank": 8,
+     "ticker": "BASI",
+     "px": 12.87,
+     "sel": 0.062758,
+     "prev_close": 11.83
+    },
+    {
+     "rank": 9,
+     "ticker": "MXC",
+     "px": 8.69,
+     "sel": 0.057178,
+     "prev_close": 9.05
+    },
+    {
+     "rank": 10,
+     "ticker": "TPGY",
+     "px": 28.12,
+     "sel": 0.057143,
+     "prev_close": 26.02
+    }
+   ],
+   "sip_order_of_stored_top10": [
+    "GSM",
+    "BASI",
+    "TESS",
+    "IMVT",
+    "NAVB",
+    "ENDP",
+    "ATOS",
+    "TPGY",
+    "MXC",
+    "NTN"
+   ],
+   "rank_flip_positions_within_stored_top10": 5,
+   "outsiders_above_cutoff": [
+    {
+     "ticker": "HYFM",
+     "sel_sip": 0.055096
+    },
+    {
+     "ticker": "CLVR",
+     "sel_sip": 0.047991
+    },
+    {
+     "ticker": "MEC",
+     "sel_sip": 0.046755
+    },
+    {
+     "ticker": "VRDN",
+     "sel_sip": 0.041387
+    },
+    {
+     "ticker": "PUBM",
+     "sel_sip": 0.039827
+    },
+    {
+     "ticker": "AGEN",
+     "sel_sip": 0.035264
+    },
+    {
+     "ticker": "IPWR",
+     "sel_sip": 0.02829
+    },
+    {
+     "ticker": "CTRA",
+     "sel_sip": 0.020733
+    },
+    {
+     "ticker": "KLR",
+     "sel_sip": 0.020586
+    },
+    {
+     "ticker": "HOL",
+     "sel_sip": 0.02
+    }
+   ],
+   "px_delta_bps": {
+    "n": 10,
+    "p50": 25.62197,
+    "max": 351.668585
+   },
+   "note": "re-rank of the stored top-10 by SIP prices; outsiders = fetched symbols above the 10th stored member's SIP score (lower bound; unfetched names not re-ranked)"
+  },
+  {
+   "pop": "B",
+   "T": 580,
+   "stored_top10": [
+    {
+     "rank": 1,
+     "ticker": "IMVT",
+     "px": 28.125,
+     "sel": 0.22924,
+     "prev_close": 43.3
+    },
+    {
+     "rank": 2,
+     "ticker": "SAVA",
+     "px": 37.69,
+     "sel": 0.131492,
+     "prev_close": 22.9
+    },
+    {
+     "rank": 3,
+     "ticker": "ENDP",
+     "px": 9.5,
+     "sel": 0.115023,
+     "prev_close": 8.34
+    },
+    {
+     "rank": 4,
+     "ticker": "AGEN",
+     "px": 4.33,
+     "sel": 0.09068,
+     "prev_close": 3.93
+    },
+    {
+     "rank": 5,
+     "ticker": "GSM",
+     "px": 3.75,
+     "sel": 0.090116,
+     "prev_close": 2.73
+    },
+    {
+     "rank": 6,
+     "ticker": "NAVB",
+     "px": 2.32,
+     "sel": 0.074074,
+     "prev_close": 2.35
+    },
+    {
+     "rank": 7,
+     "ticker": "TESS",
+     "px": 8.04,
+     "sel": 0.072,
+     "prev_close": 8.31
+    },
+    {
+     "rank": 8,
+     "ticker": "GRNQ",
+     "px": 2.15,
+     "sel": 0.069652,
+     "prev_close": 2.0
+    },
+    {
+     "rank": 9,
+     "ticker": "MEC",
+     "px": 15.3,
+     "sel": 0.06769,
+     "prev_close": 14.1
+    },
+    {
+     "rank": 10,
+     "ticker": "SRSA",
+     "px": 11.84,
+     "sel": 0.066667,
+     "prev_close": 10.82
+    }
+   ],
+   "sip_order_of_stored_top10": [
+    "IMVT",
+    "SAVA",
+    "ENDP",
+    "TESS",
+    "GSM",
+    "AGEN",
+    "NAVB",
+    "GRNQ",
+    "MEC",
+    "SRSA"
+   ],
+   "rank_flip_positions_within_stored_top10": 3,
+   "outsiders_above_cutoff": [],
+   "px_delta_bps": {
+    "n": 10,
+    "p50": 0.0,
+    "max": 385.572139
+   },
+   "note": "re-rank of the stored top-10 by SIP prices; outsiders = fetched symbols above the 10th stored member's SIP score (lower bound; unfetched names not re-ranked)"
+  },
+  {
+   "pop": "B",
+   "T": 585,
+   "stored_top10": [
+    {
+     "rank": 1,
+     "ticker": "SAVA",
+     "px": 43.2,
+     "sel": 0.296908,
+     "prev_close": 22.9
+    },
+    {
+     "rank": 2,
+     "ticker": "IMVT",
+     "px": 26.15,
+     "sel": 0.14292,
+     "prev_close": 43.3
+    },
+    {
+     "rank": 3,
+     "ticker": "PUBM",
+     "px": 50.9,
+     "sel": 0.101732,
+     "prev_close": 45.64
+    },
+    {
+     "rank": 4,
+     "ticker": "GSM",
+     "px": 3.78,
+     "sel": 0.098837,
+     "prev_close": 2.73
+    },
+    {
+     "rank": 5,
+     "ticker": "BOMN",
+     "px": 34.06,
+     "sel": 0.094473,
+     "prev_close": 29.09
+    },
+    {
+     "rank": 6,
+     "ticker": "NAVB",
+     "px": 2.36,
+     "sel": 0.092593,
+     "prev_close": 2.35
+    },
+    {
+     "rank": 7,
+     "ticker": "AGEN",
+     "px": 4.3,
+     "sel": 0.083123,
+     "prev_close": 3.93
+    },
+    {
+     "rank": 8,
+     "ticker": "KLR",
+     "px": 13.66,
+     "sel": 0.081552,
+     "prev_close": 12.41
+    },
+    {
+     "rank": 9,
+     "ticker": "ENDP",
+     "px": 9.21,
+     "sel": 0.080986,
+     "prev_close": 8.34
+    },
+    {
+     "rank": 10,
+     "ticker": "HYFM",
+     "px": 85.95,
+     "sel": 0.076258,
+     "prev_close": 79.7
+    }
+   ],
+   "sip_order_of_stored_top10": [
+    "SAVA",
+    "IMVT",
+    "PUBM",
+    "GSM",
+    "BOMN",
+    "NAVB",
+    "AGEN",
+    "ENDP",
+    "KLR",
+    "HYFM"
+   ],
+   "rank_flip_positions_within_stored_top10": 2,
+   "outsiders_above_cutoff": [
+    {
+     "ticker": "TESS",
+     "sel_sip": 0.10684
+    },
+    {
+     "ticker": "VRDN",
+     "sel_sip": 0.079978
+    }
+   ],
+   "px_delta_bps": {
+    "n": 10,
+    "p50": 0.0,
+    "max": 29.282577
+   },
+   "note": "re-rank of the stored top-10 by SIP prices; outsiders = fetched symbols above the 10th stored member's SIP score (lower bound; unfetched names not re-ranked)"
+  },
+  {
+   "pop": "B",
+   "T": 590,
+   "stored_top10": [
+    {
+     "rank": 1,
+     "ticker": "IMVT",
+     "px": 27.0,
+     "sel": 0.18007,
+     "prev_close": 43.3
+    },
+    {
+     "rank": 2,
+     "ticker": "SAVA",
+     "px": 38.79,
+     "sel": 0.164515,
+     "prev_close": 22.9
+    },
+    {
+     "rank": 3,
+     "ticker": "PUBM",
+     "px": 52.26,
+     "sel": 0.131169,
+     "prev_close": 45.64
+    },
+    {
+     "rank": 4,
+     "ticker": "NAVB",
+     "px": 2.41,
+     "sel": 0.115741,
+     "prev_close": 2.35
+    },
+    {
+     "rank": 5,
+     "ticker": "BOMN",
+     "px": 34.5,
+     "sel": 0.108612,
+     "prev_close": 29.09
+    },
+    {
+     "rank": 6,
+     "ticker": "CLVR",
+     "px": 9.9,
+     "sel": 0.104911,
+     "prev_close": 9.04
+    },
+    {
+     "rank": 7,
+     "ticker": "CTRA",
+     "px": 13.4,
+     "sel": 0.103789,
+     "prev_close": 11.67
+    },
+    {
+     "rank": 8,
+     "ticker": "ANVS",
+     "px": 11.45,
+     "sel": 0.096743,
+     "prev_close": 10.25
+    },
+    {
+     "rank": 9,
+     "ticker": "IMNM",
+     "px": 19.74,
+     "sel": 0.096058,
+     "prev_close": 17.3
+    },
+    {
+     "rank": 10,
+     "ticker": "HYFM",
+     "px": 87.205,
+     "sel": 0.091973,
+     "prev_close": 79.7
+    }
+   ],
+   "sip_order_of_stored_top10": [
+    "IMVT",
+    "SAVA",
+    "PUBM",
+    "NAVB",
+    "BOMN",
+    "CLVR",
+    "CTRA",
+    "ANVS",
+    "HYFM",
+    "IMNM"
+   ],
+   "rank_flip_positions_within_stored_top10": 2,
+   "outsiders_above_cutoff": [
+    {
+     "ticker": "VRDN",
+     "sel_sip": 0.091723
+    },
+    {
+     "ticker": "TESS",
+     "sel_sip": 0.089333
+    }
+   ],
+   "px_delta_bps": {
+    "n": 10,
+    "p50": 0.0,
+    "max": 160.638298
+   },
+   "note": "re-rank of the stored top-10 by SIP prices; outsiders = fetched symbols above the 10th stored member's SIP score (lower bound; unfetched names not re-ranked)"
+  },
+  {
+   "pop": "B",
+   "T": 595,
+   "stored_top10": [
+    {
+     "rank": 1,
+     "ticker": "ANVS",
+     "px": 12.5,
+     "sel": 0.197318,
+     "prev_close": 10.25
+    },
+    {
+     "rank": 2,
+     "ticker": "IMVT",
+     "px": 26.54,
+     "sel": 0.159965,
+     "prev_close": 43.3
+    },
+    {
+     "rank": 3,
+     "ticker": "ATOS",
+     "px": 2.94,
+     "sel": 0.15748,
+     "prev_close": 2.37
+    },
+    {
+     "rank": 4,
+     "ticker": "SAVA",
+     "px": 38.18,
+     "sel": 0.146202,
+     "prev_close": 22.9
+    },
+    {
+     "rank": 5,
+     "ticker": "CLVR",
+     "px": 10.0,
+     "sel": 0.116071,
+     "prev_close": 9.04
+    },
+    {
+     "rank": 6,
+     "ticker": "NAVB",
+     "px": 2.4,
+     "sel": 0.111111,
+     "prev_close": 2.35
+    },
+    {
+     "rank": 7,
+     "ticker": "BOMN",
+     "px": 34.3,
+     "sel": 0.102185,
+     "prev_close": 29.09
+    },
+    {
+     "rank": 8,
+     "ticker": "IMNM",
+     "px": 19.85,
+     "sel": 0.102165,
+     "prev_close": 17.3
+    },
+    {
+     "rank": 9,
+     "ticker": "SPI",
+     "px": 10.82,
+     "sel": 0.092929,
+     "prev_close": 9.7
+    },
+    {
+     "rank": 10,
+     "ticker": "HYFM",
+     "px": 87.0,
+     "sel": 0.089406,
+     "prev_close": 79.7
+    }
+   ],
+   "sip_order_of_stored_top10": [
+    "ANVS",
+    "IMVT",
+    "ATOS",
+    "SAVA",
+    "CLVR",
+    "NAVB",
+    "BOMN",
+    "IMNM",
+    "SPI",
+    "HYFM"
+   ],
+   "rank_flip_positions_within_stored_top10": 0,
+   "outsiders_above_cutoff": [
+    {
+     "ticker": "TESS",
+     "sel_sip": 0.089333
+    }
+   ],
+   "px_delta_bps": {
+    "n": 10,
+    "p50": 41.40848,
+    "max": 165.36
+   },
+   "note": "re-rank of the stored top-10 by SIP prices; outsiders = fetched symbols above the 10th stored member's SIP score (lower bound; unfetched names not re-ranked)"
+  },
+  {
+   "pop": "B",
+   "T": 600,
+   "stored_top10": [
+    {
+     "rank": 1,
+     "ticker": "IMVT",
+     "px": 27.62,
+     "sel": 0.207168,
+     "prev_close": 43.3
+    },
+    {
+     "rank": 2,
+     "ticker": "ANVS",
+     "px": 11.9,
+     "sel": 0.139847,
+     "prev_close": 10.25
+    },
+    {
+     "rank": 3,
+     "ticker": "SAVA",
+     "px": 37.73,
+     "sel": 0.132693,
+     "prev_close": 22.9
+    },
+    {
+     "rank": 4,
+     "ticker": "ATOS",
+     "px": 2.87,
+     "sel": 0.129921,
+     "prev_close": 2.37
+    },
+    {
+     "rank": 5,
+     "ticker": "KOPN",
+     "px": 6.32,
+     "sel": 0.12656,
+     "prev_close": 5.2
+    },
+    {
+     "rank": 6,
+     "ticker": "VRDN",
+     "px": 19.94,
+     "sel": 0.115213,
+     "prev_close": 17.815
+    },
+    {
+     "rank": 7,
+     "ticker": "NAVB",
+     "px": 2.4,
+     "sel": 0.111111,
+     "prev_close": 2.35
+    },
+    {
+     "rank": 8,
+     "ticker": "BOMN",
+     "px": 34.5,
+     "sel": 0.108612,
+     "prev_close": 29.09
+    },
+    {
+     "rank": 9,
+     "ticker": "CLVR",
+     "px": 9.905,
+     "sel": 0.105469,
+     "prev_close": 9.04
+    },
+    {
+     "rank": 10,
+     "ticker": "AGFY",
+     "px": 12.05,
+     "sel": 0.10247,
+     "prev_close": 10.92
+    }
+   ],
+   "sip_order_of_stored_top10": [
+    "IMVT",
+    "ANVS",
+    "SAVA",
+    "ATOS",
+    "KOPN",
+    "AGFY",
+    "VRDN",
+    "BOMN",
+    "NAVB",
+    "CLVR"
+   ],
+   "rank_flip_positions_within_stored_top10": 4,
+   "outsiders_above_cutoff": [],
+   "px_delta_bps": {
+    "n": 10,
+    "p50": 10.694953,
+    "max": 165.892116
+   },
+   "note": "re-rank of the stored top-10 by SIP prices; outsiders = fetched symbols above the 10th stored member's SIP score (lower bound; unfetched names not re-ranked)"
+  },
+  {
+   "pop": "B",
+   "T": 615,
+   "stored_top10": [
+    {
+     "rank": 1,
+     "ticker": "IMVT",
+     "px": 26.99,
+     "sel": 0.179633,
+     "prev_close": 43.3
+    },
+    {
+     "rank": 2,
+     "ticker": "ANVS",
+     "px": 12.06,
+     "sel": 0.155172,
+     "prev_close": 10.25
+    },
+    {
+     "rank": 3,
+     "ticker": "CLVR",
+     "px": 10.15,
+     "sel": 0.132812,
+     "prev_close": 9.04
+    },
+    {
+     "rank": 4,
+     "ticker": "AREC",
+     "px": 3.83,
+     "sel": 0.126471,
+     "prev_close": 2.5
+    },
+    {
+     "rank": 5,
+     "ticker": "VRDN",
+     "px": 20.09,
+     "sel": 0.123602,
+     "prev_close": 17.815
+    },
+    {
+     "rank": 6,
+     "ticker": "HYFM",
+     "px": 88.97,
+     "sel": 0.114075,
+     "prev_close": 79.7
+    },
+    {
+     "rank": 7,
+     "ticker": "AGFY",
+     "px": 12.17,
+     "sel": 0.113449,
+     "prev_close": 10.92
+    },
+    {
+     "rank": 8,
+     "ticker": "NKTX",
+     "px": 41.83,
+     "sel": 0.112204,
+     "prev_close": 37.61
+    },
+    {
+     "rank": 9,
+     "ticker": "MDIA",
+     "px": 3.63,
+     "sel": 0.106707,
+     "prev_close": 3.34
+    },
+    {
+     "rank": 10,
+     "ticker": "RESN",
+     "px": 6.46,
+     "sel": 0.104274,
+     "prev_close": 5.77
+    }
+   ],
+   "sip_order_of_stored_top10": [
+    "IMVT",
+    "ANVS",
+    "CLVR",
+    "AREC",
+    "VRDN",
+    "HYFM",
+    "AGFY",
+    "NKTX",
+    "MDIA",
+    "RESN"
+   ],
+   "rank_flip_positions_within_stored_top10": 0,
+   "outsiders_above_cutoff": [],
+   "px_delta_bps": {
+    "n": 10,
+    "p50": 0.0,
+    "max": 116.086235
+   },
+   "note": "re-rank of the stored top-10 by SIP prices; outsiders = fetched symbols above the 10th stored member's SIP score (lower bound; unfetched names not re-ranked)"
+  },
+  {
+   "pop": "B",
+   "T": 630,
+   "stored_top10": [
+    {
+     "rank": 1,
+     "ticker": "NKTX",
+     "px": 44.7,
+     "sel": 0.188514,
+     "prev_close": 37.61
+    },
+    {
+     "rank": 2,
+     "ticker": "IMVT",
+     "px": 26.69,
+     "sel": 0.166521,
+     "prev_close": 43.3
+    },
+    {
+     "rank": 3,
+     "ticker": "ATOS",
+     "px": 2.925,
+     "sel": 0.151575,
+     "prev_close": 2.37
+    },
+    {
+     "rank": 4,
+     "ticker": "ANVS",
+     "px": 12.0,
+     "sel": 0.149425,
+     "prev_close": 10.25
+    },
+    {
+     "rank": 5,
+     "ticker": "CLVR",
+     "px": 10.2,
+     "sel": 0.138393,
+     "prev_close": 9.04
+    },
+    {
+     "rank": 6,
+     "ticker": "RESN",
+     "px": 6.6,
+     "sel": 0.128205,
+     "prev_close": 5.77
+    },
+    {
+     "rank": 7,
+     "ticker": "VRDN",
+     "px": 20.0,
+     "sel": 0.118568,
+     "prev_close": 17.815
+    },
+    {
+     "rank": 8,
+     "ticker": "AGFY",
+     "px": 12.21,
+     "sel": 0.117109,
+     "prev_close": 10.92
+    },
+    {
+     "rank": 9,
+     "ticker": "IPWR",
+     "px": 18.12,
+     "sel": 0.114391,
+     "prev_close": 15.94
+    },
+    {
+     "rank": 10,
+     "ticker": "HYFM",
+     "px": 88.7,
+     "sel": 0.110694,
+     "prev_close": 79.7
+    }
+   ],
+   "sip_order_of_stored_top10": [
+    "NKTX",
+    "IMVT",
+    "ATOS",
+    "ANVS",
+    "CLVR",
+    "RESN",
+    "VRDN",
+    "AGFY",
+    "IPWR",
+    "HYFM"
+   ],
+   "rank_flip_positions_within_stored_top10": 0,
+   "outsiders_above_cutoff": [],
+   "px_delta_bps": {
+    "n": 10,
+    "p50": 1.964115,
+    "max": 82.916667
+   },
+   "note": "re-rank of the stored top-10 by SIP prices; outsiders = fetched symbols above the 10th stored member's SIP score (lower bound; unfetched names not re-ranked)"
+  },
+  {
+   "pop": "B",
+   "T": 645,
+   "stored_top10": [
+    {
+     "rank": 1,
+     "ticker": "CLVR",
+     "px": 10.75,
+     "sel": 0.199777,
+     "prev_close": 9.04
+    },
+    {
+     "rank": 2,
+     "ticker": "AREC",
+     "px": 4.0,
+     "sel": 0.176471,
+     "prev_close": 2.5
+    },
+    {
+     "rank": 3,
+     "ticker": "IMVT",
+     "px": 26.76,
+     "sel": 0.16958,
+     "prev_close": 43.3
+    },
+    {
+     "rank": 4,
+     "ticker": "NKTX",
+     "px": 43.38,
+     "sel": 0.153417,
+     "prev_close": 37.61
+    },
+    {
+     "rank": 5,
+     "ticker": "NTN",
+     "px": 4.74,
+     "sel": 0.150485,
+     "prev_close": 4.64
+    },
+    {
+     "rank": 6,
+     "ticker": "AGFY",
+     "px": 12.44,
+     "sel": 0.138152,
+     "prev_close": 10.92
+    },
+    {
+     "rank": 7,
+     "ticker": "ATOS",
+     "px": 2.87,
+     "sel": 0.129921,
+     "prev_close": 2.37
+    },
+    {
+     "rank": 8,
+     "ticker": "RESN",
+     "px": 6.6,
+     "sel": 0.128205,
+     "prev_close": 5.77
+    },
+    {
+     "rank": 9,
+     "ticker": "SAVA",
+     "px": 37.49,
+     "sel": 0.125488,
+     "prev_close": 22.9
+    },
+    {
+     "rank": 10,
+     "ticker": "ANVS",
+     "px": 11.66,
+     "sel": 0.116858,
+     "prev_close": 10.25
+    }
+   ],
+   "sip_order_of_stored_top10": [
+    "CLVR",
+    "AREC",
+    "IMVT",
+    "NKTX",
+    "AGFY",
+    "ATOS",
+    "SAVA",
+    "RESN",
+    "ANVS",
+    "NTN"
+   ],
+   "rank_flip_positions_within_stored_top10": 5,
+   "outsiders_above_cutoff": [
+    {
+     "ticker": "VRDN",
+     "sel_sip": 0.115213
+    },
+    {
+     "ticker": "DMS",
+     "sel_sip": 0.113658
+    },
+    {
+     "ticker": "IPWR",
+     "sel_sip": 0.108665
+    },
+    {
+     "ticker": "HYFM",
+     "sel_sip": 0.103181
+    },
+    {
+     "ticker": "ENDP",
+     "sel_sip": 0.095657
+    },
+    {
+     "ticker": "KOPN",
+     "sel_sip": 0.092692
+    },
+    {
+     "ticker": "PUBM",
+     "sel_sip": 0.088758
+    },
+    {
+     "ticker": "USEG",
+     "sel_sip": 0.081633
+    },
+    {
+     "ticker": "SFE",
+     "sel_sip": 0.071429
+    },
+    {
+     "ticker": "CRMD",
+     "sel_sip": 0.067623
+    }
+   ],
+   "px_delta_bps": {
+    "n": 10,
+    "p50": 13.473842,
+    "max": 210.970464
+   },
+   "note": "re-rank of the stored top-10 by SIP prices; outsiders = fetched symbols above the 10th stored member's SIP score (lower bound; unfetched names not re-ranked)"
+  },
+  {
+   "pop": "B",
+   "T": 660,
+   "stored_top10": [
+    {
+     "rank": 1,
+     "ticker": "NTN",
+     "px": 5.04,
+     "sel": 0.223301,
+     "prev_close": 4.64
+    },
+    {
+     "rank": 2,
+     "ticker": "AREC",
+     "px": 4.02,
+     "sel": 0.182353,
+     "prev_close": 2.5
+    },
+    {
+     "rank": 3,
+     "ticker": "CLVR",
+     "px": 10.59,
+     "sel": 0.18192,
+     "prev_close": 9.04
+    },
+    {
+     "rank": 4,
+     "ticker": "AGFY",
+     "px": 12.75,
+     "sel": 0.166514,
+     "prev_close": 10.92
+    },
+    {
+     "rank": 5,
+     "ticker": "NKTX",
+     "px": 43.29,
+     "sel": 0.151024,
+     "prev_close": 37.61
+    },
+    {
+     "rank": 6,
+     "ticker": "USEG",
+     "px": 5.58,
+     "sel": 0.138776,
+     "prev_close": 4.7
+    },
+    {
+     "rank": 7,
+     "ticker": "SFE",
+     "px": 7.95,
+     "sel": 0.135714,
+     "prev_close": 6.95
+    },
+    {
+     "rank": 8,
+     "ticker": "OSS",
+     "px": 5.16,
+     "sel": 0.129103,
+     "prev_close": 3.87
+    },
+    {
+     "rank": 9,
+     "ticker": "HYFM",
+     "px": 89.98,
+     "sel": 0.126722,
+     "prev_close": 79.7
+    },
+    {
+     "rank": 10,
+     "ticker": "IMVT",
+     "px": 25.75,
+     "sel": 0.125437,
+     "prev_close": 43.3
+    }
+   ],
+   "sip_order_of_stored_top10": [
+    "CLVR",
+    "AREC",
+    "AGFY",
+    "NKTX",
+    "USEG",
+    "SFE",
+    "NTN",
+    "OSS",
+    "HYFM",
+    "IMVT"
+   ],
+   "rank_flip_positions_within_stored_top10": 6,
+   "outsiders_above_cutoff": [
+    {
+     "ticker": "RESN",
+     "sel_sip": 0.12135
+    }
+   ],
+   "px_delta_bps": {
+    "n": 10,
+    "p50": 15.998046,
+    "max": 77.325581
+   },
+   "note": "re-rank of the stored top-10 by SIP prices; outsiders = fetched symbols above the 10th stored member's SIP score (lower bound; unfetched names not re-ranked)"
+  },
+  {
+   "pop": "B",
+   "T": 690,
+   "stored_top10": [
+    {
+     "rank": 1,
+     "ticker": "NTN",
+     "px": 5.37,
+     "sel": 0.303398,
+     "prev_close": 4.64
+    },
+    {
+     "rank": 2,
+     "ticker": "AGFY",
+     "px": 13.47,
+     "sel": 0.232388,
+     "prev_close": 10.92
+    },
+    {
+     "rank": 3,
+     "ticker": "SAVA",
+     "px": 40.63,
+     "sel": 0.219754,
+     "prev_close": 22.9
+    },
+    {
+     "rank": 4,
+     "ticker": "CLVR",
+     "px": 10.55,
+     "sel": 0.177455,
+     "prev_close": 9.04
+    },
+    {
+     "rank": 5,
+     "ticker": "RESN",
+     "px": 6.805,
+     "sel": 0.163248,
+     "prev_close": 5.77
+    },
+    {
+     "rank": 6,
+     "ticker": "HYFM",
+     "px": 91.5,
+     "sel": 0.145755,
+     "prev_close": 79.7
+    },
+    {
+     "rank": 7,
+     "ticker": "NKTX",
+     "px": 42.99,
+     "sel": 0.143047,
+     "prev_close": 37.61
+    },
+    {
+     "rank": 8,
+     "ticker": "DMS",
+     "px": 11.86,
+     "sel": 0.13276,
+     "prev_close": 10.28
+    },
+    {
+     "rank": 9,
+     "ticker": "ANVS",
+     "px": 11.75,
+     "sel": 0.125479,
+     "prev_close": 10.25
+    },
+    {
+     "rank": 10,
+     "ticker": "XONE",
+     "px": 36.2,
+     "sel": 0.124573,
+     "prev_close": 30.82
+    }
+   ],
+   "sip_order_of_stored_top10": [
+    "AGFY",
+    "SAVA",
+    "NTN",
+    "CLVR",
+    "RESN",
+    "HYFM",
+    "DMS",
+    "NKTX",
+    "XONE",
+    "ANVS"
+   ],
+   "rank_flip_positions_within_stored_top10": 7,
+   "outsiders_above_cutoff": [],
+   "px_delta_bps": {
+    "n": 10,
+    "p50": 5.500533,
+    "max": 62.805304
+   },
+   "note": "re-rank of the stored top-10 by SIP prices; outsiders = fetched symbols above the 10th stored member's SIP score (lower bound; unfetched names not re-ranked)"
+  },
+  {
+   "pop": "B",
+   "T": 720,
+   "stored_top10": [
+    {
+     "rank": 1,
+     "ticker": "NTN",
+     "px": 6.06,
+     "sel": 0.470874,
+     "prev_close": 4.64
+    },
+    {
+     "rank": 2,
+     "ticker": "SAVA",
+     "px": 41.82,
+     "sel": 0.255479,
+     "prev_close": 22.9
+    },
+    {
+     "rank": 3,
+     "ticker": "AGFY",
+     "px": 12.99,
+     "sel": 0.188472,
+     "prev_close": 10.92
+    },
+    {
+     "rank": 4,
+     "ticker": "CLVR",
+     "px": 10.64,
+     "sel": 0.1875,
+     "prev_close": 9.04
+    },
+    {
+     "rank": 5,
+     "ticker": "RESN",
+     "px": 6.89,
+     "sel": 0.177778,
+     "prev_close": 5.77
+    },
+    {
+     "rank": 6,
+     "ticker": "SCOR",
+     "px": 3.75,
+     "sel": 0.157407,
+     "prev_close": 3.27
+    },
+    {
+     "rank": 7,
+     "ticker": "NKTX",
+     "px": 43.13,
+     "sel": 0.146769,
+     "prev_close": 37.61
+    },
+    {
+     "rank": 8,
+     "ticker": "CRMD",
+     "px": 11.13,
+     "sel": 0.140369,
+     "prev_close": 8.91
+    },
+    {
+     "rank": 9,
+     "ticker": "DMS",
+     "px": 11.91,
+     "sel": 0.137536,
+     "prev_close": 10.28
+    },
+    {
+     "rank": 10,
+     "ticker": "FUV",
+     "px": 26.58,
+     "sel": 0.134443,
+     "prev_close": 22.93
+    }
+   ],
+   "sip_order_of_stored_top10": [
+    "NTN",
+    "SAVA",
+    "AGFY",
+    "CLVR",
+    "RESN",
+    "SCOR",
+    "NKTX",
+    "CRMD",
+    "DMS",
+    "FUV"
+   ],
+   "rank_flip_positions_within_stored_top10": 0,
+   "outsiders_above_cutoff": [],
+   "px_delta_bps": {
+    "n": 10,
+    "p50": 0.293871,
+    "max": 33.0033
+   },
+   "note": "re-rank of the stored top-10 by SIP prices; outsiders = fetched symbols above the 10th stored member's SIP score (lower bound; unfetched names not re-ranked)"
+  }
+ ],
+ "path": [
+  {
+   "pop": "A_open",
+   "T": 570,
+   "ticker": "MBRX",
+   "fill_stored": 7.15,
+   "fill_sip": 7.15,
+   "fill_delta_bps": 0.0,
+   "mfe_stored": 0.227972,
+   "mfe_sip": 0.227972,
+   "mae_stored": -0.156643,
+   "mae_sip": -0.156643,
+   "i_mfe_stored": 33,
+   "i_mfe_sip": 33,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "A_open",
+   "T": 570,
+   "ticker": "SAVA",
+   "fill_stored": 35.0,
+   "fill_sip": 35.0,
+   "fill_delta_bps": 0.0,
+   "mfe_stored": 1.128571,
+   "mfe_sip": 1.128571,
+   "mae_stored": -0.084,
+   "mae_sip": -0.084,
+   "i_mfe_stored": 252,
+   "i_mfe_sip": 252,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "A_open",
+   "T": 570,
+   "ticker": "HOL",
+   "fill_stored": 14.8,
+   "fill_sip": 14.8,
+   "fill_delta_bps": 0.0,
+   "mfe_stored": 0.141216,
+   "mfe_sip": 0.141216,
+   "mae_stored": -0.084459,
+   "mae_sip": -0.085135,
+   "i_mfe_stored": 383,
+   "i_mfe_sip": 383,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 575,
+   "ticker": "GSM",
+   "fill_stored": 4.37,
+   "fill_sip": 4.35,
+   "fill_delta_bps": -45.76659,
+   "mfe_stored": 0.018307,
+   "mfe_sip": 0.022989,
+   "mae_stored": -0.313501,
+   "mae_sip": -0.310345,
+   "i_mfe_stored": 0,
+   "i_mfe_sip": 0,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 575,
+   "ticker": "TESS",
+   "fill_stored": 7.97,
+   "fill_sip": 8.043,
+   "fill_delta_bps": 91.593476,
+   "mfe_stored": 0.036386,
+   "mfe_sip": 0.03817,
+   "mae_stored": -0.032622,
+   "mae_sip": -0.058796,
+   "i_mfe_stored": 7,
+   "i_mfe_sip": 2,
+   "order_flips_nonamb": [
+    "5/5:neither->dn_only",
+    "10/5:neither->dn_only",
+    "20/5:neither->dn_only",
+    "30/5:neither->dn_only",
+    "50/5:neither->dn_only",
+    "100/5:neither->dn_only"
+   ],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 575,
+   "ticker": "IMVT",
+   "fill_stored": 24.9,
+   "fill_sip": 24.9,
+   "fill_delta_bps": 0.0,
+   "mfe_stored": 0.185944,
+   "mfe_sip": 0.186345,
+   "mae_stored": -0.083936,
+   "mae_sip": -0.083936,
+   "i_mfe_stored": 6,
+   "i_mfe_sip": 6,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 580,
+   "ticker": "IMVT",
+   "fill_stored": 28.2,
+   "fill_sip": 28.01,
+   "fill_delta_bps": -67.375887,
+   "mfe_stored": 0.047163,
+   "mfe_sip": 0.054623,
+   "mae_stored": -0.191135,
+   "mae_sip": -0.185648,
+   "i_mfe_stored": 1,
+   "i_mfe_sip": 1,
+   "order_flips_nonamb": [
+    "5/3:dn_only->up",
+    "5/5:dn_only->up",
+    "5/8:dn_only->up",
+    "5/10:dn_only->up",
+    "5/15:dn_only->up"
+   ],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 580,
+   "ticker": "SAVA",
+   "fill_stored": 38.0,
+   "fill_sip": 38.0,
+   "fill_delta_bps": 0.0,
+   "mfe_stored": 0.960526,
+   "mfe_sip": 0.960526,
+   "mae_stored": -0.078947,
+   "mae_sip": -0.078947,
+   "i_mfe_stored": 246,
+   "i_mfe_sip": 246,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 580,
+   "ticker": "ENDP",
+   "fill_stored": 9.525,
+   "fill_sip": 9.525,
+   "fill_delta_bps": 0.0,
+   "mfe_stored": 0.005774,
+   "mfe_sip": 0.007853,
+   "mae_stored": -0.098163,
+   "mae_sip": -0.098163,
+   "i_mfe_stored": 0,
+   "i_mfe_sip": 0,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 585,
+   "ticker": "SAVA",
+   "fill_stored": 43.24,
+   "fill_sip": 43.21,
+   "fill_delta_bps": -6.93802,
+   "mfe_stored": 0.722942,
+   "mfe_sip": 0.724138,
+   "mae_stored": -0.190564,
+   "mae_sip": -0.190002,
+   "i_mfe_stored": 242,
+   "i_mfe_sip": 242,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 585,
+   "ticker": "IMVT",
+   "fill_stored": 26.145,
+   "fill_sip": 26.145,
+   "fill_delta_bps": 0.0,
+   "mfe_stored": 0.090075,
+   "mfe_sip": 0.090075,
+   "mae_stored": -0.127558,
+   "mae_sip": -0.127558,
+   "i_mfe_stored": 16,
+   "i_mfe_sip": 16,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 585,
+   "ticker": "PUBM",
+   "fill_stored": 50.99,
+   "fill_sip": 50.99,
+   "fill_delta_bps": 0.0,
+   "mfe_stored": 0.045401,
+   "mfe_sip": 0.051579,
+   "mae_stored": -0.126692,
+   "mae_sip": -0.126692,
+   "i_mfe_stored": 2,
+   "i_mfe_sip": 1,
+   "order_flips_nonamb": [
+    "5/3:dn_only->up",
+    "5/5:dn_only->up",
+    "5/8:dn_only->up",
+    "5/10:dn_only->up",
+    "5/15:neither->up_only"
+   ],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 590,
+   "ticker": "IMVT",
+   "fill_stored": 26.99,
+   "fill_sip": 26.96,
+   "fill_delta_bps": -11.115228,
+   "mfe_stored": 0.055947,
+   "mfe_sip": 0.057122,
+   "mae_stored": -0.154872,
+   "mae_sip": -0.153932,
+   "i_mfe_stored": 11,
+   "i_mfe_sip": 11,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 590,
+   "ticker": "SAVA",
+   "fill_stored": 38.95,
+   "fill_sip": 38.705,
+   "fill_delta_bps": -62.901155,
+   "mfe_stored": 0.912709,
+   "mfe_sip": 0.924816,
+   "mae_stored": -0.101412,
+   "mae_sip": -0.095724,
+   "i_mfe_stored": 237,
+   "i_mfe_sip": 237,
+   "order_flips_nonamb": [
+    "5/10:up->up_only",
+    "10/10:dn->up_only",
+    "20/10:dn->up_only",
+    "30/10:dn->up_only",
+    "50/10:dn->up_only"
+   ],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 590,
+   "ticker": "PUBM",
+   "fill_stored": 52.37,
+   "fill_sip": 52.37,
+   "fill_delta_bps": 0.0,
+   "mfe_stored": 0.007447,
+   "mfe_sip": 0.011075,
+   "mae_stored": -0.149704,
+   "mae_sip": -0.149704,
+   "i_mfe_stored": 0,
+   "i_mfe_sip": 0,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 595,
+   "ticker": "ANVS",
+   "fill_stored": 12.23,
+   "fill_sip": 12.23,
+   "fill_delta_bps": 0.0,
+   "mfe_stored": 0.431725,
+   "mfe_sip": 0.431725,
+   "mae_stored": -0.054783,
+   "mae_sip": -0.054783,
+   "i_mfe_stored": 85,
+   "i_mfe_sip": 149,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 595,
+   "ticker": "IMVT",
+   "fill_stored": 26.53,
+   "fill_sip": 26.53,
+   "fill_delta_bps": 0.0,
+   "mfe_stored": 0.074256,
+   "mfe_sip": 0.074256,
+   "mae_stored": -0.140219,
+   "mae_sip": -0.140219,
+   "i_mfe_stored": 6,
+   "i_mfe_sip": 6,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 595,
+   "ticker": "ATOS",
+   "fill_stored": 2.93,
+   "fill_sip": 2.93,
+   "fill_delta_bps": 0.0,
+   "mfe_stored": 0.085324,
+   "mfe_sip": 0.088737,
+   "mae_stored": -0.105802,
+   "mae_sip": -0.105802,
+   "i_mfe_stored": 9,
+   "i_mfe_sip": 9,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 600,
+   "ticker": "IMVT",
+   "fill_stored": 27.71,
+   "fill_sip": 27.71,
+   "fill_delta_bps": 0.0,
+   "mfe_stored": 0.02851,
+   "mfe_sip": 0.02851,
+   "mae_stored": -0.176831,
+   "mae_sip": -0.176831,
+   "i_mfe_stored": 1,
+   "i_mfe_sip": 1,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 600,
+   "ticker": "ANVS",
+   "fill_stored": 11.95,
+   "fill_sip": 11.9286,
+   "fill_delta_bps": -17.90795,
+   "mfe_stored": 0.465272,
+   "mfe_sip": 0.467901,
+   "mae_stored": -0.032636,
+   "mae_sip": -0.030901,
+   "i_mfe_stored": 81,
+   "i_mfe_sip": 145,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 600,
+   "ticker": "SAVA",
+   "fill_stored": 37.92,
+   "fill_sip": 37.8222,
+   "fill_delta_bps": -25.791139,
+   "mfe_stored": 0.964662,
+   "mfe_sip": 0.969743,
+   "mae_stored": -0.077004,
+   "mae_sip": -0.074618,
+   "i_mfe_stored": 231,
+   "i_mfe_sip": 231,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 615,
+   "ticker": "IMVT",
+   "fill_stored": 26.975,
+   "fill_sip": 26.975,
+   "fill_delta_bps": 0.0,
+   "mfe_stored": 0.00797,
+   "mfe_sip": 0.008341,
+   "mae_stored": -0.154402,
+   "mae_sip": -0.154402,
+   "i_mfe_stored": 0,
+   "i_mfe_sip": 0,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 615,
+   "ticker": "ANVS",
+   "fill_stored": 11.98,
+   "fill_sip": 11.9278,
+   "fill_delta_bps": -43.572621,
+   "mfe_stored": 0.461603,
+   "mfe_sip": 0.467999,
+   "mae_stored": -0.035058,
+   "mae_sip": -0.030836,
+   "i_mfe_stored": 74,
+   "i_mfe_sip": 131,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 615,
+   "ticker": "CLVR",
+   "fill_stored": 10.15,
+   "fill_sip": 10.15,
+   "fill_delta_bps": 0.0,
+   "mfe_stored": 0.080788,
+   "mfe_sip": 0.080788,
+   "mae_stored": -0.014778,
+   "mae_sip": -0.014778,
+   "i_mfe_stored": 25,
+   "i_mfe_sip": 25,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 630,
+   "ticker": "NKTX",
+   "fill_stored": 44.5,
+   "fill_sip": 44.5,
+   "fill_delta_bps": 0.0,
+   "mfe_stored": 0.011236,
+   "mfe_sip": 0.011236,
+   "mae_stored": -0.051236,
+   "mae_sip": -0.052809,
+   "i_mfe_stored": 85,
+   "i_mfe_sip": 133,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 630,
+   "ticker": "IMVT",
+   "fill_stored": 26.61,
+   "fill_sip": 26.7007,
+   "fill_delta_bps": 34.08493,
+   "mfe_stored": 0.016159,
+   "mfe_sip": 0.014442,
+   "mae_stored": -0.142803,
+   "mae_sip": -0.145715,
+   "i_mfe_stored": 12,
+   "i_mfe_sip": 8,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 630,
+   "ticker": "ATOS",
+   "fill_stored": 2.925,
+   "fill_sip": 2.92,
+   "fill_delta_bps": -17.094017,
+   "mfe_stored": 0.039316,
+   "mfe_sip": 0.041096,
+   "mae_stored": -0.104274,
+   "mae_sip": -0.10274,
+   "i_mfe_stored": 214,
+   "i_mfe_sip": 216,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 645,
+   "ticker": "CLVR",
+   "fill_stored": 10.75,
+   "fill_sip": 10.8399,
+   "fill_delta_bps": 83.627907,
+   "mfe_stored": 0.012093,
+   "mfe_sip": 0.003699,
+   "mae_stored": -0.037209,
+   "mae_sip": -0.045194,
+   "i_mfe_stored": 24,
+   "i_mfe_sip": 25,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 645,
+   "ticker": "AREC",
+   "fill_stored": 4.0,
+   "fill_sip": 3.9999,
+   "fill_delta_bps": -0.25,
+   "mfe_stored": 0.07,
+   "mfe_sip": 0.072527,
+   "mae_stored": -0.1875,
+   "mae_sip": -0.18748,
+   "i_mfe_stored": 12,
+   "i_mfe_sip": 12,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 645,
+   "ticker": "IMVT",
+   "fill_stored": 26.8,
+   "fill_sip": 26.8,
+   "fill_delta_bps": 0.0,
+   "mfe_stored": 0.004291,
+   "mfe_sip": 0.00672,
+   "mae_stored": -0.148881,
+   "mae_sip": -0.148881,
+   "i_mfe_stored": 7,
+   "i_mfe_sip": 6,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 660,
+   "ticker": "NTN",
+   "fill_stored": 5.07,
+   "fill_sip": 5.07,
+   "fill_delta_bps": 0.0,
+   "mfe_stored": 0.412229,
+   "mfe_sip": 0.441815,
+   "mae_stored": -0.033531,
+   "mae_sip": -0.033531,
+   "i_mfe_stored": 224,
+   "i_mfe_sip": 303,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 660,
+   "ticker": "AREC",
+   "fill_stored": 4.02,
+   "fill_sip": 4.02,
+   "fill_delta_bps": 0.0,
+   "mfe_stored": 0.001244,
+   "mfe_sip": 0.002488,
+   "mae_stored": -0.191542,
+   "mae_sip": -0.191542,
+   "i_mfe_stored": 0,
+   "i_mfe_sip": 0,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 660,
+   "ticker": "CLVR",
+   "fill_stored": 10.6,
+   "fill_sip": 10.55,
+   "fill_delta_bps": -47.169811,
+   "mfe_stored": 0.026415,
+   "mfe_sip": 0.03128,
+   "mae_stored": -0.023585,
+   "mae_sip": -0.018957,
+   "i_mfe_stored": 9,
+   "i_mfe_sip": 10,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 690,
+   "ticker": "NTN",
+   "fill_stored": 5.4,
+   "fill_sip": 5.3936,
+   "fill_delta_bps": -11.851852,
+   "mfe_stored": 0.325926,
+   "mfe_sip": 0.35531,
+   "mae_stored": -0.011111,
+   "mae_sip": -0.013646,
+   "i_mfe_stored": 194,
+   "i_mfe_sip": 273,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 690,
+   "ticker": "AGFY",
+   "fill_stored": 13.5,
+   "fill_sip": 13.5,
+   "fill_delta_bps": 0.0,
+   "mfe_stored": 0.111111,
+   "mfe_sip": 0.111111,
+   "mae_stored": -0.051852,
+   "mae_sip": -0.051852,
+   "i_mfe_stored": 97,
+   "i_mfe_sip": 115,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 690,
+   "ticker": "SAVA",
+   "fill_stored": 40.52,
+   "fill_sip": 40.52,
+   "fill_delta_bps": 0.0,
+   "mfe_stored": 0.838598,
+   "mfe_sip": 0.838598,
+   "mae_stored": -0.025173,
+   "mae_sip": -0.025173,
+   "i_mfe_stored": 141,
+   "i_mfe_sip": 141,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 720,
+   "ticker": "NTN",
+   "fill_stored": 6.08,
+   "fill_sip": 6.1,
+   "fill_delta_bps": 32.894737,
+   "mfe_stored": 0.177632,
+   "mfe_sip": 0.198361,
+   "mae_stored": -0.108553,
+   "mae_sip": -0.111475,
+   "i_mfe_stored": 164,
+   "i_mfe_sip": 243,
+   "order_flips_nonamb": [
+    "5/5:up->dn",
+    "5/8:up->dn",
+    "5/10:up->dn"
+   ],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 720,
+   "ticker": "SAVA",
+   "fill_stored": 42.02,
+   "fill_sip": 42.02,
+   "fill_delta_bps": 0.0,
+   "mfe_stored": 0.772965,
+   "mfe_sip": 0.772965,
+   "mae_stored": -0.005236,
+   "mae_sip": -0.005236,
+   "i_mfe_stored": 111,
+   "i_mfe_sip": 111,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 720,
+   "ticker": "AGFY",
+   "fill_stored": 12.98,
+   "fill_sip": 12.98,
+   "fill_delta_bps": 0.0,
+   "mfe_stored": 0.155624,
+   "mfe_sip": 0.155624,
+   "mae_stored": -0.013867,
+   "mae_sip": -0.013867,
+   "i_mfe_stored": 70,
+   "i_mfe_sip": 86,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  }
+ ],
+ "exec": [
+  {
+   "pop": "A_open",
+   "T": 570,
+   "ticker": "MBRX",
+   "quote_at_fill": {
+    "bid": 7.12,
+    "ask": 7.15,
+    "bid_sz": 2.0,
+    "ask_sz": 1.0
+   },
+   "spread_bps": 42.046251,
+   "buy_cross_bps": 0.0
+  },
+  {
+   "pop": "A_open",
+   "T": 570,
+   "ticker": "SAVA",
+   "quote_at_fill": {
+    "bid": 35.0,
+    "ask": 35.28,
+    "bid_sz": 36.0,
+    "ask_sz": 1.0
+   },
+   "spread_bps": 79.681275,
+   "buy_cross_bps": 80.0
+  },
+  {
+   "pop": "A_open",
+   "T": 570,
+   "ticker": "HOL",
+   "quote_at_fill": {
+    "bid": 14.8,
+    "ask": 14.85,
+    "bid_sz": 33.0,
+    "ask_sz": 1.0
+   },
+   "spread_bps": 33.726813,
+   "buy_cross_bps": 33.783784
+  },
+  {
+   "pop": "B",
+   "T": 575,
+   "ticker": "GSM",
+   "quote_at_fill": {
+    "bid": 4.35,
+    "ask": 4.44,
+    "bid_sz": 4.0,
+    "ask_sz": 2.0
+   },
+   "spread_bps": 204.778157,
+   "buy_cross_bps": 160.183066
+  },
+  {
+   "pop": "B",
+   "T": 575,
+   "ticker": "TESS",
+   "quote_at_fill": {
+    "bid": 8.0,
+    "ask": 8.37,
+    "bid_sz": 1.0,
+    "ask_sz": 7.0
+   },
+   "spread_bps": 452.046426,
+   "buy_cross_bps": 501.882058
+  },
+  {
+   "pop": "B",
+   "T": 575,
+   "ticker": "IMVT",
+   "quote_at_fill": {
+    "bid": 24.8,
+    "ask": 25.0,
+    "bid_sz": 1.0,
+    "ask_sz": 1.0
+   },
+   "spread_bps": 80.321285,
+   "buy_cross_bps": 40.160643
+  },
+  {
+   "pop": "B",
+   "T": 580,
+   "ticker": "IMVT",
+   "quote_at_fill": {
+    "bid": 28.01,
+    "ask": 28.24,
+    "bid_sz": 2.0,
+    "ask_sz": 1.0
+   },
+   "spread_bps": 81.777778,
+   "buy_cross_bps": 14.184397
+  },
+  {
+   "pop": "B",
+   "T": 580,
+   "ticker": "SAVA",
+   "quote_at_fill": {
+    "bid": 37.33,
+    "ask": 37.7,
+    "bid_sz": 4.0,
+    "ask_sz": 2.0
+   },
+   "spread_bps": 98.627216,
+   "buy_cross_bps": -78.947368
+  },
+  {
+   "pop": "B",
+   "T": 580,
+   "ticker": "ENDP",
+   "quote_at_fill": {
+    "bid": 9.51,
+    "ask": 9.54,
+    "bid_sz": 1.0,
+    "ask_sz": 15.0
+   },
+   "spread_bps": 31.496063,
+   "buy_cross_bps": 15.748031
+  },
+  {
+   "pop": "B",
+   "T": 585,
+   "ticker": "SAVA",
+   "quote_at_fill": {
+    "bid": 43.18,
+    "ask": 43.42,
+    "bid_sz": 1.0,
+    "ask_sz": 1.0
+   },
+   "spread_bps": 55.427252,
+   "buy_cross_bps": 41.628122
+  },
+  {
+   "pop": "B",
+   "T": 585,
+   "ticker": "IMVT",
+   "quote_at_fill": {
+    "bid": 25.99,
+    "ask": 26.3,
+    "bid_sz": 1.0,
+    "ask_sz": 2.0
+   },
+   "spread_bps": 118.569516,
+   "buy_cross_bps": 59.284758
+  },
+  {
+   "pop": "B",
+   "T": 585,
+   "ticker": "PUBM",
+   "quote_at_fill": {
+    "bid": 50.88,
+    "ask": 50.99,
+    "bid_sz": 26.0,
+    "ask_sz": 3.0
+   },
+   "spread_bps": 21.596152,
+   "buy_cross_bps": 0.0
+  },
+  {
+   "pop": "B",
+   "T": 590,
+   "ticker": "IMVT",
+   "quote_at_fill": {
+    "bid": 26.87,
+    "ask": 26.99,
+    "bid_sz": 1.0,
+    "ask_sz": 1.0
+   },
+   "spread_bps": 44.55997,
+   "buy_cross_bps": 0.0
+  },
+  {
+   "pop": "B",
+   "T": 590,
+   "ticker": "SAVA",
+   "quote_at_fill": {
+    "bid": 38.52,
+    "ask": 38.89,
+    "bid_sz": 1.0,
+    "ask_sz": 1.0
+   },
+   "spread_bps": 95.594884,
+   "buy_cross_bps": -15.404365
+  },
+  {
+   "pop": "B",
+   "T": 590,
+   "ticker": "PUBM",
+   "quote_at_fill": {
+    "bid": 52.22,
+    "ask": 52.57,
+    "bid_sz": 1.0,
+    "ask_sz": 1.0
+   },
+   "spread_bps": 66.800267,
+   "buy_cross_bps": 38.189803
+  },
+  {
+   "pop": "B",
+   "T": 595,
+   "ticker": "ANVS",
+   "quote_at_fill": {
+    "bid": 12.28,
+    "ask": 12.49,
+    "bid_sz": 2.0,
+    "ask_sz": 2.0
+   },
+   "spread_bps": 169.559952,
+   "buy_cross_bps": 212.591987
+  },
+  {
+   "pop": "B",
+   "T": 595,
+   "ticker": "IMVT",
+   "quote_at_fill": {
+    "bid": 26.47,
+    "ask": 26.99,
+    "bid_sz": 1.0,
+    "ask_sz": 6.0
+   },
+   "spread_bps": 194.537972,
+   "buy_cross_bps": 173.388617
+  },
+  {
+   "pop": "B",
+   "T": 595,
+   "ticker": "ATOS",
+   "quote_at_fill": {
+    "bid": 2.93,
+    "ask": 2.94,
+    "bid_sz": 6.0,
+    "ask_sz": 532.0
+   },
+   "spread_bps": 34.07155,
+   "buy_cross_bps": 34.129693
+  },
+  {
+   "pop": "B",
+   "T": 600,
+   "ticker": "IMVT",
+   "quote_at_fill": {
+    "bid": 27.63,
+    "ask": 27.79,
+    "bid_sz": 7.0,
+    "ask_sz": 7.0
+   },
+   "spread_bps": 57.740888,
+   "buy_cross_bps": 28.870444
+  },
+  {
+   "pop": "B",
+   "T": 600,
+   "ticker": "ANVS",
+   "quote_at_fill": {
+    "bid": 11.76,
+    "ask": 11.95,
+    "bid_sz": 1.0,
+    "ask_sz": 2.0
+   },
+   "spread_bps": 160.269928,
+   "buy_cross_bps": 0.0
+  },
+  {
+   "pop": "B",
+   "T": 600,
+   "ticker": "SAVA",
+   "quote_at_fill": {
+    "bid": 37.7,
+    "ask": 37.93,
+    "bid_sz": 8.0,
+    "ask_sz": 3.0
+   },
+   "spread_bps": 60.822425,
+   "buy_cross_bps": 2.637131
+  },
+  {
+   "pop": "B",
+   "T": 615,
+   "ticker": "IMVT",
+   "quote_at_fill": {
+    "bid": 26.95,
+    "ask": 27.0,
+    "bid_sz": 8.0,
+    "ask_sz": 5.0
+   },
+   "spread_bps": 18.535681,
+   "buy_cross_bps": 9.267841
+  },
+  {
+   "pop": "B",
+   "T": 615,
+   "ticker": "ANVS",
+   "quote_at_fill": {
+    "bid": 11.9,
+    "ask": 11.99,
+    "bid_sz": 1.0,
+    "ask_sz": 1.0
+   },
+   "spread_bps": 75.345333,
+   "buy_cross_bps": 8.347245
+  },
+  {
+   "pop": "B",
+   "T": 615,
+   "ticker": "CLVR",
+   "quote_at_fill": {
+    "bid": 10.13,
+    "ask": 10.15,
+    "bid_sz": 20.0,
+    "ask_sz": 4.0
+   },
+   "spread_bps": 19.723866,
+   "buy_cross_bps": 0.0
+  },
+  {
+   "pop": "B",
+   "T": 630,
+   "ticker": "NKTX",
+   "quote_at_fill": {
+    "bid": 43.21,
+    "ask": 45.0,
+    "bid_sz": 2.0,
+    "ask_sz": 2.0
+   },
+   "spread_bps": 405.849677,
+   "buy_cross_bps": 112.359551
+  },
+  {
+   "pop": "B",
+   "T": 630,
+   "ticker": "IMVT",
+   "quote_at_fill": {
+    "bid": 26.48,
+    "ask": 26.73,
+    "bid_sz": 27.0,
+    "ask_sz": 1.0
+   },
+   "spread_bps": 93.967299,
+   "buy_cross_bps": 45.095829
+  },
+  {
+   "pop": "B",
+   "T": 630,
+   "ticker": "ATOS",
+   "quote_at_fill": {
+    "bid": 2.92,
+    "ask": 2.93,
+    "bid_sz": 16.0,
+    "ask_sz": 3.0
+   },
+   "spread_bps": 34.188034,
+   "buy_cross_bps": 17.094017
+  },
+  {
+   "pop": "B",
+   "T": 645,
+   "ticker": "CLVR",
+   "quote_at_fill": {
+    "bid": 10.75,
+    "ask": 10.84,
+    "bid_sz": 1.0,
+    "ask_sz": 5.0
+   },
+   "spread_bps": 83.371931,
+   "buy_cross_bps": 83.72093
+  },
+  {
+   "pop": "B",
+   "T": 645,
+   "ticker": "AREC",
+   "quote_at_fill": {
+    "bid": 3.99,
+    "ask": 4.0,
+    "bid_sz": 12.0,
+    "ask_sz": 4.0
+   },
+   "spread_bps": 25.031289,
+   "buy_cross_bps": 0.0
+  },
+  {
+   "pop": "B",
+   "T": 645,
+   "ticker": "IMVT",
+   "quote_at_fill": {
+    "bid": 26.64,
+    "ask": 26.82,
+    "bid_sz": 7.0,
+    "ask_sz": 1.0
+   },
+   "spread_bps": 67.340067,
+   "buy_cross_bps": 7.462687
+  },
+  {
+   "pop": "B",
+   "T": 660,
+   "ticker": "NTN",
+   "quote_at_fill": {
+    "bid": 5.04,
+    "ask": 5.07,
+    "bid_sz": 1.0,
+    "ask_sz": 1.0
+   },
+   "spread_bps": 59.347181,
+   "buy_cross_bps": 0.0
+  },
+  {
+   "pop": "B",
+   "T": 660,
+   "ticker": "AREC",
+   "quote_at_fill": {
+    "bid": 4.01,
+    "ask": 4.03,
+    "bid_sz": 4.0,
+    "ask_sz": 3.0
+   },
+   "spread_bps": 49.751244,
+   "buy_cross_bps": 24.875622
+  },
+  {
+   "pop": "B",
+   "T": 660,
+   "ticker": "CLVR",
+   "quote_at_fill": {
+    "bid": 10.55,
+    "ask": 10.6,
+    "bid_sz": 3.0,
+    "ask_sz": 16.0
+   },
+   "spread_bps": 47.281324,
+   "buy_cross_bps": 0.0
+  },
+  {
+   "pop": "B",
+   "T": 690,
+   "ticker": "NTN",
+   "quote_at_fill": {
+    "bid": 5.37,
+    "ask": 5.4,
+    "bid_sz": 4.0,
+    "ask_sz": 18.0
+   },
+   "spread_bps": 55.710306,
+   "buy_cross_bps": 0.0
+  },
+  {
+   "pop": "B",
+   "T": 690,
+   "ticker": "AGFY",
+   "quote_at_fill": {
+    "bid": 13.46,
+    "ask": 13.5,
+    "bid_sz": 2.0,
+    "ask_sz": 8.0
+   },
+   "spread_bps": 29.673591,
+   "buy_cross_bps": 0.0
+  },
+  {
+   "pop": "B",
+   "T": 690,
+   "ticker": "SAVA",
+   "quote_at_fill": {
+    "bid": 40.25,
+    "ask": 40.65,
+    "bid_sz": 6.0,
+    "ask_sz": 2.0
+   },
+   "spread_bps": 98.887515,
+   "buy_cross_bps": 32.082922
+  },
+  {
+   "pop": "B",
+   "T": 720,
+   "ticker": "NTN",
+   "quote_at_fill": {
+    "bid": 6.05,
+    "ask": 6.11,
+    "bid_sz": 5.0,
+    "ask_sz": 3.0
+   },
+   "spread_bps": 98.684211,
+   "buy_cross_bps": 49.342105
+  },
+  {
+   "pop": "B",
+   "T": 720,
+   "ticker": "SAVA",
+   "quote_at_fill": {
+    "bid": 41.92,
+    "ask": 42.03,
+    "bid_sz": 2.0,
+    "ask_sz": 6.0
+   },
+   "spread_bps": 26.206075,
+   "buy_cross_bps": 2.379819
+  },
+  {
+   "pop": "B",
+   "T": 720,
+   "ticker": "AGFY",
+   "quote_at_fill": {
+    "bid": 12.82,
+    "ask": 13.0,
+    "bid_sz": 9.0,
+    "ask_sz": 23.0
+   },
+   "spread_bps": 139.426801,
+   "buy_cross_bps": 15.40832
+  }
+ ],
+ "tail": {
+  "symbols": {
+   "AGEN": {
+    "sip_trade_max_raw": 4.5,
+    "sip_trade_max_rth_priceupd": 4.5,
+    "sip_bar_max_rth": 4.5
+   },
+   "AGFY": {
+    "sip_trade_max_raw": 15.0,
+    "sip_trade_max_rth_priceupd": 15.0,
+    "sip_bar_max_rth": 15.0
+   },
+   "ANVS": {
+    "sip_trade_max_raw": 17.52,
+    "sip_trade_max_rth_priceupd": 17.52,
+    "sip_bar_max_rth": 17.51
+   },
+   "APPH": {
+    "sip_trade_max_raw": 42.9,
+    "sip_trade_max_rth_priceupd": 42.9,
+    "sip_bar_max_rth": 42.9
+   },
+   "APPHW": {
+    "sip_trade_max_raw": 15.5,
+    "sip_trade_max_rth_priceupd": 15.5,
+    "sip_bar_max_rth": 15.5
+   },
+   "AREC": {
+    "sip_trade_max_raw": 4.29,
+    "sip_trade_max_rth_priceupd": 4.29,
+    "sip_bar_max_rth": 4.29
+   },
+   "ATOS": {
+    "sip_trade_max_raw": 3.19,
+    "sip_trade_max_rth_priceupd": 3.19,
+    "sip_bar_max_rth": 3.19
+   },
+   "BASI": {
+    "sip_trade_max_raw": 13.26,
+    "sip_trade_max_rth_priceupd": 13.26,
+    "sip_bar_max_rth": 13.25
+   },
+   "BOMN": {
+    "sip_trade_max_raw": 34.94,
+    "sip_trade_max_rth_priceupd": 34.94,
+    "sip_bar_max_rth": 34.8
+   },
+   "BTN": {
+    "sip_trade_max_raw": 2.77,
+    "sip_trade_max_rth_priceupd": 2.77,
+    "sip_bar_max_rth": 2.77
+   },
+   "CLVR": {
+    "sip_trade_max_raw": 10.97,
+    "sip_trade_max_rth_priceupd": 10.97,
+    "sip_bar_max_rth": 10.97
+   },
+   "CRMD": {
+    "sip_trade_max_raw": 12.78,
+    "sip_trade_max_rth_priceupd": 12.78,
+    "sip_bar_max_rth": 12.78
+   },
+   "CTRA": {
+    "sip_trade_max_raw": 13.43,
+    "sip_trade_max_rth_priceupd": 13.43,
+    "sip_bar_max_rth": 13.4
+   },
+   "DMS": {
+    "sip_trade_max_raw": 12.5,
+    "sip_trade_max_rth_priceupd": 12.5,
+    "sip_bar_max_rth": 12.49
+   },
+   "DRRX": {
+    "sip_trade_max_raw": 2.85,
+    "sip_trade_max_rth_priceupd": 2.85,
+    "sip_bar_max_rth": 2.85
+   },
+   "EDSA": {
+    "sip_trade_max_raw": 8.15,
+    "sip_trade_max_rth_priceupd": 8.15,
+    "sip_bar_max_rth": 8.15
+   },
+   "ENDP": {
+    "sip_trade_max_raw": 9.6,
+    "sip_trade_max_rth_priceupd": 9.6,
+    "sip_bar_max_rth": 9.5998
+   },
+   "FUV": {
+    "sip_trade_max_raw": 26.99,
+    "sip_trade_max_rth_priceupd": 26.99,
+    "sip_bar_max_rth": 26.99
+   },
+   "GRNQ": {
+    "sip_trade_max_raw": 2.3,
+    "sip_trade_max_rth_priceupd": 2.3,
+    "sip_bar_max_rth": 2.3
+   },
+   "GSM": {
+    "sip_trade_max_raw": 4.49,
+    "sip_trade_max_rth_priceupd": 4.49,
+    "sip_bar_max_rth": 4.49
+   },
+   "HOL": {
+    "sip_trade_max_raw": 16.89,
+    "sip_trade_max_rth_priceupd": 16.89,
+    "sip_bar_max_rth": 16.89
+   },
+   "HYFM": {
+    "sip_trade_max_raw": 93.39,
+    "sip_trade_max_rth_priceupd": 93.39,
+    "sip_bar_max_rth": 92.91
+   },
+   "IMNM": {
+    "sip_trade_max_raw": 20.297,
+    "sip_trade_max_rth_priceupd": 20.297,
+    "sip_bar_max_rth": 20.26
+   },
+   "IMVT": {
+    "sip_trade_max_raw": 29.54,
+    "sip_trade_max_rth_priceupd": 29.54,
+    "sip_bar_max_rth": 29.54
+   },
+   "IPWR": {
+    "sip_trade_max_raw": 18.48,
+    "sip_trade_max_rth_priceupd": 18.48,
+    "sip_bar_max_rth": 18.48
+   },
+   "KLR": {
+    "sip_trade_max_raw": 13.97,
+    "sip_trade_max_rth_priceupd": 13.97,
+    "sip_bar_max_rth": 13.97
+   },
+   "KOPN": {
+    "sip_trade_max_raw": 7.08,
+    "sip_trade_max_rth_priceupd": 7.08,
+    "sip_bar_max_rth": 7.08
+   },
+   "MBRX": {
+    "sip_trade_max_raw": 8.78,
+    "sip_trade_max_rth_priceupd": 8.78,
+    "sip_bar_max_rth": 8.78
+   },
+   "MDIA": {
+    "sip_trade_max_raw": 3.79,
+    "sip_trade_max_rth_priceupd": 3.79,
+    "sip_bar_max_rth": 3.79
+   },
+   "MEC": {
+    "sip_trade_max_raw": 15.85,
+    "sip_trade_max_rth_priceupd": 15.85,
+    "sip_bar_max_rth": 15.76
+   },
+   "MXC": {
+    "sip_trade_max_raw": 9.0,
+    "sip_trade_max_rth_priceupd": 9.0,
+    "sip_bar_max_rth": 8.9956
+   },
+   "NAVB": {
+    "sip_trade_max_raw": 2.5,
+    "sip_trade_max_rth_priceupd": 2.5,
+    "sip_bar_max_rth": 2.5
+   },
+   "NKTX": {
+    "sip_trade_max_raw": 46.1206,
+    "sip_trade_max_rth_priceupd": 46.1206,
+    "sip_bar_max_rth": 45.99
+   },
+   "NTN": {
+    "sip_trade_max_raw": 7.31,
+    "sip_trade_max_rth_priceupd": 7.16,
+    "sip_bar_max_rth": 7.16
+   },
+   "OSS": {
+    "sip_trade_max_raw": 5.84,
+    "sip_trade_max_rth_priceupd": 5.84,
+    "sip_bar_max_rth": 5.8396
+   },
+   "PRTA": {
+    "sip_trade_max_raw": 14.98,
+    "sip_trade_max_rth_priceupd": 14.98,
+    "sip_bar_max_rth": 14.98
+   },
+   "PUBM": {
+    "sip_trade_max_raw": 53.88,
+    "sip_trade_max_rth_priceupd": 53.88,
+    "sip_bar_max_rth": 53.62
+   },
+   "RESN": {
+    "sip_trade_max_raw": 7.01,
+    "sip_trade_max_rth_priceupd": 7.01,
+    "sip_bar_max_rth": 7.01
+   },
+   "SAVA": {
+    "sip_trade_max_raw": 74.5,
+    "sip_trade_max_rth_priceupd": 74.5,
+    "sip_bar_max_rth": 74.5
+   },
+   "SCOR": {
+    "sip_trade_max_raw": 3.85,
+    "sip_trade_max_rth_priceupd": 3.85,
+    "sip_bar_max_rth": 3.85
+   },
+   "SFE": {
+    "sip_trade_max_raw": 8.16,
+    "sip_trade_max_rth_priceupd": 8.16,
+    "sip_bar_max_rth": 8.16
+   },
+   "SLS": {
+    "sip_trade_max_raw": 8.8,
+    "sip_trade_max_rth_priceupd": 8.8,
+    "sip_bar_max_rth": 8.8
+   },
+   "SPI": {
+    "sip_trade_max_raw": 11.2,
+    "sip_trade_max_rth_priceupd": 11.2,
+    "sip_bar_max_rth": 11.2
+   },
+   "SRSA": {
+    "sip_trade_max_raw": 11.87,
+    "sip_trade_max_rth_priceupd": 11.87,
+    "sip_bar_max_rth": 11.84
+   },
+   "TESS": {
+    "sip_trade_max_raw": 8.36,
+    "sip_trade_max_rth_priceupd": 8.36,
+    "sip_bar_max_rth": 8.35
+   },
+   "TLSA": {
+    "sip_trade_max_raw": 4.99,
+    "sip_trade_max_rth_priceupd": 4.99,
+    "sip_bar_max_rth": 4.99
+   },
+   "TPGY": {
+    "sip_trade_max_raw": 28.35,
+    "sip_trade_max_rth_priceupd": 28.35,
+    "sip_bar_max_rth": 28.35
+   },
+   "USEG": {
+    "sip_trade_max_raw": 5.78,
+    "sip_trade_max_rth_priceupd": 5.78,
+    "sip_bar_max_rth": 5.78
+   },
+   "VCNX": {
+    "sip_trade_max_raw": 3.3,
+    "sip_trade_max_rth_priceupd": 3.3,
+    "sip_bar_max_rth": 3.3
+   },
+   "VRDN": {
+    "sip_trade_max_raw": 20.88,
+    "sip_trade_max_rth_priceupd": 20.88,
+    "sip_bar_max_rth": 20.88
+   },
+   "VTVT": {
+    "sip_trade_max_raw": 3.15,
+    "sip_trade_max_rth_priceupd": 3.15,
+    "sip_bar_max_rth": 3.15
+   },
+   "VXRT": {
+    "sip_trade_max_raw": 24.9,
+    "sip_trade_max_rth_priceupd": 24.9,
+    "sip_bar_max_rth": 24.9
+   },
+   "XONE": {
+    "sip_trade_max_raw": 36.98,
+    "sip_trade_max_rth_priceupd": 36.98,
+    "sip_bar_max_rth": 36.97
+   }
+  },
+  "diffs_vs_stored_high": [
+   {
+    "ticker": "MXC",
+    "stored_high": 8.81,
+    "sip_rth_po_max": 9.0,
+    "raw_window_max": 9.0,
+    "delta": 0.021566
+   },
+   {
+    "ticker": "TESS",
+    "stored_high": 8.26,
+    "sip_rth_po_max": 8.36,
+    "raw_window_max": 8.36,
+    "delta": 0.012107
+   },
+   {
+    "ticker": "PUBM",
+    "stored_high": 53.305,
+    "sip_rth_po_max": 53.88,
+    "raw_window_max": 53.88,
+    "delta": 0.010787
+   },
+   {
+    "ticker": "MEC",
+    "stored_high": 15.76,
+    "sip_rth_po_max": 15.85,
+    "raw_window_max": 15.85,
+    "delta": 0.005711
+   },
+   {
+    "ticker": "VRDN",
+    "stored_high": 20.77,
+    "sip_rth_po_max": 20.88,
+    "raw_window_max": 20.88,
+    "delta": 0.005296
+   },
+   {
+    "ticker": "HYFM",
+    "stored_high": 92.91,
+    "sip_rth_po_max": 93.39,
+    "raw_window_max": 93.39,
+    "delta": 0.005166
+   }
+  ]
+ },
+ "notes": []
+}

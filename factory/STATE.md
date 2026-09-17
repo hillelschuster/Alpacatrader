@@ -2021,3 +2021,24 @@ as a separate artifact: 221 prints day 1). Self-test + live run: 2021-02-01 3.32
 avg-price print provider excludes; ALYA 11:46 +1 trade/50sh; STPK 09:30 +3/120sh
 late/superseded prints), OHLC identical. bars + auction prints under data/sip/derived/
 (gitignored). Next: quote/execution-truth layer; certification panel across the 20 pilot days.
+
+2026-09-18 (BASKET-01 SIP certification panel COMPLETE — regeneration decision note): 20-day
+SIP pilot fully ingested (40 artifacts, manifests + sha256 in data/sip/), own bars per Alpaca's
+documented condition table, event-level certification vs the legacy anatomy + a triage layer.
+Panel A-E (260 snapshots / 695 member-days): top-3 SET changed 15.4% of snapshots; 763
+rank-flip positions; decision-price deltas p50 ~1bp; fill deltas p90 77bps (7.5% >100bps);
+498 non-ambiguous first-passage order flips (all on healthy-coverage symbols; 27/27 stored
+AMBIGUOUS resolved by trades); quoted spread at fill p50 86bps / p90 472bps; stored >=+100%
+member-days 50 -> 49 confirmed (the 1 = BRP fabricated spike). All large tail revisions
+decoded: BRP = legacy bad print (SIP true max ~26.4); BNY x10.6 and GOLD x1.49 = scale/adj
+offsets (SIP ~106-109 / ~27-29 all day; percent-safe, absolute levels not comparable); 14
+diffs = SIP archive gaps (auction-print-only symbols e.g. BKKT/BE/RDW 2021-10-25; live probes
+confirm 0 trades; SIP is NOT truth there). Control: 2026 panel days (same Alpaca provenance)
+show 0 rank flips / 0 set changes. Verdict in factory/artifacts/basket/sip/
+SIP_REGENERATION_DECISION.md: REGENERATE Phase-1 from SIP-derived bars (guardrails: per
+symbol-day coverage QC; auction side channel; widened candidate net beyond legacy union;
+quotes for candidates only; reserved months raw-only). PRE-REG-BASKET-02 remains PAUSED; no
+strategy/parameter changes; owner review next. Artifacts: SIP_DECISION_NOTE.md, SIP_TRIAGE.md,
+SIP_REGENERATION_DECISION.md, sip_decision.json, sip_triage.json, certification_<day>.json
+(x20); scripts sip_decision.py, sip_triage.py (sip_decision.py bugfix: skip A_pm 'skipped'
+entries + <200-trade coverage classification).

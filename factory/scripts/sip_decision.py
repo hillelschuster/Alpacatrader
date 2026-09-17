@@ -52,6 +52,7 @@ def _q(vals):
 
 def aggregate(certs: list) -> dict:
     sel_snap = sel_set_change = sel_order_change = 0
+    sel_skipped = 0
     flips_total = 0
     px_p50, px_max = [], []
     outsiders = []
@@ -66,6 +67,9 @@ def aggregate(certs: list) -> dict:
         day = c["day"]
         d_flips = d_sel = d_setchg = 0
         for s in c.get("selection", []):
+            if "stored_top10" not in s:  # e.g. A_pm skipped in pilot-era certs
+                sel_skipped += 1
+                continue
             sel_snap += 1
             st = [r["ticker"] for r in s["stored_top10"][:3]]
             sip = s.get("sip_order_of_stored_top10", [])[:3]
@@ -120,6 +124,7 @@ def aggregate(certs: list) -> dict:
         "days": len(certs),
         "A_selection": {
             "snapshots": sel_snap,
+            "skipped_snapshots": sel_skipped,
             "top3_set_change_share": _pct(sel_set_change, sel_snap),
             "top3_order_change_share": _pct(sel_order_change, sel_snap),
             "rank_flip_positions_total": flips_total,

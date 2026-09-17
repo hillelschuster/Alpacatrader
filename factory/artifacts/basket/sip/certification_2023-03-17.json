@@ -1,0 +1,2741 @@
+{
+ "day": "2023-03-17",
+ "symbols": 48,
+ "trades_rows": 707932,
+ "quotes_rows": 260112,
+ "selection": [
+  {
+   "pop": "A_open",
+   "T": 570,
+   "stored_top10": [
+    {
+     "rank": 1,
+     "ticker": "PXMD",
+     "px": 2.67,
+     "sel": 0.219178,
+     "prev_close": 2.19
+    },
+    {
+     "rank": 2,
+     "ticker": "HUBC",
+     "px": 2.82,
+     "sel": 0.179916,
+     "prev_close": 2.39
+    },
+    {
+     "rank": 3,
+     "ticker": "MRDB",
+     "px": 2.35,
+     "sel": 0.119048,
+     "prev_close": 2.1
+    },
+    {
+     "rank": 4,
+     "ticker": "ALLG",
+     "px": 3.14,
+     "sel": 0.117438,
+     "prev_close": 2.81
+    },
+    {
+     "rank": 5,
+     "ticker": "IVA",
+     "px": 4.68,
+     "sel": 0.114286,
+     "prev_close": 4.2
+    },
+    {
+     "rank": 6,
+     "ticker": "PYXS",
+     "px": 2.35,
+     "sel": 0.113744,
+     "prev_close": 2.11
+    },
+    {
+     "rank": 7,
+     "ticker": "GEOS",
+     "px": 6.0,
+     "sel": 0.109057,
+     "prev_close": 5.41
+    },
+    {
+     "rank": 8,
+     "ticker": "FDX",
+     "px": 226.05,
+     "sel": 0.108251,
+     "prev_close": 203.97
+    },
+    {
+     "rank": 9,
+     "ticker": "MARA",
+     "px": 8.4,
+     "sel": 0.100917,
+     "prev_close": 7.63
+    },
+    {
+     "rank": 10,
+     "ticker": "CRBP",
+     "px": 6.24,
+     "sel": 0.090909,
+     "prev_close": 5.72
+    }
+   ],
+   "sip_order_of_stored_top10": [
+    "PXMD",
+    "HUBC",
+    "MRDB",
+    "ALLG",
+    "IVA",
+    "PYXS",
+    "GEOS",
+    "FDX",
+    "MARA",
+    "CRBP"
+   ],
+   "rank_flip_positions_within_stored_top10": 0,
+   "outsiders_above_cutoff": [],
+   "px_delta_bps": {
+    "n": 10,
+    "p50": 0.0,
+    "max": 0.0
+   },
+   "note": "re-rank of the stored top-10 by SIP prices; outsiders = fetched symbols above the 10th stored member's SIP score (lower bound; unfetched names not re-ranked)"
+  },
+  {
+   "pop": "B",
+   "T": 575,
+   "stored_top10": [
+    {
+     "rank": 1,
+     "ticker": "MNTK",
+     "px": 8.52,
+     "sel": 0.128477,
+     "prev_close": 9.52
+    },
+    {
+     "rank": 2,
+     "ticker": "YTEN",
+     "px": 2.91,
+     "sel": 0.110687,
+     "prev_close": 2.57
+    },
+    {
+     "rank": 3,
+     "ticker": "DTC",
+     "px": 6.49,
+     "sel": 0.072727,
+     "prev_close": 5.95
+    },
+    {
+     "rank": 4,
+     "ticker": "OGEN",
+     "px": 3.5,
+     "sel": 0.067073,
+     "prev_close": 3.44
+    },
+    {
+     "rank": 5,
+     "ticker": "ORLA",
+     "px": 4.4,
+     "sel": 0.062802,
+     "prev_close": 4.02
+    },
+    {
+     "rank": 6,
+     "ticker": "KODK",
+     "px": 3.53,
+     "sel": 0.053731,
+     "prev_close": 3.4
+    },
+    {
+     "rank": 7,
+     "ticker": "ALLT",
+     "px": 2.895,
+     "sel": 0.052727,
+     "prev_close": 2.73
+    },
+    {
+     "rank": 8,
+     "ticker": "BMEA",
+     "px": 16.23,
+     "sel": 0.051847,
+     "prev_close": 15.43
+    },
+    {
+     "rank": 9,
+     "ticker": "GRIN",
+     "px": 12.65,
+     "sel": 0.051538,
+     "prev_close": 12.2
+    },
+    {
+     "rank": 10,
+     "ticker": "WALD",
+     "px": 8.42,
+     "sel": 0.049875,
+     "prev_close": 8.0
+    }
+   ],
+   "sip_order_of_stored_top10": [
+    "MNTK",
+    "YTEN",
+    "DTC",
+    "OGEN",
+    "ORLA",
+    "KODK",
+    "BMEA",
+    "GRIN",
+    "WALD",
+    "ALLT"
+   ],
+   "rank_flip_positions_within_stored_top10": 4,
+   "outsiders_above_cutoff": [
+    {
+     "ticker": "EVCM",
+     "sel_sip": 0.049381
+    },
+    {
+     "ticker": "COOK",
+     "sel_sip": 0.048589
+    },
+    {
+     "ticker": "GEOS",
+     "sel_sip": 0.043333
+    },
+    {
+     "ticker": "CODX",
+     "sel_sip": 0.04
+    },
+    {
+     "ticker": "LIPO",
+     "sel_sip": 0.038462
+    },
+    {
+     "ticker": "KRBP",
+     "sel_sip": 0.037688
+    },
+    {
+     "ticker": "BURU",
+     "sel_sip": 0.034858
+    },
+    {
+     "ticker": "AZRE",
+     "sel_sip": 0.034653
+    },
+    {
+     "ticker": "RZLT",
+     "sel_sip": 0.033816
+    },
+    {
+     "ticker": "GURE",
+     "sel_sip": 0.029304
+    }
+   ],
+   "px_delta_bps": {
+    "n": 10,
+    "p50": 7.082153,
+    "max": 639.032815
+   },
+   "note": "re-rank of the stored top-10 by SIP prices; outsiders = fetched symbols above the 10th stored member's SIP score (lower bound; unfetched names not re-ranked)"
+  },
+  {
+   "pop": "B",
+   "T": 580,
+   "stored_top10": [
+    {
+     "rank": 1,
+     "ticker": "MNTK",
+     "px": 8.56,
+     "sel": 0.133775,
+     "prev_close": 9.52
+    },
+    {
+     "rank": 2,
+     "ticker": "YTEN",
+     "px": 2.91,
+     "sel": 0.110687,
+     "prev_close": 2.57
+    },
+    {
+     "rank": 3,
+     "ticker": "COOK",
+     "px": 3.53,
+     "sel": 0.106583,
+     "prev_close": 2.98
+    },
+    {
+     "rank": 4,
+     "ticker": "DRMA",
+     "px": 2.6,
+     "sel": 0.087866,
+     "prev_close": 2.23
+    },
+    {
+     "rank": 5,
+     "ticker": "KODK",
+     "px": 3.62,
+     "sel": 0.080597,
+     "prev_close": 3.4
+    },
+    {
+     "rank": 6,
+     "ticker": "EVCM",
+     "px": 11.31,
+     "sel": 0.077143,
+     "prev_close": 10.73
+    },
+    {
+     "rank": 7,
+     "ticker": "DTC",
+     "px": 6.505,
+     "sel": 0.075207,
+     "prev_close": 5.95
+    },
+    {
+     "rank": 8,
+     "ticker": "OGEN",
+     "px": 3.5,
+     "sel": 0.067073,
+     "prev_close": 3.44
+    },
+    {
+     "rank": 9,
+     "ticker": "BFC",
+     "px": 77.64,
+     "sel": 0.062107,
+     "prev_close": 73.66
+    },
+    {
+     "rank": 10,
+     "ticker": "HHRS",
+     "px": 6.65,
+     "sel": 0.055556,
+     "prev_close": 6.29
+    }
+   ],
+   "sip_order_of_stored_top10": [
+    "MNTK",
+    "COOK",
+    "DRMA",
+    "YTEN",
+    "KODK",
+    "DTC",
+    "EVCM",
+    "OGEN",
+    "BFC",
+    "HHRS"
+   ],
+   "rank_flip_positions_within_stored_top10": 5,
+   "outsiders_above_cutoff": [
+    {
+     "ticker": "BURU",
+     "sel_sip": 0.084946
+    },
+    {
+     "ticker": "INKT",
+     "sel_sip": 0.065708
+    },
+    {
+     "ticker": "ORLA",
+     "sel_sip": 0.062802
+    },
+    {
+     "ticker": "NUWE",
+     "sel_sip": 0.057112
+    }
+   ],
+   "px_delta_bps": {
+    "n": 10,
+    "p50": 0.0,
+    "max": 240.549828
+   },
+   "note": "re-rank of the stored top-10 by SIP prices; outsiders = fetched symbols above the 10th stored member's SIP score (lower bound; unfetched names not re-ranked)"
+  },
+  {
+   "pop": "B",
+   "T": 585,
+   "stored_top10": [
+    {
+     "rank": 1,
+     "ticker": "COOK",
+     "px": 3.69,
+     "sel": 0.15674,
+     "prev_close": 2.98
+    },
+    {
+     "rank": 2,
+     "ticker": "YTEN",
+     "px": 2.91,
+     "sel": 0.110687,
+     "prev_close": 2.57
+    },
+    {
+     "rank": 3,
+     "ticker": "MNTK",
+     "px": 8.2,
+     "sel": 0.086093,
+     "prev_close": 9.52
+    },
+    {
+     "rank": 4,
+     "ticker": "CODX",
+     "px": 2.715,
+     "sel": 0.086,
+     "prev_close": 2.96
+    },
+    {
+     "rank": 5,
+     "ticker": "ORLA",
+     "px": 4.47,
+     "sel": 0.07971,
+     "prev_close": 4.02
+    },
+    {
+     "rank": 6,
+     "ticker": "DTC",
+     "px": 6.5,
+     "sel": 0.07438,
+     "prev_close": 5.95
+    },
+    {
+     "rank": 7,
+     "ticker": "LIPO",
+     "px": 2.5,
+     "sel": 0.068376,
+     "prev_close": 2.45
+    },
+    {
+     "rank": 8,
+     "ticker": "OGEN",
+     "px": 3.5,
+     "sel": 0.067073,
+     "prev_close": 3.44
+    },
+    {
+     "rank": 9,
+     "ticker": "LE",
+     "px": 8.385,
+     "sel": 0.066794,
+     "prev_close": 8.1
+    },
+    {
+     "rank": 10,
+     "ticker": "RZLT",
+     "px": 2.2,
+     "sel": 0.062802,
+     "prev_close": 2.2
+    }
+   ],
+   "sip_order_of_stored_top10": [
+    "COOK",
+    "MNTK",
+    "CODX",
+    "YTEN",
+    "ORLA",
+    "DTC",
+    "LIPO",
+    "OGEN",
+    "LE",
+    "RZLT"
+   ],
+   "rank_flip_positions_within_stored_top10": 3,
+   "outsiders_above_cutoff": [
+    {
+     "ticker": "MHUA",
+     "sel_sip": 0.104227
+    },
+    {
+     "ticker": "INKT",
+     "sel_sip": 0.072831
+    }
+   ],
+   "px_delta_bps": {
+    "n": 10,
+    "p50": 0.0,
+    "max": 240.549828
+   },
+   "note": "re-rank of the stored top-10 by SIP prices; outsiders = fetched symbols above the 10th stored member's SIP score (lower bound; unfetched names not re-ranked)"
+  },
+  {
+   "pop": "B",
+   "T": 590,
+   "stored_top10": [
+    {
+     "rank": 1,
+     "ticker": "COOK",
+     "px": 3.68,
+     "sel": 0.153605,
+     "prev_close": 2.98
+    },
+    {
+     "rank": 2,
+     "ticker": "YTEN",
+     "px": 2.91,
+     "sel": 0.110687,
+     "prev_close": 2.57
+    },
+    {
+     "rank": 3,
+     "ticker": "CODX",
+     "px": 2.75,
+     "sel": 0.1,
+     "prev_close": 2.96
+    },
+    {
+     "rank": 4,
+     "ticker": "ORLA",
+     "px": 4.53,
+     "sel": 0.094203,
+     "prev_close": 4.02
+    },
+    {
+     "rank": 5,
+     "ticker": "BLFS",
+     "px": 20.5,
+     "sel": 0.082937,
+     "prev_close": 19.96
+    },
+    {
+     "rank": 6,
+     "ticker": "DTC",
+     "px": 6.525,
+     "sel": 0.078512,
+     "prev_close": 5.95
+    },
+    {
+     "rank": 7,
+     "ticker": "KODK",
+     "px": 3.6,
+     "sel": 0.074627,
+     "prev_close": 3.4
+    },
+    {
+     "rank": 8,
+     "ticker": "INKT",
+     "px": 2.34,
+     "sel": 0.068493,
+     "prev_close": 2.03
+    },
+    {
+     "rank": 9,
+     "ticker": "OGEN",
+     "px": 3.5,
+     "sel": 0.067073,
+     "prev_close": 3.44
+    },
+    {
+     "rank": 10,
+     "ticker": "LE",
+     "px": 8.385,
+     "sel": 0.066794,
+     "prev_close": 8.1
+    }
+   ],
+   "sip_order_of_stored_top10": [
+    "COOK",
+    "CODX",
+    "ORLA",
+    "BLFS",
+    "LE",
+    "YTEN",
+    "DTC",
+    "KODK",
+    "INKT",
+    "OGEN"
+   ],
+   "rank_flip_positions_within_stored_top10": 9,
+   "outsiders_above_cutoff": [],
+   "px_delta_bps": {
+    "n": 10,
+    "p50": 2.727273,
+    "max": 240.549828
+   },
+   "note": "re-rank of the stored top-10 by SIP prices; outsiders = fetched symbols above the 10th stored member's SIP score (lower bound; unfetched names not re-ranked)"
+  },
+  {
+   "pop": "B",
+   "T": 595,
+   "stored_top10": [
+    {
+     "rank": 1,
+     "ticker": "NUWE",
+     "px": 5.54,
+     "sel": 0.193966,
+     "prev_close": 4.66
+    },
+    {
+     "rank": 2,
+     "ticker": "COOK",
+     "px": 3.75,
+     "sel": 0.175549,
+     "prev_close": 2.98
+    },
+    {
+     "rank": 3,
+     "ticker": "YTEN",
+     "px": 2.91,
+     "sel": 0.110687,
+     "prev_close": 2.57
+    },
+    {
+     "rank": 4,
+     "ticker": "BLFS",
+     "px": 20.9,
+     "sel": 0.104068,
+     "prev_close": 19.96
+    },
+    {
+     "rank": 5,
+     "ticker": "CODX",
+     "px": 2.76,
+     "sel": 0.104,
+     "prev_close": 2.96
+    },
+    {
+     "rank": 6,
+     "ticker": "KODK",
+     "px": 3.69,
+     "sel": 0.101493,
+     "prev_close": 3.4
+    },
+    {
+     "rank": 7,
+     "ticker": "ORLA",
+     "px": 4.53,
+     "sel": 0.094203,
+     "prev_close": 4.02
+    },
+    {
+     "rank": 8,
+     "ticker": "LE",
+     "px": 8.59,
+     "sel": 0.092875,
+     "prev_close": 8.1
+    },
+    {
+     "rank": 9,
+     "ticker": "BURU",
+     "px": 4.94,
+     "sel": 0.076253,
+     "prev_close": 4.5
+    },
+    {
+     "rank": 10,
+     "ticker": "DTC",
+     "px": 6.5,
+     "sel": 0.07438,
+     "prev_close": 5.95
+    }
+   ],
+   "sip_order_of_stored_top10": [
+    "NUWE",
+    "COOK",
+    "KODK",
+    "BLFS",
+    "CODX",
+    "ORLA",
+    "LE",
+    "YTEN",
+    "DTC",
+    "BURU"
+   ],
+   "rank_flip_positions_within_stored_top10": 6,
+   "outsiders_above_cutoff": [],
+   "px_delta_bps": {
+    "n": 10,
+    "p50": 9.311741,
+    "max": 240.549828
+   },
+   "note": "re-rank of the stored top-10 by SIP prices; outsiders = fetched symbols above the 10th stored member's SIP score (lower bound; unfetched names not re-ranked)"
+  },
+  {
+   "pop": "B",
+   "T": 600,
+   "stored_top10": [
+    {
+     "rank": 1,
+     "ticker": "NUWE",
+     "px": 5.37,
+     "sel": 0.157328,
+     "prev_close": 4.66
+    },
+    {
+     "rank": 2,
+     "ticker": "BLFS",
+     "px": 21.26,
+     "sel": 0.123085,
+     "prev_close": 19.96
+    },
+    {
+     "rank": 3,
+     "ticker": "LE",
+     "px": 8.76,
+     "sel": 0.114504,
+     "prev_close": 8.1
+    },
+    {
+     "rank": 4,
+     "ticker": "KRBP",
+     "px": 4.4,
+     "sel": 0.105528,
+     "prev_close": 4.16
+    },
+    {
+     "rank": 5,
+     "ticker": "CODX",
+     "px": 2.76,
+     "sel": 0.104,
+     "prev_close": 2.96
+    },
+    {
+     "rank": 6,
+     "ticker": "KODK",
+     "px": 3.68,
+     "sel": 0.098507,
+     "prev_close": 3.4
+    },
+    {
+     "rank": 7,
+     "ticker": "ORLA",
+     "px": 4.53,
+     "sel": 0.094203,
+     "prev_close": 4.02
+    },
+    {
+     "rank": 8,
+     "ticker": "BNOX",
+     "px": 2.71,
+     "sel": 0.092742,
+     "prev_close": 2.46
+    },
+    {
+     "rank": 9,
+     "ticker": "RZLT",
+     "px": 2.25,
+     "sel": 0.086957,
+     "prev_close": 2.2
+    },
+    {
+     "rank": 10,
+     "ticker": "COOK",
+     "px": 3.46,
+     "sel": 0.084639,
+     "prev_close": 2.98
+    }
+   ],
+   "sip_order_of_stored_top10": [
+    "BNOX",
+    "LE",
+    "BLFS",
+    "NUWE",
+    "KRBP",
+    "CODX",
+    "ORLA",
+    "KODK",
+    "RZLT",
+    "COOK"
+   ],
+   "rank_flip_positions_within_stored_top10": 7,
+   "outsiders_above_cutoff": [],
+   "px_delta_bps": {
+    "n": 10,
+    "p50": 37.39404,
+    "max": 701.107011
+   },
+   "note": "re-rank of the stored top-10 by SIP prices; outsiders = fetched symbols above the 10th stored member's SIP score (lower bound; unfetched names not re-ranked)"
+  },
+  {
+   "pop": "B",
+   "T": 615,
+   "stored_top10": [
+    {
+     "rank": 1,
+     "ticker": "BURU",
+     "px": 5.23,
+     "sel": 0.139434,
+     "prev_close": 4.5
+    },
+    {
+     "rank": 2,
+     "ticker": "BNOX",
+     "px": 2.79,
+     "sel": 0.125,
+     "prev_close": 2.46
+    },
+    {
+     "rank": 3,
+     "ticker": "DTC",
+     "px": 6.77,
+     "sel": 0.119008,
+     "prev_close": 5.95
+    },
+    {
+     "rank": 4,
+     "ticker": "BLFS",
+     "px": 21.11,
+     "sel": 0.115161,
+     "prev_close": 19.96
+    },
+    {
+     "rank": 5,
+     "ticker": "KODK",
+     "px": 3.71,
+     "sel": 0.107463,
+     "prev_close": 3.4
+    },
+    {
+     "rank": 6,
+     "ticker": "OPRT",
+     "px": 3.11,
+     "sel": 0.102837,
+     "prev_close": 2.83
+    },
+    {
+     "rank": 7,
+     "ticker": "LPSN",
+     "px": 4.51,
+     "sel": 0.102689,
+     "prev_close": 4.14
+    },
+    {
+     "rank": 8,
+     "ticker": "ORLA",
+     "px": 4.52,
+     "sel": 0.091787,
+     "prev_close": 4.02
+    },
+    {
+     "rank": 9,
+     "ticker": "LE",
+     "px": 8.58,
+     "sel": 0.091603,
+     "prev_close": 8.1
+    },
+    {
+     "rank": 10,
+     "ticker": "COOK",
+     "px": 3.47,
+     "sel": 0.087774,
+     "prev_close": 2.98
+    }
+   ],
+   "sip_order_of_stored_top10": [
+    "BNOX",
+    "BURU",
+    "DTC",
+    "BLFS",
+    "OPRT",
+    "LPSN",
+    "KODK",
+    "ORLA",
+    "COOK",
+    "LE"
+   ],
+   "rank_flip_positions_within_stored_top10": 7,
+   "outsiders_above_cutoff": [
+    {
+     "ticker": "KRBP",
+     "sel_sip": 0.108291
+    },
+    {
+     "ticker": "RZLT",
+     "sel_sip": 0.086957
+    },
+    {
+     "ticker": "CODX",
+     "sel_sip": 0.08
+    },
+    {
+     "ticker": "LIPO",
+     "sel_sip": 0.07906
+    }
+   ],
+   "px_delta_bps": {
+    "n": 10,
+    "p50": 5.40228,
+    "max": 151.515152
+   },
+   "note": "re-rank of the stored top-10 by SIP prices; outsiders = fetched symbols above the 10th stored member's SIP score (lower bound; unfetched names not re-ranked)"
+  },
+  {
+   "pop": "B",
+   "T": 630,
+   "stored_top10": [
+    {
+     "rank": 1,
+     "ticker": "KRBP",
+     "px": 4.76,
+     "sel": 0.19598,
+     "prev_close": 4.16
+    },
+    {
+     "rank": 2,
+     "ticker": "BNOX",
+     "px": 2.85,
+     "sel": 0.149194,
+     "prev_close": 2.46
+    },
+    {
+     "rank": 3,
+     "ticker": "COOK",
+     "px": 3.6,
+     "sel": 0.128527,
+     "prev_close": 2.98
+    },
+    {
+     "rank": 4,
+     "ticker": "LIPO",
+     "px": 2.64,
+     "sel": 0.128205,
+     "prev_close": 2.45
+    },
+    {
+     "rank": 5,
+     "ticker": "BLFS",
+     "px": 21.28,
+     "sel": 0.124142,
+     "prev_close": 19.96
+    },
+    {
+     "rank": 6,
+     "ticker": "OPRT",
+     "px": 3.15,
+     "sel": 0.117021,
+     "prev_close": 2.83
+    },
+    {
+     "rank": 7,
+     "ticker": "DTC",
+     "px": 6.65,
+     "sel": 0.099174,
+     "prev_close": 5.95
+    },
+    {
+     "rank": 8,
+     "ticker": "MLTX",
+     "px": 23.69,
+     "sel": 0.092208,
+     "prev_close": 22.46
+    },
+    {
+     "rank": 9,
+     "ticker": "KODK",
+     "px": 3.64,
+     "sel": 0.086567,
+     "prev_close": 3.4
+    },
+    {
+     "rank": 10,
+     "ticker": "ORLA",
+     "px": 4.49,
+     "sel": 0.084541,
+     "prev_close": 4.02
+    }
+   ],
+   "sip_order_of_stored_top10": [
+    "KRBP",
+    "COOK",
+    "LIPO",
+    "BLFS",
+    "OPRT",
+    "BNOX",
+    "DTC",
+    "KODK",
+    "ORLA",
+    "MLTX"
+   ],
+   "rank_flip_positions_within_stored_top10": 8,
+   "outsiders_above_cutoff": [
+    {
+     "ticker": "RZLT",
+     "sel_sip": 0.086957
+    },
+    {
+     "ticker": "CODX",
+     "sel_sip": 0.084
+    }
+   ],
+   "px_delta_bps": {
+    "n": 10,
+    "p50": 5.567929,
+    "max": 350.526316
+   },
+   "note": "re-rank of the stored top-10 by SIP prices; outsiders = fetched symbols above the 10th stored member's SIP score (lower bound; unfetched names not re-ranked)"
+  },
+  {
+   "pop": "B",
+   "T": 645,
+   "stored_top10": [
+    {
+     "rank": 1,
+     "ticker": "KRBP",
+     "px": 4.78,
+     "sel": 0.201005,
+     "prev_close": 4.16
+    },
+    {
+     "rank": 2,
+     "ticker": "OPRT",
+     "px": 3.29,
+     "sel": 0.166667,
+     "prev_close": 2.83
+    },
+    {
+     "rank": 3,
+     "ticker": "COOK",
+     "px": 3.61,
+     "sel": 0.131661,
+     "prev_close": 2.98
+    },
+    {
+     "rank": 4,
+     "ticker": "BLFS",
+     "px": 21.27,
+     "sel": 0.123613,
+     "prev_close": 19.96
+    },
+    {
+     "rank": 5,
+     "ticker": "LIPO",
+     "px": 2.58,
+     "sel": 0.102564,
+     "prev_close": 2.45
+    },
+    {
+     "rank": 6,
+     "ticker": "DTC",
+     "px": 6.64,
+     "sel": 0.097521,
+     "prev_close": 5.95
+    },
+    {
+     "rank": 7,
+     "ticker": "BNOX",
+     "px": 2.71,
+     "sel": 0.092742,
+     "prev_close": 2.46
+    },
+    {
+     "rank": 8,
+     "ticker": "ORLA",
+     "px": 4.5,
+     "sel": 0.086957,
+     "prev_close": 4.02
+    },
+    {
+     "rank": 9,
+     "ticker": "KODK",
+     "px": 3.63,
+     "sel": 0.083582,
+     "prev_close": 3.4
+    },
+    {
+     "rank": 10,
+     "ticker": "MLTX",
+     "px": 23.49,
+     "sel": 0.082988,
+     "prev_close": 22.46
+    }
+   ],
+   "sip_order_of_stored_top10": [
+    "KRBP",
+    "OPRT",
+    "COOK",
+    "BLFS",
+    "LIPO",
+    "DTC",
+    "BNOX",
+    "ORLA",
+    "KODK",
+    "MLTX"
+   ],
+   "rank_flip_positions_within_stored_top10": 0,
+   "outsiders_above_cutoff": [
+    {
+     "ticker": "LE",
+     "sel_sip": 0.088422
+    }
+   ],
+   "px_delta_bps": {
+    "n": 10,
+    "p50": 2.350729,
+    "max": 41.213389
+   },
+   "note": "re-rank of the stored top-10 by SIP prices; outsiders = fetched symbols above the 10th stored member's SIP score (lower bound; unfetched names not re-ranked)"
+  },
+  {
+   "pop": "B",
+   "T": 660,
+   "stored_top10": [
+    {
+     "rank": 1,
+     "ticker": "OPRT",
+     "px": 3.425,
+     "sel": 0.214539,
+     "prev_close": 2.83
+    },
+    {
+     "rank": 2,
+     "ticker": "KRBP",
+     "px": 4.61,
+     "sel": 0.158291,
+     "prev_close": 4.16
+    },
+    {
+     "rank": 3,
+     "ticker": "COOK",
+     "px": 3.635,
+     "sel": 0.139498,
+     "prev_close": 2.98
+    },
+    {
+     "rank": 4,
+     "ticker": "BLFS",
+     "px": 21.45,
+     "sel": 0.133122,
+     "prev_close": 19.96
+    },
+    {
+     "rank": 5,
+     "ticker": "DTC",
+     "px": 6.63,
+     "sel": 0.095868,
+     "prev_close": 5.95
+    },
+    {
+     "rank": 6,
+     "ticker": "XPON",
+     "px": 6.385,
+     "sel": 0.095197,
+     "prev_close": 5.78
+    },
+    {
+     "rank": 7,
+     "ticker": "BNOX",
+     "px": 2.71,
+     "sel": 0.092742,
+     "prev_close": 2.46
+    },
+    {
+     "rank": 8,
+     "ticker": "LE",
+     "px": 8.57,
+     "sel": 0.090331,
+     "prev_close": 8.1
+    },
+    {
+     "rank": 9,
+     "ticker": "ORLA",
+     "px": 4.48,
+     "sel": 0.082126,
+     "prev_close": 4.02
+    },
+    {
+     "rank": 10,
+     "ticker": "GURE",
+     "px": 2.95,
+     "sel": 0.080586,
+     "prev_close": 2.71
+    }
+   ],
+   "sip_order_of_stored_top10": [
+    "OPRT",
+    "KRBP",
+    "COOK",
+    "BLFS",
+    "DTC",
+    "XPON",
+    "BNOX",
+    "LE",
+    "ORLA",
+    "GURE"
+   ],
+   "rank_flip_positions_within_stored_top10": 0,
+   "outsiders_above_cutoff": [
+    {
+     "ticker": "MHUA",
+     "sel_sip": 0.080904
+    },
+    {
+     "ticker": "JMAC",
+     "sel_sip": 0.077561
+    },
+    {
+     "ticker": "MLTX",
+     "sel_sip": 0.070539
+    },
+    {
+     "ticker": "KODK",
+     "sel_sip": 0.070149
+    },
+    {
+     "ticker": "DFLI",
+     "sel_sip": 0.0681
+    },
+    {
+     "ticker": "CODX",
+     "sel_sip": 0.064
+    },
+    {
+     "ticker": "AZRE",
+     "sel_sip": 0.059406
+    },
+    {
+     "ticker": "DC",
+     "sel_sip": 0.054839
+    },
+    {
+     "ticker": "OGEN",
+     "sel_sip": 0.051829
+    },
+    {
+     "ticker": "LPSN",
+     "sel_sip": 0.043716
+    }
+   ],
+   "px_delta_bps": {
+    "n": 10,
+    "p50": 0.0,
+    "max": 763.728814
+   },
+   "note": "re-rank of the stored top-10 by SIP prices; outsiders = fetched symbols above the 10th stored member's SIP score (lower bound; unfetched names not re-ranked)"
+  },
+  {
+   "pop": "B",
+   "T": 690,
+   "stored_top10": [
+    {
+     "rank": 1,
+     "ticker": "OPRT",
+     "px": 3.32,
+     "sel": 0.177305,
+     "prev_close": 2.83
+    },
+    {
+     "rank": 2,
+     "ticker": "KRBP",
+     "px": 4.66,
+     "sel": 0.170854,
+     "prev_close": 4.16
+    },
+    {
+     "rank": 3,
+     "ticker": "MHUA",
+     "px": 15.75,
+     "sel": 0.147959,
+     "prev_close": 13.21
+    },
+    {
+     "rank": 4,
+     "ticker": "COOK",
+     "px": 3.61,
+     "sel": 0.131661,
+     "prev_close": 2.98
+    },
+    {
+     "rank": 5,
+     "ticker": "BLFS",
+     "px": 21.03,
+     "sel": 0.110935,
+     "prev_close": 19.96
+    },
+    {
+     "rank": 6,
+     "ticker": "LE",
+     "px": 8.64,
+     "sel": 0.099237,
+     "prev_close": 8.1
+    },
+    {
+     "rank": 7,
+     "ticker": "ORLA",
+     "px": 4.53,
+     "sel": 0.094203,
+     "prev_close": 4.02
+    },
+    {
+     "rank": 8,
+     "ticker": "XPON",
+     "px": 6.345,
+     "sel": 0.088336,
+     "prev_close": 5.78
+    },
+    {
+     "rank": 9,
+     "ticker": "MLTX",
+     "px": 23.6,
+     "sel": 0.088059,
+     "prev_close": 22.46
+    },
+    {
+     "rank": 10,
+     "ticker": "AZRE",
+     "px": 2.19,
+     "sel": 0.084158,
+     "prev_close": 2.0
+    }
+   ],
+   "sip_order_of_stored_top10": [
+    "OPRT",
+    "KRBP",
+    "MHUA",
+    "COOK",
+    "BLFS",
+    "LE",
+    "ORLA",
+    "XPON",
+    "MLTX",
+    "AZRE"
+   ],
+   "rank_flip_positions_within_stored_top10": 0,
+   "outsiders_above_cutoff": [
+    {
+     "ticker": "JMAC",
+     "sel_sip": 0.090244
+    }
+   ],
+   "px_delta_bps": {
+    "n": 10,
+    "p50": 4.805812,
+    "max": 64.377682
+   },
+   "note": "re-rank of the stored top-10 by SIP prices; outsiders = fetched symbols above the 10th stored member's SIP score (lower bound; unfetched names not re-ranked)"
+  },
+  {
+   "pop": "B",
+   "T": 720,
+   "stored_top10": [
+    {
+     "rank": 1,
+     "ticker": "OPRT",
+     "px": 3.37,
+     "sel": 0.195035,
+     "prev_close": 2.83
+    },
+    {
+     "rank": 2,
+     "ticker": "KRBP",
+     "px": 4.58,
+     "sel": 0.150754,
+     "prev_close": 4.16
+    },
+    {
+     "rank": 3,
+     "ticker": "COOK",
+     "px": 3.63,
+     "sel": 0.137931,
+     "prev_close": 2.98
+    },
+    {
+     "rank": 4,
+     "ticker": "MHUA",
+     "px": 15.505,
+     "sel": 0.130102,
+     "prev_close": 13.21
+    },
+    {
+     "rank": 5,
+     "ticker": "BLFS",
+     "px": 21.33,
+     "sel": 0.126783,
+     "prev_close": 19.96
+    },
+    {
+     "rank": 6,
+     "ticker": "AZRE",
+     "px": 2.26,
+     "sel": 0.118812,
+     "prev_close": 2.0
+    },
+    {
+     "rank": 7,
+     "ticker": "LE",
+     "px": 8.72,
+     "sel": 0.109415,
+     "prev_close": 8.1
+    },
+    {
+     "rank": 8,
+     "ticker": "ORLA",
+     "px": 4.59,
+     "sel": 0.108696,
+     "prev_close": 4.02
+    },
+    {
+     "rank": 9,
+     "ticker": "BNOX",
+     "px": 2.7,
+     "sel": 0.08871,
+     "prev_close": 2.46
+    },
+    {
+     "rank": 10,
+     "ticker": "DC",
+     "px": 3.365,
+     "sel": 0.085484,
+     "prev_close": 3.1
+    }
+   ],
+   "sip_order_of_stored_top10": [
+    "OPRT",
+    "KRBP",
+    "MHUA",
+    "COOK",
+    "BLFS",
+    "AZRE",
+    "LE",
+    "ORLA",
+    "DC",
+    "BNOX"
+   ],
+   "rank_flip_positions_within_stored_top10": 4,
+   "outsiders_above_cutoff": [
+    {
+     "ticker": "JMAC",
+     "sel_sip": 0.293659
+    },
+    {
+     "ticker": "RZLT",
+     "sel_sip": 0.082126
+    },
+    {
+     "ticker": "KODK",
+     "sel_sip": 0.077612
+    },
+    {
+     "ticker": "MLTX",
+     "sel_sip": 0.077455
+    },
+    {
+     "ticker": "DTC",
+     "sel_sip": 0.07438
+    },
+    {
+     "ticker": "STBX",
+     "sel_sip": 0.0725
+    },
+    {
+     "ticker": "XPON",
+     "sel_sip": 0.071184
+    },
+    {
+     "ticker": "LPSN",
+     "sel_sip": 0.066015
+    },
+    {
+     "ticker": "DFLI",
+     "sel_sip": 0.062724
+    },
+    {
+     "ticker": "CODX",
+     "sel_sip": 0.06112
+    }
+   ],
+   "px_delta_bps": {
+    "n": 10,
+    "p50": 28.083535,
+    "max": 333.333333
+   },
+   "note": "re-rank of the stored top-10 by SIP prices; outsiders = fetched symbols above the 10th stored member's SIP score (lower bound; unfetched names not re-ranked)"
+  }
+ ],
+ "path": [
+  {
+   "pop": "A_open",
+   "T": 570,
+   "ticker": "PXMD",
+   "fill_stored": 2.62,
+   "fill_sip": 2.62,
+   "fill_delta_bps": 0.0,
+   "mfe_stored": 0.087786,
+   "mfe_sip": 0.087786,
+   "mae_stored": -0.080153,
+   "mae_sip": -0.080153,
+   "i_mfe_stored": 43,
+   "i_mfe_sip": 43,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "A_open",
+   "T": 570,
+   "ticker": "HUBC",
+   "fill_stored": 2.81,
+   "fill_sip": 2.81,
+   "fill_delta_bps": 0.0,
+   "mfe_stored": 0.103203,
+   "mfe_sip": 0.103203,
+   "mae_stored": -0.113879,
+   "mae_sip": -0.117438,
+   "i_mfe_stored": 77,
+   "i_mfe_sip": 77,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "A_open",
+   "T": 570,
+   "ticker": "MRDB",
+   "fill_stored": 2.19,
+   "fill_sip": 2.32,
+   "fill_delta_bps": 593.607306,
+   "mfe_stored": 0.045662,
+   "mfe_sip": 0.0,
+   "mae_stored": -0.086758,
+   "mae_sip": -0.224138,
+   "i_mfe_stored": 1,
+   "i_mfe_sip": 0,
+   "order_flips_nonamb": [
+    "5/10:neither->dn_only",
+    "5/15:neither->dn_only",
+    "10/10:neither->dn_only",
+    "10/15:neither->dn_only",
+    "20/10:neither->dn_only",
+    "20/15:neither->dn_only",
+    "30/10:neither->dn_only",
+    "30/15:neither->dn_only"
+   ],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 575,
+   "ticker": "MNTK",
+   "fill_stored": 8.52,
+   "fill_sip": 8.52,
+   "fill_delta_bps": 0.0,
+   "mfe_stored": 0.036385,
+   "mfe_sip": 0.036385,
+   "mae_stored": -0.117371,
+   "mae_sip": -0.118533,
+   "i_mfe_stored": 3,
+   "i_mfe_sip": 3,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 575,
+   "ticker": "DTC",
+   "fill_stored": 6.49,
+   "fill_sip": 6.49,
+   "fill_delta_bps": 0.0,
+   "mfe_stored": 0.058552,
+   "mfe_sip": 0.058552,
+   "mae_stored": -0.03698,
+   "mae_sip": -0.03698,
+   "i_mfe_stored": 35,
+   "i_mfe_sip": 41,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 580,
+   "ticker": "MNTK",
+   "fill_stored": 8.57,
+   "fill_sip": 8.57,
+   "fill_delta_bps": 0.0,
+   "mfe_stored": 0.0,
+   "mfe_sip": 0.00175,
+   "mae_stored": -0.12252,
+   "mae_sip": -0.123676,
+   "i_mfe_stored": 0,
+   "i_mfe_sip": 0,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 580,
+   "ticker": "COOK",
+   "fill_stored": 3.55,
+   "fill_sip": 3.55,
+   "fill_delta_bps": 0.0,
+   "mfe_stored": 0.076056,
+   "mfe_sip": 0.078873,
+   "mae_stored": -0.042254,
+   "mae_sip": -0.043662,
+   "i_mfe_stored": 13,
+   "i_mfe_sip": 13,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 585,
+   "ticker": "COOK",
+   "fill_stored": 3.7,
+   "fill_sip": 3.6985,
+   "fill_delta_bps": -4.054054,
+   "mfe_stored": 0.032432,
+   "mfe_sip": 0.035555,
+   "mae_stored": -0.081081,
+   "mae_sip": -0.08206,
+   "i_mfe_stored": 8,
+   "i_mfe_sip": 8,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 585,
+   "ticker": "MNTK",
+   "fill_stored": 8.18,
+   "fill_sip": 8.2,
+   "fill_delta_bps": 24.449878,
+   "mfe_stored": 0.030562,
+   "mfe_sip": 0.028049,
+   "mae_stored": -0.080685,
+   "mae_sip": -0.084134,
+   "i_mfe_stored": 180,
+   "i_mfe_sip": 202,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 590,
+   "ticker": "COOK",
+   "fill_stored": 3.68,
+   "fill_sip": 3.68,
+   "fill_delta_bps": 0.0,
+   "mfe_stored": 0.038043,
+   "mfe_sip": 0.040761,
+   "mae_stored": -0.076087,
+   "mae_sip": -0.077446,
+   "i_mfe_stored": 3,
+   "i_mfe_sip": 3,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 590,
+   "ticker": "CODX",
+   "fill_stored": 2.76,
+   "fill_sip": 2.7676,
+   "fill_delta_bps": 27.536232,
+   "mfe_stored": 0.0,
+   "mfe_sip": 0.000867,
+   "mae_stored": -0.09058,
+   "mae_sip": -0.103917,
+   "i_mfe_stored": 0,
+   "i_mfe_sip": 1,
+   "order_flips_nonamb": [
+    "5/10:neither->dn_only",
+    "10/10:neither->dn_only",
+    "20/10:neither->dn_only",
+    "30/10:neither->dn_only",
+    "50/10:neither->dn_only",
+    "100/10:neither->dn_only"
+   ],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 595,
+   "ticker": "NUWE",
+   "fill_stored": 5.2,
+   "fill_sip": 5.2,
+   "fill_delta_bps": 0.0,
+   "mfe_stored": 0.038462,
+   "mfe_sip": 0.055596,
+   "mae_stored": -0.130769,
+   "mae_sip": -0.130769,
+   "i_mfe_stored": 0,
+   "i_mfe_sip": 0,
+   "order_flips_nonamb": [
+    "5/3:dn_only->amb",
+    "5/5:dn_only->up",
+    "5/8:dn_only->up",
+    "5/10:dn_only->up",
+    "5/15:neither->up_only"
+   ],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 595,
+   "ticker": "COOK",
+   "fill_stored": 3.75,
+   "fill_sip": 3.75,
+   "fill_delta_bps": 0.0,
+   "mfe_stored": 0.018667,
+   "mfe_sip": 0.021307,
+   "mae_stored": -0.093333,
+   "mae_sip": -0.094667,
+   "i_mfe_stored": 66,
+   "i_mfe_sip": 194,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 595,
+   "ticker": "YTEN",
+   "fill_stored": 2.62,
+   "fill_sip": 2.62,
+   "fill_delta_bps": 0.0,
+   "mfe_stored": 0.015267,
+   "mfe_sip": 0.034351,
+   "mae_stored": -0.022901,
+   "mae_sip": -0.022901,
+   "i_mfe_stored": 8,
+   "i_mfe_sip": 0,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 600,
+   "ticker": "NUWE",
+   "fill_stored": 5.23,
+   "fill_sip": 5.26,
+   "fill_delta_bps": 57.361377,
+   "mfe_stored": 0.022945,
+   "mfe_sip": 0.022814,
+   "mae_stored": -0.135755,
+   "mae_sip": -0.140684,
+   "i_mfe_stored": 0,
+   "i_mfe_sip": 0,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 600,
+   "ticker": "BLFS",
+   "fill_stored": 21.46,
+   "fill_sip": 21.46,
+   "fill_delta_bps": 0.0,
+   "mfe_stored": 0.008854,
+   "mfe_sip": 0.008854,
+   "mae_stored": -0.037745,
+   "mae_sip": -0.037745,
+   "i_mfe_stored": 44,
+   "i_mfe_sip": 51,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 600,
+   "ticker": "LE",
+   "fill_stored": 8.9,
+   "fill_sip": 8.9,
+   "fill_delta_bps": 0.0,
+   "mfe_stored": 0.0,
+   "mfe_sip": 0.008989,
+   "mae_stored": -0.073034,
+   "mae_sip": -0.073034,
+   "i_mfe_stored": 0,
+   "i_mfe_sip": 0,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 615,
+   "ticker": "BURU",
+   "fill_stored": 5.23,
+   "fill_sip": 5.23,
+   "fill_delta_bps": 0.0,
+   "mfe_stored": 0.116635,
+   "mfe_sip": 0.122352,
+   "mae_stored": -0.216061,
+   "mae_sip": -0.216061,
+   "i_mfe_stored": 3,
+   "i_mfe_sip": 3,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 615,
+   "ticker": "BNOX",
+   "fill_stored": 2.8,
+   "fill_sip": 2.62,
+   "fill_delta_bps": -642.857143,
+   "mfe_stored": 0.053571,
+   "mfe_sip": 0.125954,
+   "mae_stored": -0.135714,
+   "mae_sip": -0.080153,
+   "i_mfe_stored": 0,
+   "i_mfe_sip": 0,
+   "order_flips_nonamb": [
+    "5/10:up->up_only",
+    "10/3:dn_only->up",
+    "10/5:dn_only->up",
+    "10/8:dn_only->up",
+    "10/10:dn_only->up_only",
+    "10/15:neither->up_only"
+   ],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 615,
+   "ticker": "DTC",
+   "fill_stored": 6.77,
+   "fill_sip": 6.7663,
+   "fill_delta_bps": -5.465288,
+   "mfe_stored": 0.014771,
+   "mfe_sip": 0.015326,
+   "mae_stored": -0.076809,
+   "mae_sip": -0.076305,
+   "i_mfe_stored": 1,
+   "i_mfe_sip": 1,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 630,
+   "ticker": "KRBP",
+   "fill_stored": 4.8,
+   "fill_sip": 4.7868,
+   "fill_delta_bps": -27.5,
+   "mfe_stored": 0.072917,
+   "mfe_sip": 0.077964,
+   "mae_stored": -0.114583,
+   "mae_sip": -0.112142,
+   "i_mfe_stored": 13,
+   "i_mfe_sip": 19,
+   "order_flips_nonamb": [
+    "5/8:up->dn"
+   ],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 630,
+   "ticker": "COOK",
+   "fill_stored": 3.61,
+   "fill_sip": 3.605,
+   "fill_delta_bps": -13.850416,
+   "mfe_stored": 0.058172,
+   "mfe_sip": 0.062386,
+   "mae_stored": -0.038781,
+   "mae_sip": -0.040222,
+   "i_mfe_stored": 33,
+   "i_mfe_sip": 159,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 645,
+   "ticker": "KRBP",
+   "fill_stored": 4.77,
+   "fill_sip": 4.785,
+   "fill_delta_bps": 31.446541,
+   "mfe_stored": 0.079665,
+   "mfe_sip": 0.07837,
+   "mae_stored": -0.109015,
+   "mae_sip": -0.111808,
+   "i_mfe_stored": 2,
+   "i_mfe_sip": 4,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 645,
+   "ticker": "OPRT",
+   "fill_stored": 3.29,
+   "fill_sip": 3.29,
+   "fill_delta_bps": 0.0,
+   "mfe_stored": 0.110942,
+   "mfe_sip": 0.112462,
+   "mae_stored": -0.00304,
+   "mae_sip": -0.009119,
+   "i_mfe_stored": 214,
+   "i_mfe_sip": 236,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 645,
+   "ticker": "COOK",
+   "fill_stored": 3.61,
+   "fill_sip": 3.61,
+   "fill_delta_bps": 0.0,
+   "mfe_stored": 0.058172,
+   "mfe_sip": 0.060914,
+   "mae_stored": -0.038781,
+   "mae_sip": -0.041551,
+   "i_mfe_stored": 20,
+   "i_mfe_sip": 144,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 660,
+   "ticker": "OPRT",
+   "fill_stored": 3.43,
+   "fill_sip": 3.43,
+   "fill_delta_bps": 0.0,
+   "mfe_stored": 0.065598,
+   "mfe_sip": 0.067055,
+   "mae_stored": -0.043732,
+   "mae_sip": -0.049563,
+   "i_mfe_stored": 199,
+   "i_mfe_sip": 221,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 660,
+   "ticker": "COOK",
+   "fill_stored": 3.635,
+   "fill_sip": 3.6485,
+   "fill_delta_bps": 37.138927,
+   "mfe_stored": 0.050894,
+   "mfe_sip": 0.049719,
+   "mae_stored": -0.034388,
+   "mae_sip": -0.037961,
+   "i_mfe_stored": 6,
+   "i_mfe_sip": 129,
+   "order_flips_nonamb": [
+    "5/3:up->dn_only"
+   ],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 690,
+   "ticker": "OPRT",
+   "fill_stored": 3.325,
+   "fill_sip": 3.325,
+   "fill_delta_bps": 0.0,
+   "mfe_stored": 0.099248,
+   "mfe_sip": 0.100752,
+   "mae_stored": -0.010526,
+   "mae_sip": -0.015008,
+   "i_mfe_stored": 171,
+   "i_mfe_sip": 191,
+   "order_flips_nonamb": [
+    "10/3:neither->up_only",
+    "10/5:neither->up_only",
+    "10/8:neither->up_only",
+    "10/10:neither->up_only",
+    "10/15:neither->up_only"
+   ],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 690,
+   "ticker": "KRBP",
+   "fill_stored": 4.68,
+   "fill_sip": 4.6774,
+   "fill_delta_bps": -5.555556,
+   "mfe_stored": 0.004274,
+   "mfe_sip": 0.007611,
+   "mae_stored": -0.09188,
+   "mae_sip": -0.091376,
+   "i_mfe_stored": 2,
+   "i_mfe_sip": 0,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 720,
+   "ticker": "OPRT",
+   "fill_stored": 3.375,
+   "fill_sip": 3.375,
+   "fill_delta_bps": 0.0,
+   "mfe_stored": 0.082963,
+   "mfe_sip": 0.084444,
+   "mae_stored": -0.025185,
+   "mae_sip": -0.0296,
+   "i_mfe_stored": 151,
+   "i_mfe_sip": 165,
+   "order_flips_nonamb": [],
+   "amb_resolved": {}
+  },
+  {
+   "pop": "B",
+   "T": 720,
+   "ticker": "COOK",
+   "fill_stored": 3.64,
+   "fill_sip": 3.64,
+   "fill_delta_bps": 0.0,
+   "mfe_stored": 0.049451,
+   "mfe_sip": 0.05217,
+   "mae_stored": -0.035714,
+   "mae_sip": -0.035714,
+   "i_mfe_stored": 46,
+   "i_mfe_sip": 70,
+   "order_flips_nonamb": [
+    "5/3:dn_only->up",
+    "5/5:neither->up_only",
+    "5/8:neither->up_only",
+    "5/10:neither->up_only",
+    "5/15:neither->up_only"
+   ],
+   "amb_resolved": {}
+  }
+ ],
+ "exec": [
+  {
+   "pop": "A_open",
+   "T": 570,
+   "ticker": "PXMD",
+   "quote_at_fill": {
+    "bid": 2.62,
+    "ask": 2.63,
+    "bid_sz": 1.0,
+    "ask_sz": 2.0
+   },
+   "spread_bps": 38.095238,
+   "buy_cross_bps": 38.167939
+  },
+  {
+   "pop": "A_open",
+   "T": 570,
+   "ticker": "HUBC",
+   "quote_at_fill": {
+    "bid": 2.81,
+    "ask": 2.82,
+    "bid_sz": 19.0,
+    "ask_sz": 3.0
+   },
+   "spread_bps": 35.523979,
+   "buy_cross_bps": 35.587189
+  },
+  {
+   "pop": "A_open",
+   "T": 570,
+   "ticker": "MRDB",
+   "quote_at_fill": {
+    "bid": 2.16,
+    "ask": 2.48,
+    "bid_sz": 6.0,
+    "ask_sz": 50.0
+   },
+   "spread_bps": 1379.310345,
+   "buy_cross_bps": 1324.200913
+  },
+  {
+   "pop": "B",
+   "T": 575,
+   "ticker": "MNTK",
+   "quote_at_fill": {
+    "bid": 8.21,
+    "ask": 8.58,
+    "bid_sz": 1.0,
+    "ask_sz": 1.0
+   },
+   "spread_bps": 440.738535,
+   "buy_cross_bps": 70.422535
+  },
+  {
+   "pop": "B",
+   "T": 575,
+   "ticker": "DTC",
+   "quote_at_fill": {
+    "bid": 6.49,
+    "ask": 6.52,
+    "bid_sz": 1.0,
+    "ask_sz": 3.0
+   },
+   "spread_bps": 46.11837,
+   "buy_cross_bps": 46.224961
+  },
+  {
+   "pop": "B",
+   "T": 580,
+   "ticker": "MNTK",
+   "quote_at_fill": {
+    "bid": 8.51,
+    "ask": 8.6,
+    "bid_sz": 6.0,
+    "ask_sz": 1.0
+   },
+   "spread_bps": 105.201636,
+   "buy_cross_bps": 35.005834
+  },
+  {
+   "pop": "B",
+   "T": 580,
+   "ticker": "COOK",
+   "quote_at_fill": {
+    "bid": 3.5,
+    "ask": 3.56,
+    "bid_sz": 6.0,
+    "ask_sz": 10.0
+   },
+   "spread_bps": 169.971671,
+   "buy_cross_bps": 28.169014
+  },
+  {
+   "pop": "B",
+   "T": 585,
+   "ticker": "COOK",
+   "quote_at_fill": {
+    "bid": 3.69,
+    "ask": 3.7,
+    "bid_sz": 1.0,
+    "ask_sz": 3.0
+   },
+   "spread_bps": 27.063599,
+   "buy_cross_bps": 0.0
+  },
+  {
+   "pop": "B",
+   "T": 585,
+   "ticker": "MNTK",
+   "quote_at_fill": {
+    "bid": 8.18,
+    "ask": 8.22,
+    "bid_sz": 1.0,
+    "ask_sz": 7.0
+   },
+   "spread_bps": 48.780488,
+   "buy_cross_bps": 48.899756
+  },
+  {
+   "pop": "B",
+   "T": 590,
+   "ticker": "COOK",
+   "quote_at_fill": {
+    "bid": 3.68,
+    "ask": 3.72,
+    "bid_sz": 1.0,
+    "ask_sz": 48.0
+   },
+   "spread_bps": 108.108108,
+   "buy_cross_bps": 108.695652
+  },
+  {
+   "pop": "B",
+   "T": 590,
+   "ticker": "CODX",
+   "quote_at_fill": {
+    "bid": 2.75,
+    "ask": 2.78,
+    "bid_sz": 1.0,
+    "ask_sz": 7.0
+   },
+   "spread_bps": 108.499096,
+   "buy_cross_bps": 72.463768
+  },
+  {
+   "pop": "B",
+   "T": 595,
+   "ticker": "NUWE",
+   "quote_at_fill": {
+    "bid": 4.44,
+    "ask": 5.92,
+    "bid_sz": 1.0,
+    "ask_sz": 3.0
+   },
+   "spread_bps": 2857.142857,
+   "buy_cross_bps": 1384.615385
+  },
+  {
+   "pop": "B",
+   "T": 595,
+   "ticker": "COOK",
+   "quote_at_fill": {
+    "bid": 3.73,
+    "ask": 3.75,
+    "bid_sz": 2.0,
+    "ask_sz": 6.0
+   },
+   "spread_bps": 53.475936,
+   "buy_cross_bps": 0.0
+  },
+  {
+   "pop": "B",
+   "T": 595,
+   "ticker": "YTEN",
+   "quote_at_fill": {
+    "bid": 2.53,
+    "ask": 2.62,
+    "bid_sz": 9.0,
+    "ask_sz": 1.0
+   },
+   "spread_bps": 349.514563,
+   "buy_cross_bps": 0.0
+  },
+  {
+   "pop": "B",
+   "T": 600,
+   "ticker": "NUWE",
+   "quote_at_fill": {
+    "bid": 5.25,
+    "ask": 5.44,
+    "bid_sz": 2.0,
+    "ask_sz": 12.0
+   },
+   "spread_bps": 355.472404,
+   "buy_cross_bps": 401.529637
+  },
+  {
+   "pop": "B",
+   "T": 600,
+   "ticker": "BLFS",
+   "quote_at_fill": {
+    "bid": 21.02,
+    "ask": 21.5,
+    "bid_sz": 3.0,
+    "ask_sz": 1.0
+   },
+   "spread_bps": 225.776105,
+   "buy_cross_bps": 18.639329
+  },
+  {
+   "pop": "B",
+   "T": 600,
+   "ticker": "LE",
+   "quote_at_fill": {
+    "bid": 8.75,
+    "ask": 8.91,
+    "bid_sz": 2.0,
+    "ask_sz": 2.0
+   },
+   "spread_bps": 181.200453,
+   "buy_cross_bps": 11.235955
+  },
+  {
+   "pop": "B",
+   "T": 615,
+   "ticker": "BURU",
+   "quote_at_fill": {
+    "bid": 5.14,
+    "ask": 5.23,
+    "bid_sz": 1.0,
+    "ask_sz": 9.0
+   },
+   "spread_bps": 173.577628,
+   "buy_cross_bps": 0.0
+  },
+  {
+   "pop": "B",
+   "T": 615,
+   "ticker": "BNOX",
+   "quote_at_fill": {
+    "bid": 2.62,
+    "ask": 2.8,
+    "bid_sz": 3.0,
+    "ask_sz": 1.0
+   },
+   "spread_bps": 664.206642,
+   "buy_cross_bps": 0.0
+  },
+  {
+   "pop": "B",
+   "T": 615,
+   "ticker": "DTC",
+   "quote_at_fill": {
+    "bid": 6.74,
+    "ask": 6.8,
+    "bid_sz": 1.0,
+    "ask_sz": 10.0
+   },
+   "spread_bps": 88.626292,
+   "buy_cross_bps": 44.313146
+  },
+  {
+   "pop": "B",
+   "T": 630,
+   "ticker": "KRBP",
+   "quote_at_fill": {
+    "bid": 4.55,
+    "ask": 4.75,
+    "bid_sz": 2.0,
+    "ask_sz": 1.0
+   },
+   "spread_bps": 430.107527,
+   "buy_cross_bps": -104.166667
+  },
+  {
+   "pop": "B",
+   "T": 630,
+   "ticker": "COOK",
+   "quote_at_fill": {
+    "bid": 3.59,
+    "ask": 3.62,
+    "bid_sz": 2.0,
+    "ask_sz": 4.0
+   },
+   "spread_bps": 83.217753,
+   "buy_cross_bps": 27.700831
+  },
+  {
+   "pop": "B",
+   "T": 645,
+   "ticker": "KRBP",
+   "quote_at_fill": {
+    "bid": 4.77,
+    "ask": 4.8,
+    "bid_sz": 6.0,
+    "ask_sz": 1.0
+   },
+   "spread_bps": 62.695925,
+   "buy_cross_bps": 62.893082
+  },
+  {
+   "pop": "B",
+   "T": 645,
+   "ticker": "OPRT",
+   "quote_at_fill": {
+    "bid": 3.28,
+    "ask": 3.29,
+    "bid_sz": 3.0,
+    "ask_sz": 3.0
+   },
+   "spread_bps": 30.4414,
+   "buy_cross_bps": 0.0
+  },
+  {
+   "pop": "B",
+   "T": 645,
+   "ticker": "COOK",
+   "quote_at_fill": {
+    "bid": 3.61,
+    "ask": 3.63,
+    "bid_sz": 1.0,
+    "ask_sz": 4.0
+   },
+   "spread_bps": 55.248619,
+   "buy_cross_bps": 55.401662
+  },
+  {
+   "pop": "B",
+   "T": 660,
+   "ticker": "OPRT",
+   "quote_at_fill": {
+    "bid": 3.41,
+    "ask": 3.43,
+    "bid_sz": 1.0,
+    "ask_sz": 5.0
+   },
+   "spread_bps": 58.479532,
+   "buy_cross_bps": 0.0
+  },
+  {
+   "pop": "B",
+   "T": 660,
+   "ticker": "COOK",
+   "quote_at_fill": {
+    "bid": 3.62,
+    "ask": 3.65,
+    "bid_sz": 2.0,
+    "ask_sz": 2.0
+   },
+   "spread_bps": 82.530949,
+   "buy_cross_bps": 41.265475
+  },
+  {
+   "pop": "B",
+   "T": 690,
+   "ticker": "OPRT",
+   "quote_at_fill": {
+    "bid": 3.32,
+    "ask": 3.33,
+    "bid_sz": 1.0,
+    "ask_sz": 3.0
+   },
+   "spread_bps": 30.075188,
+   "buy_cross_bps": 15.037594
+  },
+  {
+   "pop": "B",
+   "T": 690,
+   "ticker": "KRBP",
+   "quote_at_fill": {
+    "bid": 4.66,
+    "ask": 4.72,
+    "bid_sz": 1.0,
+    "ask_sz": 4.0
+   },
+   "spread_bps": 127.93177,
+   "buy_cross_bps": 85.470085
+  },
+  {
+   "pop": "B",
+   "T": 720,
+   "ticker": "OPRT",
+   "quote_at_fill": {
+    "bid": 3.37,
+    "ask": 3.38,
+    "bid_sz": 3.0,
+    "ask_sz": 1.0
+   },
+   "spread_bps": 29.62963,
+   "buy_cross_bps": 14.814815
+  },
+  {
+   "pop": "B",
+   "T": 720,
+   "ticker": "COOK",
+   "quote_at_fill": {
+    "bid": 3.62,
+    "ask": 3.64,
+    "bid_sz": 2.0,
+    "ask_sz": 1.0
+   },
+   "spread_bps": 55.096419,
+   "buy_cross_bps": 0.0
+  }
+ ],
+ "tail": {
+  "symbols": {
+   "ALLG": {
+    "sip_trade_max_raw": 3.53,
+    "sip_trade_max_rth_priceupd": 3.53,
+    "sip_bar_max_rth": 3.53
+   },
+   "ALLT": {
+    "sip_trade_max_raw": 3.0285,
+    "sip_trade_max_rth_priceupd": 3.0285,
+    "sip_bar_max_rth": 2.895
+   },
+   "AZRE": {
+    "sip_trade_max_raw": 2.28,
+    "sip_trade_max_rth_priceupd": 2.28,
+    "sip_bar_max_rth": 2.28
+   },
+   "BFC": {
+    "sip_trade_max_raw": 77.64,
+    "sip_trade_max_rth_priceupd": 77.64,
+    "sip_bar_max_rth": 77.64
+   },
+   "BLFS": {
+    "sip_trade_max_raw": 21.65,
+    "sip_trade_max_rth_priceupd": 21.65,
+    "sip_bar_max_rth": 21.65
+   },
+   "BMEA": {
+    "sip_trade_max_raw": 16.24,
+    "sip_trade_max_rth_priceupd": 16.24,
+    "sip_bar_max_rth": 16.23
+   },
+   "BNOX": {
+    "sip_trade_max_raw": 2.95,
+    "sip_trade_max_rth_priceupd": 2.95,
+    "sip_bar_max_rth": 2.95
+   },
+   "BURU": {
+    "sip_trade_max_raw": 5.8699,
+    "sip_trade_max_rth_priceupd": 5.8699,
+    "sip_bar_max_rth": 5.8699
+   },
+   "CODX": {
+    "sip_trade_max_raw": 2.7799,
+    "sip_trade_max_rth_priceupd": 2.7799,
+    "sip_bar_max_rth": 2.77
+   },
+   "COOK": {
+    "sip_trade_max_raw": 3.83,
+    "sip_trade_max_rth_priceupd": 3.83,
+    "sip_bar_max_rth": 3.83
+   },
+   "CRBP": {
+    "sip_trade_max_raw": 7.65,
+    "sip_trade_max_rth_priceupd": 7.65,
+    "sip_bar_max_rth": 7.65
+   },
+   "DC": {
+    "sip_trade_max_raw": 3.53,
+    "sip_trade_max_rth_priceupd": 3.53,
+    "sip_bar_max_rth": 3.52
+   },
+   "DFLI": {
+    "sip_trade_max_raw": 3.68,
+    "sip_trade_max_rth_priceupd": 3.68,
+    "sip_bar_max_rth": 3.68
+   },
+   "DRMA": {
+    "sip_trade_max_raw": 2.62,
+    "sip_trade_max_rth_priceupd": 2.62,
+    "sip_bar_max_rth": 2.62
+   },
+   "DTC": {
+    "sip_trade_max_raw": 6.87,
+    "sip_trade_max_rth_priceupd": 6.87,
+    "sip_bar_max_rth": 6.87
+   },
+   "EVCM": {
+    "sip_trade_max_raw": 11.3688,
+    "sip_trade_max_rth_priceupd": 11.3688,
+    "sip_bar_max_rth": 11.31
+   },
+   "FDX": {
+    "sip_trade_max_raw": 227.5,
+    "sip_trade_max_rth_priceupd": 227.5,
+    "sip_bar_max_rth": 226.05
+   },
+   "GEOS": {
+    "sip_trade_max_raw": 6.31,
+    "sip_trade_max_rth_priceupd": 6.31,
+    "sip_bar_max_rth": 6.31
+   },
+   "GRIN": {
+    "sip_trade_max_raw": 12.76,
+    "sip_trade_max_rth_priceupd": 12.76,
+    "sip_bar_max_rth": 12.76
+   },
+   "GURE": {
+    "sip_trade_max_raw": 2.95,
+    "sip_trade_max_rth_priceupd": 2.95,
+    "sip_bar_max_rth": 2.95
+   },
+   "HHRS": {
+    "sip_trade_max_raw": 7.38,
+    "sip_trade_max_rth_priceupd": 7.38,
+    "sip_bar_max_rth": 7.1
+   },
+   "HUBC": {
+    "sip_trade_max_raw": 3.1,
+    "sip_trade_max_rth_priceupd": 3.1,
+    "sip_bar_max_rth": 3.1
+   },
+   "INKT": {
+    "sip_trade_max_raw": 2.36,
+    "sip_trade_max_rth_priceupd": 2.36,
+    "sip_bar_max_rth": 2.35
+   },
+   "IVA": {
+    "sip_trade_max_raw": 5.35,
+    "sip_trade_max_rth_priceupd": 5.35,
+    "sip_bar_max_rth": 4.77
+   },
+   "JMAC": {
+    "sip_trade_max_raw": 15.78,
+    "sip_trade_max_rth_priceupd": 15.78,
+    "sip_bar_max_rth": 15.78
+   },
+   "KODK": {
+    "sip_trade_max_raw": 3.77,
+    "sip_trade_max_rth_priceupd": 3.77,
+    "sip_bar_max_rth": 3.77
+   },
+   "KRBP": {
+    "sip_trade_max_raw": 5.16,
+    "sip_trade_max_rth_priceupd": 5.16,
+    "sip_bar_max_rth": 5.16
+   },
+   "LE": {
+    "sip_trade_max_raw": 8.98,
+    "sip_trade_max_rth_priceupd": 8.98,
+    "sip_bar_max_rth": 8.98
+   },
+   "LIPO": {
+    "sip_trade_max_raw": 2.73,
+    "sip_trade_max_rth_priceupd": 2.73,
+    "sip_bar_max_rth": 2.73
+   },
+   "LPSN": {
+    "sip_trade_max_raw": 4.53,
+    "sip_trade_max_rth_priceupd": 4.53,
+    "sip_bar_max_rth": 4.53
+   },
+   "MARA": {
+    "sip_trade_max_raw": 8.51,
+    "sip_trade_max_rth_priceupd": 8.51,
+    "sip_bar_max_rth": 8.51
+   },
+   "MHUA": {
+    "sip_trade_max_raw": 19.49,
+    "sip_trade_max_rth_priceupd": 19.49,
+    "sip_bar_max_rth": 19.49
+   },
+   "MLTX": {
+    "sip_trade_max_raw": 24.7699,
+    "sip_trade_max_rth_priceupd": 24.7699,
+    "sip_bar_max_rth": 24.7699
+   },
+   "MNTK": {
+    "sip_trade_max_raw": 8.92,
+    "sip_trade_max_rth_priceupd": 8.92,
+    "sip_bar_max_rth": 8.83
+   },
+   "MRDB": {
+    "sip_trade_max_raw": 2.35,
+    "sip_trade_max_rth_priceupd": 2.35,
+    "sip_bar_max_rth": 2.35
+   },
+   "NUWE": {
+    "sip_trade_max_raw": 5.54,
+    "sip_trade_max_rth_priceupd": 5.54,
+    "sip_bar_max_rth": 5.54
+   },
+   "OGEN": {
+    "sip_trade_max_raw": 3.52,
+    "sip_trade_max_rth_priceupd": 3.52,
+    "sip_bar_max_rth": 3.5
+   },
+   "OMGA": {
+    "sip_trade_max_raw": 9.8,
+    "sip_trade_max_rth_priceupd": 9.8,
+    "sip_bar_max_rth": 9.8
+   },
+   "OPRT": {
+    "sip_trade_max_raw": 3.66,
+    "sip_trade_max_rth_priceupd": 3.66,
+    "sip_bar_max_rth": 3.66
+   },
+   "ORLA": {
+    "sip_trade_max_raw": 4.72,
+    "sip_trade_max_rth_priceupd": 4.72,
+    "sip_bar_max_rth": 4.72
+   },
+   "PXMD": {
+    "sip_trade_max_raw": 2.85,
+    "sip_trade_max_rth_priceupd": 2.85,
+    "sip_bar_max_rth": 2.85
+   },
+   "PYXS": {
+    "sip_trade_max_raw": 2.76,
+    "sip_trade_max_rth_priceupd": 2.75,
+    "sip_bar_max_rth": 2.75
+   },
+   "RZLT": {
+    "sip_trade_max_raw": 2.37,
+    "sip_trade_max_rth_priceupd": 2.37,
+    "sip_bar_max_rth": 2.36
+   },
+   "STBX": {
+    "sip_trade_max_raw": 2.44,
+    "sip_trade_max_rth_priceupd": 2.44,
+    "sip_bar_max_rth": 2.44
+   },
+   "THMO": {
+    "sip_trade_max_raw": 6.67,
+    "sip_trade_max_rth_priceupd": 6.67,
+    "sip_bar_max_rth": 6.67
+   },
+   "WALD": {
+    "sip_trade_max_raw": 9.2,
+    "sip_trade_max_rth_priceupd": 9.0,
+    "sip_bar_max_rth": 9.0
+   },
+   "XPON": {
+    "sip_trade_max_raw": 6.48,
+    "sip_trade_max_rth_priceupd": 6.48,
+    "sip_bar_max_rth": 6.48
+   },
+   "YTEN": {
+    "sip_trade_max_raw": 2.97,
+    "sip_trade_max_rth_priceupd": 2.97,
+    "sip_bar_max_rth": 2.97
+   }
+  },
+  "diffs_vs_stored_high": [
+   {
+    "ticker": "IVA",
+    "stored_high": 4.77,
+    "sip_rth_po_max": 5.35,
+    "raw_window_max": 5.35,
+    "delta": 0.121593
+   },
+   {
+    "ticker": "ALLT",
+    "stored_high": 2.895,
+    "sip_rth_po_max": 3.0285,
+    "raw_window_max": 3.0285,
+    "delta": 0.046114
+   },
+   {
+    "ticker": "HHRS",
+    "stored_high": 7.1,
+    "sip_rth_po_max": 7.38,
+    "raw_window_max": 7.38,
+    "delta": 0.039437
+   },
+   {
+    "ticker": "YTEN",
+    "stored_high": 2.91,
+    "sip_rth_po_max": 2.97,
+    "raw_window_max": 2.97,
+    "delta": 0.020619
+   },
+   {
+    "ticker": "RZLT",
+    "stored_high": 2.33,
+    "sip_rth_po_max": 2.37,
+    "raw_window_max": 2.37,
+    "delta": 0.017167
+   },
+   {
+    "ticker": "XPON",
+    "stored_high": 6.41,
+    "sip_rth_po_max": 6.48,
+    "raw_window_max": 6.48,
+    "delta": 0.01092
+   },
+   {
+    "ticker": "MNTK",
+    "stored_high": 8.83,
+    "sip_rth_po_max": 8.92,
+    "raw_window_max": 8.92,
+    "delta": 0.010193
+   },
+   {
+    "ticker": "MLTX",
+    "stored_high": 24.525,
+    "sip_rth_po_max": 24.7699,
+    "raw_window_max": 24.7699,
+    "delta": 0.009986
+   },
+   {
+    "ticker": "LE",
+    "stored_high": 8.9,
+    "sip_rth_po_max": 8.98,
+    "raw_window_max": 8.98,
+    "delta": 0.008989
+   },
+   {
+    "ticker": "GRIN",
+    "stored_high": 12.65,
+    "sip_rth_po_max": 12.76,
+    "raw_window_max": 12.76,
+    "delta": 0.008696
+   },
+   {
+    "ticker": "DRMA",
+    "stored_high": 2.6,
+    "sip_rth_po_max": 2.62,
+    "raw_window_max": 2.62,
+    "delta": 0.007692
+   },
+   {
+    "ticker": "CODX",
+    "stored_high": 2.76,
+    "sip_rth_po_max": 2.7799,
+    "raw_window_max": 2.7799,
+    "delta": 0.00721
+   },
+   {
+    "ticker": "FDX",
+    "stored_high": 226.05,
+    "sip_rth_po_max": 227.5,
+    "raw_window_max": 227.5,
+    "delta": 0.006415
+   },
+   {
+    "ticker": "OGEN",
+    "stored_high": 3.5,
+    "sip_rth_po_max": 3.52,
+    "raw_window_max": 3.52,
+    "delta": 0.005714
+   },
+   {
+    "ticker": "EVCM",
+    "stored_high": 11.31,
+    "sip_rth_po_max": 11.3688,
+    "raw_window_max": 11.3688,
+    "delta": 0.005199
+   }
+  ]
+ },
+ "notes": []
+}
