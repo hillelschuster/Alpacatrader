@@ -38,6 +38,33 @@ accepted-trade policies, execution models) belongs in derived layers on top.
   condition codes present (e.g. `['@']` regular, `['@','I']` odd lot,
   `[' ']`, `['@','F']` sweep) — to be interpreted ONLY in derived layers.
 
+## Bar builder (derived layer) — `factory/scripts/sip_bars.py`
+
+Rebuilds 1-minute bars from the raw trades using Alpaca's **documented** bar-aggregation
+table (Market Data FAQ, "How are bars aggregated?"): per-condition open/close, high/low
+and volume update rules, tape-conditional rows, strictest-rule-wins for multi-condition
+trades, minute = timestamp truncated to the minute (NY), bar emitted only when price
+fields exist. Auction/official codes (`Q, M, O, 5, 6`) update nothing in bars and are
+written separately (`auction_prints_*.parquet`; 221 prints on the first pilot day).
+
+First certification against the provider (2021-02-01, heaviest-era day):
+
+- 3,318,734 trades -> **16,613 bars** across 54 symbols (~20 s).
+- vs provider SIP 1-minute bars: **16,613/16,613 matched, 0 ours-only, 0 provider-only
+  inside the 09:25-16:05 window** (all 6,675 provider-only bars are outside the window),
+  **99.982% exact cells** (16,610/16,613).
+- 3 residual mismatches, all **volume-only, OHLC identical**:
+  - `STPK 11:28` ours +4,000 sh = a `[' ','B']` Average Price block the provider excludes
+    from volume (its documented table says volume updates for `B`) ;
+  - `ALYA 11:46` ours +1 trade / +50 sh and `STPK 09:30` ours +3 trades / +120 sh —
+    regular-family prints present in the final consolidated tape but absent from the
+    provider's as-published bars (late/superseded-print semantics).
+- Interpretation: our builder replicates the provider bar *content* almost exactly;
+  the tiny residual is tape-finalization and avg-price-volume policy, not bad prints.
+  OHLC (what ranking and path measurement use) is unaffected in this sample; the
+  certification panel must confirm per-day. Impact on ranking/MFE/MAE is measured
+  in the pilot comparison, not assumed.
+
 ## Not in this layer
 
 - No bar construction, no price series, no trade-condition policy (derived layer).

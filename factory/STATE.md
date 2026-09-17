@@ -1995,3 +1995,14 @@ Sample manifests + layer README committed under factory/artifacts/basket/sip/. N
 trade->1-min bar builder with explicit condition policy (calibrated against provider bars),
 quote/execution-truth layer, then certification comparison -> regeneration scope. Context: T11
 pairing bug fixed (1703ebc); provenance audit committed (d157237); no BASKET rule frozen.
+
+2026-09-18 (BASKET-01 SIP upgrade — bars layer + first provider cross-check): dip_bars.py ->
+sip_bars.py rebuilds 1-min bars from raw SIP trades with Alpaca's documented condition-update
+table (tape-aware, strictest-rule-wins; auction codes Q/M/O/5/6 excluded from bars and preserved
+as a separate artifact: 221 prints day 1). Self-test + live run: 2021-02-01 3.32M trades ->
+16,613 bars / 54 syms (~20s). Provider cross-check: 16,613/16,613 matched, 0 ours-only,
+0 provider-only inside 09:25-16:05 (all 6,675 provider-only bars out of window), exact-cell
+99.982% (16,610/16,613). Only mismatches: 3 volume-only bars (STPK 11:28 +4,000sh [' ','B']
+avg-price print provider excludes; ALYA 11:46 +1 trade/50sh; STPK 09:30 +3/120sh
+late/superseded prints), OHLC identical. bars + auction prints under data/sip/derived/
+(gitignored). Next: quote/execution-truth layer; certification panel across the 20 pilot days.
