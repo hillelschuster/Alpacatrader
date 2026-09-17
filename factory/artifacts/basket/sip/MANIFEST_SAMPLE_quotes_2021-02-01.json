@@ -1,0 +1,35 @@
+{
+ "status": "ok",
+ "provider": "alpaca",
+ "feed": "sip",
+ "client": "alpaca-py",
+ "requested_at": "2026-09-17T21:59:00.384799+00:00",
+ "window_utc": [
+  "2021-02-01T14:25:00+00:00",
+  "2021-02-01T21:05:00+00:00"
+ ],
+ "window_et": "09:25-16:05 America/New_York",
+ "symbols_requested": 15,
+ "symbols_with_data": 15,
+ "errors": [],
+ "elapsed_s": 85.4,
+ "day": "2021-02-01",
+ "kind": "quotes",
+ "file": "quotes/2021-02-01.parquet",
+ "rows": 959117,
+ "sha256": "153af71d9d69e273ab298e31e35370f9a11814733456cbb8c437eaaabf3dda3a",
+ "schema": {
+  "symbol": "String",
+  "ts_utc": "Datetime(time_unit='us', time_zone='UTC')",
+  "bid_price": "Float64",
+  "bid_size": "Float64",
+  "ask_price": "Float64",
+  "ask_size": "Float64",
+  "bid_exchange": "String",
+  "ask_exchange": "String",
+  "conditions": "List(String)",
+  "tape": "String"
+ },
+ "min_ts": "2021-02-01 14:25:00.211112+00:00",
+ "max_ts": "2021-02-01 21:04:59.844000+00:00"
+}

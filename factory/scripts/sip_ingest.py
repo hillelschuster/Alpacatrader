@@ -1,0 +1,320 @@
+#!/usr/bin/env python3
+"""BASKET-01 SIP canonical ingestion — raw Alpaca SIP trades + quotes, day by day.
+
+Principle (user directive): raw market record first; explicit interpretation second.
+This layer stores provider events as intactly as reasonably possible:
+  * no trade-condition filtering, no dedup, no cleaning of any kind;
+  * conditions/tape/exchange/id preserved;
+  * deterministic window per day (09:25-16:05 ET), resumable, atomic writes;
+  * per-artifact manifest with counts/checksum/schema/window/source, plus a global
+    append-only index (data/sip/manifest.jsonl).
+
+Derived layers (bar reconstruction, condition policy) must sit ON TOP of this data.
+
+Pilot scope: symbols = union of the day's anatomy candidate names (top-10 per
+snapshot + session winners) for trades; top-3-per-snapshot union for quotes.
+Full-universe ranking replication is a post-pilot decision (see PANEL notes).
+
+Usage:
+  .venv/bin/python factory/scripts/sip_ingest.py --self-test
+  .venv/bin/python factory/scripts/sip_ingest.py --panel                 # pilot panel
+  .venv/bin/python factory/scripts/sip_ingest.py --days 2022-03-10 2025-09-09
+  .venv/bin/python factory/scripts/sip_ingest.py --panel --kinds trades --req-sleep 0.5
+"""
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import os
+import time
+from datetime import datetime, timezone, date
+from pathlib import Path
+from zoneinfo import ZoneInfo
+
+import polars as pl
+
+ROOT = Path(__file__).resolve().parents[2]
+ANAT = ROOT / "factory" / "artifacts" / "basket" / "anatomy"
+OUT = ROOT / "data" / "sip"
+ET = ZoneInfo("America/New_York")
+SESSION_START_ET = (9, 25)
+SESSION_END_ET = (16, 5)
+
+# Pilot certification panel (selected from committed anatomy artifacts; era-spread):
+PANEL = {
+    "2022-03-10": "known bad-print day (BRP corrupted HF prints)",
+    "2025-09-09": "extreme +1585% (QMMM)",
+    "2021-02-09": "extreme (era 2021)",
+    "2022-02-17": "extreme (era 2022)",
+    "2025-03-24": "extreme (era 2025)",
+    "2025-10-30": "largest B/600 day-max (+538%, BQ)",
+    "2026-04-27": "extreme (era 2026)",
+    "2021-02-02": "multi-survivor (3 members >= +30%)",
+    "2023-12-28": "multi-survivor (3 members >= +30%)",
+    "2026-05-15": "multi-survivor (3 members >= +30%)",
+    "2021-10-25": "ordinary day (day-max < 2%)",
+    "2023-08-30": "ordinary day (day-max < 2%)",
+    "2025-11-25": "ordinary day (day-max < 2%)",
+    "2021-02-01": "halt-heavy day",
+    "2023-03-16": "halt day",
+    "2026-05-29": "halt day + top-3 churn 0",
+    "2021-03-08": "minute-bar ambiguity day",
+    "2023-12-15": "minute-bar ambiguity day",
+    "2026-04-29": "minute-bar ambiguity day",
+    "2023-03-17": "top-3 churn 0 (high opening churn)",
+}
+
+TRADE_COLS = ["symbol", "ts_utc", "price", "size", "exchange", "conditions", "trade_id", "tape"]
+QUOTE_COLS = ["symbol", "ts_utc", "bid_price", "bid_size", "ask_price", "ask_size",
+              "bid_exchange", "ask_exchange", "conditions", "tape"]
+
+
+def window_utc(day: str):
+    d = date.fromisoformat(day)
+    start = datetime(d.year, d.month, d.day, *SESSION_START_ET, tzinfo=ET).astimezone(timezone.utc)
+    end = datetime(d.year, d.month, d.day, *SESSION_END_ET, tzinfo=ET).astimezone(timezone.utc)
+    return start, end
+
+
+def symbols_for_day(day: str, include_adj: bool = True):
+    """Trades set: union of stored candidate names + session winners for the day."""
+    p = ANAT / f"{day}.jsonl"
+    if not p.exists():
+        raise FileNotFoundError(f"no anatomy day file for {day}")
+    rec = json.loads(p.read_text())
+    names = set()
+    for s in rec["snapshots"]:
+        for n in s["names"]:
+            names.add(n["ticker"])
+    for w in rec.get("winners_open", []) + rec.get("winners_prev", []):
+        names.add(w["ticker"])
+    quotes = set()
+    for s in rec["snapshots"]:
+        for n in s["names"][:3]:
+            quotes.add(n["ticker"])
+    return sorted(names), sorted(quotes)
+
+
+def cols_from_trades(trades, symbol: str):
+    """Column-oriented accumulation (cheap for multi-million-event extreme days)."""
+    ts, px, sz, ex, cd, tid, tp = [], [], [], [], [], [], []
+    for t in trades:
+        ts.append(t.timestamp); px.append(float(t.price)); sz.append(float(t.size))
+        ex.append(t.exchange); cd.append(list(t.conditions) if t.conditions else [])
+        tid.append(int(t.id) if t.id is not None else None); tp.append(t.tape)
+    return {"symbol": [symbol] * len(ts), "ts_utc": ts, "price": px, "size": sz,
+            "exchange": ex, "conditions": cd, "trade_id": tid, "tape": tp}
+
+
+def cols_from_quotes(quotes, symbol: str):
+    ts, bp, bsz, ap, asz, bxe, axe, cd, tp = ([],) * 9
+    ts, bp, bsz, ap, asz, bxe, axe, cd, tp = [], [], [], [], [], [], [], [], []
+    for q in quotes:
+        ts.append(q.timestamp); bp.append(float(q.bid_price)); bsz.append(float(q.bid_size))
+        ap.append(float(q.ask_price)); asz.append(float(q.ask_size))
+        bxe.append(q.bid_exchange); axe.append(q.ask_exchange)
+        cd.append(list(q.conditions) if q.conditions else []); tp.append(q.tape)
+    return {"symbol": [symbol] * len(ts), "ts_utc": ts, "bid_price": bp, "bid_size": bsz,
+            "ask_price": ap, "ask_size": asz, "bid_exchange": bxe, "ask_exchange": axe,
+            "conditions": cd, "tape": tp}
+
+
+def empty_frame(cols):
+    schema = {"symbol": pl.Utf8, "ts_utc": pl.Datetime("us", "UTC")}
+    for c in cols:
+        if c not in schema:
+            schema[c] = pl.Float64 if c not in ("conditions", "tape", "exchange",
+                                                "bid_exchange", "ask_exchange", "trade_id") else (
+                pl.List(pl.Utf8) if c == "conditions" else
+                (pl.Int64 if c == "trade_id" else pl.Utf8))
+    return pl.DataFrame(schema=schema)
+
+
+def frame(acc, cols):
+    if not acc or not acc.get("ts_utc"):
+        return empty_frame(cols)
+    df = pl.DataFrame(acc)
+    return df.select([c for c in cols if c in df.columns] +
+                     [c for c in df.columns if c not in cols])
+
+
+def sha256_file(p: Path):
+    h = hashlib.sha256()
+    with open(p, "rb") as fh:
+        for chunk in iter(lambda: fh.read(1 << 20), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def should_skip(out_root: Path, day: str, kind: str, force: bool) -> bool:
+    if force:
+        return False
+    mp = out_root / kind / f"{day}.manifest.json"
+    fp = out_root / kind / f"{day}.parquet"
+    if not (mp.exists() and fp.exists()):
+        return False
+    try:
+        m = json.loads(mp.read_text())
+    except Exception:
+        return False
+    return m.get("status") == "ok"
+
+
+def write_artifact(out_root: Path, day: str, kind: str, df: "pl.DataFrame",
+                   meta: dict) -> dict:
+    d = out_root / kind
+    d.mkdir(parents=True, exist_ok=True)
+    fp = d / f"{day}.parquet"
+    tmp = d / f"{day}.parquet.tmp"
+    df.write_parquet(tmp)
+    os.replace(tmp, fp)
+    man = dict(meta)
+    man.update({"day": day, "kind": kind, "file": f"{kind}/{day}.parquet",
+                "rows": int(df.height), "sha256": sha256_file(fp),
+                "schema": {c: str(df.schema[c]) for c in df.columns}})
+    if df.height:
+        man["min_ts"] = str(df["ts_utc"].min())
+        man["max_ts"] = str(df["ts_utc"].max())
+    mp = d / f"{day}.manifest.json"
+    tmpm = d / f"{day}.manifest.json.tmp"
+    tmpm.write_text(json.dumps(man, indent=1, default=str))
+    os.replace(tmpm, mp)
+    with open(out_root / "manifest.jsonl", "a") as fh:
+        fh.write(json.dumps(man, separators=(",", ":"), default=str) + "\n")
+    return man
+
+
+def fetch_day(day: str, kinds, req_sleep: float, out_root: Path, force: bool,
+              limit_symbols: int | None = None):
+    from dotenv import load_dotenv
+    load_dotenv(ROOT / ".env")
+    from alpaca.data.historical import StockHistoricalDataClient
+    from alpaca.data.requests import StockTradesRequest, StockQuotesRequest
+    from alpaca.data.enums import DataFeed
+
+    client = StockHistoricalDataClient(os.environ["ALPACA_API_KEY"], os.environ["ALPACA_SECRET_KEY"])
+    start, end = window_utc(day)
+    sym_trades, sym_quotes = symbols_for_day(day)
+    if limit_symbols:
+        sym_trades, sym_quotes = sym_trades[:limit_symbols], sym_quotes[:limit_symbols]
+    results = {}
+    for kind, syms in (("trades", sym_trades), ("quotes", sym_quotes)):
+        if kind not in kinds:
+            continue
+        if should_skip(out_root, day, kind, force):
+            results[kind] = "skip"
+            continue
+        rows, errors, got = None, [], 0
+        t0 = time.time()
+        cols = TRADE_COLS if kind == "trades" else QUOTE_COLS
+        acc = {c: [] for c in cols}
+        for i, s in enumerate(syms):
+            for attempt in range(3):
+                try:
+                    if kind == "trades":
+                        r = client.get_stock_trades(StockTradesRequest(
+                            symbol_or_symbols=[s], start=start, end=end, feed=DataFeed.SIP))
+                        ev = r.data.get(s, [])
+                        part = cols_from_trades(ev, s)
+                    else:
+                        r = client.get_stock_quotes(StockQuotesRequest(
+                            symbol_or_symbols=[s], start=start, end=end, feed=DataFeed.SIP))
+                        ev = r.data.get(s, [])
+                        part = cols_from_quotes(ev, s)
+                    for c in cols:
+                        acc[c].extend(part[c])
+                    if ev:
+                        got += 1
+                    break
+                except Exception as e:  # retryable API/network errors
+                    if attempt == 2:
+                        errors.append({"symbol": s, "error": str(e)[:200]})
+                    else:
+                        time.sleep(5 * (attempt + 1))
+            if req_sleep:
+                time.sleep(req_sleep)
+        df = frame(acc, cols)
+        status = "probe" if limit_symbols else ("ok" if not errors else "partial")
+        meta = {"status": status,
+                "provider": "alpaca", "feed": "sip", "client": "alpaca-py",
+                "requested_at": datetime.now(timezone.utc).isoformat(),
+                "window_utc": [start.isoformat(), end.isoformat()],
+                "window_et": "09:25-16:05 America/New_York",
+                "symbols_requested": len(syms), "symbols_with_data": got,
+                "errors": errors, "elapsed_s": round(time.time() - t0, 1)}
+        man = write_artifact(out_root, day, kind, df, meta)
+        results[kind] = f"{man['status']} rows={man['rows']} syms={got}/{len(syms)} {man['elapsed_s']}s"
+    return results
+
+
+def selftest():
+    s, e = window_utc("2022-03-10")  # EST
+    assert (e - s).total_seconds() == 6 * 3600 + 40 * 60
+    assert s.astimezone(ET).hour == 9 and s.astimezone(ET).minute == 25
+    s2, _ = window_utc("2025-06-02")  # EDT
+    assert s2.astimezone(ET).hour == 9 and s2.astimezone(ET).minute == 25
+    assert s2.hour == 13  # 09:25 EDT == 13:25 UTC
+    # symbol derivation on a real anatomy day
+    tr, qs = symbols_for_day("2022-03-10")
+    assert "BRP" in tr, tr[:20]
+    assert len(tr) <= 200 and 0 < len(qs) <= len(tr)
+    # rows_from_* pure helpers
+    from types import SimpleNamespace as NS
+    t = NS(timestamp=s, price=1.5, size=100.0, exchange="D", conditions=["@"], id=7, tape="A")
+    r = cols_from_trades([t], "XYZ")
+    assert r["conditions"] == [["@"]] and r["price"] == [1.5] and r["trade_id"] == [7]
+    q = NS(timestamp=s, bid_price=1.0, bid_size=1.0, ask_price=1.2, ask_size=2.0,
+           bid_exchange="T", ask_exchange="M", conditions=["R"], tape="C")
+    rq = cols_from_quotes([q], "XYZ")
+    assert rq["ask_price"] == [1.2] and rq["conditions"] == [["R"]]
+    df = frame(r, TRADE_COLS)
+    assert df.height == 1 and "trade_id" in df.columns
+    assert frame({"symbol": [], "ts_utc": []}, TRADE_COLS).height == 0
+    # atomic write + resume logic
+    import tempfile
+    with tempfile.TemporaryDirectory() as td:
+        td = Path(td)
+        assert not should_skip(td, "2022-03-10", "trades", False)
+        write_artifact(td, "2022-03-10", "trades", df,
+                       {"status": "ok", "provider": "alpaca"})
+        assert (td / "trades" / "2022-03-10.parquet").exists()
+        assert should_skip(td, "2022-03-10", "trades", False)
+        assert not should_skip(td, "2022-03-10", "trades", True)
+        write_artifact(td, "2022-03-10", "quotes", df, {"status": "partial"})
+        assert not should_skip(td, "2022-03-10", "quotes", False)  # partial retries
+        assert (td / "manifest.jsonl").exists()
+    print("self-test OK")
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--days", nargs="*", default=None)
+    ap.add_argument("--panel", action="store_true")
+    ap.add_argument("--kinds", default="trades,quotes")
+    ap.add_argument("--req-sleep", type=float, default=0.45)
+    ap.add_argument("--limit-symbols", type=int, default=None)
+    ap.add_argument("--out", default=str(OUT))
+    ap.add_argument("--force", action="store_true")
+    ap.add_argument("--self-test", action="store_true")
+    args = ap.parse_args(argv)
+    if args.self_test:
+        selftest()
+        return
+    days = args.days or (sorted(PANEL) if args.panel else [])
+    if not days:
+        ap.error("provide --days or --panel")
+    kinds = {k.strip() for k in args.kinds.split(",") if k.strip()}
+    out_root = Path(args.out)
+    out_root.mkdir(parents=True, exist_ok=True)
+    for day in days:
+        try:
+            res = fetch_day(day, kinds, args.req_sleep, out_root, args.force,
+                            args.limit_symbols)
+            print(f"{day}: " + " | ".join(f"{k}:{v}" for k, v in res.items()), flush=True)
+        except FileNotFoundError as e:
+            print(f"{day}: SKIP ({e})", flush=True)
+
+
+if __name__ == "__main__":
+    main()

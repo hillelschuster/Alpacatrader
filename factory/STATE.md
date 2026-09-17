@@ -1981,3 +1981,17 @@ ohlcv_2026-03 also local for cross-feed check); clean_month bakes RTH/dedup/$2 f
 BEFORE BASKET logic; 2024 raw+clean absent while 2024 leaderboard exists (non-regenerable);
 2025-02 clean without raw sibling; 2025 premarket = SIP; leaderboard inherits clean mix; IEX and
 subminute-quote lanes are separate/experimental. Next: SIP pilot ingestion + certification panel.
+
+2026-09-18 (BASKET-01 SIP upgrade — raw ingestion layer live): per user directive, Alpaca SIP
+is now the high-fidelity measuring instrument (PRE-REG-BASKET-02 parameter freeze remains
+PAUSED). Committed sip_ingest.py (resumable/atomic, zero cleaning): data/sip/{trades,quotes}/
+YYYY-MM-DD.parquet + per-artifact manifests (sha256, schema, window, counts, per-symbol errors)
++ append-only manifest.jsonl; window 09:25-16:05 ET (DST-correct); pilot panel of 20 era-spread
+days launched detached (BRP 2022-03-10 bad-print day, QMMM 2025-09-09 +1585%, 4 extremes,
+3 multi-survivor, 3 ordinary, 3 halt, 3 ambiguity). Day 1 (2021-02-01) verified: 3,318,734 trade
+rows / 54 syms (29.5MB) + 959,117 quote rows / 15 syms (5.1MB), ts 09:25:00.205851-16:04:59.974
+ET, 0 nulls, 16 exchanges, raw condition codes preserved (['@'], ['@','I'], ['@','F'], [' ']).
+Sample manifests + layer README committed under factory/artifacts/basket/sip/. Next: SIP
+trade->1-min bar builder with explicit condition policy (calibrated against provider bars),
+quote/execution-truth layer, then certification comparison -> regeneration scope. Context: T11
+pairing bug fixed (1703ebc); provenance audit committed (d157237); no BASKET rule frozen.

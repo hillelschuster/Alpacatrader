@@ -1,0 +1,33 @@
+{
+ "status": "ok",
+ "provider": "alpaca",
+ "feed": "sip",
+ "client": "alpaca-py",
+ "requested_at": "2026-09-17T21:57:31.820691+00:00",
+ "window_utc": [
+  "2021-02-01T14:25:00+00:00",
+  "2021-02-01T21:05:00+00:00"
+ ],
+ "window_et": "09:25-16:05 America/New_York",
+ "symbols_requested": 54,
+ "symbols_with_data": 54,
+ "errors": [],
+ "elapsed_s": 264.1,
+ "day": "2021-02-01",
+ "kind": "trades",
+ "file": "trades/2021-02-01.parquet",
+ "rows": 3318734,
+ "sha256": "7e5227cb46ed4136790bb8f8538215e722c3d914b8bd4e45da6d18ea74607477",
+ "schema": {
+  "symbol": "String",
+  "ts_utc": "Datetime(time_unit='us', time_zone='UTC')",
+  "price": "Float64",
+  "size": "Float64",
+  "exchange": "String",
+  "conditions": "List(String)",
+  "trade_id": "Int64",
+  "tape": "String"
+ },
+ "min_ts": "2021-02-01 14:25:00.205851+00:00",
+ "max_ts": "2021-02-01 21:04:59.974000+00:00"
+}
