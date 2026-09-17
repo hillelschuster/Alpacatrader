@@ -1941,3 +1941,24 @@ rule, not a proven bound; (11) numeric corrections: 600->615 overlap is 1.75/3 (
 remaining at 10:00 ~92% (not two-thirds), LULD clustering marked external and not mechanically
 verified. T*=600, L=10, g=50 unchanged and explicitly labelled owner-decisions whose confirmation
 is reserved/forward only. Still NOT frozen; awaiting user sign-off.
+
+2026-09-17 (BASKET-01 re-centering pass, pre-freeze — owner directive): read layer re-centered
+away from ruler-as-ontology. New measurement artifacts: T11_dist.json (full daily basket
+anatomy: continuous member / day-max excursion distributions incl. extremes, 0/1/2/3-mover
+frequencies across the full ladder, ordinary days, pay-for-participation arithmetic —
+explicitly ex-post illustration) and T12_splitaudit.json (artifact audit). Headline readings
+(pooled, B T=600, 1065 days, main top-3): member MFE p50 +7.7% / p90 +36.9% / p99 +142.6% /
+max +1585% (QMMM 2025-09-09; genuine); day-max p50 +18.7% / p90 +74.6% / p99 +227%; 2nd ticket
+p50 +6.8% / p90 +20.1% / max +92.7%; 3rd p50 +2.3% / p90 +8.2% / max +37.7%; k>=1 movers
+90.9 / 75.0 / 47.5 / 30.6 / 17.3 / 6.0% for +5/+10/+20/+30/+50/+100; k>=2 60.9 / 32.5 / 9.9 /
+4.1 / 1.3 / 0%; all-3 19.3 / 5.1 / 0.9 / 0.3 / 0 / 0%; ordinary days (day-max < 10%) 24.7%,
+on which member p50 +3.6% vs adverse p50 -9.6%. Ladder-wide tail preservation Q(H, L=10):
+0.858 / 0.818 / 0.807 / 0.783 / 0.703 for H=10/20/30/50/100 (at L=15: 0.958 / 0.945 / 0.946 /
+0.934 / 0.891) — the far tail wants more room than -10%; the final choice is the owner's at
+freeze. Containment (session-max leader inside our top-N): top-1 in top-1 2.6% -> 14.4%
+(09:35 -> 12:00); in top-3 4.9% -> 18.7%; in top-10 8.0% -> 22.4%. ARTIFACT AUDIT (T12): of
+38,331 member-days exactly 1 bad-print glitch (BRP 2022-03-10: et=587 close 1092.71 and et=629
+open 785.47 -> close 25.14 corrupted both the causal rank and the recorded MFE; glitch-free
+member MFE +3.7%), plus 273 susp_expost split-like member-days (0.7%; raw >= +100% tail 697 ->
+691 when excluded, max unchanged apart from BRP). No strategy code; PRE-REG-BASKET-02 remains
+NOT FROZEN.
