@@ -53,4 +53,4 @@ Checks: JSON parse of every day file; snapshot count 13/14; per-filled-member fi
 
 ## 7. Current state (update after each cycle)
 
-- 2026-09-17: resume2 running for 2025-02/03/04/06/08/12 (A_pm crash fix). After `ALL_DONE_RESUME2`: QA → T5/shadow/random passes → aggregate → first read. Reserved months 2026-06..08 untouched.
+- 2026-09-17: resume2 DONE; QA PASS (1065/1066, 1 declared skip). All passes + aggregates complete; first descriptive read done; evidence committed. Next: PRE-REG-BASKET-02 (release rule + survivor rule) from the anatomy, frozen before any Phase-2 P&L. Reserved months 2026-06..08 untouched.

@@ -92,6 +92,8 @@ def new_acc():
         "contain": defaultdict(Counter), "shares": defaultdict(lambda: defaultdict(list)),
         # T3/T4/T9 member-level, keyed (setname, H, L)
         "race": defaultdict(Counter),
+        # T4 basket-level frontier, keyed (month, pop, T, setname, H, L)
+        "front": defaultdict(Counter),
         # T7b, keyed (setname, H)
         "jt": defaultdict(Counter), "mfe_rank": defaultdict(lambda: defaultdict(list)),
         "multi": defaultdict(Counter),
@@ -156,6 +158,20 @@ def add_snapshot(acc, rec, month, pop, T, names):
         for n in mset:
             add_member(acc, month, pop, T, setname, n, is_top3=(setname == "main"))
         filled = [n for n in mset if member_class(n) == "filled"]
+        for H in UP:
+            for L in DN:
+                labels = [race_label(n, H, L) for n in filled]
+                kp = sum(1 for x in labels if x in ("up", "up_only"))
+                ka = sum(1 for x in labels if x == "amb")
+                c = acc["front"][(month, pop, T, setname, H, L)]
+                c["days"] += 1
+                c[f"k{kp}"] += 1
+                c["amb0_days"] += int(kp == 0 and ka > 0)
+                touched = [n for n in filled if n["ladders"]["up"][str(H)] is not None]
+                c["touched"] += len(touched)
+                c["upfirst"] += sum(1 for n in touched
+                                    if race_label(n, H, L) in ("up", "up_only"))
+                c["amb"] += sum(1 for n in touched if race_label(n, H, L) == "amb")
         short = PRIMARY_N - len(mset)
         acc["jt"][(month, pop, T, setname)]["unfilled_slots"] += short
         for H in UP:
@@ -266,6 +282,22 @@ def finalize(acc):
         t4.append({"month": month, "pop": pop, "T": T, "set": setname, **base})
     tables["T4"] = t4
 
+    # T4b basket-level release-retention frontier F(L,H) + Q_H(L)
+    t4b = []
+    for (month, pop, T, setname, H, L), c in sorted(acc["front"].items()):
+        days = c["days"] or 1
+        t4b.append({
+            "month": month, "pop": pop, "T": T, "set": setname, "H": H, "L": L,
+            "days": c["days"],
+            "F_pess": round((days - c["k0"]) / days, 5),
+            "F_opt": round((days - c["k0"] + c["amb0_days"]) / days, 5),
+            "k_hist": [c["k0"], c["k1"], c["k2"], c["k3"]],
+            "touched": c["touched"],
+            "Q_pess": round(c["upfirst"] / c["touched"], 5) if c["touched"] else None,
+            "Q_opt": round((c["upfirst"] + c["amb"]) / c["touched"], 5) if c["touched"] else None,
+        })
+    tables["T4b_frontier"] = t4b
+
     # T7b joint tail distributions (aggregate k-histograms over months + per month)
     t7b = []
     keys = sorted({k for k in jt if len(k) == 4})
@@ -367,6 +399,11 @@ def selftest():
     r = {(x["H"], x["L"]): x for x in t["T3"] if x["set"] == "main"}
     assert r[(20, 5)]["up"] == 1 and r[(20, 5)]["dn"] == 1 and r[(20, 5)]["amb"] == 1
     assert r[(20, 5)]["up_first_pess"] == round(1 / 3, 4)
+    # basket-level frontier: main k>=1 (pess) present; Q = up-first | touched
+    fr = next(x for x in t["T4b_frontier"]
+              if x["set"] == "main" and x["H"] == 20 and x["L"] == 5)
+    assert fr["k_hist"][1] == 1 and fr["F_pess"] == 1.0 and fr["F_opt"] == 1.0, fr
+    assert fr["touched"] == 3 and fr["Q_pess"] == round(1 / 3, 5), fr
     # MFE ranks: 0.50, 0.10, 0.02
     tr = next(x for x in t["T5_mfe_ranks"] if x["set"] == "main")
     assert tr["rank1"]["p50"] == 0.5 and tr["rank3"]["p50"] == 0.02
