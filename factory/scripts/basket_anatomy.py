@@ -30,6 +30,7 @@ from __future__ import annotations
 import argparse
 import bisect
 import json
+import os
 from pathlib import Path
 
 import numpy as np
@@ -534,15 +535,15 @@ def main(argv=None):
         days = month_days(month)
         if args.max_days:
             days = days[: args.max_days]
-        for chunk in [days[i:i + 5] for i in range(0, len(days), 5)]:
-            wdf = lf.filter(pl.col("date").is_in(chunk)).collect().unique(
-                subset=["timestamp", "ticker"], keep="first"
-            )
+        for chunk in [days[i:i + 2] for i in range(0, len(days), 2)]:
+            wdf = lf.filter(pl.col("date").is_in(chunk)).collect()
             for d in chunk:
                 day_str = str(d)
                 jl = outd / "anatomy" / f"{day_str}.jsonl"
                 bp = outd / "bars" / f"{day_str}.parquet"
-                day = wdf.filter(pl.col("date") == d)
+                day = wdf.filter(pl.col("date") == d).unique(
+                    subset=["timestamp", "ticker"], keep="first"
+                )
                 if day.height == 0:
                     continue
                 last = day.group_by("ticker").agg(
@@ -562,9 +563,13 @@ def main(argv=None):
                     carry = carry_next
                     continue
                 bars = rec.pop("_bars")
-                with open(jl, "w") as fh:
+                tmp_j = jl.with_suffix(".jsonl.tmp")
+                with open(tmp_j, "w") as fh:
                     fh.write(json.dumps(rec, separators=(",", ":"), default=str) + "\n")
-                bars.write_parquet(bp)
+                os.replace(tmp_j, jl)  # atomic: a kill can never leave a truncated day file
+                tmp_b = bp.with_suffix(".parquet.tmp")
+                bars.write_parquet(tmp_b)
+                os.replace(tmp_b, bp)
                 n_cand = sum(len(s["names"]) for s in rec["snapshots"])
                 print(f"{day_str}: snaps={len(rec['snapshots'])} cands={n_cand} "
                       f"elig={rec['audit']['n_elig']} missing0930={rec['audit']['missing_0930']} "

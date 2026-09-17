@@ -4,3 +4,5 @@ bars/
 run_dev.log
 shadow/
 random/
+run_gaps.log
+run_watchdog.log
