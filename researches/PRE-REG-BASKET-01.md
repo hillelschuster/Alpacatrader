@@ -155,6 +155,27 @@ Fixed overnight shadow ledger (EOD -> next executable open; diagnostic only — 
 repair the intraday result). Policy pay-for-team (what the rules actually kept exposed) is
 deferred.
 
+**T7b — Joint future right tail of the original basket (multi-survivor preservation)**: the
+hypothesis assumes **no fixed number of survivors** — a day may produce 0, 1, 2 or all 3
+original top-3 members with large post-fill excursions, and multiple members may warrant
+participation simultaneously. Per (population, T, N=3), per ladder H, month-blocked:
+
+- distribution of k = 0/1/2/3 original top-3 members producing the +H future excursion,
+  for the **touch lens** and the **executable lens** separately. The executable lens counts
+  only members with a causal fill; members marked blocked/unfilled are excluded from it and
+  reported as their own bucket — their later raw path (from the stored candidate bars) may
+  appear in the selected-name lens only, never counted as accessible participation;
+- post-fill MFE of each original member and the basket's 1st-/2nd-/3rd-largest MFE;
+- frequency of days with >=2 and with 3 such excursions (right-tail clustering within the
+  same basket/day);
+- the same core joint-tail view for the rank-adjacent control (T9a) where a full comparison
+  set exists;
+- change of all of the above across the frozen timing surface.
+
+The +H rulers here remain descriptive measurement rulers — never survivor definitions,
+profit targets, or release triggers. T7's "best member pays for peers" remains one lens;
+it must not be the only basket-level tail lens.
+
 **T8 — Stability**: every headline number per month and per quarter.
 
 **T9 — Controls**: (a) rank-adjacent strong gainers (ranks just below top-N at T) as the
@@ -205,3 +226,9 @@ constructed later without rerunning the anatomy.
   above (5-min open window, 15-min to 11:00, 30-min to noon) with per-T joint reporting
   (containment + remaining upside + churn + failed-ticket burden + execution realism read
   together). Frozen before any aggregate was viewed; not re-selectable from aggregates.
+- 2026-09-16 (multi-survivor lock, pre-aggregate): T7b added — joint future right tail of
+  the original N=3 basket (k = 0/1/2/3 members per +H ruler; 1st/2nd/3rd-largest MFE; >=2
+  and all-3 day frequencies; touch vs executable lenses with blocked/unfilled members
+  excluded from the accessible lens; rank-adjacent mirror; across the frozen timing
+  surface). No fixed number of survivors is assumed; +H rulers remain rulers, not
+  survivor definitions.

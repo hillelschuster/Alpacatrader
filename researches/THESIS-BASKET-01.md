@@ -10,11 +10,24 @@ contract), `researches/STATE.md`. H025 remains independent and untouched.
 
 We buy participation in a small race of plausible extreme leaders. We do not know the
 winner at entry. The market is allowed to eliminate candidates. Failed tickets should
-become inexpensive. We preserve meaningful exposure to the candidate that keeps
+become inexpensive. We preserve meaningful exposure to whichever candidates keep
 surviving. We impose no predetermined profit destination. If peers die while one candidate
 remains strong, that relative survival may itself contain information and may eventually
 justify reallocating some released risk toward the survivor under a fixed portfolio-risk
 ceiling.
+
+**Multi-survivor clarification (locked before the aggregation was written).** Nothing in
+this thesis assumes that exactly one candidate survives, or that one member must be the
+only economically valuable one. A day may produce **zero, one, two, or all three** original
+members with large post-fill excursions, and multiple members may continue to deserve
+participation simultaneously (e.g., A +70%, B +150%, C +300% post-fill: A and B are not
+"failed tickets" merely because C was stronger). Release is caused by a candidate's **own
+causal path demonstrating failure** — never merely because a peer looks stronger. The
+basket-level joint right tail of the original N members is therefore a first-class
+measurement object (PRE-REG T7b), not something inferred from a single "best member"
+statistic. This is a mindset and measurement lock only: adds, replacement and LS logic stay
+deferred (below), and the +H rulers remain descriptive rulers — never survivor definitions
+or profit targets.
 
 Compact form: **diversified uncertainty -> market-driven elimination -> preserved
 survivor -> potentially concentrated evidence.**
@@ -60,7 +73,8 @@ Three questions — never conflated:
    Missing the champion is a missed-opportunity diagnostic, NOT a thesis failure. A basket
    of A=-4%, B=-3%, C=+30% can be excellent without containing the +150% name.
 2. **ECONOMICS** (the real test): did the basket contain enough *accessible* right tail
-   for its best/surviving member to pay for the failed tickets?
+   for its surviving member(s) to pay for the failed tickets — with the joint multi-member
+   tail preserved (PRE-REG T7b), not collapsed to a single best member?
 3. **PORTFOLIO VIABILITY**: the full basket-day distribution after friction, gaps, halts,
    unfilled slots, forced-flat, month-blocked.
 
@@ -122,11 +136,17 @@ definitions alone would miss it. Ladder values are measurement rulers only.
 2. **POLICY pay-for-team**: did the member our causal survival rules actually kept exposed
    generate enough realized profit to pay the other members' losses? Tests whether the
    architecture harvested the opportunity.
+3. **JOINT multi-member tail (the non-singular lens — PRE-REG T7b)**: the original basket
+   may contain zero/one/two/three members with large post-fill excursions; the aggregation
+   preserves the joint right tail of the original N members (k-of-N producing each +H
+   ruler; the basket's 1st/2nd/3rd-largest post-fill MFE; multi-member-day frequencies)
+   so the economics is not forced into a one-survivor frame. Multiple large excursions
+   within one basket are a success shape, not a contradiction.
 
 ## 7. Break-even tail map
 
-Intuition (equal notional): k released members at realized loss `lambda` => the survivor
-must return `r* = k * lambda` for the basket to break even. The executable version uses
+Intuition (equal notional): k released members at realized loss `lambda` => the remaining
+held member(s) must return `r* = k * lambda` for the basket to break even. The executable version uses
 actual basket economics — realized peer losses + friction + slippage/gap costs + relevant
 basket costs — and asks whether the causally held survivor reaches that required profit.
 Phase 1 reports the policy-free illustration only (all-hold / ruler scenarios); the
@@ -243,3 +263,8 @@ plus on-demand SIP pulls).
   failed-ticket burden, execution realism read jointly per T); frozen before any
   aggregate was viewed. §11 same-bar statement aligned with the PRE-REG bounds
   convention (AMBIGUOUS, optimistic/pessimistic; adverse-first = stress assumption only).
+- 2026-09-16 (multi-survivor lock, pre-aggregate): §0 clarification (zero/one/two/three
+  original members may be valuable future survivors; release = own-path failure, never
+  relative comparison to a stronger peer); §2 economics question and §6 pay-for-team gain
+  the joint multi-member tail lens (PRE-REG T7b); §7 wording de-singularized. Mindset and
+  measurement only — adds/replacement/LS remain deferred.
