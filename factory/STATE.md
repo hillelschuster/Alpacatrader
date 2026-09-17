@@ -1996,8 +1996,8 @@ trade->1-min bar builder with explicit condition policy (calibrated against prov
 quote/execution-truth layer, then certification comparison -> regeneration scope. Context: T11
 pairing bug fixed (1703ebc); provenance audit committed (d157237); no BASKET rule frozen.
 
-2026-09-18 (BASKET-01 SIP upgrade — bars layer + first provider cross-check): dip_bars.py ->
-sip_bars.py rebuilds 1-min bars from raw SIP trades with Alpaca's documented condition-update
+2026-09-18 (BASKET-01 SIP upgrade — bars layer + first provider cross-check): sip_bars.py
+rebuilds 1-min bars from raw SIP trades with Alpaca's documented condition-update
 table (tape-aware, strictest-rule-wins; auction codes Q/M/O/5/6 excluded from bars and preserved
 as a separate artifact: 221 prints day 1). Self-test + live run: 2021-02-01 3.32M trades ->
 16,613 bars / 54 syms (~20s). Provider cross-check: 16,613/16,613 matched, 0 ours-only,
