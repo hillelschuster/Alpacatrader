@@ -73,20 +73,23 @@ def pm_path(month: str) -> Path:
     return DATA / "backfill" / f"premarket_ohlcv_{month}.parquet"
 
 
-def load_month(month: str) -> pl.DataFrame:
-    df = pl.read_parquet(
-        month_path(month),
-        columns=["timestamp", "ticker", "open", "high", "low", "close", "volume"],
+def load_month_lazy(month: str) -> pl.LazyFrame:
+    lf = pl.scan_parquet(month_path(month)).select(
+        ["timestamp", "ticker", "open", "high", "low", "close", "volume"]
     )
-    df = df.with_columns(
+    lf = lf.with_columns(
         pl.col("timestamp").dt.convert_time_zone("America/New_York").alias("tset")
     )
-    df = df.with_columns(
+    lf = lf.with_columns(
         (pl.col("tset").dt.hour().cast(pl.Int32) * 60 + pl.col("tset").dt.minute().cast(pl.Int32)).alias("et"),
         pl.col("tset").dt.date().alias("date"),
     )
-    df = df.filter((pl.col("et") >= 570) & (pl.col("et") < 960))
-    return df.unique(subset=["timestamp", "ticker"], keep="first")
+    return lf.filter((pl.col("et") >= 570) & (pl.col("et") < 960))
+
+
+def month_days(month: str) -> list:
+    lf = load_month_lazy(month)
+    return sorted(lf.select("date").unique().collect()["date"].to_list())
 
 
 def load_pm_month(month: str) -> pl.DataFrame | None:
@@ -526,43 +529,47 @@ def main(argv=None):
             carry = last_closes_of_month(prev)
             if not carry:
                 print(f"[seed] {month}: no prior-month closes; first day will be skipped")
-        df = load_month(month)
+        lf = load_month_lazy(month)
         pm = load_pm_month(month)
-        days = sorted(df["date"].unique().to_list())
+        days = month_days(month)
         if args.max_days:
             days = days[: args.max_days]
-        for d in days:
-            day_str = str(d)
-            jl = outd / "anatomy" / f"{day_str}.jsonl"
-            bp = outd / "bars" / f"{day_str}.parquet"
-            day = df.filter(pl.col("date") == d)
-            if day.height == 0:
-                continue
-            last = day.group_by("ticker").agg(
-                pl.col("close").sort_by("et").last().alias("c")
+        for chunk in [days[i:i + 5] for i in range(0, len(days), 5)]:
+            wdf = lf.filter(pl.col("date").is_in(chunk)).collect().unique(
+                subset=["timestamp", "ticker"], keep="first"
             )
-            carry_next = dict(zip(last["ticker"].to_list(), last["c"].to_list()))
-            if jl.exists() and not args.force:
+            for d in chunk:
+                day_str = str(d)
+                jl = outd / "anatomy" / f"{day_str}.jsonl"
+                bp = outd / "bars" / f"{day_str}.parquet"
+                day = wdf.filter(pl.col("date") == d)
+                if day.height == 0:
+                    continue
+                last = day.group_by("ticker").agg(
+                    pl.col("close").sort_by("et").last().alias("c")
+                )
+                carry_next = dict(zip(last["ticker"].to_list(), last["c"].to_list()))
+                if jl.exists() and not args.force:
+                    carry = carry_next
+                    continue
+                if not carry:
+                    print(f"[skip] {day_str}: no prev close seed (first day of a data stretch)")
+                    carry = carry_next
+                    continue
+                pm_day = pm.filter(pl.col("date") == d) if pm is not None else None
+                rec = process_day(day, day_str, carry, pm_day, args.max_days is not None)
+                if not rec:
+                    carry = carry_next
+                    continue
+                bars = rec.pop("_bars")
+                with open(jl, "w") as fh:
+                    fh.write(json.dumps(rec, separators=(",", ":"), default=str) + "\n")
+                bars.write_parquet(bp)
+                n_cand = sum(len(s["names"]) for s in rec["snapshots"])
+                print(f"{day_str}: snaps={len(rec['snapshots'])} cands={n_cand} "
+                      f"elig={rec['audit']['n_elig']} missing0930={rec['audit']['missing_0930']} "
+                      f"ratio2plus={len(rec['audit']['ratio2plus'])}")
                 carry = carry_next
-                continue
-            if not carry:
-                print(f"[skip] {day_str}: no prev close seed (first day of a data stretch)")
-                carry = carry_next
-                continue
-            pm_day = pm.filter(pl.col("date") == d) if pm is not None else None
-            rec = process_day(day, day_str, carry, pm_day, args.max_days is not None)
-            if not rec:
-                carry = carry_next
-                continue
-            bars = rec.pop("_bars")
-            with open(jl, "w") as fh:
-                fh.write(json.dumps(rec, separators=(",", ":"), default=str) + "\n")
-            bars.write_parquet(bp)
-            n_cand = sum(len(s["names"]) for s in rec["snapshots"])
-            print(f"{day_str}: snaps={len(rec['snapshots'])} cands={n_cand} "
-                  f"elig={rec['audit']['n_elig']} missing0930={rec['audit']['missing_0930']} "
-                  f"ratio2plus={len(rec['audit']['ratio2plus'])}")
-            carry = carry_next
         last_month = month
         print(f"[month done] {month}")
 
