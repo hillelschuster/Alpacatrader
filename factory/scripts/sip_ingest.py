@@ -220,19 +220,94 @@ def write_artifact(out_root: Path, day: str, kind: str, df: "pl.DataFrame",
     return man
 
 
+PAGE_LIMIT = 10000
+PAGE_FLUSH_ROWS = 50000
+
+
+def _parse_ts(s: str) -> datetime:
+    if s.endswith("Z"):
+        s = s[:-1] + "+00:00"
+    if "." in s:
+        head, tail = s.split(".", 1)
+        digits, off = "", ""
+        for i, ch in enumerate(tail):
+            if ch.isdigit():
+                digits += ch
+            else:
+                off = tail[i:]
+                break
+        s = f"{head}.{digits[:6]}{off}"
+    return datetime.fromisoformat(s)
+
+
+def cols_from_trade_dicts(ev, symbol: str):
+    ts, px, sz, ex, cd, tid, tp = [], [], [], [], [], [], []
+    for t in ev:
+        ts.append(_parse_ts(t["t"])); px.append(float(t["p"])); sz.append(float(t["s"]))
+        ex.append(t.get("x")); cd.append(list(t.get("c") or []))
+        i_ = t.get("i"); tid.append(int(i_) if i_ is not None else None); tp.append(t.get("z"))
+    return {"symbol": [symbol] * len(ts), "ts_utc": ts, "price": px, "size": sz,
+            "exchange": ex, "conditions": cd, "trade_id": tid, "tape": tp}
+
+
+def cols_from_quote_dicts(ev, symbol: str):
+    ts, bp, bsz, ap, asz, bxe, axe, cd, tp = [], [], [], [], [], [], [], [], []
+    for q in ev:
+        ts.append(_parse_ts(q["t"])); bp.append(float(q["bp"])); bsz.append(float(q["bs"]))
+        ap.append(float(q["ap"])); asz.append(float(q["as"]))
+        bxe.append(q.get("bx")); axe.append(q.get("ax"))
+        cd.append(list(q.get("c") or [])); tp.append(q.get("z"))
+    return {"symbol": [symbol] * len(ts), "ts_utc": ts, "bid_price": bp, "bid_size": bsz,
+            "ask_price": ap, "ask_size": asz, "bid_exchange": bxe, "ask_exchange": axe,
+            "conditions": cd, "tape": tp}
+
+
+def iter_pages(kind: str, symbol: str, start, end, headers: dict, session, retries: int = 3):
+    """Stream provider pages (<=PAGE_LIMIT events each) so memory stays flat."""
+    url = f"https://data.alpaca.markets/v2/stocks/{kind}"
+    params = {"symbols": symbol, "start": start.isoformat(), "end": end.isoformat(),
+              "feed": "sip", "limit": PAGE_LIMIT}
+    tok = None
+    while True:
+        if tok:
+            params["page_token"] = tok
+        r = None
+        for attempt in range(retries):
+            try:
+                r = session.get(url, params=params, headers=headers, timeout=60)
+                if r.status_code == 429:
+                    time.sleep(2 * (attempt + 1))
+                    continue
+                r.raise_for_status()
+                break
+            except Exception:
+                if attempt == retries - 1:
+                    raise
+                time.sleep(3 * (attempt + 1))
+        if r is None or r.status_code == 429:
+            raise RuntimeError(f"request failed after {retries} attempts")
+        js = r.json()
+        data = js.get(kind) or {}
+        ev = data.get(symbol, []) if isinstance(data, dict) else list(data)
+        if ev:
+            yield ev
+        tok = js.get("next_page_token")
+        if not tok:
+            return
+
+
 def fetch_day(day: str, kinds, req_sleep: float, out_root: Path, force: bool,
               limit_symbols: int | None = None, symbol_fn=symbols_for_day,
               append_global: bool = True):
     import shutil
+    import requests
     if shutil.disk_usage("/mnt/c").free < SPACE_FLOOR_GB * 2**30:
         return {k: "space_stop" for k in kinds}
     from dotenv import load_dotenv
     load_dotenv(ROOT / ".env")
-    from alpaca.data.historical import StockHistoricalDataClient
-    from alpaca.data.requests import StockTradesRequest, StockQuotesRequest
-    from alpaca.data.enums import DataFeed
-
-    client = StockHistoricalDataClient(os.environ["ALPACA_API_KEY"], os.environ["ALPACA_SECRET_KEY"])
+    headers = {"APCA-API-KEY-ID": os.environ["ALPACA_API_KEY"],
+               "APCA-API-SECRET-KEY": os.environ["ALPACA_SECRET_KEY"]}
+    session = requests.Session()
     start, end = window_utc(day)
     sym_trades, sym_quotes = symbol_fn(day)
     if limit_symbols:
@@ -254,33 +329,23 @@ def fetch_day(day: str, kinds, req_sleep: float, out_root: Path, force: bool,
         parts_dir.mkdir(parents=True, exist_ok=True)
         n_parts, rows_total = 0, 0
         for i, s in enumerate(syms):
-            for attempt in range(3):
-                try:
-                    if kind == "trades":
-                        r = client.get_stock_trades(StockTradesRequest(
-                            symbol_or_symbols=[s], start=start, end=end, feed=DataFeed.SIP))
-                        ev = r.data.get(s, [])
-                        part = cols_from_trades(ev, s)
-                    else:
-                        r = client.get_stock_quotes(StockQuotesRequest(
-                            symbol_or_symbols=[s], start=start, end=end, feed=DataFeed.SIP))
-                        ev = r.data.get(s, [])
-                        part = cols_from_quotes(ev, s)
+            n_ev = 0
+            try:
+                for ev in iter_pages(kind, s, start, end, headers, session):
+                    part = (cols_from_trade_dicts(ev, s) if kind == "trades"
+                            else cols_from_quote_dicts(ev, s))
                     for c in cols:
                         acc[c].extend(part[c])
-                    if ev:
-                        got += 1
-                    del r, ev, part
-                    break
-                except Exception as e:  # retryable API/network errors
-                    if attempt == 2:
-                        errors.append({"symbol": s, "error": str(e)[:200]})
-                    else:
-                        time.sleep(5 * (attempt + 1))
-            if (i + 1) % PART_SYMS == 0:
-                rows_total += _flush_part(acc, cols, parts_dir, n_parts)
-                n_parts += 1
-                acc = {c: [] for c in cols}
+                    n_ev += len(ev)
+                    if len(acc["ts_utc"]) >= PAGE_FLUSH_ROWS:
+                        rows_total += _flush_part(acc, cols, parts_dir, n_parts)
+                        n_parts += 1
+                        acc = {c: [] for c in cols}
+                    del part, ev
+            except Exception as e:
+                errors.append({"symbol": s, "error": str(e)[:200]})
+            if n_ev:
+                got += 1
             if req_sleep:
                 time.sleep(req_sleep)
         rows_total += _flush_part(acc, cols, parts_dir, n_parts)
@@ -291,7 +356,7 @@ def fetch_day(day: str, kinds, req_sleep: float, out_root: Path, force: bool,
             df = empty_frame(cols)
         status = "probe" if limit_symbols else ("ok" if not errors else "partial")
         meta = {"status": status,
-                "provider": "alpaca", "feed": "sip", "client": "alpaca-py",
+                "provider": "alpaca", "feed": "sip", "client": "alpaca-rest-v2",
                 "requested_at": datetime.now(timezone.utc).isoformat(),
                 "window_utc": [start.isoformat(), end.isoformat()],
                 "window_et": "09:25-16:05 America/New_York",
@@ -353,6 +418,16 @@ def selftest():
     df = frame(r, TRADE_COLS)
     assert df.height == 1 and "trade_id" in df.columns
     assert frame({"symbol": [], "ts_utc": []}, TRADE_COLS).height == 0
+    # REST dict adapters (page streaming)
+    td = {"t": "2021-02-01T14:30:00.123456789Z", "p": 1.5, "s": 100, "x": "D",
+          "c": ["@"], "i": 7, "z": "A"}
+    r3 = cols_from_trade_dicts([td], "XYZ")
+    assert r3["price"] == [1.5] and r3["trade_id"] == [7]
+    assert r3["ts_utc"][0].microsecond == 123456 and r3["ts_utc"][0].tzinfo is not None
+    qd = {"t": "2021-02-01T14:30:00.5Z", "bp": 1.0, "bs": 1.0, "ap": 1.2, "as": 2.0,
+          "bx": "T", "ax": "M", "c": ["R"], "z": "C"}
+    r4 = cols_from_quote_dicts([qd], "XYZ")
+    assert r4["ask_price"] == [1.2] and r4["conditions"] == [["R"]]
     # atomic write + resume logic
     import tempfile
     with tempfile.TemporaryDirectory() as td:
