@@ -2095,6 +2095,18 @@ regeneration: data/sip/net/{trades,quotes}. Live probe 2021-02-01 (3 symbols):
 trades 75,238 rows / 9.2s; quotes 174,294 rows / 17.4s. Measurement-only; no
 thesis/ruler/parameter change; PRE-REG-BASKET-02 not frozen; reserved months untouched.
 
+2026-09-18 (read-packet builder): factory/scripts/basket_read.py — consolidated NON-SELECTIVE
+read over the agg tables for any artifact root (--root / BASKET_ART_ROOT): composition,
+containment, joint k-tail across the whole ruler ladder (5..100) for touch/exec/above,
+competing-risk counters, the F/Q frontier over every (H,L) cell with zero-month counts,
+runner path anatomy, overnight shadow, matched-random control, the continuous T11
+distribution and extremes. `--write` emits READ_PACKET.md + read_packet.json beside the
+tables. Self-tested; validated against the committed legacy anchors (B/600/N3 top1_in
+0.1243; F(30,-10) 0.2554 / Q 0.807; touch k>=1@30 0.3061; random touch k>=1@30 0.0083;
+F(100,-10) 0.0423 / Q 0.7031 with 22 zero months of 51). The reader selects nothing;
+rulers remain rulers. Measurement-only; no thesis/ruler/parameter change; PRE-REG-02 not
+frozen; reserved months untouched.
+
 2026-09-18 (SIP substrate chain: netbars + anatomy driver, smoke-verified): new
 factory/scripts/sip_netbars.py builds the Layer-2 substrate per day: derived bars from raw
 net trades (sip_bars policy='alpaca'), provider SIP bars as fallback/cross-check,
