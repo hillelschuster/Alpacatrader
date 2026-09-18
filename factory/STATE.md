@@ -2157,3 +2157,13 @@ prev-session seeds 2021-01-29 & 2025-01-31), 5 workers, ETA ~4h; run validated t
 data/sip/universe/ (gitignored); a compact index/diagnostics copy will be committed under
 factory/artifacts/basket/sip/ when the backfill completes. No thesis/ruler/parameter change;
 PRE-REG-02 unfrozen; reserved months untouched.
+
+2026-09-18 (Layer-2 net fetch relaunched memory-safe after the OOM + 9p incident):
+sip_ingest.py hardened — per-symbol part flushes every 5 symbols (parts merged to the day
+parquet then deleted), zstd level 3 on all parquet writes, C:-free-space floor
+(SPACE_FLOOR_GB=52) that stops cleanly before the user's disk floor. Bounded memory verified
+on the two heaviest early days (2021-02-01/02: 4.37M/3.55M trade rows; workers ~380-420MB
+RSS, was 1.5-3.4GB pre-fix). Relaunched with 2 disjoint-day workers over 1,068 days
+(skip-existing honors the valid 2021-01-29 leftover); pace ~8-9.5 min/day/worker => ETA
+~3.2 days. Raw trees on WSL ext4 (/home/hillel/sip/net via symlink), C: >= 52GB floor.
+Measurement-only; PRE-REG-BASKET-02 unfrozen; H025 and reserved months untouched.

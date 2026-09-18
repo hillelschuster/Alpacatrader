@@ -117,6 +117,20 @@ def list_net_days():
     return sorted(p.name[:10] for p in CAND.glob("*.json") if len(p.name) == 15)
 
 
+PART_SYMS = 5            # symbols per flushed part file (bounded memory)
+SPACE_FLOOR_GB = 52      # stop before C: free space drops below this (user floor ~50)
+ZSTD_LEVEL = 3
+
+
+def _flush_part(acc, cols, parts_dir: Path, idx: int) -> int:
+    if not acc.get("ts_utc"):
+        return 0
+    df = frame(acc, cols)
+    df.write_parquet(parts_dir / f"part_{idx:03d}.parquet",
+                     compression="zstd", compression_level=ZSTD_LEVEL)
+    return df.height
+
+
 def cols_from_trades(trades, symbol: str):
     """Column-oriented accumulation (cheap for multi-million-event extreme days)."""
     ts, px, sz, ex, cd, tid, tp = [], [], [], [], [], [], []
@@ -187,7 +201,7 @@ def write_artifact(out_root: Path, day: str, kind: str, df: "pl.DataFrame",
     d.mkdir(parents=True, exist_ok=True)
     fp = d / f"{day}.parquet"
     tmp = d / f"{day}.parquet.tmp"
-    df.write_parquet(tmp)
+    df.write_parquet(tmp, compression="zstd", compression_level=ZSTD_LEVEL)
     os.replace(tmp, fp)
     man = dict(meta)
     man.update({"day": day, "kind": kind, "file": f"{kind}/{day}.parquet",
@@ -209,6 +223,9 @@ def write_artifact(out_root: Path, day: str, kind: str, df: "pl.DataFrame",
 def fetch_day(day: str, kinds, req_sleep: float, out_root: Path, force: bool,
               limit_symbols: int | None = None, symbol_fn=symbols_for_day,
               append_global: bool = True):
+    import shutil
+    if shutil.disk_usage("/mnt/c").free < SPACE_FLOOR_GB * 2**30:
+        return {k: "space_stop" for k in kinds}
     from dotenv import load_dotenv
     load_dotenv(ROOT / ".env")
     from alpaca.data.historical import StockHistoricalDataClient
@@ -227,10 +244,13 @@ def fetch_day(day: str, kinds, req_sleep: float, out_root: Path, force: bool,
         if should_skip(out_root, day, kind, force):
             results[kind] = "skip"
             continue
-        rows, errors, got = None, [], 0
+        errors, got = [], 0
         t0 = time.time()
         cols = TRADE_COLS if kind == "trades" else QUOTE_COLS
         acc = {c: [] for c in cols}
+        parts_dir = out_root / kind / f"parts_{day}"
+        parts_dir.mkdir(parents=True, exist_ok=True)
+        n_parts, rows_total = 0, 0
         for i, s in enumerate(syms):
             for attempt in range(3):
                 try:
@@ -254,9 +274,18 @@ def fetch_day(day: str, kinds, req_sleep: float, out_root: Path, force: bool,
                         errors.append({"symbol": s, "error": str(e)[:200]})
                     else:
                         time.sleep(5 * (attempt + 1))
+            if (i + 1) % PART_SYMS == 0:
+                rows_total += _flush_part(acc, cols, parts_dir, n_parts)
+                n_parts += 1
+                acc = {c: [] for c in cols}
             if req_sleep:
                 time.sleep(req_sleep)
-        df = frame(acc, cols)
+        rows_total += _flush_part(acc, cols, parts_dir, n_parts)
+        n_parts += 1
+        if rows_total:
+            df = pl.concat([pl.read_parquet(p) for p in sorted(parts_dir.glob("*.parquet"))])
+        else:
+            df = empty_frame(cols)
         status = "probe" if limit_symbols else ("ok" if not errors else "partial")
         meta = {"status": status,
                 "provider": "alpaca", "feed": "sip", "client": "alpaca-py",
@@ -264,8 +293,15 @@ def fetch_day(day: str, kinds, req_sleep: float, out_root: Path, force: bool,
                 "window_utc": [start.isoformat(), end.isoformat()],
                 "window_et": "09:25-16:05 America/New_York",
                 "symbols_requested": len(syms), "symbols_with_data": got,
-                "errors": errors, "elapsed_s": round(time.time() - t0, 1)}
+                "errors": errors, "elapsed_s": round(time.time() - t0, 1),
+                "parts": int(n_parts), "part_syms": PART_SYMS}
         man = write_artifact(out_root, day, kind, df, meta, append_global)
+        for p_ in sorted(parts_dir.glob("*.parquet")):
+            p_.unlink()
+        try:
+            parts_dir.rmdir()
+        except OSError:
+            pass
         results[kind] = f"{man['status']} rows={man['rows']} syms={got}/{len(syms)} {man['elapsed_s']}s"
     return results
 
