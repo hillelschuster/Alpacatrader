@@ -118,7 +118,7 @@ def list_net_days():
 
 
 PART_SYMS = 5            # symbols per flushed part file (bounded memory)
-SPACE_FLOOR_GB = 52      # stop before C: free space drops below this (user floor ~50)
+SPACE_FLOOR_GB = 50      # stop before C: free space drops below this (user floor ~50)
 ZSTD_LEVEL = 3
 
 
@@ -249,6 +249,8 @@ def fetch_day(day: str, kinds, req_sleep: float, out_root: Path, force: bool,
         cols = TRADE_COLS if kind == "trades" else QUOTE_COLS
         acc = {c: [] for c in cols}
         parts_dir = out_root / kind / f"parts_{day}"
+        if parts_dir.exists():
+            shutil.rmtree(parts_dir)  # stale parts from an interrupted attempt
         parts_dir.mkdir(parents=True, exist_ok=True)
         n_parts, rows_total = 0, 0
         for i, s in enumerate(syms):
