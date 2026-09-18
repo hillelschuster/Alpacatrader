@@ -2095,6 +2095,21 @@ regeneration: data/sip/net/{trades,quotes}. Live probe 2021-02-01 (3 symbols):
 trades 75,238 rows / 9.2s; quotes 174,294 rows / 17.4s. Measurement-only; no
 thesis/ruler/parameter change; PRE-REG-BASKET-02 not frozen; reserved months untouched.
 
+2026-09-18 (SIP substrate chain: netbars + anatomy driver, smoke-verified): new
+factory/scripts/sip_netbars.py builds the Layer-2 substrate per day: derived bars from raw
+net trades (sip_bars policy='alpaca'), provider SIP bars as fallback/cross-check,
+per-symbol-day coverage class (healthy_raw / provider_only / unresolved, rule documented in
+code), merged RTH frame data/sip/net/bars/<day>.parquet (+ coverage/<day>.json + manifests).
+Smoke 2021-02-01: 67 symbols, 19,837 merged rows, classes 65 healthy_raw / 2 provider_only /
+0 unresolved, 74.7s. new factory/scripts/sip_anatomy.py reuses basket_anatomy.process_day on
+the SIP substrate with SIP prev close (previous available universe day c_last), A_pm from the
+SIP premarket compact table when present, winners + audit patched from the FULL PIT-universe
+compact table (containment uses all PIT symbols). Smoke 2021-02-01: 13 snapshots, audit
+n_elig 5,290 / n_open0930 5,090 / missing 200, B600 top3 LODE +55.3% / KSPN +20.2% /
+GSM +18.8%, winners_open LODE +85.3% / LACQ +67.4% / KIQ +63.2%. Both self-tested.
+Measurement-only; no thesis/ruler/parameter change; PRE-REG-BASKET-02 not frozen; reserved
+months untouched.
+
 2026-09-18 (SIP Layer-1 discovery — full PIT-universe SIP minute bars): new
 factory/scripts/sip_universe.py fetches Alpaca SIP 1-min bars across the complete PIT-eligible
 universe per day (feed=sip, Adjustment.RAW, batches of 500, per-day atomic parquet + manifest,
