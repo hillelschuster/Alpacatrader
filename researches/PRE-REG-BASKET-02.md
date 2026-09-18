@@ -4,6 +4,17 @@
 Gate: PRE-REG-BASKET-01 §7 ("Pre-register ONE release rule + ONE permissive survivor rule …
 frozen before any Phase-2 P&L"; "User sign-off at each gate").
 
+**SUPERSEDING CONDITION — SIP data upgrade (2026-09-18):** every number in this document is
+derived from the legacy OHLCV tape, which the SIP certification panel (20 days, event-level)
+showed to be materially wrong in a minority of cases: missing minutes, subsampled
+single-print minutes, two confirmed scale/bad-print contaminations, 498 sub-minute
+first-passage order flips on healthy-coverage symbols, and 15.4% of snapshots changing the
+top-3 set. Certification verdict: **regenerate Phase-1 from SIP-derived bars**
+(`factory/artifacts/basket/sip/SIP_REGENERATION_DECISION.md`). Consequently the constants
+selected here (T\*=600, L=10, g=50) and all Phase-1 probabilities are **PROVISIONAL** and may
+be re-derived once the SIP-regenerated anatomy exists. **This document must not be frozen
+against legacy numbers.** Freeze stays PAUSED pending the owner's regeneration decision.
+
 Inputs: `factory/artifacts/basket/agg/` (committed: `T1…T10`, `T4b_frontier.json`,
 `T5_paths.json`, `T7_overnight.json`, `T9b_random.json`) + `THESIS-BASKET-01.md`
 (§0 state machine, §2 posture, multi-survivor lock). All numbers below are descriptive
@@ -188,3 +199,11 @@ The static-survivor comparator is mandatory for any later sizing work.
   claims replaced with measured values (≈92%, 1.75/3); the LULD statement marked external,
   not mechanically verified. Parameters unchanged (T\*=600, L=10, g=50) and are now
   explicitly owner-decisions. No Phase-2 P&L computed.
+* 2026-09-18 (SIP data upgrade — freeze condition added): SIP certification over the 20-day
+  panel showed the legacy tape is materially wrong in a minority of cases (missing minutes,
+  subsampled single-print minutes, confirmed scale/bad-print contaminations, 498 sub-minute
+  first-passage order flips, 15.4% of snapshots changing the top-3 set); certification verdict
+  = regenerate Phase-1 from SIP-derived bars (SIP_REGENERATION_DECISION.md). All constants and
+  probabilities in this document are marked PROVISIONAL at the top and must not be frozen
+  against legacy numbers. Freeze remains PAUSED pending the owner's regeneration decision.
+  No Phase-2 P&L computed.
