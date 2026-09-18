@@ -2074,6 +2074,17 @@ top-3 set-change declared a lower bound (stored top-10 rerank only). PRE-REG-02 
 SIP_REGENERATION_DECISION.md owner-amendments section updated. Measurement-only: no
 thesis/ruler/parameter change; PRE-REG-BASKET-02 still NOT FROZEN; reserved months untouched.
 
+2026-09-18 (SIP Layer-1 candidate snapshots): new factory/scripts/sip_candidates.py
+(self-tested; smoke on 2021-02-01 -> net=67, prev_day=2021-01-29) reconstructs the frozen
+BASKET ranking snapshots DIRECTLY FROM SIP compact tables: A_open = o570 / SIP previous-
+session close - 1 (previous close chained from the previous available SIP table; A_open
+reported, never silently gated, when no SIP prev session exists); B(T) = px_T / o570 - 1
+(prev-close independent); winners_open/winners_prev diagnostics; per-snapshot top-10 plus
+a 1pp SIP boundary margin; candidate net = union of all snapshot top-10s + margins +
+winners. The legacy union is not consulted. Outputs: data/sip/candidates/YYYY-MM-DD.json
++ per-day manifest (source sha256, counts, elapsed) + index builder (--index). Atomic,
+resumable. Measurement-only; no thesis/ruler/parameter change; PRE-REG-02 not frozen.
+
 2026-09-18 (SIP Layer-1 discovery — full PIT-universe SIP minute bars): new
 factory/scripts/sip_universe.py fetches Alpaca SIP 1-min bars across the complete PIT-eligible
 universe per day (feed=sip, Adjustment.RAW, batches of 500, per-day atomic parquet + manifest,
