@@ -2073,3 +2073,23 @@ bar-based (legacy bars vs SIP-derived bars) in cert files, decision note and doc
 top-3 set-change declared a lower bound (stored top-10 rerank only). PRE-REG-02 banner and
 SIP_REGENERATION_DECISION.md owner-amendments section updated. Measurement-only: no
 thesis/ruler/parameter change; PRE-REG-BASKET-02 still NOT FROZEN; reserved months untouched.
+
+2026-09-18 (SIP Layer-1 discovery — full PIT-universe SIP minute bars): new
+factory/scripts/sip_universe.py fetches Alpaca SIP 1-min bars across the complete PIT-eligible
+universe per day (feed=sip, Adjustment.RAW, batches of 500, per-day atomic parquet + manifest,
+resume; --premarket mode = A_pm window 04:00-09:29 ET; --workers N runs disjoint-day
+subprocesses; --index rebuilds the merged index from per-day manifests, never concurrent
+appends). Compact per-symbol row: o570 + delayed-open flag, px at every frozen T (close of the
+last bar with et<=T-1, with the et actually used), day hi/lo/c_last/vol/n_bars. Three
+handling fixes: '^' and '/' symbols are pre-filtered (Alpaca rejects those preferred/class
+spellings and fails a WHOLE batch on one bad symbol), API-invalid symbols are removed
+individually with a loop guard (the raw removal previously could not match whitespace-padded
+names and spun forever), and PIT symbols are whitespace-stripped (the bundle is fixed-width
+padded); seed days before the PIT archive start fall back to the earliest vintage.
+Benchmarks: 2021-02-01 5,290/5,366 syms 55.8s; 2022-03-10 6,054/6,289 56.5s; 2025-09-09 and
+2025-10-30 ~47-60s each. Full dev-span backfill launched: 1,068 days (1,066 dev + 2
+prev-session seeds 2021-01-29 & 2025-01-31), 5 workers, ETA ~4h; run validated to include May
+2026 (an earlier full-date string filter had silently excluded it). Raw stays under
+data/sip/universe/ (gitignored); a compact index/diagnostics copy will be committed under
+factory/artifacts/basket/sip/ when the backfill completes. No thesis/ruler/parameter change;
+PRE-REG-02 unfrozen; reserved months untouched.
