@@ -13,8 +13,8 @@ populations and rules stay as frozen.
   prices); px delta p50 ≈ 2bps.
 - path: 38 members; fill delta p50 0bps, p90 +53.5bps, **max 469bps**; MFE delta p90 +47bps,
   **max 492bps**.
-- first-passage: **21 non-ambiguous order flips** across 4 members; 1/1 stored AMBIGUOUS case
-  resolved by trade sequencing.
+- first-passage: **21 bar-based order flips** (legacy bars vs SIP-derived bars) across 4
+  members; 1/1 stored AMBIGUOUS case resolved by raw-trade sequencing.
 - execution: spread at fill p50 ≈ 107bps, p90 ≈ 358bps (quoted spread at the entry moment).
 - tail: 10 symbols with SIP RTH price-updating max differing from the stored day high by >0.5%,
   **max +9.3%** (CDE 12.58 → 13.75).

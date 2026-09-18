@@ -4,6 +4,7 @@
   "snapshots": 260,
   "skipped_snapshots": 4,
   "top3_set_change_share": 0.1538,
+  "top3_set_change_scope": "LOWER BOUND: stored top-10 reranked by SIP only; full-universe SIP-bar discovery yields the actual number",
   "top3_order_change_share": 0.25,
   "rank_flip_positions_total": 763,
   "px_delta_bps_p50_of_p50s": {
@@ -110,9 +111,14 @@
   }
  },
  "C_first_passage": {
-  "order_flips_nonamb": 498,
-  "ambiguous_cases": 27,
-  "ambiguous_resolved": 27
+  "bar_based_order_flips": 498,
+  "bar_based_order_flips_method": "legacy-bar vs SIP-derived-bar first-touch ordering (bar-level; subminute ordering measured by amb lens)",
+  "amb": {
+   "cells": 58,
+   "resolved_raw_trades": 58,
+   "resolved_price_updating": 58,
+   "unresolved": 0
+  }
  },
  "D_execution": {
   "spread_bps": {

@@ -1,41 +1,65 @@
 {
  "panel": {
-  "days": 1,
+  "days": 20,
   "selection": {
-   "snapshots": 13,
-   "rank_flip_positions_total": 34,
-   "px_delta_bps_p50_of_p50s": 2.115954
+   "snapshots": 260,
+   "rank_flip_positions_total": 763,
+   "px_delta_bps_p50_of_p50s": 0.977254
   },
   "path": {
-   "members": 38,
+   "members": 695,
    "fill_delta_bps": {
     "p50": 0.0,
-    "p90": 53.502984,
-    "max_abs": 469.156322
+    "p90": 28.812446,
+    "max_abs": 7444.126074
    },
    "mfe_delta_bps": {
-    "p50": 1.165,
-    "p90": 46.991,
-    "max_abs": 492.25
+    "p50": 0.0,
+    "p90": 95.556,
+    "max_abs": 298713.59
    },
-   "nonambiguous_order_flips": 21,
-   "amb_cases": 1,
-   "amb_resolved_by_trades": 1
+   "bar_based_order_flips": 498,
+   "bar_based_order_flips_method": "legacy-bar vs SIP-derived-bar first-touch ordering (bar-level)",
+   "amb": {
+    "cells": 58,
+    "resolved_raw_trades": 58,
+    "resolved_price_updating": 58,
+    "unresolved": 0
+   }
   },
   "exec": {
-   "members": 37,
+   "members": 682,
    "spread_bps": {
-    "p50": 106.656133,
-    "p90": 357.748403
+    "p50": 86.262109,
+    "p90": 471.85545
    }
   },
   "tail": {
-   "days": 1,
-   "symbol_tail_diffs_total": 10,
-   "max_abs_delta": 0.093005
+   "days": 20,
+   "symbol_tail_diffs_total": 197,
+   "max_abs_delta": 9.602339
   }
  },
  "days": [
-  "2021-02-01"
+  "2021-02-01",
+  "2021-02-02",
+  "2021-02-09",
+  "2021-03-08",
+  "2021-10-25",
+  "2022-02-17",
+  "2022-03-10",
+  "2023-03-16",
+  "2023-03-17",
+  "2023-08-30",
+  "2023-12-15",
+  "2023-12-28",
+  "2025-03-24",
+  "2025-09-09",
+  "2025-10-30",
+  "2025-11-25",
+  "2026-04-27",
+  "2026-04-29",
+  "2026-05-15",
+  "2026-05-29"
  ]
 }

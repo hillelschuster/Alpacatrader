@@ -57,7 +57,7 @@ def aggregate(certs: list) -> dict:
     px_p50, px_max = [], []
     outsiders = []
     fill_d, mfe_d, mae_d = [], [], []
-    flips_nonamb = amb_cases = amb_res = 0
+    flips_bar = amb_cells = amb_rt = amb_po = amb_unres = 0
     spreads, crosses = [], []
     tail_diffs = []
     mfe_stored_big = mfe_sip_big = sip_only_big = stored_only_big = 0
@@ -103,11 +103,15 @@ def aggregate(certs: list) -> dict:
                     sip_only_big += 1
             if p.get("mae_stored") is not None and p.get("mae_sip") is not None:
                 mae_d.append((p["mae_sip"] - p["mae_stored"]) * 1e4)
-            flips_nonamb += len(p.get("order_flips_nonamb", []) or [])
-            if p.get("amb_resolved"):
-                amb_cases += 1
-                if p["amb_resolved"] is not None:
-                    amb_res += 1
+            flips_bar += len(p.get("order_flips_bar_based", p.get("order_flips_nonamb", [])) or [])
+            for k, v in (p.get("amb_resolved") or {}).items():
+                # per-(H,L) ambiguity cells; per-lens resolution; genuine unresolved bucket
+                amb_cells += 1
+                r_ok = v.get("raw") in ("up", "dn", "up_only", "dn_only")
+                p_ok = v.get("price_upd") in ("up", "dn", "up_only", "dn_only")
+                amb_rt += int(r_ok)
+                amb_po += int(p_ok)
+                amb_unres += int(not (r_ok or p_ok))
         for e in c.get("exec", []):
             if e.get("spread_bps") is not None:
                 spreads.append(e["spread_bps"])
@@ -126,6 +130,8 @@ def aggregate(certs: list) -> dict:
             "snapshots": sel_snap,
             "skipped_snapshots": sel_skipped,
             "top3_set_change_share": _pct(sel_set_change, sel_snap),
+            "top3_set_change_scope": ("LOWER BOUND: stored top-10 reranked by SIP only; "
+                                      "full-universe SIP-bar discovery yields the actual number"),
             "top3_order_change_share": _pct(sel_order_change, sel_snap),
             "rank_flip_positions_total": flips_total,
             "px_delta_bps_p50_of_p50s": _q(px_p50), "px_delta_bps_max": max(px_max) if px_max else None,
@@ -138,8 +144,12 @@ def aggregate(certs: list) -> dict:
             "fill_delta_share_gt_100bps": _pct(sum(1 for x in fill_d if x > 100), len(fill_d)),
             "mfe_delta_bps": _q(mfe_d), "mae_delta_bps": _q(mae_d),
         },
-        "C_first_passage": {"order_flips_nonamb": flips_nonamb,
-                            "ambiguous_cases": amb_cases, "ambiguous_resolved": amb_res},
+        "C_first_passage": {
+            "bar_based_order_flips": flips_bar,
+            "bar_based_order_flips_method": ("legacy-bar vs SIP-derived-bar first-touch ordering "
+                                             "(bar-level; subminute ordering measured by amb lens)"),
+            "amb": {"cells": amb_cells, "resolved_raw_trades": amb_rt,
+                    "resolved_price_updating": amb_po, "unresolved": amb_unres}},
         "D_execution": {"spread_bps": _q(spreads), "buy_cross_bps": _q(crosses)},
         "E_tail": {"symbol_diffs_total": len(tail_diffs),
                    "stored_big_members": mfe_stored_big, "confirmed_by_sip": mfe_sip_big,
@@ -163,8 +173,8 @@ def render_note(agg: dict) -> str:
              "quoted spreads are market state, not assumed fills.")
     L.append("")
     L.append("## A. Selection differences (membership / rank / decision prices)")
-    L.append(f"- top-3 **set** changed on {A['top3_set_change_share']} of {A['snapshots']} snapshots; "
-             f"order-only changes on {A['top3_order_change_share']}")
+    L.append(f"- top-3 **set** changed on {A['top3_set_change_share']} of {A['snapshots']} snapshots "
+             f"({A['top3_set_change_scope']}); order-only changes on {A['top3_order_change_share']}")
     L.append(f"- rank-flip positions within stored top-10 (total): {A['rank_flip_positions_total']}")
     L.append(f"- decision-price deltas (bps): median-of-medians {A['px_delta_bps_p50_of_p50s']}, "
              f"max {A['px_delta_bps_max']}")
@@ -176,8 +186,10 @@ def render_note(agg: dict) -> str:
     L.append(f"- MFE delta bps (SIP - stored): {B['mfe_delta_bps']}; MAE delta bps: {B['mae_delta_bps']}")
     L.append("")
     L.append("## C. First-passage differences")
-    L.append(f"- non-ambiguous order flips: {C['order_flips_nonamb']}; "
-             f"ambiguous cases {C['ambiguous_cases']}, resolved by raw trades {C['ambiguous_resolved']}")
+    L.append(f"- bar-based order flips (legacy bars vs SIP-derived bars): {C['bar_based_order_flips']}; "
+             f"subminute ambiguity cells {C['amb']['cells']} (resolved by raw trades "
+             f"{C['amb']['resolved_raw_trades']}, by price-updating trades "
+             f"{C['amb']['resolved_price_updating']}, unresolved {C['amb']['unresolved']})")
     L.append("")
     L.append("## D. Execution truth at causal entry")
     L.append(f"- quoted spread at fill bps: {D['spread_bps']}; buy-cross bps: {D['buy_cross_bps']}")
@@ -224,10 +236,12 @@ def selftest():
                        "outsiders_above_cutoff": [{"ticker": "ZZZ", "sel_sip": 0.5}]}],
         "path": [{"pop": "B", "T": 600, "ticker": "AAA", "fill_stored": 10.0, "fill_sip": 10.11,
                   "fill_delta_bps": 110.0, "mfe_stored": 1.2, "mfe_sip": 1.1, "mae_stored": -0.1,
-                  "mae_sip": -0.2, "order_flips_nonamb": [{"H": 30, "L": 10}], "amb_resolved": "up"},
+                  "mae_sip": -0.2, "order_flips_bar_based": [{"H": 30, "L": 10}],
+                  "amb_resolved": {"30/10": {"raw": "up", "price_upd": "amb"}}},
                  {"pop": "B", "T": 600, "ticker": "BBB", "fill_stored": 9.0, "fill_sip": 9.0,
                   "fill_delta_bps": 0.0, "mfe_stored": 0.5, "mfe_sip": 1.4, "mae_stored": -0.05,
-                  "mae_sip": -0.06, "order_flips_nonamb": [], "amb_resolved": None}],
+                  "mae_sip": -0.06, "order_flips_bar_based": [],
+                  "amb_resolved": {"10/5": {"raw": None, "price_upd": "amb"}}}],
         "exec": [{"pop": "B", "T": 600, "ticker": "AAA", "spread_bps": 90.0, "buy_cross_bps": 45.0}],
         "tail": {"diffs_vs_stored_high": [{"ticker": "AAA", "stored_high": 22.0,
                                            "sip_rth_po_max": 23.0, "raw_window_max": 23.0,
@@ -242,7 +256,8 @@ def selftest():
     assert B["fill_delta_share_gt_100bps"] == 0.5, B
     assert E["stored_big_members"] == 1 and E["confirmed_by_sip"] == 1
     assert E["sip_only_big_new"] == 1 and E["stored_only_big_unconfirmed"] == 0
-    assert C["order_flips_nonamb"] == 1 and C["ambiguous_resolved"] == 1
+    assert C["bar_based_order_flips"] == 1 and C["amb"] == {
+        "cells": 2, "resolved_raw_trades": 1, "resolved_price_updating": 0, "unresolved": 1}
     note = render_note(agg)
     assert "Decision framework" in note and "2025-01-02" in note
     print("self-test OK")
@@ -274,7 +289,7 @@ def main(argv=None):
         print(f"{agg['days']} days: A set-change {agg['A_selection']['top3_set_change_share']}, "
               f"flips {agg['A_selection']['rank_flip_positions_total']}, "
               f"B fill>100bps {agg['B_path']['fill_delta_share_gt_100bps']}, "
-              f"C flips {agg['C_first_passage']['order_flips_nonamb']}, "
+              f"C flips {agg['C_first_passage']['bar_based_order_flips']}, "
               f"E stored-big {agg['E_tail']['stored_big_members']}/confirmed {agg['E_tail']['confirmed_by_sip']}")
 
 

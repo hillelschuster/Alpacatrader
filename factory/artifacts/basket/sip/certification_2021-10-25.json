@@ -1577,7 +1577,7 @@
    "mae_sip": -0.507956,
    "i_mfe_stored": 0,
    "i_mfe_sip": 0,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -1593,7 +1593,7 @@
    "mae_sip": -0.008056,
    "i_mfe_stored": 0,
    "i_mfe_sip": 0,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -1609,7 +1609,7 @@
    "mae_sip": -0.365289,
    "i_mfe_stored": 0,
    "i_mfe_sip": 0,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -1625,7 +1625,7 @@
    "mae_sip": -0.218391,
    "i_mfe_stored": 13,
    "i_mfe_sip": 13,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -1641,7 +1641,7 @@
    "mae_sip": -0.192466,
    "i_mfe_stored": 129,
    "i_mfe_sip": 169,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -1657,7 +1657,7 @@
    "mae_sip": -0.195667,
    "i_mfe_stored": 14,
    "i_mfe_sip": 14,
-   "order_flips_nonamb": [
+   "order_flips_bar_based": [
     "5/3:up->dn",
     "10/3:up->dn"
    ],
@@ -1676,7 +1676,7 @@
    "mae_sip": -0.235955,
    "i_mfe_stored": 8,
    "i_mfe_sip": 8,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -1692,7 +1692,7 @@
    "mae_sip": -0.03318,
    "i_mfe_stored": 6,
    "i_mfe_sip": 8,
-   "order_flips_nonamb": [
+   "order_flips_bar_based": [
     "5/3:up_only->dn",
     "10/3:neither->dn_only",
     "20/3:neither->dn_only",
@@ -1715,7 +1715,7 @@
    "mae_sip": -0.198562,
    "i_mfe_stored": 11,
    "i_mfe_sip": 11,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -1731,7 +1731,7 @@
    "mae_sip": -0.028481,
    "i_mfe_stored": 4,
    "i_mfe_sip": 6,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -1747,7 +1747,7 @@
    "mae_sip": -0.212355,
    "i_mfe_stored": 3,
    "i_mfe_sip": 3,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -1763,7 +1763,7 @@
    "mae_sip": -0.178947,
    "i_mfe_stored": 6,
    "i_mfe_sip": 6,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -1779,7 +1779,7 @@
    "mae_sip": -0.284211,
    "i_mfe_stored": 1,
    "i_mfe_sip": 1,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -1795,7 +1795,7 @@
    "mae_sip": -0.014543,
    "i_mfe_stored": 0,
    "i_mfe_sip": 1,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -1811,7 +1811,7 @@
    "mae_sip": -0.2,
    "i_mfe_stored": 4,
    "i_mfe_sip": 4,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -1827,7 +1827,7 @@
    "mae_sip": -0.27803,
    "i_mfe_stored": 1,
    "i_mfe_sip": 1,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -1843,7 +1843,7 @@
    "mae_sip": -0.252747,
    "i_mfe_stored": 4,
    "i_mfe_sip": 4,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -1859,7 +1859,7 @@
    "mae_sip": -0.261713,
    "i_mfe_stored": 1,
    "i_mfe_sip": 2,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -1875,7 +1875,7 @@
    "mae_sip": -0.036077,
    "i_mfe_stored": 28,
    "i_mfe_sip": 70,
-   "order_flips_nonamb": [
+   "order_flips_bar_based": [
     "5/3:neither->dn_only",
     "10/3:neither->dn_only",
     "20/3:neither->dn_only",
@@ -1898,7 +1898,7 @@
    "mae_sip": -0.252747,
    "i_mfe_stored": 0,
    "i_mfe_sip": 0,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -1914,7 +1914,7 @@
    "mae_sip": -0.037079,
    "i_mfe_stored": 23,
    "i_mfe_sip": 61,
-   "order_flips_nonamb": [
+   "order_flips_bar_based": [
     "5/3:neither->dn_only",
     "10/3:neither->dn_only",
     "20/3:neither->dn_only",
@@ -1937,7 +1937,7 @@
    "mae_sip": -0.229822,
    "i_mfe_stored": 3,
    "i_mfe_sip": 7,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -1953,7 +1953,7 @@
    "mae_sip": 0.0,
    "i_mfe_stored": 275,
    "i_mfe_sip": 0,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -1969,7 +1969,7 @@
    "mae_sip": -0.230959,
    "i_mfe_stored": 19,
    "i_mfe_sip": 9,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -1985,7 +1985,7 @@
    "mae_sip": -0.021961,
    "i_mfe_stored": 18,
    "i_mfe_sip": 54,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -2001,7 +2001,7 @@
    "mae_sip": -0.024916,
    "i_mfe_stored": 16,
    "i_mfe_sip": 50,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -2017,7 +2017,7 @@
    "mae_sip": -0.06988,
    "i_mfe_stored": 12,
    "i_mfe_sip": 265,
-   "order_flips_nonamb": [
+   "order_flips_bar_based": [
     "5/3:up->dn",
     "5/5:up->dn"
    ],
@@ -2036,7 +2036,7 @@
    "mae_sip": -0.101469,
    "i_mfe_stored": 183,
    "i_mfe_sip": 250,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -2052,7 +2052,7 @@
    "mae_sip": -0.213511,
    "i_mfe_stored": 15,
    "i_mfe_sip": 2,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -2068,7 +2068,7 @@
    "mae_sip": -0.104831,
    "i_mfe_stored": 0,
    "i_mfe_sip": 0,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -2084,7 +2084,7 @@
    "mae_sip": -0.034067,
    "i_mfe_stored": 10,
    "i_mfe_sip": 38,
-   "order_flips_nonamb": [
+   "order_flips_bar_based": [
     "5/3:neither->dn_only",
     "10/3:neither->dn_only",
     "20/3:neither->dn_only",
@@ -2107,7 +2107,7 @@
    "mae_sip": -0.219024,
    "i_mfe_stored": 11,
    "i_mfe_sip": 8,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -2123,7 +2123,7 @@
    "mae_sip": -0.075,
    "i_mfe_stored": 4,
    "i_mfe_sip": 0,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   }
  ],

@@ -7,13 +7,15 @@ No rule, parameter or thesis change. PRE-REG-BASKET-02 freeze remains PAUSED.
 
 ## A–E summary (panel)
 
-- **A selection**: top-3 SET changed on 15.4% of snapshots; 763 rank-flip positions;
-  590 fetched outsiders above the 10th stored member; decision-price deltas p50 ≈ 1 bp
+- **A selection**: top-3 SET changed on 15.4% of snapshots (**LOWER BOUND** — rerank of the
+  stored top-10 only; full-universe SIP-bar discovery yields the actual number); 763 rank-flip
+  positions; 590 fetched outsiders above the 10th stored member; decision-price deltas p50 ≈ 1 bp
   (the churn is at the margin, not wholesale).
 - **B path**: |fill delta| p50 0 / p90 77 bps; 7.5% of member-days > 100 bps;
   MFE deltas p90 ≈ 96 bps (excluding the artifact max).
-- **C first passage**: **498** non-ambiguous +H/−L order flips across 695 member-days
-  (all on healthy-coverage symbols), 27/27 stored-ambiguous cases resolved by trades.
+- **C first passage**: **498 bar-based +H/−L order flips** (legacy bars vs SIP-derived bars,
+  not subminute) across 695 member-days (all on healthy-coverage symbols); 27 subminute
+  ambiguity cells, 27 resolved by raw-trade sequencing.
 - **D execution**: quoted spread at causal fill p50 86 bps / p90 472 bps; market state
   only — no fills assumed.
 - **E tail**: 50 stored member-days ≥ +100% → 49 confirmed; 1 unconfirmed = BRP's
@@ -37,8 +39,8 @@ when feeds match.
 ## Verdict
 
 **Regenerate Phase-1 from SIP-derived bars** (the stronger of the two options).
-Rationale: first-passage ordering materially changes when resolved to trades (498 flips,
-healthy coverage); basket membership at the margin changes (15.4% set changes); and the
+Rationale: first-passage ordering materially changes at the bar level (498 flips, healthy
+coverage); basket membership at the margin changes (lower-bound 15.4% set changes); and the
 legacy substrate carries confirmed bad prints and scale offsets that no patch list can
 fully whitelist. Selective regeneration (keep legacy selection, rebuild path layers) is
 rejected because the selection layer itself moves.
@@ -49,13 +51,36 @@ rejected because the selection layer itself moves.
    silently scored; blocked-slot reporting like the legacy QA.
 2. Bars rebuilt per Alpaca's documented condition table (already implemented in
    `sip_bars.py`); auction/print codes (Q/M/O/5/6) preserved as a side channel.
-3. Candidate net widened beyond the legacy candidate union (legacy gain-floor superset +
-   PIT universe) so SIP top-10s are not restricted to legacy-selected names.
+3. Candidate net = **SIP-derived two-layer approach** (owner amendment 2026-09-18): (a) full
+   PIT-universe SIP minute bars reconstruct top-1/3/5/10 ranking independently of the legacy
+   tape; (b) raw trades/quotes fetched for the discovered SIP candidate neighborhood. The
+   legacy union is demoted to a comparison/audit set; the legacy-cutoff-margin net is NOT
+   canonical.
 4. Quotes ingested for candidate names only (execution truth at causal entries);
    market-state vs assumed-fill layers stay separate.
 5. Reserved months 2026-06..08: raw acquisition allowed, outcomes untouched until the
    frozen implementation is confirmed once.
 6. No quote-feature mining, no strategy changes, no parameter work during migration.
+
+## Owner amendments (2026-09-18, approved)
+
+- **Two-layer discovery** as in guardrail 3: benchmark acquisition on a few days, then full
+  dev-span backfill without further approval unless a new data-source failure appears.
+- **Previous close migrates to SIP**: prev-session close derived from the same SIP layer (no
+  stored legacy prev_close); B keeps the frozen RTH-open anchor; A_open/A_pm use
+  SIP-consistent previous-session information.
+- **A_pm included**: acquire the premarket interval the frozen A_pm definition requires; keep
+  A_pm separately qualified if Alpaca historical coverage limits it.
+- **Coverage classification** per symbol-day: healthy raw SIP / provider-bar-only /
+  unresolved gap. Provider SIP bars may establish ranking/OHLC where raw trades are
+  incomplete; unresolved cases are reported with incidence, never silently dropped.
+- **Measurement fixes**: `ts_min_utc` true-UTC conversion; ambiguity counted per (H,L) cell
+  with resolved-by-raw / resolved-by-price-updating / unresolved; "order flips" relabeled
+  bar-based; 15.4% set-change declared a lower bound.
+- **Process count**: 4–6 disjoint-day workers, per-day manifests canonical (no global-log
+  contention); measured throughput ~1.3 req/s single, ~2.8 req/s at 6–12 workers, no 429s.
+- Regeneration proceeds: SIP anatomy → QA → complete Phase-1 re-read → stop and report;
+  PRE-REG-BASKET-02 stays unfrozen.
 
 ## What this does not decide
 

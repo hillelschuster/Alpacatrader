@@ -7,13 +7,17 @@ frozen before any Phase-2 P&L"; "User sign-off at each gate").
 **SUPERSEDING CONDITION — SIP data upgrade (2026-09-18):** every number in this document is
 derived from the legacy OHLCV tape, which the SIP certification panel (20 days, event-level)
 showed to be materially wrong in a minority of cases: missing minutes, subsampled
-single-print minutes, two confirmed scale/bad-print contaminations, 498 sub-minute
-first-passage order flips on healthy-coverage symbols, and 15.4% of snapshots changing the
-top-3 set. Certification verdict: **regenerate Phase-1 from SIP-derived bars**
-(`factory/artifacts/basket/sip/SIP_REGENERATION_DECISION.md`). Consequently the constants
-selected here (T\*=600, L=10, g=50) and all Phase-1 probabilities are **PROVISIONAL** and may
-be re-derived once the SIP-regenerated anatomy exists. **This document must not be frozen
-against legacy numbers.** Freeze stays PAUSED pending the owner's regeneration decision.
+single-print minutes, two confirmed scale/bad-print contaminations, 498 bar-based first-touch
+order flips (legacy-bar vs SIP-derived-bar ordering; the subminute lens resolved 27
+ambiguity cells), and a lower-bound 15.4% of snapshots changing the top-3 set (stored top-10
+rerank only; full SIP-universe discovery gives the actual number). Certification verdict:
+**regenerate Phase-1 from SIP-derived bars**
+(`factory/artifacts/basket/sip/SIP_REGENERATION_DECISION.md`); the owner approved the
+regeneration on 2026-09-18 under an amended two-layer discovery architecture (full PIT-universe
+SIP bars → SIP candidate neighborhood). Consequently the constants selected here
+(T\*=600, L=10, g=50) and all Phase-1 probabilities are **PROVISIONAL** and will be re-derived
+from the SIP-regenerated anatomy. **This document must not be frozen against legacy numbers.**
+Freeze stays PAUSED through the regeneration and re-read.
 
 Inputs: `factory/artifacts/basket/agg/` (committed: `T1…T10`, `T4b_frontier.json`,
 `T5_paths.json`, `T7_overnight.json`, `T9b_random.json`) + `THESIS-BASKET-01.md`
@@ -201,9 +205,11 @@ The static-survivor comparator is mandatory for any later sizing work.
   explicitly owner-decisions. No Phase-2 P&L computed.
 * 2026-09-18 (SIP data upgrade — freeze condition added): SIP certification over the 20-day
   panel showed the legacy tape is materially wrong in a minority of cases (missing minutes,
-  subsampled single-print minutes, confirmed scale/bad-print contaminations, 498 sub-minute
-  first-passage order flips, 15.4% of snapshots changing the top-3 set); certification verdict
-  = regenerate Phase-1 from SIP-derived bars (SIP_REGENERATION_DECISION.md). All constants and
-  probabilities in this document are marked PROVISIONAL at the top and must not be frozen
-  against legacy numbers. Freeze remains PAUSED pending the owner's regeneration decision.
+  subsampled single-print minutes, confirmed scale/bad-print contaminations, 498 bar-based
+  order flips — legacy bars vs SIP-derived bars — and a lower-bound 15.4% of snapshots
+  changing the top-3 set); certification verdict = regenerate Phase-1 from SIP-derived bars
+  (SIP_REGENERATION_DECISION.md). Owner approved the regeneration on 2026-09-18 under the
+  amended two-layer discovery architecture; the 1% legacy-cutoff-margin net is not canonical.
+  All constants and probabilities in this document are marked PROVISIONAL at the top and must
+  not be frozen against legacy numbers. Freeze remains PAUSED through regeneration and re-read.
   No Phase-2 P&L computed.

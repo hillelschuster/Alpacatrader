@@ -397,7 +397,9 @@ def certify_day(day: str) -> dict:
                 "mfe_stored": n.get("mfe"), "mfe_sip": st["mfe"],
                 "mae_stored": n.get("mae"), "mae_sip": st["mae"],
                 "i_mfe_stored": n.get("i_mfe"), "i_mfe_sip": st["i_mfe"],
-                "order_flips_nonamb": flips[:8],
+                # legacy-bar ordering vs SIP-derived-bar ordering (bar-level, NOT subminute;
+                # subminute ordering is measured separately by the amb resolution below)
+                "order_flips_bar_based": flips[:8],
                 "amb_resolved": amb_res,
             })
             out["exec"].append({
@@ -418,7 +420,7 @@ def summarize(per_day: list):
     fill_deltas = []
     mfe_deltas = []
     flips_n = 0
-    amb_total = amb_res = 0
+    amb_cells = amb_res_raw = amb_res_po = amb_unres = 0
     spreads = []
     tail_diff_n = 0
     tail_diff_max = 0.0
@@ -435,12 +437,16 @@ def summarize(per_day: list):
                 fill_deltas.append(row["fill_delta_bps"])
             if row["mfe_stored"] is not None and row["mfe_sip"] is not None:
                 mfe_deltas.append((row["mfe_sip"] - row["mfe_stored"]) * 1e4)
-            flips_n += len(row["order_flips_nonamb"])
+            flips_n += len(row["order_flips_bar_based"])
             for k, v in row["amb_resolved"].items():
-                amb_total += 1
-                vals = [v.get("raw"), v.get("price_upd")]
-                if any(x in ("up", "dn", "up_only", "dn_only") for x in vals):
-                    amb_res += 1
+                # one cell per (H,L) ambiguity; count each resolution lens separately and
+                # keep a genuine unresolved bucket (still-amb / no-touch / missing data)
+                amb_cells += 1
+                r_ok = v.get("raw") in ("up", "dn", "up_only", "dn_only")
+                p_ok = v.get("price_upd") in ("up", "dn", "up_only", "dn_only")
+                amb_res_raw += int(r_ok)
+                amb_res_po += int(p_ok)
+                amb_unres += int(not (r_ok or p_ok))
         for row in d["exec"]:
             if row["spread_bps"] is not None:
                 spreads.append(row["spread_bps"])
@@ -456,8 +462,10 @@ def summarize(per_day: list):
                  "mfe_delta_bps": {"p50": R(np.percentile(mfe_deltas, 50)) if mfe_deltas else None,
                                    "p90": R(np.percentile(mfe_deltas, 90)) if mfe_deltas else None,
                                    "max_abs": R(max([abs(x) for x in mfe_deltas])) if mfe_deltas else None},
-                 "nonambiguous_order_flips": flips_n,
-                 "amb_cases": amb_total, "amb_resolved_by_trades": amb_res}
+                 "bar_based_order_flips": flips_n,
+                 "bar_based_order_flips_method": "legacy-bar vs SIP-derived-bar first-touch ordering (bar-level)",
+                 "amb": {"cells": amb_cells, "resolved_raw_trades": amb_res_raw,
+                         "resolved_price_updating": amb_res_po, "unresolved": amb_unres}}
     s["exec"] = {"members": len(spreads), "spread_bps": {
         "p50": R(np.percentile(spreads, 50)) if spreads else None,
         "p90": R(np.percentile(spreads, 90)) if spreads else None} if spreads else None}
@@ -528,6 +536,24 @@ def selftest():
     assert st["mfe"] == round(10.8 / 10.2 - 1, 6), st
     assert st["up5"]["et"] == 571 and st["dn5"]["et"] == 572, st
     assert order_from_stats(st, 5, 5) == "up"
+    # aggregation: per-(H,L) amb cells, per-lens resolution, genuine unresolved bucket
+    fake = [{
+        "selection": [], "exec": [],
+        "path": [
+            {"fill_delta_bps": 0.0, "mfe_stored": 0.1, "mfe_sip": 0.1,
+             "order_flips_bar_based": ["5/3:up->dn"],
+             "amb_resolved": {"5/3": {"raw": "up", "price_upd": "amb"}}},
+            {"fill_delta_bps": 0.0, "mfe_stored": 0.1, "mfe_sip": 0.1,
+             "order_flips_bar_based": [],
+             "amb_resolved": {"10/5": {"raw": None, "price_upd": "amb"}}},
+        ],
+        "tail": {"diffs_vs_stored_high": []},
+    }]
+    ss = summarize(fake)
+    assert ss["path"]["bar_based_order_flips"] == 1, ss
+    amb = ss["path"]["amb"]
+    assert amb == {"cells": 2, "resolved_raw_trades": 1,
+                   "resolved_price_updating": 0, "unresolved": 1}, amb
     print("self-test OK")
 
 

@@ -3,7 +3,7 @@
 Panel days certified: **20**. Method: `sip_certify.py` (SIP raw trades/quotes -> own bars per Alpaca's documented rules), compared event-by-event against the stored legacy anatomy. Pilot scope limits: candidate-union symbols only; stored prev_close reused; A_pm excluded; quoted spreads are market state, not assumed fills.
 
 ## A. Selection differences (membership / rank / decision prices)
-- top-3 **set** changed on 0.1538 of 260 snapshots; order-only changes on 0.25
+- top-3 **set** changed on 0.1538 of 260 snapshots (LOWER BOUND: stored top-10 reranked by SIP only; full-universe SIP-bar discovery yields the actual number); order-only changes on 0.25
 - rank-flip positions within stored top-10 (total): 763
 - decision-price deltas (bps): median-of-medians {'n': 260, 'p50': 0.98, 'p90': 24.43, 'max': 106.0}, max 9766.681004
 - fetched outsiders above the 10th stored member: 590
@@ -14,7 +14,7 @@ Panel days certified: **20**. Method: `sip_certify.py` (SIP raw trades/quotes ->
 - MFE delta bps (SIP - stored): {'n': 695, 'p50': 0.0, 'p90': 95.56, 'max': 298713.59}; MAE delta bps: {'n': 695, 'p50': 0.0, 'p90': 16.51, 'max': 5204.08}
 
 ## C. First-passage differences
-- non-ambiguous order flips: 498; ambiguous cases 27, resolved by raw trades 27
+- bar-based order flips (legacy bars vs SIP-derived bars): 498; subminute ambiguity cells 58 (resolved by raw trades 58, by price-updating trades 58, unresolved 0)
 
 ## D. Execution truth at causal entry
 - quoted spread at fill bps: {'n': 682, 'p50': 86.26, 'p90': 471.86, 'max': 6437.43}; buy-cross bps: {'n': 685, 'p50': 29.41, 'p90': 274.22, 'max': 120434.78}

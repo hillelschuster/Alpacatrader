@@ -1452,7 +1452,7 @@
    "mae_sip": -0.080153,
    "i_mfe_stored": 43,
    "i_mfe_sip": 43,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -1468,7 +1468,7 @@
    "mae_sip": -0.117438,
    "i_mfe_stored": 77,
    "i_mfe_sip": 77,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -1484,7 +1484,7 @@
    "mae_sip": -0.224138,
    "i_mfe_stored": 1,
    "i_mfe_sip": 0,
-   "order_flips_nonamb": [
+   "order_flips_bar_based": [
     "5/10:neither->dn_only",
     "5/15:neither->dn_only",
     "10/10:neither->dn_only",
@@ -1509,7 +1509,7 @@
    "mae_sip": -0.118533,
    "i_mfe_stored": 3,
    "i_mfe_sip": 3,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -1525,7 +1525,7 @@
    "mae_sip": -0.03698,
    "i_mfe_stored": 35,
    "i_mfe_sip": 41,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -1541,7 +1541,7 @@
    "mae_sip": -0.123676,
    "i_mfe_stored": 0,
    "i_mfe_sip": 0,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -1557,7 +1557,7 @@
    "mae_sip": -0.043662,
    "i_mfe_stored": 13,
    "i_mfe_sip": 13,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -1573,7 +1573,7 @@
    "mae_sip": -0.08206,
    "i_mfe_stored": 8,
    "i_mfe_sip": 8,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -1589,7 +1589,7 @@
    "mae_sip": -0.084134,
    "i_mfe_stored": 180,
    "i_mfe_sip": 202,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -1605,7 +1605,7 @@
    "mae_sip": -0.077446,
    "i_mfe_stored": 3,
    "i_mfe_sip": 3,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -1621,7 +1621,7 @@
    "mae_sip": -0.103917,
    "i_mfe_stored": 0,
    "i_mfe_sip": 1,
-   "order_flips_nonamb": [
+   "order_flips_bar_based": [
     "5/10:neither->dn_only",
     "10/10:neither->dn_only",
     "20/10:neither->dn_only",
@@ -1644,7 +1644,7 @@
    "mae_sip": -0.130769,
    "i_mfe_stored": 0,
    "i_mfe_sip": 0,
-   "order_flips_nonamb": [
+   "order_flips_bar_based": [
     "5/3:dn_only->amb",
     "5/5:dn_only->up",
     "5/8:dn_only->up",
@@ -1666,7 +1666,7 @@
    "mae_sip": -0.094667,
    "i_mfe_stored": 66,
    "i_mfe_sip": 194,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -1682,7 +1682,7 @@
    "mae_sip": -0.022901,
    "i_mfe_stored": 8,
    "i_mfe_sip": 0,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -1698,7 +1698,7 @@
    "mae_sip": -0.140684,
    "i_mfe_stored": 0,
    "i_mfe_sip": 0,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -1714,7 +1714,7 @@
    "mae_sip": -0.037745,
    "i_mfe_stored": 44,
    "i_mfe_sip": 51,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -1730,7 +1730,7 @@
    "mae_sip": -0.073034,
    "i_mfe_stored": 0,
    "i_mfe_sip": 0,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -1746,7 +1746,7 @@
    "mae_sip": -0.216061,
    "i_mfe_stored": 3,
    "i_mfe_sip": 3,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -1762,7 +1762,7 @@
    "mae_sip": -0.080153,
    "i_mfe_stored": 0,
    "i_mfe_sip": 0,
-   "order_flips_nonamb": [
+   "order_flips_bar_based": [
     "5/10:up->up_only",
     "10/3:dn_only->up",
     "10/5:dn_only->up",
@@ -1785,7 +1785,7 @@
    "mae_sip": -0.076305,
    "i_mfe_stored": 1,
    "i_mfe_sip": 1,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -1801,7 +1801,7 @@
    "mae_sip": -0.112142,
    "i_mfe_stored": 13,
    "i_mfe_sip": 19,
-   "order_flips_nonamb": [
+   "order_flips_bar_based": [
     "5/8:up->dn"
    ],
    "amb_resolved": {}
@@ -1819,7 +1819,7 @@
    "mae_sip": -0.040222,
    "i_mfe_stored": 33,
    "i_mfe_sip": 159,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -1835,7 +1835,7 @@
    "mae_sip": -0.111808,
    "i_mfe_stored": 2,
    "i_mfe_sip": 4,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -1851,7 +1851,7 @@
    "mae_sip": -0.009119,
    "i_mfe_stored": 214,
    "i_mfe_sip": 236,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -1867,7 +1867,7 @@
    "mae_sip": -0.041551,
    "i_mfe_stored": 20,
    "i_mfe_sip": 144,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -1883,7 +1883,7 @@
    "mae_sip": -0.049563,
    "i_mfe_stored": 199,
    "i_mfe_sip": 221,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -1899,7 +1899,7 @@
    "mae_sip": -0.037961,
    "i_mfe_stored": 6,
    "i_mfe_sip": 129,
-   "order_flips_nonamb": [
+   "order_flips_bar_based": [
     "5/3:up->dn_only"
    ],
    "amb_resolved": {}
@@ -1917,7 +1917,7 @@
    "mae_sip": -0.015008,
    "i_mfe_stored": 171,
    "i_mfe_sip": 191,
-   "order_flips_nonamb": [
+   "order_flips_bar_based": [
     "10/3:neither->up_only",
     "10/5:neither->up_only",
     "10/8:neither->up_only",
@@ -1939,7 +1939,7 @@
    "mae_sip": -0.091376,
    "i_mfe_stored": 2,
    "i_mfe_sip": 0,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -1955,7 +1955,7 @@
    "mae_sip": -0.0296,
    "i_mfe_stored": 151,
    "i_mfe_sip": 165,
-   "order_flips_nonamb": [],
+   "order_flips_bar_based": [],
    "amb_resolved": {}
   },
   {
@@ -1971,7 +1971,7 @@
    "mae_sip": -0.035714,
    "i_mfe_stored": 46,
    "i_mfe_sip": 70,
-   "order_flips_nonamb": [
+   "order_flips_bar_based": [
     "5/3:dn_only->up",
     "5/5:neither->up_only",
     "5/8:neither->up_only",

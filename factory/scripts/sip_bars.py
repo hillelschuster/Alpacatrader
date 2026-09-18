@@ -101,7 +101,8 @@ def build_bars(trades: pl.DataFrame, policy: str = "alpaca"):
     )
     t = t.with_columns(
         (pl.col("ts_et").dt.hour().cast(pl.Int32) * 60 + pl.col("ts_et").dt.minute().cast(pl.Int32)).alias("et_min"),
-        pl.col("ts_et").dt.truncate("1m").dt.replace_time_zone("UTC").alias("ts_min_utc"),
+        # true UTC instant truncated to its minute; must NOT be the ET wall time relabeled as UTC
+        pl.col("ts_utc").dt.truncate("1m").alias("ts_min_utc"),
     )
     t = t.with_columns(
         pl.when(pl.col("et_min") < 570).then(pl.lit("pre"))
@@ -234,6 +235,17 @@ def selftest():
     auc = auction_prints(df)
     assert set(auc["symbol"].to_list()) == {"AAA", "BBB"}, auc
     assert auc.height == 2, auc.height  # Q at 14:32 and Q at 14:33:45
+    # canonical timestamps: true UTC minute boundary (EST day: 14:30 UTC = 09:30 ET)
+    tsm = a630["ts_min_utc"]
+    assert tsm.hour == 14 and tsm.minute == 30 and tsm.utcoffset().total_seconds() == 0, tsm
+    # DST control: 2025-06-02 is EDT (UTC-4) -> 13:30 UTC = 09:30 ET, bar keeps the UTC minute
+    mk2 = lambda h, m, s=0: datetime(2025, 6, 2, h, m, s, tzinfo=timezone.utc)
+    df2 = pl.DataFrame([_t("DDD", mk2(13, 30, 0), 3.0, 10, ["@"]),
+                        _t("DDD", mk2(13, 30, 20), 3.2, 5, ["@"])])
+    d2 = build_bars(df2, "alpaca").row(0, named=True)
+    assert d2["et_min"] == 570, d2
+    assert d2["ts_min_utc"].hour == 13 and d2["ts_min_utc"].minute == 30, d2
+    assert d2["ts_min_utc"].utcoffset().total_seconds() == 0, d2
     print("self-test OK")
 
 

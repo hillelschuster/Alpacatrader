@@ -2056,3 +2056,20 @@ factory/scripts/sip_net_size.py (self-tested) + factory/artifacts/basket/sip/net
 + addendum in SIP_REGENERATION_DECISION.md. Still awaiting owner review before any
 backfill; PRE-REG-BASKET-02 freeze paused; no thesis/ruler/parameter change; H025 and
 reserved months untouched.
+
+2026-09-18 (SIP owner-approved regeneration — architecture amendments + measurement fixes):
+owner approved Phase-1 regeneration under an amended two-layer discovery architecture:
+(a) full PIT-universe SIP minute bars reconstruct top-1/3/5/10 ranking independently of the
+legacy tape; (b) raw trades/quotes only for the discovered SIP candidate neighborhood;
+legacy union demoted to audit; the 1% legacy-cutoff-margin net is NOT canonical. Also:
+SIP-derived previous-session close (stored legacy prev_close retired for ranking), A_pm
+premarket acquisition, per-symbol-day coverage classes (healthy / provider-bar-only /
+unresolved; gaps reported, never silently dropped), 4-6 disjoint-day workers with per-day
+manifests canonical. Measurement fixes applied + self-tested: sip_bars.ts_min_utc now true
+UTC truncation (was ET wall time relabeled as UTC; ET minute/OHLC unaffected); sip_certify
+ambiguity aggregated per (H,L) cell with resolved_raw / resolved_price_updating / unresolved
+(was: rows with ambiguity counted and effectively always resolved); \"order flips\" relabeled
+bar-based (legacy bars vs SIP-derived bars) in cert files, decision note and docs; the 15.4%
+top-3 set-change declared a lower bound (stored top-10 rerank only). PRE-REG-02 banner and
+SIP_REGENERATION_DECISION.md owner-amendments section updated. Measurement-only: no
+thesis/ruler/parameter change; PRE-REG-BASKET-02 still NOT FROZEN; reserved months untouched.
