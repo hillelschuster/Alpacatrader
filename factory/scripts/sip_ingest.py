@@ -117,7 +117,7 @@ def list_net_days():
     return sorted(p.name[:10] for p in CAND.glob("*.json") if len(p.name) == 15)
 
 
-PART_SYMS = 5            # symbols per flushed part file (bounded memory)
+PART_SYMS = 1            # flush after each symbol (bounded memory: one symbol's events per worker)
 SPACE_FLOOR_GB = 50      # stop before C: free space drops below this (user floor ~50)
 ZSTD_LEVEL = 3
 
@@ -270,6 +270,7 @@ def fetch_day(day: str, kinds, req_sleep: float, out_root: Path, force: bool,
                         acc[c].extend(part[c])
                     if ev:
                         got += 1
+                    del r, ev, part
                     break
                 except Exception as e:  # retryable API/network errors
                     if attempt == 2:
