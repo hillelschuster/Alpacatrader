@@ -63,3 +63,34 @@ The thesis, populations, rulers and measurement contract are unchanged. This not
 answers "is the legacy record a sufficient measuring instrument?" — it is not, and
 better measurement is available. Awaiting owner review before any backfill or
 regeneration work begins.
+
+## Addendum 2026-09-18 — guardrail #3 refined: measured acquisition net sizes
+
+Guardrail #3 asked for a candidate net "widened beyond the legacy union (legacy gain-floor
+superset + PIT)". Measured on 8 era-spread days (`factory/scripts/sip_net_size.py` →
+`net_size.json`), the gain-floor formulation is impractical:
+
+| net definition | names/day |
+|---|---|
+| legacy snapshot union (current panel net) | 38–51 |
+| per-T top-10 union, B only | 11–21 |
+| gain floor ≥ +2% at any T | 1,587–3,162 |
+| gain floor ≥ +5% | 494–2,096 |
+| gain floor ≥ +10% | 141–1,049 |
+| **cutoff-margin net: within 1% of the 10th-ranked score at each T** | **11–23** (4–11 beyond legacy) |
+
+Rejected: the gain floor is 30–70× the panel volume while reaching names far below any
+plausible top-10 cutoff. Adopted definition: the **cutoff-margin net** — every PIT name
+within 1% of the legacy 10th-ranked decision score at any frozen T, anchor = max(gain vs
+RTH open, gain vs previous close). The 1% margin is 3–4× the largest measured
+decision-price error in the certification panel (p90 ≈ 24bps, max ≈ 266bps).
+
+Recommended per-day acquisition net = legacy snapshot union ∪ winners lists ∪
+cutoff-margin net (1%) ∪ A_open cutoff-margin at 09:30 ≈ 55–70 names/day
+(≈1.1–1.3× the panel) → ≈5.5–6.5 min/day single-process → 1,065 dev days ≈ 4–5 days;
+4–6 parallel processes ≈ ~1 day. Rate-limit probes: 40 sequential requests 1.3 req/s;
+90 requests / 6 workers 2.8 req/s; 120 requests / 12 workers 2.7 req/s; zero 429s at
+≤164 req/min (under Alpaca Basic's documented 200/min; higher tiers untested).
+
+Residual risk: a name whose *legacy* decision score is understated by >1% could be
+missed. Post-backfill check: count promotions from beyond the margin (expected ~0).

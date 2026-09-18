@@ -2042,3 +2042,17 @@ strategy/parameter changes; owner review next. Artifacts: SIP_DECISION_NOTE.md, 
 SIP_REGENERATION_DECISION.md, sip_decision.json, sip_triage.json, certification_<day>.json
 (x20); scripts sip_decision.py, sip_triage.py (sip_decision.py bugfix: skip A_pm 'skipped'
 entries + <200-trade coverage classification).
+
+2026-09-18 (BASKET-01 SIP guardrail refinement — measured net sizes): guardrail #3's
+"gain-floor superset" acquisition net is measured and rejected as impractical: on 8
+era-spread days a +2% floor reaches 1,587-3,162 names/day (30-70x the panel) while the
+per-T cutoff-margin net (within 1% of the legacy 10th-ranked decision score; anchor =
+max(gain vs RTH open, gain vs previous close)) is 11-23 names/day, only 4-11 beyond the
+legacy union. Adopted: legacy union + winners + cutoff-margin(1%) + A_open margin at
+09:30 ≈ 55-70/day (≈1.1-1.3x panel cost → 1,065 dev days ≈ 4-5 days single-process, ~1
+day with 4-6 processes). Alpaca rate probes: 1.3 req/s sequential, 2.8 req/s at 6
+workers, 2.7 at 12 workers, zero 429s (≤164 req/min, under Basic's 200/min). Artifacts:
+factory/scripts/sip_net_size.py (self-tested) + factory/artifacts/basket/sip/net_size.json
++ addendum in SIP_REGENERATION_DECISION.md. Still awaiting owner review before any
+backfill; PRE-REG-BASKET-02 freeze paused; no thesis/ruler/parameter change; H025 and
+reserved months untouched.
