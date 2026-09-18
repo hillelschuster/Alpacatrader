@@ -49,6 +49,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import basket_anatomy as ba  # noqa: E402  (T_LIST, MIN_PRICE — frozen surface)
 
 UNI = ROOT / "data" / "sip" / "universe" / "rth"
+PMU = ROOT / "data" / "sip" / "universe" / "premarket"
 OUT = ROOT / "data" / "sip" / "candidates"
 K_TOP = 10
 MARGIN = 0.01  # SIP score margin near the 10th rank (boundary completeness)
@@ -136,6 +137,36 @@ def snapshot(df: pl.DataFrame, pop: str, T: int, prev: dict):
             "margin": margin, "cutoff": cutoff}
 
 
+def pm_top(df: pl.DataFrame, prev: dict, margin=MARGIN):
+    """A_pm: SIP premarket last print (<=09:29 ET, freshness <= FRESH_MIN) vs SIP prev close."""
+    sub = df.filter((pl.col("pm_last_px") >= ba.MIN_PRICE) & pl.col("pm_last_et").is_not_null()
+                    & ((569 - pl.col("pm_last_et")) <= ba.FRESH_MIN) & (pl.col("pm_last_et") <= 569))
+    if not prev or sub.height == 0:
+        return {"pop": "A_pm", "T": 570, "n_eligible": 0, "top": [], "margin": [], "cutoff": None}
+    sub = with_prev(sub, prev).filter(pl.col("pclose") > 0)
+    if sub.height == 0:
+        return {"pop": "A_pm", "T": 570, "n_eligible": 0, "top": [], "margin": [], "cutoff": None}
+    sub = sub.with_columns((pl.col("pm_last_px") / pl.col("pclose") - 1).alias("score"))
+    top = top_list(sub, "score", ["pm_last_px", "pm_last_et"])
+    cutoff = top[-1]["score"] if len(top) == K_TOP else None
+    margin_l = []
+    if cutoff is not None:
+        in_top = {r["symbol"] for r in top}
+        near = sub.filter((pl.col("score") > cutoff - margin))
+        margin_l = sorted(s for s in near["symbol"].to_list() if s not in in_top)
+    return {"pop": "A_pm", "T": 570, "n_eligible": int(sub.height), "top": top,
+            "margin": margin_l, "cutoff": cutoff}
+
+
+def snapshot_pm(day: str, prev: dict):
+    p = PMU / f"{day}.parquet"
+    if not p.exists():
+        return {"pop": "A_pm", "T": 570, "n_eligible": 0, "top": [], "margin": [],
+                "cutoff": None, "skipped": True, "note": "no SIP premarket table for day"}
+    df = pl.read_parquet(p, columns=["symbol", "pm_last_et", "pm_last_px", "pm_n_bars"])
+    return pm_top(df, prev)
+
+
 def winners(day_df: pl.DataFrame, prev: dict, anchor: str) -> list:
     """top-10 by day-max hi over an anchor (open or prev close)."""
     if anchor == "open":
@@ -160,6 +191,7 @@ def build_day(day: str, days: list, margin=MARGIN) -> dict:
         a = {"pop": "A_open", "T": 570, "n_eligible": 0, "top": [], "margin": [],
              "cutoff": None, "note": "no SIP prev session available"}
     snaps.append(a)
+    snaps.append(snapshot_pm(day, prev))
     for T in ba.T_LIST:
         snaps.append(snapshot(day_df, "B", T, prev))
     w_open = winners(day_df, prev, "open")
@@ -267,6 +299,15 @@ def selftest():
     assert b2 is not None and len(b2["top"]) == 4
     # A_open reports rather than silently skipping when prev missing
     assert snapshot(df, "A_open", 570, {}) is None
+    # A_pm: stale prints excluded; scored vs SIP prev close
+    pm = pl.DataFrame({"symbol": ["AAA", "BBB", "CCC", "DDD"],
+                       "pm_last_et": [560, 569, 540, 568],
+                       "pm_last_px": [10.0, 30.0, 4.0, 9.0]})
+    ap = pm_top(pm, {"AAA": 9.0, "BBB": 25.0, "CCC": 4.0, "DDD": 8.0})
+    assert [r["symbol"] for r in ap["top"]] == ["BBB", "DDD", "AAA"], ap
+    assert ap["n_eligible"] == 3, ap
+    assert ap["top"][0]["score"] == ba.R(30.0 / 25.0 - 1), ap
+    assert pm_top(pm, {})["n_eligible"] == 0
     # winners open: AAA .3, CCC .2, BBB .1, EEE .05
     wo = winners(df, prev, "open")
     assert [r["symbol"] for r in wo][:2] == ["AAA", "CCC"], wo

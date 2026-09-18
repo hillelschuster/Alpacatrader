@@ -2110,6 +2110,15 @@ GSM +18.8%, winners_open LODE +85.3% / LACQ +67.4% / KIQ +63.2%. Both self-teste
 Measurement-only; no thesis/ruler/parameter change; PRE-REG-BASKET-02 not frozen; reserved
 months untouched.
 
+2026-09-18 (SIP A_pm snapshot + pipeline runner): sip_candidates.py gained the A_pm
+population from SIP premarket compact tables (last print <= 09:29 ET, freshness <= 15 min,
+scored vs SIP prev close; a missing premarket table is recorded as skipped, never silently
+omitted) with a pm_top self-test (stale-print exclusion asserted). New sip_pipeline.py runs
+the per-day chain netbars -> anatomy with disjoint-day workers and per-worker logs
+(resumable; self-test OK; smoke 2021-02-01: classes healthy_raw 65 / provider_only 2 /
+unresolved 0). Measurement-only; no thesis/ruler/parameter change; PRE-REG-BASKET-02 not
+frozen; reserved months untouched.
+
 2026-09-18 (SIP Layer-1 discovery — full PIT-universe SIP minute bars): new
 factory/scripts/sip_universe.py fetches Alpaca SIP 1-min bars across the complete PIT-eligible
 universe per day (feed=sip, Adjustment.RAW, batches of 500, per-day atomic parquet + manifest,
