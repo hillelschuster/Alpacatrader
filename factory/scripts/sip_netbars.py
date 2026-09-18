@@ -152,15 +152,25 @@ def build_day(day: str, force: bool = False) -> dict:
         return {"day": day, "status": "no_trades"}
     tdf = pl.read_parquet(trades_p)
     symbols = sorted(tdf["symbol"].unique().to_list())
-    derived_all = sb.build_bars(tdf, policy="alpaca")
-    d_rth = derived_all.filter(pl.col("sess") == "rth").select([
-        pl.lit(day).str.to_date().alias("date"), "symbol", "et_min",
-        pl.col("o").alias("open"), pl.col("h").alias("high"), pl.col("l").alias("low"),
-        pl.col("c").alias("close"), pl.col("v").alias("volume"),
-    ])
+    # memory bound: derive bars one symbol at a time (whole-day builds spike multi-GB on
+    # heavy days: 6-8M trades with condition lists; per-symbol bounds peak by one symbol)
+    d_parts = []
+    for s in symbols:
+        ds = sb.build_bars(tdf.filter(pl.col("symbol") == s), policy="alpaca")
+        if ds.height:
+            d_parts.append(ds.filter(pl.col("sess") == "rth").select([
+                pl.lit(day).str.to_date().alias("date"), "symbol", "et_min",
+                pl.col("o").alias("open"), pl.col("h").alias("high"), pl.col("l").alias("low"),
+                pl.col("c").alias("close"), pl.col("v").alias("volume"),
+            ]))
+    d_rth = pl.concat(d_parts, how="vertical") if d_parts else pl.DataFrame(
+        schema={"date": pl.Date, "symbol": pl.String, "et_min": pl.Int32,
+                "open": pl.Float64, "high": pl.Float64, "low": pl.Float64,
+                "close": pl.Float64, "volume": pl.Int64})
 
     n_trades = tdf.group_by("symbol").len().rename({"len": "n"}).to_dicts()
     n_trades = {r["symbol"]: int(r["n"]) for r in n_trades}
+    del tdf, d_parts
     prov = fetch_provider_bars(day, symbols)
     if prov.height:
         p_rth = rth(prov, "timestamp").select(
