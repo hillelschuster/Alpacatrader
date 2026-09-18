@@ -43,9 +43,11 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import basket_anatomy as ba  # noqa: E402
 
-ANAT = ROOT / "factory" / "artifacts" / "basket" / "anatomy"
-RAND = ROOT / "factory" / "artifacts" / "basket" / "random"
-OUT = ROOT / "factory" / "artifacts" / "basket" / "agg"
+import os
+ART = Path(os.environ.get("BASKET_ART_ROOT", str(ROOT / "factory" / "artifacts" / "basket")))
+ANAT = ART / "anatomy"
+RAND = ART / "random"
+OUT = ART / "agg"
 DRAWS = 3
 BAND_EDGES = [2.0, 5.0, 10.0]
 

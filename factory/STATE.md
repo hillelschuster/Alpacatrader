@@ -2119,6 +2119,13 @@ the per-day chain netbars -> anatomy with disjoint-day workers and per-worker lo
 unresolved 0). Measurement-only; no thesis/ruler/parameter change; PRE-REG-BASKET-02 not
 frozen; reserved months untouched.
 
+2026-09-18 (SIP read-layer parametrization): the six read/QA scripts (basket_aggregate,
+basket_dist, basket_t5_bars, basket_shadow_overnight, basket_random_control, basket_qa) now
+honor BASKET_ART_ROOT (default = legacy factory/artifacts/basket) so the identical frozen
+tables can be regenerated over the SIP anatomy tree via
+BASKET_ART_ROOT=factory/artifacts/basket/sip. All six self-tests pass. Measurement-only; no
+thesis/ruler/parameter change; PRE-REG-BASKET-02 not frozen; reserved months untouched.
+
 2026-09-18 (SIP Layer-1 discovery — full PIT-universe SIP minute bars): new
 factory/scripts/sip_universe.py fetches Alpaca SIP 1-min bars across the complete PIT-eligible
 universe per day (feed=sip, Adjustment.RAW, batches of 500, per-day atomic parquet + manifest,

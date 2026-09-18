@@ -29,9 +29,11 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / "data"
-ANAT = ROOT / "factory" / "artifacts" / "basket" / "anatomy"
-SHADOW = ROOT / "factory" / "artifacts" / "basket" / "shadow"
-OUT = ROOT / "factory" / "artifacts" / "basket" / "agg"
+import os
+ART = Path(os.environ.get("BASKET_ART_ROOT", str(ROOT / "factory" / "artifacts" / "basket")))
+ANAT = ART / "anatomy"
+SHADOW = ART / "shadow"
+OUT = ART / "agg"
 RESERVED = {"2026-06", "2026-07", "2026-08"}
 PRIMARY_N = 3
 UP_STRATA = [20, 30, 50]

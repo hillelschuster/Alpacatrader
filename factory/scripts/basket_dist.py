@@ -32,8 +32,10 @@ from pathlib import Path
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[2]
-ANAT = ROOT / "factory" / "artifacts" / "basket" / "anatomy"
-OUT = ROOT / "factory" / "artifacts" / "basket" / "agg"
+import os
+ART = Path(os.environ.get("BASKET_ART_ROOT", str(ROOT / "factory" / "artifacts" / "basket")))
+ANAT = ART / "anatomy"
+OUT = ART / "agg"
 
 LADDER = [5, 10, 20, 30, 50, 100]      # frozen rulers (measurement tools only)
 EXT = [150, 200, 300]                  # descriptive extension, same status

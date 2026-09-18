@@ -24,7 +24,8 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-BASKET = ROOT / "factory" / "artifacts" / "basket"
+import os
+BASKET = Path(os.environ.get("BASKET_ART_ROOT", str(ROOT / "factory" / "artifacts" / "basket")))
 ANAT = BASKET / "anatomy"
 BARSD = BASKET / "bars"
 DEV_END = "2026-05"
