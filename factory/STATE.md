@@ -2167,3 +2167,16 @@ RSS, was 1.5-3.4GB pre-fix). Relaunched with 2 disjoint-day workers over 1,068 d
 (skip-existing honors the valid 2021-01-29 leftover); pace ~8-9.5 min/day/worker => ETA
 ~3.2 days. Raw trees on WSL ext4 (/home/hillel/sip/net via symlink), C: >= 52GB floor.
 Measurement-only; PRE-REG-BASKET-02 unfrozen; H025 and reserved months untouched.
+
+2026-09-18 (SIP regeneration chain, autonomous): Layer-2 fetch (sip_ingest --net --all --workers 2,
+memory-bounded part flushes, zstd, disk floor now 50GB) running from 2021-02; drain loop
+(/tmp/opencode/drain_loop.sh) runs sip_pipeline --all --workers 2 every 25 min and on fetch exit
+runs a final drain, net index, sip_coverage --write, then writes ORCH2_DONE; final read chain
+(/tmp/opencode/final_read.sh) waits for ORCH2_DONE, then runs basket_aggregate, basket_dist,
+basket_t5_bars, basket_shadow_sip --write, basket_qa, basket_read --write under
+BASKET_ART_ROOT=factory/artifacts/basket/sip and writes FINAL_READ_DONE. New
+factory/scripts/basket_shadow_sip.py: SIP-consistent overnight shadow (T7) computed from the universe
+tables (next-day o570 vs stored close; reasons counters; reserved months refused) - no legacy tape
+read in SIP mode. Matched-random control (T9b) is NOT regenerated on SIP in this pass (needs raw
+fetches for randomly drawn names) - the read packet notes it explicitly. Measurement-only;
+PRE-REG-BASKET-02 unfrozen; H025 and reserved months untouched.
