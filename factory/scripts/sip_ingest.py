@@ -36,7 +36,9 @@ import polars as pl
 
 ROOT = Path(__file__).resolve().parents[2]
 ANAT = ROOT / "factory" / "artifacts" / "basket" / "anatomy"
+CAND = ROOT / "data" / "sip" / "candidates"
 OUT = ROOT / "data" / "sip"
+NET_OUT = ROOT / "data" / "sip" / "net"
 ET = ZoneInfo("America/New_York")
 SESSION_START_ET = (9, 25)
 SESSION_END_ET = (16, 5)
@@ -96,6 +98,25 @@ def symbols_for_day(day: str, include_adj: bool = True):
     return sorted(names), sorted(quotes)
 
 
+def symbols_for_day_net(day: str):
+    """Regeneration mode: trades = SIP-discovered candidate net; quotes = top-3 per
+    SIP snapshot. The legacy union is NOT consulted (owner amendment 2026-09-18)."""
+    p = CAND / f"{day}.json"
+    if not p.exists():
+        raise FileNotFoundError(f"no candidates file for {day}")
+    rec = json.loads(p.read_text())
+    trades = sorted(set(rec["net"]))
+    quotes = set()
+    for s in rec["snapshots"]:
+        for n in s.get("top", [])[:3]:
+            quotes.add(n["symbol"])
+    return trades, sorted(quotes)
+
+
+def list_net_days():
+    return sorted(p.name[:10] for p in CAND.glob("*.json") if len(p.name) == 15)
+
+
 def cols_from_trades(trades, symbol: str):
     """Column-oriented accumulation (cheap for multi-million-event extreme days)."""
     ts, px, sz, ex, cd, tid, tp = [], [], [], [], [], [], []
@@ -108,7 +129,6 @@ def cols_from_trades(trades, symbol: str):
 
 
 def cols_from_quotes(quotes, symbol: str):
-    ts, bp, bsz, ap, asz, bxe, axe, cd, tp = ([],) * 9
     ts, bp, bsz, ap, asz, bxe, axe, cd, tp = [], [], [], [], [], [], [], [], []
     for q in quotes:
         ts.append(q.timestamp); bp.append(float(q.bid_price)); bsz.append(float(q.bid_size))
@@ -162,7 +182,7 @@ def should_skip(out_root: Path, day: str, kind: str, force: bool) -> bool:
 
 
 def write_artifact(out_root: Path, day: str, kind: str, df: "pl.DataFrame",
-                   meta: dict) -> dict:
+                   meta: dict, append_global: bool = True) -> dict:
     d = out_root / kind
     d.mkdir(parents=True, exist_ok=True)
     fp = d / f"{day}.parquet"
@@ -180,13 +200,15 @@ def write_artifact(out_root: Path, day: str, kind: str, df: "pl.DataFrame",
     tmpm = d / f"{day}.manifest.json.tmp"
     tmpm.write_text(json.dumps(man, indent=1, default=str))
     os.replace(tmpm, mp)
-    with open(out_root / "manifest.jsonl", "a") as fh:
-        fh.write(json.dumps(man, separators=(",", ":"), default=str) + "\n")
+    if append_global:
+        with open(out_root / "manifest.jsonl", "a") as fh:
+            fh.write(json.dumps(man, separators=(",", ":"), default=str) + "\n")
     return man
 
 
 def fetch_day(day: str, kinds, req_sleep: float, out_root: Path, force: bool,
-              limit_symbols: int | None = None):
+              limit_symbols: int | None = None, symbol_fn=symbols_for_day,
+              append_global: bool = True):
     from dotenv import load_dotenv
     load_dotenv(ROOT / ".env")
     from alpaca.data.historical import StockHistoricalDataClient
@@ -195,7 +217,7 @@ def fetch_day(day: str, kinds, req_sleep: float, out_root: Path, force: bool,
 
     client = StockHistoricalDataClient(os.environ["ALPACA_API_KEY"], os.environ["ALPACA_SECRET_KEY"])
     start, end = window_utc(day)
-    sym_trades, sym_quotes = symbols_for_day(day)
+    sym_trades, sym_quotes = symbol_fn(day)
     if limit_symbols:
         sym_trades, sym_quotes = sym_trades[:limit_symbols], sym_quotes[:limit_symbols]
     results = {}
@@ -243,9 +265,26 @@ def fetch_day(day: str, kinds, req_sleep: float, out_root: Path, force: bool,
                 "window_et": "09:25-16:05 America/New_York",
                 "symbols_requested": len(syms), "symbols_with_data": got,
                 "errors": errors, "elapsed_s": round(time.time() - t0, 1)}
-        man = write_artifact(out_root, day, kind, df, meta)
+        man = write_artifact(out_root, day, kind, df, meta, append_global)
         results[kind] = f"{man['status']} rows={man['rows']} syms={got}/{len(syms)} {man['elapsed_s']}s"
     return results
+
+
+def rebuild_index(out_root: Path):
+    """Rebuild the merged artifact index from per-day manifests (safe after workers)."""
+    rows = []
+    for mp in sorted(out_root.glob("*/*.manifest.json")):
+        try:
+            rows.append(json.loads(mp.read_text()))
+        except Exception:
+            continue
+    ip = out_root / "manifest_index.jsonl"
+    tmp = out_root / "manifest_index.jsonl.tmp"
+    with open(tmp, "w") as fh:
+        for m in rows:
+            fh.write(json.dumps(m, separators=(",", ":"), default=str) + "\n")
+    os.replace(tmp, ip)
+    print(f"index: {len(rows)} artifacts -> {ip}")
 
 
 def selftest():
@@ -259,6 +298,10 @@ def selftest():
     tr, qs = symbols_for_day("2022-03-10")
     assert "BRP" in tr, tr[:20]
     assert len(tr) <= 200 and 0 < len(qs) <= len(tr)
+    # regeneration mode: SIP-discovered net + top-3 quotes + day listing
+    trn, qsn = symbols_for_day_net("2021-02-01")
+    assert "LODE" in trn and 0 < len(qsn) <= len(trn)
+    assert "2021-02-01" in list_net_days()
     # rows_from_* pure helpers
     from types import SimpleNamespace as NS
     t = NS(timestamp=s, price=1.5, size=100.0, exchange="D", conditions=["@"], id=7, tape="A")
@@ -284,6 +327,15 @@ def selftest():
         write_artifact(td, "2022-03-10", "quotes", df, {"status": "partial"})
         assert not should_skip(td, "2022-03-10", "quotes", False)  # partial retries
         assert (td / "manifest.jsonl").exists()
+    # worker-safe index rebuild (no global log)
+    with tempfile.TemporaryDirectory() as td:
+        td = Path(td)
+        write_artifact(td, "2022-03-10", "trades", df, {"status": "ok"}, append_global=False)
+        write_artifact(td, "2022-03-10", "quotes", df, {"status": "ok"}, append_global=False)
+        rebuild_index(td)
+        assert (td / "manifest_index.jsonl").exists()
+        assert len((td / "manifest_index.jsonl").read_text().splitlines()) == 2
+        assert not (td / "manifest.jsonl").exists()
     print("self-test OK")
 
 
@@ -291,26 +343,66 @@ def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--days", nargs="*", default=None)
     ap.add_argument("--panel", action="store_true")
+    ap.add_argument("--all", action="store_true",
+                    help="net mode: every day with a candidates file")
+    ap.add_argument("--net", action="store_true",
+                    help="regeneration mode: symbols from SIP candidate net (data/sip/net)")
+    ap.add_argument("--workers", type=int, default=1,
+                    help="disjoint-day worker processes (no shared output contention)")
+    ap.add_argument("--no-global-log", action="store_true",
+                    help="skip the shared manifest.jsonl append (worker-safe); use --index later")
+    ap.add_argument("--index", action="store_true", help="rebuild manifest_index.jsonl")
     ap.add_argument("--kinds", default="trades,quotes")
     ap.add_argument("--req-sleep", type=float, default=0.45)
     ap.add_argument("--limit-symbols", type=int, default=None)
-    ap.add_argument("--out", default=str(OUT))
+    ap.add_argument("--out", default=None)
     ap.add_argument("--force", action="store_true")
     ap.add_argument("--self-test", action="store_true")
     args = ap.parse_args(argv)
     if args.self_test:
         selftest()
         return
-    days = args.days or (sorted(PANEL) if args.panel else [])
+    out_root = Path(args.out) if args.out else (NET_OUT if args.net else OUT)
+    if args.index:
+        rebuild_index(out_root)
+        return
+    days = args.days or (list_net_days() if (args.net and args.all)
+                         else (sorted(PANEL) if args.panel else []))
     if not days:
-        ap.error("provide --days or --panel")
+        ap.error("provide --days, --panel, or --net --all")
+    symbol_fn = symbols_for_day_net if args.net else symbols_for_day
     kinds = {k.strip() for k in args.kinds.split(",") if k.strip()}
-    out_root = Path(args.out)
     out_root.mkdir(parents=True, exist_ok=True)
+
+    if args.workers > 1:
+        import subprocess
+        import sys
+        chunks = [days[i::args.workers] for i in range(args.workers)]
+        procs = []
+        for i, ch in enumerate(chunks):
+            if not ch:
+                continue
+            cmd = [sys.executable, str(Path(__file__).resolve()),
+                   "--days", *ch, "--kinds", args.kinds,
+                   "--req-sleep", str(args.req_sleep), "--out", str(out_root),
+                   "--no-global-log"]
+            if args.net:
+                cmd.append("--net")
+            if args.force:
+                cmd.append("--force")
+            log = open(f"/tmp/opencode/ingest_w{i}.log", "ab")
+            procs.append(subprocess.Popen(cmd, stdout=log, stderr=subprocess.STDOUT))
+            print(f"worker {i}: {len(ch)} days -> /tmp/opencode/ingest_w{i}.log", flush=True)
+        rc = 0
+        for p in procs:
+            rc |= p.wait()
+        print(f"workers done rc={rc}", flush=True)
+        return
+
     for day in days:
         try:
             res = fetch_day(day, kinds, args.req_sleep, out_root, args.force,
-                            args.limit_symbols)
+                            args.limit_symbols, symbol_fn, not args.no_global_log)
             print(f"{day}: " + " | ".join(f"{k}:{v}" for k, v in res.items()), flush=True)
         except FileNotFoundError as e:
             print(f"{day}: SKIP ({e})", flush=True)

@@ -2085,6 +2085,16 @@ winners. The legacy union is not consulted. Outputs: data/sip/candidates/YYYY-MM
 + per-day manifest (source sha256, counts, elapsed) + index builder (--index). Atomic,
 resumable. Measurement-only; no thesis/ruler/parameter change; PRE-REG-02 not frozen.
 
+2026-09-18 (SIP Layer-2 net ingestion mode): sip_ingest.py extended with --net (trades =
+SIP-discovered candidate net; quotes = top-3 per SIP snapshot; legacy union not consulted),
+--all (every day with a candidates file), --workers N (disjoint-day workers; per-day
+manifests canonical; shared global log disabled via --no-global-log), --index (rebuild
+merged manifest_index.jsonl from per-day manifests after worker runs), plus append_global
+parameterization and a selftest for net symbol derivation + index rebuild. Output root for
+regeneration: data/sip/net/{trades,quotes}. Live probe 2021-02-01 (3 symbols):
+trades 75,238 rows / 9.2s; quotes 174,294 rows / 17.4s. Measurement-only; no
+thesis/ruler/parameter change; PRE-REG-BASKET-02 not frozen; reserved months untouched.
+
 2026-09-18 (SIP Layer-1 discovery — full PIT-universe SIP minute bars): new
 factory/scripts/sip_universe.py fetches Alpaca SIP 1-min bars across the complete PIT-eligible
 universe per day (feed=sip, Adjustment.RAW, batches of 500, per-day atomic parquet + manifest,
