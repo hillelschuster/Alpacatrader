@@ -114,7 +114,12 @@ def fetch_provider_bars(day: str, symbols: list) -> pl.DataFrame:
                 bad.extend(need)
                 todo = [s for s in todo if s not in need]
                 continue
-            raise
+            # transient network/DNS/5xx: retry with backoff; final attempt is non-fatal
+            if attempt < 3:
+                time.sleep(4 * (attempt + 1))
+                continue
+            print(f"  provider fetch unavailable after retries ({msg[:120]}); continuing derive-only")
+            break
     if not rows:
         return pl.DataFrame(schema={"symbol": pl.String, "timestamp": pl.Datetime,
                                     "open": pl.Float64, "high": pl.Float64, "low": pl.Float64,
@@ -221,6 +226,7 @@ def build_day(day: str, force: bool = False) -> dict:
     os.replace(tmpj, cj)
     man = {"day": day, "status": "ok", "symbols": len(symbols), "rows_merged": frame.height,
            "classes": counts, "elapsed_s": round(time.time() - t0, 1),
+           "provider_unavailable": bool(symbols and not prov.height),
            "source_trades": str(trades_p), "src_sha256": _sha256(trades_p)}
     tmpm = man_p.with_suffix(".json.tmp")
     with open(tmpm, "w") as fh:
