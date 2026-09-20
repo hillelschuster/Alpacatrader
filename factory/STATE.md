@@ -2180,3 +2180,26 @@ tables (next-day o570 vs stored close; reasons counters; reserved months refused
 read in SIP mode. Matched-random control (T9b) is NOT regenerated on SIP in this pass (needs raw
 fetches for randomly drawn names) - the read packet notes it explicitly. Measurement-only;
 PRE-REG-BASKET-02 unfrozen; H025 and reserved months untouched.
+
+2026-09-20 (SIP Phase-1 regeneration COMPLETE — anatomy regenerated from the SIP substrate; QA PASS):
+Layer-1 full-PIT SIP universe (1,068 days: 1,066 dev + 2 seeds), Layer-2 raw SIP trades+quotes for the
+SIP-discovered nets (1,066/1,066 days, zero missing), netbars (derived-from-raw bars with provider
+fallback; coverage classes healthy_raw 63,815 / provider_only 6,121 / unresolved 8 symbol-days listed
+explicitly in COVERAGE.md), SIP anatomy 1,066 days (basket_qa PASS: 0 missing/corrupt/structure/bars/tmp;
+149,201 candidate rows). Fixes of record during the run: REST v2 page streaming (flat memory; monster
+2021-05-27 day 8.3M rows at ~150MB RSS), provider-bar transient-error retries with derive-only fallback
+(manifest field provider_unavailable), 50GB disk floor, per-symbol part flushes + response release,
+worker-safe per-day manifests, and a prev-close adjacency guard (a seed day had resolved prev_close 13
+months back via 2023-12-29; such days are now skipped as prev_session_outside_coverage). Also: the two
+dev days the candidates step had missed (2026-05-21, 2026-05-29 - they were still being written when the
+sweep's completion guard fired) were re-built and folded in. Regenerated tables: T1-T10 + T4b frontier +
+T11 dist + T5 paths (82,853 members) + T7 SIP overnight shadow, plus READ_PACKET.md/json and
+READ_COMPARE.md vs the legacy root. Headline legacy->SIP shifts (B/600, main top-3): joint +30% touch
+k>=1 30.6% -> 39.1% (exec 39.0%), k>=2 4.1% -> 6.3%, all-3 0.28% -> 0.56%; +100% k>=1 6.0% -> 7.8%;
+frontier F(+30,-10) 25.5% -> 31.2% with Q 80.7% -> 77.1% (L=10 no longer clears the previously declared
+Q>=0.80 mapping under SIP data; L=15 gives F 36.5% / Q 92.5%); containment top1_in 12.4% -> 9.8%;
+member MFE p50 7.2% -> 8.4%, MAE p50 -8.3% -> -10.5%; ordinary days 24.7% -> 19.3%; gap-blocked slots
+3,691 -> 2,678. Continuous (SIP, B/600): member MFE p90 44.9% / p99 168.1% / max 727%; day-max p50 23.6%
+/ p90 86.3% / p99 239.9%. All numbers are descriptive; no ruler/rule/parameter was selected from them.
+PRE-REG-BASKET-02 remains UNFROZEN (its constants are provisional and now carry SIP-vs-legacy deltas);
+H025 and reserved months untouched.

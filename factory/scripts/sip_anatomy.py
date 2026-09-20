@@ -45,6 +45,34 @@ def prev_universe_day(day: str, max_back: int = 10):
     return prior[-1] if prior else None
 
 
+_LB = None
+
+
+def calendar_days() -> list:
+    global _LB
+    if _LB is None:
+        _LB = sorted(Path(p).name[3:13]
+                     for p in glob.glob(str(ROOT / "data" / "leaderboard" / "lb_*.parquet")))
+    return _LB
+
+
+def prev_check(day: str, prev_day: str):
+    """None when the previous-session close is calendar-adjacent (or this is the span's
+    first calendar day); otherwise a reason string. Guards against a stale prev close
+    silently crossing a raw-data gap (e.g. the 2025-01-31 seed resolving to 2023-12-29)."""
+    cal = calendar_days()
+    i = cal.index(day) if day in cal else None
+    if i is None or i == 0:
+        return None  # first calendar day: seed-allowed
+    cp = cal[i - 1]
+    uni_days = set(Path(p).name[:10] for p in glob.glob(str(SIU / "rth" / "*.parquet")))
+    if cp not in uni_days:
+        return "prev_session_outside_coverage"
+    if prev_day != cp:
+        return "prev_not_adjacent"
+    return None
+
+
 def prev_map_from(prev_day: str) -> dict:
     if not prev_day:
         return {}
@@ -103,6 +131,9 @@ def build_day(day: str, force: bool = False) -> dict:
         return {"day": day, "status": "skip"}
     frame = pl.read_parquet(frame_p)
     prev_day = prev_universe_day(day)
+    why = prev_check(day, prev_day)
+    if why:
+        return {"day": day, "status": why, "prev_day": prev_day}
     prev_map = prev_map_from(prev_day)
     pm_day = pm_day_from(day)
     rec = ba.process_day(frame, day, prev_map, pm_day, max_days_flag=False)

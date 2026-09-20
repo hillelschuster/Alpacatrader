@@ -1,0 +1,11309 @@
+[
+ {
+  "month": "2021-02",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 57
+ },
+ {
+  "month": "2021-02",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 56,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-02",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 57
+ },
+ {
+  "month": "2021-02",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 56,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-02",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "gap_blocked": 5,
+  "filled": 52
+ },
+ {
+  "month": "2021-02",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "filled": 55,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-02",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "filled": 52,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2021-02",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "filled": 52,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2021-02",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "filled": 54,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2021-02",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 56,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-02",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "filled": 57
+ },
+ {
+  "month": "2021-02",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "filled": 57
+ },
+ {
+  "month": "2021-02",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 55,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-02",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 55,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-02",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 54,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2021-02",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "filled": 55,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-02",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 55,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-02",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 56,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-02",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-02",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "filled": 55,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-02",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 57
+ },
+ {
+  "month": "2021-02",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "filled": 55,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-02",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-02",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "gap_blocked": 1,
+  "filled": 56
+ },
+ {
+  "month": "2021-02",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-02",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 57
+ },
+ {
+  "month": "2021-02",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 55,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-02",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 57
+ },
+ {
+  "month": "2021-03",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 69
+ },
+ {
+  "month": "2021-03",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 69
+ },
+ {
+  "month": "2021-03",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 69
+ },
+ {
+  "month": "2021-03",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 69
+ },
+ {
+  "month": "2021-03",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "filled": 64,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2021-03",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2021-03",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "filled": 60,
+  "gap_blocked": 9
+ },
+ {
+  "month": "2021-03",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "filled": 64,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2021-03",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "filled": 65,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2021-03",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 64,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2021-03",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "filled": 67,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-03",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "filled": 65,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2021-03",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 65,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2021-03",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 64,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2021-03",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 67,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-03",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "filled": 66,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2021-03",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 69
+ },
+ {
+  "month": "2021-03",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 65,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2021-03",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 69
+ },
+ {
+  "month": "2021-03",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "filled": 68,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-03",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 68,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-03",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "filled": 69
+ },
+ {
+  "month": "2021-03",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 67,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-03",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "filled": 67,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-03",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 68,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-03",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 66,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2021-03",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 68,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-03",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 66,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2021-04",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-04",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-04",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "unfilled": 10,
+  "filled": 53
+ },
+ {
+  "month": "2021-04",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 57,
+  "unfilled": 6
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "filled": 55,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "filled": 51,
+  "gap_blocked": 12
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "filled": 55,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "filled": 50,
+  "gap_blocked": 13
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "filled": 52,
+  "gap_blocked": 11
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 58,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "filled": 52,
+  "gap_blocked": 11
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 53,
+  "gap_blocked": 10
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 63
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "filled": 63
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-05",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 59,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-05",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 60
+ },
+ {
+  "month": "2021-05",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 60
+ },
+ {
+  "month": "2021-05",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-05",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "filled": 54,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2021-05",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "filled": 52,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2021-05",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "filled": 57,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2021-05",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "filled": 57,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2021-05",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2021-05",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 58,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-05",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-05",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "filled": 57,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2021-05",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 59,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-05",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 57,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2021-05",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 57,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2021-05",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "filled": 60
+ },
+ {
+  "month": "2021-05",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 60
+ },
+ {
+  "month": "2021-05",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-05",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 59,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-05",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "filled": 60
+ },
+ {
+  "month": "2021-05",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-05",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-05",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 59,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-05",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-05",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-05",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 60
+ },
+ {
+  "month": "2021-05",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-05",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 60
+ },
+ {
+  "month": "2021-06",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 66
+ },
+ {
+  "month": "2021-06",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 65,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-06",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 66
+ },
+ {
+  "month": "2021-06",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 66
+ },
+ {
+  "month": "2021-06",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "filled": 59,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2021-06",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "filled": 58,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2021-06",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2021-06",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2021-06",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "filled": 57,
+  "gap_blocked": 9
+ },
+ {
+  "month": "2021-06",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2021-06",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "filled": 64,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-06",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "filled": 65,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-06",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 62,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2021-06",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 63,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2021-06",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "gap_blocked": 2,
+  "filled": 64
+ },
+ {
+  "month": "2021-06",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "filled": 65,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-06",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 66
+ },
+ {
+  "month": "2021-06",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 64,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-06",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 63,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2021-06",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "filled": 64,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-06",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 65,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-06",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "filled": 64,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-06",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 63,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2021-06",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "filled": 64,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-06",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 65,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-06",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 65,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-06",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 62,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2021-06",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 66
+ },
+ {
+  "month": "2021-07",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 63
+ },
+ {
+  "month": "2021-07",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 63
+ },
+ {
+  "month": "2021-07",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 63
+ },
+ {
+  "month": "2021-07",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 63
+ },
+ {
+  "month": "2021-07",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "gap_blocked": 11,
+  "filled": 52
+ },
+ {
+  "month": "2021-07",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "filled": 54,
+  "gap_blocked": 9
+ },
+ {
+  "month": "2021-07",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "filled": 53,
+  "gap_blocked": 10
+ },
+ {
+  "month": "2021-07",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-07",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2021-07",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 58,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2021-07",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2021-07",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "filled": 58,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2021-07",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2021-07",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 58,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2021-07",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-07",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2021-07",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 63
+ },
+ {
+  "month": "2021-07",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-07",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-07",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2021-07",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2021-07",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-07",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-07",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-07",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-07",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-07",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2021-07",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-08",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 65,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-08",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 65,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-08",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 66
+ },
+ {
+  "month": "2021-08",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 66
+ },
+ {
+  "month": "2021-08",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "filled": 59,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2021-08",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "gap_blocked": 8,
+  "filled": 58
+ },
+ {
+  "month": "2021-08",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2021-08",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "filled": 64,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-08",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "filled": 63,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2021-08",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 63,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2021-08",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "filled": 62,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2021-08",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "filled": 63,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2021-08",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 62,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2021-08",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 64,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-08",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 63,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2021-08",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2021-08",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 61,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2021-08",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 65,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-08",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 63,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2021-08",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2021-08",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "gap_blocked": 4,
+  "filled": 62
+ },
+ {
+  "month": "2021-08",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "filled": 64,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-08",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 64,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-08",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "filled": 65,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-08",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 65,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-08",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 65,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-08",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 62,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2021-08",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 64,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-09",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-09",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 63
+ },
+ {
+  "month": "2021-09",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 63
+ },
+ {
+  "month": "2021-09",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-09",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2021-09",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "filled": 54,
+  "gap_blocked": 9
+ },
+ {
+  "month": "2021-09",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "filled": 53,
+  "gap_blocked": 10
+ },
+ {
+  "month": "2021-09",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "filled": 58,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2021-09",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "gap_blocked": 6,
+  "filled": 57
+ },
+ {
+  "month": "2021-09",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 57,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2021-09",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "gap_blocked": 4,
+  "filled": 59
+ },
+ {
+  "month": "2021-09",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-09",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-09",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-09",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-09",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-09",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2021-09",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2021-09",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2021-09",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-09",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2021-09",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "gap_blocked": 3,
+  "filled": 60
+ },
+ {
+  "month": "2021-09",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2021-09",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "filled": 63
+ },
+ {
+  "month": "2021-09",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 63
+ },
+ {
+  "month": "2021-09",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 63
+ },
+ {
+  "month": "2021-09",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-09",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 63
+ },
+ {
+  "month": "2021-10",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-10",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-10",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 63
+ },
+ {
+  "month": "2021-10",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 63
+ },
+ {
+  "month": "2021-10",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "filled": 46,
+  "gap_blocked": 17
+ },
+ {
+  "month": "2021-10",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "filled": 55,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2021-10",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2021-10",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "filled": 58,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2021-10",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2021-10",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-10",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2021-10",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "filled": 63
+ },
+ {
+  "month": "2021-10",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-10",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-10",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2021-10",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-10",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2021-10",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-10",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2021-10",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-10",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 59,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2021-10",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "filled": 63
+ },
+ {
+  "month": "2021-10",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "gap_blocked": 1,
+  "filled": 62
+ },
+ {
+  "month": "2021-10",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-10",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2021-10",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 63
+ },
+ {
+  "month": "2021-10",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-10",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-11",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-11",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 63
+ },
+ {
+  "month": "2021-11",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 63
+ },
+ {
+  "month": "2021-11",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 63
+ },
+ {
+  "month": "2021-11",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "gap_blocked": 9,
+  "filled": 54
+ },
+ {
+  "month": "2021-11",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "filled": 54,
+  "gap_blocked": 9
+ },
+ {
+  "month": "2021-11",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2021-11",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "filled": 58,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2021-11",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "filled": 57,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2021-11",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2021-11",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2021-11",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2021-11",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2021-11",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-11",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 63
+ },
+ {
+  "month": "2021-11",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-11",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-11",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 63
+ },
+ {
+  "month": "2021-11",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-11",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-11",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-11",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "filled": 63
+ },
+ {
+  "month": "2021-11",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2021-11",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-11",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-11",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 63
+ },
+ {
+  "month": "2021-11",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-11",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 63
+ },
+ {
+  "month": "2021-12",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 64,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-12",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 65,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-12",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 66
+ },
+ {
+  "month": "2021-12",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 65,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2021-12",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "filled": 53,
+  "gap_blocked": 13
+ },
+ {
+  "month": "2021-12",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "filled": 55,
+  "gap_blocked": 11
+ },
+ {
+  "month": "2021-12",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "filled": 53,
+  "gap_blocked": 13
+ },
+ {
+  "month": "2021-12",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "gap_blocked": 13,
+  "filled": 53
+ },
+ {
+  "month": "2021-12",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "filled": 52,
+  "gap_blocked": 14
+ },
+ {
+  "month": "2021-12",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 57,
+  "gap_blocked": 9
+ },
+ {
+  "month": "2021-12",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "filled": 53,
+  "gap_blocked": 13
+ },
+ {
+  "month": "2021-12",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2021-12",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 57,
+  "gap_blocked": 9
+ },
+ {
+  "month": "2021-12",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2021-12",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 63,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2021-12",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "filled": 60,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2021-12",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 62,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2021-12",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 63,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2021-12",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 60,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2021-12",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2021-12",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 64,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-12",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "filled": 63,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2021-12",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 64,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-12",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "filled": 64,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2021-12",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "gap_blocked": 3,
+  "filled": 63
+ },
+ {
+  "month": "2021-12",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2021-12",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 55,
+  "gap_blocked": 11
+ },
+ {
+  "month": "2021-12",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 63,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2022-01",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 53,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2022-01",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "gap_blocked": 2,
+  "filled": 58
+ },
+ {
+  "month": "2022-01",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 60
+ },
+ {
+  "month": "2022-01",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 60
+ },
+ {
+  "month": "2022-01",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "filled": 47,
+  "gap_blocked": 13
+ },
+ {
+  "month": "2022-01",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "filled": 53,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2022-01",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "filled": 49,
+  "gap_blocked": 11
+ },
+ {
+  "month": "2022-01",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "filled": 55,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2022-01",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "filled": 52,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2022-01",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 56,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2022-01",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "filled": 53,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2022-01",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "filled": 57,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2022-01",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 53,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2022-01",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 54,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2022-01",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 53,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2022-01",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "filled": 56,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2022-01",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 53,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2022-01",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 58,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2022-01",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 54,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2022-01",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "filled": 55,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2022-01",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 54,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2022-01",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2022-01",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2022-01",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "filled": 58,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2022-01",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 60
+ },
+ {
+  "month": "2022-01",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 57,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2022-01",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2022-01",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 60
+ },
+ {
+  "month": "2022-02",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 55,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2022-02",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 55,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2022-02",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 57
+ },
+ {
+  "month": "2022-02",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 57
+ },
+ {
+  "month": "2022-02",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "filled": 46,
+  "gap_blocked": 11
+ },
+ {
+  "month": "2022-02",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "gap_blocked": 9,
+  "filled": 48
+ },
+ {
+  "month": "2022-02",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "filled": 48,
+  "gap_blocked": 9
+ },
+ {
+  "month": "2022-02",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "filled": 51,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2022-02",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "filled": 50,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2022-02",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 51,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2022-02",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "filled": 46,
+  "gap_blocked": 11
+ },
+ {
+  "month": "2022-02",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "filled": 51,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2022-02",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 54,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2022-02",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 52,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2022-02",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 51,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2022-02",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "filled": 51,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2022-02",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 53,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2022-02",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 50,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2022-02",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 51,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2022-02",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "filled": 53,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2022-02",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 50,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2022-02",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "filled": 53,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2022-02",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 51,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2022-02",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "filled": 52,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2022-02",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 50,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2022-02",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 54,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2022-02",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 54,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2022-02",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 53,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2022-03",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 68,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2022-03",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 64,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2022-03",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 69
+ },
+ {
+  "month": "2022-03",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 69
+ },
+ {
+  "month": "2022-03",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 11
+ },
+ {
+  "month": "2022-03",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2022-03",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "filled": 60,
+  "gap_blocked": 9
+ },
+ {
+  "month": "2022-03",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "filled": 63,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2022-03",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "filled": 64,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2022-03",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 66,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2022-03",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "filled": 65,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2022-03",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "filled": 65,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2022-03",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 63,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2022-03",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 64,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2022-03",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 65,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2022-03",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "filled": 65,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2022-03",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 63,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2022-03",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 68,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2022-03",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 65,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2022-03",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "filled": 66,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2022-03",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 67,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2022-03",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "filled": 68,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2022-03",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 67,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2022-03",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "filled": 68,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2022-03",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 68,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2022-03",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 67,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2022-03",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 62,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2022-03",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 67,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2022-04",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 57,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2022-04",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 58,
+  "unfilled": 1,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2022-04",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 60
+ },
+ {
+  "month": "2022-04",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 60
+ },
+ {
+  "month": "2022-04",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "filled": 48,
+  "gap_blocked": 12
+ },
+ {
+  "month": "2022-04",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "filled": 48,
+  "gap_blocked": 12
+ },
+ {
+  "month": "2022-04",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "filled": 49,
+  "gap_blocked": 11
+ },
+ {
+  "month": "2022-04",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "filled": 49,
+  "gap_blocked": 11
+ },
+ {
+  "month": "2022-04",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "filled": 48,
+  "gap_blocked": 12
+ },
+ {
+  "month": "2022-04",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 53,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2022-04",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "filled": 51,
+  "gap_blocked": 9
+ },
+ {
+  "month": "2022-04",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "filled": 52,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2022-04",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 50,
+  "gap_blocked": 10
+ },
+ {
+  "month": "2022-04",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 51,
+  "gap_blocked": 9
+ },
+ {
+  "month": "2022-04",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 50,
+  "gap_blocked": 10
+ },
+ {
+  "month": "2022-04",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "filled": 51,
+  "gap_blocked": 9
+ },
+ {
+  "month": "2022-04",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 49,
+  "gap_blocked": 11
+ },
+ {
+  "month": "2022-04",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 57,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2022-04",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2022-04",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "filled": 55,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2022-04",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 52,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2022-04",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "filled": 55,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2022-04",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 54,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2022-04",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "filled": 58,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2022-04",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 3,
+  "unfilled": 1
+ },
+ {
+  "month": "2022-04",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 58,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2022-04",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 57,
+  "gap_blocked": 2,
+  "unfilled": 1
+ },
+ {
+  "month": "2022-04",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 54,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2022-05",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 59,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2022-05",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2022-05",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2022-05",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 63
+ },
+ {
+  "month": "2022-05",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "filled": 51,
+  "gap_blocked": 12
+ },
+ {
+  "month": "2022-05",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "filled": 53,
+  "gap_blocked": 10
+ },
+ {
+  "month": "2022-05",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "gap_blocked": 8,
+  "filled": 55
+ },
+ {
+  "month": "2022-05",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "filled": 51,
+  "gap_blocked": 12
+ },
+ {
+  "month": "2022-05",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "gap_blocked": 13,
+  "filled": 50
+ },
+ {
+  "month": "2022-05",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 52,
+  "gap_blocked": 11
+ },
+ {
+  "month": "2022-05",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "filled": 53,
+  "gap_blocked": 10
+ },
+ {
+  "month": "2022-05",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "filled": 57,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2022-05",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "gap_blocked": 14,
+  "filled": 49
+ },
+ {
+  "month": "2022-05",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2022-05",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 53,
+  "gap_blocked": 10
+ },
+ {
+  "month": "2022-05",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2022-05",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2022-05",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2022-05",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 57,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2022-05",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2022-05",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 55,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2022-05",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2022-05",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2022-05",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "filled": 57,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2022-05",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 52,
+  "gap_blocked": 11
+ },
+ {
+  "month": "2022-05",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2022-05",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2022-05",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2022-06",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2022-06",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2022-06",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 63
+ },
+ {
+  "month": "2022-06",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 63
+ },
+ {
+  "month": "2022-06",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "filled": 55,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2022-06",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "filled": 50,
+  "gap_blocked": 13
+ },
+ {
+  "month": "2022-06",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "filled": 49,
+  "gap_blocked": 14
+ },
+ {
+  "month": "2022-06",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "filled": 47,
+  "gap_blocked": 16
+ },
+ {
+  "month": "2022-06",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "filled": 50,
+  "gap_blocked": 13
+ },
+ {
+  "month": "2022-06",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 53,
+  "gap_blocked": 10
+ },
+ {
+  "month": "2022-06",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "filled": 52,
+  "gap_blocked": 11
+ },
+ {
+  "month": "2022-06",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "gap_blocked": 6,
+  "filled": 57
+ },
+ {
+  "month": "2022-06",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 52,
+  "gap_blocked": 11
+ },
+ {
+  "month": "2022-06",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 56,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2022-06",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 52,
+  "gap_blocked": 11
+ },
+ {
+  "month": "2022-06",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "gap_blocked": 9,
+  "filled": 54
+ },
+ {
+  "month": "2022-06",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 48,
+  "gap_blocked": 15
+ },
+ {
+  "month": "2022-06",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 58,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2022-06",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 52,
+  "gap_blocked": 11
+ },
+ {
+  "month": "2022-06",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "gap_blocked": 9,
+  "filled": 54
+ },
+ {
+  "month": "2022-06",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 52,
+  "gap_blocked": 11
+ },
+ {
+  "month": "2022-06",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "gap_blocked": 8,
+  "filled": 55
+ },
+ {
+  "month": "2022-06",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 48,
+  "gap_blocked": 15
+ },
+ {
+  "month": "2022-06",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "gap_blocked": 4,
+  "filled": 59
+ },
+ {
+  "month": "2022-06",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 51,
+  "gap_blocked": 11,
+  "unfilled": 1
+ },
+ {
+  "month": "2022-06",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "gap_blocked": 4,
+  "filled": 59
+ },
+ {
+  "month": "2022-06",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 54,
+  "gap_blocked": 9
+ },
+ {
+  "month": "2022-06",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 58,
+  "gap_blocked": 4,
+  "unfilled": 1
+ },
+ {
+  "month": "2022-07",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "gap_blocked": 7,
+  "filled": 53
+ },
+ {
+  "month": "2022-07",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 58,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2022-07",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 59,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2022-07",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 60
+ },
+ {
+  "month": "2022-07",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "filled": 50,
+  "gap_blocked": 10
+ },
+ {
+  "month": "2022-07",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "filled": 48,
+  "gap_blocked": 12
+ },
+ {
+  "month": "2022-07",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "filled": 47,
+  "gap_blocked": 13
+ },
+ {
+  "month": "2022-07",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "filled": 47,
+  "gap_blocked": 13
+ },
+ {
+  "month": "2022-07",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "filled": 45,
+  "gap_blocked": 15
+ },
+ {
+  "month": "2022-07",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 52,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2022-07",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "filled": 48,
+  "gap_blocked": 12
+ },
+ {
+  "month": "2022-07",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "filled": 50,
+  "gap_blocked": 10
+ },
+ {
+  "month": "2022-07",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 44,
+  "gap_blocked": 16
+ },
+ {
+  "month": "2022-07",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 52,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2022-07",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 48,
+  "gap_blocked": 12
+ },
+ {
+  "month": "2022-07",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "filled": 55,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2022-07",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 52,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2022-07",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 54,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2022-07",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 50,
+  "gap_blocked": 10
+ },
+ {
+  "month": "2022-07",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "filled": 53,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2022-07",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 48,
+  "gap_blocked": 12
+ },
+ {
+  "month": "2022-07",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "filled": 55,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2022-07",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 49,
+  "gap_blocked": 11
+ },
+ {
+  "month": "2022-07",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "filled": 55,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2022-07",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "gap_blocked": 12,
+  "filled": 48
+ },
+ {
+  "month": "2022-07",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 56,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2022-07",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 52,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2022-07",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2022-08",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 67,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2022-08",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 69
+ },
+ {
+  "month": "2022-08",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 68,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2022-08",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 69
+ },
+ {
+  "month": "2022-08",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "filled": 55,
+  "gap_blocked": 14
+ },
+ {
+  "month": "2022-08",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2022-08",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "filled": 62,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2022-08",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "gap_blocked": 8,
+  "filled": 61
+ },
+ {
+  "month": "2022-08",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "gap_blocked": 10,
+  "filled": 59
+ },
+ {
+  "month": "2022-08",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "gap_blocked": 6,
+  "filled": 63
+ },
+ {
+  "month": "2022-08",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "filled": 61,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2022-08",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "gap_blocked": 4,
+  "filled": 65
+ },
+ {
+  "month": "2022-08",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 64,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2022-08",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 65,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2022-08",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 63,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2022-08",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "filled": 66,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2022-08",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 64,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2022-08",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 66,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2022-08",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 62,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2022-08",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "filled": 65,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2022-08",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 67,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2022-08",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "filled": 68,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2022-08",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 68,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2022-08",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "filled": 68,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2022-08",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 64,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2022-08",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 68,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2022-08",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 68,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2022-08",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 68,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2022-09",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 55,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2022-09",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2022-09",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 63
+ },
+ {
+  "month": "2022-09",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 63
+ },
+ {
+  "month": "2022-09",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "filled": 38,
+  "gap_blocked": 25
+ },
+ {
+  "month": "2022-09",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "gap_blocked": 20,
+  "filled": 43
+ },
+ {
+  "month": "2022-09",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "filled": 48,
+  "gap_blocked": 15
+ },
+ {
+  "month": "2022-09",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "filled": 52,
+  "gap_blocked": 11
+ },
+ {
+  "month": "2022-09",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "filled": 50,
+  "gap_blocked": 13
+ },
+ {
+  "month": "2022-09",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "gap_blocked": 8,
+  "filled": 55
+ },
+ {
+  "month": "2022-09",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2022-09",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "filled": 56,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2022-09",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 51,
+  "gap_blocked": 12
+ },
+ {
+  "month": "2022-09",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "gap_blocked": 8,
+  "filled": 55
+ },
+ {
+  "month": "2022-09",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 55,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2022-09",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "gap_blocked": 6,
+  "filled": 57
+ },
+ {
+  "month": "2022-09",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 53,
+  "gap_blocked": 10
+ },
+ {
+  "month": "2022-09",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 58,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2022-09",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2022-09",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2022-09",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 55,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2022-09",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "gap_blocked": 4,
+  "filled": 59
+ },
+ {
+  "month": "2022-09",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 59,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2022-09",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "gap_blocked": 5,
+  "filled": 58
+ },
+ {
+  "month": "2022-09",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 55,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2022-09",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2022-09",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2022-09",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 63
+ },
+ {
+  "month": "2022-10",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2022-10",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2022-10",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 63
+ },
+ {
+  "month": "2022-10",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 63
+ },
+ {
+  "month": "2022-10",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "filled": 42,
+  "gap_blocked": 21
+ },
+ {
+  "month": "2022-10",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "filled": 47,
+  "gap_blocked": 16
+ },
+ {
+  "month": "2022-10",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "filled": 54,
+  "gap_blocked": 9
+ },
+ {
+  "month": "2022-10",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "filled": 54,
+  "gap_blocked": 9
+ },
+ {
+  "month": "2022-10",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "filled": 51,
+  "gap_blocked": 12
+ },
+ {
+  "month": "2022-10",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 50,
+  "gap_blocked": 13
+ },
+ {
+  "month": "2022-10",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "gap_blocked": 12,
+  "filled": 51
+ },
+ {
+  "month": "2022-10",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "filled": 56,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2022-10",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 50,
+  "gap_blocked": 13
+ },
+ {
+  "month": "2022-10",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 52,
+  "gap_blocked": 11
+ },
+ {
+  "month": "2022-10",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2022-10",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "filled": 52,
+  "gap_blocked": 11
+ },
+ {
+  "month": "2022-10",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 53,
+  "gap_blocked": 10
+ },
+ {
+  "month": "2022-10",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 58,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2022-10",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 57,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2022-10",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2022-10",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 55,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2022-10",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2022-10",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 54,
+  "gap_blocked": 9
+ },
+ {
+  "month": "2022-10",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2022-10",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2022-10",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2022-10",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 57,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2022-10",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2022-11",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2022-11",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2022-11",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 63
+ },
+ {
+  "month": "2022-11",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 63
+ },
+ {
+  "month": "2022-11",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "filled": 54,
+  "gap_blocked": 8,
+  "unfilled": 1
+ },
+ {
+  "month": "2022-11",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "filled": 50,
+  "gap_blocked": 13
+ },
+ {
+  "month": "2022-11",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "filled": 50,
+  "gap_blocked": 13
+ },
+ {
+  "month": "2022-11",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "filled": 54,
+  "gap_blocked": 9
+ },
+ {
+  "month": "2022-11",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "filled": 51,
+  "gap_blocked": 11,
+  "unfilled": 1
+ },
+ {
+  "month": "2022-11",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 54,
+  "gap_blocked": 9
+ },
+ {
+  "month": "2022-11",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "filled": 54,
+  "gap_blocked": 9
+ },
+ {
+  "month": "2022-11",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2022-11",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 54,
+  "gap_blocked": 9
+ },
+ {
+  "month": "2022-11",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 57,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2022-11",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 57,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2022-11",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "filled": 55,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2022-11",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 49,
+  "gap_blocked": 14
+ },
+ {
+  "month": "2022-11",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 57,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2022-11",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2022-11",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2022-11",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 53,
+  "gap_blocked": 10
+ },
+ {
+  "month": "2022-11",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2022-11",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 57,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2022-11",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2022-11",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2022-11",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2022-11",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 57,
+  "unfilled": 1,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2022-11",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2022-12",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 59,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2022-12",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2022-12",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2022-12",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2022-12",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "gap_blocked": 27,
+  "filled": 36
+ },
+ {
+  "month": "2022-12",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "filled": 47,
+  "gap_blocked": 16
+ },
+ {
+  "month": "2022-12",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "filled": 47,
+  "gap_blocked": 16
+ },
+ {
+  "month": "2022-12",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "filled": 49,
+  "gap_blocked": 13,
+  "unfilled": 1
+ },
+ {
+  "month": "2022-12",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "filled": 52,
+  "gap_blocked": 11
+ },
+ {
+  "month": "2022-12",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 44,
+  "gap_blocked": 18,
+  "unfilled": 1
+ },
+ {
+  "month": "2022-12",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "filled": 47,
+  "gap_blocked": 15,
+  "unfilled": 1
+ },
+ {
+  "month": "2022-12",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "filled": 50,
+  "gap_blocked": 13
+ },
+ {
+  "month": "2022-12",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 50,
+  "gap_blocked": 12,
+  "unfilled": 1
+ },
+ {
+  "month": "2022-12",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 52,
+  "gap_blocked": 11
+ },
+ {
+  "month": "2022-12",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 49,
+  "gap_blocked": 13,
+  "unfilled": 1
+ },
+ {
+  "month": "2022-12",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "filled": 49,
+  "gap_blocked": 14
+ },
+ {
+  "month": "2022-12",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 52,
+  "gap_blocked": 11
+ },
+ {
+  "month": "2022-12",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 55,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2022-12",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 52,
+  "gap_blocked": 9,
+  "unfilled": 2
+ },
+ {
+  "month": "2022-12",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "filled": 51,
+  "gap_blocked": 12
+ },
+ {
+  "month": "2022-12",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 57,
+  "gap_blocked": 5,
+  "unfilled": 1
+ },
+ {
+  "month": "2022-12",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "filled": 55,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2022-12",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 52,
+  "gap_blocked": 10,
+  "unfilled": 1
+ },
+ {
+  "month": "2022-12",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "filled": 58,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2022-12",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 55,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2022-12",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 56,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2022-12",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 51,
+  "gap_blocked": 12
+ },
+ {
+  "month": "2022-12",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 56,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2023-01",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "gap_blocked": 6,
+  "filled": 54
+ },
+ {
+  "month": "2023-01",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 60
+ },
+ {
+  "month": "2023-01",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 60
+ },
+ {
+  "month": "2023-01",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 60
+ },
+ {
+  "month": "2023-01",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "gap_blocked": 15,
+  "filled": 44,
+  "unfilled": 1
+ },
+ {
+  "month": "2023-01",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "filled": 50,
+  "gap_blocked": 10
+ },
+ {
+  "month": "2023-01",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "gap_blocked": 12,
+  "filled": 48
+ },
+ {
+  "month": "2023-01",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "filled": 52,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2023-01",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "filled": 50,
+  "gap_blocked": 10
+ },
+ {
+  "month": "2023-01",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 55,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2023-01",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "filled": 54,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2023-01",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "filled": 57,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2023-01",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 55,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2023-01",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 56,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2023-01",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 55,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2023-01",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "filled": 58,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2023-01",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2023-01",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 60
+ },
+ {
+  "month": "2023-01",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 54,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2023-01",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "filled": 57,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2023-01",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2023-01",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "filled": 58,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2023-01",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "gap_blocked": 7,
+  "filled": 53
+ },
+ {
+  "month": "2023-01",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2023-01",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2023-01",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2023-01",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 53,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2023-01",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 56,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2023-02",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "gap_blocked": 3,
+  "filled": 54
+ },
+ {
+  "month": "2023-02",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 56,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2023-02",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 55,
+  "unfilled": 1,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2023-02",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 57
+ },
+ {
+  "month": "2023-02",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "filled": 45,
+  "gap_blocked": 12
+ },
+ {
+  "month": "2023-02",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "filled": 47,
+  "gap_blocked": 10
+ },
+ {
+  "month": "2023-02",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "gap_blocked": 9,
+  "filled": 48
+ },
+ {
+  "month": "2023-02",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "filled": 46,
+  "gap_blocked": 11
+ },
+ {
+  "month": "2023-02",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "filled": 48,
+  "gap_blocked": 9
+ },
+ {
+  "month": "2023-02",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 50,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2023-02",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "filled": 53,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2023-02",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "filled": 54,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2023-02",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 52,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2023-02",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 53,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2023-02",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 55,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2023-02",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "filled": 53,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2023-02",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 51,
+  "gap_blocked": 5,
+  "unfilled": 1
+ },
+ {
+  "month": "2023-02",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 56,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2023-02",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 52,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2023-02",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "filled": 54,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2023-02",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 54,
+  "gap_blocked": 2,
+  "unfilled": 1
+ },
+ {
+  "month": "2023-02",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "filled": 56,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2023-02",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 51,
+  "gap_blocked": 5,
+  "unfilled": 1
+ },
+ {
+  "month": "2023-02",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "filled": 55,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2023-02",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 53,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2023-02",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 56,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2023-02",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 53,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2023-02",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 57
+ },
+ {
+  "month": "2023-03",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 68,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2023-03",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 67,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2023-03",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 69
+ },
+ {
+  "month": "2023-03",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 69
+ },
+ {
+  "month": "2023-03",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "filled": 46,
+  "gap_blocked": 23
+ },
+ {
+  "month": "2023-03",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "filled": 50,
+  "gap_blocked": 19
+ },
+ {
+  "month": "2023-03",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 13
+ },
+ {
+  "month": "2023-03",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "gap_blocked": 19,
+  "filled": 50
+ },
+ {
+  "month": "2023-03",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "filled": 54,
+  "gap_blocked": 15
+ },
+ {
+  "month": "2023-03",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 51,
+  "gap_blocked": 18
+ },
+ {
+  "month": "2023-03",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "filled": 55,
+  "gap_blocked": 14
+ },
+ {
+  "month": "2023-03",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "filled": 58,
+  "gap_blocked": 11
+ },
+ {
+  "month": "2023-03",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "gap_blocked": 18,
+  "filled": 51
+ },
+ {
+  "month": "2023-03",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 60,
+  "gap_blocked": 9
+ },
+ {
+  "month": "2023-03",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 13
+ },
+ {
+  "month": "2023-03",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "gap_blocked": 9,
+  "filled": 60
+ },
+ {
+  "month": "2023-03",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 54,
+  "gap_blocked": 15
+ },
+ {
+  "month": "2023-03",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 63,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2023-03",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 60,
+  "gap_blocked": 9
+ },
+ {
+  "month": "2023-03",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2023-03",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 57,
+  "gap_blocked": 12
+ },
+ {
+  "month": "2023-03",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "filled": 58,
+  "gap_blocked": 11
+ },
+ {
+  "month": "2023-03",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "gap_blocked": 12,
+  "filled": 57
+ },
+ {
+  "month": "2023-03",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "filled": 63,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2023-03",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 60,
+  "gap_blocked": 9
+ },
+ {
+  "month": "2023-03",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "gap_blocked": 7,
+  "filled": 62
+ },
+ {
+  "month": "2023-03",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 11
+ },
+ {
+  "month": "2023-03",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 64,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2023-04",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 53,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2023-04",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 56,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2023-04",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 57
+ },
+ {
+  "month": "2023-04",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 57
+ },
+ {
+  "month": "2023-04",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "filled": 41,
+  "gap_blocked": 16
+ },
+ {
+  "month": "2023-04",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "filled": 50,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2023-04",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "filled": 47,
+  "gap_blocked": 10
+ },
+ {
+  "month": "2023-04",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "filled": 48,
+  "gap_blocked": 9
+ },
+ {
+  "month": "2023-04",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "filled": 43,
+  "gap_blocked": 14
+ },
+ {
+  "month": "2023-04",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 49,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2023-04",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "filled": 45,
+  "gap_blocked": 12
+ },
+ {
+  "month": "2023-04",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "filled": 47,
+  "gap_blocked": 10
+ },
+ {
+  "month": "2023-04",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 45,
+  "gap_blocked": 12
+ },
+ {
+  "month": "2023-04",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 54,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2023-04",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 51,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2023-04",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "filled": 55,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2023-04",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "gap_blocked": 6,
+  "filled": 51
+ },
+ {
+  "month": "2023-04",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 51,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2023-04",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 53,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2023-04",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "filled": 52,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2023-04",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 52,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2023-04",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "filled": 50,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2023-04",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 52,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2023-04",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "filled": 54,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2023-04",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2023-04",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 54,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2023-04",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 50,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2023-04",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 54,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2023-05",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 65,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2023-05",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 63,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2023-05",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 65,
+  "unfilled": 1
+ },
+ {
+  "month": "2023-05",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 66
+ },
+ {
+  "month": "2023-05",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "filled": 54,
+  "gap_blocked": 12
+ },
+ {
+  "month": "2023-05",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "filled": 58,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2023-05",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "filled": 59,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2023-05",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "gap_blocked": 8,
+  "filled": 58
+ },
+ {
+  "month": "2023-05",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "filled": 61,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2023-05",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2023-05",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "gap_blocked": 5,
+  "filled": 61
+ },
+ {
+  "month": "2023-05",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2023-05",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2023-05",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2023-05",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "gap_blocked": 6,
+  "filled": 60
+ },
+ {
+  "month": "2023-05",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2023-05",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 60,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2023-05",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 63,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2023-05",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 64,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2023-05",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "filled": 60,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2023-05",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 62,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2023-05",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2023-05",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 63,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2023-05",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "filled": 65,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2023-05",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 64,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2023-05",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 63,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2023-05",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 63,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2023-05",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 63,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2023-06",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2023-06",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 63
+ },
+ {
+  "month": "2023-06",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 63
+ },
+ {
+  "month": "2023-06",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 63
+ },
+ {
+  "month": "2023-06",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "gap_blocked": 16,
+  "filled": 47
+ },
+ {
+  "month": "2023-06",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "filled": 54,
+  "gap_blocked": 9
+ },
+ {
+  "month": "2023-06",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "filled": 57,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2023-06",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "filled": 57,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2023-06",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "gap_blocked": 11,
+  "filled": 52
+ },
+ {
+  "month": "2023-06",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2023-06",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "filled": 52,
+  "gap_blocked": 11
+ },
+ {
+  "month": "2023-06",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2023-06",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 53,
+  "gap_blocked": 10
+ },
+ {
+  "month": "2023-06",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2023-06",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "gap_blocked": 10,
+  "filled": 53
+ },
+ {
+  "month": "2023-06",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2023-06",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 57,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2023-06",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2023-06",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 53,
+  "gap_blocked": 10
+ },
+ {
+  "month": "2023-06",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2023-06",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 59,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2023-06",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2023-06",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 57,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2023-06",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "filled": 58,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2023-06",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2023-06",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2023-06",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 57,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2023-06",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2023-07",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 55,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2023-07",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2023-07",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 59,
+  "unfilled": 1
+ },
+ {
+  "month": "2023-07",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 60
+ },
+ {
+  "month": "2023-07",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "gap_blocked": 11,
+  "filled": 49
+ },
+ {
+  "month": "2023-07",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "filled": 53,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2023-07",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "gap_blocked": 12,
+  "filled": 48
+ },
+ {
+  "month": "2023-07",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "gap_blocked": 9,
+  "filled": 51
+ },
+ {
+  "month": "2023-07",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "filled": 52,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2023-07",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 55,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2023-07",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "gap_blocked": 9,
+  "filled": 51
+ },
+ {
+  "month": "2023-07",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "gap_blocked": 5,
+  "filled": 55
+ },
+ {
+  "month": "2023-07",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 53,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2023-07",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "gap_blocked": 5,
+  "filled": 55
+ },
+ {
+  "month": "2023-07",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 55,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2023-07",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "gap_blocked": 3,
+  "filled": 57
+ },
+ {
+  "month": "2023-07",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 54,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2023-07",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "gap_blocked": 4,
+  "filled": 56
+ },
+ {
+  "month": "2023-07",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2023-07",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "gap_blocked": 5,
+  "filled": 55
+ },
+ {
+  "month": "2023-07",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2023-07",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "gap_blocked": 3,
+  "filled": 57
+ },
+ {
+  "month": "2023-07",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 55,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2023-07",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "gap_blocked": 2,
+  "filled": 58
+ },
+ {
+  "month": "2023-07",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2023-07",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "gap_blocked": 2,
+  "filled": 58
+ },
+ {
+  "month": "2023-07",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 57,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2023-07",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 60
+ },
+ {
+  "month": "2023-08",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 67,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2023-08",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 69
+ },
+ {
+  "month": "2023-08",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 68,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2023-08",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 69
+ },
+ {
+  "month": "2023-08",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "filled": 48,
+  "gap_blocked": 21
+ },
+ {
+  "month": "2023-08",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "filled": 57,
+  "gap_blocked": 12
+ },
+ {
+  "month": "2023-08",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "filled": 62,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2023-08",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "filled": 55,
+  "gap_blocked": 14
+ },
+ {
+  "month": "2023-08",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "filled": 59,
+  "gap_blocked": 10
+ },
+ {
+  "month": "2023-08",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 63,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2023-08",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "filled": 59,
+  "gap_blocked": 9,
+  "unfilled": 1
+ },
+ {
+  "month": "2023-08",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "filled": 65,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2023-08",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 12,
+  "unfilled": 1
+ },
+ {
+  "month": "2023-08",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2023-08",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 10,
+  "unfilled": 1
+ },
+ {
+  "month": "2023-08",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "gap_blocked": 6,
+  "filled": 63
+ },
+ {
+  "month": "2023-08",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 57,
+  "gap_blocked": 11,
+  "unfilled": 1
+ },
+ {
+  "month": "2023-08",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 65,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2023-08",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 60,
+  "gap_blocked": 8,
+  "unfilled": 1
+ },
+ {
+  "month": "2023-08",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "filled": 65,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2023-08",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "gap_blocked": 7,
+  "filled": 62
+ },
+ {
+  "month": "2023-08",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "filled": 67,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2023-08",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 59,
+  "gap_blocked": 10
+ },
+ {
+  "month": "2023-08",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "filled": 65,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2023-08",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 61,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2023-08",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 66,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2023-08",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 62,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2023-08",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 63,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2023-09",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2023-09",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2023-09",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 57,
+  "unfilled": 1,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2023-09",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2023-09",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "filled": 46,
+  "gap_blocked": 14
+ },
+ {
+  "month": "2023-09",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "filled": 47,
+  "gap_blocked": 13
+ },
+ {
+  "month": "2023-09",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "filled": 48,
+  "gap_blocked": 12
+ },
+ {
+  "month": "2023-09",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "filled": 48,
+  "gap_blocked": 12
+ },
+ {
+  "month": "2023-09",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "filled": 45,
+  "gap_blocked": 15
+ },
+ {
+  "month": "2023-09",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 49,
+  "gap_blocked": 11
+ },
+ {
+  "month": "2023-09",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "filled": 49,
+  "gap_blocked": 11
+ },
+ {
+  "month": "2023-09",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "filled": 53,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2023-09",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 46,
+  "gap_blocked": 13,
+  "unfilled": 1
+ },
+ {
+  "month": "2023-09",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 50,
+  "gap_blocked": 10
+ },
+ {
+  "month": "2023-09",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 50,
+  "gap_blocked": 10
+ },
+ {
+  "month": "2023-09",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "filled": 55,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2023-09",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 51,
+  "gap_blocked": 8,
+  "unfilled": 1
+ },
+ {
+  "month": "2023-09",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 57,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2023-09",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 54,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2023-09",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "filled": 55,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2023-09",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2023-09",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "gap_blocked": 2,
+  "filled": 58
+ },
+ {
+  "month": "2023-09",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2023-09",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "filled": 58,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2023-09",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 54,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2023-09",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 57,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2023-09",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 59,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2023-09",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 57,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2023-10",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 63,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2023-10",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2023-10",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 66
+ },
+ {
+  "month": "2023-10",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 65,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2023-10",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 10
+ },
+ {
+  "month": "2023-10",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "gap_blocked": 15,
+  "filled": 51
+ },
+ {
+  "month": "2023-10",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "filled": 52,
+  "gap_blocked": 14
+ },
+ {
+  "month": "2023-10",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "filled": 56,
+  "gap_blocked": 10
+ },
+ {
+  "month": "2023-10",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "filled": 50,
+  "gap_blocked": 16
+ },
+ {
+  "month": "2023-10",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "gap_blocked": 13,
+  "filled": 53
+ },
+ {
+  "month": "2023-10",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "filled": 48,
+  "gap_blocked": 18
+ },
+ {
+  "month": "2023-10",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "filled": 55,
+  "gap_blocked": 11
+ },
+ {
+  "month": "2023-10",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 51,
+  "gap_blocked": 15
+ },
+ {
+  "month": "2023-10",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2023-10",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 57,
+  "gap_blocked": 9
+ },
+ {
+  "month": "2023-10",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "filled": 55,
+  "gap_blocked": 11
+ },
+ {
+  "month": "2023-10",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 59,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2023-10",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2023-10",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 57,
+  "gap_blocked": 9
+ },
+ {
+  "month": "2023-10",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2023-10",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 57,
+  "gap_blocked": 9
+ },
+ {
+  "month": "2023-10",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2023-10",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 52,
+  "gap_blocked": 13,
+  "unfilled": 1
+ },
+ {
+  "month": "2023-10",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "filled": 64,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2023-10",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 59,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2023-10",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 63,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2023-10",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 10
+ },
+ {
+  "month": "2023-10",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2023-11",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 59,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2023-11",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2023-11",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 63
+ },
+ {
+  "month": "2023-11",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 63
+ },
+ {
+  "month": "2023-11",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "filled": 48,
+  "gap_blocked": 15
+ },
+ {
+  "month": "2023-11",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "gap_blocked": 7,
+  "filled": 56
+ },
+ {
+  "month": "2023-11",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "filled": 52,
+  "gap_blocked": 11
+ },
+ {
+  "month": "2023-11",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "gap_blocked": 6,
+  "filled": 57
+ },
+ {
+  "month": "2023-11",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "filled": 54,
+  "gap_blocked": 9
+ },
+ {
+  "month": "2023-11",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "gap_blocked": 9,
+  "filled": 54
+ },
+ {
+  "month": "2023-11",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "gap_blocked": 9,
+  "filled": 54
+ },
+ {
+  "month": "2023-11",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "gap_blocked": 13,
+  "filled": 50
+ },
+ {
+  "month": "2023-11",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 54,
+  "gap_blocked": 9
+ },
+ {
+  "month": "2023-11",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 57,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2023-11",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "gap_blocked": 9,
+  "filled": 54
+ },
+ {
+  "month": "2023-11",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "filled": 56,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2023-11",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "gap_blocked": 10,
+  "filled": 53
+ },
+ {
+  "month": "2023-11",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2023-11",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "gap_blocked": 10,
+  "filled": 53
+ },
+ {
+  "month": "2023-11",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2023-11",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2023-11",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2023-11",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 57,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2023-11",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "filled": 57,
+  "gap_blocked": 5,
+  "unfilled": 1
+ },
+ {
+  "month": "2023-11",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 54,
+  "gap_blocked": 9
+ },
+ {
+  "month": "2023-11",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 56,
+  "gap_blocked": 6,
+  "unfilled": 1
+ },
+ {
+  "month": "2023-11",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 54,
+  "gap_blocked": 8,
+  "unfilled": 1
+ },
+ {
+  "month": "2023-11",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2023-12",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 59,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2023-12",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2023-12",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 60
+ },
+ {
+  "month": "2023-12",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2023-12",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "filled": 51,
+  "gap_blocked": 9
+ },
+ {
+  "month": "2023-12",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "filled": 51,
+  "gap_blocked": 9
+ },
+ {
+  "month": "2023-12",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "filled": 55,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2023-12",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "filled": 52,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2023-12",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "filled": 51,
+  "gap_blocked": 9
+ },
+ {
+  "month": "2023-12",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 55,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2023-12",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "filled": 54,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2023-12",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "filled": 58,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2023-12",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 51,
+  "gap_blocked": 9
+ },
+ {
+  "month": "2023-12",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 52,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2023-12",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 53,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2023-12",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "filled": 56,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2023-12",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2023-12",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 56,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2023-12",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 55,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2023-12",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "gap_blocked": 5,
+  "filled": 55
+ },
+ {
+  "month": "2023-12",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 54,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2023-12",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "filled": 60
+ },
+ {
+  "month": "2023-12",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 55,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2023-12",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "filled": 58,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2023-12",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 55,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2023-12",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 58,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2023-12",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 57,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2023-12",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 58,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-02",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 57
+ },
+ {
+  "month": "2025-02",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 57
+ },
+ {
+  "month": "2025-02",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 57
+ },
+ {
+  "month": "2025-02",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 57
+ },
+ {
+  "month": "2025-02",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "filled": 45,
+  "gap_blocked": 12
+ },
+ {
+  "month": "2025-02",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "filled": 51,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2025-02",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "filled": 52,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2025-02",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "gap_blocked": 3,
+  "filled": 54
+ },
+ {
+  "month": "2025-02",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-02",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 55,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-02",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "filled": 55,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-02",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "filled": 54,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2025-02",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 55,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-02",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 53,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2025-02",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 57
+ },
+ {
+  "month": "2025-02",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "filled": 56,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-02",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 55,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-02",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 55,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-02",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-02",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "filled": 57
+ },
+ {
+  "month": "2025-02",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-02",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "filled": 55,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-02",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-02",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "filled": 56,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-02",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 55,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-02",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 57
+ },
+ {
+  "month": "2025-02",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 57
+ },
+ {
+  "month": "2025-02",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 56,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-03",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 63
+ },
+ {
+  "month": "2025-03",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 63
+ },
+ {
+  "month": "2025-03",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 63
+ },
+ {
+  "month": "2025-03",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 63
+ },
+ {
+  "month": "2025-03",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "filled": 54,
+  "gap_blocked": 9
+ },
+ {
+  "month": "2025-03",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "filled": 54,
+  "gap_blocked": 9
+ },
+ {
+  "month": "2025-03",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "filled": 55,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2025-03",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "filled": 58,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2025-03",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "filled": 55,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2025-03",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2025-03",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "filled": 57,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2025-03",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-03",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2025-03",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2025-03",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2025-03",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-03",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 59,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2025-03",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 63
+ },
+ {
+  "month": "2025-03",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2025-03",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-03",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2025-03",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2025-03",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 57,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2025-03",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-03",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 57,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2025-03",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-03",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2025-03",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-04",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2025-04",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 63
+ },
+ {
+  "month": "2025-04",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-04",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-04",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "filled": 44,
+  "gap_blocked": 19
+ },
+ {
+  "month": "2025-04",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "filled": 55,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2025-04",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "filled": 51,
+  "gap_blocked": 12
+ },
+ {
+  "month": "2025-04",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2025-04",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "filled": 53,
+  "gap_blocked": 10
+ },
+ {
+  "month": "2025-04",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2025-04",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 6,
+  "unfilled": 1
+ },
+ {
+  "month": "2025-04",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "filled": 57,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2025-04",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2025-04",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 57,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2025-04",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2025-04",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2025-04",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 53,
+  "gap_blocked": 10
+ },
+ {
+  "month": "2025-04",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 55,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2025-04",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2025-04",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "gap_blocked": 4,
+  "filled": 59
+ },
+ {
+  "month": "2025-04",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2025-04",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "filled": 54,
+  "gap_blocked": 9
+ },
+ {
+  "month": "2025-04",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2025-04",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "filled": 58,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2025-04",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 59,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2025-04",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2025-04",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-04",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2025-05",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 63
+ },
+ {
+  "month": "2025-05",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2025-05",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-05",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 63
+ },
+ {
+  "month": "2025-05",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "gap_blocked": 13,
+  "filled": 50
+ },
+ {
+  "month": "2025-05",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "filled": 53,
+  "gap_blocked": 10
+ },
+ {
+  "month": "2025-05",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2025-05",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-05",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2025-05",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-05",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2025-05",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-05",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 57,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2025-05",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "gap_blocked": 1,
+  "filled": 62
+ },
+ {
+  "month": "2025-05",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 57,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2025-05",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-05",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2025-05",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 63
+ },
+ {
+  "month": "2025-05",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-05",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-05",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2025-05",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "filled": 63
+ },
+ {
+  "month": "2025-05",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 57,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2025-05",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2025-05",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-05",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2025-05",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2025-05",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2025-06",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 60
+ },
+ {
+  "month": "2025-06",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-06",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 60
+ },
+ {
+  "month": "2025-06",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 60
+ },
+ {
+  "month": "2025-06",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "filled": 53,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2025-06",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "filled": 54,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2025-06",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-06",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "filled": 54,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2025-06",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "filled": 60
+ },
+ {
+  "month": "2025-06",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 56,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2025-06",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-06",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "filled": 56,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2025-06",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-06",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 56,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2025-06",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-06",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "filled": 56,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2025-06",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2025-06",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-06",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 57,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2025-06",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "filled": 57,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2025-06",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-06",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "filled": 58,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-06",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-06",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-06",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-06",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 58,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-06",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 59,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-06",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 58,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-07",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 65,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-07",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 64,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-07",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 66
+ },
+ {
+  "month": "2025-07",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 66
+ },
+ {
+  "month": "2025-07",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "filled": 60,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2025-07",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "gap_blocked": 8,
+  "filled": 58
+ },
+ {
+  "month": "2025-07",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 10
+ },
+ {
+  "month": "2025-07",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "filled": 64,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-07",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "filled": 63,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2025-07",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 63,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2025-07",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "filled": 65,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-07",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "filled": 66
+ },
+ {
+  "month": "2025-07",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 64,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-07",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 64,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-07",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 65,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-07",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "filled": 65,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-07",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 66
+ },
+ {
+  "month": "2025-07",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2025-07",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 66
+ },
+ {
+  "month": "2025-07",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "filled": 64,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-07",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 65,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-07",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "filled": 65,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-07",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 66
+ },
+ {
+  "month": "2025-07",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "filled": 65,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-07",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 64,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-07",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 65,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-07",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 63,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2025-07",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 66
+ },
+ {
+  "month": "2025-08",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 63
+ },
+ {
+  "month": "2025-08",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 63
+ },
+ {
+  "month": "2025-08",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 63
+ },
+ {
+  "month": "2025-08",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 63
+ },
+ {
+  "month": "2025-08",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2025-08",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2025-08",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "gap_blocked": 5,
+  "filled": 58
+ },
+ {
+  "month": "2025-08",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2025-08",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "gap_blocked": 5,
+  "filled": 58
+ },
+ {
+  "month": "2025-08",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2025-08",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "gap_blocked": 4,
+  "filled": 59
+ },
+ {
+  "month": "2025-08",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2025-08",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 59,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2025-08",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-08",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-08",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-08",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-08",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-08",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-08",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-08",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-08",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-08",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-08",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-08",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2025-08",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-08",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 59,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2025-08",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-09",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-09",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-09",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 63
+ },
+ {
+  "month": "2025-09",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-09",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "gap_blocked": 7,
+  "filled": 56
+ },
+ {
+  "month": "2025-09",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "filled": 56,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2025-09",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2025-09",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2025-09",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "filled": 59,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2025-09",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-09",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-09",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2025-09",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-09",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 63
+ },
+ {
+  "month": "2025-09",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-09",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2025-09",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-09",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-09",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 59,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2025-09",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-09",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-09",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-09",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-09",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-09",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-09",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2025-09",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-09",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-10",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 69
+ },
+ {
+  "month": "2025-10",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 67,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-10",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 69
+ },
+ {
+  "month": "2025-10",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 69
+ },
+ {
+  "month": "2025-10",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "filled": 61,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2025-10",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2025-10",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "gap_blocked": 4,
+  "filled": 65
+ },
+ {
+  "month": "2025-10",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "filled": 67,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-10",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "filled": 65,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2025-10",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 66,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2025-10",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "filled": 67,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-10",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "filled": 68,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-10",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 67,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-10",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "gap_blocked": 4,
+  "filled": 65
+ },
+ {
+  "month": "2025-10",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 64,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2025-10",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "filled": 67,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-10",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 65,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2025-10",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 68,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-10",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 65,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2025-10",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "filled": 68,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-10",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 69
+ },
+ {
+  "month": "2025-10",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "filled": 66,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2025-10",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 66,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2025-10",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "filled": 68,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-10",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 65,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2025-10",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 68,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-10",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 64,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2025-10",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 67,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-11",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-11",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 56,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-11",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 57
+ },
+ {
+  "month": "2025-11",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 57
+ },
+ {
+  "month": "2025-11",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "filled": 45,
+  "gap_blocked": 12
+ },
+ {
+  "month": "2025-11",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "filled": 53,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2025-11",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "filled": 48,
+  "gap_blocked": 9
+ },
+ {
+  "month": "2025-11",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "filled": 52,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2025-11",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "filled": 51,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2025-11",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 54,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2025-11",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-11",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "filled": 56,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-11",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 57
+ },
+ {
+  "month": "2025-11",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 53,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2025-11",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 57
+ },
+ {
+  "month": "2025-11",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "gap_blocked": 2,
+  "filled": 55
+ },
+ {
+  "month": "2025-11",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-11",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 52,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2025-11",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 55,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-11",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "filled": 54,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2025-11",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 54,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2025-11",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "filled": 54,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2025-11",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 54,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2025-11",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "filled": 52,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2025-11",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 53,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2025-11",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 57
+ },
+ {
+  "month": "2025-11",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 52,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2025-11",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 55,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-12",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 64,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-12",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 65,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-12",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 66
+ },
+ {
+  "month": "2025-12",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 66
+ },
+ {
+  "month": "2025-12",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "filled": 54,
+  "gap_blocked": 12
+ },
+ {
+  "month": "2025-12",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2025-12",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "filled": 59,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2025-12",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "filled": 63,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2025-12",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "filled": 63,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2025-12",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 60,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2025-12",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "filled": 62,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2025-12",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2025-12",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 63,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2025-12",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2025-12",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 64,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-12",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2025-12",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 62,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2025-12",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "gap_blocked": 3,
+  "filled": 63
+ },
+ {
+  "month": "2025-12",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 64,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-12",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "gap_blocked": 1,
+  "filled": 65
+ },
+ {
+  "month": "2025-12",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 65,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-12",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "gap_blocked": 1,
+  "filled": 65
+ },
+ {
+  "month": "2025-12",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 60,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2025-12",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "filled": 64,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2025-12",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 61,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2025-12",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 65,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2025-12",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 59,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2025-12",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 65,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2026-01",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 60
+ },
+ {
+  "month": "2026-01",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 60
+ },
+ {
+  "month": "2026-01",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 59,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2026-01",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 60
+ },
+ {
+  "month": "2026-01",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "filled": 49,
+  "gap_blocked": 10,
+  "unfilled": 1
+ },
+ {
+  "month": "2026-01",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "filled": 54,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2026-01",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "gap_blocked": 6,
+  "filled": 54
+ },
+ {
+  "month": "2026-01",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "filled": 56,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2026-01",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "filled": 55,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2026-01",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 56,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2026-01",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2026-01",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "filled": 58,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2026-01",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2026-01",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 58,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2026-01",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2026-01",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2026-01",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 59,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2026-01",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2026-01",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 59,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2026-01",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "filled": 60
+ },
+ {
+  "month": "2026-01",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 60
+ },
+ {
+  "month": "2026-01",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "filled": 56,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2026-01",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 59,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2026-01",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "filled": 57,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2026-01",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 57,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2026-01",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 57,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2026-01",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2026-01",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 58,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2026-02",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2026-02",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 54,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2026-02",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 57
+ },
+ {
+  "month": "2026-02",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 57
+ },
+ {
+  "month": "2026-02",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "filled": 46,
+  "gap_blocked": 11
+ },
+ {
+  "month": "2026-02",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "filled": 51,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2026-02",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "filled": 50,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2026-02",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "filled": 45,
+  "gap_blocked": 12
+ },
+ {
+  "month": "2026-02",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "filled": 54,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2026-02",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 49,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2026-02",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "filled": 52,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2026-02",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "gap_blocked": 9,
+  "filled": 48
+ },
+ {
+  "month": "2026-02",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 55,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2026-02",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 50,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2026-02",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2026-02",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "filled": 50,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2026-02",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 55,
+  "unfilled": 1,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2026-02",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "gap_blocked": 9,
+  "filled": 48
+ },
+ {
+  "month": "2026-02",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 54,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2026-02",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "filled": 52,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2026-02",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2026-02",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "filled": 55,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2026-02",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 54,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2026-02",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "filled": 57
+ },
+ {
+  "month": "2026-02",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 55,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2026-02",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 56,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2026-02",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2026-02",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 54,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2026-03",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 65,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2026-03",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "gap_blocked": 4,
+  "filled": 62
+ },
+ {
+  "month": "2026-03",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 66
+ },
+ {
+  "month": "2026-03",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 66
+ },
+ {
+  "month": "2026-03",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2026-03",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "filled": 57,
+  "gap_blocked": 8,
+  "unfilled": 1
+ },
+ {
+  "month": "2026-03",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "filled": 60,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2026-03",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 3,
+  "unfilled": 1
+ },
+ {
+  "month": "2026-03",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "filled": 60,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2026-03",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 6,
+  "unfilled": 1
+ },
+ {
+  "month": "2026-03",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "filled": 60,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2026-03",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "filled": 63,
+  "unfilled": 1,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2026-03",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 59,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2026-03",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 62,
+  "unfilled": 1,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2026-03",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2026-03",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "filled": 62,
+  "unfilled": 1,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2026-03",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 64,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2026-03",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 65,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2026-03",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 62,
+  "unfilled": 1,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2026-03",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "filled": 64,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2026-03",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 60,
+  "gap_blocked": 5,
+  "unfilled": 1
+ },
+ {
+  "month": "2026-03",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "filled": 64,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2026-03",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 62,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2026-03",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "filled": 64,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2026-03",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 61,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2026-03",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "gap_blocked": 4,
+  "filled": 62
+ },
+ {
+  "month": "2026-03",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 60,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2026-03",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 64,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2026-04",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2026-04",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2026-04",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2026-04",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 63
+ },
+ {
+  "month": "2026-04",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "filled": 53,
+  "gap_blocked": 10
+ },
+ {
+  "month": "2026-04",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "filled": 57,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2026-04",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "filled": 57,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2026-04",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2026-04",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "filled": 59,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2026-04",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2026-04",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "filled": 57,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2026-04",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2026-04",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2026-04",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2026-04",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 62,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2026-04",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2026-04",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 59,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2026-04",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2026-04",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2026-04",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "gap_blocked": 5,
+  "filled": 58
+ },
+ {
+  "month": "2026-04",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2026-04",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "gap_blocked": 4,
+  "filled": 59
+ },
+ {
+  "month": "2026-04",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 59,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2026-04",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "gap_blocked": 4,
+  "filled": 59
+ },
+ {
+  "month": "2026-04",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "gap_blocked": 4,
+  "filled": 59
+ },
+ {
+  "month": "2026-04",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 60,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2026-04",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 58,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2026-04",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 61,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2026-05",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "filled": 60
+ },
+ {
+  "month": "2026-05",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "filled": 58,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2026-05",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "filled": 60
+ },
+ {
+  "month": "2026-05",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "filled": 60
+ },
+ {
+  "month": "2026-05",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2026-05",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "filled": 53,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2026-05",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "filled": 52,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2026-05",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "filled": 55,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2026-05",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "filled": 55,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2026-05",
+  "pop": "B",
+  "T": 585,
+  "set": "main",
+  "filled": 53,
+  "gap_blocked": 7
+ },
+ {
+  "month": "2026-05",
+  "pop": "B",
+  "T": 590,
+  "set": "adj",
+  "filled": 54,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2026-05",
+  "pop": "B",
+  "T": 590,
+  "set": "main",
+  "filled": 55,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2026-05",
+  "pop": "B",
+  "T": 595,
+  "set": "adj",
+  "filled": 52,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2026-05",
+  "pop": "B",
+  "T": 595,
+  "set": "main",
+  "filled": 56,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2026-05",
+  "pop": "B",
+  "T": 600,
+  "set": "adj",
+  "filled": 57,
+  "gap_blocked": 3
+ },
+ {
+  "month": "2026-05",
+  "pop": "B",
+  "T": 600,
+  "set": "main",
+  "filled": 52,
+  "gap_blocked": 8
+ },
+ {
+  "month": "2026-05",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "filled": 54,
+  "gap_blocked": 6
+ },
+ {
+  "month": "2026-05",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "filled": 55,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2026-05",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "filled": 55,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2026-05",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "filled": 58,
+  "gap_blocked": 2
+ },
+ {
+  "month": "2026-05",
+  "pop": "B",
+  "T": 645,
+  "set": "adj",
+  "filled": 59,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2026-05",
+  "pop": "B",
+  "T": 645,
+  "set": "main",
+  "filled": 55,
+  "gap_blocked": 5
+ },
+ {
+  "month": "2026-05",
+  "pop": "B",
+  "T": 660,
+  "set": "adj",
+  "filled": 59,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2026-05",
+  "pop": "B",
+  "T": 660,
+  "set": "main",
+  "filled": 56,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2026-05",
+  "pop": "B",
+  "T": 690,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2026-05",
+  "pop": "B",
+  "T": 690,
+  "set": "main",
+  "filled": 59,
+  "gap_blocked": 1
+ },
+ {
+  "month": "2026-05",
+  "pop": "B",
+  "T": 720,
+  "set": "adj",
+  "filled": 56,
+  "gap_blocked": 4
+ },
+ {
+  "month": "2026-05",
+  "pop": "B",
+  "T": 720,
+  "set": "main",
+  "filled": 57,
+  "gap_blocked": 3
+ }
+]

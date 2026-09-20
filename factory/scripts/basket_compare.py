@@ -81,9 +81,14 @@ def metric_rows(d):
             for kind in ("touch", "exec"):
                 days = g(s, "joint_tail", f"{popT}/main", "days")
                 hist = g(s, "joint_tail", f"{popT}/main", f"{kind}_{H}")
-                add("joint_tail", f"{popT}/main/{kind}{H}/k>=1", k_ge(hist, 1, days), None, True)
-                add("joint_tail", f"{popT}/main/{kind}{H}/k>=2", k_ge(hist, 2, days), None, True)
-                add("joint_tail", f"{popT}/main/{kind}{H}/all3", k_ge(hist, 3, days), None, True)
+                if isinstance(hist, dict):  # read_packet precomputes k>=1 / k>=2 / all3
+                    add("joint_tail", f"{popT}/main/{kind}{H}/k>=1", hist.get("k>=1"), None, True)
+                    add("joint_tail", f"{popT}/main/{kind}{H}/k>=2", hist.get("k>=2"), None, True)
+                    add("joint_tail", f"{popT}/main/{kind}{H}/all3", hist.get("all3"), None, True)
+                else:
+                    add("joint_tail", f"{popT}/main/{kind}{H}/k>=1", k_ge(hist, 1, days), None, True)
+                    add("joint_tail", f"{popT}/main/{kind}{H}/k>=2", k_ge(hist, 2, days), None, True)
+                    add("joint_tail", f"{popT}/main/{kind}{H}/all3", k_ge(hist, 3, days), None, True)
     # frontier
     for popT in ("B/600", "A_open/570"):
         for hl in ("H30/L10", "H100/L10", "H30/L15", "H10/L5"):
