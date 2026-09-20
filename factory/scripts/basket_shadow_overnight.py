@@ -186,8 +186,9 @@ def run(files, force=False):
             for cut in UP_STRATA:
                 if row["mfe"] is not None and row["mfe"] >= cut / 100.0:
                     acc[key + (f"mfe>={cut}", "gap")].append(g)
-            acc[key + ("all", "gap|eod_ret")].append(
-                None if g is None or row["eod_ret"] is None else float(row["eod_ret"]) + float(g))
+    acc[key + ("all", "gap|eod_ret")].append(
+        None if g is None or row["eod_ret"] is None else
+        (1.0 + float(row["eod_ret"])) * (1.0 + float(g)) - 1.0)
     tables = []
     for (month, setname, stratum, stat), vals in sorted(acc.items()):
         q = _q(vals)

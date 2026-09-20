@@ -138,7 +138,8 @@ def run(root: Path, write: bool):
             if r["mfe"] is not None and r["mfe"] >= cut / 100.0:
                 acc[base + (f"mfe>={cut}", "gap")].append(g)
         if r["eod_ret"] is not None:
-            acc[base + ("all", "gap|eod_ret")].append(float(r["eod_ret"]) + g)
+            acc[base + ("all", "gap|eod_ret")].append(
+                (1.0 + float(r["eod_ret"])) * (1.0 + g) - 1.0)
 
     tables = []
     for (month, setname, stratum, stat), vals in sorted(acc.items()):

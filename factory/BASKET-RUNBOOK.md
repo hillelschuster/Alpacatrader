@@ -37,7 +37,7 @@ Watchdog: 120s checks; relights the loop if no python process exists and the log
 .venv/bin/python factory/scripts/basket_qa.py     # must print QA: PASS
 ```
 
-Checks: JSON parse of every day file; snapshot count 13/14; per-filled-member fill/ladders/mfe/mae/states; bars column set + presence; zero `.tmp` leftovers; calendar completeness vs leaderboard dates with declared known-skips only (2024/2025-01: no raw data; 2025-02-03: no prev-close seed).
+Checks: JSON parse of every day file; snapshot count 13/14; per-filled-member fill/ladders/mfe/mae/states; bars column set + presence; zero `.tmp` leftovers; calendar completeness vs leaderboard dates with declared known-skips only. The single declared skip (first 2025-02 session) is now conditional: it is declared only on trees that lack the 2025-01-31 prev-close seed (the legacy root); SIP trees carry the seed and 2025-02-03, so no skip is declared there.
 
 ## 5. Failure protocol (after any `month M FAILED`)
 
@@ -54,3 +54,37 @@ Checks: JSON parse of every day file; snapshot count 13/14; per-filled-member fi
 ## 7. Current state (update after each cycle)
 
 - 2026-09-17: resume2 DONE; QA PASS (1065/1066, 1 declared skip). All passes + aggregates complete; first descriptive read done; evidence committed. Next: PRE-REG-BASKET-02 (release rule + survivor rule) from the anatomy, frozen before any Phase-2 P&L. Reserved months 2026-06..08 untouched.
+- 2026-09-20 (evening): SIP regeneration + repair pass done. Canonical root = `factory/artifacts/basket/sip` (QA PASS, 1,066 days). Repairs 1-12 applied; T5 rebuilt from raw SIP prints (82,853 members; peak-minute ordering resolved); T7 pay-for-team added; T8 stability + T9b SIP random control + market base rates + selection audit produced. 10 days with incomplete Layer-2 nets found and repaired (net-repair recipe in §8); those 10 anatomy days re-extracted and the read chain re-run. Sealed 2024 + 2025-01 acquired (mechanics only, certified in `SEALED_2024_CERT.md`); reserved months untouched. No parameter selected; PRE-REG-BASKET-02 remains unfrozen. Next: owner gate on the integrated read.
+
+## 8. Canonical read chain + repair recipes (2026-09-20)
+
+Canonical root: `BASKET_ART_ROOT=factory/artifacts/basket/sip`. Full chain (each step resumable; run under the env var):
+
+```bash
+.venv/bin/python factory/scripts/basket_aggregate.py          # T1-T11 core
+.venv/bin/python factory/scripts/basket_dist.py               # T11 continuous
+.venv/bin/python factory/scripts/basket_t5_rawpaths.py --merge-only   # T5 from raw prints (per-day staging data/sip/t5_raw/)
+.venv/bin/python factory/scripts/basket_shadow_sip.py --write # T7 overnight (next-day o570)
+.venv/bin/python factory/scripts/basket_t7_econ.py            # T7 policy-free pay-for-team + break-even
+.venv/bin/python factory/scripts/basket_t8_stability.py       # T8 month/quarter stability
+.venv/bin/python factory/scripts/basket_qa.py                 # must print QA: PASS
+.venv/bin/python factory/scripts/basket_read.py --write       # READ_PACKET.md + read_packet.json
+.venv/bin/python factory/scripts/sip_selection_audit.py --write       # Layer-1 vs anatomy selections
+.venv/bin/python factory/scripts/basket_market_base_rates.py          # full-universe base rates + funnel
+```
+
+Long variants: `basket_t5_rawpaths.py --days ...` stages raw-trade paths per day then `--merge-only`; `basket_random_control_sip.py --all --workers 4` stages T9b draws per sampled day (data/sip/t9b_raw/) then `--merge-only`.
+
+**Incomplete-net detection + repair** (found 2026-09-20: 10 days had Layer-2 nets far below `net_n` because ingest raced the candidates step). Detection uses `data/sip/net/coverage/<day>.json` (`symbols` count vs candidates `net_n`) — **never** `net/manifest_index.jsonl`, which holds duplicate stale entries:
+
+```bash
+.venv/bin/python factory/scripts/sip_ingest.py --days <days> --net --force --workers 3
+.venv/bin/python factory/scripts/sip_ingest.py --index
+.venv/bin/python factory/scripts/sip_netbars.py --days <days> --force
+.venv/bin/python factory/scripts/sip_coverage.py --write
+# then re-extract the affected anatomy days and re-run the read chain:
+.venv/bin/python factory/scripts/sip_anatomy.py --days <days> --force
+.venv/bin/python factory/scripts/basket_t5_rawpaths.py --days <days> --force
+```
+
+**Subagent note (environment)**: as of 2026-09-20 background subagents are unusable here — one ran 31 min with no output, others were wiped by an environment restart. Execute research scripts directly (matches the repo AGENTS.md guidance).

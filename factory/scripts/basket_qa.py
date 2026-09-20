@@ -9,10 +9,8 @@ Checks:
   2. bars parquet exists, has the exact column set, and is non-empty for every day
   3. zero ".tmp" leftovers (atomic-write hygiene)
   4. calendar completeness vs the repo leaderboard calendar, restricted to months
-     with raw clean data and <= DEV_END, minus declared known skips:
-       - 2024-* and 2025-01: no raw clean data exists (nothing expected)
-       - 2025-02 first trading session: no 2025-01 raw data for the prev-close seed
-         (documented extractor behaviour)
+     with raw clean data and <= DEV_END (no declared known skips; the SIP root
+     covers 2025-02-03 via the 2025-01-31 seed)
 
 Usage: .venv/bin/python factory/scripts/basket_qa.py --self-test | (no args)
 """
@@ -77,13 +75,15 @@ def check_record(rec: dict) -> list:
     return errs
 
 
-def known_skips(lb_dates: list, raw_months: set) -> set:
-    """Declared, documented skips (not bugs)."""
-    skips = set()
+def known_skips(present: set, lb_dates: list) -> set:
+    """Declared, documented skip: the first 2025-02 session on trees built without the
+    2025-01-31 prev-close seed (legacy raw span). SIP trees carry the seed day and the
+    2025-02-03 anatomy day, so the skip is stale there (removed 2026-09-20) and is declared
+    only where the tree genuinely lacks both days."""
     first_2025_02 = next((d for d in lb_dates if d[:7] == "2025-02"), None)
-    if first_2025_02 and "2025-01" not in raw_months:
-        skips.add(first_2025_02)
-    return skips
+    if first_2025_02 and first_2025_02 not in present and "2025-01-31" not in present:
+        return {first_2025_02}
+    return set()
 
 
 def main(argv=None):
@@ -100,10 +100,8 @@ def main(argv=None):
         bad = json.loads(json.dumps(good))
         bad["snapshots"] = bad["snapshots"][:3]
         assert check_record(bad), "short snapshot list must fail"
-        mm = {"2025-02", "2026-01"}  # no 2025-01 raw data -> first 2025-02 day is a declared skip
-        sk = known_skips(["2025-02-03", "2025-02-04", "2026-01-02"], mm)
-        assert sk == {"2025-02-03"}, sk
-        assert known_skips(["2025-02-03"], {"2025-01"}) == set()
+        assert known_skips({"2025-02-04"}, ["2025-02-03", "2025-02-04"]) == {"2025-02-03"}  # legacy: no seed
+        assert known_skips({"2025-01-31", "2025-02-03", "2025-02-04"}, ["2025-02-03"]) == set()  # SIP
         print("self-test OK")
         return
 
@@ -117,7 +115,7 @@ def main(argv=None):
     files = sorted(glob.glob(str(ANAT / "*.jsonl")))
     present = {Path(f).name[:10] for f in files}
     expected = [d for d in lb if d[:7] in raw and d[:7] <= DEV_END]
-    skips = known_skips(lb, raw)
+    skips = known_skips(present, lb)
     missing = [d for d in expected if d not in present and d not in skips]
 
     corrupt, struct_bad, bars_missing, bars_bad = [], [], [], []

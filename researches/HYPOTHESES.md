@@ -20,6 +20,11 @@ NEW LANE (2026-09-16): BASKET-01 participation/survival thesis — Phase 0 froze
 Phase 1 anatomy next; no code; release/survivor rules deferred to PRE-REG-BASKET-02.
 Read the THESIS doc before mapping this onto H2 (closest relative), H12 (retired), or the
 frozen dominant-leader program.
+H038 (factory/HYPOTHESES.jsonl, OPEN-PLANNING, 2026-09-16) is the numbered pointer for
+this lane. Status 2026-09-20: Phase 1 regenerated on the SIP substrate, repaired read
+layer, canonical packet committed at `factory/artifacts/basket/sip/READ_PACKET.md`
+(QA PASS); integrated read pending owner gate. No parameter selected; PRE-REG-BASKET-02
+stays unfrozen.
 
 ## ARCHIVE (2026-09-06 thinking round — planned but NOT executed; superseded by the
 ## 2026-09-08 post-H11 ranking at the bottom of this file. Retained for provenance.)

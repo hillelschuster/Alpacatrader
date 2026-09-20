@@ -3030,30 +3030,246 @@
   "set": "adj",
   "H": 5,
   "ge2_touch": 14,
+  "all3_touch": 3
+ },
+ {
+  "month": "2021-04",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "H": 10,
+  "ge2_touch": 4,
+  "all3_touch": 0
+ },
+ {
+  "month": "2021-04",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "H": 20,
+  "ge2_touch": 0,
+  "all3_touch": 0
+ },
+ {
+  "month": "2021-04",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "H": 30,
+  "ge2_touch": 0,
+  "all3_touch": 0
+ },
+ {
+  "month": "2021-04",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "H": 50,
+  "ge2_touch": 0,
+  "all3_touch": 0
+ },
+ {
+  "month": "2021-04",
+  "pop": "A_open",
+  "T": 570,
+  "set": "adj",
+  "H": 100,
+  "ge2_touch": 0,
+  "all3_touch": 0
+ },
+ {
+  "month": "2021-04",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "H": 5,
+  "ge2_touch": 9,
+  "all3_touch": 1
+ },
+ {
+  "month": "2021-04",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "H": 10,
+  "ge2_touch": 4,
+  "all3_touch": 0
+ },
+ {
+  "month": "2021-04",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "H": 20,
+  "ge2_touch": 1,
+  "all3_touch": 0
+ },
+ {
+  "month": "2021-04",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "H": 30,
+  "ge2_touch": 0,
+  "all3_touch": 0
+ },
+ {
+  "month": "2021-04",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "H": 50,
+  "ge2_touch": 0,
+  "all3_touch": 0
+ },
+ {
+  "month": "2021-04",
+  "pop": "A_open",
+  "T": 570,
+  "set": "main",
+  "H": 100,
+  "ge2_touch": 0,
+  "all3_touch": 0
+ },
+ {
+  "month": "2021-04",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "H": 5,
+  "ge2_touch": 14,
+  "all3_touch": 3
+ },
+ {
+  "month": "2021-04",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "H": 10,
+  "ge2_touch": 9,
+  "all3_touch": 1
+ },
+ {
+  "month": "2021-04",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "H": 20,
+  "ge2_touch": 2,
+  "all3_touch": 0
+ },
+ {
+  "month": "2021-04",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "H": 30,
+  "ge2_touch": 0,
+  "all3_touch": 0
+ },
+ {
+  "month": "2021-04",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "H": 50,
+  "ge2_touch": 0,
+  "all3_touch": 0
+ },
+ {
+  "month": "2021-04",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "adj",
+  "H": 100,
+  "ge2_touch": 0,
+  "all3_touch": 0
+ },
+ {
+  "month": "2021-04",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "H": 5,
+  "ge2_touch": 11,
   "all3_touch": 4
  },
  {
   "month": "2021-04",
-  "pop": "A_open",
+  "pop": "A_pm",
   "T": 570,
-  "set": "adj",
+  "set": "main",
   "H": 10,
-  "ge2_touch": 6,
+  "ge2_touch": 3,
   "all3_touch": 1
  },
  {
   "month": "2021-04",
-  "pop": "A_open",
+  "pop": "A_pm",
   "T": 570,
-  "set": "adj",
+  "set": "main",
   "H": 20,
   "ge2_touch": 0,
   "all3_touch": 0
  },
  {
   "month": "2021-04",
-  "pop": "A_open",
+  "pop": "A_pm",
   "T": 570,
+  "set": "main",
+  "H": 30,
+  "ge2_touch": 0,
+  "all3_touch": 0
+ },
+ {
+  "month": "2021-04",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "H": 50,
+  "ge2_touch": 0,
+  "all3_touch": 0
+ },
+ {
+  "month": "2021-04",
+  "pop": "A_pm",
+  "T": 570,
+  "set": "main",
+  "H": 100,
+  "ge2_touch": 0,
+  "all3_touch": 0
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "H": 5,
+  "ge2_touch": 7,
+  "all3_touch": 2
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "H": 10,
+  "ge2_touch": 2,
+  "all3_touch": 1
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 575,
+  "set": "adj",
+  "H": 20,
+  "ge2_touch": 1,
+  "all3_touch": 0
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 575,
   "set": "adj",
   "H": 30,
   "ge2_touch": 0,
@@ -3061,8 +3277,8 @@
  },
  {
   "month": "2021-04",
-  "pop": "A_open",
-  "T": 570,
+  "pop": "B",
+  "T": 575,
   "set": "adj",
   "H": 50,
   "ge2_touch": 0,
@@ -3070,8 +3286,8 @@
  },
  {
   "month": "2021-04",
-  "pop": "A_open",
-  "T": 570,
+  "pop": "B",
+  "T": 575,
   "set": "adj",
   "H": 100,
   "ge2_touch": 0,
@@ -3079,390 +3295,174 @@
  },
  {
   "month": "2021-04",
-  "pop": "A_open",
-  "T": 570,
+  "pop": "B",
+  "T": 575,
   "set": "main",
   "H": 5,
-  "ge2_touch": 9,
+  "ge2_touch": 6,
+  "all3_touch": 0
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "H": 10,
+  "ge2_touch": 1,
+  "all3_touch": 0
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "H": 20,
+  "ge2_touch": 0,
+  "all3_touch": 0
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "H": 30,
+  "ge2_touch": 0,
+  "all3_touch": 0
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "H": 50,
+  "ge2_touch": 0,
+  "all3_touch": 0
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 575,
+  "set": "main",
+  "H": 100,
+  "ge2_touch": 0,
+  "all3_touch": 0
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "H": 5,
+  "ge2_touch": 7,
+  "all3_touch": 3
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "H": 10,
+  "ge2_touch": 3,
+  "all3_touch": 1
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "H": 20,
+  "ge2_touch": 2,
+  "all3_touch": 1
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "H": 30,
+  "ge2_touch": 2,
+  "all3_touch": 0
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "H": 50,
+  "ge2_touch": 1,
+  "all3_touch": 0
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 580,
+  "set": "adj",
+  "H": 100,
+  "ge2_touch": 0,
+  "all3_touch": 0
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "H": 5,
+  "ge2_touch": 8,
   "all3_touch": 2
  },
  {
   "month": "2021-04",
-  "pop": "A_open",
-  "T": 570,
+  "pop": "B",
+  "T": 580,
   "set": "main",
   "H": 10,
+  "ge2_touch": 3,
+  "all3_touch": 0
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "H": 20,
+  "ge2_touch": 1,
+  "all3_touch": 0
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "H": 30,
+  "ge2_touch": 0,
+  "all3_touch": 0
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "H": 50,
+  "ge2_touch": 0,
+  "all3_touch": 0
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 580,
+  "set": "main",
+  "H": 100,
+  "ge2_touch": 0,
+  "all3_touch": 0
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 585,
+  "set": "adj",
+  "H": 5,
   "ge2_touch": 5,
-  "all3_touch": 0
- },
- {
-  "month": "2021-04",
-  "pop": "A_open",
-  "T": 570,
-  "set": "main",
-  "H": 20,
-  "ge2_touch": 1,
-  "all3_touch": 0
- },
- {
-  "month": "2021-04",
-  "pop": "A_open",
-  "T": 570,
-  "set": "main",
-  "H": 30,
-  "ge2_touch": 0,
-  "all3_touch": 0
- },
- {
-  "month": "2021-04",
-  "pop": "A_open",
-  "T": 570,
-  "set": "main",
-  "H": 50,
-  "ge2_touch": 0,
-  "all3_touch": 0
- },
- {
-  "month": "2021-04",
-  "pop": "A_open",
-  "T": 570,
-  "set": "main",
-  "H": 100,
-  "ge2_touch": 0,
-  "all3_touch": 0
- },
- {
-  "month": "2021-04",
-  "pop": "A_pm",
-  "T": 570,
-  "set": "adj",
-  "H": 5,
-  "ge2_touch": 12,
-  "all3_touch": 3
- },
- {
-  "month": "2021-04",
-  "pop": "A_pm",
-  "T": 570,
-  "set": "adj",
-  "H": 10,
-  "ge2_touch": 8,
-  "all3_touch": 1
- },
- {
-  "month": "2021-04",
-  "pop": "A_pm",
-  "T": 570,
-  "set": "adj",
-  "H": 20,
-  "ge2_touch": 1,
-  "all3_touch": 0
- },
- {
-  "month": "2021-04",
-  "pop": "A_pm",
-  "T": 570,
-  "set": "adj",
-  "H": 30,
-  "ge2_touch": 0,
-  "all3_touch": 0
- },
- {
-  "month": "2021-04",
-  "pop": "A_pm",
-  "T": 570,
-  "set": "adj",
-  "H": 50,
-  "ge2_touch": 0,
-  "all3_touch": 0
- },
- {
-  "month": "2021-04",
-  "pop": "A_pm",
-  "T": 570,
-  "set": "adj",
-  "H": 100,
-  "ge2_touch": 0,
-  "all3_touch": 0
- },
- {
-  "month": "2021-04",
-  "pop": "A_pm",
-  "T": 570,
-  "set": "main",
-  "H": 5,
-  "ge2_touch": 9,
   "all3_touch": 2
- },
- {
-  "month": "2021-04",
-  "pop": "A_pm",
-  "T": 570,
-  "set": "main",
-  "H": 10,
-  "ge2_touch": 2,
-  "all3_touch": 0
- },
- {
-  "month": "2021-04",
-  "pop": "A_pm",
-  "T": 570,
-  "set": "main",
-  "H": 20,
-  "ge2_touch": 0,
-  "all3_touch": 0
- },
- {
-  "month": "2021-04",
-  "pop": "A_pm",
-  "T": 570,
-  "set": "main",
-  "H": 30,
-  "ge2_touch": 0,
-  "all3_touch": 0
- },
- {
-  "month": "2021-04",
-  "pop": "A_pm",
-  "T": 570,
-  "set": "main",
-  "H": 50,
-  "ge2_touch": 0,
-  "all3_touch": 0
- },
- {
-  "month": "2021-04",
-  "pop": "A_pm",
-  "T": 570,
-  "set": "main",
-  "H": 100,
-  "ge2_touch": 0,
-  "all3_touch": 0
- },
- {
-  "month": "2021-04",
-  "pop": "B",
-  "T": 575,
-  "set": "adj",
-  "H": 5,
-  "ge2_touch": 9,
-  "all3_touch": 2
- },
- {
-  "month": "2021-04",
-  "pop": "B",
-  "T": 575,
-  "set": "adj",
-  "H": 10,
-  "ge2_touch": 2,
-  "all3_touch": 1
- },
- {
-  "month": "2021-04",
-  "pop": "B",
-  "T": 575,
-  "set": "adj",
-  "H": 20,
-  "ge2_touch": 1,
-  "all3_touch": 0
- },
- {
-  "month": "2021-04",
-  "pop": "B",
-  "T": 575,
-  "set": "adj",
-  "H": 30,
-  "ge2_touch": 0,
-  "all3_touch": 0
- },
- {
-  "month": "2021-04",
-  "pop": "B",
-  "T": 575,
-  "set": "adj",
-  "H": 50,
-  "ge2_touch": 0,
-  "all3_touch": 0
- },
- {
-  "month": "2021-04",
-  "pop": "B",
-  "T": 575,
-  "set": "adj",
-  "H": 100,
-  "ge2_touch": 0,
-  "all3_touch": 0
- },
- {
-  "month": "2021-04",
-  "pop": "B",
-  "T": 575,
-  "set": "main",
-  "H": 5,
-  "ge2_touch": 6,
-  "all3_touch": 1
- },
- {
-  "month": "2021-04",
-  "pop": "B",
-  "T": 575,
-  "set": "main",
-  "H": 10,
-  "ge2_touch": 1,
-  "all3_touch": 0
- },
- {
-  "month": "2021-04",
-  "pop": "B",
-  "T": 575,
-  "set": "main",
-  "H": 20,
-  "ge2_touch": 0,
-  "all3_touch": 0
- },
- {
-  "month": "2021-04",
-  "pop": "B",
-  "T": 575,
-  "set": "main",
-  "H": 30,
-  "ge2_touch": 0,
-  "all3_touch": 0
- },
- {
-  "month": "2021-04",
-  "pop": "B",
-  "T": 575,
-  "set": "main",
-  "H": 50,
-  "ge2_touch": 0,
-  "all3_touch": 0
- },
- {
-  "month": "2021-04",
-  "pop": "B",
-  "T": 575,
-  "set": "main",
-  "H": 100,
-  "ge2_touch": 0,
-  "all3_touch": 0
- },
- {
-  "month": "2021-04",
-  "pop": "B",
-  "T": 580,
-  "set": "adj",
-  "H": 5,
-  "ge2_touch": 4,
-  "all3_touch": 3
- },
- {
-  "month": "2021-04",
-  "pop": "B",
-  "T": 580,
-  "set": "adj",
-  "H": 10,
-  "ge2_touch": 3,
-  "all3_touch": 1
- },
- {
-  "month": "2021-04",
-  "pop": "B",
-  "T": 580,
-  "set": "adj",
-  "H": 20,
-  "ge2_touch": 2,
-  "all3_touch": 1
- },
- {
-  "month": "2021-04",
-  "pop": "B",
-  "T": 580,
-  "set": "adj",
-  "H": 30,
-  "ge2_touch": 2,
-  "all3_touch": 0
- },
- {
-  "month": "2021-04",
-  "pop": "B",
-  "T": 580,
-  "set": "adj",
-  "H": 50,
-  "ge2_touch": 1,
-  "all3_touch": 0
- },
- {
-  "month": "2021-04",
-  "pop": "B",
-  "T": 580,
-  "set": "adj",
-  "H": 100,
-  "ge2_touch": 0,
-  "all3_touch": 0
- },
- {
-  "month": "2021-04",
-  "pop": "B",
-  "T": 580,
-  "set": "main",
-  "H": 5,
-  "ge2_touch": 8,
-  "all3_touch": 2
- },
- {
-  "month": "2021-04",
-  "pop": "B",
-  "T": 580,
-  "set": "main",
-  "H": 10,
-  "ge2_touch": 3,
-  "all3_touch": 0
- },
- {
-  "month": "2021-04",
-  "pop": "B",
-  "T": 580,
-  "set": "main",
-  "H": 20,
-  "ge2_touch": 1,
-  "all3_touch": 0
- },
- {
-  "month": "2021-04",
-  "pop": "B",
-  "T": 580,
-  "set": "main",
-  "H": 30,
-  "ge2_touch": 0,
-  "all3_touch": 0
- },
- {
-  "month": "2021-04",
-  "pop": "B",
-  "T": 580,
-  "set": "main",
-  "H": 50,
-  "ge2_touch": 0,
-  "all3_touch": 0
- },
- {
-  "month": "2021-04",
-  "pop": "B",
-  "T": 580,
-  "set": "main",
-  "H": 100,
-  "ge2_touch": 0,
-  "all3_touch": 0
- },
- {
-  "month": "2021-04",
-  "pop": "B",
-  "T": 585,
-  "set": "adj",
-  "H": 5,
-  "ge2_touch": 4,
-  "all3_touch": 1
  },
  {
   "month": "2021-04",
@@ -3470,7 +3470,7 @@
   "T": 585,
   "set": "adj",
   "H": 10,
-  "ge2_touch": 3,
+  "ge2_touch": 4,
   "all3_touch": 1
  },
  {
@@ -3516,7 +3516,7 @@
   "set": "main",
   "H": 5,
   "ge2_touch": 11,
-  "all3_touch": 6
+  "all3_touch": 5
  },
  {
   "month": "2021-04",
@@ -3570,7 +3570,7 @@
   "set": "adj",
   "H": 5,
   "ge2_touch": 5,
-  "all3_touch": 0
+  "all3_touch": 1
  },
  {
   "month": "2021-04",
@@ -3677,8 +3677,8 @@
   "T": 595,
   "set": "adj",
   "H": 5,
-  "ge2_touch": 9,
-  "all3_touch": 0
+  "ge2_touch": 10,
+  "all3_touch": 1
  },
  {
   "month": "2021-04",
@@ -3687,7 +3687,7 @@
   "set": "adj",
   "H": 10,
   "ge2_touch": 4,
-  "all3_touch": 0
+  "all3_touch": 1
  },
  {
   "month": "2021-04",
@@ -3785,7 +3785,7 @@
   "T": 600,
   "set": "adj",
   "H": 5,
-  "ge2_touch": 8,
+  "ge2_touch": 11,
   "all3_touch": 0
  },
  {
@@ -3840,7 +3840,7 @@
   "set": "main",
   "H": 5,
   "ge2_touch": 10,
-  "all3_touch": 4
+  "all3_touch": 5
  },
  {
   "month": "2021-04",
@@ -3848,7 +3848,7 @@
   "T": 600,
   "set": "main",
   "H": 10,
-  "ge2_touch": 7,
+  "ge2_touch": 8,
   "all3_touch": 0
  },
  {
@@ -3893,139 +3893,31 @@
   "T": 615,
   "set": "adj",
   "H": 5,
-  "ge2_touch": 7,
-  "all3_touch": 0
- },
- {
-  "month": "2021-04",
-  "pop": "B",
-  "T": 615,
-  "set": "adj",
-  "H": 10,
-  "ge2_touch": 2,
-  "all3_touch": 0
- },
- {
-  "month": "2021-04",
-  "pop": "B",
-  "T": 615,
-  "set": "adj",
-  "H": 20,
-  "ge2_touch": 1,
-  "all3_touch": 0
- },
- {
-  "month": "2021-04",
-  "pop": "B",
-  "T": 615,
-  "set": "adj",
-  "H": 30,
-  "ge2_touch": 0,
-  "all3_touch": 0
- },
- {
-  "month": "2021-04",
-  "pop": "B",
-  "T": 615,
-  "set": "adj",
-  "H": 50,
-  "ge2_touch": 0,
-  "all3_touch": 0
- },
- {
-  "month": "2021-04",
-  "pop": "B",
-  "T": 615,
-  "set": "adj",
-  "H": 100,
-  "ge2_touch": 0,
-  "all3_touch": 0
- },
- {
-  "month": "2021-04",
-  "pop": "B",
-  "T": 615,
-  "set": "main",
-  "H": 5,
-  "ge2_touch": 14,
-  "all3_touch": 2
- },
- {
-  "month": "2021-04",
-  "pop": "B",
-  "T": 615,
-  "set": "main",
-  "H": 10,
-  "ge2_touch": 5,
+  "ge2_touch": 8,
   "all3_touch": 1
  },
  {
   "month": "2021-04",
   "pop": "B",
   "T": 615,
-  "set": "main",
-  "H": 20,
-  "ge2_touch": 1,
-  "all3_touch": 0
- },
- {
-  "month": "2021-04",
-  "pop": "B",
-  "T": 615,
-  "set": "main",
-  "H": 30,
-  "ge2_touch": 0,
-  "all3_touch": 0
- },
- {
-  "month": "2021-04",
-  "pop": "B",
-  "T": 615,
-  "set": "main",
-  "H": 50,
-  "ge2_touch": 0,
-  "all3_touch": 0
- },
- {
-  "month": "2021-04",
-  "pop": "B",
-  "T": 615,
-  "set": "main",
-  "H": 100,
-  "ge2_touch": 0,
-  "all3_touch": 0
- },
- {
-  "month": "2021-04",
-  "pop": "B",
-  "T": 630,
-  "set": "adj",
-  "H": 5,
-  "ge2_touch": 7,
-  "all3_touch": 0
- },
- {
-  "month": "2021-04",
-  "pop": "B",
-  "T": 630,
   "set": "adj",
   "H": 10,
+  "ge2_touch": 3,
+  "all3_touch": 0
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 615,
+  "set": "adj",
+  "H": 20,
   "ge2_touch": 1,
   "all3_touch": 0
  },
  {
   "month": "2021-04",
   "pop": "B",
-  "T": 630,
-  "set": "adj",
-  "H": 20,
-  "ge2_touch": 0,
-  "all3_touch": 0
- },
- {
-  "month": "2021-04",
-  "pop": "B",
-  "T": 630,
+  "T": 615,
   "set": "adj",
   "H": 30,
   "ge2_touch": 0,
@@ -4034,7 +3926,7 @@
  {
   "month": "2021-04",
   "pop": "B",
-  "T": 630,
+  "T": 615,
   "set": "adj",
   "H": 50,
   "ge2_touch": 0,
@@ -4043,7 +3935,7 @@
  {
   "month": "2021-04",
   "pop": "B",
-  "T": 630,
+  "T": 615,
   "set": "adj",
   "H": 100,
   "ge2_touch": 0,
@@ -4052,11 +3944,119 @@
  {
   "month": "2021-04",
   "pop": "B",
-  "T": 630,
+  "T": 615,
   "set": "main",
   "H": 5,
   "ge2_touch": 15,
-  "all3_touch": 4
+  "all3_touch": 3
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "H": 10,
+  "ge2_touch": 7,
+  "all3_touch": 2
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "H": 20,
+  "ge2_touch": 2,
+  "all3_touch": 0
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "H": 30,
+  "ge2_touch": 0,
+  "all3_touch": 0
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "H": 50,
+  "ge2_touch": 0,
+  "all3_touch": 0
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 615,
+  "set": "main",
+  "H": 100,
+  "ge2_touch": 0,
+  "all3_touch": 0
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "H": 5,
+  "ge2_touch": 9,
+  "all3_touch": 1
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "H": 10,
+  "ge2_touch": 1,
+  "all3_touch": 0
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "H": 20,
+  "ge2_touch": 0,
+  "all3_touch": 0
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "H": 30,
+  "ge2_touch": 0,
+  "all3_touch": 0
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "H": 50,
+  "ge2_touch": 0,
+  "all3_touch": 0
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 630,
+  "set": "adj",
+  "H": 100,
+  "ge2_touch": 0,
+  "all3_touch": 0
+ },
+ {
+  "month": "2021-04",
+  "pop": "B",
+  "T": 630,
+  "set": "main",
+  "H": 5,
+  "ge2_touch": 16,
+  "all3_touch": 5
  },
  {
   "month": "2021-04",
@@ -4064,7 +4064,7 @@
   "T": 630,
   "set": "main",
   "H": 10,
-  "ge2_touch": 7,
+  "ge2_touch": 9,
   "all3_touch": 4
  },
  {
@@ -4109,7 +4109,7 @@
   "T": 645,
   "set": "adj",
   "H": 5,
-  "ge2_touch": 6,
+  "ge2_touch": 8,
   "all3_touch": 1
  },
  {
@@ -4118,7 +4118,7 @@
   "T": 645,
   "set": "adj",
   "H": 10,
-  "ge2_touch": 1,
+  "ge2_touch": 2,
   "all3_touch": 0
  },
  {
@@ -4163,7 +4163,7 @@
   "T": 645,
   "set": "main",
   "H": 5,
-  "ge2_touch": 13,
+  "ge2_touch": 15,
   "all3_touch": 3
  },
  {
@@ -4172,7 +4172,7 @@
   "T": 645,
   "set": "main",
   "H": 10,
-  "ge2_touch": 6,
+  "ge2_touch": 8,
   "all3_touch": 2
  },
  {
@@ -4217,7 +4217,7 @@
   "T": 660,
   "set": "adj",
   "H": 5,
-  "ge2_touch": 8,
+  "ge2_touch": 11,
   "all3_touch": 1
  },
  {
@@ -4226,7 +4226,7 @@
   "T": 660,
   "set": "adj",
   "H": 10,
-  "ge2_touch": 1,
+  "ge2_touch": 3,
   "all3_touch": 1
  },
  {
@@ -4235,7 +4235,7 @@
   "T": 660,
   "set": "adj",
   "H": 20,
-  "ge2_touch": 0,
+  "ge2_touch": 1,
   "all3_touch": 0
  },
  {
@@ -4271,8 +4271,8 @@
   "T": 660,
   "set": "main",
   "H": 5,
-  "ge2_touch": 10,
-  "all3_touch": 3
+  "ge2_touch": 11,
+  "all3_touch": 4
  },
  {
   "month": "2021-04",
@@ -4280,7 +4280,7 @@
   "T": 660,
   "set": "main",
   "H": 10,
-  "ge2_touch": 4,
+  "ge2_touch": 5,
   "all3_touch": 1
  },
  {
@@ -4325,7 +4325,7 @@
   "T": 690,
   "set": "adj",
   "H": 5,
-  "ge2_touch": 5,
+  "ge2_touch": 7,
   "all3_touch": 1
  },
  {
@@ -4379,7 +4379,7 @@
   "T": 690,
   "set": "main",
   "H": 5,
-  "ge2_touch": 9,
+  "ge2_touch": 11,
   "all3_touch": 5
  },
  {
@@ -4487,7 +4487,7 @@
   "T": 720,
   "set": "main",
   "H": 5,
-  "ge2_touch": 8,
+  "ge2_touch": 11,
   "all3_touch": 3
  },
  {
@@ -24522,7 +24522,7 @@
   "set": "adj",
   "H": 5,
   "ge2_touch": 7,
-  "all3_touch": 1
+  "all3_touch": 2
  },
  {
   "month": "2022-06",
@@ -24530,7 +24530,7 @@
   "T": 580,
   "set": "adj",
   "H": 10,
-  "ge2_touch": 3,
+  "ge2_touch": 4,
   "all3_touch": 1
  },
  {
@@ -25277,7 +25277,7 @@
   "T": 645,
   "set": "adj",
   "H": 5,
-  "ge2_touch": 7,
+  "ge2_touch": 8,
   "all3_touch": 1
  },
  {
@@ -25655,7 +25655,7 @@
   "T": 720,
   "set": "main",
   "H": 5,
-  "ge2_touch": 14,
+  "ge2_touch": 15,
   "all3_touch": 2
  },
  {
@@ -25664,7 +25664,7 @@
   "T": 720,
   "set": "main",
   "H": 10,
-  "ge2_touch": 8,
+  "ge2_touch": 9,
   "all3_touch": 0
  },
  {
@@ -40829,7 +40829,7 @@
   "T": 570,
   "set": "adj",
   "H": 5,
-  "ge2_touch": 18,
+  "ge2_touch": 17,
   "all3_touch": 6
  },
  {
@@ -40838,7 +40838,7 @@
   "T": 570,
   "set": "adj",
   "H": 10,
-  "ge2_touch": 16,
+  "ge2_touch": 15,
   "all3_touch": 4
  },
  {
@@ -44123,7 +44123,7 @@
   "T": 575,
   "set": "main",
   "H": 5,
-  "ge2_touch": 13,
+  "ge2_touch": 14,
   "all3_touch": 5
  },
  {
@@ -44393,7 +44393,7 @@
   "T": 590,
   "set": "adj",
   "H": 5,
-  "ge2_touch": 10,
+  "ge2_touch": 9,
   "all3_touch": 1
  },
  {
@@ -44447,7 +44447,7 @@
   "T": 590,
   "set": "main",
   "H": 5,
-  "ge2_touch": 12,
+  "ge2_touch": 13,
   "all3_touch": 4
  },
  {
@@ -44456,7 +44456,7 @@
   "T": 590,
   "set": "main",
   "H": 10,
-  "ge2_touch": 6,
+  "ge2_touch": 7,
   "all3_touch": 2
  },
  {
@@ -44501,7 +44501,7 @@
   "T": 595,
   "set": "adj",
   "H": 5,
-  "ge2_touch": 10,
+  "ge2_touch": 12,
   "all3_touch": 1
  },
  {
@@ -44510,7 +44510,7 @@
   "T": 595,
   "set": "adj",
   "H": 10,
-  "ge2_touch": 5,
+  "ge2_touch": 6,
   "all3_touch": 0
  },
  {
@@ -44519,7 +44519,7 @@
   "T": 595,
   "set": "adj",
   "H": 20,
-  "ge2_touch": 1,
+  "ge2_touch": 2,
   "all3_touch": 0
  },
  {
@@ -44717,7 +44717,7 @@
   "T": 615,
   "set": "adj",
   "H": 5,
-  "ge2_touch": 11,
+  "ge2_touch": 10,
   "all3_touch": 1
  },
  {
@@ -44771,7 +44771,7 @@
   "T": 615,
   "set": "main",
   "H": 5,
-  "ge2_touch": 11,
+  "ge2_touch": 12,
   "all3_touch": 4
  },
  {
@@ -45212,7 +45212,7 @@
   "T": 690,
   "set": "main",
   "H": 10,
-  "ge2_touch": 9,
+  "ge2_touch": 8,
   "all3_touch": 0
  },
  {

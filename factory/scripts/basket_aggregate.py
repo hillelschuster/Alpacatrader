@@ -91,7 +91,8 @@ def new_acc():
         # T1/T8
         "days": Counter(), "ncand": [], "churn": defaultdict(list),
         # T2
-        "contain": defaultdict(Counter), "shares": defaultdict(lambda: defaultdict(list)),
+        "contain": defaultdict(Counter), "cdays": Counter(),
+        "shares": defaultdict(lambda: defaultdict(list)),
         # T3/T4/T9 member-level, keyed (setname, H, L)
         "race": defaultdict(Counter),
         # T4 basket-level frontier, keyed (month, pop, T, setname, H, L)
@@ -124,6 +125,7 @@ def add_member(acc, month, pop, T, setname, n, is_top3):
 def add_snapshot(acc, rec, month, pop, T, names):
     key = (month, pop, T)
     acc["days"][key] += 1
+    acc["cdays"][key] += 1          # T2 day-level denominator (one per snapshot-day)
     acc["ncand"].append((month, pop, T, len(names)))
     if len(names) == 0:
         acc["days"][(month, pop, T, "empty")] += 1
@@ -134,6 +136,8 @@ def add_snapshot(acc, rec, month, pop, T, names):
     acc["churn"][(rec["date"], pop)].append((T, tickers(names, PRIMARY_N)))
 
     # ---- T2 containment vs session-max leaders (winners_open)
+    # Day-level numerators over acc["cdays"] (the old "eval" denominator counted one
+    # row per (winner, N) pair = 3x days, printing shares at one third of the day value).
     winners = rec.get("winners_open", [])[:3]
     for N in N_LADDER:
         s = set(n["ticker"] for n in names[:N])
@@ -141,18 +145,25 @@ def add_snapshot(acc, rec, month, pop, T, names):
             if w["ticker"] in s:
                 acc["contain"][(month, pop, T, N)][f"top{wr}_in"] += 1
                 m = next((n for n in names[:N] if n["ticker"] == w["ticker"]), None)
-                if m and m.get("fill") and m.get("day_high") and m.get("open0930"):
-                    a = float(m["open0930"])
-                    hi = float(m["day_high"])
-                    fill = float(m["fill"]["px"])
-                    pxd = float(m["px_decision"])
-                    if hi > a and fill > 0:
-                        acc["shares"][(month, pop, T, N)]["completed"].append(
-                            (pxd - a) / (hi - a))
-                        acc["shares"][(month, pop, T, N)]["ahead"].append(
-                            (hi - fill) / (hi - a))
-                        acc["shares"][(month, pop, T, N)]["remaining"].append(
-                            hi / fill - 1.0)
+                f = (m or {}).get("fill")
+                # Shares conditioned on an ACCESSIBLE fill: a blocked slot is cash,
+                # its later raw path is not participation (PRE-REG §5 / T6 semantics).
+                if m and f is not None and not f.get("blocked") and m.get("mfe") is not None:
+                    acc["contain"][(month, pop, T, N)]["filled_in"] += 1
+                    a = float(m["open0930"]) if m.get("open0930") else None
+                    hi = float(m["day_high"]) if m.get("day_high") else None
+                    fill = float(f["px"])
+                    pxd = float(m["px_decision"]) if m.get("px_decision") is not None else None
+                    post_hi = fill * (1.0 + float(m["mfe"]))
+                    if a and hi and pxd is not None and hi > a and fill > 0:
+                        sh = acc["shares"][(month, pop, T, N)]
+                        sh["completed"].append((pxd - a) / (hi - a))
+                        # post-fill shares: the part of the day's open-anchored move
+                        # that still lay ahead of OUR fill (accessibility lens).
+                        sh["ahead"].append((post_hi - fill) / (hi - a))
+                        sh["remaining"].append(post_hi / fill - 1.0)
+                else:
+                    acc["contain"][(month, pop, T, N)]["blocked_in"] += 1
             acc["contain"][(month, pop, T, N)]["eval"] += 1
 
     # ---- member-level, main set (top-3) and rank-adjacent control (ranks 4-6)
@@ -254,12 +265,16 @@ def finalize(acc):
            for (m, p, a, b), v in sorted(churns.items())]
     tables["T1"] = {"composition": t1, "churn": t1b}
 
-    # T2 containment
+    # T2 containment (day-level shares; numerators are day counts)
     t2 = []
     for (month, pop, T, N), c in sorted(acc["contain"].items()):
-        row = {"month": month, "pop": pop, "T": T, "N": N,
-               "days_eval": c["eval"], "top1_in": c["top1_in"],
-               "top2_in": c["top2_in"], "top3_in": c["top3_in"]}
+        days = acc["cdays"].get((month, pop, T), 0)
+        row = {"month": month, "pop": pop, "T": T, "N": N, "days": days,
+               "top1_in": c["top1_in"], "top2_in": c["top2_in"], "top3_in": c["top3_in"],
+               "top1_in_share": round(c["top1_in"] / days, 5) if days else None,
+               "top2_in_share": round(c["top2_in"] / days, 5) if days else None,
+               "top3_in_share": round(c["top3_in"] / days, 5) if days else None,
+               "filled_in": c.get("filled_in", 0), "blocked_in": c.get("blocked_in", 0)}
         sh = acc["shares"].get((month, pop, T, N), {})
         for k in ("completed", "ahead", "remaining"):
             row[k] = _q(sh.get(k, []))
@@ -409,6 +424,14 @@ def selftest():
     # MFE ranks: 0.50, 0.10, 0.02
     tr = next(x for x in t["T5_mfe_ranks"] if x["set"] == "main")
     assert tr["rank1"]["p50"] == 0.5 and tr["rank3"]["p50"] == 0.02
+    # T2 day-level: one winner contained -> numerator 1 over ONE day (not 3 rows)
+    t2 = {(x["pop"], x["T"], x["N"]): x for x in t["T2"]}
+    row = t2[("B", 585, 3)]
+    assert row["days"] == 1 and row["top1_in"] == 1 and row["top1_in_share"] == 1.0, row
+    assert row["blocked_in"] == 0 and row["filled_in"] == 1, row
+    # post-fill shares: completed (110-100)/(200-100)=.1; post_hi=150 -> ahead .5, remaining .5
+    assert row["completed"]["p50"] == 0.1 and row["ahead"]["p50"] == 0.5, row
+    assert row["remaining"]["p50"] == 0.5, row
     t6 = {(x["set"]): x for x in t["T6"]}
     main_filled = t6["main"]["filled"]
     adj_blocked = t6["adj"]["gap_blocked"]

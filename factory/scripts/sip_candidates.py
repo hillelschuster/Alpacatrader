@@ -349,9 +349,11 @@ def main(argv=None):
         todo = list(days)
     if not todo:
         raise SystemExit("no days selected (use --day/--months/--all)")
-    done = skipped = failed = 0
+    done = skipped = failed = no_universe = 0
     for day in todo:
         if not (UNI / f"{day}.parquet").exists():
+            no_universe += 1
+            print(f"{day}: NO UNIVERSE TABLE -> skipped (reported, not silent)")
             continue
         if should_skip(day, args.force):
             skipped += 1
@@ -366,7 +368,8 @@ def main(argv=None):
         except Exception as e:  # keep going; manifest absent -> retried next run
             failed += 1
             print(f"{day}: FAILED {type(e).__name__}: {e}")
-    print(f"candidates: done={done} skipped={skipped} failed={failed} -> {OUT}")
+    print(f"candidates: done={done} skipped={skipped} failed={failed} "
+          f"no_universe={no_universe} -> {OUT}")
 
 
 if __name__ == "__main__":

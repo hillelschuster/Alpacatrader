@@ -1,0 +1,7615 @@
+{
+ "method": "Layer-1 candidates top-3 (provider SIP compact tables) vs final anatomy top-3 (merged raw-derived bars) for every dev day and snapshot; set comparison; causes from merged-bar presence, px agreement, Layer-1 rank/margin",
+ "days_checked": 1066,
+ "snapshots_checked": 14924,
+ "agree_top3_set": 14342,
+ "differ_snapshots": 582,
+ "diff_rows": 582,
+ "cause_counts": {
+  "dropped:no_prev_close": 584,
+  "promoted:top10_promoted": 587,
+  "dropped:outside_net": 1,
+  "dropped:no_decision_bar_in_merged": 2
+ },
+ "promoted_n": 587,
+ "promoted_with_quotes": 370,
+ "promoted_with_quotes_share": 0.6303,
+ "promoted_rank_gt10_no_quotes": [],
+ "promoted": [
+  {
+   "day": "2021-02-08",
+   "pop": "B",
+   "T": 575,
+   "ticker": "CNSP",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-02-08",
+   "pop": "B",
+   "T": 630,
+   "ticker": "OCGN",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-02-08",
+   "pop": "B",
+   "T": 645,
+   "ticker": "OCGN",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-02-09",
+   "pop": "B",
+   "T": 595,
+   "ticker": "BSQR",
+   "l1_rank": 5,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-02-09",
+   "pop": "B",
+   "T": 600,
+   "ticker": "EVOK",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-02-09",
+   "pop": "B",
+   "T": 600,
+   "ticker": "BSQR",
+   "l1_rank": 5,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-02-09",
+   "pop": "B",
+   "T": 615,
+   "ticker": "GMBL",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-02-11",
+   "pop": "B",
+   "T": 580,
+   "ticker": "GME",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-02-12",
+   "pop": "B",
+   "T": 575,
+   "ticker": "ARTL",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-02-23",
+   "pop": "B",
+   "T": 575,
+   "ticker": "DSWL",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-03-02",
+   "pop": "B",
+   "T": 590,
+   "ticker": "STIM",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-03-04",
+   "pop": "B",
+   "T": 585,
+   "ticker": "RETO",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-03-04",
+   "pop": "B",
+   "T": 590,
+   "ticker": "YEXT",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-03-04",
+   "pop": "B",
+   "T": 595,
+   "ticker": "VRTV",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-03-04",
+   "pop": "B",
+   "T": 600,
+   "ticker": "GNUS",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-03-04",
+   "pop": "B",
+   "T": 615,
+   "ticker": "SGOC",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-03-04",
+   "pop": "B",
+   "T": 630,
+   "ticker": "GNUS",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-03-23",
+   "pop": "B",
+   "T": 630,
+   "ticker": "ARPO",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-03-26",
+   "pop": "B",
+   "T": 580,
+   "ticker": "CODA",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-03-26",
+   "pop": "B",
+   "T": 585,
+   "ticker": "AMBO",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-03-26",
+   "pop": "B",
+   "T": 590,
+   "ticker": "AMBO",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-03-26",
+   "pop": "B",
+   "T": 595,
+   "ticker": "AMBO",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-03-26",
+   "pop": "B",
+   "T": 600,
+   "ticker": "AMBO",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-03-26",
+   "pop": "B",
+   "T": 615,
+   "ticker": "RAIL",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-03-26",
+   "pop": "B",
+   "T": 630,
+   "ticker": "RAIL",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-03-26",
+   "pop": "B",
+   "T": 645,
+   "ticker": "RAIL",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-03-29",
+   "pop": "B",
+   "T": 580,
+   "ticker": "WAFU",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-03-29",
+   "pop": "B",
+   "T": 585,
+   "ticker": "KOSS",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-03-29",
+   "pop": "B",
+   "T": 595,
+   "ticker": "DUOT",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-03-29",
+   "pop": "B",
+   "T": 595,
+   "ticker": "ACVA",
+   "l1_rank": 5,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-03-29",
+   "pop": "B",
+   "T": 600,
+   "ticker": "DUOT",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-03-29",
+   "pop": "B",
+   "T": 615,
+   "ticker": "SEAC",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-03-29",
+   "pop": "B",
+   "T": 630,
+   "ticker": "KBSF",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-03-29",
+   "pop": "B",
+   "T": 660,
+   "ticker": "TH",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-04-01",
+   "pop": "B",
+   "T": 660,
+   "ticker": "UXIN",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-04-07",
+   "pop": "B",
+   "T": 575,
+   "ticker": "CCNC",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-04-07",
+   "pop": "B",
+   "T": 590,
+   "ticker": "TH",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-04-07",
+   "pop": "B",
+   "T": 595,
+   "ticker": "XL",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-04-07",
+   "pop": "B",
+   "T": 615,
+   "ticker": "XL",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-04-07",
+   "pop": "B",
+   "T": 630,
+   "ticker": "IO",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-04-07",
+   "pop": "B",
+   "T": 645,
+   "ticker": "IO",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-04-07",
+   "pop": "B",
+   "T": 660,
+   "ticker": "OCGN",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-04-07",
+   "pop": "B",
+   "T": 690,
+   "ticker": "OCGN",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-04-07",
+   "pop": "B",
+   "T": 720,
+   "ticker": "ODT",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-04-09",
+   "pop": "B",
+   "T": 585,
+   "ticker": "CGA",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-04-09",
+   "pop": "B",
+   "T": 590,
+   "ticker": "NTZ",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-04-09",
+   "pop": "B",
+   "T": 595,
+   "ticker": "BNSO",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-04-09",
+   "pop": "B",
+   "T": 600,
+   "ticker": "PRTK",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-04-09",
+   "pop": "B",
+   "T": 615,
+   "ticker": "PRVB",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-04-09",
+   "pop": "B",
+   "T": 630,
+   "ticker": "PRTK",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-04-09",
+   "pop": "B",
+   "T": 645,
+   "ticker": "PRTK",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-04-09",
+   "pop": "B",
+   "T": 660,
+   "ticker": "PRTK",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-04-09",
+   "pop": "B",
+   "T": 690,
+   "ticker": "GROW",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-04-09",
+   "pop": "B",
+   "T": 720,
+   "ticker": "RICE",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-04-20",
+   "pop": "B",
+   "T": 575,
+   "ticker": "MOXC",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-04-20",
+   "pop": "B",
+   "T": 580,
+   "ticker": "TKAT",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-04-22",
+   "pop": "B",
+   "T": 585,
+   "ticker": "PLBY",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-04-22",
+   "pop": "B",
+   "T": 590,
+   "ticker": "MCB",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-04-22",
+   "pop": "B",
+   "T": 595,
+   "ticker": "OCGN",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-04-22",
+   "pop": "B",
+   "T": 600,
+   "ticker": "EAST",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-04-22",
+   "pop": "B",
+   "T": 615,
+   "ticker": "DSP",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-04-22",
+   "pop": "B",
+   "T": 630,
+   "ticker": "DSP",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-04-22",
+   "pop": "B",
+   "T": 660,
+   "ticker": "FTK",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-04-22",
+   "pop": "B",
+   "T": 690,
+   "ticker": "GALT",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-04-23",
+   "pop": "B",
+   "T": 590,
+   "ticker": "ACBI",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-04-26",
+   "pop": "B",
+   "T": 690,
+   "ticker": "QLGN",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-04-26",
+   "pop": "B",
+   "T": 720,
+   "ticker": "MVIS",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-04-26",
+   "pop": "B",
+   "T": 720,
+   "ticker": "ALGS",
+   "l1_rank": 5,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-04-30",
+   "pop": "B",
+   "T": 580,
+   "ticker": "TIRX",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-04-30",
+   "pop": "B",
+   "T": 595,
+   "ticker": "WETF",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-05-17",
+   "pop": "B",
+   "T": 575,
+   "ticker": "SNMP",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-05-17",
+   "pop": "B",
+   "T": 575,
+   "ticker": "BTU",
+   "l1_rank": 5,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-05-17",
+   "pop": "B",
+   "T": 580,
+   "ticker": "BGI",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-05-17",
+   "pop": "B",
+   "T": 590,
+   "ticker": "NMRD",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-05-28",
+   "pop": "B",
+   "T": 585,
+   "ticker": "MDJH",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-06-14",
+   "pop": "B",
+   "T": 575,
+   "ticker": "RCG",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-06-14",
+   "pop": "B",
+   "T": 580,
+   "ticker": "LKCO",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-06-14",
+   "pop": "B",
+   "T": 585,
+   "ticker": "AVXL",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-06-14",
+   "pop": "B",
+   "T": 590,
+   "ticker": "AVXL",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-06-14",
+   "pop": "B",
+   "T": 595,
+   "ticker": "AVXL",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-06-14",
+   "pop": "B",
+   "T": 600,
+   "ticker": "FNCH",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-06-15",
+   "pop": "B",
+   "T": 575,
+   "ticker": "WISH",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-06-15",
+   "pop": "B",
+   "T": 580,
+   "ticker": "DXR",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-06-15",
+   "pop": "B",
+   "T": 590,
+   "ticker": "UFAB",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-06-15",
+   "pop": "B",
+   "T": 595,
+   "ticker": "FUSN",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-06-15",
+   "pop": "B",
+   "T": 600,
+   "ticker": "UAVS",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-06-15",
+   "pop": "B",
+   "T": 615,
+   "ticker": "FUSN",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-06-15",
+   "pop": "B",
+   "T": 630,
+   "ticker": "PRPO",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-06-15",
+   "pop": "B",
+   "T": 645,
+   "ticker": "TYHT",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-06-15",
+   "pop": "B",
+   "T": 660,
+   "ticker": "TYHT",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-06-15",
+   "pop": "B",
+   "T": 690,
+   "ticker": "FUSN",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-06-15",
+   "pop": "B",
+   "T": 720,
+   "ticker": "FOA",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-06-18",
+   "pop": "B",
+   "T": 585,
+   "ticker": "OLO",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-06-18",
+   "pop": "B",
+   "T": 590,
+   "ticker": "SSNT",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-06-25",
+   "pop": "B",
+   "T": 575,
+   "ticker": "BCOR",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-06-25",
+   "pop": "B",
+   "T": 580,
+   "ticker": "VERY",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-06-25",
+   "pop": "B",
+   "T": 585,
+   "ticker": "AUUD",
+   "l1_rank": 5,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-06-25",
+   "pop": "B",
+   "T": 590,
+   "ticker": "CYT",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-06-25",
+   "pop": "B",
+   "T": 600,
+   "ticker": "VERY",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-06-25",
+   "pop": "B",
+   "T": 630,
+   "ticker": "ATOS",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-06-28",
+   "pop": "B",
+   "T": 580,
+   "ticker": "MOXC",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-06-28",
+   "pop": "B",
+   "T": 585,
+   "ticker": "BSGM",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-06-30",
+   "pop": "B",
+   "T": 600,
+   "ticker": "BBBY",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-06-30",
+   "pop": "B",
+   "T": 615,
+   "ticker": "BLIN",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-06-30",
+   "pop": "B",
+   "T": 630,
+   "ticker": "FEMY",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-06-30",
+   "pop": "B",
+   "T": 645,
+   "ticker": "FEMY",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-06-30",
+   "pop": "B",
+   "T": 660,
+   "ticker": "IPW",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-06-30",
+   "pop": "B",
+   "T": 690,
+   "ticker": "MTC",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-06-30",
+   "pop": "B",
+   "T": 720,
+   "ticker": "FEMY",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-07-01",
+   "pop": "B",
+   "T": 615,
+   "ticker": "HUT",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-07-09",
+   "pop": "B",
+   "T": 575,
+   "ticker": "CVRX",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-07-15",
+   "pop": "B",
+   "T": 660,
+   "ticker": "RIDE",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-07-15",
+   "pop": "B",
+   "T": 690,
+   "ticker": "UNCY",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-07-15",
+   "pop": "B",
+   "T": 720,
+   "ticker": "VERB",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-07-23",
+   "pop": "B",
+   "T": 690,
+   "ticker": "ARDS",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-07-29",
+   "pop": "B",
+   "T": 690,
+   "ticker": "VEEE",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-07-29",
+   "pop": "B",
+   "T": 720,
+   "ticker": "MDIA",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-07-30",
+   "pop": "B",
+   "T": 575,
+   "ticker": "DCTH",
+   "l1_rank": 5,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-07-30",
+   "pop": "B",
+   "T": 580,
+   "ticker": "SNPX",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-07-30",
+   "pop": "B",
+   "T": 585,
+   "ticker": "SNPX",
+   "l1_rank": 5,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-07-30",
+   "pop": "B",
+   "T": 590,
+   "ticker": "SNPX",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-07-30",
+   "pop": "B",
+   "T": 595,
+   "ticker": "MRIN",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-07-30",
+   "pop": "B",
+   "T": 600,
+   "ticker": "MRIN",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-08-03",
+   "pop": "B",
+   "T": 575,
+   "ticker": "UTI",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-08-03",
+   "pop": "B",
+   "T": 580,
+   "ticker": "HLIT",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-08-04",
+   "pop": "B",
+   "T": 575,
+   "ticker": "INVE",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-08-04",
+   "pop": "B",
+   "T": 590,
+   "ticker": "AQST",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-08-09",
+   "pop": "B",
+   "T": 575,
+   "ticker": "SRRK",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-08-27",
+   "pop": "B",
+   "T": 575,
+   "ticker": "PALT",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-08-31",
+   "pop": "B",
+   "T": 575,
+   "ticker": "DSGN",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-09-08",
+   "pop": "B",
+   "T": 575,
+   "ticker": "AIRT",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-09-08",
+   "pop": "B",
+   "T": 580,
+   "ticker": "ISUN",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-09-08",
+   "pop": "B",
+   "T": 585,
+   "ticker": "ISUN",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-09-08",
+   "pop": "B",
+   "T": 590,
+   "ticker": "GSAT",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-09-08",
+   "pop": "B",
+   "T": 690,
+   "ticker": "CCM",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-09-08",
+   "pop": "B",
+   "T": 720,
+   "ticker": "ICUI",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-09-13",
+   "pop": "B",
+   "T": 720,
+   "ticker": "MTNB",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-09-16",
+   "pop": "B",
+   "T": 580,
+   "ticker": "AEYE",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-10-06",
+   "pop": "B",
+   "T": 575,
+   "ticker": "EEIQ",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-10-07",
+   "pop": "B",
+   "T": 575,
+   "ticker": "ANGN",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-10-12",
+   "pop": "B",
+   "T": 575,
+   "ticker": "SILC",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-10-12",
+   "pop": "B",
+   "T": 580,
+   "ticker": "LOKB",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-10-12",
+   "pop": "B",
+   "T": 585,
+   "ticker": "PROG",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-10-12",
+   "pop": "B",
+   "T": 630,
+   "ticker": "TTNP",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-10-12",
+   "pop": "B",
+   "T": 645,
+   "ticker": "TTNP",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-10-12",
+   "pop": "B",
+   "T": 660,
+   "ticker": "TTNP",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-10-12",
+   "pop": "B",
+   "T": 690,
+   "ticker": "CRXT",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-10-12",
+   "pop": "B",
+   "T": 720,
+   "ticker": "BBIG",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-10-26",
+   "pop": "B",
+   "T": 585,
+   "ticker": "AZYO",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-11-01",
+   "pop": "B",
+   "T": 645,
+   "ticker": "SLGG",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-11-01",
+   "pop": "B",
+   "T": 660,
+   "ticker": "PHCF",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-11-01",
+   "pop": "B",
+   "T": 690,
+   "ticker": "PHCF",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-11-01",
+   "pop": "B",
+   "T": 720,
+   "ticker": "DM",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-11-02",
+   "pop": "B",
+   "T": 575,
+   "ticker": "SBEA",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-11-02",
+   "pop": "B",
+   "T": 580,
+   "ticker": "ABOS",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-11-02",
+   "pop": "B",
+   "T": 585,
+   "ticker": "CLNN",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-11-02",
+   "pop": "B",
+   "T": 590,
+   "ticker": "XELB",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-11-02",
+   "pop": "B",
+   "T": 595,
+   "ticker": "NVTS",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-11-02",
+   "pop": "B",
+   "T": 600,
+   "ticker": "ESPR",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-11-10",
+   "pop": "B",
+   "T": 575,
+   "ticker": "TH",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-11-10",
+   "pop": "B",
+   "T": 615,
+   "ticker": "MCRB",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-11-10",
+   "pop": "B",
+   "T": 630,
+   "ticker": "PFMT",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-11-10",
+   "pop": "B",
+   "T": 645,
+   "ticker": "ATIP",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-11-10",
+   "pop": "B",
+   "T": 660,
+   "ticker": "IFMK",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-11-10",
+   "pop": "B",
+   "T": 690,
+   "ticker": "UBX",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-11-10",
+   "pop": "B",
+   "T": 720,
+   "ticker": "SWIM",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-11-22",
+   "pop": "B",
+   "T": 590,
+   "ticker": "TCBX",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-11-26",
+   "pop": "B",
+   "T": 575,
+   "ticker": "PTPI",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-12-07",
+   "pop": "B",
+   "T": 580,
+   "ticker": "ANIX",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-12-09",
+   "pop": "B",
+   "T": 600,
+   "ticker": "IFBD",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-12-15",
+   "pop": "B",
+   "T": 645,
+   "ticker": "CNEY",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-12-15",
+   "pop": "B",
+   "T": 660,
+   "ticker": "MTCR",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-12-15",
+   "pop": "B",
+   "T": 690,
+   "ticker": "CNEY",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-12-15",
+   "pop": "B",
+   "T": 720,
+   "ticker": "MOXC",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-12-17",
+   "pop": "B",
+   "T": 580,
+   "ticker": "EEIQ",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-12-17",
+   "pop": "B",
+   "T": 585,
+   "ticker": "ELEV",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-12-17",
+   "pop": "B",
+   "T": 595,
+   "ticker": "AGIL",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-12-17",
+   "pop": "B",
+   "T": 645,
+   "ticker": "AMC",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-12-17",
+   "pop": "B",
+   "T": 660,
+   "ticker": "AMC",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-12-17",
+   "pop": "B",
+   "T": 690,
+   "ticker": "INTA",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-12-17",
+   "pop": "B",
+   "T": 720,
+   "ticker": "OPK",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-12-22",
+   "pop": "B",
+   "T": 585,
+   "ticker": "EVTL",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-12-22",
+   "pop": "B",
+   "T": 590,
+   "ticker": "AZYO",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-12-22",
+   "pop": "B",
+   "T": 595,
+   "ticker": "AZYO",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-12-22",
+   "pop": "B",
+   "T": 600,
+   "ticker": "AZYO",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-12-22",
+   "pop": "B",
+   "T": 615,
+   "ticker": "BLPH",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-12-22",
+   "pop": "B",
+   "T": 630,
+   "ticker": "PTPI",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-12-22",
+   "pop": "B",
+   "T": 645,
+   "ticker": "BLPH",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-12-22",
+   "pop": "B",
+   "T": 660,
+   "ticker": "ISO",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-12-27",
+   "pop": "B",
+   "T": 580,
+   "ticker": "BTCY",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2021-12-27",
+   "pop": "B",
+   "T": 585,
+   "ticker": "ATAI",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2021-12-27",
+   "pop": "B",
+   "T": 590,
+   "ticker": "RGP",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-01-03",
+   "pop": "B",
+   "T": 575,
+   "ticker": "MOBQ",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-01-03",
+   "pop": "B",
+   "T": 580,
+   "ticker": "JWEL",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-01-03",
+   "pop": "B",
+   "T": 585,
+   "ticker": "JWEL",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-01-03",
+   "pop": "B",
+   "T": 590,
+   "ticker": "PRFX",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-01-03",
+   "pop": "B",
+   "T": 595,
+   "ticker": "PRFX",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-01-03",
+   "pop": "B",
+   "T": 600,
+   "ticker": "JWEL",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-01-03",
+   "pop": "B",
+   "T": 615,
+   "ticker": "PRFX",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-01-03",
+   "pop": "B",
+   "T": 630,
+   "ticker": "EQOS",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-01-03",
+   "pop": "B",
+   "T": 645,
+   "ticker": "NES",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-01-03",
+   "pop": "B",
+   "T": 660,
+   "ticker": "GBS",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-01-03",
+   "pop": "B",
+   "T": 690,
+   "ticker": "GBS",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-01-03",
+   "pop": "B",
+   "T": 720,
+   "ticker": "EQOS",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-02-03",
+   "pop": "B",
+   "T": 585,
+   "ticker": "KSCP",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-02-03",
+   "pop": "B",
+   "T": 590,
+   "ticker": "CLEU",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-02-03",
+   "pop": "B",
+   "T": 595,
+   "ticker": "YELL",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-02-03",
+   "pop": "B",
+   "T": 600,
+   "ticker": "BIMI",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-02-03",
+   "pop": "B",
+   "T": 615,
+   "ticker": "YELL",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-02-03",
+   "pop": "B",
+   "T": 630,
+   "ticker": "YELL",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-02-07",
+   "pop": "B",
+   "T": 580,
+   "ticker": "USAK",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-02-07",
+   "pop": "B",
+   "T": 585,
+   "ticker": "NILE",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-02-07",
+   "pop": "B",
+   "T": 600,
+   "ticker": "DSEY",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-02-07",
+   "pop": "B",
+   "T": 615,
+   "ticker": "NSSC",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-02-07",
+   "pop": "B",
+   "T": 615,
+   "ticker": "DSEY",
+   "l1_rank": 5,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-02-07",
+   "pop": "B",
+   "T": 630,
+   "ticker": "GMVD",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-02-07",
+   "pop": "B",
+   "T": 645,
+   "ticker": "BKKT",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-02-07",
+   "pop": "B",
+   "T": 660,
+   "ticker": "KAVL",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-02-07",
+   "pop": "B",
+   "T": 690,
+   "ticker": "NSSC",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-02-07",
+   "pop": "B",
+   "T": 720,
+   "ticker": "BKKT",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-02-11",
+   "pop": "B",
+   "T": 615,
+   "ticker": "INNV",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-02-14",
+   "pop": "B",
+   "T": 580,
+   "ticker": "MITQ",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-02-22",
+   "pop": "B",
+   "T": 595,
+   "ticker": "INDO",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-03-16",
+   "pop": "B",
+   "T": 585,
+   "ticker": "MIRO",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-03-16",
+   "pop": "B",
+   "T": 590,
+   "ticker": "WULF",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-03-16",
+   "pop": "B",
+   "T": 595,
+   "ticker": "MXC",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-03-16",
+   "pop": "B",
+   "T": 600,
+   "ticker": "MXC",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-03-31",
+   "pop": "B",
+   "T": 615,
+   "ticker": "SVFD",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-03-31",
+   "pop": "B",
+   "T": 660,
+   "ticker": "BCAB",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-04-13",
+   "pop": "B",
+   "T": 575,
+   "ticker": "GAMB",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-04-28",
+   "pop": "B",
+   "T": 580,
+   "ticker": "NDLS",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-05-11",
+   "pop": "B",
+   "T": 660,
+   "ticker": "ONTF",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-05-18",
+   "pop": "B",
+   "T": 630,
+   "ticker": "ID",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-05-18",
+   "pop": "B",
+   "T": 645,
+   "ticker": "NUTX",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-05-18",
+   "pop": "B",
+   "T": 720,
+   "ticker": "SKYH",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-05-23",
+   "pop": "B",
+   "T": 575,
+   "ticker": "AFYA",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-05-23",
+   "pop": "B",
+   "T": 580,
+   "ticker": "SRZN",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-05-23",
+   "pop": "B",
+   "T": 585,
+   "ticker": "TNXP",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-05-23",
+   "pop": "B",
+   "T": 590,
+   "ticker": "VOR",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-05-23",
+   "pop": "B",
+   "T": 595,
+   "ticker": "DPSI",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-05-23",
+   "pop": "B",
+   "T": 600,
+   "ticker": "FRGE",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-05-23",
+   "pop": "B",
+   "T": 615,
+   "ticker": "FRGE",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-05-23",
+   "pop": "B",
+   "T": 630,
+   "ticker": "FRGE",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-05-23",
+   "pop": "B",
+   "T": 645,
+   "ticker": "RLYB",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-05-23",
+   "pop": "B",
+   "T": 660,
+   "ticker": "NEON",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-05-31",
+   "pop": "B",
+   "T": 575,
+   "ticker": "GOVX",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-05-31",
+   "pop": "B",
+   "T": 580,
+   "ticker": "ID",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-05-31",
+   "pop": "B",
+   "T": 585,
+   "ticker": "HSDT",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-05-31",
+   "pop": "B",
+   "T": 595,
+   "ticker": "MULN",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-05-31",
+   "pop": "B",
+   "T": 600,
+   "ticker": "MULN",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-05-31",
+   "pop": "B",
+   "T": 615,
+   "ticker": "AAME",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-05-31",
+   "pop": "B",
+   "T": 630,
+   "ticker": "ALLR",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-05-31",
+   "pop": "B",
+   "T": 645,
+   "ticker": "GGR",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-06-13",
+   "pop": "B",
+   "T": 575,
+   "ticker": "VVOS",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-06-16",
+   "pop": "B",
+   "T": 585,
+   "ticker": "JSPR",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-06-16",
+   "pop": "B",
+   "T": 590,
+   "ticker": "VIVK",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-06-16",
+   "pop": "B",
+   "T": 595,
+   "ticker": "BTCY",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-06-16",
+   "pop": "B",
+   "T": 600,
+   "ticker": "BTCY",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-06-16",
+   "pop": "B",
+   "T": 615,
+   "ticker": "EBIX",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-06-16",
+   "pop": "B",
+   "T": 630,
+   "ticker": "DPSI",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-06-16",
+   "pop": "B",
+   "T": 645,
+   "ticker": "IONM",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-06-16",
+   "pop": "B",
+   "T": 660,
+   "ticker": "AKAN",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-06-16",
+   "pop": "B",
+   "T": 690,
+   "ticker": "PEI",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-06-16",
+   "pop": "B",
+   "T": 720,
+   "ticker": "BBLG",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-06-23",
+   "pop": "B",
+   "T": 690,
+   "ticker": "SFT",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-07-11",
+   "pop": "B",
+   "T": 585,
+   "ticker": "NLIT",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-07-11",
+   "pop": "B",
+   "T": 590,
+   "ticker": "BKTI",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-07-11",
+   "pop": "B",
+   "T": 595,
+   "ticker": "CFRX",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-07-11",
+   "pop": "B",
+   "T": 600,
+   "ticker": "CFRX",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-07-11",
+   "pop": "B",
+   "T": 615,
+   "ticker": "VLCN",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-07-11",
+   "pop": "B",
+   "T": 645,
+   "ticker": "ARMP",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-07-15",
+   "pop": "B",
+   "T": 720,
+   "ticker": "ATNF",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-07-19",
+   "pop": "B",
+   "T": 575,
+   "ticker": "APLD",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-07-29",
+   "pop": "B",
+   "T": 600,
+   "ticker": "OMER",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-07-29",
+   "pop": "B",
+   "T": 615,
+   "ticker": "RKLY",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-08-01",
+   "pop": "B",
+   "T": 580,
+   "ticker": "NVCT",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-08-01",
+   "pop": "B",
+   "T": 585,
+   "ticker": "NVCT",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-08-01",
+   "pop": "B",
+   "T": 590,
+   "ticker": "VRAX",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-08-01",
+   "pop": "B",
+   "T": 595,
+   "ticker": "OM",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-08-04",
+   "pop": "B",
+   "T": 615,
+   "ticker": "FRGE",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-08-18",
+   "pop": "B",
+   "T": 615,
+   "ticker": "WETG",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-08-18",
+   "pop": "B",
+   "T": 630,
+   "ticker": "WETG",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-08-18",
+   "pop": "B",
+   "T": 645,
+   "ticker": "INDO",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-08-18",
+   "pop": "B",
+   "T": 660,
+   "ticker": "INDO",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-08-18",
+   "pop": "B",
+   "T": 690,
+   "ticker": "TUSK",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-08-19",
+   "pop": "B",
+   "T": 575,
+   "ticker": "BWV",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-08-19",
+   "pop": "B",
+   "T": 585,
+   "ticker": "LMDX",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-08-19",
+   "pop": "B",
+   "T": 590,
+   "ticker": "WETG",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-08-19",
+   "pop": "B",
+   "T": 595,
+   "ticker": "MEGL",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-08-19",
+   "pop": "B",
+   "T": 600,
+   "ticker": "PRTY",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-08-19",
+   "pop": "B",
+   "T": 660,
+   "ticker": "BNSO",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-08-19",
+   "pop": "B",
+   "T": 690,
+   "ticker": "HSTO",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-08-19",
+   "pop": "B",
+   "T": 720,
+   "ticker": "PRTY",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-08-30",
+   "pop": "B",
+   "T": 580,
+   "ticker": "MCVT",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-09-02",
+   "pop": "B",
+   "T": 585,
+   "ticker": "FRGE",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-09-02",
+   "pop": "B",
+   "T": 590,
+   "ticker": "EVLO",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-09-14",
+   "pop": "B",
+   "T": 580,
+   "ticker": "AMSWA",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-09-20",
+   "pop": "B",
+   "T": 575,
+   "ticker": "ABOS",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-09-20",
+   "pop": "B",
+   "T": 660,
+   "ticker": "GCT",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-09-22",
+   "pop": "B",
+   "T": 575,
+   "ticker": "ZCMD",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-10-10",
+   "pop": "B",
+   "T": 585,
+   "ticker": "ACMR",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-10-18",
+   "pop": "B",
+   "T": 645,
+   "ticker": "RBT",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-10-18",
+   "pop": "B",
+   "T": 660,
+   "ticker": "DRUG",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-10-18",
+   "pop": "B",
+   "T": 690,
+   "ticker": "RBT",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-10-18",
+   "pop": "B",
+   "T": 720,
+   "ticker": "DRUG",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-10-31",
+   "pop": "B",
+   "T": 575,
+   "ticker": "CDRO",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-10-31",
+   "pop": "B",
+   "T": 580,
+   "ticker": "CDRO",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-10-31",
+   "pop": "B",
+   "T": 590,
+   "ticker": "VENA",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-10-31",
+   "pop": "B",
+   "T": 600,
+   "ticker": "GETY",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-10-31",
+   "pop": "B",
+   "T": 615,
+   "ticker": "VENA",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-11-01",
+   "pop": "B",
+   "T": 575,
+   "ticker": "AGMH",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-11-03",
+   "pop": "B",
+   "T": 580,
+   "ticker": "WETG",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-11-03",
+   "pop": "B",
+   "T": 585,
+   "ticker": "UK",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-11-03",
+   "pop": "B",
+   "T": 590,
+   "ticker": "SLNA",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-11-03",
+   "pop": "B",
+   "T": 595,
+   "ticker": "DSEY",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-11-03",
+   "pop": "B",
+   "T": 600,
+   "ticker": "DSEY",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-11-03",
+   "pop": "B",
+   "T": 615,
+   "ticker": "UK",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-11-03",
+   "pop": "B",
+   "T": 630,
+   "ticker": "FDMT",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-11-03",
+   "pop": "B",
+   "T": 645,
+   "ticker": "PRVB",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-11-03",
+   "pop": "B",
+   "T": 720,
+   "ticker": "NXL",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-11-07",
+   "pop": "B",
+   "T": 575,
+   "ticker": "CTHR",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-11-07",
+   "pop": "B",
+   "T": 580,
+   "ticker": "APRN",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-11-07",
+   "pop": "B",
+   "T": 585,
+   "ticker": "SRTS",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-11-07",
+   "pop": "B",
+   "T": 590,
+   "ticker": "FNKO",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-11-07",
+   "pop": "B",
+   "T": 595,
+   "ticker": "ACMR",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-11-07",
+   "pop": "B",
+   "T": 600,
+   "ticker": "ACMR",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-11-07",
+   "pop": "B",
+   "T": 630,
+   "ticker": "ACMR",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-11-08",
+   "pop": "B",
+   "T": 575,
+   "ticker": "SLNA",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-11-15",
+   "pop": "B",
+   "T": 615,
+   "ticker": "XCUR",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2022-12-07",
+   "pop": "B",
+   "T": 645,
+   "ticker": "NMTC",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-12-07",
+   "pop": "B",
+   "T": 660,
+   "ticker": "NMTC",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-12-07",
+   "pop": "B",
+   "T": 690,
+   "ticker": "NMTC",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-12-07",
+   "pop": "B",
+   "T": 720,
+   "ticker": "NMTC",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2022-12-08",
+   "pop": "B",
+   "T": 590,
+   "ticker": "AGAE",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-01-06",
+   "pop": "B",
+   "T": 690,
+   "ticker": "BLPH",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-01-06",
+   "pop": "B",
+   "T": 720,
+   "ticker": "BLPH",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-01-17",
+   "pop": "B",
+   "T": 575,
+   "ticker": "RNER",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-01-17",
+   "pop": "B",
+   "T": 585,
+   "ticker": "PRAX",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-01-30",
+   "pop": "B",
+   "T": 575,
+   "ticker": "GMVD",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-01-30",
+   "pop": "B",
+   "T": 580,
+   "ticker": "MCVT",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-01-30",
+   "pop": "B",
+   "T": 585,
+   "ticker": "AUUD",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-01-30",
+   "pop": "B",
+   "T": 590,
+   "ticker": "AUUD",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-01-30",
+   "pop": "B",
+   "T": 645,
+   "ticker": "NVVE",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-01-30",
+   "pop": "B",
+   "T": 660,
+   "ticker": "OBLG",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-02-16",
+   "pop": "B",
+   "T": 615,
+   "ticker": "LUNR",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-02-22",
+   "pop": "B",
+   "T": 600,
+   "ticker": "USIO",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-02-22",
+   "pop": "B",
+   "T": 615,
+   "ticker": "CVRX",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-02-23",
+   "pop": "B",
+   "T": 575,
+   "ticker": "BHC",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-02-23",
+   "pop": "B",
+   "T": 585,
+   "ticker": "YETI",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-02-23",
+   "pop": "B",
+   "T": 590,
+   "ticker": "LUCY",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-02-23",
+   "pop": "B",
+   "T": 595,
+   "ticker": "BHC",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-02-23",
+   "pop": "B",
+   "T": 600,
+   "ticker": "AWIN",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-02-23",
+   "pop": "B",
+   "T": 615,
+   "ticker": "AWIN",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-02-23",
+   "pop": "B",
+   "T": 630,
+   "ticker": "LION",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-02-23",
+   "pop": "B",
+   "T": 645,
+   "ticker": "TOP",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-02-23",
+   "pop": "B",
+   "T": 660,
+   "ticker": "BURU",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-02-23",
+   "pop": "B",
+   "T": 690,
+   "ticker": "TOP",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-02-23",
+   "pop": "B",
+   "T": 720,
+   "ticker": "TOP",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-03-09",
+   "pop": "B",
+   "T": 580,
+   "ticker": "MFH",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-03-09",
+   "pop": "B",
+   "T": 585,
+   "ticker": "IMRX",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-03-09",
+   "pop": "B",
+   "T": 590,
+   "ticker": "BREA",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-03-09",
+   "pop": "B",
+   "T": 595,
+   "ticker": "DTC",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-03-09",
+   "pop": "B",
+   "T": 600,
+   "ticker": "ASRT",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-03-09",
+   "pop": "B",
+   "T": 630,
+   "ticker": "BDTX",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-03-09",
+   "pop": "B",
+   "T": 645,
+   "ticker": "OPGN",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-03-09",
+   "pop": "B",
+   "T": 660,
+   "ticker": "OPGN",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-03-16",
+   "pop": "B",
+   "T": 575,
+   "ticker": "AEHL",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-03-16",
+   "pop": "B",
+   "T": 580,
+   "ticker": "PCT",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-04-04",
+   "pop": "B",
+   "T": 580,
+   "ticker": "TGL",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-04-17",
+   "pop": "B",
+   "T": 575,
+   "ticker": "CLWT",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-04-17",
+   "pop": "B",
+   "T": 580,
+   "ticker": "GFAI",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-04-17",
+   "pop": "B",
+   "T": 590,
+   "ticker": "GFAI",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-04-21",
+   "pop": "B",
+   "T": 575,
+   "ticker": "SAI",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-04-21",
+   "pop": "B",
+   "T": 580,
+   "ticker": "ADSE",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-05-12",
+   "pop": "B",
+   "T": 590,
+   "ticker": "ARLO",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-05-12",
+   "pop": "B",
+   "T": 595,
+   "ticker": "JWAC",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-05-12",
+   "pop": "B",
+   "T": 600,
+   "ticker": "ARLO",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-05-12",
+   "pop": "B",
+   "T": 615,
+   "ticker": "ARLO",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-05-12",
+   "pop": "B",
+   "T": 630,
+   "ticker": "VERO",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-05-12",
+   "pop": "B",
+   "T": 660,
+   "ticker": "IZM",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-05-19",
+   "pop": "B",
+   "T": 575,
+   "ticker": "CWD",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-05-19",
+   "pop": "B",
+   "T": 580,
+   "ticker": "GTEC",
+   "l1_rank": 5,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-05-23",
+   "pop": "B",
+   "T": 645,
+   "ticker": "OCEA",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-05-23",
+   "pop": "B",
+   "T": 660,
+   "ticker": "LFCR",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-05-23",
+   "pop": "B",
+   "T": 690,
+   "ticker": "OCEA",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-05-23",
+   "pop": "B",
+   "T": 720,
+   "ticker": "OCEA",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-05-25",
+   "pop": "B",
+   "T": 595,
+   "ticker": "ABSI",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-05-25",
+   "pop": "B",
+   "T": 600,
+   "ticker": "CINT",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-06-05",
+   "pop": "B",
+   "T": 585,
+   "ticker": "REAL",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-06-05",
+   "pop": "B",
+   "T": 590,
+   "ticker": "PRTG",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-06-05",
+   "pop": "B",
+   "T": 595,
+   "ticker": "TOP",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-06-05",
+   "pop": "B",
+   "T": 600,
+   "ticker": "BREA",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-06-05",
+   "pop": "B",
+   "T": 615,
+   "ticker": "UTME",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-06-05",
+   "pop": "B",
+   "T": 630,
+   "ticker": "CXAI",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-06-05",
+   "pop": "B",
+   "T": 645,
+   "ticker": "COEP",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-06-15",
+   "pop": "B",
+   "T": 575,
+   "ticker": "ACOR",
+   "l1_rank": 5,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-06-15",
+   "pop": "B",
+   "T": 615,
+   "ticker": "AAOI",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-06-15",
+   "pop": "B",
+   "T": 630,
+   "ticker": "IDAI",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-06-15",
+   "pop": "B",
+   "T": 645,
+   "ticker": "UP",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-06-15",
+   "pop": "B",
+   "T": 660,
+   "ticker": "POWW",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-06-15",
+   "pop": "B",
+   "T": 690,
+   "ticker": "IOBT",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-06-20",
+   "pop": "B",
+   "T": 660,
+   "ticker": "FRGE",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-06-20",
+   "pop": "B",
+   "T": 690,
+   "ticker": "ATIP",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-06-20",
+   "pop": "B",
+   "T": 720,
+   "ticker": "SPCE",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-06-23",
+   "pop": "B",
+   "T": 575,
+   "ticker": "APPF",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-06-23",
+   "pop": "B",
+   "T": 580,
+   "ticker": "APPF",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-07-07",
+   "pop": "B",
+   "T": 575,
+   "ticker": "CDNA",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-07-18",
+   "pop": "B",
+   "T": 575,
+   "ticker": "REKR",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-07-25",
+   "pop": "B",
+   "T": 575,
+   "ticker": "LIPO",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-07-25",
+   "pop": "B",
+   "T": 580,
+   "ticker": "GFAI",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-07-25",
+   "pop": "B",
+   "T": 585,
+   "ticker": "EVLO",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-07-25",
+   "pop": "B",
+   "T": 590,
+   "ticker": "ELBM",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-07-25",
+   "pop": "B",
+   "T": 630,
+   "ticker": "AKBA",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-07-25",
+   "pop": "B",
+   "T": 645,
+   "ticker": "AKBA",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-07-25",
+   "pop": "B",
+   "T": 660,
+   "ticker": "AGIL",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-07-25",
+   "pop": "B",
+   "T": 690,
+   "ticker": "AKBA",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-07-25",
+   "pop": "B",
+   "T": 720,
+   "ticker": "AGIL",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-08-07",
+   "pop": "B",
+   "T": 585,
+   "ticker": "AAOI",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-08-14",
+   "pop": "B",
+   "T": 575,
+   "ticker": "XFOR",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-08-16",
+   "pop": "B",
+   "T": 585,
+   "ticker": "TRON",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-08-16",
+   "pop": "B",
+   "T": 590,
+   "ticker": "OCTO",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-08-16",
+   "pop": "B",
+   "T": 595,
+   "ticker": "OCTO",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-08-16",
+   "pop": "B",
+   "T": 600,
+   "ticker": "EOSE",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-08-18",
+   "pop": "B",
+   "T": 575,
+   "ticker": "RRGB",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-08-18",
+   "pop": "B",
+   "T": 580,
+   "ticker": "AAME",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-08-29",
+   "pop": "B",
+   "T": 575,
+   "ticker": "TSRI",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-08-29",
+   "pop": "B",
+   "T": 580,
+   "ticker": "KWE",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-08-29",
+   "pop": "B",
+   "T": 585,
+   "ticker": "MLGO",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-08-29",
+   "pop": "B",
+   "T": 590,
+   "ticker": "HALL",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-08-29",
+   "pop": "B",
+   "T": 595,
+   "ticker": "MLGO",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-08-29",
+   "pop": "B",
+   "T": 600,
+   "ticker": "EZFL",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-08-29",
+   "pop": "B",
+   "T": 615,
+   "ticker": "VCIG",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-08-29",
+   "pop": "B",
+   "T": 630,
+   "ticker": "CHSN",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-08-29",
+   "pop": "B",
+   "T": 645,
+   "ticker": "GREE",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-08-29",
+   "pop": "B",
+   "T": 660,
+   "ticker": "MARA",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-08-29",
+   "pop": "B",
+   "T": 690,
+   "ticker": "EZFL",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-08-29",
+   "pop": "B",
+   "T": 720,
+   "ticker": "TSHA",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-09-08",
+   "pop": "B",
+   "T": 580,
+   "ticker": "VERB",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-09-19",
+   "pop": "B",
+   "T": 615,
+   "ticker": "MDJH",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-09-19",
+   "pop": "B",
+   "T": 630,
+   "ticker": "BGLC",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-09-19",
+   "pop": "B",
+   "T": 645,
+   "ticker": "BGLC",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-09-19",
+   "pop": "B",
+   "T": 690,
+   "ticker": "CETX",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-09-20",
+   "pop": "B",
+   "T": 595,
+   "ticker": "EHTH",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-09-20",
+   "pop": "B",
+   "T": 600,
+   "ticker": "VRAR",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-09-20",
+   "pop": "B",
+   "T": 615,
+   "ticker": "BMTX",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-09-29",
+   "pop": "B",
+   "T": 575,
+   "ticker": "VIEW",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-09-29",
+   "pop": "B",
+   "T": 630,
+   "ticker": "CRIS",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-10-02",
+   "pop": "B",
+   "T": 580,
+   "ticker": "AGFY",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-10-02",
+   "pop": "B",
+   "T": 615,
+   "ticker": "BNOX",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-10-06",
+   "pop": "B",
+   "T": 615,
+   "ticker": "HOFV",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-10-06",
+   "pop": "B",
+   "T": 630,
+   "ticker": "DERM",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-10-06",
+   "pop": "B",
+   "T": 660,
+   "ticker": "CMBM",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-11-01",
+   "pop": "B",
+   "T": 720,
+   "ticker": "SLN",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-11-07",
+   "pop": "B",
+   "T": 615,
+   "ticker": "CUTR",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-11-07",
+   "pop": "B",
+   "T": 630,
+   "ticker": "PIXY",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-11-07",
+   "pop": "B",
+   "T": 645,
+   "ticker": "CUTR",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-11-07",
+   "pop": "B",
+   "T": 660,
+   "ticker": "CUTR",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-11-07",
+   "pop": "B",
+   "T": 690,
+   "ticker": "BYU",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-11-07",
+   "pop": "B",
+   "T": 720,
+   "ticker": "ONVO",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-11-09",
+   "pop": "B",
+   "T": 575,
+   "ticker": "EFXT",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-11-09",
+   "pop": "B",
+   "T": 580,
+   "ticker": "BYND",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-11-13",
+   "pop": "B",
+   "T": 575,
+   "ticker": "SPWR",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-11-30",
+   "pop": "B",
+   "T": 590,
+   "ticker": "BDRX",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-12-21",
+   "pop": "B",
+   "T": 580,
+   "ticker": "MGTX",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-12-21",
+   "pop": "B",
+   "T": 585,
+   "ticker": "IREN",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-12-21",
+   "pop": "B",
+   "T": 590,
+   "ticker": "BKYI",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-12-21",
+   "pop": "B",
+   "T": 595,
+   "ticker": "ATAK",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-12-21",
+   "pop": "B",
+   "T": 600,
+   "ticker": "AAGR",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-12-21",
+   "pop": "B",
+   "T": 615,
+   "ticker": "ECDA",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-12-21",
+   "pop": "B",
+   "T": 630,
+   "ticker": "IREN",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-12-21",
+   "pop": "B",
+   "T": 645,
+   "ticker": "PARA",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-12-21",
+   "pop": "B",
+   "T": 660,
+   "ticker": "BKYI",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-12-21",
+   "pop": "B",
+   "T": 690,
+   "ticker": "BKYI",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-12-21",
+   "pop": "B",
+   "T": 720,
+   "ticker": "BEAT",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2023-12-29",
+   "pop": "B",
+   "T": 575,
+   "ticker": "FTFT",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2023-12-29",
+   "pop": "B",
+   "T": 580,
+   "ticker": "MBOT",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-02-06",
+   "pop": "B",
+   "T": 575,
+   "ticker": "FORM",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2025-02-18",
+   "pop": "B",
+   "T": 615,
+   "ticker": "AXIL",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2025-02-18",
+   "pop": "B",
+   "T": 630,
+   "ticker": "PULM",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-02-18",
+   "pop": "B",
+   "T": 645,
+   "ticker": "AMOD",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2025-02-18",
+   "pop": "B",
+   "T": 660,
+   "ticker": "REBN",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2025-02-18",
+   "pop": "B",
+   "T": 690,
+   "ticker": "REBN",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2025-02-18",
+   "pop": "B",
+   "T": 720,
+   "ticker": "ALLO",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-02-19",
+   "pop": "B",
+   "T": 580,
+   "ticker": "CSAI",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-02-19",
+   "pop": "B",
+   "T": 585,
+   "ticker": "RSLS",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2025-02-19",
+   "pop": "B",
+   "T": 590,
+   "ticker": "KRYS",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-02-19",
+   "pop": "B",
+   "T": 595,
+   "ticker": "HIMS",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2025-02-19",
+   "pop": "B",
+   "T": 600,
+   "ticker": "DATS",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2025-02-19",
+   "pop": "B",
+   "T": 615,
+   "ticker": "BOWN",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-02-19",
+   "pop": "B",
+   "T": 630,
+   "ticker": "IBRX",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2025-02-19",
+   "pop": "B",
+   "T": 645,
+   "ticker": "BOWN",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-02-19",
+   "pop": "B",
+   "T": 660,
+   "ticker": "BOWN",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-02-19",
+   "pop": "B",
+   "T": 690,
+   "ticker": "CPIX",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-02-19",
+   "pop": "B",
+   "T": 720,
+   "ticker": "RSLS",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2025-03-06",
+   "pop": "B",
+   "T": 575,
+   "ticker": "FGBI",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2025-03-28",
+   "pop": "B",
+   "T": 720,
+   "ticker": "SER",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-04-01",
+   "pop": "B",
+   "T": 615,
+   "ticker": "ICCT",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-04-02",
+   "pop": "B",
+   "T": 575,
+   "ticker": "IOBT",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2025-04-24",
+   "pop": "B",
+   "T": 585,
+   "ticker": "PHIO",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-04-24",
+   "pop": "B",
+   "T": 590,
+   "ticker": "SHFS",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2025-04-24",
+   "pop": "B",
+   "T": 595,
+   "ticker": "CEP",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-04-24",
+   "pop": "B",
+   "T": 600,
+   "ticker": "CEP",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-04-24",
+   "pop": "B",
+   "T": 615,
+   "ticker": "AREB",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-04-24",
+   "pop": "B",
+   "T": 630,
+   "ticker": "RZLV",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2025-04-30",
+   "pop": "B",
+   "T": 575,
+   "ticker": "ULY",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-04-30",
+   "pop": "B",
+   "T": 580,
+   "ticker": "DAN",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2025-04-30",
+   "pop": "B",
+   "T": 585,
+   "ticker": "AEYE",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-04-30",
+   "pop": "B",
+   "T": 595,
+   "ticker": "ULY",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-04-30",
+   "pop": "B",
+   "T": 600,
+   "ticker": "AREB",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-04-30",
+   "pop": "B",
+   "T": 615,
+   "ticker": "ASPS",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2025-04-30",
+   "pop": "B",
+   "T": 630,
+   "ticker": "ASTL",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2025-04-30",
+   "pop": "B",
+   "T": 720,
+   "ticker": "ABEO",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-05-23",
+   "pop": "B",
+   "T": 615,
+   "ticker": "LTBR",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-06-06",
+   "pop": "B",
+   "T": 585,
+   "ticker": "DTCK",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-06-24",
+   "pop": "B",
+   "T": 585,
+   "ticker": "AIFU",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2025-06-24",
+   "pop": "B",
+   "T": 590,
+   "ticker": "INM",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-06-24",
+   "pop": "B",
+   "T": 595,
+   "ticker": "CREV",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-06-24",
+   "pop": "B",
+   "T": 600,
+   "ticker": "RGC",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-06-24",
+   "pop": "B",
+   "T": 630,
+   "ticker": "RZLV",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2025-06-26",
+   "pop": "B",
+   "T": 575,
+   "ticker": "BKSY",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-06-26",
+   "pop": "B",
+   "T": 580,
+   "ticker": "ALT",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-06-26",
+   "pop": "B",
+   "T": 585,
+   "ticker": "KWE",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-06-26",
+   "pop": "B",
+   "T": 590,
+   "ticker": "CYN",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-06-26",
+   "pop": "B",
+   "T": 595,
+   "ticker": "SAFX",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2025-06-26",
+   "pop": "B",
+   "T": 600,
+   "ticker": "KWE",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-06-27",
+   "pop": "B",
+   "T": 580,
+   "ticker": "JVSA",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2025-06-27",
+   "pop": "B",
+   "T": 585,
+   "ticker": "LCFY",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-06-27",
+   "pop": "B",
+   "T": 590,
+   "ticker": "CHRO",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-06-27",
+   "pop": "B",
+   "T": 630,
+   "ticker": "TRNR",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-07-09",
+   "pop": "B",
+   "T": 575,
+   "ticker": "LGPS",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2025-08-05",
+   "pop": "B",
+   "T": 580,
+   "ticker": "LMND",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-08-05",
+   "pop": "B",
+   "T": 615,
+   "ticker": "BTAI",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-08-05",
+   "pop": "B",
+   "T": 630,
+   "ticker": "SMXT",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-08-05",
+   "pop": "B",
+   "T": 645,
+   "ticker": "SMXT",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-08-13",
+   "pop": "B",
+   "T": 575,
+   "ticker": "NEGG",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2025-08-13",
+   "pop": "B",
+   "T": 580,
+   "ticker": "KLC",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2025-08-13",
+   "pop": "B",
+   "T": 590,
+   "ticker": "PSKY",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2025-08-13",
+   "pop": "B",
+   "T": 595,
+   "ticker": "ZYBT",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-08-29",
+   "pop": "B",
+   "T": 645,
+   "ticker": "CHSN",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2025-09-12",
+   "pop": "B",
+   "T": 600,
+   "ticker": "MFI",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-09-15",
+   "pop": "B",
+   "T": 575,
+   "ticker": "SMX",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2025-10-03",
+   "pop": "B",
+   "T": 580,
+   "ticker": "ASTC",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-10-09",
+   "pop": "B",
+   "T": 575,
+   "ticker": "TDIC",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-10-17",
+   "pop": "B",
+   "T": 575,
+   "ticker": "WWR",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-10-23",
+   "pop": "B",
+   "T": 575,
+   "ticker": "AIMD",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2025-10-23",
+   "pop": "B",
+   "T": 580,
+   "ticker": "WWR",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2025-10-23",
+   "pop": "B",
+   "T": 585,
+   "ticker": "WWR",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2025-11-14",
+   "pop": "B",
+   "T": 600,
+   "ticker": "AIHS",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-11-14",
+   "pop": "B",
+   "T": 615,
+   "ticker": "BHST",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-11-14",
+   "pop": "B",
+   "T": 630,
+   "ticker": "BHST",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-11-14",
+   "pop": "B",
+   "T": 645,
+   "ticker": "PGEN",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2025-11-14",
+   "pop": "B",
+   "T": 660,
+   "ticker": "AIHS",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-11-14",
+   "pop": "B",
+   "T": 690,
+   "ticker": "PGEN",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2025-11-14",
+   "pop": "B",
+   "T": 720,
+   "ticker": "SMTK",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-12-09",
+   "pop": "B",
+   "T": 615,
+   "ticker": "KITT",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2025-12-09",
+   "pop": "B",
+   "T": 630,
+   "ticker": "DGNX",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2025-12-09",
+   "pop": "B",
+   "T": 645,
+   "ticker": "OCG",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-12-09",
+   "pop": "B",
+   "T": 660,
+   "ticker": "PSNYW",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-12-09",
+   "pop": "B",
+   "T": 690,
+   "ticker": "PSNYW",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-12-09",
+   "pop": "B",
+   "T": 720,
+   "ticker": "NCPL",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2025-12-19",
+   "pop": "B",
+   "T": 575,
+   "ticker": "SOPA",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2026-01-07",
+   "pop": "B",
+   "T": 575,
+   "ticker": "CRML",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2026-01-07",
+   "pop": "B",
+   "T": 580,
+   "ticker": "ERAS",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2026-01-07",
+   "pop": "B",
+   "T": 585,
+   "ticker": "BTAI",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2026-01-07",
+   "pop": "B",
+   "T": 615,
+   "ticker": "MNTS",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2026-01-07",
+   "pop": "B",
+   "T": 630,
+   "ticker": "NBY",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2026-01-07",
+   "pop": "B",
+   "T": 645,
+   "ticker": "NBY",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2026-01-07",
+   "pop": "B",
+   "T": 660,
+   "ticker": "NBY",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2026-01-07",
+   "pop": "B",
+   "T": 720,
+   "ticker": "NBY",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2026-01-09",
+   "pop": "B",
+   "T": 580,
+   "ticker": "QTRX",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2026-01-09",
+   "pop": "B",
+   "T": 585,
+   "ticker": "QTRX",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2026-01-09",
+   "pop": "B",
+   "T": 590,
+   "ticker": "QTRX",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2026-01-09",
+   "pop": "B",
+   "T": 595,
+   "ticker": "AXTI",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2026-01-09",
+   "pop": "B",
+   "T": 600,
+   "ticker": "PW",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2026-01-09",
+   "pop": "B",
+   "T": 615,
+   "ticker": "OPTX",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2026-01-09",
+   "pop": "B",
+   "T": 630,
+   "ticker": "NISN",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2026-01-09",
+   "pop": "B",
+   "T": 645,
+   "ticker": "OPTX",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2026-01-09",
+   "pop": "B",
+   "T": 660,
+   "ticker": "OPTX",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2026-01-09",
+   "pop": "B",
+   "T": 690,
+   "ticker": "OPTX",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2026-01-09",
+   "pop": "B",
+   "T": 720,
+   "ticker": "QTRX",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2026-03-18",
+   "pop": "B",
+   "T": 660,
+   "ticker": "RGC",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2026-03-18",
+   "pop": "B",
+   "T": 690,
+   "ticker": "NN",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2026-03-18",
+   "pop": "B",
+   "T": 720,
+   "ticker": "EVTV",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2026-04-20",
+   "pop": "B",
+   "T": 690,
+   "ticker": "SST",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2026-04-30",
+   "pop": "B",
+   "T": 615,
+   "ticker": "RDZN",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": true
+  },
+  {
+   "day": "2026-05-22",
+   "pop": "A_open",
+   "T": 570,
+   "ticker": "LZMH",
+   "l1_rank": 4,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  },
+  {
+   "day": "2026-05-22",
+   "pop": "A_pm",
+   "T": 570,
+   "ticker": "IPW",
+   "l1_rank": 6,
+   "l1_listed": "top10",
+   "cause": "top10_promoted",
+   "in_merged_bars": true,
+   "quotes": false
+  }
+ ],
+ "per_day_diffs": [
+  {
+   "date": "2021-02-08",
+   "n_diffs": 3,
+   "agree": 11,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-02-09",
+   "n_diffs": 3,
+   "agree": 11,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-02-11",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-02-12",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-02-23",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-03-02",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-03-04",
+   "n_diffs": 6,
+   "agree": 8,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-03-23",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-03-26",
+   "n_diffs": 8,
+   "agree": 6,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-03-29",
+   "n_diffs": 7,
+   "agree": 7,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-04-01",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-04-07",
+   "n_diffs": 9,
+   "agree": 5,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-04-09",
+   "n_diffs": 10,
+   "agree": 4,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-04-20",
+   "n_diffs": 2,
+   "agree": 12,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-04-22",
+   "n_diffs": 8,
+   "agree": 6,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-04-23",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-04-26",
+   "n_diffs": 2,
+   "agree": 12,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-04-30",
+   "n_diffs": 2,
+   "agree": 12,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-05-17",
+   "n_diffs": 3,
+   "agree": 11,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-05-28",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-06-14",
+   "n_diffs": 6,
+   "agree": 8,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-06-15",
+   "n_diffs": 11,
+   "agree": 3,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-06-18",
+   "n_diffs": 2,
+   "agree": 12,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-06-25",
+   "n_diffs": 6,
+   "agree": 8,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-06-28",
+   "n_diffs": 2,
+   "agree": 12,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-06-30",
+   "n_diffs": 7,
+   "agree": 7,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-07-01",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-07-09",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-07-15",
+   "n_diffs": 3,
+   "agree": 11,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-07-23",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-07-29",
+   "n_diffs": 2,
+   "agree": 12,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-07-30",
+   "n_diffs": 6,
+   "agree": 8,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-08-03",
+   "n_diffs": 2,
+   "agree": 12,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-08-04",
+   "n_diffs": 2,
+   "agree": 12,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-08-09",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-08-27",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-08-31",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-09-08",
+   "n_diffs": 6,
+   "agree": 8,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-09-13",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-09-16",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-10-06",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-10-07",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-10-12",
+   "n_diffs": 8,
+   "agree": 6,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-10-26",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-11-01",
+   "n_diffs": 4,
+   "agree": 10,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-11-02",
+   "n_diffs": 6,
+   "agree": 8,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-11-10",
+   "n_diffs": 7,
+   "agree": 7,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-11-22",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-11-26",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-12-07",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-12-09",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-12-15",
+   "n_diffs": 4,
+   "agree": 10,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-12-17",
+   "n_diffs": 7,
+   "agree": 7,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-12-22",
+   "n_diffs": 8,
+   "agree": 6,
+   "snapshots": 14
+  },
+  {
+   "date": "2021-12-27",
+   "n_diffs": 3,
+   "agree": 11,
+   "snapshots": 14
+  },
+  {
+   "date": "2022-01-03",
+   "n_diffs": 12,
+   "agree": 2,
+   "snapshots": 14
+  },
+  {
+   "date": "2022-02-03",
+   "n_diffs": 6,
+   "agree": 8,
+   "snapshots": 14
+  },
+  {
+   "date": "2022-02-07",
+   "n_diffs": 9,
+   "agree": 5,
+   "snapshots": 14
+  },
+  {
+   "date": "2022-02-11",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2022-02-14",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2022-02-22",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2022-03-16",
+   "n_diffs": 4,
+   "agree": 10,
+   "snapshots": 14
+  },
+  {
+   "date": "2022-03-31",
+   "n_diffs": 2,
+   "agree": 12,
+   "snapshots": 14
+  },
+  {
+   "date": "2022-04-13",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2022-04-28",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2022-05-11",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2022-05-18",
+   "n_diffs": 3,
+   "agree": 11,
+   "snapshots": 14
+  },
+  {
+   "date": "2022-05-23",
+   "n_diffs": 10,
+   "agree": 4,
+   "snapshots": 14
+  },
+  {
+   "date": "2022-05-31",
+   "n_diffs": 8,
+   "agree": 6,
+   "snapshots": 14
+  },
+  {
+   "date": "2022-06-13",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2022-06-16",
+   "n_diffs": 10,
+   "agree": 4,
+   "snapshots": 14
+  },
+  {
+   "date": "2022-06-23",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2022-07-11",
+   "n_diffs": 6,
+   "agree": 8,
+   "snapshots": 14
+  },
+  {
+   "date": "2022-07-15",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2022-07-19",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2022-07-29",
+   "n_diffs": 2,
+   "agree": 12,
+   "snapshots": 14
+  },
+  {
+   "date": "2022-08-01",
+   "n_diffs": 4,
+   "agree": 10,
+   "snapshots": 14
+  },
+  {
+   "date": "2022-08-04",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2022-08-18",
+   "n_diffs": 5,
+   "agree": 9,
+   "snapshots": 14
+  },
+  {
+   "date": "2022-08-19",
+   "n_diffs": 8,
+   "agree": 6,
+   "snapshots": 14
+  },
+  {
+   "date": "2022-08-30",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2022-09-02",
+   "n_diffs": 2,
+   "agree": 12,
+   "snapshots": 14
+  },
+  {
+   "date": "2022-09-14",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2022-09-20",
+   "n_diffs": 2,
+   "agree": 12,
+   "snapshots": 14
+  },
+  {
+   "date": "2022-09-22",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2022-10-10",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2022-10-18",
+   "n_diffs": 4,
+   "agree": 10,
+   "snapshots": 14
+  },
+  {
+   "date": "2022-10-31",
+   "n_diffs": 5,
+   "agree": 9,
+   "snapshots": 14
+  },
+  {
+   "date": "2022-11-01",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2022-11-03",
+   "n_diffs": 9,
+   "agree": 5,
+   "snapshots": 14
+  },
+  {
+   "date": "2022-11-07",
+   "n_diffs": 7,
+   "agree": 7,
+   "snapshots": 14
+  },
+  {
+   "date": "2022-11-08",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2022-11-15",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2022-12-07",
+   "n_diffs": 4,
+   "agree": 10,
+   "snapshots": 14
+  },
+  {
+   "date": "2022-12-08",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2023-01-06",
+   "n_diffs": 2,
+   "agree": 12,
+   "snapshots": 14
+  },
+  {
+   "date": "2023-01-17",
+   "n_diffs": 2,
+   "agree": 12,
+   "snapshots": 14
+  },
+  {
+   "date": "2023-01-30",
+   "n_diffs": 6,
+   "agree": 8,
+   "snapshots": 14
+  },
+  {
+   "date": "2023-02-16",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2023-02-22",
+   "n_diffs": 2,
+   "agree": 12,
+   "snapshots": 14
+  },
+  {
+   "date": "2023-02-23",
+   "n_diffs": 11,
+   "agree": 3,
+   "snapshots": 14
+  },
+  {
+   "date": "2023-03-09",
+   "n_diffs": 8,
+   "agree": 6,
+   "snapshots": 14
+  },
+  {
+   "date": "2023-03-16",
+   "n_diffs": 2,
+   "agree": 12,
+   "snapshots": 14
+  },
+  {
+   "date": "2023-04-04",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2023-04-17",
+   "n_diffs": 3,
+   "agree": 11,
+   "snapshots": 14
+  },
+  {
+   "date": "2023-04-21",
+   "n_diffs": 2,
+   "agree": 12,
+   "snapshots": 14
+  },
+  {
+   "date": "2023-05-12",
+   "n_diffs": 6,
+   "agree": 8,
+   "snapshots": 14
+  },
+  {
+   "date": "2023-05-19",
+   "n_diffs": 2,
+   "agree": 12,
+   "snapshots": 14
+  },
+  {
+   "date": "2023-05-23",
+   "n_diffs": 4,
+   "agree": 10,
+   "snapshots": 14
+  },
+  {
+   "date": "2023-05-25",
+   "n_diffs": 2,
+   "agree": 12,
+   "snapshots": 14
+  },
+  {
+   "date": "2023-06-05",
+   "n_diffs": 7,
+   "agree": 7,
+   "snapshots": 14
+  },
+  {
+   "date": "2023-06-15",
+   "n_diffs": 6,
+   "agree": 8,
+   "snapshots": 14
+  },
+  {
+   "date": "2023-06-20",
+   "n_diffs": 3,
+   "agree": 11,
+   "snapshots": 14
+  },
+  {
+   "date": "2023-06-23",
+   "n_diffs": 2,
+   "agree": 12,
+   "snapshots": 14
+  },
+  {
+   "date": "2023-07-07",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2023-07-18",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2023-07-25",
+   "n_diffs": 9,
+   "agree": 5,
+   "snapshots": 14
+  },
+  {
+   "date": "2023-08-07",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2023-08-14",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2023-08-16",
+   "n_diffs": 4,
+   "agree": 10,
+   "snapshots": 14
+  },
+  {
+   "date": "2023-08-18",
+   "n_diffs": 2,
+   "agree": 12,
+   "snapshots": 14
+  },
+  {
+   "date": "2023-08-29",
+   "n_diffs": 12,
+   "agree": 2,
+   "snapshots": 14
+  },
+  {
+   "date": "2023-09-08",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2023-09-19",
+   "n_diffs": 4,
+   "agree": 10,
+   "snapshots": 14
+  },
+  {
+   "date": "2023-09-20",
+   "n_diffs": 3,
+   "agree": 11,
+   "snapshots": 14
+  },
+  {
+   "date": "2023-09-29",
+   "n_diffs": 2,
+   "agree": 12,
+   "snapshots": 14
+  },
+  {
+   "date": "2023-10-02",
+   "n_diffs": 2,
+   "agree": 12,
+   "snapshots": 14
+  },
+  {
+   "date": "2023-10-06",
+   "n_diffs": 3,
+   "agree": 11,
+   "snapshots": 14
+  },
+  {
+   "date": "2023-11-01",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2023-11-07",
+   "n_diffs": 6,
+   "agree": 8,
+   "snapshots": 14
+  },
+  {
+   "date": "2023-11-09",
+   "n_diffs": 2,
+   "agree": 12,
+   "snapshots": 14
+  },
+  {
+   "date": "2023-11-13",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2023-11-30",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2023-12-21",
+   "n_diffs": 11,
+   "agree": 3,
+   "snapshots": 14
+  },
+  {
+   "date": "2023-12-29",
+   "n_diffs": 2,
+   "agree": 12,
+   "snapshots": 14
+  },
+  {
+   "date": "2025-02-06",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2025-02-18",
+   "n_diffs": 6,
+   "agree": 8,
+   "snapshots": 14
+  },
+  {
+   "date": "2025-02-19",
+   "n_diffs": 11,
+   "agree": 3,
+   "snapshots": 14
+  },
+  {
+   "date": "2025-03-06",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2025-03-28",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2025-04-01",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2025-04-02",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2025-04-24",
+   "n_diffs": 6,
+   "agree": 8,
+   "snapshots": 14
+  },
+  {
+   "date": "2025-04-30",
+   "n_diffs": 8,
+   "agree": 6,
+   "snapshots": 14
+  },
+  {
+   "date": "2025-05-23",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2025-06-06",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2025-06-24",
+   "n_diffs": 5,
+   "agree": 9,
+   "snapshots": 14
+  },
+  {
+   "date": "2025-06-26",
+   "n_diffs": 6,
+   "agree": 8,
+   "snapshots": 14
+  },
+  {
+   "date": "2025-06-27",
+   "n_diffs": 4,
+   "agree": 10,
+   "snapshots": 14
+  },
+  {
+   "date": "2025-07-09",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2025-08-05",
+   "n_diffs": 4,
+   "agree": 10,
+   "snapshots": 14
+  },
+  {
+   "date": "2025-08-13",
+   "n_diffs": 4,
+   "agree": 10,
+   "snapshots": 14
+  },
+  {
+   "date": "2025-08-29",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2025-09-12",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2025-09-15",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2025-10-03",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2025-10-09",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2025-10-17",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2025-10-23",
+   "n_diffs": 3,
+   "agree": 11,
+   "snapshots": 14
+  },
+  {
+   "date": "2025-11-14",
+   "n_diffs": 7,
+   "agree": 7,
+   "snapshots": 14
+  },
+  {
+   "date": "2025-12-09",
+   "n_diffs": 6,
+   "agree": 8,
+   "snapshots": 14
+  },
+  {
+   "date": "2025-12-19",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2026-01-07",
+   "n_diffs": 8,
+   "agree": 6,
+   "snapshots": 14
+  },
+  {
+   "date": "2026-01-09",
+   "n_diffs": 11,
+   "agree": 3,
+   "snapshots": 14
+  },
+  {
+   "date": "2026-03-18",
+   "n_diffs": 3,
+   "agree": 11,
+   "snapshots": 14
+  },
+  {
+   "date": "2026-04-20",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2026-04-30",
+   "n_diffs": 1,
+   "agree": 13,
+   "snapshots": 14
+  },
+  {
+   "date": "2026-05-22",
+   "n_diffs": 2,
+   "agree": 12,
+   "snapshots": 14
+  }
+ ],
+ "unresolved_audit": [
+  {
+   "ticker": "VVPR",
+   "day": "2022-05-13",
+   "layer1_hits": [
+    {
+     "pop": "B",
+     "T": 575,
+     "margin": true
+    }
+   ],
+   "in_net": true,
+   "anatomy_selected": []
+  },
+  {
+   "ticker": "HSON",
+   "day": "2022-06-15",
+   "layer1_hits": [
+    {
+     "pop": "B",
+     "T": 580,
+     "rank": 9
+    }
+   ],
+   "in_net": true,
+   "anatomy_selected": []
+  },
+  {
+   "ticker": "PMN",
+   "day": "2023-02-13",
+   "layer1_hits": [
+    {
+     "pop": "A_pm",
+     "T": 570,
+     "rank": 4
+    }
+   ],
+   "in_net": true,
+   "anatomy_selected": [
+    {
+     "pop": "A_pm",
+     "T": 570,
+     "rank": 4
+    }
+   ]
+  },
+  {
+   "ticker": "HSON",
+   "day": "2023-07-19",
+   "layer1_hits": [
+    {
+     "pop": "B",
+     "T": 575,
+     "rank": 9
+    },
+    {
+     "pop": "B",
+     "T": 580,
+     "margin": true
+    }
+   ],
+   "in_net": true,
+   "anatomy_selected": []
+  },
+  {
+   "ticker": "MGLD",
+   "day": "2023-09-19",
+   "layer1_hits": [
+    {
+     "pop": "A_pm",
+     "T": 570,
+     "rank": 5
+    }
+   ],
+   "in_net": true,
+   "anatomy_selected": [
+    {
+     "pop": "A_pm",
+     "T": 570,
+     "rank": 5
+    }
+   ]
+  },
+  {
+   "ticker": "CSLR",
+   "day": "2023-09-28",
+   "layer1_hits": [
+    {
+     "pop": "B",
+     "T": 585,
+     "rank": 9
+    }
+   ],
+   "in_net": true,
+   "anatomy_selected": []
+  },
+  {
+   "ticker": "CSLR",
+   "day": "2023-11-13",
+   "layer1_hits": [
+    {
+     "pop": "B",
+     "T": 575,
+     "rank": 3
+    }
+   ],
+   "in_net": true,
+   "anatomy_selected": []
+  },
+  {
+   "ticker": "HSON",
+   "day": "2025-05-22",
+   "layer1_hits": [
+    {
+     "pop": "B",
+     "T": 575,
+     "margin": true
+    }
+   ],
+   "in_net": true,
+   "anatomy_selected": []
+  }
+ ],
+ "notes": [
+  "Layer-1 and the anatomy can differ at the margin by construction (different bar substrate); this audit quantifies the differences and proves whether any name outside the acquired net was selected.",
+  "quotas: quotes were acquired only for the top-3 quote union per snapshot; a promoted name without quotes was never in a Layer-1 top-3.",
+  "No parameter, rule, or PnL is defined here."
+ ]
+}

@@ -2203,3 +2203,37 @@ member MFE p50 7.2% -> 8.4%, MAE p50 -8.3% -> -10.5%; ordinary days 24.7% -> 19.
 / p90 86.3% / p99 239.9%. All numbers are descriptive; no ruler/rule/parameter was selected from them.
 PRE-REG-BASKET-02 remains UNFROZEN (its constants are provisional and now carry SIP-vs-legacy deltas);
 H025 and reserved months untouched.
+
+2026-09-20 (evening) — BASKET-01 SIP Phase-1 REPAIR PASS + canonical read layer (all numbers [ART]/[RUN],
+descriptive only, no parameter selected, PRE-REG-BASKET-02 still unfrozen):
+Repairs of record (work order §7): (1) T2 containment reported at day level — the earlier printed shares
+divided by a 3x event denominator (per-winner increments); all containment shares in the previous packet
+were 1/3 of the day-level value. (2) T2 remaining opportunity now from the post-fill high, paired on the
+same rows with the completed/ahead shares; blocked fills excluded from fill-based shares and counted
+(blocked_in). (3) T5 pre-high retracement / post-high giveback rebuilt from raw SIP prints: peak-minute
+low/high ordering resolved from trade timestamps, peak bar excluded; rows keyed by population and T
+(82,853 members; order lo_first 44,514 / hi_first 33,683 / unresolved 4,656 = 5.6%, dropped from those
+stats and reported). (4) T7 policy-free pay-for-team added (all-hold EOD gross/net100; stylized
+failed-ticket costs -3/-5/-8/-10; P(best pays peers); surplus/deficit; break-even map r*=k*c, k in {1,2}).
+(5) Layer-1-vs-anatomy selection audit: 14,924 snapshots, agree 96.1%; after repair, promoted names are
+all top-10-internal (rank>10 promotions 0, margin 0); the 584 dropped/584-only cases are the documented
+B-population difference (no prev session in the previous day's universe table → anatomy requires
+prev_close>0), 1 outside-net, 2 no-decision-bar. (6) exec lens legend added to the packet (touch/exec/
+above; exec is NOT sellability). (7) overnight shadow compounds (was adding). (8) T9b matched-random
+control regenerated ON SIP (244 sampled days; B/600 touch30 k>=1 1.65% vs treated 39.2% — the control
+never overlaps the treated top-10). (9) T8 consolidated month/quarter stability artifact (345 rows).
+(10) stale 2025-02-03 QA skip now declared only on trees lacking the 2025-01-31 seed (the SIP root
+declares none). (11) market base-rate funnel added: full PIT universe, both anchors — open-anchored
+day-shares +50 90.0% / +100 47.9% / +200 13.7%; prev-close-anchored +100 74.7% / +200 36.2% (explicitly
+separate from the basket's post-entry +100). (12) sip_candidates missing-universe-table skip is now
+reported; sip_ingest catches per-day exceptions and continues. INCOMPLETE-NET FINDING during the audit:
+10 days had Layer-2 nets far below the candidates net (worst 7/57 on 2021-04-06) because ingest raced
+the candidates step; nets re-fetched, coverage re-certified (symbol-days 70,176; healthy_raw 64,041 /
+provider_only 6,126 / unresolved 9), the 10 anatomy days re-extracted, full read chain re-run (QA PASS).
+Sealed acquisition: 2024 + 2025-01 SIP RTH+premarket (272 days each) fetched mechanically, per-file
+sha256/rows/schema certified (SEALED_2024_CERT.md); no BASKET computation touched those days; reserved
+2026-06..08 neither fetched nor read. Canonical packet regenerated: containment day-level B/575 10.1% /
+B/600 29.3% / B/720 52.4% / A_open 8.7% / A_pm 9.1%; joint touch B/600 k>=1 39.2% / k>=2 6.3% / all-3
+0.56% at +30; above30 k>=1 22.5%; F(30,-10) 31.3% Q 77.2%; F(30,-15) 36.6% Q 92.5%; T7 B/600 pays_net
+30.4%, c3 49.5%. All artifacts under factory/artifacts/basket/sip/; scripts self-test via --self-test;
+integrated read pending owner gate. H025 / flush lane untouched.

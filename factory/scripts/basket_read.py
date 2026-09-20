@@ -87,6 +87,9 @@ def build(root: Path) -> dict:
     t9b = load(root, "T9b_random")
     t11 = load(root, "T11_dist")
     t6 = load(root, "T6")
+    t7e = load(root, "T7_payforteam")
+    t8 = load(root, "T8_stability")
+    mbr = load(root, "market_base_rates")
     cov = load(root, "coverage_summary")
 
     s: dict = out["sections"]
@@ -108,18 +111,20 @@ def build(root: Path) -> dict:
         s["churn_top3_overlap"] = {f"{p}/{a}->{b}": round(float(np.mean(v)), 3)
                                    for (p, a, b), v in sorted(ch.items())}
     if t2:
-        agg = defaultdict(lambda: {"d": 0, "t1": 0, "t2": 0, "t3": 0})
+        agg = defaultdict(lambda: {"d": 0, "t1": 0, "t2": 0, "t3": 0, "blk": 0})
         for r in t2:
             k = (r["pop"], r["T"], r["N"])
-            agg[k]["d"] += r["days_eval"]
+            agg[k]["d"] += r.get("days", r.get("days_eval", 0))
             agg[k]["t1"] += r["top1_in"]
             agg[k]["t2"] += r["top2_in"]
             agg[k]["t3"] += r["top3_in"]
+            agg[k]["blk"] += r.get("blocked_in", 0)
         s["containment"] = {f"{p}/{T}/N{N}": {
             "days": v["d"],
             "top1_in": round(v["t1"] / v["d"], 4) if v["d"] else None,
             "top2_in": round(v["t2"] / v["d"], 4) if v["d"] else None,
-            "top3_in": round(v["t3"] / v["d"], 4) if v["d"] else None}
+            "top3_in": round(v["t3"] / v["d"], 4) if v["d"] else None,
+            "blocked_in": v["blk"]}
             for (p, T, N), v in sorted(agg.items())}
     if t7b:
         grp = defaultdict(list)
@@ -229,7 +234,20 @@ def build(root: Path) -> dict:
                     continue
                 tot[(r["pop"], r["set"], k)] += v
         s["buckets"] = {f"{p}/{setn}/{k}": v for (p, setn, k), v in sorted(tot.items())}
+    if t7e:
+        s["pay_for_team"] = t7e.get("pooled", t7e)
+        s["pay_for_team_break_even"] = t7e.get("break_even_map")
+    if t8:
+        s["stability"] = t8
+    if mbr:
+        s["market_base_rates"] = mbr
     out["notes"].append("Rulers are descriptive; no H/L/T/N were selected by this reader.")
+    out["notes"].append("Lenses: touch = the excursion exists on the minute path; exec = touch AND a next "
+                        "bar existed (the frozen contract's 'executable' bookkeeping -- NOT a claim of "
+                        "sellability); above = the next bar's open is at/above the threshold (strict "
+                        "saleable lens). Never read exec as 'we could have sold there'.")
+    out["notes"].append("T11 'cover' is a non-economic illustration (best raw MFE vs co-member MAE); "
+                        "T7_pay_for_team carries the labeled economics.")
     out["notes"].append("Pooling = day-weighted sums across months; quantities are provisional until "
                         "the artifact root's QA gate reports PASS.")
     return out

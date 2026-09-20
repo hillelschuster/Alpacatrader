@@ -457,7 +457,7 @@
    "days_lt3": 0,
    "n_cand": {
     "n": 21,
-    "mean": 9.85714,
+    "mean": 10.0,
     "p10": 10.0,
     "p50": 10.0,
     "p90": 10.0,
@@ -489,7 +489,7 @@
    "days_lt3": 0,
    "n_cand": {
     "n": 21,
-    "mean": 9.85714,
+    "mean": 10.0,
     "p10": 10.0,
     "p50": 10.0,
     "p90": 10.0,
@@ -505,7 +505,7 @@
    "days_lt3": 0,
    "n_cand": {
     "n": 21,
-    "mean": 9.85714,
+    "mean": 10.0,
     "p10": 10.0,
     "p50": 10.0,
     "p90": 10.0,
@@ -521,7 +521,7 @@
    "days_lt3": 0,
    "n_cand": {
     "n": 21,
-    "mean": 9.85714,
+    "mean": 10.0,
     "p10": 10.0,
     "p50": 10.0,
     "p90": 10.0,
@@ -537,7 +537,7 @@
    "days_lt3": 0,
    "n_cand": {
     "n": 21,
-    "mean": 9.85714,
+    "mean": 10.0,
     "p10": 10.0,
     "p50": 10.0,
     "p90": 10.0,
@@ -553,7 +553,7 @@
    "days_lt3": 0,
    "n_cand": {
     "n": 21,
-    "mean": 9.85714,
+    "mean": 10.0,
     "p10": 10.0,
     "p50": 10.0,
     "p90": 10.0,
@@ -569,7 +569,7 @@
    "days_lt3": 0,
    "n_cand": {
     "n": 21,
-    "mean": 9.85714,
+    "mean": 10.0,
     "p10": 10.0,
     "p50": 10.0,
     "p90": 10.0,
@@ -585,7 +585,7 @@
    "days_lt3": 0,
    "n_cand": {
     "n": 21,
-    "mean": 9.85714,
+    "mean": 10.0,
     "p10": 10.0,
     "p50": 10.0,
     "p90": 10.0,
@@ -601,7 +601,7 @@
    "days_lt3": 0,
    "n_cand": {
     "n": 21,
-    "mean": 9.85714,
+    "mean": 10.0,
     "p10": 10.0,
     "p50": 10.0,
     "p90": 10.0,
@@ -617,7 +617,7 @@
    "days_lt3": 0,
    "n_cand": {
     "n": 21,
-    "mean": 9.85714,
+    "mean": 10.0,
     "p10": 10.0,
     "p50": 10.0,
     "p90": 10.0,
@@ -633,7 +633,7 @@
    "days_lt3": 0,
    "n_cand": {
     "n": 21,
-    "mean": 9.85714,
+    "mean": 10.0,
     "p10": 10.0,
     "p50": 10.0,
     "p90": 10.0,
@@ -649,7 +649,7 @@
    "days_lt3": 0,
    "n_cand": {
     "n": 21,
-    "mean": 9.85714,
+    "mean": 10.0,
     "p10": 10.0,
     "p50": 10.0,
     "p90": 10.0,
@@ -665,7 +665,7 @@
    "days_lt3": 0,
    "n_cand": {
     "n": 21,
-    "mean": 9.85714,
+    "mean": 10.0,
     "p10": 10.0,
     "p50": 10.0,
     "p90": 10.0,
@@ -11623,7 +11623,7 @@
    "pop": "B",
    "T_from": 585,
    "T_to": 590,
-   "mean_top3_overlap": 2.0,
+   "mean_top3_overlap": 1.905,
    "n_days": 21
   },
   {
@@ -11631,7 +11631,7 @@
    "pop": "B",
    "T_from": 590,
    "T_to": 595,
-   "mean_top3_overlap": 1.905,
+   "mean_top3_overlap": 1.857,
    "n_days": 21
   },
   {
@@ -11639,7 +11639,7 @@
    "pop": "B",
    "T_from": 595,
    "T_to": 600,
-   "mean_top3_overlap": 2.095,
+   "mean_top3_overlap": 2.0,
    "n_days": 21
   },
   {
@@ -11647,7 +11647,7 @@
    "pop": "B",
    "T_from": 600,
    "T_to": 615,
-   "mean_top3_overlap": 1.857,
+   "mean_top3_overlap": 1.667,
    "n_days": 21
   },
   {
@@ -11655,7 +11655,7 @@
    "pop": "B",
    "T_from": 615,
    "T_to": 630,
-   "mean_top3_overlap": 2.19,
+   "mean_top3_overlap": 2.143,
    "n_days": 21
   },
   {
@@ -11663,7 +11663,7 @@
    "pop": "B",
    "T_from": 630,
    "T_to": 645,
-   "mean_top3_overlap": 2.476,
+   "mean_top3_overlap": 2.286,
    "n_days": 21
   },
   {
@@ -11671,7 +11671,7 @@
    "pop": "B",
    "T_from": 645,
    "T_to": 660,
-   "mean_top3_overlap": 2.286,
+   "mean_top3_overlap": 2.238,
    "n_days": 21
   },
   {
@@ -11679,7 +11679,7 @@
    "pop": "B",
    "T_from": 660,
    "T_to": 690,
-   "mean_top3_overlap": 1.905,
+   "mean_top3_overlap": 1.952,
    "n_days": 21
   },
   {
@@ -14007,7 +14007,7 @@
    "pop": "B",
    "T_from": 590,
    "T_to": 595,
-   "mean_top3_overlap": 1.95,
+   "mean_top3_overlap": 2.0,
    "n_days": 20
   },
   {
@@ -14023,7 +14023,7 @@
    "pop": "B",
    "T_from": 600,
    "T_to": 615,
-   "mean_top3_overlap": 1.65,
+   "mean_top3_overlap": 1.7,
    "n_days": 20
   },
   {
@@ -14031,7 +14031,7 @@
    "pop": "B",
    "T_from": 615,
    "T_to": 630,
-   "mean_top3_overlap": 2.0,
+   "mean_top3_overlap": 2.05,
    "n_days": 20
   },
   {
@@ -14039,7 +14039,7 @@
    "pop": "B",
    "T_from": 630,
    "T_to": 645,
-   "mean_top3_overlap": 1.95,
+   "mean_top3_overlap": 2.0,
    "n_days": 20
   },
   {
@@ -14047,7 +14047,7 @@
    "pop": "B",
    "T_from": 645,
    "T_to": 660,
-   "mean_top3_overlap": 2.15,
+   "mean_top3_overlap": 2.2,
    "n_days": 20
   },
   {
@@ -14055,7 +14055,7 @@
    "pop": "B",
    "T_from": 660,
    "T_to": 690,
-   "mean_top3_overlap": 2.1,
+   "mean_top3_overlap": 2.15,
    "n_days": 20
   },
   {

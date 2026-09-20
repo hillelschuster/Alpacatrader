@@ -138,8 +138,13 @@ checked for basic data presence, but they are unseen for BASKET-01 specifically.
 validation beyond that is forward. Development span: 2021-01..2023-12 + 2025-02..2026-02
 (clean) + 2026-03..2026-05 (backfill); note the PIT universe begins with the 2021-01-30
 vintage, so the first usable day is 2021-02-01 (2021-01 days have no causal universe and
-are skipped). A_pm additionally limited to 2025-02..2025-12 (premarket files exist for
-2025-01 but there are no RTH clean bars for it).
+are skipped). [AMENDED 2026-09-20 — availability amendment, not a semantics change: the
+original text read "A_pm additionally limited to 2025-02..2025-12 (premarket files exist
+for 2025-01 but there are no RTH clean bars for it)". Under the SIP substrate, premarket
+tables exist for the full span, so A_pm is now computed for the same 1,066 dev days as
+every other population. Same idea, earlier observation point; the population definition
+(rank by last premarket print <= 09:30 with the freshness rule, scored vs prev close) is
+unchanged.]
 
 **T1 — Composition & turnover**: candidate sets per (population, T, N); churn matrices;
 new entrants; days with <N and 0 candidates.
@@ -258,3 +263,18 @@ constructed later without rerunning the anatomy.
   signatures mapped to the frozen tables (T7b exec lenses; T5 MFE ranks; T2 remaining
   opportunity with T1 churn; T3/T4 failure-survival geometry; T4/T6 cheap-failure region);
   full reporting and no-mining restated. Contract unchanged.
+- 2026-09-20 (availability amendment, SIP substrate): A_pm now computed for the full dev
+  span (the 2025-only limitation was a legacy premarket-data availability artifact; SIP
+  premarket tables exist for all 1,066 dev days). Population semantics unchanged.
+- 2026-09-20 (post-SIP aggregate/read repair pass; none of these change frozen
+  populations, timing surface, rulers, or lens definitions): T2 containment reported at the
+  day level (the previous printed shares divided by a 3x event denominator); T2 remaining
+  opportunity now uses the post-fill high on the same rows as the completed/ahead shares;
+  T5 pre-high retracement / post-high giveback rebuilt from raw SIP prints (peak-minute
+  ordering resolved, peak bar excluded) and keyed by population and T; T7 policy-free
+  pay-for-team added (all-hold EOD, stylized failed-ticket costs -3/-5/-8/-10, break-even
+  map); exec labeling legend added to the packet (exec = touch AND a next bar existed —
+  not sellability; above = strict saleable lens); overnight shadow compounds instead of
+  adds; T8 monthly/quarterly stability and T9b matched-random control regenerated on SIP;
+  market base-rate funnel added (full PIT universe, both anchors, explicitly separate from
+  the basket's post-entry numbers); Layer-1-vs-anatomy selection audit added.

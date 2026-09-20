@@ -1,15 +1,15 @@
 {
  "days": 1068,
- "symbol_days": 69944,
+ "symbol_days": 70176,
  "classes": {
-  "healthy_raw": 63815,
-  "provider_only": 6121,
-  "unresolved": 8
+  "healthy_raw": 64041,
+  "provider_only": 6126,
+  "unresolved": 9
  },
  "shares": {
-  "healthy_raw": 0.912373,
-  "provider_only": 0.087513,
-  "unresolved": 0.000114
+  "healthy_raw": 0.912577,
+  "provider_only": 0.087295,
+  "unresolved": 0.000128
  },
  "per_month": {
   "2021-01": {
@@ -28,8 +28,8 @@
    "unresolved": 0
   },
   "2021-04": {
-   "healthy_raw": 1293,
-   "provider_only": 81,
+   "healthy_raw": 1488,
+   "provider_only": 86,
    "unresolved": 0
   },
   "2021-05": {
@@ -98,8 +98,8 @@
    "unresolved": 1
   },
   "2022-06": {
-   "healthy_raw": 1314,
-   "provider_only": 182,
+   "healthy_raw": 1319,
+   "provider_only": 181,
    "unresolved": 1
   },
   "2022-07": {
@@ -153,8 +153,8 @@
    "unresolved": 0
   },
   "2023-05": {
-   "healthy_raw": 1233,
-   "provider_only": 107,
+   "healthy_raw": 1244,
+   "provider_only": 106,
    "unresolved": 0
   },
   "2023-06": {
@@ -163,9 +163,9 @@
    "unresolved": 0
   },
   "2023-07": {
-   "healthy_raw": 1215,
-   "provider_only": 169,
-   "unresolved": 1
+   "healthy_raw": 1230,
+   "provider_only": 171,
+   "unresolved": 2
   },
   "2023-08": {
    "healthy_raw": 1356,
@@ -582,8 +582,8 @@
   },
   {
    "day": "2021-04-01",
-   "symbols": 62,
-   "healthy_raw": 61,
+   "symbols": 77,
+   "healthy_raw": 76,
    "provider_only": 1,
    "unresolved": 0
   },
@@ -596,16 +596,16 @@
   },
   {
    "day": "2021-04-06",
-   "symbols": 7,
-   "healthy_raw": 7,
-   "provider_only": 0,
+   "symbols": 57,
+   "healthy_raw": 56,
+   "provider_only": 1,
    "unresolved": 0
   },
   {
    "day": "2021-04-07",
-   "symbols": 21,
-   "healthy_raw": 19,
-   "provider_only": 2,
+   "symbols": 61,
+   "healthy_raw": 57,
+   "provider_only": 4,
    "unresolved": 0
   },
   {
@@ -617,8 +617,8 @@
   },
   {
    "day": "2021-04-09",
-   "symbols": 49,
-   "healthy_raw": 43,
+   "symbols": 69,
+   "healthy_raw": 63,
    "provider_only": 6,
    "unresolved": 0
   },
@@ -673,9 +673,9 @@
   },
   {
    "day": "2021-04-21",
-   "symbols": 13,
-   "healthy_raw": 13,
-   "provider_only": 0,
+   "symbols": 88,
+   "healthy_raw": 86,
+   "provider_only": 2,
    "unresolved": 0
   },
   {
@@ -2745,9 +2745,9 @@
   },
   {
    "day": "2022-06-23",
-   "symbols": 90,
-   "healthy_raw": 75,
-   "provider_only": 15,
+   "symbols": 92,
+   "healthy_raw": 78,
+   "provider_only": 14,
    "unresolved": 0
   },
   {
@@ -2759,8 +2759,8 @@
   },
   {
    "day": "2022-06-27",
-   "symbols": 80,
-   "healthy_raw": 71,
+   "symbols": 82,
+   "healthy_raw": 73,
    "provider_only": 9,
    "unresolved": 0
   },
@@ -4369,9 +4369,9 @@
   },
   {
    "day": "2023-05-25",
-   "symbols": 61,
-   "healthy_raw": 53,
-   "provider_only": 8,
+   "symbols": 71,
+   "healthy_raw": 64,
+   "provider_only": 7,
    "unresolved": 0
   },
   {
@@ -4544,15 +4544,15 @@
   },
   {
    "day": "2023-07-03",
-   "symbols": 73,
-   "healthy_raw": 58,
-   "provider_only": 15,
-   "unresolved": 0
+   "symbols": 81,
+   "healthy_raw": 63,
+   "provider_only": 17,
+   "unresolved": 1
   },
   {
    "day": "2023-07-05",
-   "symbols": 64,
-   "healthy_raw": 57,
+   "symbols": 74,
+   "healthy_raw": 67,
    "provider_only": 7,
    "unresolved": 0
   },
@@ -7772,19 +7772,19 @@
   "raw insufficient (n_trades=167)": 37,
   "raw insufficient (n_trades=172)": 36,
   "raw insufficient (n_trades=124)": 36,
+  "raw insufficient (n_trades=103)": 36,
   "raw insufficient (n_trades=101)": 36,
   "raw insufficient (n_trades=134)": 36,
+  "raw insufficient (n_trades=75)": 35,
   "raw insufficient (n_trades=140)": 35,
   "raw insufficient (n_trades=100)": 35,
   "raw insufficient (n_trades=80)": 35,
+  "raw insufficient (n_trades=143)": 35,
   "raw insufficient (n_trades=114)": 35,
   "raw insufficient (n_trades=97)": 35,
-  "raw insufficient (n_trades=103)": 35,
-  "raw insufficient (n_trades=75)": 34,
   "raw insufficient (n_trades=98)": 34,
   "raw insufficient (n_trades=199)": 34,
   "raw insufficient (n_trades=122)": 34,
-  "raw insufficient (n_trades=143)": 34,
   "raw insufficient (n_trades=138)": 33,
   "raw insufficient (n_trades=145)": 33,
   "raw insufficient (n_trades=191)": 33,
@@ -7819,6 +7819,7 @@
   "raw insufficient (n_trades=153)": 29,
   "raw insufficient (n_trades=106)": 29,
   "raw insufficient (n_trades=179)": 29,
+  "raw insufficient (n_trades=95)": 29,
   "raw insufficient (n_trades=88)": 29,
   "raw insufficient (n_trades=111)": 29,
   "raw insufficient (n_trades=161)": 28,
@@ -7829,7 +7830,6 @@
   "raw insufficient (n_trades=85)": 28,
   "raw insufficient (n_trades=121)": 28,
   "raw insufficient (n_trades=141)": 28,
-  "raw insufficient (n_trades=95)": 28,
   "raw insufficient (n_trades=183)": 28,
   "raw insufficient (n_trades=142)": 28,
   "raw insufficient (n_trades=133)": 28,
@@ -7838,6 +7838,7 @@
   "raw insufficient (n_trades=154)": 28,
   "raw insufficient (n_trades=105)": 27,
   "raw insufficient (n_trades=185)": 27,
+  "raw insufficient (n_trades=117)": 27,
   "raw insufficient (n_trades=62)": 27,
   "raw insufficient (n_trades=150)": 27,
   "raw insufficient (n_trades=162)": 27,
@@ -7848,7 +7849,6 @@
   "raw insufficient (n_trades=194)": 26,
   "raw insufficient (n_trades=115)": 26,
   "raw insufficient (n_trades=78)": 26,
-  "raw insufficient (n_trades=117)": 26,
   "raw insufficient (n_trades=96)": 26,
   "raw insufficient (n_trades=135)": 26,
   "raw insufficient (n_trades=82)": 26,
@@ -7869,6 +7869,7 @@
   "raw insufficient (n_trades=147)": 25,
   "raw insufficient (n_trades=146)": 24,
   "raw insufficient (n_trades=126)": 24,
+  "raw insufficient (n_trades=197)": 24,
   "raw insufficient (n_trades=64)": 24,
   "raw insufficient (n_trades=93)": 24,
   "raw insufficient (n_trades=176)": 24,
@@ -7880,20 +7881,20 @@
   "raw insufficient (n_trades=112)": 23,
   "raw insufficient (n_trades=61)": 23,
   "raw insufficient (n_trades=116)": 23,
-  "raw insufficient (n_trades=197)": 23,
   "raw insufficient (n_trades=155)": 23,
   "raw insufficient (n_trades=87)": 23,
   "raw insufficient (n_trades=152)": 22,
   "raw insufficient (n_trades=56)": 22,
   "raw insufficient (n_trades=50)": 21,
+  "raw insufficient (n_trades=131)": 21,
   "raw insufficient (n_trades=69)": 21,
   "raw insufficient (n_trades=66)": 21,
   "raw insufficient (n_trades=99)": 21,
-  "raw insufficient (n_trades=131)": 20,
   "raw insufficient (n_trades=51)": 20,
   "raw insufficient (n_trades=67)": 19,
   "raw insufficient (n_trades=63)": 19,
   "raw insufficient (n_trades=70)": 19,
+  "raw insufficient (n_trades=40)": 19,
   "raw insufficient (n_trades=57)": 18,
   "raw insufficient (n_trades=65)": 18,
   "raw insufficient (n_trades=189)": 18,
@@ -7903,7 +7904,6 @@
   "raw insufficient (n_trades=53)": 18,
   "raw insufficient (n_trades=43)": 18,
   "raw insufficient (n_trades=59)": 18,
-  "raw insufficient (n_trades=40)": 18,
   "raw insufficient (n_trades=137)": 18,
   "raw insufficient (n_trades=206)": 17,
   "raw insufficient (n_trades=177)": 17,
@@ -7925,6 +7925,7 @@
   "raw insufficient (n_trades=42)": 13,
   "raw insufficient (n_trades=210)": 13,
   "raw insufficient (n_trades=205)": 13,
+  "raw insufficient (n_trades=41)": 12,
   "raw insufficient (n_trades=46)": 12,
   "raw insufficient (n_trades=221)": 12,
   "raw insufficient (n_trades=201)": 12,
@@ -7932,7 +7933,6 @@
   "raw insufficient (n_trades=24)": 12,
   "raw insufficient (n_trades=251)": 12,
   "raw insufficient (n_trades=202)": 12,
-  "raw insufficient (n_trades=41)": 11,
   "raw insufficient (n_trades=207)": 11,
   "raw insufficient (n_trades=248)": 11,
   "raw insufficient (n_trades=249)": 11,
@@ -8242,9 +8242,7 @@
   "raw insufficient (n_trades=357)": 1,
   "raw insufficient (n_trades=656)": 1,
   "raw insufficient (n_trades=424)": 1,
-  "raw insufficient (n_trades=50000)": 1,
   "raw insufficient (n_trades=715)": 1,
-  "derived 345 < 95% of provider 390": 1,
   "raw insufficient (n_trades=400)": 1,
   "raw insufficient (n_trades=1188)": 1,
   "raw insufficient (n_trades=829)": 1,
@@ -8286,12 +8284,10 @@
   "raw insufficient (n_trades=546)": 1,
   "raw insufficient (n_trades=381)": 1,
   "raw insufficient (n_trades=787)": 1,
-  "derived 161 < 95% of provider 390": 1,
   "raw insufficient (n_trades=3)": 1,
   "raw insufficient (n_trades=447)": 1,
   "raw insufficient (n_trades=290)": 1,
   "raw insufficient (n_trades=1683)": 1,
-  "derived 68 < 95% of provider 390": 1,
   "raw insufficient (n_trades=767)": 1,
   "raw insufficient (n_trades=985)": 1,
   "raw insufficient (n_trades=440)": 1,
@@ -8517,13 +8513,14 @@
   "no usable source (n_trades=156, d_bars=36)": 1,
   "no usable source (n_trades=244, d_bars=9)": 1,
   "no usable source (n_trades=26, d_bars=0)": 1,
+  "raw>=min but session truncated and no provider reference": 1,
   "no usable source (n_trades=103, d_bars=6)": 1,
   "no usable source (n_trades=24, d_bars=0)": 1,
   "no usable source (n_trades=299, d_bars=29)": 1,
   "no usable source (n_trades=277, d_bars=27)": 1,
   "no usable source (n_trades=248, d_bars=22)": 1
  },
- "unresolved_days": 8,
+ "unresolved_days": 9,
  "unresolved_rows": [
   {
    "day": "2022-05-13",
@@ -8548,6 +8545,14 @@
    "derived_bars": 0,
    "provider_bars": 0,
    "reason": "no usable source (n_trades=26, d_bars=0)"
+  },
+  {
+   "day": "2023-07-03",
+   "symbol": "AJX",
+   "n_trades": 4549,
+   "derived_bars": 175,
+   "provider_bars": 0,
+   "reason": "raw>=min but session truncated and no provider reference"
   },
   {
    "day": "2023-07-19",

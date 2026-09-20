@@ -520,6 +520,9 @@ def main(argv=None):
             print(f"{day}: " + " | ".join(f"{k}:{v}" for k, v in res.items()), flush=True)
         except FileNotFoundError as e:
             print(f"{day}: SKIP ({e})", flush=True)
+        except Exception as e:
+            # one bad day must never kill the worker; the day stays resumable
+            print(f"{day}: FAILED {type(e).__name__}: {str(e)[:200]} (continuing)", flush=True)
 
 
 if __name__ == "__main__":
