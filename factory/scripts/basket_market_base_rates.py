@@ -196,6 +196,7 @@ def build(root: Path, write: bool):
                    "prev>0 (prev = previous available SIP table's c_last, seeds 2021-01-29 / "
                    "2025-01-31)"),
         "rulers": H_LADDER, "root": str(root),
+        "_producer": "basket_market_base_rates.py",
         "days": len(per_day), "universe_tables_read": n_prev_tables,
         "anchors": {"open": pooled(per_day, "open"),
                     "prev_close": pooled(per_day, "prev_close")},

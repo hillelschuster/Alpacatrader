@@ -274,10 +274,12 @@ def merge(out_dir: Path) -> dict:
                "monster = day with >=1 full-PIT name whose session high reached +H over the "
                "stated anchor (hi_open = RTH open, hi_prev = previous close); rank = position "
                "in the frozen population ranking computed on SIP compact tables; contains = the "
-               "monster is in the day's anatomy top-3 for that (pop,T); monster_mfe = post-fill "
+               "day's anatomy top-3 included at least one such +H-qualified name for that "
+               "(pop,T) -- it does NOT mean the top-3 contained the singular eventual champion "
+               "(that object is the containment table's top1_in); monster_mfe = post-fill "
                "high (touch lens, accessible fills only); ahead_share = (post-fill high - fill) "
-               "/ (day high - anchor); miss_* = on days the monster was NOT in our top-3, what "
-               "the accessible top-3 members still delivered (touch lens)."),
+               "/ (day high - anchor); miss_* = on days no +H-qualified name was in our top-3, "
+               "what the accessible top-3 members still delivered (touch lens)."),
            "notes": ["hi_open, hi_prev and post-entry excursions are separate objects; never "
                      "subtract or pool them.", "Diagnostic only; no parameter selected."]}
     out_dir.mkdir(parents=True, exist_ok=True)

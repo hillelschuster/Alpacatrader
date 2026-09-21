@@ -2,180 +2,17 @@
  "method": "Layer-1 candidates top-3 (provider SIP compact tables) vs final anatomy top-3 (merged raw-derived bars) for every dev day and snapshot; set comparison; causes from merged-bar presence, px agreement, Layer-1 rank/margin",
  "days_checked": 1066,
  "snapshots_checked": 15990,
- "agree_top3_set": 15979,
- "differ_snapshots": 11,
- "diff_rows": 11,
- "cause_counts": {
-  "dropped:score_tie_or_other": 7,
-  "promoted:top10_promoted": 11,
-  "dropped:no_prev_close": 1,
-  "dropped:no_decision_bar_in_merged": 3
- },
- "promoted_n": 11,
- "promoted_with_quotes": 7,
- "promoted_with_quotes_share": 0.6364,
+ "_producer": "sip_selection_audit.py",
+ "agree_top3_set": 15990,
+ "differ_snapshots": 0,
+ "diff_rows": 0,
+ "cause_counts": {},
+ "promoted_n": 0,
+ "promoted_with_quotes": 0,
+ "promoted_with_quotes_share": null,
  "promoted_rank_gt10_no_quotes": [],
- "promoted": [
-  {
-   "day": "2022-05-19",
-   "pop": "B",
-   "T": 580,
-   "ticker": "VVPR",
-   "l1_rank": 4,
-   "l1_listed": "top10",
-   "cause": "top10_promoted",
-   "in_merged_bars": true,
-   "quotes": true
-  },
-  {
-   "day": "2022-05-19",
-   "pop": "B",
-   "T": 660,
-   "ticker": "VVPR",
-   "l1_rank": 4,
-   "l1_listed": "top10",
-   "cause": "top10_promoted",
-   "in_merged_bars": true,
-   "quotes": true
-  },
-  {
-   "day": "2022-05-19",
-   "pop": "B",
-   "T": 720,
-   "ticker": "VVPR",
-   "l1_rank": 4,
-   "l1_listed": "top10",
-   "cause": "top10_promoted",
-   "in_merged_bars": true,
-   "quotes": true
-  },
-  {
-   "day": "2023-01-30",
-   "pop": "B",
-   "T": 630,
-   "ticker": "STSS",
-   "l1_rank": 4,
-   "l1_listed": "top10",
-   "cause": "top10_promoted",
-   "in_merged_bars": true,
-   "quotes": true
-  },
-  {
-   "day": "2023-01-30",
-   "pop": "B",
-   "T": 690,
-   "ticker": "STSS",
-   "l1_rank": 4,
-   "l1_listed": "top10",
-   "cause": "top10_promoted",
-   "in_merged_bars": true,
-   "quotes": true
-  },
-  {
-   "day": "2023-08-16",
-   "pop": "B",
-   "T": 585,
-   "ticker": "TRON",
-   "l1_rank": 4,
-   "l1_listed": "top10",
-   "cause": "top10_promoted",
-   "in_merged_bars": true,
-   "quotes": true
-  },
-  {
-   "day": "2023-12-21",
-   "pop": "B",
-   "T": 645,
-   "ticker": "PARA",
-   "l1_rank": 4,
-   "l1_listed": "top10",
-   "cause": "top10_promoted",
-   "in_merged_bars": true,
-   "quotes": true
-  },
-  {
-   "day": "2025-03-18",
-   "pop": "B",
-   "T": 630,
-   "ticker": "PARA",
-   "l1_rank": 4,
-   "l1_listed": "top10",
-   "cause": "top10_promoted",
-   "in_merged_bars": true,
-   "quotes": false
-  },
-  {
-   "day": "2026-05-22",
-   "pop": "A_open",
-   "T": 570,
-   "ticker": "LZMH",
-   "l1_rank": 4,
-   "l1_listed": "top10",
-   "cause": "top10_promoted",
-   "in_merged_bars": true,
-   "quotes": false
-  },
-  {
-   "day": "2026-05-22",
-   "pop": "A_pm",
-   "T": 570,
-   "ticker": "IPW",
-   "l1_rank": 6,
-   "l1_listed": "top10",
-   "cause": "top10_promoted",
-   "in_merged_bars": true,
-   "quotes": false
-  },
-  {
-   "day": "2026-05-22",
-   "pop": "A_pm31",
-   "T": 570,
-   "ticker": "IPW",
-   "l1_rank": 6,
-   "l1_listed": "top10",
-   "cause": "top10_promoted",
-   "in_merged_bars": true,
-   "quotes": false
-  }
- ],
- "per_day_diffs": [
-  {
-   "date": "2022-05-19",
-   "n_diffs": 3,
-   "agree": 12,
-   "snapshots": 15
-  },
-  {
-   "date": "2023-01-30",
-   "n_diffs": 2,
-   "agree": 13,
-   "snapshots": 15
-  },
-  {
-   "date": "2023-08-16",
-   "n_diffs": 1,
-   "agree": 14,
-   "snapshots": 15
-  },
-  {
-   "date": "2023-12-21",
-   "n_diffs": 1,
-   "agree": 14,
-   "snapshots": 15
-  },
-  {
-   "date": "2025-03-18",
-   "n_diffs": 1,
-   "agree": 14,
-   "snapshots": 15
-  },
-  {
-   "date": "2026-05-22",
-   "n_diffs": 3,
-   "agree": 12,
-   "snapshots": 15
-  }
- ],
+ "promoted": [],
+ "per_day_diffs": [],
  "unresolved_audit": [
   {
    "ticker": "VVPR",
@@ -302,7 +139,7 @@
     {
      "pop": "B",
      "T": 585,
-     "rank": 10
+     "rank": 9
     }
    ]
   },

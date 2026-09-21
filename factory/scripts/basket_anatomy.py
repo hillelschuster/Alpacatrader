@@ -236,7 +236,7 @@ def topk(frame: pl.DataFrame, gaincol: str) -> pl.DataFrame:
     # NOTE: no split exclusion here — split_flags is future-dependent
     # (its signature uses the stock's full-day intraday behavior at decision time),
     # so it is audit/sensitivity metadata only, never a causal admission criterion.
-    f = frame.sort(gaincol, descending=True).head(K_TOP)
+    f = frame.sort([gaincol, "ticker"], descending=[True, False]).head(K_TOP)
     return f.with_row_index("rank", offset=1)
 
 
@@ -302,10 +302,10 @@ def process_day(
     )
     w = w.filter(pl.col("anchor") >= MIN_PRICE)
     wp_prev_ok = w.filter(pl.col("prev_close") > 0)
-    win_o = w.sort("gain_open", descending=True).head(K_TOP)
-    win_p = wp_prev_ok.sort("gain_prev", descending=True).head(K_TOP)
-    win_co = w.sort("eod_open", descending=True).head(K_TOP)
-    win_cp = wp_prev_ok.sort("eod_prev", descending=True).head(K_TOP)
+    win_o = w.sort(["gain_open", "ticker"], descending=[True, False]).head(K_TOP)
+    win_p = wp_prev_ok.sort(["gain_prev", "ticker"], descending=[True, False]).head(K_TOP)
+    win_co = w.sort(["eod_open", "ticker"], descending=[True, False]).head(K_TOP)
+    win_cp = wp_prev_ok.sort(["eod_prev", "ticker"], descending=[True, False]).head(K_TOP)
     winners_open = [
         {"ticker": r["ticker"], "gain_open": R(r["gain_open"]), "gain_prev": R(r["gain_prev"]),
          "eod_open": R(r["eod_open"]), "et_hi": int(r["etN"]) if False else None,

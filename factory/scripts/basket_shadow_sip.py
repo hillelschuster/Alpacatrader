@@ -146,7 +146,8 @@ def run(root: Path, write: bool):
         q = _q(vals)
         if q:
             tables.append({"month": month, "set": setname, "stratum": stratum, "stat": stat, **q})
-    out = {"source": "sip universe tables (next-day o570)", "reasons": dict(reasons), "tables": tables}
+    out = {"source": "sip universe tables (next-day o570)", "reasons": dict(reasons),
+           "tables": tables, "_producer": "basket_shadow_sip.py"}
     if write:
         (root / "agg").mkdir(parents=True, exist_ok=True)
         with open(root / "agg" / "T7_overnight.json", "w") as fh:

@@ -4116,8 +4116,8 @@
   "pop": "B",
   "T": 595,
   "set": "adj",
-  "filled": 44,
-  "gap_blocked": 16
+  "filled": 45,
+  "gap_blocked": 15
  },
  {
   "month": "2022-07",
@@ -7173,8 +7173,8 @@
   "pop": "B",
   "T": 580,
   "set": "adj",
-  "filled": 60,
-  "gap_blocked": 9
+  "filled": 61,
+  "gap_blocked": 8
  },
  {
   "month": "2023-08",

@@ -292,9 +292,10 @@ constructed later without rerunning the anatomy.
   (no minute ordering assumed anywhere) with strata extended to mfe>=100; T7 artifact now
   carries true monthly rollups (the previous "monthly" key held day rows, which made the
   T8 monthly pay-for-team shares invalid); Layer-2 provider fetch now retries symbols the
-  bulk request silently dropped (8 of 9 previously unresolved symbol-days were recovered:
-  VVPR 2022-05-13, HSON 2022-06-15, HSON 2023-07-19, MGLD 2023-09-19, CSLR 2023-09-28,
-  CSLR 2023-11-13, HSON 2025-05-22, AJX 2023-07-03; PMN 2023-02-13 remains genuinely
+  bulk request silently dropped (7 of 9 previously unresolved symbol-days were recovered:
+  VVPR 2022-05-13, HSON 2022-06-15, HSON 2023-07-19, CSLR 2023-09-28,
+  CSLR 2023-11-13, HSON 2025-05-22, AJX 2023-07-03; PMN 2023-02-13 and MGLD 2023-09-19
+  remain genuinely
   provider-empty).
   Continuation (same pass): the market base-rate artifact's canonical eligibility is now
   the $1 floor on open tradeability for both anchors (prev-close anchor additionally needs
@@ -308,3 +309,20 @@ constructed later without rerunning the anatomy.
   exactly. T8 quarter rows now carry `pays_days`; the T8 pay-for-team shares read the
   corrected T7 monthly rollups. No parameter, population, timing point, ruler or lens was
   selected; PRE-REG-BASKET-02 remains unfrozen.
+- 2026-09-21 (audit pass — measurement-layer close-out; contract clarification, not a
+  semantics change): the frozen ranking rule is now explicit in code as `score descending,
+  ticker ascending` at every selection point (anatomy top-K, all leader/winners lists, the
+  Layer-1 candidate lists). Previously the tie-break was implicit and the engine's sort is
+  not stable, so boundary ties resolved arbitrarily; with the rule stated, the Layer-1 vs
+  final-anatomy selection audit is 15,990/15,990 snapshots in agreement (0 differences, 0
+  promotions; the 11 previously-reported differences were exactly the 10 tie days). Also in
+  this pass: T8 containment reads N=3 rows (it had been reading N=10), T8 quarterly
+  economics weight by `pays_days` (filled days) rather than calendar days; T5 path anatomy
+  initializes state zero at the actual fill price/time; `race_by_view` orders up-vs-down by
+  raw print chronology; sub-$1-restricted leader objects (`winners_open_floored`,
+  `winners_close_open_floored`) are reported alongside the unrestricted ones with their own
+  containment counters; T4/T7b slot counters now count unfilled and blocked slots; the
+  packet's coverage section is restored. Every headline number in the packet was reproduced
+  independently from lower-level inputs by separate implementations. Two symbol-days remain
+  genuinely provider-empty (PMN 2023-02-13, MGLD 2023-09-19). No parameter selected;
+  PRE-REG-BASKET-02 remains unfrozen.

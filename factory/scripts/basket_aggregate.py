@@ -140,7 +140,9 @@ def add_snapshot(acc, rec, month, pop, T, names):
     for prefix, lkey, primary in (("", "winners_open", True),
                                   ("prev_", "winners_prev", False),
                                   ("eodopen_", "winners_close_open", False),
-                                  ("eodprev_", "winners_close_prev", False)):
+                                  ("eodprev_", "winners_close_prev", False),
+                                  ("flr_", "winners_open_floored", False),
+                                  ("flreod_", "winners_close_open_floored", False)):
         winners = rec.get(lkey, [])[:3]
         for N in N_LADDER:
             s = set(n["ticker"] for n in names[:N])
@@ -189,8 +191,10 @@ def add_snapshot(acc, rec, month, pop, T, names):
                 c["upfirst"] += sum(1 for n in touched
                                     if race_label(n, H, L) in ("up", "up_only"))
                 c["amb"] += sum(1 for n in touched if race_label(n, H, L) == "amb")
-        short = PRIMARY_N - len(mset)
-        acc["jt"][(month, pop, T, setname)]["unfilled_slots"] += short
+        acc["jt"][(month, pop, T, setname)]["unfilled_slots"] += sum(
+            1 for n in mset if n.get("fill") is None)
+        acc["jt"][(month, pop, T, setname)]["blocked_slots"] += sum(
+            1 for n in mset if (n.get("fill") or {}).get("blocked"))
         for H in UP:
             k_touch = sum(1 for n in filled if n["ladders"]["up"][str(H)] is not None)
             k_exec = sum(1 for n in filled
@@ -267,7 +271,7 @@ def finalize(acc):
     t1b = [{"month": m, "pop": p, "T_from": a, "T_to": b,
             "mean_top3_overlap": round(float(np.mean(v)), 3), "n_days": len(v)}
            for (m, p, a, b), v in sorted(churns.items())]
-    tables["T1"] = {"composition": t1, "churn": t1b}
+    tables["T1"] = {"composition": t1, "churn": t1b, "_producer": "basket_aggregate.py"}
 
     # T2 containment (day-level shares; numerators are day counts)
     t2 = []
@@ -279,7 +283,7 @@ def finalize(acc):
                "top2_in_share": round(c["top2_in"] / days, 5) if days else None,
                "top3_in_share": round(c["top3_in"] / days, 5) if days else None,
                "filled_in": c.get("filled_in", 0), "blocked_in": c.get("blocked_in", 0)}
-        for pre in ("prev", "eodopen", "eodprev"):
+        for pre in ("prev", "eodopen", "eodprev", "flr", "flreod"):
             for k in (1, 2, 3):
                 cnt = c.get(f"{pre}_top{k}_in", 0)
                 row[f"{pre}_top{k}_in"] = cnt
@@ -304,7 +308,8 @@ def finalize(acc):
     t4 = []
     jt = acc["jt"]
     for (month, pop, T, setname), c in sorted(jt.items()):
-        base = {k: c[k] for k in c if k.startswith(("k_touch", "unfilled_slots"))}
+        base = {k: c[k] for k in c
+                if k.startswith(("k_touch", "unfilled_slots", "blocked_slots"))}
         t4.append({"month": month, "pop": pop, "T": T, "set": setname, **base})
     tables["T4"] = t4
 
@@ -331,7 +336,8 @@ def finalize(acc):
         c = jt[(month, pop, T, setname)]
         days = c.get("k_touch_50/0", 0) + c.get("k_touch_50/1", 0) + c.get("k_touch_50/2", 0) + c.get("k_touch_50/3", 0)
         row = {"month": month, "pop": pop, "T": T, "set": setname, "days": days,
-               "unfilled_slots": c.get("unfilled_slots", 0)}
+               "unfilled_slots": c.get("unfilled_slots", 0),
+               "blocked_slots": c.get("blocked_slots", 0)}
         for H in UP:
             row[f"touch_k_{H}"] = [c.get(f"k_touch_{H}/{k}", 0) for k in range(4)]
             row[f"exec_k_{H}"] = [c.get(f"k_exec_{H}/{k}", 0) for k in range(4)]

@@ -55,15 +55,20 @@ def art_root(arg=None) -> Path:
 
 
 def classify_diff(l1_rows, an_names, merged_tickers, merged_dec=None, T=None,
-                  merged_series=None, prev_syms=None):
+                  merged_series=None, prev_syms=None, pop=None):
     """Return the symmetric difference detail for one snapshot comparison.
 
     merged_dec: dict ticker -> set of et present on the merged frame that day (optional);
     used to separate "no decision bar in the merged frame" from ranking/population effects.
+    pop: population of the snapshot; the merged-frame decision-bar test only means
+    something for RTH-anchored populations (A_open / B) - for the premarket populations
+    (A_pm, A_pm31) the decision basis is the premarket print, so that branch is skipped.
     """
     l1_top3 = [r["symbol"] for r in l1_rows[:3]]
     an_top3 = [n["ticker"] for n in an_names[:3]]
     l1_rank = {r["symbol"]: r["rank"] for r in l1_rows}
+    l1_score = {r["symbol"]: r.get("score") for r in l1_rows}
+    rth_anchored = pop not in ("A_pm", "A_pm31")
     l1_px = {}
     for r in l1_rows:
         for k, v in r.items():
@@ -83,9 +88,14 @@ def classify_diff(l1_rows, an_names, merged_tickers, merged_dec=None, T=None,
             se, sc = merged_series[t]
             cand = [c for e, c in zip(se, sc) if e <= T - 1]
             mpx = cand[-1] if cand else None
+        s_a = l1_score.get(t)
+        tie = s_a is not None and any(
+            abs(s_a - x) < 1e-9 for x in (l1_score.get(u) for u in an_top3) if x is not None)
         if not in_bars:
             cause = "outside_net"
-        elif T is not None and ets and not any(e <= T - 1 for e in ets):
+        elif tie:
+            cause = "score_tie"
+        elif rth_anchored and T is not None and ets and not any(e <= T - 1 for e in ets):
             cause = "no_decision_bar_in_merged"
         elif prev_syms is not None and t not in prev_syms:
             cause = "no_prev_close"
@@ -182,7 +192,7 @@ def audit_day(day: str, anat_path: Path, cand_path: Path, quotes_cache: dict) ->
         d = classify_diff(l1s["top"], next(x["names"] for x in rec["snapshots"]
                                            if (x["pop"], x["T"]) == (r["pop"], r["T"])),
                           merged_tickers, merged_dec, T=r["T"],
-                          merged_series=merged_series, prev_syms=prev_syms)
+                          merged_series=merged_series, prev_syms=prev_syms, pop=r["pop"])
         for p in d["promoted"]:
             margin = r.get("l1_margin") or []
             if p["l1_rank"] is not None:
@@ -274,6 +284,7 @@ def run(root: Path, write: bool, limit: int | None, merge_only: bool = False):
                    "top-3 (merged raw-derived bars) for every dev day and snapshot; set "
                    "comparison; causes from merged-bar presence, px agreement, Layer-1 rank/margin"),
         "days_checked": len(days), "snapshots_checked": tot_snaps,
+        "_producer": "sip_selection_audit.py",
         "agree_top3_set": tot_agree, "differ_snapshots": tot_snaps - tot_agree,
         "diff_rows": diffs_n, "cause_counts": dict(cause),
         "promoted_n": len(promoted),

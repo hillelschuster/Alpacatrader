@@ -7,18 +7,26 @@ count as price updates under the same condition policy the derived bars use
 (sip_bars.combine, hl == update-high/low). No minute-level ordering ambiguity remains
 for any bar: the sequence IS the sequence.
 
+Path semantics (FIX 1): state zero is the ACTUAL FILL — (time = start of the fill
+bar's minute, price = fill price). The path is [fill state] + eligible prints with
+et >= fill_et, so a first print below the fill is a drawdown, not a fresh high and
+peak_vs_fill >= 0 by construction.
+
 Objects (PRE-REG T5, rulers stay rulers):
-    retr_pre_hi   = deepest trade price / running max - 1 before first touch of the peak
+    retr_pre_hi   = deepest trade price / running max - 1 up to the first touch of the
+                    peak, runmax initialized at the fill price
     retr_after_hi = deepest trade price / peak - 1 from the peak onward
     eod_vs_hi     = last eligible print of the session / peak - 1
-    peak_vs_fill  = peak / fill - 1
-    time_to_hi    = peak print time minus first post-fill print time (minutes)
+    peak_vs_fill  = peak / fill - 1 (peak = max(fill, prints))
+    time_to_hi    = peak print time minus the start of the fill bar's minute (minutes)
 
 Members with no eligible prints after the fill are counted as unresolved, never
 dropped silently. Rows keep (month, pop, T, set, stratum, stat) dimensions; strata
 are all / mfe>=20 / 30 / 50 / 100. Coverage class per member (healthy_raw /
 provider_only) is stored so provider-only sparsity stays visible; the merge reports
-class counts and a reconciliation of trade-level peak vs the stored bar-based MFE.
+class counts and a reconciliation of trade-level peak vs the stored bar-based MFE
+(members whose prints never exceed the fill show peak_vs_fill = 0 vs a negative
+stored mfe; counters for that and for trade-peak > stored-peak are reported).
 
 Measurement only. No release rule, no survivor rule, no strategy code.
 
@@ -78,19 +86,35 @@ def member_rows(rec):
     return out
 
 
-def path_stats(prices: np.ndarray, ts_us: np.ndarray, fill_px: float):
+def fill_minute_start(ts_us0: int, et0: int, fill_et: int) -> int:
+    """UTC us of the start of the fill bar's minute (ET offset is constant intraday)."""
+    return (int(ts_us0) // 60_000_000) * 60_000_000 - (int(et0) - int(fill_et)) * 60_000_000
+
+
+def path_stats(prices: np.ndarray, ts_us: np.ndarray, fill_px: float, ts_fill_us: int):
+    """FIX 1 path stats: state zero = the fill (fill minute start, fill price).
+
+    prices/ts_us are eligible prints (et >= fill_et, chronological). peak = max over
+    [fill] + prints, so peak_vs_fill >= 0. k = first path element at the peak. When no
+    print ever reaches the fill the fill IS the high: there is no new-high event, so the
+    whole path counts as pre-hi (k_pre = last index) - the demanded fill-init semantics.
+    """
     if len(prices) == 0:
         return None
-    runmax = np.maximum.accumulate(prices)
-    k = int(np.argmax(prices))
-    peak = float(prices[k])
-    retr_pre = float((prices[:k + 1] / runmax[:k + 1] - 1.0).min())
-    retr_post = float((prices[k:] / peak - 1.0).min())
+    path = np.concatenate((np.array([fill_px], dtype=float), prices))
+    tpath = np.concatenate((np.array([ts_fill_us], dtype=np.int64), ts_us.astype(np.int64)))
+    runmax = np.maximum.accumulate(path)
+    peak = float(runmax[-1])
+    k = int(np.argmax(path))                 # first touch of the peak (0 = the fill itself)
+    k_pre = len(path) - 1 if k == 0 else k   # no new high -> whole path is pre-hi
+    k_pre = max(k_pre, k)
+    retr_pre = float((path[:k_pre + 1] / runmax[:k_pre + 1] - 1.0).min())
+    retr_post = float((path[k:] / peak - 1.0).min())
     return {
-        "time_to_hi": float((int(ts_us[k]) - int(ts_us[0])) / 60_000_000.0),
+        "time_to_hi": float((int(tpath[k]) - int(ts_fill_us)) / 60_000_000.0),
         "retr_pre_hi": retr_pre,
         "retr_after_hi": retr_post,
-        "eod_vs_hi": float(prices[-1] / peak - 1.0),
+        "eod_vs_hi": float(path[-1] / peak - 1.0),
         "peak_vs_fill": float(peak / fill_px - 1.0),
         "n_trades": int(len(prices)),
     }
@@ -109,6 +133,18 @@ def price_updating(trades: pl.DataFrame) -> pl.DataFrame:
     return t.join(rules, on=["_ck", "tape"], how="left").filter(pl.col("hl") == sb.G)
 
 
+def sym_paths(trades: pl.DataFrame, need) -> dict:
+    """{symbol: (prices, ts_us, et)} for prints that count as price updates."""
+    tdf = price_updating(trades.filter(pl.col("symbol").is_in(need)))
+    out: dict = {}
+    for s, sub in tdf.sort(["symbol", "ts_utc"]).group_by("symbol", maintain_order=True):
+        key = s[0] if isinstance(s, tuple) else s
+        out[key] = (sub["price"].to_numpy(),
+                    sub["ts_utc"].cast(pl.Int64).to_numpy(),
+                    sub["et"].to_numpy())
+    return out
+
+
 def day_stats(day: str, rec: dict, trades: pl.DataFrame | None):
     rows = member_rows(rec)
     if not rows:
@@ -117,13 +153,7 @@ def day_stats(day: str, rec: dict, trades: pl.DataFrame | None):
     frame: pl.DataFrame = trades if trades is not None else pl.DataFrame(
         schema={"symbol": pl.Utf8, "ts_utc": pl.Datetime("us", "UTC"),
                 "price": pl.Float64, "et": pl.Int32})
-    tdf = price_updating(frame.filter(pl.col("symbol").is_in(need)))
-    by_sym: dict = {}
-    for s, sub in tdf.sort(["symbol", "ts_utc"]).group_by("symbol", maintain_order=True):
-        key = s[0] if isinstance(s, tuple) else s
-        by_sym[key] = (sub["price"].to_numpy(),
-                       sub["ts_utc"].cast(pl.Int64).to_numpy(),
-                       sub["et"].to_numpy())
+    by_sym = sym_paths(frame, need)
     cls_map = {}
     cp = COV / f"{day}.json"
     if cp.exists():
@@ -139,10 +169,11 @@ def day_stats(day: str, rec: dict, trades: pl.DataFrame | None):
         if not mask.any():
             n_no_trades += 1
             continue
-        pr, tv = px[mask], ts[mask]
+        pr, tv, etv = px[mask], ts[mask], et[mask]
         if len(pr) < SPARSE_MIN:
             n_sparse += 1
-        st = path_stats(pr, tv, r["fill_px"])
+        ts_fill = fill_minute_start(tv[0], int(etv[0]), r["fill_et"])
+        st = path_stats(pr, tv, r["fill_px"], ts_fill)
         if st is None:
             n_no_trades += 1
             continue
@@ -193,7 +224,7 @@ def merge(out_dir: Path) -> dict:
     acc: dict = defaultdict(list)
     n_members = n_days = n_no = n_sparse = 0
     cls_counts = defaultdict(int)
-    recon = []
+    recon, n_peak_gt, n_mfe_neg = [], 0, 0
     for f in sorted(glob.glob(str(STAGE / "*.json"))):
         st = json.load(open(f))
         n_days += 1
@@ -204,6 +235,10 @@ def merge(out_dir: Path) -> dict:
             cls_counts[m.get("cls") or "unknown"] += 1
             if m.get("mfe") is not None:
                 recon.append(abs(m["peak_vs_fill"] - m["mfe"]))
+                if m["peak_vs_fill"] - m["mfe"] > 1e-4:
+                    n_peak_gt += 1
+                if m["mfe"] < 0:
+                    n_mfe_neg += 1
             month = st["date"][:7]
             for stat in STATS:
                 acc[(month, m["pop"], m["T"], m["set"], "all", stat)].append(m[stat])
@@ -222,13 +257,18 @@ def merge(out_dir: Path) -> dict:
     out = {"n_days": n_days, "n_members": n_members,
            "n_no_trades": n_no, "n_sparse_lt5": n_sparse,
            "class_counts": dict(cls_counts),
+           "_producer": "basket_t5_rawpaths.py",
            "strata": ["all"] + [f"mfe>={c}" for c in UP_STRATA],
            "method": "trade-level chronological path from raw SIP prints; condition policy "
-                     "= sip_bars alpaca rules (hl updates); no minute ordering assumed",
+                     "= sip_bars alpaca rules (hl updates); path state zero = actual fill "
+                     "(fill-bar minute start, fill price), so peak_vs_fill >= 0 and "
+                     "never-new-high members show 0 vs a negative stored mfe",
            "peak_recon_vs_stored_mfe": {
                "n": int(len(r)), "p50_abs_diff": round(float(np.percentile(r, 50)), 8),
                "p90_abs_diff": round(float(np.percentile(r, 90)), 6),
-               "share_within_1e-4": round(float((r <= 1e-4).mean()), 4)},
+               "share_within_1e-4": round(float((r <= 1e-4).mean()), 4),
+               "n_trade_peak_gt_stored_1e-4": int(n_peak_gt),
+               "n_stored_mfe_negative": int(n_mfe_neg)},
            "tables": tables}
     out_dir.mkdir(parents=True, exist_ok=True)
     with open(out_dir / "T5_paths.json", "w") as fh:
@@ -239,17 +279,29 @@ def merge(out_dir: Path) -> dict:
 
 
 def selftest():
-    ts = np.array([1, 2, 3, 4, 5, 6], dtype=np.int64) * 60_000_000
+    m = 60_000_000
+    t0 = 600 * m  # 10:00 ET: start of the fill bar's minute
+    ts = t0 + np.array([1, 2, 3, 4, 5, 6], dtype=np.int64) * m
     px = np.array([1.0, 1.2, 1.1, 1.5, 1.2, 1.3])
-    st = path_stats(px, ts, 1.0)
+    st = path_stats(px, ts, 1.0, t0)
     assert st is not None
     assert abs(st["retr_pre_hi"] + 1 / 12) < 1e-9, st
     assert abs(st["retr_after_hi"] + 0.2) < 1e-9, st
     assert abs(st["eod_vs_hi"] + 0.13333333) < 1e-7, st
-    assert abs(st["peak_vs_fill"] - 0.5) < 1e-9 and st["time_to_hi"] == 3.0, st
-    single = path_stats(np.array([2.0]), np.array([60_000_000]), 1.0)
+    assert abs(st["peak_vs_fill"] - 0.5) < 1e-9 and st["time_to_hi"] == 4.0, st
+    single = path_stats(np.array([2.0]), np.array([t0 + m], dtype=np.int64), 1.0, t0)
     assert single is not None
-    assert single["retr_pre_hi"] == 0.0 and single["time_to_hi"] == 0.0
+    assert single["retr_pre_hi"] == 0.0 and single["time_to_hi"] == 1.0
+    # FIX 1: state zero = the fill. A first print below the fill is a drawdown, not a high.
+    ts3 = t0 + np.array([1, 2, 3], dtype=np.int64) * m
+    below = path_stats(np.array([9.2, 9.0, 9.5]), ts3, 10.0, t0)
+    assert below["retr_pre_hi"] <= -0.08 and abs(below["peak_vs_fill"]) < 1e-12, below
+    assert below["time_to_hi"] == 0.0 and below["eod_vs_hi"] <= -0.05, below
+    above = path_stats(np.array([9.2, 12.0, 11.0]), ts3, 10.0, t0)
+    assert abs(above["peak_vs_fill"] - 0.2) < 1e-12, above
+    assert above["retr_pre_hi"] <= -0.08, above
+    assert above["time_to_hi"] == 2.0, above  # peak print at fill-minute-start + 2 min
+    assert fill_minute_start(t0 + 3 * m + 17, 603, 600) == t0
     tr = pl.DataFrame({
         "symbol": ["X", "X", "X", "X"], "price": [1.0, 2.0, 3.0, 4.0],
         "ts_utc": [1, 2, 3, 4], "conditions": [["@"], ["@"], ["Q"], ["B"]],

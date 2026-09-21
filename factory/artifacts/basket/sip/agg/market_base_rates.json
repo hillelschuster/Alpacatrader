@@ -8,6 +8,7 @@
   200
  ],
  "root": "factory/artifacts/basket/sip",
+ "_producer": "basket_market_base_rates.py",
  "days": 1066,
  "universe_tables_read": 1339,
  "anchors": {

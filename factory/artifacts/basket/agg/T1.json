@@ -15274,5 +15274,6 @@
    "mean_top3_overlap": 2.2,
    "n_days": 20
   }
- ]
+ ],
+ "_producer": "basket_aggregate.py"
 }

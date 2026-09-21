@@ -102,7 +102,7 @@ def winners_from_universe(uni: pl.DataFrame, prev_map: dict, split_set: set):
     merged-frame (first-open anchored) lists back in and tags their anchor source."""
     df = uni.filter(pl.col("o570") > 0)
     if not df.height:
-        return [], [], [], []
+        return [], [], [], [], [], []
     pcm = pl.DataFrame({"symbol": list(prev_map.keys()),
                         "pclose": [float(v) for v in prev_map.values()]}) if prev_map else None
     if pcm is not None:
@@ -115,28 +115,44 @@ def winners_from_universe(uni: pl.DataFrame, prev_map: dict, split_set: set):
         ((pl.col("hi") / pl.col("pclose") - 1)).alias("gain_prev"),
         ((pl.col("c_last") / pl.col("pclose") - 1)).alias("eod_prev"),
     )
-    wo = df.sort("gain_open", descending=True).head(10)
+    wo = df.sort(["gain_open", "symbol"], descending=[True, False]).head(10)
     winners_open = [{"ticker": r["symbol"], "gain_open": ba.R(r["gain_open"]),
                      "gain_prev": ba.R(r["gain_prev"]), "eod_open": ba.R(r["eod_open"]),
                      "anchor_src": "o570",
                      "split_flag": r["symbol"] in split_set} for r in wo.iter_rows(named=True)]
     dfp = df.filter(pl.col("pclose") > 0)
-    wp = dfp.sort("gain_prev", descending=True).head(10)
+    wp = dfp.sort(["gain_prev", "symbol"], descending=[True, False]).head(10)
     winners_prev = [{"ticker": r["symbol"], "gain_prev": ba.R(r["gain_prev"]),
                      "gain_open": ba.R(r["gain_open"]), "anchor_src": "prev_close",
                      "split_flag": r["symbol"] in split_set}
                     for r in wp.iter_rows(named=True)]
-    wco = df.sort("eod_open", descending=True).head(10)
+    wco = df.sort(["eod_open", "symbol"], descending=[True, False]).head(10)
     winners_close_open = [{"ticker": r["symbol"], "eod_open": ba.R(r["eod_open"]),
                            "gain_open": ba.R(r["gain_open"]), "anchor_src": "o570",
                            "split_flag": r["symbol"] in split_set}
                           for r in wco.iter_rows(named=True)]
-    wcp = dfp.sort("eod_prev", descending=True).head(10)
+    wcp = dfp.sort(["eod_prev", "symbol"], descending=[True, False]).head(10)
     winners_close_prev = [{"ticker": r["symbol"], "eod_prev": ba.R(r["eod_prev"]),
                            "eod_open": ba.R(r["eod_open"]), "anchor_src": "prev_close",
                            "split_flag": r["symbol"] in split_set}
                           for r in wcp.iter_rows(named=True)]
-    return winners_open, winners_prev, winners_close_open, winners_close_prev
+    # The same open-anchored leader objects restricted to the basket's own tradeability
+    # floor (o570 >= $1). Containment is reported against BOTH universes: the unfloored
+    # leader set is the conservative object (a sub-$1 penny leader is a leader we could
+    # never have bought), the floored set is the comparable one for capture questions.
+    dff = df.filter(pl.col("o570") >= ba.MIN_PRICE)
+    wof = dff.sort(["gain_open", "symbol"], descending=[True, False]).head(10)
+    winners_open_floored = [{"ticker": r["symbol"], "gain_open": ba.R(r["gain_open"]),
+                             "anchor_src": "o570_floored",
+                             "split_flag": r["symbol"] in split_set}
+                            for r in wof.iter_rows(named=True)]
+    wcof = dff.sort(["eod_open", "symbol"], descending=[True, False]).head(10)
+    winners_close_open_floored = [{"ticker": r["symbol"], "eod_open": ba.R(r["eod_open"]),
+                                   "anchor_src": "o570_floored",
+                                   "split_flag": r["symbol"] in split_set}
+                                  for r in wcof.iter_rows(named=True)]
+    return (winners_open, winners_prev, winners_close_open, winners_close_prev,
+            winners_open_floored, winners_close_open_floored)
 
 
 def union_leaders(univ: list, merged: list | None, key: str, cap: int = 10) -> list:
@@ -150,6 +166,7 @@ def union_leaders(univ: list, merged: list | None, key: str, cap: int = 10) -> l
         w["anchor_src"] = "first_open"
         extra.append(w)
     both = list(univ) + extra
+    both.sort(key=lambda w: w["ticker"])
     both.sort(key=lambda w: (w.get(key) is not None, w.get(key) if w.get(key) is not None else 0.0),
               reverse=True)
     return both[:cap]
@@ -177,12 +194,14 @@ def build_day(day: str, force: bool = False) -> dict:
     # --- winners + audit patched from the FULL PIT universe table
     uni = pl.read_parquet(SIU / "rth" / f"{day}.parquet")
     split_set = ba.split_excl(day)
-    wo, wp, wco, wcp = winners_from_universe(uni, prev_map, split_set)
+    wo, wp, wco, wcp, wof, wcof = winners_from_universe(uni, prev_map, split_set)
     if wo:
         rec["winners_open"] = union_leaders(wo, rec.get("winners_open"), "gain_open")
         rec["winners_prev"] = union_leaders(wp, rec.get("winners_prev"), "gain_prev")
         rec["winners_close_open"] = union_leaders(wco, rec.get("winners_close_open"), "eod_open")
         rec["winners_close_prev"] = union_leaders(wcp, rec.get("winners_close_prev"), "eod_prev")
+        rec["winners_open_floored"] = wof
+        rec["winners_close_open_floored"] = wcof
     audit = rec.get("audit", {})
     audit.update({
         "rows": int(frame.height),
@@ -220,11 +239,25 @@ def selftest():
         "c_last": [2.0, 2.2, 11.0, 4.0, 3.1],
     })
     prev = {"AAA": 1.0, "BBB": 2.0, "CCC": 5.0, "EEE": 2.0}
-    wo, wp, wco, wcp = winners_from_universe(uni, prev, {"BBB"})
+    wo, wp, wco, wcp, wof, wcof = winners_from_universe(uni, prev, {"BBB"})
     # gain_open: AAA 2.0, BBB .5, CCC .2, EEE .1 ; DDD excluded (o570 null)
     assert [w["ticker"] for w in wo] == ["AAA", "BBB", "CCC", "EEE"], wo
     assert wo[0]["gain_open"] == 2.0 and wo[0]["eod_open"] == 1.0
     assert wo[1]["split_flag"] is True and wo[1]["gain_prev"] == 0.5
+    # floored variants: a sub-$1 leader (FFF, o570 0.5, +900% from open) is excluded by
+    # the tradeability floor; the EOD/open tie BBB==CCC resolves by ticker ascending
+    sub = pl.DataFrame({"symbol": ["AAA", "BBB", "CCC", "EEE", "FFF"],
+                        "o570": [1.0, 2.0, 10.0, 3.0, 0.5],
+                        "hi": [3.0, 3.0, 12.0, 3.3, 5.0],
+                        "c_last": [2.0, 2.2, 11.0, 3.1, 4.0]})
+    _, _, _, _, sf, scf = winners_from_universe(sub, {}, set())
+    assert [w["ticker"] for w in sf] == ["AAA", "BBB", "CCC", "EEE"], sf
+    assert [w["ticker"] for w in scf] == ["AAA", "BBB", "CCC", "EEE"], scf
+    # exact-tie determinism: equal gain_open resolves by ticker ascending
+    tie = pl.DataFrame({"symbol": ["ZZZ", "AAA"], "o570": [1.0, 1.0],
+                        "hi": [2.0, 2.0], "c_last": [1.5, 1.5]})
+    t_open, _, _, _, _, _ = winners_from_universe(tie, {}, set())
+    assert [w["ticker"] for w in t_open] == ["AAA", "ZZZ"], t_open
     # gain_prev: AAA 2.0, CCC 1.4, BBB .5, EEE .65 -> order AAA, CCC, EEE, BBB
     assert [w["ticker"] for w in wp] == ["AAA", "CCC", "EEE", "BBB"], wp
     assert wp[1]["gain_prev"] == 1.4

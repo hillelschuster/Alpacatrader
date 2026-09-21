@@ -2276,10 +2276,38 @@ k1c3 98.0% / k2c10 62.0%; B/600 97.8% / 57.6%. Tail destruction (race_by_view, d
 anchor +100 86.5% (922), +200 66.8% (712). Capture funnel (hi_open/H100, 511 days): A_pm ranks the
 monster in the top-3 on 103 days (20.2%), A_open 92 (18.0%), B/600 255 (49.9%, 229 with an accessible
 fill); on the miss days another basket member still touched +30 on 159/408 (A_pm) and 68/256 (B/600)
-days. Selection audit: 14,924 snapshots, agree 96.1%; promotions all top-10-internal; CSLR 2023-11-13
-B/575 rank 3 is now selected with its own fill (the one true slot-substitution case resolved); the 8
-recovered provider symbol-days are recorded with status recovered_provider. Verification: containment
+days. Selection audit: 15,990 snapshots, agree 15,990 (100.0%, 0 differ once the score-desc /
+ticker-asc tie-break contract was made explicit); promotions all top-10-internal;
+CSLR 2023-11-13
+B/575 rank 3 is now selected with its own fill (the one true slot-substitution case resolved); the 7
+recovered provider symbol-days (+2 genuinely unresolved) are recorded with status recovered_provider. Verification: containment
 0.2852, joint touch30 0.3959, T8 2025-06 B/600 pays_net 0.2 / c3 0.55, T5 trade-level stats (LODE
 2021-02-01) and the funnel day-level sample all reproduced independently from raw data; funnel vs base
 rates agree on all six (anchor, ruler) counts. Subagents remain unusable here (two further 30-min
 zero-output timeouts) — direct verification used instead.
+
+## 2026-09-21 (audit pass — measurement layer closed out)
+
+Five scoped audits (population/selection, T5/race chronology, aggregation/denominators, stale state,
+independent headline reproduction) ran to completion. Findings and dispositions: (1) ranking tie-break
+was implicit — polars sort is unstable, and the 11 selection-audit diffs were exactly the 10 tie days;
+the frozen ranking rule is now explicit everywhere (`score desc, ticker asc`) in basket_anatomy.topk,
+the four winners sorts, sip_anatomy.winners_from_universe/union_leaders and sip_candidates.top_list →
+selection audit is now 15,990/15,990 agree, 0 differ, 0 promotions. (2) T8 containment read N=10 rows
+instead of N=3 (250/306 month blocks were wrong: B/600 pooled 0.3537 → 0.2852) — fixed; T8 quarterly
+pays weighted by calendar days instead of `pays_days` (one quarter affected by 0.0004) — fixed.
+(3) T5 now initializes the path at the actual fill (state zero = fill price, time origin = fill minute):
+verified 12/12 + 8/8 members against raw prints, 0/89,124 members with peak_vs_fill < 0. (4) race_by_view
+rebuilt on raw chronological prints (labels reproduced exactly; verified 11/11 pooled quantities and
+10/10 microsecond-level labels). (5) Sub-$1 leader objects added (`winners_open_floored`,
+`winners_close_open_floored`, independent $1-subset re-rank — NOT a subset of the unfloored list) with
+`flr_`/`flreod_` containment counters: B/600 0.3865 vs 0.2852 unfloored, A_open 0.1126, A_pm 0.1201.
+(6) T4/T7b `unfilled_slots` was degenerate (always 0) — now counts slots with no fill; `blocked_slots`
+added (pooled B/600: unfilled 4 / blocked 487). (7) Stale-generation defects fixed (T2 missing flr
+counters, T11/mbr missing `_producer`, funnel stale-file-on-empty, PRE-REG '8 of 9 recovered' →
+'7 of 9'). (8) Packet coverage section restored (`unresolved_n` 2). Canonical numbers were otherwise
+unchanged by the audit. Independent verification: all headline numbers reproduced from lower-level
+inputs by separate implementations (containment, joint tail, T5, race, funnel, base rates, T7, T8,
+random control). Selection audit: 1,066 days / 15,990 snapshots / 100% agreement / 2 unresolved
+symbol-days (PMN 2023-02-13, MGLD 2023-09-19). No parameter selected; PRE-REG-BASKET-02 unfrozen.
+Subagents were usable for this pass (5 audits + 2 verifiers completed; two earlier attempts hung).

@@ -93,12 +93,17 @@ def build(root: Path) -> dict:
     cf = load(root, "capture_funnel")
     rbv = load(root, "race_by_view")
     cov = load(root, "coverage_summary")
+    if cov is None:
+        p = root / "coverage_summary.json"
+        cov = json.load(open(p)) if p.exists() else None
 
     s: dict = out["sections"]
     if cov:
+        _unres = cov.get("unresolved") or []
+        _cls = cov.get("classes") or {}
         s["coverage"] = {"days": cov.get("days"), "symbol_days": cov.get("symbol_days"),
-                         "classes": cov.get("classes"), "shares": cov.get("shares"),
-                         "unresolved_n": len(cov.get("unresolved", []) or [])}
+                         "classes": _cls, "shares": cov.get("shares"),
+                         "unresolved_n": len(_unres) if _unres else _cls.get("unresolved")}
     if t1:
         comp = defaultdict(lambda: {"days": 0, "empty": 0, "lt3": 0})
         for r in t1["composition"]:
@@ -116,7 +121,9 @@ def build(root: Path) -> dict:
         keys = ["top1_in", "top2_in", "top3_in",
                 "prev_top1_in", "prev_top2_in", "prev_top3_in",
                 "eodopen_top1_in", "eodopen_top2_in", "eodopen_top3_in",
-                "eodprev_top1_in", "eodprev_top2_in", "eodprev_top3_in"]
+                "eodprev_top1_in", "eodprev_top2_in", "eodprev_top3_in",
+                "flr_top1_in", "flr_top2_in", "flr_top3_in",
+                "flreod_top1_in", "flreod_top2_in", "flreod_top3_in"]
         agg = defaultdict(lambda: defaultdict(int))
         for r in t2:
             k = (r["pop"], r["T"], r["N"])
@@ -251,7 +258,8 @@ def build(root: Path) -> dict:
     if mbr:
         s["market_base_rates"] = mbr
     if cf:
-        s["capture_funnel"] = cf.get("summary", cf)
+        s["capture_funnel"] = {"definitions": cf.get("_definitions"),
+                               "summary": cf.get("summary", cf)}
     if rbv:
         s["race_by_view"] = {"views": rbv.get("views"), "method": rbv.get("method")}
     out["notes"].append("Rulers are descriptive; no H/L/T/N were selected by this reader.")
@@ -261,9 +269,18 @@ def build(root: Path) -> dict:
                         "saleable lens). Never read exec as 'we could have sold there'.")
     out["notes"].append("T11 'cover' is a non-economic illustration (best raw MFE vs co-member MAE); "
                         "T7_pay_for_team carries the labeled economics.")
+    out["notes"].append("capture_funnel 'contains' = the day's top-3 included at least one +H-qualified "
+                        "name; it is NOT the singular eventual leader object (that is the containment "
+                        "table's top1_in).")
     out["notes"].append("Containment: top{k}_in = hi_open leaders (session max, RTH-open anchored); "
                         "prev_/eodopen_/eodprev_ are the hi_prev, EOD/open and EOD/prev leader "
                         "objects — never conflated with the intraday-high definition.")
+    out["notes"].append("Containment `blocked_in` = contained leaders whose fill was not "
+                        "accessible (blocked slot or missing fill); `filled_in` is its "
+                        "complement among contained primary (open-anchored) leaders.")
+    out["notes"].append("Containment `flr_`/`flreod_` counters use the $1-floored leader "
+                        "objects: an independent top-10 re-rank restricted to o570 >= $1 "
+                        "(the basket-eligible anchor), NOT a subset of the unfloored list.")
     out["notes"].append("Pooling = day-weighted sums across months; quantities are provisional until "
                         "the artifact root's QA gate reports PASS.")
     return out

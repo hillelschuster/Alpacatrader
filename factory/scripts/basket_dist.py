@@ -195,8 +195,12 @@ def finalize(per_pt, monthly, extremes):
     monthly_rows = [{"month": m, "pop": p, "T": T, **v}
                     for (m, p, T), v in sorted(monthly.items())]
     extremes = sorted(extremes, key=lambda r: r["mfe"], reverse=True)[:TOP_EXTREMES]
-    return {"bands": BANDS, "ladder": LADDER, "extension": EXT, "dn": DN,
-            "per_pop_T": rows, "monthly": monthly_rows, "extremes_top": extremes}
+    out = {"bands": BANDS, "ladder": LADDER, "extension": EXT, "dn": DN,
+           "per_pop_T": rows, "monthly": monthly_rows, "extremes_top": extremes,
+           "_producer": "basket_dist.py",
+           "cover_note": "T11 'cover' is a non-economic illustration (best raw MFE vs co-member "
+                         "MAE); T7_payforteam carries the labeled economics."}
+    return out
 
 
 def _hist(ks):

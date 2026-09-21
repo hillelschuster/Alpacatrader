@@ -90,7 +90,7 @@ def prev_close_map(day: str, days: list):
 
 def top_list(df: pl.DataFrame, score_col: str, extra_cols: list) -> list:
     k = min(K_TOP, df.height)
-    top = df.sort(score_col, descending=True).head(k)
+    top = df.sort([score_col, "symbol"], descending=[True, False]).head(k)
     out = []
     for i, r in enumerate(top.iter_rows(named=True), start=1):
         row = {"rank": i, "symbol": r["symbol"], "score": ba.R(r[score_col])}

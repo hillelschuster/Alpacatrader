@@ -53,6 +53,17 @@ def median(vals):
     return None if not v else round(float(np.median(np.array(v, dtype=float))), 5)
 
 
+def _wmean(rows, key, wkey):
+    """Weighted mean over rows with a positive weight in wkey; rows with weight 0
+    (no filled days for an economic ratio) are excluded, never re-weighted by days."""
+    vals = [(r.get(key), r.get(wkey)) for r in rows if r.get(key) is not None]
+    vals = [(v, w) for v, w in vals if w]
+    tot = sum(w for _, w in vals)
+    if not vals or not tot:
+        return None
+    return round(sum(v * w for v, w in vals) / tot, 4)
+
+
 def pooled_F_Q(rows):
     days = sum(r["days"] for r in rows)
     k0 = sum((r.get("k_hist") or [0, 0, 0, 0])[0] for r in rows)
@@ -72,7 +83,7 @@ def block_view(t2, t4b, t7b, t5m, t7e, t6, t11, months, pop, T):
     for label in months:
         out[label] = {}
     for r in t2 or []:
-        if r["pop"] == pop and r["T"] == T and r["month"] in mset:
+        if r["pop"] == pop and r["T"] == T and r.get("N") == 3 and r["month"] in mset:
             d = r.get("days") or 0
             out[r["month"]].update({
                 "days": d,
@@ -149,12 +160,15 @@ def finalize(root: Path):
                 num = sum((r.get("cont_top1_in") or 0) * (r.get("days") or 0) for r in rows)
                 agg["cont_top1_in"] = round(num / d, 4)
             for key in ("touch30_k>=1", "touch50_k>=1", "touch100_k>=1",
-                        "above30_k>=1", "above100_k>=1", "pays_net", "pays_net_c3"):
-                vals = [r.get(key) for r in rows if r.get(key) is not None]
-                w = [r.get("days") or 0 for r in rows if r.get(key) is not None]
-                if vals and sum(w):
-                    agg[key] = round(sum(v * ww for v, ww in zip(vals, w)) / sum(w), 4)
-            for key in ("F30L10", "Q30L10", "F30L15", "Q30L15", "F100L10",
+                        "above30_k>=1", "above100_k>=1"):
+                m = _wmean(rows, key, "days")
+                if m is not None:
+                    agg[key] = m
+            for key in ("pays_net", "pays_net_c3"):
+                m = _wmean(rows, key, "pays_days")
+                if m is not None:
+                    agg[key] = m
+            for key in ("F30L10", "Q30L10", "F30L15", "Q30L15", "F100L10", "Q100L10",
                         "mfe_p50", "mae_p50"):
                 vals = [r.get(key) for r in rows if r.get(key) is not None]
                 if vals:
@@ -186,6 +200,20 @@ def selftest():
     empty = block_view([], [], [], [], [], [], None, ["2021-02"], "B", 600)
     assert empty["2021-02"] == {}
     assert median([1.0, None, 3.0]) == 2.0
+    rows = [{"days": 10, "pays_net": 0.5, "pays_days": 4},
+            {"days": 10, "pays_net": 0.1, "pays_days": 6}]
+    assert _wmean(rows, "pays_net", "pays_days") == 0.26, _wmean(rows, "pays_net", "pays_days")
+    assert _wmean(rows, "pays_net", "days") == 0.3
+    zero = [{"days": 5, "pays_net": 0.0, "pays_days": 0}, {"days": 5, "pays_net": 0.4, "pays_days": 5}]
+    assert _wmean(zero, "pays_net", "pays_days") == 0.4, _wmean(zero, "pays_net", "pays_days")
+    assert _wmean(zero, "pays_net", "days") == 0.2
+    t2n = [{"month": "2021-02", "pop": "B", "T": 600, "N": 3, "days": 19, "top1_in": 7,
+            "blocked_in": 1},
+           {"month": "2021-02", "pop": "B", "T": 600, "N": 10, "days": 19, "top1_in": 9,
+            "blocked_in": 2}]
+    mv = block_view(t2n, [], [], [], [], [], None, ["2021-02"], "B", 600)
+    assert mv["2021-02"]["cont_top1_in"] == round(7 / 19, 4), mv["2021-02"]
+    assert mv["2021-02"]["cont_blocked"] == 1, mv["2021-02"]
     print("self-test OK")
 
 

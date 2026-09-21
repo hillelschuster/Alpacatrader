@@ -59,8 +59,8 @@ Checks: JSON parse of every day file; snapshot count 13/14; per-filled-member fi
   trade-by-trade from raw prints (no minute ordering assumed anywhere; `peak_recon_vs_stored_mfe` in the
   artifact shows exact agreement with the bar-based MFE); T7 emits true monthly rollups (T8 pays_net shares
   corrected); full anatomy regeneration (1,066 days, 15 snapshots/day); provider fetch now retries symbols
-  the bulk request silently dropped — netbars re-run recovered 8 of 9 previously unresolved symbol-days
-  (unresolved 9 -> 2: PMN 2023-02-13 and MGLD 2023-09-19 remain genuinely provider-empty); CSLR 2023-11-13
+  the bulk request silently dropped — netbars re-run recovered 7 of the 9 audited symbol-days
+  (2 remain unresolved: PMN 2023-02-13 and MGLD 2023-09-19 are genuinely provider-empty); CSLR 2023-11-13
   B/575 rank 3 is now selected with its own fill (the one true slot-substitution case is resolved).
   No parameter selected; PRE-REG-BASKET-02 remains unfrozen.
 - 2026-09-21 (continuation): market base rates re-run with canonical eligibility (the $1
@@ -73,6 +73,17 @@ Checks: JSON parse of every day file; snapshot count 13/14; per-filled-member fi
   merge kept reading it — this caused a 3-day mismatch: 2021-09-14, 2022-01-13, 2022-02-01).
   `race_by_view` added (dn-before-up shares per view/cell). T8 quarter rows carry
   `pays_days`. T7 emits true monthly rollups (key `monthly`) + day rows (`daily`).
+- 2026-09-21 (audit pass — measurement layer close-out): five scoped audits + two verifiers. Ranking
+  tie-break made explicit everywhere (`score desc, ticker asc`; polars sort is unstable) → selection
+  audit 15,990/15,990 agree, 0 promotions. T8 read N=10 containment rows instead of N=3 (250/306 month
+  blocks wrong; B/600 pooled 0.3537 → 0.2852) — fixed; T8 quarterly pays now weighted by `pays_days`.
+  T5 path now starts at the actual fill (state zero = fill price/time; 0/89,124 members with
+  peak_vs_fill < 0). `race_by_view` rebuilt on raw chronological prints (labels verified to the
+  microsecond). Sub-$1 leader objects added (`winners_open_floored` / `winners_close_open_floored` =
+  independent $1-subset re-rank, NOT a subset) with `flr_`/`flreod_` containment counters (B/600 0.3865).
+  T4/T7b `unfilled_slots` de-degenerated + `blocked_slots` added. Packet coverage section restored
+  (`unresolved_n` 2). All headline numbers reproduced independently from lower-level inputs.
+  No parameter selected; PRE-REG-BASKET-02 remains unfrozen.
   Verification: T5 trade-level spot check reproduces staged stats exactly (LODE
   2021-02-01: retr_pre_hi -0.217169, retr_after_hi -0.398082, time_to_hi 33.7, peak = stored
   mfe 0.853333); containment/joint-tail/T8 pays recomputed from day files independently
@@ -118,4 +129,4 @@ Long variants: `basket_t5_rawpaths.py --days ...` stages raw-trade paths per day
 .venv/bin/python factory/scripts/basket_t5_rawpaths.py --days <days> --force
 ```
 
-**Subagent note (environment)**: as of 2026-09-20 background subagents are unusable here — one ran 31 min with no output, others were wiped by an environment restart. Execute research scripts directly (matches the repo AGENTS.md guidance).
+**Subagent note (environment)**: background subagents are usable but flaky here — several attempts hung with zero output (30-min inactivity kills), while others completed normally (five scoped audits + two verifiers finished on 2026-09-21). A hung agent's session is NOT resumable (`Task not found`); respawn it fresh with the same work order. Prefer direct execution for anything on the critical path.

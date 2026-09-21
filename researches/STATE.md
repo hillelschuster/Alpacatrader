@@ -35,7 +35,11 @@ BASKET-01 planning lane (bullet below).
   layer; canonical packet `factory/artifacts/basket/sip/READ_PACKET.md`. Advisor-directed
   final measurement pass done 2026-09-21 (B(T) prev-close admission gate removed; A_pm31
   09:31 bound; trade-level T5; T7 monthly rollups + T8 fix; EOD/prev leader objects;
-  capture funnel; race_by_view; provider-fetch recovery -> unresolved 9 -> 2). Integrated
+  capture funnel; race_by_view; provider-fetch recovery -> unresolved 9 -> 2). Audit pass
+  2026-09-21 (five scoped audits + two independent verifiers): ranking tie-break made
+  explicit -> selection audit 15,990/15,990 (100%); T8 N=3 + pays_days fixes; T5 fill-as-
+  state-zero and raw-chronology race; floored leader objects; all headline numbers
+  reproduced from lower-level inputs. Integrated
   seven-question read pending owner gate. No release-rule constants; PRE-REG-BASKET-02
   unfrozen; H025 untouched. Reserved months 2026-06..08 untouched; sealed 2024/2025-01
   acquired mechanically (certified) and unseen.

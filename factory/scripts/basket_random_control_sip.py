@@ -242,7 +242,10 @@ def aggregate(root: Path):
         rows.append(row)
     out = {"draws": DRAWS, "substrate": "SIP provider bars (full PIT universe)",
            "day_sampling": "deterministic spacing ~4/month (same as the legacy pass)",
-           "note": "B-surface matched-random control; treated top-10 excluded from draws",
+           "note": "B-surface matched-random control; treated top-10 excluded from draws; "
+                   "k-histogram denominators are the days with 3 draws (n_drawn == 3), not "
+                   "the sampled-day count",
+           "_producer": "basket_random_control_sip.py",
            "tables": rows}
     (root / "agg").mkdir(parents=True, exist_ok=True)
     with open(root / "agg" / "T9b_random.json", "w") as fh:

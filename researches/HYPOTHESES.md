@@ -26,7 +26,11 @@ dev days, QA PASS), repaired read layer, B(T) admission fixed (prev close no lon
 required), A_pm31 conservative bound, trade-level T5, corrected T7/T8 economics, EOD and
 prev-anchored leader objects, market base rates + capture funnel + race_by_view; canonical
 packet committed at `factory/artifacts/basket/sip/READ_PACKET.md`. Independent recompute of
-the load-bearing numbers matched the artifacts. Integrated seven-question read pending
+the load-bearing numbers matched the artifacts. Audit pass 2026-09-21: ranking tie-break
+made explicit -> Layer-1 vs final-anatomy selection audit 15,990/15,990 (100%); T8
+containment N=3 and `pays_days` weighting fixed; T5 path starts at the actual fill;
+`race_by_view` on raw print chronology; sub-$1-restricted leader objects added; packet
+coverage restored. Integrated seven-question read pending
 owner gate. No parameter selected; PRE-REG-BASKET-02 stays unfrozen.
 
 ## ARCHIVE (2026-09-06 thinking round — planned but NOT executed; superseded by the

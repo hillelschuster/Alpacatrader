@@ -6588,5 +6588,7 @@
    "exec_max_H": 100
   }
  ],
+ "_producer": "basket_dist.py",
+ "cover_note": "T11 'cover' is a non-economic illustration (best raw MFE vs co-member MAE); T7_payforteam carries the labeled economics.",
  "n_day_files": 1065
 }

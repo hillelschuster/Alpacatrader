@@ -14351,7 +14351,7 @@
    "pop": "B",
    "T_from": 690,
    "T_to": 720,
-   "mean_top3_overlap": 2.25,
+   "mean_top3_overlap": 2.3,
    "n_days": 20
   },
   {
@@ -16730,5 +16730,6 @@
    "mean_top3_overlap": 2.05,
    "n_days": 20
   }
- ]
+ ],
+ "_producer": "basket_aggregate.py"
 }
