@@ -33,7 +33,8 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[2]
 ART = Path(os.environ.get("BASKET_ART_ROOT", str(ROOT / "factory" / "artifacts" / "basket")))
-VIEWS = [("B", 600), ("B", 585), ("B", 720), ("A_open", 570), ("A_pm", 570)]
+VIEWS = [("B", 600), ("B", 585), ("B", 720), ("A_open", 570), ("A_pm", 570),
+         ("A_pm31", 570)]
 H_LADDER = [5, 10, 20, 30, 50, 100]
 
 
@@ -106,6 +107,7 @@ def block_view(t2, t4b, t7b, t5m, t7e, t6, t11, months, pop, T):
             b = out[r["month"]]
             b["pays_net"] = r.get("pays_net")
             b["pays_net_c3"] = r.get("pays_net_c3")
+            b["pays_days"] = r.get("filled_days")
     for r in t6 or []:
         if r["pop"] == pop and r["T"] == T and r["set"] == "main" and r["month"] in mset:
             b = out[r["month"]]
@@ -137,8 +139,8 @@ def finalize(root: Path):
         for q, ms in sorted(qmonths.items()):
             rows = [mv[m] for m in ms]
             agg = {}
-            for key in ("days", "cont_blocked", "filled_slots", "gap_blocked_slots",
-                        "unfilled_slots"):
+            for key in ("days", "pays_days", "cont_blocked", "filled_slots",
+                        "gap_blocked_slots", "unfilled_slots"):
                 vals = [r.get(key) for r in rows if r.get(key) is not None]
                 if vals:
                     agg[key] = sum(vals)

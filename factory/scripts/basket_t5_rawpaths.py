@@ -1,22 +1,26 @@
 #!/usr/bin/env python3
-"""BASKET-01 T5 path-shape pass, ordering-resolved (repair of basket_t5_bars.py).
+"""BASKET-01 T5 path-shape pass — genuine trade-level chronology (2026-09-21 rebuild).
 
-Same objects as the bars pass (PRE-REG T5: max retracement before the session high,
-drawdown after the high, EOD vs high, time-to-high, peak vs fill), rebuilt with the
-peak bar excluded from both bar segments and the peak minute's own low/high order
-resolved from the raw SIP prints:
+Replaces the bars+peak-minute-ordering pass. For every filled main/adj member of the
+SIP anatomy, the post-fill path is built trade-by-trade from the raw SIP prints that
+count as price updates under the same condition policy the derived bars use
+(sip_bars.combine, hl == update-high/low). No minute-level ordering ambiguity remains
+for any bar: the sequence IS the sequence.
 
-    retr_pre_hi   = min over bars strictly before the peak bar, PLUS the peak
-                    minute's low when the raw prints show low BEFORE high
-    retr_after_hi = min over bars strictly after the peak bar, PLUS the peak
-                    minute's low when the raw prints show high BEFORE low
+Objects (PRE-REG T5, rulers stay rulers):
+    retr_pre_hi   = deepest trade price / running max - 1 before first touch of the peak
+    retr_after_hi = deepest trade price / peak - 1 from the peak onward
+    eod_vs_hi     = last eligible print of the session / peak - 1
+    peak_vs_fill  = peak / fill - 1
+    time_to_hi    = peak print time minus first post-fill print time (minutes)
 
-Rows are keyed by (month, pop, T, set, stratum, stat) so population and timing
-dimensions survive into the read layer (the old table dropped them). Non-peak
-minutes keep bar resolution; that ceiling is stated, not hidden.
+Members with no eligible prints after the fill are counted as unresolved, never
+dropped silently. Rows keep (month, pop, T, set, stratum, stat) dimensions; strata
+are all / mfe>=20 / 30 / 50 / 100. Coverage class per member (healthy_raw /
+provider_only) is stored so provider-only sparsity stays visible; the merge reports
+class counts and a reconciliation of trade-level peak vs the stored bar-based MFE.
 
-Measurement only. Rulers remain rulers; no release rule, no strategy code.
-Raw trades are read from data/sip/net/trades/<day>.parquet (SIP root only).
+Measurement only. No release rule, no survivor rule, no strategy code.
 
 Outputs (resumable):
   data/sip/t5_raw/<day>.json      per-day member stats (scratch, gitignored data/)
@@ -24,8 +28,8 @@ Outputs (resumable):
 
 Usage:
   .venv/bin/python factory/scripts/basket_t5_rawpaths.py --self-test
-  BASKET_ART_ROOT=factory/artifacts/basket/sip .venv/bin/python factory/scripts/basket_t5_rawpaths.py --days 2021-02-01 2021-02-02
-  BASKET_ART_ROOT=factory/artifacts/basket/sip .venv/bin/python factory/scripts/basket_t5_rawpaths.py --all
+  BASKET_ART_ROOT=factory/artifacts/basket/sip .venv/bin/python factory/scripts/basket_t5_rawpaths.py --days 2021-02-01
+  BASKET_ART_ROOT=factory/artifacts/basket/sip .venv/bin/python factory/scripts/basket_t5_rawpaths.py --all --workers 4
   .venv/bin/python factory/scripts/basket_t5_rawpaths.py --merge-only
 """
 from __future__ import annotations
@@ -34,6 +38,8 @@ import argparse
 import glob
 import json
 import os
+import subprocess
+import sys
 from collections import defaultdict
 from pathlib import Path
 
@@ -41,16 +47,20 @@ import numpy as np
 import polars as pl
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import sip_bars as sb  # noqa: E402
+
 ART = Path(os.environ.get("BASKET_ART_ROOT", str(ROOT / "factory" / "artifacts" / "basket")))
 ANAT = ART / "anatomy"
 BARS = ART / "bars"
 OUT = ART / "agg"
 TRADES = ROOT / "data" / "sip" / "net" / "trades"
+COV = ROOT / "data" / "sip" / "net" / "coverage"
 STAGE = ROOT / "data" / "sip" / "t5_raw"
-UP_STRATA = [20, 30, 50]
-SETS = ("main", "adj")
+UP_STRATA = [20, 30, 50, 100]
 PRIMARY_N = 3
-PRICE_TOL = 1e-6
+SPARSE_MIN = 5
+STATS = ("time_to_hi", "retr_pre_hi", "retr_after_hi", "eod_vs_hi", "peak_vs_fill")
 
 
 def member_rows(rec):
@@ -68,96 +78,77 @@ def member_rows(rec):
     return out
 
 
-def peak_order(trades_sym, peak_et: int, peak_hi: float, peak_lo: float):
-    """Order of the peak minute's high vs low from raw prints; None = unresolved."""
-    if peak_hi <= peak_lo:
+def path_stats(prices: np.ndarray, ts_us: np.ndarray, fill_px: float):
+    if len(prices) == 0:
         return None
-    m = trades_sym.filter(pl.col("et") == peak_et)
-    if m.height == 0:
-        return None
-    ts = m["ts_utc"].to_list()
-    px = m["price"].to_numpy()
-    hi_ts = [t for t, p in zip(ts, px) if abs(p - peak_hi) <= PRICE_TOL]
-    lo_ts = [t for t, p in zip(ts, px) if abs(p - peak_lo) <= PRICE_TOL]
-    if not hi_ts or not lo_ts:
-        return None
-    if min(lo_ts) < min(hi_ts):
-        return "lo_first"
-    if min(hi_ts) < min(lo_ts):
-        return "hi_first"
-    return None
-
-
-def path_stats(post_et, post_h, post_l, post_c, fill_px, order):
-    """Post-fill path shape; peak bar excluded from both segments, its own low
-    attributed by the raw-resolved order. Returns dict or None."""
-    if len(post_h) == 0:
-        return None
-    k = int(np.argmax(post_h))
-    peak = float(post_h[k])
-    retr_pre = None
-    if k > 0:
-        runmax = np.maximum.accumulate(post_h[:k])
-        retr_pre = float((post_l[:k] / runmax - 1.0).min())
-    if order == "lo_first":
-        base = float(post_h[:k].max()) if k > 0 else fill_px
-        v = float(post_l[k]) / base - 1.0
-        retr_pre = v if retr_pre is None else min(retr_pre, v)
-    retr_post = None
-    if k < len(post_l) - 1:
-        retr_post = float((post_l[k + 1:] / peak - 1.0).min())
-    if order == "hi_first":
-        v = float(post_l[k]) / peak - 1.0
-        retr_post = v if retr_post is None else min(retr_post, v)
+    runmax = np.maximum.accumulate(prices)
+    k = int(np.argmax(prices))
+    peak = float(prices[k])
+    retr_pre = float((prices[:k + 1] / runmax[:k + 1] - 1.0).min())
+    retr_post = float((prices[k:] / peak - 1.0).min())
     return {
-        "time_to_hi": float(post_et[k] - post_et[0]),
+        "time_to_hi": float((int(ts_us[k]) - int(ts_us[0])) / 60_000_000.0),
         "retr_pre_hi": retr_pre,
         "retr_after_hi": retr_post,
-        "eod_vs_hi": float(post_c[-1] / peak - 1.0),
+        "eod_vs_hi": float(prices[-1] / peak - 1.0),
         "peak_vs_fill": float(peak / fill_px - 1.0),
+        "n_trades": int(len(prices)),
     }
 
 
-def day_stats(day: str, rec: dict, bars: pl.DataFrame | None, trades: pl.DataFrame | None):
+def price_updating(trades: pl.DataFrame) -> pl.DataFrame:
+    """Trades that can update high/low under Alpaca's documented bar rules."""
+    t = trades.with_columns(pl.col("conditions").list.join("|").alias("_ck"))
+    key = t.select(["_ck", "tape"]).unique()
+    rows = []
+    for ck, tp in key.iter_rows():
+        conds = ck.split("|") if ck else []
+        _oc, hl, _v, _unk = sb.combine(conds, tp)
+        rows.append({"_ck": ck, "tape": tp, "hl": hl})
+    rules = pl.DataFrame(rows)
+    return t.join(rules, on=["_ck", "tape"], how="left").filter(pl.col("hl") == sb.G)
+
+
+def day_stats(day: str, rec: dict, trades: pl.DataFrame | None):
     rows = member_rows(rec)
-    if not rows or bars is None:
+    if not rows:
         return None
     need = sorted({r["ticker"] for r in rows})
-    bdf = bars.filter(pl.col("ticker").is_in(need)).sort(["ticker", "et"])
-    if trades is None:
-        trades = pl.DataFrame(schema={"symbol": pl.Utf8, "ts_utc": pl.Datetime("us", "UTC"),
-                                      "price": pl.Float64, "et": pl.Int32})
-    tdf = trades.filter(pl.col("symbol").is_in(need)).sort(["symbol", "ts_utc"])
-    members, n_skip, n_ord = [], 0, {"lo_first": 0, "hi_first": 0, "unresolved": 0}
-    by_sym_bars: dict = {}
-    for t, sub in bdf.group_by("ticker", maintain_order=True):
-        by_sym_bars[t[0] if isinstance(t, tuple) else t] = sub
-    by_sym_tr: dict = {}
-    for s, sub in tdf.group_by("symbol", maintain_order=True):
-        by_sym_tr[s[0] if isinstance(s, tuple) else s] = sub
-    empty_tr = tdf.clear()
+    frame: pl.DataFrame = trades if trades is not None else pl.DataFrame(
+        schema={"symbol": pl.Utf8, "ts_utc": pl.Datetime("us", "UTC"),
+                "price": pl.Float64, "et": pl.Int32})
+    tdf = price_updating(frame.filter(pl.col("symbol").is_in(need)))
+    by_sym: dict = {}
+    for s, sub in tdf.sort(["symbol", "ts_utc"]).group_by("symbol", maintain_order=True):
+        key = s[0] if isinstance(s, tuple) else s
+        by_sym[key] = (sub["price"].to_numpy(),
+                       sub["ts_utc"].cast(pl.Int64).to_numpy(),
+                       sub["et"].to_numpy())
+    cls_map = {}
+    cp = COV / f"{day}.json"
+    if cp.exists():
+        cls_map = {k: v.get("cls") for k, v in (json.load(open(cp)).get("per_symbol") or {}).items()}
+    members, n_no_trades, n_sparse = [], 0, 0
     for r in rows:
-        sub = by_sym_bars.get(r["ticker"])
-        if sub is None or sub.height == 0:
-            n_skip += 1
+        got = by_sym.get(r["ticker"])
+        if got is None:
+            n_no_trades += 1
             continue
-        et = sub["et"].to_numpy()
-        idx = int(np.searchsorted(et, r["fill_et"], side="left"))
-        if idx >= len(et) or int(et[idx]) != r["fill_et"]:
-            n_skip += 1
+        px, ts, et = got
+        mask = et >= r["fill_et"]
+        if not mask.any():
+            n_no_trades += 1
             continue
-        hi, lo, cs = sub["high"].to_numpy(), sub["low"].to_numpy(), sub["close"].to_numpy()
-        pk = int(np.argmax(hi[idx:])) + idx
-        order = peak_order(by_sym_tr.get(r["ticker"], empty_tr), int(et[pk]),
-                           float(hi[pk]), float(lo[pk]))
-        n_ord["unresolved" if order is None else order] += 1
-        st = path_stats(et[idx:], hi[idx:], lo[idx:], cs[idx:], r["fill_px"], order)
+        pr, tv = px[mask], ts[mask]
+        if len(pr) < SPARSE_MIN:
+            n_sparse += 1
+        st = path_stats(pr, tv, r["fill_px"])
         if st is None:
-            n_skip += 1
+            n_no_trades += 1
             continue
         members.append({"pop": r["pop"], "T": r["T"], "set": r["set"], "ticker": r["ticker"],
-                        "mfe": r["mfe"], "order": order, **st})
-    return {"date": day, "members": members, "skip": n_skip, "order": n_ord}
+                        "mfe": r["mfe"], "cls": cls_map.get(r["ticker"]), **st})
+    return {"date": day, "members": members, "no_trades": n_no_trades, "sparse": n_sparse}
 
 
 def stage_day(day: str, force: bool) -> str:
@@ -165,20 +156,18 @@ def stage_day(day: str, force: bool) -> str:
     if sp.exists() and not force:
         return "skip"
     ap = ANAT / f"{day}.jsonl"
-    bp = BARS / f"{day}.parquet"
     tp = TRADES / f"{day}.parquet"
-    if not (ap.exists() and bp.exists() and tp.exists()):
+    if not (ap.exists() and tp.exists()):
         return "missing"
     rec = json.load(open(ap))
-    bars = pl.read_parquet(bp)
-    trades = (pl.scan_parquet(tp).select(["symbol", "ts_utc", "price"])
+    trades = (pl.scan_parquet(tp).select(["symbol", "ts_utc", "price", "conditions", "tape"])
               .with_columns(pl.col("ts_utc").dt.convert_time_zone("America/New_York")
                             .alias("tset"))
               .with_columns((pl.col("tset").dt.hour().cast(pl.Int32) * 60
                              + pl.col("tset").dt.minute().cast(pl.Int32)).alias("et"))
               .filter((pl.col("et") >= 570) & (pl.col("et") < 960))
               .collect())
-    st = day_stats(day, rec, bars, trades)
+    st = day_stats(day, rec, trades)
     if st is None:
         return "empty"
     STAGE.mkdir(parents=True, exist_ok=True)
@@ -202,17 +191,21 @@ def _q(vals):
 
 def merge(out_dir: Path) -> dict:
     acc: dict = defaultdict(list)
-    n_members = n_days = 0
-    order = defaultdict(int)
+    n_members = n_days = n_no = n_sparse = 0
+    cls_counts = defaultdict(int)
+    recon = []
     for f in sorted(glob.glob(str(STAGE / "*.json"))):
         st = json.load(open(f))
         n_days += 1
+        n_no += st.get("no_trades", 0)
+        n_sparse += st.get("sparse", 0)
         for m in st["members"]:
             n_members += 1
-            order[m["order"] or "unresolved"] += 1
+            cls_counts[m.get("cls") or "unknown"] += 1
+            if m.get("mfe") is not None:
+                recon.append(abs(m["peak_vs_fill"] - m["mfe"]))
             month = st["date"][:7]
-            for stat in ("time_to_hi", "retr_pre_hi", "retr_after_hi", "eod_vs_hi",
-                         "peak_vs_fill"):
+            for stat in STATS:
                 acc[(month, m["pop"], m["T"], m["set"], "all", stat)].append(m[stat])
                 if m.get("mfe") is not None:
                     for cut in UP_STRATA:
@@ -225,54 +218,48 @@ def merge(out_dir: Path) -> dict:
         if q:
             tables.append({"month": month, "pop": pop, "T": T, "set": setn,
                            "stratum": stratum, "stat": stat, **q})
+    r = np.array(recon) if recon else np.array([0.0])
     out = {"n_days": n_days, "n_members": n_members,
+           "n_no_trades": n_no, "n_sparse_lt5": n_sparse,
+           "class_counts": dict(cls_counts),
            "strata": ["all"] + [f"mfe>={c}" for c in UP_STRATA],
-           "method": "bars path + peak-minute raw-trade ordering; peak bar excluded "
-                     "from both segments; non-peak minutes remain bar-resolution",
-           "peak_minute_order": dict(order), "tables": tables}
+           "method": "trade-level chronological path from raw SIP prints; condition policy "
+                     "= sip_bars alpaca rules (hl updates); no minute ordering assumed",
+           "peak_recon_vs_stored_mfe": {
+               "n": int(len(r)), "p50_abs_diff": round(float(np.percentile(r, 50)), 8),
+               "p90_abs_diff": round(float(np.percentile(r, 90)), 6),
+               "share_within_1e-4": round(float((r <= 1e-4).mean()), 4)},
+           "tables": tables}
     out_dir.mkdir(parents=True, exist_ok=True)
     with open(out_dir / "T5_paths.json", "w") as fh:
         json.dump(out, fh, indent=1, default=str)
-    print(f"T5_paths: {n_days} staged days, {n_members} members -> {out_dir/'T5_paths.json'} "
-          f"order={dict(order)}")
+    print(f"T5_paths: {n_days} staged days, {n_members} members, no_trades={n_no}, "
+          f"sparse={n_sparse} -> {out_dir/'T5_paths.json'}")
     return out
 
 
 def selftest():
-    et = np.array([570, 571, 572, 573, 574, 575, 576])
-    hi = np.array([1.0, 1.2, 1.15, 1.3, 1.8, 2.0, 1.6])
-    lo = np.array([1.0, 1.1, 1.0, 1.05, 1.4, 1.5, 1.2])
-    cl = np.array([1.0, 1.15, 1.05, 1.25, 1.6, 1.9, 1.2])
-    # post-fill from index 0: peak bar k=5 (hi 2.0, lo 1.5). Peak bar excluded:
-    # pre segment bars 0..4: min(low/runmax-1) = 1.0/1.2-1 = -1/6
-    st = path_stats(et, hi, lo, cl, 1.0, None)
+    ts = np.array([1, 2, 3, 4, 5, 6], dtype=np.int64) * 60_000_000
+    px = np.array([1.0, 1.2, 1.1, 1.5, 1.2, 1.3])
+    st = path_stats(px, ts, 1.0)
     assert st is not None
-    assert st["time_to_hi"] == 5.0 and abs(st["retr_pre_hi"] + 2 / 9) < 1e-9, st
-    # peak bar excluded from post: bars 6 only -> 1.2/2.0-1 = -0.4
-    assert abs(st["retr_after_hi"] + 0.4) < 1e-9, st
-    assert abs(st["eod_vs_hi"] + 0.4) < 1e-9 and abs(st["peak_vs_fill"] - 1.0) < 1e-9
-    # peak-minute low 1.5 before the high (lo_first): 1.5/1.8-1 = -1/6, dominated by -2/9
-    st2 = path_stats(et, hi, lo, cl, 1.0, "lo_first")
-    assert st2 is not None
-    assert abs(st2["retr_pre_hi"] + 2 / 9) < 1e-9, st2
-    assert abs(st2["retr_after_hi"] + 0.4) < 1e-9, st2
-    # peak-minute low after the high (hi_first): post = min(bars 6, 1.5/2.0-1) = -0.4
-    st3 = path_stats(et, hi, lo, cl, 1.0, "hi_first")
-    assert st3 is not None
-    assert abs(st3["retr_after_hi"] + 0.4) < 1e-9, st3
-    assert abs(st3["retr_pre_hi"] + 2 / 9) < 1e-9, st3
-    # first post-fill bar is the peak, low precedes high -> base = fill, no pre drawdown
-    st4 = path_stats(et[5:], hi[5:], lo[5:], cl[5:], 1.5, "lo_first")
-    assert st4 is not None
-    assert st4["retr_pre_hi"] == 0.0 and abs(st4["retr_after_hi"] + 0.4) < 1e-9, st4
-    tr = pl.DataFrame({"symbol": ["X", "X", "X"], "et": [575, 575, 575],
-                       "price": [2.0, 1.9, 1.5],
-                       "ts_utc": [1, 2, 3]}).with_columns(
-        pl.col("ts_utc").cast(pl.Datetime("us", "UTC")))
-    assert peak_order(tr, 575, 2.0, 1.5) == "hi_first"
-    tr2 = tr.with_columns(pl.Series("price", [1.5, 1.9, 2.0]))
-    assert peak_order(tr2, 575, 2.0, 1.5) == "lo_first"
-    assert peak_order(tr, 575, 2.0, 2.0) is None
+    assert abs(st["retr_pre_hi"] + 1 / 12) < 1e-9, st
+    assert abs(st["retr_after_hi"] + 0.2) < 1e-9, st
+    assert abs(st["eod_vs_hi"] + 0.13333333) < 1e-7, st
+    assert abs(st["peak_vs_fill"] - 0.5) < 1e-9 and st["time_to_hi"] == 3.0, st
+    single = path_stats(np.array([2.0]), np.array([60_000_000]), 1.0)
+    assert single is not None
+    assert single["retr_pre_hi"] == 0.0 and single["time_to_hi"] == 0.0
+    tr = pl.DataFrame({
+        "symbol": ["X", "X", "X", "X"], "price": [1.0, 2.0, 3.0, 4.0],
+        "ts_utc": [1, 2, 3, 4], "conditions": [["@"], ["@"], ["Q"], ["B"]],
+        "tape": ["C", "C", "C", "C"],
+    }).with_columns(pl.col("ts_utc").cast(pl.Datetime("us", "UTC")))
+    keep = price_updating(tr)
+    assert keep.height == 3, keep  # auction print Q is not a price update
+    tr2 = tr.with_columns(pl.Series("tape", ["C", "C", "C", "A"]))
+    keep2 = price_updating(tr2)
+    assert keep2.height == 2, keep2  # average-price tape print B/A is not a price update
     rec = {"snapshots": [{"pop": "B", "T": 585, "names": [
         {"ticker": "AAA", "fill": {"et": 571, "px": 1.0, "blocked": False}, "mfe": 1.0},
         {"ticker": "BBB", "fill": {"et": 580, "px": 1.0, "blocked": True}, "mfe": 0.1},
@@ -287,6 +274,7 @@ def main(argv=None):
     ap.add_argument("--days", nargs="*", default=None)
     ap.add_argument("--months", nargs="*", default=None)
     ap.add_argument("--all", action="store_true")
+    ap.add_argument("--workers", type=int, default=0)
     ap.add_argument("--merge-only", action="store_true")
     ap.add_argument("--force", action="store_true")
     ap.add_argument("--out", default=str(OUT))
@@ -309,13 +297,29 @@ def main(argv=None):
             days = [d for d in days if d[:7] in months]
     if not days:
         ap.error("provide --days/--months/--all/--merge-only")
-    counts = defaultdict(int)
-    for i, d in enumerate(days, 1):
-        res = stage_day(d, args.force)
-        counts[res.split("(")[0]] += 1
-        if i % 25 == 0 or args.days is None:
-            print(f"[{i}/{len(days)}] {d}: {res}  {dict(counts)}", flush=True)
-    print(f"staged: {dict(counts)}")
+    if args.workers > 1 and len(days) > 1:
+        parts = [[] for _ in range(args.workers)]
+        for i, d in enumerate(sorted(days)):
+            parts[i % args.workers].append(d)
+        procs = []
+        for i, part in enumerate(parts):
+            cmd = [sys.executable, "-u", str(Path(__file__)), "--days", *part]
+            if args.force:
+                cmd.append("--force")
+            log = open(f"/tmp/opencode/t5_w{i}.log", "w")
+            procs.append((subprocess.Popen(cmd, stdout=log, stderr=subprocess.STDOUT), log))
+        for p, log in procs:
+            rc = p.wait()
+            log.close()
+            print(f"worker rc={rc}")
+    else:
+        counts = defaultdict(int)
+        for i, d in enumerate(days, 1):
+            res = stage_day(d, args.force)
+            counts[res.split("(")[0]] += 1
+            if i % 25 == 0 or len(days) <= 5:
+                print(f"[{i}/{len(days)}] {d}: {res}", flush=True)
+        print(f"staged: {dict(counts)}")
 
 
 if __name__ == "__main__":

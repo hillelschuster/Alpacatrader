@@ -54,7 +54,30 @@ Checks: JSON parse of every day file; snapshot count 13/14; per-filled-member fi
 ## 7. Current state (update after each cycle)
 
 - 2026-09-17: resume2 DONE; QA PASS (1065/1066, 1 declared skip). All passes + aggregates complete; first descriptive read done; evidence committed. Next: PRE-REG-BASKET-02 (release rule + survivor rule) from the anatomy, frozen before any Phase-2 P&L. Reserved months 2026-06..08 untouched.
-- 2026-09-20 (evening): SIP regeneration + repair pass done. Canonical root = `factory/artifacts/basket/sip` (QA PASS, 1,066 days). Repairs 1-12 applied; T5 rebuilt from raw SIP prints (82,853 members; peak-minute ordering resolved); T7 pay-for-team added; T8 stability + T9b SIP random control + market base rates + selection audit produced. 10 days with incomplete Layer-2 nets found and repaired (net-repair recipe in §8); those 10 anatomy days re-extracted and the read chain re-run. Sealed 2024 + 2025-01 acquired (mechanics only, certified in `SEALED_2024_CERT.md`); reserved months untouched. No parameter selected; PRE-REG-BASKET-02 remains unfrozen. Next: owner gate on the integrated read.
+- 2026-09-21 (advisor-directed final measurement pass): B(T) prev-close admission gate removed (584 audit
+  cases); EOD leader objects + separate containment counters added; A_pm31 population added; T5 rebuilt
+  trade-by-trade from raw prints (no minute ordering assumed anywhere; `peak_recon_vs_stored_mfe` in the
+  artifact shows exact agreement with the bar-based MFE); T7 emits true monthly rollups (T8 pays_net shares
+  corrected); full anatomy regeneration (1,066 days, 15 snapshots/day); provider fetch now retries symbols
+  the bulk request silently dropped — netbars re-run recovered 8 of 9 previously unresolved symbol-days
+  (unresolved 9 -> 2: PMN 2023-02-13 and MGLD 2023-09-19 remain genuinely provider-empty); CSLR 2023-11-13
+  B/575 rank 3 is now selected with its own fill (the one true slot-substitution case is resolved).
+  No parameter selected; PRE-REG-BASKET-02 remains unfrozen.
+- 2026-09-21 (continuation): market base rates re-run with canonical eligibility (the $1
+  floor on open tradeability for both anchors; prev-close anchor additionally needs
+  prev_close > 0; the old prev-basis floor is kept as `prev_close_prevfloor`); capture
+  funnel re-staged (A_pm31 was missing from the rank table -> mis-bucketed as absent; fixed)
+  and cross-checked against the base-rate artifact — all six (anchor, ruler) day counts are
+  identical. `basket_capture_funnel.stage_day` now DELETES a stale staged file when a
+  re-staged day yields no rows (without this, a pre-floor staging survived re-runs and the
+  merge kept reading it — this caused a 3-day mismatch: 2021-09-14, 2022-01-13, 2022-02-01).
+  `race_by_view` added (dn-before-up shares per view/cell). T8 quarter rows carry
+  `pays_days`. T7 emits true monthly rollups (key `monthly`) + day rows (`daily`).
+  Verification: T5 trade-level spot check reproduces staged stats exactly (LODE
+  2021-02-01: retr_pre_hi -0.217169, retr_after_hi -0.398082, time_to_hi 33.7, peak = stored
+  mfe 0.853333); containment/joint-tail/T8 pays recomputed from day files independently
+  match. Subagents remain unusable in this environment (two more 30-min zero-output
+  timeouts) — verify directly.
 
 ## 8. Canonical read chain + repair recipes (2026-09-20)
 
@@ -63,15 +86,23 @@ Canonical root: `BASKET_ART_ROOT=factory/artifacts/basket/sip`. Full chain (each
 ```bash
 .venv/bin/python factory/scripts/basket_aggregate.py          # T1-T11 core
 .venv/bin/python factory/scripts/basket_dist.py               # T11 continuous
-.venv/bin/python factory/scripts/basket_t5_rawpaths.py --merge-only   # T5 from raw prints (per-day staging data/sip/t5_raw/)
+.venv/bin/python factory/scripts/basket_t5_rawpaths.py --all --workers 4 --force && \
+  .venv/bin/python factory/scripts/basket_t5_rawpaths.py --merge-only   # T5 raw-print paths
 .venv/bin/python factory/scripts/basket_shadow_sip.py --write # T7 overnight (next-day o570)
-.venv/bin/python factory/scripts/basket_t7_econ.py            # T7 policy-free pay-for-team + break-even
+.venv/bin/python factory/scripts/basket_t7_econ.py            # T7 pay-for-team (daily + monthly rollups)
 .venv/bin/python factory/scripts/basket_t8_stability.py       # T8 month/quarter stability
 .venv/bin/python factory/scripts/basket_qa.py                 # must print QA: PASS
+.venv/bin/python factory/scripts/basket_capture_funnel.py --all --workers 3 --force && \
+  .venv/bin/python factory/scripts/basket_capture_funnel.py --merge-only  # monster -> capture funnel
 .venv/bin/python factory/scripts/basket_read.py --write       # READ_PACKET.md + read_packet.json
 .venv/bin/python factory/scripts/sip_selection_audit.py --write       # Layer-1 vs anatomy selections
-.venv/bin/python factory/scripts/basket_market_base_rates.py          # full-universe base rates + funnel
+.venv/bin/python factory/scripts/basket_market_base_rates.py          # full-universe base rates
 ```
+
+Anatomy shape since 2026-09-21: 15 snapshots/day (A_open + A_pm + A_pm31 + 12 B(T)); A_pm31 is the
+coequal 09:31-bound A_pm read (same premarket selection, fill = first bar open with et >= 571).
+B(T) admission no longer requires a previous-session close. Day files also carry
+`winners_close_open` / `winners_close_prev` (EOD leader objects) beside `winners_open` / `winners_prev`.
 
 Long variants: `basket_t5_rawpaths.py --days ...` stages raw-trade paths per day then `--merge-only`; `basket_random_control_sip.py --all --workers 4` stages T9b draws per sampled day (data/sip/t9b_raw/) then `--merge-only`.
 

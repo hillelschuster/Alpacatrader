@@ -62,7 +62,14 @@ def prev_of(days: list, day: str):
 
 
 def day_stats(df: pl.DataFrame, prev: dict, day: str) -> dict:
-    """One day's two-anchor base rates. prev = {symbol: prev close}."""
+    """One day's two-anchor base rates. prev = {symbol: prev close}.
+
+    Canonical eligibility (2026-09-21, aligned with the capture funnel): the frozen
+    universe floor is applied to TRADEABILITY AT THE OPEN (o570 >= MIN_PRICE) for both
+    anchors; the prev-anchor additionally needs prev_close > 0 to be measurable. The
+    earlier provisional rule (floor on the prev-close basis itself, o570 unconstrained)
+    is preserved as `prev_close_prevfloor` (sensitivity), not as a headline.
+    """
     got = set(df.columns)
     missing = [c for c in COLS if c not in got]
     if missing:
@@ -77,8 +84,10 @@ def day_stats(df: pl.DataFrame, prev: dict, day: str) -> dict:
            "open": {}, "prev_close": {}}
     for anchor, basis in (("open", o570), ("prev_close", prov)):
         gains = []
-        for h, b in zip(hi, basis):
-            if h is None or b is None or b < MIN_PRICE:
+        for o, h, b in zip(o570, hi, basis):
+            if h is None or b is None or o is None or o < MIN_PRICE:
+                continue  # not tradeable at the open: outside the frozen universe
+            if b <= 0:
                 continue
             gains.append(h / b - 1.0)
         if not gains:
@@ -92,6 +101,14 @@ def day_stats(df: pl.DataFrame, prev: dict, day: str) -> dict:
             "n_ge": {str(H): int((a >= H / 100.0).sum()) for H in H_LADDER},
             "median_eligible": round(float(np.median(a)), 4),
         }
+    # sensitivity: the earlier provisional prev-anchor floor (prev >= MIN_PRICE, o570
+    # unconstrained). Kept so the previously published 0.747 number stays traceable.
+    s = [h / b - 1.0 for h, b in zip(hi, prov)
+         if h is not None and b is not None and b >= MIN_PRICE]
+    out["prev_close_prevfloor"] = {
+        "n_eligible": int(len(s)),
+        "max": round(float(max(s)), 4) if s else None,
+        "n_ge": {str(H): int(sum(1 for g in s if g >= H / 100.0)) for H in H_LADDER}}
     return out
 
 
@@ -175,18 +192,25 @@ def build(root: Path, write: bool):
     p = {
         "method": ("full-PIT SIP compact universe rows (sip_universe.py); dev days = the "
                    f"{len(dev)} anatomy days; open anchor = hi/o570-1 with o570>=${MIN_PRICE}; "
-                   f"prev_close anchor = hi/prev-1 with prev>=${MIN_PRICE} (prev = previous "
-                   "available SIP table's c_last, seeds 2021-01-29 / 2025-01-31)"),
+                   "prev_close anchor = hi/prev-1 with o570>=$1 (tradeable at the open) and "
+                   "prev>0 (prev = previous available SIP table's c_last, seeds 2021-01-29 / "
+                   "2025-01-31)"),
         "rulers": H_LADDER, "root": str(root),
         "days": len(per_day), "universe_tables_read": n_prev_tables,
         "anchors": {"open": pooled(per_day, "open"),
                     "prev_close": pooled(per_day, "prev_close")},
+        "anchors_sensitivity": {"prev_close_prevfloor": pooled(per_day, "prev_close_prevfloor")},
         "per_day": per_day,
         "monthly": monthly_rows(per_day),
         "funnel": funnel(root),
         "notes": ["Descriptive base rates; no parameter selected, no strategy implied.",
                   "The basket's own +H numbers are post-ENTRY and fill-anchored; these base "
-                  "rates are session-anchored and must never be subtracted from them."],
+                  "rates are session-anchored and must never be subtracted from them.",
+                  "Eligibility (2026-09-21): the $1 floor is applied to tradeability at the "
+                  "open (o570 >= $1) for BOTH anchors; prev-anchor additionally needs "
+                  "prev_close > 0. `anchors_sensitivity.prev_close_prevfloor` preserves the "
+                  "earlier provisional rule (floor on the prev-close basis), whose +100 share "
+                  "was 0.747."],
     }
     if write:
         (root / "agg").mkdir(parents=True, exist_ok=True)
@@ -227,10 +251,15 @@ def selftest():
     assert st["prev_close"]["n_ge"]["100"] == 1, st
     assert st["n_no_prev"] == 1, st
     # a symbol priced under $1 is not eligible on either anchor
-    df2 = pl.DataFrame({"symbol": ["X", "Y"], "o570": [0.5, 2.0], "hi": [0.6, 3.0],
-                        "c_last": [0.5, 2.0], "delayed_open": [False, False]})
-    st2 = day_stats(df2, {"X": 0.4, "Y": 2.0}, "2021-02-02")
+    df2 = pl.DataFrame({"symbol": ["X", "Y", "Z"], "o570": [0.5, 2.0, 0.5],
+                        "hi": [0.6, 3.0, 4.0], "c_last": [0.5, 2.0, 2.0],
+                        "delayed_open": [False, False, False]})
+    st2 = day_stats(df2, {"X": 0.4, "Y": 2.0, "Z": 2.0}, "2021-02-02")
     assert st2["open"]["n_eligible"] == 1 and st2["prev_close"]["n_eligible"] == 1, st2
+    # sensitivity keeps the old rule: Z (prev 2.0, o570 0.5) counts there, not canonically
+    assert st2["prev_close_prevfloor"]["n_eligible"] == 2, st2
+    assert st2["prev_close_prevfloor"]["n_ge"]["100"] == 1, st2
+    assert st2["prev_close"]["n_ge"]["100"] == 0, st2
     pl_pool = pooled([st, {"date": "2021-02-02", "open": {"max": None, "n_ge": {str(H): 0 for H in H_LADDER}},
                            "prev_close": {"max": None, "n_ge": {str(H): 0 for H in H_LADDER}}}], "open")
     assert pl_pool["days_evaluated"] == 1 and pl_pool["days_no_eligible"] == 1, pl_pool

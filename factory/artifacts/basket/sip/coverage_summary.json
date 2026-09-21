@@ -2,14 +2,14 @@
  "days": 1068,
  "symbol_days": 70176,
  "classes": {
-  "healthy_raw": 64041,
-  "provider_only": 6126,
-  "unresolved": 9
+  "healthy_raw": 64042,
+  "provider_only": 6132,
+  "unresolved": 2
  },
  "shares": {
-  "healthy_raw": 0.912577,
-  "provider_only": 0.087295,
-  "unresolved": 0.000128
+  "healthy_raw": 0.912591,
+  "provider_only": 0.08738,
+  "unresolved": 2.8e-05
  },
  "per_month": {
   "2021-01": {
@@ -94,13 +94,13 @@
   },
   "2022-05": {
    "healthy_raw": 1358,
-   "provider_only": 172,
-   "unresolved": 1
+   "provider_only": 173,
+   "unresolved": 0
   },
   "2022-06": {
    "healthy_raw": 1319,
-   "provider_only": 181,
-   "unresolved": 1
+   "provider_only": 182,
+   "unresolved": 0
   },
   "2022-07": {
    "healthy_raw": 1252,
@@ -163,9 +163,9 @@
    "unresolved": 0
   },
   "2023-07": {
-   "healthy_raw": 1230,
-   "provider_only": 171,
-   "unresolved": 2
+   "healthy_raw": 1231,
+   "provider_only": 172,
+   "unresolved": 0
   },
   "2023-08": {
    "healthy_raw": 1356,
@@ -174,8 +174,8 @@
   },
   "2023-09": {
    "healthy_raw": 1193,
-   "provider_only": 221,
-   "unresolved": 2
+   "provider_only": 222,
+   "unresolved": 1
   },
   "2023-10": {
    "healthy_raw": 1226,
@@ -184,8 +184,8 @@
   },
   "2023-11": {
    "healthy_raw": 1217,
-   "provider_only": 175,
-   "unresolved": 1
+   "provider_only": 176,
+   "unresolved": 0
   },
   "2023-12": {
    "healthy_raw": 1169,
@@ -214,8 +214,8 @@
   },
   "2025-05": {
    "healthy_raw": 1146,
-   "provider_only": 91,
-   "unresolved": 1
+   "provider_only": 92,
+   "unresolved": 0
   },
   "2025-06": {
    "healthy_raw": 1075,
@@ -2558,8 +2558,8 @@
    "day": "2022-05-13",
    "symbols": 80,
    "healthy_raw": 73,
-   "provider_only": 6,
-   "unresolved": 1
+   "provider_only": 7,
+   "unresolved": 0
   },
   {
    "day": "2022-05-16",
@@ -2712,8 +2712,8 @@
    "day": "2022-06-15",
    "symbols": 66,
    "healthy_raw": 61,
-   "provider_only": 4,
-   "unresolved": 1
+   "provider_only": 5,
+   "unresolved": 0
   },
   {
    "day": "2022-06-16",
@@ -4545,9 +4545,9 @@
   {
    "day": "2023-07-03",
    "symbols": 81,
-   "healthy_raw": 63,
+   "healthy_raw": 64,
    "provider_only": 17,
-   "unresolved": 1
+   "unresolved": 0
   },
   {
    "day": "2023-07-05",
@@ -4623,8 +4623,8 @@
    "day": "2023-07-19",
    "symbols": 72,
    "healthy_raw": 66,
-   "provider_only": 5,
-   "unresolved": 1
+   "provider_only": 6,
+   "unresolved": 0
   },
   {
    "day": "2023-07-20",
@@ -4973,8 +4973,8 @@
    "day": "2023-09-28",
    "symbols": 75,
    "healthy_raw": 60,
-   "provider_only": 14,
-   "unresolved": 1
+   "provider_only": 15,
+   "unresolved": 0
   },
   {
    "day": "2023-09-29",
@@ -5197,8 +5197,8 @@
    "day": "2023-11-13",
    "symbols": 70,
    "healthy_raw": 51,
-   "provider_only": 18,
-   "unresolved": 1
+   "provider_only": 19,
+   "unresolved": 0
   },
   {
    "day": "2023-11-14",
@@ -5967,8 +5967,8 @@
    "day": "2025-05-22",
    "symbols": 57,
    "healthy_raw": 51,
-   "provider_only": 5,
-   "unresolved": 1
+   "provider_only": 6,
+   "unresolved": 0
   },
   {
    "day": "2025-05-23",
@@ -7757,7 +7757,7 @@
   }
  ],
  "provider_only_reasons": {
-  "raw insufficient (n_trades=156)": 46,
+  "raw insufficient (n_trades=156)": 47,
   "raw insufficient (n_trades=148)": 45,
   "raw insufficient (n_trades=165)": 41,
   "raw insufficient (n_trades=123)": 40,
@@ -7770,9 +7770,9 @@
   "raw insufficient (n_trades=113)": 38,
   "raw insufficient (n_trades=184)": 37,
   "raw insufficient (n_trades=167)": 37,
+  "raw insufficient (n_trades=103)": 37,
   "raw insufficient (n_trades=172)": 36,
   "raw insufficient (n_trades=124)": 36,
-  "raw insufficient (n_trades=103)": 36,
   "raw insufficient (n_trades=101)": 36,
   "raw insufficient (n_trades=134)": 36,
   "raw insufficient (n_trades=75)": 35,
@@ -7926,6 +7926,7 @@
   "raw insufficient (n_trades=210)": 13,
   "raw insufficient (n_trades=205)": 13,
   "raw insufficient (n_trades=41)": 12,
+  "raw insufficient (n_trades=248)": 12,
   "raw insufficient (n_trades=46)": 12,
   "raw insufficient (n_trades=221)": 12,
   "raw insufficient (n_trades=201)": 12,
@@ -7934,11 +7935,11 @@
   "raw insufficient (n_trades=251)": 12,
   "raw insufficient (n_trades=202)": 12,
   "raw insufficient (n_trades=207)": 11,
-  "raw insufficient (n_trades=248)": 11,
   "raw insufficient (n_trades=249)": 11,
   "raw insufficient (n_trades=234)": 11,
   "raw insufficient (n_trades=212)": 11,
   "raw insufficient (n_trades=37)": 11,
+  "raw insufficient (n_trades=244)": 11,
   "raw insufficient (n_trades=237)": 11,
   "raw insufficient (n_trades=58)": 10,
   "raw insufficient (n_trades=254)": 10,
@@ -7949,7 +7950,6 @@
   "raw insufficient (n_trades=27)": 10,
   "raw insufficient (n_trades=233)": 10,
   "raw insufficient (n_trades=229)": 10,
-  "raw insufficient (n_trades=244)": 10,
   "raw insufficient (n_trades=272)": 10,
   "raw insufficient (n_trades=231)": 9,
   "raw insufficient (n_trades=209)": 9,
@@ -7962,6 +7962,7 @@
   "raw insufficient (n_trades=224)": 9,
   "raw insufficient (n_trades=34)": 9,
   "raw insufficient (n_trades=282)": 9,
+  "raw insufficient (n_trades=299)": 9,
   "raw insufficient (n_trades=217)": 9,
   "raw insufficient (n_trades=29)": 8,
   "raw insufficient (n_trades=300)": 8,
@@ -7972,7 +7973,6 @@
   "raw insufficient (n_trades=225)": 8,
   "raw insufficient (n_trades=326)": 8,
   "raw insufficient (n_trades=239)": 8,
-  "raw insufficient (n_trades=299)": 8,
   "raw insufficient (n_trades=22)": 8,
   "raw insufficient (n_trades=280)": 7,
   "raw insufficient (n_trades=203)": 7,
@@ -8062,6 +8062,7 @@
   "raw insufficient (n_trades=315)": 4,
   "raw insufficient (n_trades=267)": 4,
   "raw insufficient (n_trades=318)": 4,
+  "raw insufficient (n_trades=277)": 4,
   "raw insufficient (n_trades=329)": 4,
   "raw insufficient (n_trades=23)": 4,
   "raw insufficient (n_trades=316)": 4,
@@ -8099,7 +8100,6 @@
   "raw insufficient (n_trades=270)": 3,
   "raw insufficient (n_trades=541)": 3,
   "raw insufficient (n_trades=379)": 3,
-  "raw insufficient (n_trades=277)": 3,
   "raw insufficient (n_trades=364)": 3,
   "raw insufficient (n_trades=374)": 3,
   "raw insufficient (n_trades=580)": 3,
@@ -8510,34 +8510,11 @@
   "raw insufficient (n_trades=1942)": 1
  },
  "unresolved_reasons": {
-  "no usable source (n_trades=156, d_bars=36)": 1,
-  "no usable source (n_trades=244, d_bars=9)": 1,
   "no usable source (n_trades=26, d_bars=0)": 1,
-  "raw>=min but session truncated and no provider reference": 1,
-  "no usable source (n_trades=103, d_bars=6)": 1,
-  "no usable source (n_trades=24, d_bars=0)": 1,
-  "no usable source (n_trades=299, d_bars=29)": 1,
-  "no usable source (n_trades=277, d_bars=27)": 1,
-  "no usable source (n_trades=248, d_bars=22)": 1
+  "no usable source (n_trades=24, d_bars=0)": 1
  },
- "unresolved_days": 9,
+ "unresolved_days": 2,
  "unresolved_rows": [
-  {
-   "day": "2022-05-13",
-   "symbol": "VVPR",
-   "n_trades": 156,
-   "derived_bars": 36,
-   "provider_bars": 0,
-   "reason": "no usable source (n_trades=156, d_bars=36)"
-  },
-  {
-   "day": "2022-06-15",
-   "symbol": "HSON",
-   "n_trades": 244,
-   "derived_bars": 9,
-   "provider_bars": 0,
-   "reason": "no usable source (n_trades=244, d_bars=9)"
-  },
   {
    "day": "2023-02-13",
    "symbol": "PMN",
@@ -8547,52 +8524,12 @@
    "reason": "no usable source (n_trades=26, d_bars=0)"
   },
   {
-   "day": "2023-07-03",
-   "symbol": "AJX",
-   "n_trades": 4549,
-   "derived_bars": 175,
-   "provider_bars": 0,
-   "reason": "raw>=min but session truncated and no provider reference"
-  },
-  {
-   "day": "2023-07-19",
-   "symbol": "HSON",
-   "n_trades": 103,
-   "derived_bars": 6,
-   "provider_bars": 0,
-   "reason": "no usable source (n_trades=103, d_bars=6)"
-  },
-  {
    "day": "2023-09-19",
    "symbol": "MGLD",
    "n_trades": 24,
    "derived_bars": 0,
    "provider_bars": 0,
    "reason": "no usable source (n_trades=24, d_bars=0)"
-  },
-  {
-   "day": "2023-09-28",
-   "symbol": "CSLR",
-   "n_trades": 299,
-   "derived_bars": 29,
-   "provider_bars": 0,
-   "reason": "no usable source (n_trades=299, d_bars=29)"
-  },
-  {
-   "day": "2023-11-13",
-   "symbol": "CSLR",
-   "n_trades": 277,
-   "derived_bars": 27,
-   "provider_bars": 0,
-   "reason": "no usable source (n_trades=277, d_bars=27)"
-  },
-  {
-   "day": "2025-05-22",
-   "symbol": "HSON",
-   "n_trades": 248,
-   "derived_bars": 22,
-   "provider_bars": 0,
-   "reason": "no usable source (n_trades=248, d_bars=22)"
   }
  ]
 }

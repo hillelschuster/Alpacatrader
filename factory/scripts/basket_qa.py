@@ -4,8 +4,9 @@
 Fails loudly (exit 1) on any problem. No interpretation, no strategy.
 Checks:
   1. every anatomy day file parses; required structure present
-     (snapshots in {13,14}: A_open + B x12 + A_pm in 2025; every filled member has
-      causal fill fields, up/dn ladders, mfe/mae, fixed-time states)
+     (snapshots in {13,14,15}: A_open + B x12 (+ A_pm, + A_pm31 when premarket data
+      exists); every filled member has causal fill fields, up/dn ladders, mfe/mae,
+      fixed-time states)
   2. bars parquet exists, has the exact column set, and is non-empty for every day
   3. zero ".tmp" leftovers (atomic-write hygiene)
   4. calendar completeness vs the repo leaderboard calendar, restricted to months
@@ -41,11 +42,11 @@ def check_record(rec: dict) -> list:
         if k not in rec:
             errs.append(f"missing key {k}")
     snaps = rec.get("snapshots") or []
-    if len(snaps) not in (13, 14):
+    if len(snaps) not in (13, 14, 15):
         errs.append(f"snapshot count {len(snaps)}")
     year = str(rec.get("date", ""))[:4]
     for i, s in enumerate(snaps):
-        if s.get("pop") not in ("A_open", "A_pm", "B"):
+        if s.get("pop") not in ("A_open", "A_pm", "A_pm31", "B"):
             errs.append(f"snap{i}: bad pop {s.get('pop')}")
         for n in s.get("names", []):
             t = n.get("ticker", "?")

@@ -51,8 +51,11 @@ survivor -> potentially concentrated evidence.**
   for operational reasons — never because a band produced attractive P&L.
 - Population A (coequal): `A_open` ranks from the completed 09:30 bar by open(09:30 first
   RTH bar)/prev_close - 1, fill at the 09:31 open (1-bar lag); `A_pm` ranks by last
-  premarket print <= 09:30 / prev_close - 1 (known before the bell; 2025 only; freshness
-  rule), fill at the 09:30 bar open — the first realistic RTH participation opportunity
+  premarket print <= 09:30 / prev_close - 1 (known before the bell; freshness
+  rule; [AMENDED 2026-09-20 under SIP: available for all 1,066 dev days — the earlier
+  2025-only limit was a pre-SIP data-availability artifact; a coequal conservative
+  09:31-bound variant, A_pm31, is measured alongside]), fill at the 09:30 bar open — the
+  first realistic RTH participation opportunity
   (conservative bound: 09:31 open). Population B (coequal): ranks by close(last completed
   bar, et <= T-1) / open(09:30) - 1 on the frozen dense timing surface (5-min through
   10:00, 15-min to 11:00, 30-min to noon; PRE-REG §3), fill at the
@@ -260,7 +263,9 @@ assumption, never as observed fact); fills per population (A_pm: 09:30 first-tra
 bound 09:31; A_open: 09:31; B(T): first bar open et>=T); honest friction (100bps+);
 month-blocked reporting; pre-registered kills.
 
-Data limits to respect: premarket bars **2025 only** (Alpaca SIP, 04:00-09:29:59 ET); no
+Data limits to respect: premarket bars [AMENDED 2026-09-20: SIP premarket bars now exist
+for all 1,066 dev days; the "2025 only" limit recorded here was legacy data availability]
+(Alpaca SIP, 04:00-09:29:59 ET); no
 official 09:30 auction print (the 09:30 bar open is the first RTH trade); no LULD halt
 flags (halts inferred from >=5-min bar holes); raw/unadjusted prices; split/corporate-action
 flags are audit/sensitivity metadata only — never causal admission (no independent

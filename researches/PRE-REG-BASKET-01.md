@@ -60,9 +60,11 @@ later for operational reasons only — never because a band produced attractive 
 - `A_pm`: rank by last premarket print <= 09:30 / prev_close - 1 (known before the bell);
   fill at the 09:30 bar open — the first realistic RTH participation opportunity (09:30
   open = first RTH trade; no official auction print exists in this data). Conservative
-  bound: 09:31 open, reported alongside. Freshness rule default: print within the last 15
-  minutes before 09:30; staleness sensitivity reported. 2025 only — never pooled with
-  A_open.
+  bound: 09:31 open, reported alongside (regenerated as a coequal `A_pm31` population:
+  same selection, fill at the first bar open with et >= 571). Freshness rule default:
+  print within the last 15 minutes before 09:30; staleness sensitivity reported.
+  [AMENDED 2026-09-20: available for all 1,066 dev days under SIP — the legacy 2025-only
+  limit was a premarket-data availability artifact.] Never pooled with A_open.
 - `B(T)`: rank by close(last completed bar, et <= T-1) / open(09:30) - 1; fill at the
   first bar open with et >= T. Frozen timing surface (fixed before any aggregate result
   was viewed): 5-minute resolution through the opening window — 09:35, 09:40, 09:45,
@@ -278,3 +280,31 @@ constructed later without rerunning the anatomy.
   adds; T8 monthly/quarterly stability and T9b matched-random control regenerated on SIP;
   market base-rate funnel added (full PIT universe, both anchors, explicitly separate from
   the basket's post-entry numbers); Layer-1-vs-anatomy selection audit added.
+- 2026-09-21 (advisor-directed final measurement pass; no frozen population, timing
+  surface, ruler or lens definition changes): B(T) admission no longer requires a
+  previous-session close (it was never part of the B ranking rule: rank = close(T-1) /
+  open(09:30) - 1; prev_close is descriptive metadata only) — this removes the
+  `dropped:no_prev_close` selection-audit class; open-anchored / EOD leader objects are
+  recorded separately (`winners_close_open`, `winners_close_prev`) and reported as
+  separate containment counters so "final top gainer" never reuses the intraday-high
+  definition; `A_pm31` added as the coequal conservative 09:31-bound A_pm read; T5 path
+  anatomy rebuilt trade-by-trade from raw SIP prints under the Alpaca condition policy
+  (no minute ordering assumed anywhere) with strata extended to mfe>=100; T7 artifact now
+  carries true monthly rollups (the previous "monthly" key held day rows, which made the
+  T8 monthly pay-for-team shares invalid); Layer-2 provider fetch now retries symbols the
+  bulk request silently dropped (8 of 9 previously unresolved symbol-days were recovered:
+  VVPR 2022-05-13, HSON 2022-06-15, HSON 2023-07-19, MGLD 2023-09-19, CSLR 2023-09-28,
+  CSLR 2023-11-13, HSON 2025-05-22, AJX 2023-07-03; PMN 2023-02-13 remains genuinely
+  provider-empty).
+  Continuation (same pass): the market base-rate artifact's canonical eligibility is now
+  the $1 floor on open tradeability for both anchors (prev-close anchor additionally needs
+  prev_close > 0); the previous prev-basis floor is retained as the
+  `prev_close_prevfloor` sensitivity field so no published number becomes untraceable.
+  New measurement views (descriptive only): market-opportunity -> basket-capture funnel
+  (`capture_funnel`, both anchors, ranks at A_pm/A_pm31/A_open/B(T), post-fill remaining
+  for contained monsters, and the same-day co-member fallback on miss days) and
+  `race_by_view` (per-view dn-before-up shares for the (H, L) cells). The funnel was
+  cross-checked against the base-rate artifact: all six (anchor, ruler) day counts agree
+  exactly. T8 quarter rows now carry `pays_days`; the T8 pay-for-team shares read the
+  corrected T7 monthly rollups. No parameter, population, timing point, ruler or lens was
+  selected; PRE-REG-BASKET-02 remains unfrozen.

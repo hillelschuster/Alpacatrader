@@ -90,6 +90,8 @@ def build(root: Path) -> dict:
     t7e = load(root, "T7_payforteam")
     t8 = load(root, "T8_stability")
     mbr = load(root, "market_base_rates")
+    cf = load(root, "capture_funnel")
+    rbv = load(root, "race_by_view")
     cov = load(root, "coverage_summary")
 
     s: dict = out["sections"]
@@ -111,21 +113,24 @@ def build(root: Path) -> dict:
         s["churn_top3_overlap"] = {f"{p}/{a}->{b}": round(float(np.mean(v)), 3)
                                    for (p, a, b), v in sorted(ch.items())}
     if t2:
-        agg = defaultdict(lambda: {"d": 0, "t1": 0, "t2": 0, "t3": 0, "blk": 0})
+        keys = ["top1_in", "top2_in", "top3_in",
+                "prev_top1_in", "prev_top2_in", "prev_top3_in",
+                "eodopen_top1_in", "eodopen_top2_in", "eodopen_top3_in",
+                "eodprev_top1_in", "eodprev_top2_in", "eodprev_top3_in"]
+        agg = defaultdict(lambda: defaultdict(int))
         for r in t2:
             k = (r["pop"], r["T"], r["N"])
-            agg[k]["d"] += r.get("days", r.get("days_eval", 0))
-            agg[k]["t1"] += r["top1_in"]
-            agg[k]["t2"] += r["top2_in"]
-            agg[k]["t3"] += r["top3_in"]
+            agg[k]["d"] += int(r.get("days", r.get("days_eval", 0)) or 0)
+            for key in keys:
+                agg[k][key] += int(r.get(key, 0) or 0)
             agg[k]["blk"] += r.get("blocked_in", 0)
-        s["containment"] = {f"{p}/{T}/N{N}": {
-            "days": v["d"],
-            "top1_in": round(v["t1"] / v["d"], 4) if v["d"] else None,
-            "top2_in": round(v["t2"] / v["d"], 4) if v["d"] else None,
-            "top3_in": round(v["t3"] / v["d"], 4) if v["d"] else None,
-            "blocked_in": v["blk"]}
-            for (p, T, N), v in sorted(agg.items())}
+        s["containment"] = {}
+        for (p, T, N), v in sorted(agg.items()):
+            d = v["d"]
+            entry: dict = {"days": d, "blocked_in": v["blk"]}
+            for key in keys:
+                entry[key] = round(v[key] / d, 4) if d else None
+            s["containment"][f"{p}/{T}/N{N}"] = entry
     if t7b:
         grp = defaultdict(list)
         for r in t7b:
@@ -169,14 +174,18 @@ def build(root: Path) -> dict:
     if t5p:
         grp = defaultdict(list)
         for r in t5p["tables"]:
-            grp[(r["set"], r["stratum"], r["stat"])].append(r)
+            grp[(r.get("pop", "-"), r.get("T", 0), r["set"], r["stratum"], r["stat"])].append(r)
         s["runner_paths"] = {
-            f"{setn}/{strat}/{stat}": {
+            f"{pop}/{T}/{setn}/{strat}/{stat}": {
                 "months": len(rows),
                 "p50_monthly_median": _round(_median_field(rows, "p50")),
                 "p50_monthly_range": _range([r["p50"] for r in rows]),
             }
-            for (setn, strat, stat), rows in sorted(grp.items())}
+            for (pop, T, setn, strat, stat), rows in sorted(grp.items())}
+        s["runner_paths_meta"] = {
+            "n_members": t5p.get("n_members"), "n_no_trades": t5p.get("n_no_trades"),
+            "n_sparse_lt5": t5p.get("n_sparse_lt5"), "method": t5p.get("method"),
+            "peak_recon_vs_stored_mfe": t5p.get("peak_recon_vs_stored_mfe")}
     if t5m:
         grp = defaultdict(list)
         for r in t5m:
@@ -215,7 +224,7 @@ def build(root: Path) -> dict:
             key = f"{r['pop']}/{r['T']}"
             if r["pop"] == "B" and r["T"] not in (600, 585, 720):
                 continue
-            if r["pop"] == "A_open" and r["T"] != 570:
+            if r["pop"] != "B" and r["T"] != 570:
                 continue
             s["continuous"][key] = {
                 "days": r["days"], "days_lt3": r["days_lt3"], "members": r["members_filled"],
@@ -241,6 +250,10 @@ def build(root: Path) -> dict:
         s["stability"] = t8
     if mbr:
         s["market_base_rates"] = mbr
+    if cf:
+        s["capture_funnel"] = cf.get("summary", cf)
+    if rbv:
+        s["race_by_view"] = {"views": rbv.get("views"), "method": rbv.get("method")}
     out["notes"].append("Rulers are descriptive; no H/L/T/N were selected by this reader.")
     out["notes"].append("Lenses: touch = the excursion exists on the minute path; exec = touch AND a next "
                         "bar existed (the frozen contract's 'executable' bookkeeping -- NOT a claim of "
@@ -248,6 +261,9 @@ def build(root: Path) -> dict:
                         "saleable lens). Never read exec as 'we could have sold there'.")
     out["notes"].append("T11 'cover' is a non-economic illustration (best raw MFE vs co-member MAE); "
                         "T7_pay_for_team carries the labeled economics.")
+    out["notes"].append("Containment: top{k}_in = hi_open leaders (session max, RTH-open anchored); "
+                        "prev_/eodopen_/eodprev_ are the hi_prev, EOD/open and EOD/prev leader "
+                        "objects — never conflated with the intraday-high definition.")
     out["notes"].append("Pooling = day-weighted sums across months; quantities are provisional until "
                         "the artifact root's QA gate reports PASS.")
     return out

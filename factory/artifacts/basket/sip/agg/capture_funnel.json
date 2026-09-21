@@ -1,0 +1,4542 @@
+{
+ "summary": {
+  "hi_open/H50": {
+   "days_offered": 959,
+   "views": {
+    "A_pm/570": {
+     "anchor": "hi_open",
+     "H": 50,
+     "pop": "A_pm",
+     "T": 570,
+     "days": 959,
+     "buckets": {
+      "4-10": 246,
+      "1-3": 268,
+      "11-50": 139,
+      ">100": 185,
+      "absent": 75,
+      "51-100": 46
+     },
+     "contains_days": 268,
+     "contains_share": 0.2795,
+     "contains_accessible_days": 268,
+     "contains_blocked_days": 0,
+     "monster_mfe_q": {
+      "n": 268,
+      "p50": 0.7739,
+      "p90": 2.2048
+     },
+     "monster_ahead_share_q": {
+      "n": 268,
+      "p50": 1.0,
+      "p90": 1.0
+     },
+     "monster_above_H_days": 169,
+     "miss_days": 691,
+     "miss_other_touch_30": 180,
+     "miss_other_touch_50": 0,
+     "miss_other_touch_100": 0,
+     "miss_other_above_100": 0,
+     "miss_other_best_mfe_q": {
+      "n": 691,
+      "p50": 0.2,
+      "p90": 0.4061
+     }
+    },
+    "A_pm31/570": {
+     "anchor": "hi_open",
+     "H": 50,
+     "pop": "A_pm31",
+     "T": 570,
+     "days": 959,
+     "buckets": {
+      "4-10": 246,
+      "1-3": 268,
+      "11-50": 139,
+      ">100": 185,
+      "absent": 75,
+      "51-100": 46
+     },
+     "contains_days": 268,
+     "contains_share": 0.2795,
+     "contains_accessible_days": 260,
+     "contains_blocked_days": 8,
+     "monster_mfe_q": {
+      "n": 260,
+      "p50": 0.761,
+      "p90": 1.9972
+     },
+     "monster_ahead_share_q": {
+      "n": 260,
+      "p50": 0.9885,
+      "p90": 1.0405
+     },
+     "monster_above_H_days": 133,
+     "miss_days": 691,
+     "miss_other_touch_30": 157,
+     "miss_other_touch_50": 8,
+     "miss_other_touch_100": 0,
+     "miss_other_above_100": 0,
+     "miss_other_best_mfe_q": {
+      "n": 691,
+      "p50": 0.1971,
+      "p90": 0.3905
+     }
+    },
+    "A_open/570": {
+     "anchor": "hi_open",
+     "H": 50,
+     "pop": "A_open",
+     "T": 570,
+     "days": 959,
+     "buckets": {
+      "4-10": 268,
+      "1-3": 249,
+      "11-50": 150,
+      ">100": 235,
+      "absent": 8,
+      "51-100": 49
+     },
+     "contains_days": 249,
+     "contains_share": 0.2596,
+     "contains_accessible_days": 243,
+     "contains_blocked_days": 6,
+     "monster_mfe_q": {
+      "n": 243,
+      "p50": 0.7489,
+      "p90": 2.0111
+     },
+     "monster_ahead_share_q": {
+      "n": 243,
+      "p50": 0.9889,
+      "p90": 1.0456
+     },
+     "monster_above_H_days": 126,
+     "miss_days": 710,
+     "miss_other_touch_30": 149,
+     "miss_other_touch_50": 7,
+     "miss_other_touch_100": 0,
+     "miss_other_above_100": 0,
+     "miss_other_best_mfe_q": {
+      "n": 710,
+      "p50": 0.1886,
+      "p90": 0.3693
+     }
+    },
+    "B/600": {
+     "anchor": "hi_open",
+     "H": 50,
+     "pop": "B",
+     "T": 600,
+     "days": 959,
+     "buckets": {
+      "1-3": 646,
+      "4-10": 89,
+      "11-50": 95,
+      ">100": 107,
+      "51-100": 22
+     },
+     "contains_days": 646,
+     "contains_share": 0.6736,
+     "contains_accessible_days": 600,
+     "contains_blocked_days": 46,
+     "monster_mfe_q": {
+      "n": 600,
+      "p50": 0.2931,
+      "p90": 0.9036
+     },
+     "monster_ahead_share_q": {
+      "n": 600,
+      "p50": 0.5445,
+      "p90": 0.8129
+     },
+     "monster_above_H_days": 93,
+     "miss_days": 313,
+     "miss_other_touch_30": 14,
+     "miss_other_touch_50": 8,
+     "miss_other_touch_100": 4,
+     "miss_other_above_100": 2,
+     "miss_other_best_mfe_q": {
+      "n": 313,
+      "p50": 0.1156,
+      "p90": 0.2523
+     }
+    }
+   }
+  },
+  "hi_open/H100": {
+   "days_offered": 511,
+   "views": {
+    "A_pm/570": {
+     "anchor": "hi_open",
+     "H": 100,
+     "pop": "A_pm",
+     "T": 570,
+     "days": 511,
+     "buckets": {
+      "4-10": 98,
+      "1-3": 103,
+      ">100": 127,
+      "11-50": 74,
+      "absent": 91,
+      "51-100": 18
+     },
+     "contains_days": 103,
+     "contains_share": 0.2016,
+     "contains_accessible_days": 103,
+     "contains_blocked_days": 0,
+     "monster_mfe_q": {
+      "n": 103,
+      "p50": 1.4194,
+      "p90": 3.117
+     },
+     "monster_ahead_share_q": {
+      "n": 103,
+      "p50": 1.0,
+      "p90": 1.0
+     },
+     "monster_above_H_days": 55,
+     "miss_days": 408,
+     "miss_other_touch_30": 159,
+     "miss_other_touch_50": 71,
+     "miss_other_touch_100": 0,
+     "miss_other_above_100": 0,
+     "miss_other_best_mfe_q": {
+      "n": 408,
+      "p50": 0.2343,
+      "p90": 0.6174
+     }
+    },
+    "A_pm31/570": {
+     "anchor": "hi_open",
+     "H": 100,
+     "pop": "A_pm31",
+     "T": 570,
+     "days": 511,
+     "buckets": {
+      "4-10": 98,
+      "1-3": 103,
+      ">100": 127,
+      "11-50": 74,
+      "absent": 91,
+      "51-100": 18
+     },
+     "contains_days": 103,
+     "contains_share": 0.2016,
+     "contains_accessible_days": 100,
+     "contains_blocked_days": 3,
+     "monster_mfe_q": {
+      "n": 100,
+      "p50": 1.3797,
+      "p90": 2.9894
+     },
+     "monster_ahead_share_q": {
+      "n": 100,
+      "p50": 0.9922,
+      "p90": 1.0258
+     },
+     "monster_above_H_days": 48,
+     "miss_days": 408,
+     "miss_other_touch_30": 149,
+     "miss_other_touch_50": 63,
+     "miss_other_touch_100": 1,
+     "miss_other_above_100": 0,
+     "miss_other_best_mfe_q": {
+      "n": 408,
+      "p50": 0.2266,
+      "p90": 0.6068
+     }
+    },
+    "A_open/570": {
+     "anchor": "hi_open",
+     "H": 100,
+     "pop": "A_open",
+     "T": 570,
+     "days": 511,
+     "buckets": {
+      "1-3": 92,
+      "4-10": 110,
+      ">100": 201,
+      "51-100": 26,
+      "11-50": 70,
+      "absent": 12
+     },
+     "contains_days": 92,
+     "contains_share": 0.18,
+     "contains_accessible_days": 91,
+     "contains_blocked_days": 1,
+     "monster_mfe_q": {
+      "n": 91,
+      "p50": 1.4157,
+      "p90": 3.0458
+     },
+     "monster_ahead_share_q": {
+      "n": 91,
+      "p50": 0.995,
+      "p90": 1.0262
+     },
+     "monster_above_H_days": 45,
+     "miss_days": 419,
+     "miss_other_touch_30": 143,
+     "miss_other_touch_50": 59,
+     "miss_other_touch_100": 1,
+     "miss_other_above_100": 0,
+     "miss_other_best_mfe_q": {
+      "n": 419,
+      "p50": 0.2197,
+      "p90": 0.5948
+     }
+    },
+    "B/600": {
+     "anchor": "hi_open",
+     "H": 100,
+     "pop": "B",
+     "T": 600,
+     "days": 511,
+     "buckets": {
+      "4-10": 55,
+      "1-3": 255,
+      ">100": 128,
+      "11-50": 61,
+      "51-100": 11,
+      "absent": 1
+     },
+     "contains_days": 255,
+     "contains_share": 0.499,
+     "contains_accessible_days": 229,
+     "contains_blocked_days": 26,
+     "monster_mfe_q": {
+      "n": 229,
+      "p50": 0.76,
+      "p90": 1.7004
+     },
+     "monster_ahead_share_q": {
+      "n": 229,
+      "p50": 0.7342,
+      "p90": 0.8846
+     },
+     "monster_above_H_days": 28,
+     "miss_days": 256,
+     "miss_other_touch_30": 68,
+     "miss_other_touch_50": 15,
+     "miss_other_touch_100": 2,
+     "miss_other_above_100": 1,
+     "miss_other_best_mfe_q": {
+      "n": 256,
+      "p50": 0.1861,
+      "p90": 0.4558
+     }
+    }
+   }
+  },
+  "hi_open/H200": {
+   "days_offered": 146,
+   "views": {
+    "A_pm/570": {
+     "anchor": "hi_open",
+     "H": 200,
+     "pop": "A_pm",
+     "T": 570,
+     "days": 146,
+     "buckets": {
+      "1-3": 29,
+      ">100": 38,
+      "4-10": 29,
+      "absent": 30,
+      "51-100": 3,
+      "11-50": 17
+     },
+     "contains_days": 29,
+     "contains_share": 0.1986,
+     "contains_accessible_days": 29,
+     "contains_blocked_days": 0,
+     "monster_mfe_q": {
+      "n": 29,
+      "p50": 2.9357,
+      "p90": 4.2614
+     },
+     "monster_ahead_share_q": {
+      "n": 29,
+      "p50": 1.0,
+      "p90": 1.0
+     },
+     "monster_above_H_days": null,
+     "miss_days": 117,
+     "miss_other_touch_30": 49,
+     "miss_other_touch_50": 23,
+     "miss_other_touch_100": 8,
+     "miss_other_above_100": 6,
+     "miss_other_best_mfe_q": {
+      "n": 117,
+      "p50": 0.2466,
+      "p90": 0.6785
+     }
+    },
+    "A_pm31/570": {
+     "anchor": "hi_open",
+     "H": 200,
+     "pop": "A_pm31",
+     "T": 570,
+     "days": 146,
+     "buckets": {
+      "1-3": 29,
+      ">100": 38,
+      "4-10": 29,
+      "absent": 30,
+      "51-100": 3,
+      "11-50": 17
+     },
+     "contains_days": 29,
+     "contains_share": 0.1986,
+     "contains_accessible_days": 27,
+     "contains_blocked_days": 2,
+     "monster_mfe_q": {
+      "n": 27,
+      "p50": 2.8339,
+      "p90": 3.886
+     },
+     "monster_ahead_share_q": {
+      "n": 27,
+      "p50": 0.9955,
+      "p90": 1.0139
+     },
+     "monster_above_H_days": null,
+     "miss_days": 117,
+     "miss_other_touch_30": 48,
+     "miss_other_touch_50": 21,
+     "miss_other_touch_100": 7,
+     "miss_other_above_100": 4,
+     "miss_other_best_mfe_q": {
+      "n": 117,
+      "p50": 0.25,
+      "p90": 0.7171
+     }
+    },
+    "A_open/570": {
+     "anchor": "hi_open",
+     "H": 200,
+     "pop": "A_open",
+     "T": 570,
+     "days": 146,
+     "buckets": {
+      "1-3": 26,
+      ">100": 66,
+      "4-10": 32,
+      "51-100": 6,
+      "11-50": 14,
+      "absent": 2
+     },
+     "contains_days": 26,
+     "contains_share": 0.1781,
+     "contains_accessible_days": 26,
+     "contains_blocked_days": 0,
+     "monster_mfe_q": {
+      "n": 26,
+      "p50": 2.8585,
+      "p90": 3.9371
+     },
+     "monster_ahead_share_q": {
+      "n": 26,
+      "p50": 0.9936,
+      "p90": 1.0146
+     },
+     "monster_above_H_days": null,
+     "miss_days": 120,
+     "miss_other_touch_30": 45,
+     "miss_other_touch_50": 18,
+     "miss_other_touch_100": 6,
+     "miss_other_above_100": 4,
+     "miss_other_best_mfe_q": {
+      "n": 120,
+      "p50": 0.2397,
+      "p90": 0.609
+     }
+    },
+    "B/600": {
+     "anchor": "hi_open",
+     "H": 200,
+     "pop": "B",
+     "T": 600,
+     "days": 146,
+     "buckets": {
+      "1-3": 71,
+      "11-50": 14,
+      "4-10": 17,
+      ">100": 40,
+      "51-100": 4
+     },
+     "contains_days": 71,
+     "contains_share": 0.4863,
+     "contains_accessible_days": 60,
+     "contains_blocked_days": 11,
+     "monster_mfe_q": {
+      "n": 60,
+      "p50": 1.6816,
+      "p90": 2.6821
+     },
+     "monster_ahead_share_q": {
+      "n": 60,
+      "p50": 0.8644,
+      "p90": 0.9396
+     },
+     "monster_above_H_days": null,
+     "miss_days": 75,
+     "miss_other_touch_30": 32,
+     "miss_other_touch_50": 18,
+     "miss_other_touch_100": 4,
+     "miss_other_above_100": 0,
+     "miss_other_best_mfe_q": {
+      "n": 75,
+      "p50": 0.2447,
+      "p90": 0.8844
+     }
+    }
+   }
+  },
+  "hi_prev/H50": {
+   "days_offered": 1052,
+   "views": {
+    "A_pm/570": {
+     "anchor": "hi_prev",
+     "H": 50,
+     "pop": "A_pm",
+     "T": 570,
+     "days": 1052,
+     "buckets": {
+      "1-3": 1005,
+      "4-10": 24,
+      "absent": 9,
+      ">100": 8,
+      "11-50": 3,
+      "51-100": 3
+     },
+     "contains_days": 1005,
+     "contains_share": 0.9553,
+     "contains_accessible_days": 1005,
+     "contains_blocked_days": 0,
+     "monster_mfe_q": {
+      "n": 1005,
+      "p50": 0.1225,
+      "p90": 0.5111
+     },
+     "monster_ahead_share_q": {
+      "n": 1005,
+      "p50": 0.1478,
+      "p90": 0.5363
+     },
+     "monster_above_H_days": 66,
+     "miss_days": 47,
+     "miss_other_touch_30": 0,
+     "miss_other_touch_50": 0,
+     "miss_other_touch_100": 0,
+     "miss_other_above_100": 0,
+     "miss_other_best_mfe_q": {
+      "n": 47,
+      "p50": 0.0949,
+      "p90": 0.1857
+     }
+    },
+    "A_pm31/570": {
+     "anchor": "hi_prev",
+     "H": 50,
+     "pop": "A_pm31",
+     "T": 570,
+     "days": 1052,
+     "buckets": {
+      "1-3": 1005,
+      "4-10": 24,
+      "absent": 9,
+      ">100": 8,
+      "11-50": 3,
+      "51-100": 3
+     },
+     "contains_days": 1005,
+     "contains_share": 0.9553,
+     "contains_accessible_days": 991,
+     "contains_blocked_days": 14,
+     "monster_mfe_q": {
+      "n": 991,
+      "p50": 0.1089,
+      "p90": 0.4834
+     },
+     "monster_ahead_share_q": {
+      "n": 991,
+      "p50": 0.1371,
+      "p90": 0.5235
+     },
+     "monster_above_H_days": 52,
+     "miss_days": 47,
+     "miss_other_touch_30": 0,
+     "miss_other_touch_50": 0,
+     "miss_other_touch_100": 0,
+     "miss_other_above_100": 0,
+     "miss_other_best_mfe_q": {
+      "n": 47,
+      "p50": 0.0891,
+      "p90": 0.1997
+     }
+    },
+    "A_open/570": {
+     "anchor": "hi_prev",
+     "H": 50,
+     "pop": "A_open",
+     "T": 570,
+     "days": 1052,
+     "buckets": {
+      "1-3": 1009,
+      "4-10": 22,
+      ">100": 9,
+      "11-50": 7,
+      "51-100": 5
+     },
+     "contains_days": 1009,
+     "contains_share": 0.9591,
+     "contains_accessible_days": 990,
+     "contains_blocked_days": 19,
+     "monster_mfe_q": {
+      "n": 990,
+      "p50": 0.1097,
+      "p90": 0.448
+     },
+     "monster_ahead_share_q": {
+      "n": 990,
+      "p50": 0.1279,
+      "p90": 0.4962
+     },
+     "monster_above_H_days": 48,
+     "miss_days": 43,
+     "miss_other_touch_30": 0,
+     "miss_other_touch_50": 0,
+     "miss_other_touch_100": 0,
+     "miss_other_above_100": 0,
+     "miss_other_best_mfe_q": {
+      "n": 43,
+      "p50": 0.088,
+      "p90": 0.2065
+     }
+    },
+    "B/600": {
+     "anchor": "hi_prev",
+     "H": 50,
+     "pop": "B",
+     "T": 600,
+     "days": 1052,
+     "buckets": {
+      "1-3": 771,
+      "11-50": 78,
+      "4-10": 101,
+      ">100": 81,
+      "51-100": 21
+     },
+     "contains_days": 771,
+     "contains_share": 0.7329,
+     "contains_accessible_days": 728,
+     "contains_blocked_days": 43,
+     "monster_mfe_q": {
+      "n": 728,
+      "p50": 0.208,
+      "p90": 0.7903
+     },
+     "monster_ahead_share_q": {
+      "n": 728,
+      "p50": 0.3455,
+      "p90": 0.7481
+     },
+     "monster_above_H_days": 83,
+     "miss_days": 281,
+     "miss_other_touch_30": 29,
+     "miss_other_touch_50": 14,
+     "miss_other_touch_100": 5,
+     "miss_other_above_100": 3,
+     "miss_other_best_mfe_q": {
+      "n": 281,
+      "p50": 0.1256,
+      "p90": 0.3051
+     }
+    }
+   }
+  },
+  "hi_prev/H100": {
+   "days_offered": 922,
+   "views": {
+    "A_pm/570": {
+     "anchor": "hi_prev",
+     "H": 100,
+     "pop": "A_pm",
+     "T": 570,
+     "days": 922,
+     "buckets": {
+      "1-3": 834,
+      "4-10": 26,
+      "absent": 23,
+      ">100": 21,
+      "11-50": 12,
+      "51-100": 6
+     },
+     "contains_days": 834,
+     "contains_share": 0.9046,
+     "contains_accessible_days": 834,
+     "contains_blocked_days": 0,
+     "monster_mfe_q": {
+      "n": 834,
+      "p50": 0.1355,
+      "p90": 0.6729
+     },
+     "monster_ahead_share_q": {
+      "n": 834,
+      "p50": 0.1451,
+      "p90": 0.5838
+     },
+     "monster_above_H_days": 28,
+     "miss_days": 88,
+     "miss_other_touch_30": 17,
+     "miss_other_touch_50": 3,
+     "miss_other_touch_100": 0,
+     "miss_other_above_100": 0,
+     "miss_other_best_mfe_q": {
+      "n": 88,
+      "p50": 0.1811,
+      "p90": 0.3544
+     }
+    },
+    "A_pm31/570": {
+     "anchor": "hi_prev",
+     "H": 100,
+     "pop": "A_pm31",
+     "T": 570,
+     "days": 922,
+     "buckets": {
+      "1-3": 834,
+      "4-10": 26,
+      "absent": 23,
+      ">100": 21,
+      "11-50": 12,
+      "51-100": 6
+     },
+     "contains_days": 834,
+     "contains_share": 0.9046,
+     "contains_accessible_days": 822,
+     "contains_blocked_days": 12,
+     "monster_mfe_q": {
+      "n": 822,
+      "p50": 0.1249,
+      "p90": 0.6856
+     },
+     "monster_ahead_share_q": {
+      "n": 822,
+      "p50": 0.1372,
+      "p90": 0.5892
+     },
+     "monster_above_H_days": 25,
+     "miss_days": 88,
+     "miss_other_touch_30": 16,
+     "miss_other_touch_50": 3,
+     "miss_other_touch_100": 0,
+     "miss_other_above_100": 0,
+     "miss_other_best_mfe_q": {
+      "n": 88,
+      "p50": 0.1637,
+      "p90": 0.37
+     }
+    },
+    "A_open/570": {
+     "anchor": "hi_prev",
+     "H": 100,
+     "pop": "A_open",
+     "T": 570,
+     "days": 922,
+     "buckets": {
+      "1-3": 850,
+      ">100": 28,
+      "4-10": 24,
+      "11-50": 10,
+      "51-100": 10
+     },
+     "contains_days": 850,
+     "contains_share": 0.9219,
+     "contains_accessible_days": 832,
+     "contains_blocked_days": 18,
+     "monster_mfe_q": {
+      "n": 832,
+      "p50": 0.1227,
+      "p90": 0.602
+     },
+     "monster_ahead_share_q": {
+      "n": 832,
+      "p50": 0.1268,
+      "p90": 0.5519
+     },
+     "monster_above_H_days": 21,
+     "miss_days": 72,
+     "miss_other_touch_30": 10,
+     "miss_other_touch_50": 2,
+     "miss_other_touch_100": 0,
+     "miss_other_above_100": 0,
+     "miss_other_best_mfe_q": {
+      "n": 72,
+      "p50": 0.1407,
+      "p90": 0.3169
+     }
+    },
+    "B/600": {
+     "anchor": "hi_prev",
+     "H": 100,
+     "pop": "B",
+     "T": 600,
+     "days": 922,
+     "buckets": {
+      "1-3": 423,
+      "4-10": 108,
+      ">100": 266,
+      "11-50": 97,
+      "absent": 1,
+      "51-100": 27
+     },
+     "contains_days": 423,
+     "contains_share": 0.4588,
+     "contains_accessible_days": 396,
+     "contains_blocked_days": 27,
+     "monster_mfe_q": {
+      "n": 396,
+      "p50": 0.3374,
+      "p90": 1.1786
+     },
+     "monster_ahead_share_q": {
+      "n": 396,
+      "p50": 0.4024,
+      "p90": 0.8093
+     },
+     "monster_above_H_days": 24,
+     "miss_days": 499,
+     "miss_other_touch_30": 116,
+     "miss_other_touch_50": 40,
+     "miss_other_touch_100": 7,
+     "miss_other_above_100": 2,
+     "miss_other_best_mfe_q": {
+      "n": 499,
+      "p50": 0.1813,
+      "p90": 0.4476
+     }
+    }
+   }
+  },
+  "hi_prev/H200": {
+   "days_offered": 712,
+   "views": {
+    "A_pm/570": {
+     "anchor": "hi_prev",
+     "H": 200,
+     "pop": "A_pm",
+     "T": 570,
+     "days": 712,
+     "buckets": {
+      "1-3": 638,
+      "4-10": 12,
+      "absent": 43,
+      ">100": 12,
+      "51-100": 2,
+      "11-50": 5
+     },
+     "contains_days": 638,
+     "contains_share": 0.8961,
+     "contains_accessible_days": 638,
+     "contains_blocked_days": 0,
+     "monster_mfe_q": {
+      "n": 638,
+      "p50": 0.1164,
+      "p90": 0.7779
+     },
+     "monster_ahead_share_q": {
+      "n": 638,
+      "p50": 0.1137,
+      "p90": 0.5532
+     },
+     "monster_above_H_days": null,
+     "miss_days": 74,
+     "miss_other_touch_30": 29,
+     "miss_other_touch_50": 14,
+     "miss_other_touch_100": 2,
+     "miss_other_above_100": 1,
+     "miss_other_best_mfe_q": {
+      "n": 74,
+      "p50": 0.2465,
+      "p90": 0.5922
+     }
+    },
+    "A_pm31/570": {
+     "anchor": "hi_prev",
+     "H": 200,
+     "pop": "A_pm31",
+     "T": 570,
+     "days": 712,
+     "buckets": {
+      "1-3": 638,
+      "4-10": 12,
+      "absent": 43,
+      ">100": 12,
+      "51-100": 2,
+      "11-50": 5
+     },
+     "contains_days": 638,
+     "contains_share": 0.8961,
+     "contains_accessible_days": 628,
+     "contains_blocked_days": 10,
+     "monster_mfe_q": {
+      "n": 628,
+      "p50": 0.1058,
+      "p90": 0.7507
+     },
+     "monster_ahead_share_q": {
+      "n": 628,
+      "p50": 0.1047,
+      "p90": 0.5355
+     },
+     "monster_above_H_days": null,
+     "miss_days": 74,
+     "miss_other_touch_30": 26,
+     "miss_other_touch_50": 11,
+     "miss_other_touch_100": 2,
+     "miss_other_above_100": 0,
+     "miss_other_best_mfe_q": {
+      "n": 74,
+      "p50": 0.2505,
+      "p90": 0.6034
+     }
+    },
+    "A_open/570": {
+     "anchor": "hi_prev",
+     "H": 200,
+     "pop": "A_open",
+     "T": 570,
+     "days": 712,
+     "buckets": {
+      "1-3": 674,
+      ">100": 23,
+      "4-10": 10,
+      "11-50": 2,
+      "51-100": 3
+     },
+     "contains_days": 674,
+     "contains_share": 0.9466,
+     "contains_accessible_days": 658,
+     "contains_blocked_days": 16,
+     "monster_mfe_q": {
+      "n": 658,
+      "p50": 0.1069,
+      "p90": 0.6924
+     },
+     "monster_ahead_share_q": {
+      "n": 658,
+      "p50": 0.1042,
+      "p90": 0.4813
+     },
+     "monster_above_H_days": null,
+     "miss_days": 38,
+     "miss_other_touch_30": 11,
+     "miss_other_touch_50": 4,
+     "miss_other_touch_100": 0,
+     "miss_other_above_100": 0,
+     "miss_other_best_mfe_q": {
+      "n": 38,
+      "p50": 0.2054,
+      "p90": 0.5166
+     }
+    },
+    "B/600": {
+     "anchor": "hi_prev",
+     "H": 200,
+     "pop": "B",
+     "T": 600,
+     "days": 712,
+     "buckets": {
+      "1-3": 204,
+      "4-10": 69,
+      ">100": 315,
+      "11-50": 83,
+      "51-100": 41
+     },
+     "contains_days": 204,
+     "contains_share": 0.2865,
+     "contains_accessible_days": 187,
+     "contains_blocked_days": 17,
+     "monster_mfe_q": {
+      "n": 187,
+      "p50": 0.4768,
+      "p90": 1.8763
+     },
+     "monster_ahead_share_q": {
+      "n": 187,
+      "p50": 0.4264,
+      "p90": 0.861
+     },
+     "monster_above_H_days": null,
+     "miss_days": 508,
+     "miss_other_touch_30": 167,
+     "miss_other_touch_50": 76,
+     "miss_other_touch_100": 18,
+     "miss_other_above_100": 6,
+     "miss_other_best_mfe_q": {
+      "n": 508,
+      "p50": 0.2154,
+      "p90": 0.635
+     }
+    }
+   }
+  }
+ },
+ "table": [
+  {
+   "anchor": "hi_open",
+   "H": 50,
+   "pop": "A_open",
+   "T": 570,
+   "days": 959,
+   "buckets": {
+    "4-10": 268,
+    "1-3": 249,
+    "11-50": 150,
+    ">100": 235,
+    "absent": 8,
+    "51-100": 49
+   },
+   "contains_days": 249,
+   "contains_share": 0.2596,
+   "contains_accessible_days": 243,
+   "contains_blocked_days": 6,
+   "monster_mfe_q": {
+    "n": 243,
+    "p50": 0.7489,
+    "p90": 2.0111
+   },
+   "monster_ahead_share_q": {
+    "n": 243,
+    "p50": 0.9889,
+    "p90": 1.0456
+   },
+   "monster_above_H_days": 126,
+   "miss_days": 710,
+   "miss_other_touch_30": 149,
+   "miss_other_touch_50": 7,
+   "miss_other_touch_100": 0,
+   "miss_other_above_100": 0,
+   "miss_other_best_mfe_q": {
+    "n": 710,
+    "p50": 0.1886,
+    "p90": 0.3693
+   }
+  },
+  {
+   "anchor": "hi_open",
+   "H": 50,
+   "pop": "A_pm",
+   "T": 570,
+   "days": 959,
+   "buckets": {
+    "4-10": 246,
+    "1-3": 268,
+    "11-50": 139,
+    ">100": 185,
+    "absent": 75,
+    "51-100": 46
+   },
+   "contains_days": 268,
+   "contains_share": 0.2795,
+   "contains_accessible_days": 268,
+   "contains_blocked_days": 0,
+   "monster_mfe_q": {
+    "n": 268,
+    "p50": 0.7739,
+    "p90": 2.2048
+   },
+   "monster_ahead_share_q": {
+    "n": 268,
+    "p50": 1.0,
+    "p90": 1.0
+   },
+   "monster_above_H_days": 169,
+   "miss_days": 691,
+   "miss_other_touch_30": 180,
+   "miss_other_touch_50": 0,
+   "miss_other_touch_100": 0,
+   "miss_other_above_100": 0,
+   "miss_other_best_mfe_q": {
+    "n": 691,
+    "p50": 0.2,
+    "p90": 0.4061
+   }
+  },
+  {
+   "anchor": "hi_open",
+   "H": 50,
+   "pop": "A_pm31",
+   "T": 570,
+   "days": 959,
+   "buckets": {
+    "4-10": 246,
+    "1-3": 268,
+    "11-50": 139,
+    ">100": 185,
+    "absent": 75,
+    "51-100": 46
+   },
+   "contains_days": 268,
+   "contains_share": 0.2795,
+   "contains_accessible_days": 260,
+   "contains_blocked_days": 8,
+   "monster_mfe_q": {
+    "n": 260,
+    "p50": 0.761,
+    "p90": 1.9972
+   },
+   "monster_ahead_share_q": {
+    "n": 260,
+    "p50": 0.9885,
+    "p90": 1.0405
+   },
+   "monster_above_H_days": 133,
+   "miss_days": 691,
+   "miss_other_touch_30": 157,
+   "miss_other_touch_50": 8,
+   "miss_other_touch_100": 0,
+   "miss_other_above_100": 0,
+   "miss_other_best_mfe_q": {
+    "n": 691,
+    "p50": 0.1971,
+    "p90": 0.3905
+   }
+  },
+  {
+   "anchor": "hi_open",
+   "H": 50,
+   "pop": "B",
+   "T": 575,
+   "days": 959,
+   "buckets": {
+    "4-10": 151,
+    ">100": 262,
+    "51-100": 60,
+    "1-3": 326,
+    "11-50": 160
+   },
+   "contains_days": 326,
+   "contains_share": 0.3399,
+   "contains_accessible_days": 275,
+   "contains_blocked_days": 51,
+   "monster_mfe_q": {
+    "n": 275,
+    "p50": 0.4948,
+    "p90": 1.3024
+   },
+   "monster_ahead_share_q": {
+    "n": 275,
+    "p50": 0.7938,
+    "p90": 0.9117
+   },
+   "monster_above_H_days": 80,
+   "miss_days": 633,
+   "miss_other_touch_30": 36,
+   "miss_other_touch_50": 7,
+   "miss_other_touch_100": 3,
+   "miss_other_above_100": 0,
+   "miss_other_best_mfe_q": {
+    "n": 628,
+    "p50": 0.131,
+    "p90": 0.2701
+   }
+  },
+  {
+   "anchor": "hi_open",
+   "H": 50,
+   "pop": "B",
+   "T": 580,
+   "days": 959,
+   "buckets": {
+    "4-10": 165,
+    "1-3": 438,
+    ">100": 187,
+    "11-50": 137,
+    "51-100": 32
+   },
+   "contains_days": 438,
+   "contains_share": 0.4567,
+   "contains_accessible_days": 386,
+   "contains_blocked_days": 52,
+   "monster_mfe_q": {
+    "n": 386,
+    "p50": 0.4433,
+    "p90": 1.1092
+   },
+   "monster_ahead_share_q": {
+    "n": 386,
+    "p50": 0.7377,
+    "p90": 0.8871
+   },
+   "monster_above_H_days": 82,
+   "miss_days": 521,
+   "miss_other_touch_30": 29,
+   "miss_other_touch_50": 8,
+   "miss_other_touch_100": 3,
+   "miss_other_above_100": 1,
+   "miss_other_best_mfe_q": {
+    "n": 519,
+    "p50": 0.1219,
+    "p90": 0.265
+   }
+  },
+  {
+   "anchor": "hi_open",
+   "H": 50,
+   "pop": "B",
+   "T": 585,
+   "days": 959,
+   "buckets": {
+    "4-10": 125,
+    "1-3": 531,
+    ">100": 154,
+    "11-50": 115,
+    "51-100": 34
+   },
+   "contains_days": 531,
+   "contains_share": 0.5537,
+   "contains_accessible_days": 478,
+   "contains_blocked_days": 53,
+   "monster_mfe_q": {
+    "n": 478,
+    "p50": 0.3838,
+    "p90": 0.9827
+   },
+   "monster_ahead_share_q": {
+    "n": 478,
+    "p50": 0.681,
+    "p90": 0.8573
+   },
+   "monster_above_H_days": 95,
+   "miss_days": 428,
+   "miss_other_touch_30": 24,
+   "miss_other_touch_50": 10,
+   "miss_other_touch_100": 4,
+   "miss_other_above_100": 2,
+   "miss_other_best_mfe_q": {
+    "n": 427,
+    "p50": 0.1288,
+    "p90": 0.262
+   }
+  },
+  {
+   "anchor": "hi_open",
+   "H": 50,
+   "pop": "B",
+   "T": 590,
+   "days": 959,
+   "buckets": {
+    "1-3": 575,
+    "4-10": 121,
+    ">100": 128,
+    "11-50": 99,
+    "51-100": 36
+   },
+   "contains_days": 575,
+   "contains_share": 0.5996,
+   "contains_accessible_days": 518,
+   "contains_blocked_days": 57,
+   "monster_mfe_q": {
+    "n": 518,
+    "p50": 0.3427,
+    "p90": 0.9511
+   },
+   "monster_ahead_share_q": {
+    "n": 518,
+    "p50": 0.6068,
+    "p90": 0.831
+   },
+   "monster_above_H_days": 85,
+   "miss_days": 384,
+   "miss_other_touch_30": 16,
+   "miss_other_touch_50": 6,
+   "miss_other_touch_100": 2,
+   "miss_other_above_100": 0,
+   "miss_other_best_mfe_q": {
+    "n": 384,
+    "p50": 0.129,
+    "p90": 0.2522
+   }
+  },
+  {
+   "anchor": "hi_open",
+   "H": 50,
+   "pop": "B",
+   "T": 595,
+   "days": 959,
+   "buckets": {
+    "1-3": 627,
+    "4-10": 101,
+    "11-50": 82,
+    ">100": 116,
+    "51-100": 33
+   },
+   "contains_days": 627,
+   "contains_share": 0.6538,
+   "contains_accessible_days": 559,
+   "contains_blocked_days": 68,
+   "monster_mfe_q": {
+    "n": 559,
+    "p50": 0.3279,
+    "p90": 0.9416
+   },
+   "monster_ahead_share_q": {
+    "n": 559,
+    "p50": 0.5877,
+    "p90": 0.8287
+   },
+   "monster_above_H_days": 89,
+   "miss_days": 332,
+   "miss_other_touch_30": 13,
+   "miss_other_touch_50": 7,
+   "miss_other_touch_100": 3,
+   "miss_other_above_100": 2,
+   "miss_other_best_mfe_q": {
+    "n": 332,
+    "p50": 0.1184,
+    "p90": 0.2426
+   }
+  },
+  {
+   "anchor": "hi_open",
+   "H": 50,
+   "pop": "B",
+   "T": 600,
+   "days": 959,
+   "buckets": {
+    "1-3": 646,
+    "4-10": 89,
+    "11-50": 95,
+    ">100": 107,
+    "51-100": 22
+   },
+   "contains_days": 646,
+   "contains_share": 0.6736,
+   "contains_accessible_days": 600,
+   "contains_blocked_days": 46,
+   "monster_mfe_q": {
+    "n": 600,
+    "p50": 0.2931,
+    "p90": 0.9036
+   },
+   "monster_ahead_share_q": {
+    "n": 600,
+    "p50": 0.5445,
+    "p90": 0.8129
+   },
+   "monster_above_H_days": 93,
+   "miss_days": 313,
+   "miss_other_touch_30": 14,
+   "miss_other_touch_50": 8,
+   "miss_other_touch_100": 4,
+   "miss_other_above_100": 2,
+   "miss_other_best_mfe_q": {
+    "n": 313,
+    "p50": 0.1156,
+    "p90": 0.2523
+   }
+  },
+  {
+   "anchor": "hi_open",
+   "H": 50,
+   "pop": "B",
+   "T": 615,
+   "days": 959,
+   "buckets": {
+    "1-3": 707,
+    "4-10": 86,
+    "11-50": 74,
+    "51-100": 19,
+    ">100": 73
+   },
+   "contains_days": 707,
+   "contains_share": 0.7372,
+   "contains_accessible_days": 662,
+   "contains_blocked_days": 45,
+   "monster_mfe_q": {
+    "n": 662,
+    "p50": 0.2445,
+    "p90": 0.8341
+   },
+   "monster_ahead_share_q": {
+    "n": 662,
+    "p50": 0.4442,
+    "p90": 0.7556
+   },
+   "monster_above_H_days": 77,
+   "miss_days": 252,
+   "miss_other_touch_30": 17,
+   "miss_other_touch_50": 5,
+   "miss_other_touch_100": 2,
+   "miss_other_above_100": 0,
+   "miss_other_best_mfe_q": {
+    "n": 252,
+    "p50": 0.1341,
+    "p90": 0.2572
+   }
+  },
+  {
+   "anchor": "hi_open",
+   "H": 50,
+   "pop": "B",
+   "T": 630,
+   "days": 959,
+   "buckets": {
+    "1-3": 744,
+    "11-50": 56,
+    ">100": 46,
+    "4-10": 94,
+    "51-100": 19
+   },
+   "contains_days": 744,
+   "contains_share": 0.7758,
+   "contains_accessible_days": 707,
+   "contains_blocked_days": 37,
+   "monster_mfe_q": {
+    "n": 707,
+    "p50": 0.2222,
+    "p90": 0.771
+   },
+   "monster_ahead_share_q": {
+    "n": 707,
+    "p50": 0.4029,
+    "p90": 0.746
+   },
+   "monster_above_H_days": 80,
+   "miss_days": 215,
+   "miss_other_touch_30": 12,
+   "miss_other_touch_50": 5,
+   "miss_other_touch_100": 1,
+   "miss_other_above_100": 0,
+   "miss_other_best_mfe_q": {
+    "n": 215,
+    "p50": 0.139,
+    "p90": 0.2311
+   }
+  },
+  {
+   "anchor": "hi_open",
+   "H": 50,
+   "pop": "B",
+   "T": 645,
+   "days": 959,
+   "buckets": {
+    "1-3": 775,
+    "4-10": 80,
+    "11-50": 53,
+    ">100": 39,
+    "51-100": 12
+   },
+   "contains_days": 775,
+   "contains_share": 0.8081,
+   "contains_accessible_days": 738,
+   "contains_blocked_days": 37,
+   "monster_mfe_q": {
+    "n": 738,
+    "p50": 0.1947,
+    "p90": 0.7496
+   },
+   "monster_ahead_share_q": {
+    "n": 738,
+    "p50": 0.3699,
+    "p90": 0.7327
+   },
+   "monster_above_H_days": 74,
+   "miss_days": 184,
+   "miss_other_touch_30": 8,
+   "miss_other_touch_50": 4,
+   "miss_other_touch_100": 4,
+   "miss_other_above_100": 2,
+   "miss_other_best_mfe_q": {
+    "n": 184,
+    "p50": 0.1082,
+    "p90": 0.2219
+   }
+  },
+  {
+   "anchor": "hi_open",
+   "H": 50,
+   "pop": "B",
+   "T": 660,
+   "days": 959,
+   "buckets": {
+    "1-3": 798,
+    "11-50": 46,
+    "4-10": 67,
+    ">100": 42,
+    "51-100": 6
+   },
+   "contains_days": 798,
+   "contains_share": 0.8321,
+   "contains_accessible_days": 768,
+   "contains_blocked_days": 30,
+   "monster_mfe_q": {
+    "n": 768,
+    "p50": 0.1972,
+    "p90": 0.6842
+   },
+   "monster_ahead_share_q": {
+    "n": 768,
+    "p50": 0.364,
+    "p90": 0.7165
+   },
+   "monster_above_H_days": 72,
+   "miss_days": 161,
+   "miss_other_touch_30": 10,
+   "miss_other_touch_50": 4,
+   "miss_other_touch_100": 2,
+   "miss_other_above_100": 2,
+   "miss_other_best_mfe_q": {
+    "n": 161,
+    "p50": 0.1161,
+    "p90": 0.2638
+   }
+  },
+  {
+   "anchor": "hi_open",
+   "H": 50,
+   "pop": "B",
+   "T": 690,
+   "days": 959,
+   "buckets": {
+    "1-3": 822,
+    "4-10": 72,
+    "11-50": 33,
+    ">100": 32
+   },
+   "contains_days": 822,
+   "contains_share": 0.8571,
+   "contains_accessible_days": 802,
+   "contains_blocked_days": 20,
+   "monster_mfe_q": {
+    "n": 802,
+    "p50": 0.1597,
+    "p90": 0.6554
+   },
+   "monster_ahead_share_q": {
+    "n": 802,
+    "p50": 0.2836,
+    "p90": 0.6851
+   },
+   "monster_above_H_days": 71,
+   "miss_days": 137,
+   "miss_other_touch_30": 6,
+   "miss_other_touch_50": 3,
+   "miss_other_touch_100": 2,
+   "miss_other_above_100": 1,
+   "miss_other_best_mfe_q": {
+    "n": 137,
+    "p50": 0.1111,
+    "p90": 0.2128
+   }
+  },
+  {
+   "anchor": "hi_open",
+   "H": 50,
+   "pop": "B",
+   "T": 720,
+   "days": 959,
+   "buckets": {
+    "1-3": 843,
+    "4-10": 59,
+    "11-50": 28,
+    ">100": 24,
+    "51-100": 5
+   },
+   "contains_days": 843,
+   "contains_share": 0.879,
+   "contains_accessible_days": 820,
+   "contains_blocked_days": 23,
+   "monster_mfe_q": {
+    "n": 820,
+    "p50": 0.1555,
+    "p90": 0.5996
+   },
+   "monster_ahead_share_q": {
+    "n": 820,
+    "p50": 0.2691,
+    "p90": 0.657
+   },
+   "monster_above_H_days": 66,
+   "miss_days": 116,
+   "miss_other_touch_30": 7,
+   "miss_other_touch_50": 3,
+   "miss_other_touch_100": 0,
+   "miss_other_above_100": 0,
+   "miss_other_best_mfe_q": {
+    "n": 116,
+    "p50": 0.1156,
+    "p90": 0.2122
+   }
+  },
+  {
+   "anchor": "hi_open",
+   "H": 100,
+   "pop": "A_open",
+   "T": 570,
+   "days": 511,
+   "buckets": {
+    "1-3": 92,
+    "4-10": 110,
+    ">100": 201,
+    "51-100": 26,
+    "11-50": 70,
+    "absent": 12
+   },
+   "contains_days": 92,
+   "contains_share": 0.18,
+   "contains_accessible_days": 91,
+   "contains_blocked_days": 1,
+   "monster_mfe_q": {
+    "n": 91,
+    "p50": 1.4157,
+    "p90": 3.0458
+   },
+   "monster_ahead_share_q": {
+    "n": 91,
+    "p50": 0.995,
+    "p90": 1.0262
+   },
+   "monster_above_H_days": 45,
+   "miss_days": 419,
+   "miss_other_touch_30": 143,
+   "miss_other_touch_50": 59,
+   "miss_other_touch_100": 1,
+   "miss_other_above_100": 0,
+   "miss_other_best_mfe_q": {
+    "n": 419,
+    "p50": 0.2197,
+    "p90": 0.5948
+   }
+  },
+  {
+   "anchor": "hi_open",
+   "H": 100,
+   "pop": "A_pm",
+   "T": 570,
+   "days": 511,
+   "buckets": {
+    "4-10": 98,
+    "1-3": 103,
+    ">100": 127,
+    "11-50": 74,
+    "absent": 91,
+    "51-100": 18
+   },
+   "contains_days": 103,
+   "contains_share": 0.2016,
+   "contains_accessible_days": 103,
+   "contains_blocked_days": 0,
+   "monster_mfe_q": {
+    "n": 103,
+    "p50": 1.4194,
+    "p90": 3.117
+   },
+   "monster_ahead_share_q": {
+    "n": 103,
+    "p50": 1.0,
+    "p90": 1.0
+   },
+   "monster_above_H_days": 55,
+   "miss_days": 408,
+   "miss_other_touch_30": 159,
+   "miss_other_touch_50": 71,
+   "miss_other_touch_100": 0,
+   "miss_other_above_100": 0,
+   "miss_other_best_mfe_q": {
+    "n": 408,
+    "p50": 0.2343,
+    "p90": 0.6174
+   }
+  },
+  {
+   "anchor": "hi_open",
+   "H": 100,
+   "pop": "A_pm31",
+   "T": 570,
+   "days": 511,
+   "buckets": {
+    "4-10": 98,
+    "1-3": 103,
+    ">100": 127,
+    "11-50": 74,
+    "absent": 91,
+    "51-100": 18
+   },
+   "contains_days": 103,
+   "contains_share": 0.2016,
+   "contains_accessible_days": 100,
+   "contains_blocked_days": 3,
+   "monster_mfe_q": {
+    "n": 100,
+    "p50": 1.3797,
+    "p90": 2.9894
+   },
+   "monster_ahead_share_q": {
+    "n": 100,
+    "p50": 0.9922,
+    "p90": 1.0258
+   },
+   "monster_above_H_days": 48,
+   "miss_days": 408,
+   "miss_other_touch_30": 149,
+   "miss_other_touch_50": 63,
+   "miss_other_touch_100": 1,
+   "miss_other_above_100": 0,
+   "miss_other_best_mfe_q": {
+    "n": 408,
+    "p50": 0.2266,
+    "p90": 0.6068
+   }
+  },
+  {
+   "anchor": "hi_open",
+   "H": 100,
+   "pop": "B",
+   "T": 575,
+   "days": 511,
+   "buckets": {
+    ">100": 240,
+    "1-3": 103,
+    "4-10": 54,
+    "11-50": 82,
+    "51-100": 31,
+    "absent": 1
+   },
+   "contains_days": 103,
+   "contains_share": 0.2016,
+   "contains_accessible_days": 81,
+   "contains_blocked_days": 22,
+   "monster_mfe_q": {
+    "n": 81,
+    "p50": 1.1344,
+    "p90": 2.0682
+   },
+   "monster_ahead_share_q": {
+    "n": 81,
+    "p50": 0.8871,
+    "p90": 0.9499
+   },
+   "monster_above_H_days": 23,
+   "miss_days": 408,
+   "miss_other_touch_30": 100,
+   "miss_other_touch_50": 39,
+   "miss_other_touch_100": 1,
+   "miss_other_above_100": 0,
+   "miss_other_best_mfe_q": {
+    "n": 405,
+    "p50": 0.1905,
+    "p90": 0.4754
+   }
+  },
+  {
+   "anchor": "hi_open",
+   "H": 100,
+   "pop": "B",
+   "T": 580,
+   "days": 511,
+   "buckets": {
+    "1-3": 151,
+    "4-10": 70,
+    ">100": 194,
+    "11-50": 67,
+    "51-100": 28,
+    "absent": 1
+   },
+   "contains_days": 151,
+   "contains_share": 0.2955,
+   "contains_accessible_days": 131,
+   "contains_blocked_days": 20,
+   "monster_mfe_q": {
+    "n": 131,
+    "p50": 0.9435,
+    "p90": 1.9419
+   },
+   "monster_ahead_share_q": {
+    "n": 131,
+    "p50": 0.8507,
+    "p90": 0.9267
+   },
+   "monster_above_H_days": 33,
+   "miss_days": 360,
+   "miss_other_touch_30": 92,
+   "miss_other_touch_50": 26,
+   "miss_other_touch_100": 2,
+   "miss_other_above_100": 1,
+   "miss_other_best_mfe_q": {
+    "n": 359,
+    "p50": 0.1754,
+    "p90": 0.4686
+   }
+  },
+  {
+   "anchor": "hi_open",
+   "H": 100,
+   "pop": "B",
+   "T": 585,
+   "days": 511,
+   "buckets": {
+    "1-3": 190,
+    ">100": 168,
+    "51-100": 22,
+    "4-10": 63,
+    "11-50": 66,
+    "absent": 2
+   },
+   "contains_days": 190,
+   "contains_share": 0.3718,
+   "contains_accessible_days": 163,
+   "contains_blocked_days": 27,
+   "monster_mfe_q": {
+    "n": 163,
+    "p50": 0.8451,
+    "p90": 1.6051
+   },
+   "monster_ahead_share_q": {
+    "n": 163,
+    "p50": 0.8182,
+    "p90": 0.9097
+   },
+   "monster_above_H_days": 26,
+   "miss_days": 321,
+   "miss_other_touch_30": 93,
+   "miss_other_touch_50": 24,
+   "miss_other_touch_100": 2,
+   "miss_other_above_100": 0,
+   "miss_other_best_mfe_q": {
+    "n": 321,
+    "p50": 0.1886,
+    "p90": 0.4455
+   }
+  },
+  {
+   "anchor": "hi_open",
+   "H": 100,
+   "pop": "B",
+   "T": 590,
+   "days": 511,
+   "buckets": {
+    "1-3": 210,
+    ">100": 152,
+    "11-50": 69,
+    "4-10": 59,
+    "51-100": 20,
+    "absent": 1
+   },
+   "contains_days": 210,
+   "contains_share": 0.411,
+   "contains_accessible_days": 187,
+   "contains_blocked_days": 23,
+   "monster_mfe_q": {
+    "n": 187,
+    "p50": 0.8357,
+    "p90": 1.6719
+   },
+   "monster_ahead_share_q": {
+    "n": 187,
+    "p50": 0.8014,
+    "p90": 0.9028
+   },
+   "monster_above_H_days": 28,
+   "miss_days": 301,
+   "miss_other_touch_30": 76,
+   "miss_other_touch_50": 14,
+   "miss_other_touch_100": 0,
+   "miss_other_above_100": 0,
+   "miss_other_best_mfe_q": {
+    "n": 300,
+    "p50": 0.188,
+    "p90": 0.4264
+   }
+  },
+  {
+   "anchor": "hi_open",
+   "H": 100,
+   "pop": "B",
+   "T": 595,
+   "days": 511,
+   "buckets": {
+    "4-10": 59,
+    "1-3": 235,
+    ">100": 143,
+    "51-100": 21,
+    "11-50": 52,
+    "absent": 1
+   },
+   "contains_days": 235,
+   "contains_share": 0.4599,
+   "contains_accessible_days": 196,
+   "contains_blocked_days": 39,
+   "monster_mfe_q": {
+    "n": 196,
+    "p50": 0.8,
+    "p90": 1.7115
+   },
+   "monster_ahead_share_q": {
+    "n": 196,
+    "p50": 0.7635,
+    "p90": 0.909
+   },
+   "monster_above_H_days": 32,
+   "miss_days": 276,
+   "miss_other_touch_30": 80,
+   "miss_other_touch_50": 20,
+   "miss_other_touch_100": 1,
+   "miss_other_above_100": 1,
+   "miss_other_best_mfe_q": {
+    "n": 276,
+    "p50": 0.1996,
+    "p90": 0.4664
+   }
+  },
+  {
+   "anchor": "hi_open",
+   "H": 100,
+   "pop": "B",
+   "T": 600,
+   "days": 511,
+   "buckets": {
+    "4-10": 55,
+    "1-3": 255,
+    ">100": 128,
+    "11-50": 61,
+    "51-100": 11,
+    "absent": 1
+   },
+   "contains_days": 255,
+   "contains_share": 0.499,
+   "contains_accessible_days": 229,
+   "contains_blocked_days": 26,
+   "monster_mfe_q": {
+    "n": 229,
+    "p50": 0.76,
+    "p90": 1.7004
+   },
+   "monster_ahead_share_q": {
+    "n": 229,
+    "p50": 0.7342,
+    "p90": 0.8846
+   },
+   "monster_above_H_days": 28,
+   "miss_days": 256,
+   "miss_other_touch_30": 68,
+   "miss_other_touch_50": 15,
+   "miss_other_touch_100": 2,
+   "miss_other_above_100": 1,
+   "miss_other_best_mfe_q": {
+    "n": 256,
+    "p50": 0.1861,
+    "p90": 0.4558
+   }
+  },
+  {
+   "anchor": "hi_open",
+   "H": 100,
+   "pop": "B",
+   "T": 615,
+   "days": 511,
+   "buckets": {
+    "11-50": 45,
+    "1-3": 292,
+    ">100": 104,
+    "4-10": 56,
+    "51-100": 13,
+    "absent": 1
+   },
+   "contains_days": 292,
+   "contains_share": 0.5714,
+   "contains_accessible_days": 269,
+   "contains_blocked_days": 23,
+   "monster_mfe_q": {
+    "n": 269,
+    "p50": 0.6122,
+    "p90": 1.4844
+   },
+   "monster_ahead_share_q": {
+    "n": 269,
+    "p50": 0.6646,
+    "p90": 0.8648
+   },
+   "monster_above_H_days": 28,
+   "miss_days": 219,
+   "miss_other_touch_30": 49,
+   "miss_other_touch_50": 11,
+   "miss_other_touch_100": 2,
+   "miss_other_above_100": 0,
+   "miss_other_best_mfe_q": {
+    "n": 219,
+    "p50": 0.177,
+    "p90": 0.3956
+   }
+  },
+  {
+   "anchor": "hi_open",
+   "H": 100,
+   "pop": "B",
+   "T": 630,
+   "days": 511,
+   "buckets": {
+    "11-50": 38,
+    "1-3": 332,
+    ">100": 78,
+    "51-100": 14,
+    "4-10": 47,
+    "absent": 2
+   },
+   "contains_days": 332,
+   "contains_share": 0.6497,
+   "contains_accessible_days": 302,
+   "contains_blocked_days": 30,
+   "monster_mfe_q": {
+    "n": 302,
+    "p50": 0.5097,
+    "p90": 1.2452
+   },
+   "monster_ahead_share_q": {
+    "n": 302,
+    "p50": 0.5869,
+    "p90": 0.8484
+   },
+   "monster_above_H_days": 24,
+   "miss_days": 179,
+   "miss_other_touch_30": 48,
+   "miss_other_touch_50": 11,
+   "miss_other_touch_100": 2,
+   "miss_other_above_100": 0,
+   "miss_other_best_mfe_q": {
+    "n": 179,
+    "p50": 0.1947,
+    "p90": 0.4097
+   }
+  },
+  {
+   "anchor": "hi_open",
+   "H": 100,
+   "pop": "B",
+   "T": 645,
+   "days": 511,
+   "buckets": {
+    "4-10": 39,
+    "1-3": 357,
+    ">100": 63,
+    "11-50": 40,
+    "51-100": 10,
+    "absent": 2
+   },
+   "contains_days": 357,
+   "contains_share": 0.6986,
+   "contains_accessible_days": 326,
+   "contains_blocked_days": 31,
+   "monster_mfe_q": {
+    "n": 326,
+    "p50": 0.4692,
+    "p90": 1.128
+   },
+   "monster_ahead_share_q": {
+    "n": 326,
+    "p50": 0.5351,
+    "p90": 0.8229
+   },
+   "monster_above_H_days": 23,
+   "miss_days": 154,
+   "miss_other_touch_30": 33,
+   "miss_other_touch_50": 5,
+   "miss_other_touch_100": 1,
+   "miss_other_above_100": 1,
+   "miss_other_best_mfe_q": {
+    "n": 154,
+    "p50": 0.1844,
+    "p90": 0.4119
+   }
+  },
+  {
+   "anchor": "hi_open",
+   "H": 100,
+   "pop": "B",
+   "T": 660,
+   "days": 511,
+   "buckets": {
+    "11-50": 35,
+    "1-3": 368,
+    "4-10": 39,
+    ">100": 58,
+    "51-100": 10,
+    "absent": 1
+   },
+   "contains_days": 368,
+   "contains_share": 0.7202,
+   "contains_accessible_days": 344,
+   "contains_blocked_days": 24,
+   "monster_mfe_q": {
+    "n": 344,
+    "p50": 0.3894,
+    "p90": 1.156
+   },
+   "monster_ahead_share_q": {
+    "n": 344,
+    "p50": 0.4772,
+    "p90": 0.8039
+   },
+   "monster_above_H_days": 20,
+   "miss_days": 143,
+   "miss_other_touch_30": 27,
+   "miss_other_touch_50": 2,
+   "miss_other_touch_100": 1,
+   "miss_other_above_100": 1,
+   "miss_other_best_mfe_q": {
+    "n": 143,
+    "p50": 0.1862,
+    "p90": 0.3549
+   }
+  },
+  {
+   "anchor": "hi_open",
+   "H": 100,
+   "pop": "B",
+   "T": 690,
+   "days": 511,
+   "buckets": {
+    "1-3": 399,
+    "11-50": 33,
+    ">100": 43,
+    "4-10": 28,
+    "51-100": 7,
+    "absent": 1
+   },
+   "contains_days": 399,
+   "contains_share": 0.7808,
+   "contains_accessible_days": 383,
+   "contains_blocked_days": 16,
+   "monster_mfe_q": {
+    "n": 383,
+    "p50": 0.2969,
+    "p90": 0.9848
+   },
+   "monster_ahead_share_q": {
+    "n": 383,
+    "p50": 0.3769,
+    "p90": 0.7701
+   },
+   "monster_above_H_days": 16,
+   "miss_days": 112,
+   "miss_other_touch_30": 19,
+   "miss_other_touch_50": 3,
+   "miss_other_touch_100": 1,
+   "miss_other_above_100": 0,
+   "miss_other_best_mfe_q": {
+    "n": 112,
+    "p50": 0.1582,
+    "p90": 0.3521
+   }
+  },
+  {
+   "anchor": "hi_open",
+   "H": 100,
+   "pop": "B",
+   "T": 720,
+   "days": 511,
+   "buckets": {
+    "1-3": 417,
+    "11-50": 20,
+    ">100": 39,
+    "51-100": 8,
+    "4-10": 26,
+    "absent": 1
+   },
+   "contains_days": 417,
+   "contains_share": 0.816,
+   "contains_accessible_days": 397,
+   "contains_blocked_days": 20,
+   "monster_mfe_q": {
+    "n": 397,
+    "p50": 0.2812,
+    "p90": 0.8791
+   },
+   "monster_ahead_share_q": {
+    "n": 397,
+    "p50": 0.3431,
+    "p90": 0.74
+   },
+   "monster_above_H_days": 22,
+   "miss_days": 94,
+   "miss_other_touch_30": 16,
+   "miss_other_touch_50": 4,
+   "miss_other_touch_100": 2,
+   "miss_other_above_100": 2,
+   "miss_other_best_mfe_q": {
+    "n": 94,
+    "p50": 0.1407,
+    "p90": 0.3797
+   }
+  },
+  {
+   "anchor": "hi_open",
+   "H": 200,
+   "pop": "A_open",
+   "T": 570,
+   "days": 146,
+   "buckets": {
+    "1-3": 26,
+    ">100": 66,
+    "4-10": 32,
+    "51-100": 6,
+    "11-50": 14,
+    "absent": 2
+   },
+   "contains_days": 26,
+   "contains_share": 0.1781,
+   "contains_accessible_days": 26,
+   "contains_blocked_days": 0,
+   "monster_mfe_q": {
+    "n": 26,
+    "p50": 2.8585,
+    "p90": 3.9371
+   },
+   "monster_ahead_share_q": {
+    "n": 26,
+    "p50": 0.9936,
+    "p90": 1.0146
+   },
+   "monster_above_H_days": null,
+   "miss_days": 120,
+   "miss_other_touch_30": 45,
+   "miss_other_touch_50": 18,
+   "miss_other_touch_100": 6,
+   "miss_other_above_100": 4,
+   "miss_other_best_mfe_q": {
+    "n": 120,
+    "p50": 0.2397,
+    "p90": 0.609
+   }
+  },
+  {
+   "anchor": "hi_open",
+   "H": 200,
+   "pop": "A_pm",
+   "T": 570,
+   "days": 146,
+   "buckets": {
+    "1-3": 29,
+    ">100": 38,
+    "4-10": 29,
+    "absent": 30,
+    "51-100": 3,
+    "11-50": 17
+   },
+   "contains_days": 29,
+   "contains_share": 0.1986,
+   "contains_accessible_days": 29,
+   "contains_blocked_days": 0,
+   "monster_mfe_q": {
+    "n": 29,
+    "p50": 2.9357,
+    "p90": 4.2614
+   },
+   "monster_ahead_share_q": {
+    "n": 29,
+    "p50": 1.0,
+    "p90": 1.0
+   },
+   "monster_above_H_days": null,
+   "miss_days": 117,
+   "miss_other_touch_30": 49,
+   "miss_other_touch_50": 23,
+   "miss_other_touch_100": 8,
+   "miss_other_above_100": 6,
+   "miss_other_best_mfe_q": {
+    "n": 117,
+    "p50": 0.2466,
+    "p90": 0.6785
+   }
+  },
+  {
+   "anchor": "hi_open",
+   "H": 200,
+   "pop": "A_pm31",
+   "T": 570,
+   "days": 146,
+   "buckets": {
+    "1-3": 29,
+    ">100": 38,
+    "4-10": 29,
+    "absent": 30,
+    "51-100": 3,
+    "11-50": 17
+   },
+   "contains_days": 29,
+   "contains_share": 0.1986,
+   "contains_accessible_days": 27,
+   "contains_blocked_days": 2,
+   "monster_mfe_q": {
+    "n": 27,
+    "p50": 2.8339,
+    "p90": 3.886
+   },
+   "monster_ahead_share_q": {
+    "n": 27,
+    "p50": 0.9955,
+    "p90": 1.0139
+   },
+   "monster_above_H_days": null,
+   "miss_days": 117,
+   "miss_other_touch_30": 48,
+   "miss_other_touch_50": 21,
+   "miss_other_touch_100": 7,
+   "miss_other_above_100": 4,
+   "miss_other_best_mfe_q": {
+    "n": 117,
+    "p50": 0.25,
+    "p90": 0.7171
+   }
+  },
+  {
+   "anchor": "hi_open",
+   "H": 200,
+   "pop": "B",
+   "T": 575,
+   "days": 146,
+   "buckets": {
+    "1-3": 25,
+    "4-10": 16,
+    "11-50": 21,
+    ">100": 80,
+    "51-100": 4
+   },
+   "contains_days": 25,
+   "contains_share": 0.1712,
+   "contains_accessible_days": 20,
+   "contains_blocked_days": 5,
+   "monster_mfe_q": {
+    "n": 20,
+    "p50": 1.9475,
+    "p90": 4.3343
+   },
+   "monster_ahead_share_q": {
+    "n": 20,
+    "p50": 0.9408,
+    "p90": 0.9813
+   },
+   "monster_above_H_days": null,
+   "miss_days": 121,
+   "miss_other_touch_30": 40,
+   "miss_other_touch_50": 26,
+   "miss_other_touch_100": 6,
+   "miss_other_above_100": 2,
+   "miss_other_best_mfe_q": {
+    "n": 121,
+    "p50": 0.2015,
+    "p90": 0.7156
+   }
+  },
+  {
+   "anchor": "hi_open",
+   "H": 200,
+   "pop": "B",
+   "T": 580,
+   "days": 146,
+   "buckets": {
+    "1-3": 31,
+    "51-100": 6,
+    "4-10": 20,
+    "11-50": 20,
+    ">100": 69
+   },
+   "contains_days": 31,
+   "contains_share": 0.2123,
+   "contains_accessible_days": 26,
+   "contains_blocked_days": 5,
+   "monster_mfe_q": {
+    "n": 26,
+    "p50": 1.9609,
+    "p90": 2.8723
+   },
+   "monster_ahead_share_q": {
+    "n": 26,
+    "p50": 0.9196,
+    "p90": 0.9498
+   },
+   "monster_above_H_days": null,
+   "miss_days": 115,
+   "miss_other_touch_30": 36,
+   "miss_other_touch_50": 22,
+   "miss_other_touch_100": 4,
+   "miss_other_above_100": 2,
+   "miss_other_best_mfe_q": {
+    "n": 114,
+    "p50": 0.15,
+    "p90": 0.6997
+   }
+  },
+  {
+   "anchor": "hi_open",
+   "H": 200,
+   "pop": "B",
+   "T": 585,
+   "days": 146,
+   "buckets": {
+    "1-3": 42,
+    ">100": 60,
+    "51-100": 5,
+    "4-10": 21,
+    "11-50": 18
+   },
+   "contains_days": 42,
+   "contains_share": 0.2877,
+   "contains_accessible_days": 34,
+   "contains_blocked_days": 8,
+   "monster_mfe_q": {
+    "n": 34,
+    "p50": 1.7322,
+    "p90": 2.876
+   },
+   "monster_ahead_share_q": {
+    "n": 34,
+    "p50": 0.8906,
+    "p90": 0.9532
+   },
+   "monster_above_H_days": null,
+   "miss_days": 104,
+   "miss_other_touch_30": 43,
+   "miss_other_touch_50": 21,
+   "miss_other_touch_100": 5,
+   "miss_other_above_100": 2,
+   "miss_other_best_mfe_q": {
+    "n": 104,
+    "p50": 0.2399,
+    "p90": 0.7857
+   }
+  },
+  {
+   "anchor": "hi_open",
+   "H": 200,
+   "pop": "B",
+   "T": 590,
+   "days": 146,
+   "buckets": {
+    "1-3": 51,
+    "11-50": 20,
+    ">100": 51,
+    "4-10": 15,
+    "51-100": 9
+   },
+   "contains_days": 51,
+   "contains_share": 0.3493,
+   "contains_accessible_days": 47,
+   "contains_blocked_days": 4,
+   "monster_mfe_q": {
+    "n": 47,
+    "p50": 1.6758,
+    "p90": 2.964
+   },
+   "monster_ahead_share_q": {
+    "n": 47,
+    "p50": 0.871,
+    "p90": 0.9515
+   },
+   "monster_above_H_days": null,
+   "miss_days": 95,
+   "miss_other_touch_30": 45,
+   "miss_other_touch_50": 21,
+   "miss_other_touch_100": 3,
+   "miss_other_above_100": 1,
+   "miss_other_best_mfe_q": {
+    "n": 95,
+    "p50": 0.2275,
+    "p90": 0.8476
+   }
+  },
+  {
+   "anchor": "hi_open",
+   "H": 200,
+   "pop": "B",
+   "T": 595,
+   "days": 146,
+   "buckets": {
+    "1-3": 62,
+    "11-50": 16,
+    ">100": 47,
+    "4-10": 14,
+    "51-100": 7
+   },
+   "contains_days": 62,
+   "contains_share": 0.4247,
+   "contains_accessible_days": 51,
+   "contains_blocked_days": 11,
+   "monster_mfe_q": {
+    "n": 51,
+    "p50": 1.7208,
+    "p90": 2.8216
+   },
+   "monster_ahead_share_q": {
+    "n": 51,
+    "p50": 0.8766,
+    "p90": 0.9439
+   },
+   "monster_above_H_days": null,
+   "miss_days": 84,
+   "miss_other_touch_30": 34,
+   "miss_other_touch_50": 17,
+   "miss_other_touch_100": 3,
+   "miss_other_above_100": 0,
+   "miss_other_best_mfe_q": {
+    "n": 84,
+    "p50": 0.2118,
+    "p90": 0.7598
+   }
+  },
+  {
+   "anchor": "hi_open",
+   "H": 200,
+   "pop": "B",
+   "T": 600,
+   "days": 146,
+   "buckets": {
+    "1-3": 71,
+    "11-50": 14,
+    "4-10": 17,
+    ">100": 40,
+    "51-100": 4
+   },
+   "contains_days": 71,
+   "contains_share": 0.4863,
+   "contains_accessible_days": 60,
+   "contains_blocked_days": 11,
+   "monster_mfe_q": {
+    "n": 60,
+    "p50": 1.6816,
+    "p90": 2.6821
+   },
+   "monster_ahead_share_q": {
+    "n": 60,
+    "p50": 0.8644,
+    "p90": 0.9396
+   },
+   "monster_above_H_days": null,
+   "miss_days": 75,
+   "miss_other_touch_30": 32,
+   "miss_other_touch_50": 18,
+   "miss_other_touch_100": 4,
+   "miss_other_above_100": 0,
+   "miss_other_best_mfe_q": {
+    "n": 75,
+    "p50": 0.2447,
+    "p90": 0.8844
+   }
+  },
+  {
+   "anchor": "hi_open",
+   "H": 200,
+   "pop": "B",
+   "T": 615,
+   "days": 146,
+   "buckets": {
+    "1-3": 81,
+    "11-50": 11,
+    "4-10": 20,
+    ">100": 34
+   },
+   "contains_days": 81,
+   "contains_share": 0.5548,
+   "contains_accessible_days": 72,
+   "contains_blocked_days": 9,
+   "monster_mfe_q": {
+    "n": 72,
+    "p50": 1.3989,
+    "p90": 2.8713
+   },
+   "monster_ahead_share_q": {
+    "n": 72,
+    "p50": 0.8087,
+    "p90": 0.9253
+   },
+   "monster_above_H_days": null,
+   "miss_days": 65,
+   "miss_other_touch_30": 28,
+   "miss_other_touch_50": 16,
+   "miss_other_touch_100": 6,
+   "miss_other_above_100": 2,
+   "miss_other_best_mfe_q": {
+    "n": 65,
+    "p50": 0.2484,
+    "p90": 0.9235
+   }
+  },
+  {
+   "anchor": "hi_open",
+   "H": 200,
+   "pop": "B",
+   "T": 630,
+   "days": 146,
+   "buckets": {
+    "1-3": 93,
+    "11-50": 9,
+    ">100": 29,
+    "4-10": 12,
+    "51-100": 3
+   },
+   "contains_days": 93,
+   "contains_share": 0.637,
+   "contains_accessible_days": 78,
+   "contains_blocked_days": 15,
+   "monster_mfe_q": {
+    "n": 78,
+    "p50": 1.1155,
+    "p90": 2.2917
+   },
+   "monster_ahead_share_q": {
+    "n": 78,
+    "p50": 0.7218,
+    "p90": 0.9235
+   },
+   "monster_above_H_days": null,
+   "miss_days": 53,
+   "miss_other_touch_30": 28,
+   "miss_other_touch_50": 19,
+   "miss_other_touch_100": 3,
+   "miss_other_above_100": 2,
+   "miss_other_best_mfe_q": {
+    "n": 53,
+    "p50": 0.3506,
+    "p90": 0.9724
+   }
+  },
+  {
+   "anchor": "hi_open",
+   "H": 200,
+   "pop": "B",
+   "T": 645,
+   "days": 146,
+   "buckets": {
+    "1-3": 97,
+    "11-50": 12,
+    "4-10": 10,
+    ">100": 26,
+    "51-100": 1
+   },
+   "contains_days": 97,
+   "contains_share": 0.6644,
+   "contains_accessible_days": 82,
+   "contains_blocked_days": 15,
+   "monster_mfe_q": {
+    "n": 82,
+    "p50": 0.9986,
+    "p90": 1.9455
+   },
+   "monster_ahead_share_q": {
+    "n": 82,
+    "p50": 0.6679,
+    "p90": 0.8755
+   },
+   "monster_above_H_days": null,
+   "miss_days": 49,
+   "miss_other_touch_30": 21,
+   "miss_other_touch_50": 14,
+   "miss_other_touch_100": 3,
+   "miss_other_above_100": 3,
+   "miss_other_best_mfe_q": {
+    "n": 49,
+    "p50": 0.2691,
+    "p90": 0.8136
+   }
+  },
+  {
+   "anchor": "hi_open",
+   "H": 200,
+   "pop": "B",
+   "T": 660,
+   "days": 146,
+   "buckets": {
+    "1-3": 106,
+    "4-10": 8,
+    "51-100": 3,
+    ">100": 23,
+    "11-50": 6
+   },
+   "contains_days": 106,
+   "contains_share": 0.726,
+   "contains_accessible_days": 96,
+   "contains_blocked_days": 10,
+   "monster_mfe_q": {
+    "n": 96,
+    "p50": 1.0139,
+    "p90": 1.9349
+   },
+   "monster_ahead_share_q": {
+    "n": 96,
+    "p50": 0.6851,
+    "p90": 0.8808
+   },
+   "monster_above_H_days": null,
+   "miss_days": 40,
+   "miss_other_touch_30": 16,
+   "miss_other_touch_50": 8,
+   "miss_other_touch_100": 3,
+   "miss_other_above_100": 1,
+   "miss_other_best_mfe_q": {
+    "n": 40,
+    "p50": 0.2441,
+    "p90": 0.7663
+   }
+  },
+  {
+   "anchor": "hi_open",
+   "H": 200,
+   "pop": "B",
+   "T": 690,
+   "days": 146,
+   "buckets": {
+    "1-3": 114,
+    "11-50": 13,
+    ">100": 13,
+    "4-10": 2,
+    "51-100": 4
+   },
+   "contains_days": 114,
+   "contains_share": 0.7808,
+   "contains_accessible_days": 109,
+   "contains_blocked_days": 5,
+   "monster_mfe_q": {
+    "n": 109,
+    "p50": 0.7156,
+    "p90": 1.7872
+   },
+   "monster_ahead_share_q": {
+    "n": 109,
+    "p50": 0.5771,
+    "p90": 0.833
+   },
+   "monster_above_H_days": null,
+   "miss_days": 32,
+   "miss_other_touch_30": 12,
+   "miss_other_touch_50": 7,
+   "miss_other_touch_100": 1,
+   "miss_other_above_100": 1,
+   "miss_other_best_mfe_q": {
+    "n": 32,
+    "p50": 0.1835,
+    "p90": 0.7881
+   }
+  },
+  {
+   "anchor": "hi_open",
+   "H": 200,
+   "pop": "B",
+   "T": 720,
+   "days": 146,
+   "buckets": {
+    "1-3": 122,
+    "11-50": 7,
+    ">100": 8,
+    "4-10": 7,
+    "51-100": 2
+   },
+   "contains_days": 122,
+   "contains_share": 0.8356,
+   "contains_accessible_days": 114,
+   "contains_blocked_days": 8,
+   "monster_mfe_q": {
+    "n": 114,
+    "p50": 0.6171,
+    "p90": 1.5899
+   },
+   "monster_ahead_share_q": {
+    "n": 114,
+    "p50": 0.5326,
+    "p90": 0.7906
+   },
+   "monster_above_H_days": null,
+   "miss_days": 24,
+   "miss_other_touch_30": 10,
+   "miss_other_touch_50": 6,
+   "miss_other_touch_100": 0,
+   "miss_other_above_100": 0,
+   "miss_other_best_mfe_q": {
+    "n": 24,
+    "p50": 0.2352,
+    "p90": 0.6765
+   }
+  },
+  {
+   "anchor": "hi_prev",
+   "H": 50,
+   "pop": "A_open",
+   "T": 570,
+   "days": 1052,
+   "buckets": {
+    "1-3": 1009,
+    "4-10": 22,
+    ">100": 9,
+    "11-50": 7,
+    "51-100": 5
+   },
+   "contains_days": 1009,
+   "contains_share": 0.9591,
+   "contains_accessible_days": 990,
+   "contains_blocked_days": 19,
+   "monster_mfe_q": {
+    "n": 990,
+    "p50": 0.1097,
+    "p90": 0.448
+   },
+   "monster_ahead_share_q": {
+    "n": 990,
+    "p50": 0.1279,
+    "p90": 0.4962
+   },
+   "monster_above_H_days": 48,
+   "miss_days": 43,
+   "miss_other_touch_30": 0,
+   "miss_other_touch_50": 0,
+   "miss_other_touch_100": 0,
+   "miss_other_above_100": 0,
+   "miss_other_best_mfe_q": {
+    "n": 43,
+    "p50": 0.088,
+    "p90": 0.2065
+   }
+  },
+  {
+   "anchor": "hi_prev",
+   "H": 50,
+   "pop": "A_pm",
+   "T": 570,
+   "days": 1052,
+   "buckets": {
+    "1-3": 1005,
+    "4-10": 24,
+    "absent": 9,
+    ">100": 8,
+    "11-50": 3,
+    "51-100": 3
+   },
+   "contains_days": 1005,
+   "contains_share": 0.9553,
+   "contains_accessible_days": 1005,
+   "contains_blocked_days": 0,
+   "monster_mfe_q": {
+    "n": 1005,
+    "p50": 0.1225,
+    "p90": 0.5111
+   },
+   "monster_ahead_share_q": {
+    "n": 1005,
+    "p50": 0.1478,
+    "p90": 0.5363
+   },
+   "monster_above_H_days": 66,
+   "miss_days": 47,
+   "miss_other_touch_30": 0,
+   "miss_other_touch_50": 0,
+   "miss_other_touch_100": 0,
+   "miss_other_above_100": 0,
+   "miss_other_best_mfe_q": {
+    "n": 47,
+    "p50": 0.0949,
+    "p90": 0.1857
+   }
+  },
+  {
+   "anchor": "hi_prev",
+   "H": 50,
+   "pop": "A_pm31",
+   "T": 570,
+   "days": 1052,
+   "buckets": {
+    "1-3": 1005,
+    "4-10": 24,
+    "absent": 9,
+    ">100": 8,
+    "11-50": 3,
+    "51-100": 3
+   },
+   "contains_days": 1005,
+   "contains_share": 0.9553,
+   "contains_accessible_days": 991,
+   "contains_blocked_days": 14,
+   "monster_mfe_q": {
+    "n": 991,
+    "p50": 0.1089,
+    "p90": 0.4834
+   },
+   "monster_ahead_share_q": {
+    "n": 991,
+    "p50": 0.1371,
+    "p90": 0.5235
+   },
+   "monster_above_H_days": 52,
+   "miss_days": 47,
+   "miss_other_touch_30": 0,
+   "miss_other_touch_50": 0,
+   "miss_other_touch_100": 0,
+   "miss_other_above_100": 0,
+   "miss_other_best_mfe_q": {
+    "n": 47,
+    "p50": 0.0891,
+    "p90": 0.1997
+   }
+  },
+  {
+   "anchor": "hi_prev",
+   "H": 50,
+   "pop": "B",
+   "T": 575,
+   "days": 1052,
+   "buckets": {
+    "4-10": 192,
+    "1-3": 541,
+    "11-50": 154,
+    ">100": 128,
+    "51-100": 37
+   },
+   "contains_days": 541,
+   "contains_share": 0.5143,
+   "contains_accessible_days": 490,
+   "contains_blocked_days": 51,
+   "monster_mfe_q": {
+    "n": 490,
+    "p50": 0.254,
+    "p90": 0.8092
+   },
+   "monster_ahead_share_q": {
+    "n": 490,
+    "p50": 0.418,
+    "p90": 0.7687
+   },
+   "monster_above_H_days": 66,
+   "miss_days": 511,
+   "miss_other_touch_30": 38,
+   "miss_other_touch_50": 12,
+   "miss_other_touch_100": 6,
+   "miss_other_above_100": 2,
+   "miss_other_best_mfe_q": {
+    "n": 503,
+    "p50": 0.1098,
+    "p90": 0.272
+   }
+  },
+  {
+   "anchor": "hi_prev",
+   "H": 50,
+   "pop": "B",
+   "T": 580,
+   "days": 1052,
+   "buckets": {
+    "1-3": 661,
+    "4-10": 163,
+    "11-50": 94,
+    ">100": 104,
+    "51-100": 30
+   },
+   "contains_days": 661,
+   "contains_share": 0.6283,
+   "contains_accessible_days": 605,
+   "contains_blocked_days": 56,
+   "monster_mfe_q": {
+    "n": 605,
+    "p50": 0.2425,
+    "p90": 0.8258
+   },
+   "monster_ahead_share_q": {
+    "n": 605,
+    "p50": 0.4113,
+    "p90": 0.8069
+   },
+   "monster_above_H_days": 72,
+   "miss_days": 391,
+   "miss_other_touch_30": 32,
+   "miss_other_touch_50": 10,
+   "miss_other_touch_100": 2,
+   "miss_other_above_100": 1,
+   "miss_other_best_mfe_q": {
+    "n": 389,
+    "p50": 0.1167,
+    "p90": 0.281
+   }
+  },
+  {
+   "anchor": "hi_prev",
+   "H": 50,
+   "pop": "B",
+   "T": 585,
+   "days": 1052,
+   "buckets": {
+    "1-3": 717,
+    "4-10": 135,
+    "51-100": 24,
+    ">100": 88,
+    "11-50": 88
+   },
+   "contains_days": 717,
+   "contains_share": 0.6816,
+   "contains_accessible_days": 667,
+   "contains_blocked_days": 50,
+   "monster_mfe_q": {
+    "n": 667,
+    "p50": 0.2478,
+    "p90": 0.7348
+   },
+   "monster_ahead_share_q": {
+    "n": 667,
+    "p50": 0.396,
+    "p90": 0.7746
+   },
+   "monster_above_H_days": 81,
+   "miss_days": 335,
+   "miss_other_touch_30": 33,
+   "miss_other_touch_50": 14,
+   "miss_other_touch_100": 8,
+   "miss_other_above_100": 5,
+   "miss_other_best_mfe_q": {
+    "n": 334,
+    "p50": 0.1194,
+    "p90": 0.2972
+   }
+  },
+  {
+   "anchor": "hi_prev",
+   "H": 50,
+   "pop": "B",
+   "T": 590,
+   "days": 1052,
+   "buckets": {
+    "1-3": 743,
+    "11-50": 84,
+    ">100": 88,
+    "4-10": 119,
+    "51-100": 18
+   },
+   "contains_days": 743,
+   "contains_share": 0.7063,
+   "contains_accessible_days": 692,
+   "contains_blocked_days": 51,
+   "monster_mfe_q": {
+    "n": 692,
+    "p50": 0.2188,
+    "p90": 0.7854
+   },
+   "monster_ahead_share_q": {
+    "n": 692,
+    "p50": 0.38,
+    "p90": 0.7663
+   },
+   "monster_above_H_days": 74,
+   "miss_days": 309,
+   "miss_other_touch_30": 27,
+   "miss_other_touch_50": 11,
+   "miss_other_touch_100": 6,
+   "miss_other_above_100": 2,
+   "miss_other_best_mfe_q": {
+    "n": 309,
+    "p50": 0.1285,
+    "p90": 0.2782
+   }
+  },
+  {
+   "anchor": "hi_prev",
+   "H": 50,
+   "pop": "B",
+   "T": 595,
+   "days": 1052,
+   "buckets": {
+    "1-3": 769,
+    "4-10": 118,
+    "11-50": 66,
+    ">100": 87,
+    "51-100": 12
+   },
+   "contains_days": 769,
+   "contains_share": 0.731,
+   "contains_accessible_days": 714,
+   "contains_blocked_days": 55,
+   "monster_mfe_q": {
+    "n": 714,
+    "p50": 0.2053,
+    "p90": 0.7952
+   },
+   "monster_ahead_share_q": {
+    "n": 714,
+    "p50": 0.3681,
+    "p90": 0.7618
+   },
+   "monster_above_H_days": 75,
+   "miss_days": 283,
+   "miss_other_touch_30": 24,
+   "miss_other_touch_50": 12,
+   "miss_other_touch_100": 3,
+   "miss_other_above_100": 1,
+   "miss_other_best_mfe_q": {
+    "n": 283,
+    "p50": 0.1184,
+    "p90": 0.2769
+   }
+  },
+  {
+   "anchor": "hi_prev",
+   "H": 50,
+   "pop": "B",
+   "T": 600,
+   "days": 1052,
+   "buckets": {
+    "1-3": 771,
+    "11-50": 78,
+    "4-10": 101,
+    ">100": 81,
+    "51-100": 21
+   },
+   "contains_days": 771,
+   "contains_share": 0.7329,
+   "contains_accessible_days": 728,
+   "contains_blocked_days": 43,
+   "monster_mfe_q": {
+    "n": 728,
+    "p50": 0.208,
+    "p90": 0.7903
+   },
+   "monster_ahead_share_q": {
+    "n": 728,
+    "p50": 0.3455,
+    "p90": 0.7481
+   },
+   "monster_above_H_days": 83,
+   "miss_days": 281,
+   "miss_other_touch_30": 29,
+   "miss_other_touch_50": 14,
+   "miss_other_touch_100": 5,
+   "miss_other_above_100": 3,
+   "miss_other_best_mfe_q": {
+    "n": 281,
+    "p50": 0.1256,
+    "p90": 0.3051
+   }
+  },
+  {
+   "anchor": "hi_prev",
+   "H": 50,
+   "pop": "B",
+   "T": 615,
+   "days": 1052,
+   "buckets": {
+    "1-3": 805,
+    "4-10": 91,
+    "11-50": 69,
+    "51-100": 16,
+    ">100": 71
+   },
+   "contains_days": 805,
+   "contains_share": 0.7652,
+   "contains_accessible_days": 767,
+   "contains_blocked_days": 38,
+   "monster_mfe_q": {
+    "n": 767,
+    "p50": 0.1826,
+    "p90": 0.7417
+   },
+   "monster_ahead_share_q": {
+    "n": 767,
+    "p50": 0.3127,
+    "p90": 0.7237
+   },
+   "monster_above_H_days": 79,
+   "miss_days": 247,
+   "miss_other_touch_30": 29,
+   "miss_other_touch_50": 7,
+   "miss_other_touch_100": 3,
+   "miss_other_above_100": 2,
+   "miss_other_best_mfe_q": {
+    "n": 247,
+    "p50": 0.1314,
+    "p90": 0.3104
+   }
+  },
+  {
+   "anchor": "hi_prev",
+   "H": 50,
+   "pop": "B",
+   "T": 630,
+   "days": 1052,
+   "buckets": {
+    "1-3": 820,
+    ">100": 65,
+    "11-50": 64,
+    "4-10": 91,
+    "51-100": 12
+   },
+   "contains_days": 820,
+   "contains_share": 0.7795,
+   "contains_accessible_days": 791,
+   "contains_blocked_days": 29,
+   "monster_mfe_q": {
+    "n": 791,
+    "p50": 0.1842,
+    "p90": 0.7272
+   },
+   "monster_ahead_share_q": {
+    "n": 791,
+    "p50": 0.3197,
+    "p90": 0.6942
+   },
+   "monster_above_H_days": 77,
+   "miss_days": 232,
+   "miss_other_touch_30": 19,
+   "miss_other_touch_50": 9,
+   "miss_other_touch_100": 3,
+   "miss_other_above_100": 1,
+   "miss_other_best_mfe_q": {
+    "n": 232,
+    "p50": 0.1233,
+    "p90": 0.2797
+   }
+  },
+  {
+   "anchor": "hi_prev",
+   "H": 50,
+   "pop": "B",
+   "T": 645,
+   "days": 1052,
+   "buckets": {
+    "1-3": 842,
+    ">100": 60,
+    "4-10": 89,
+    "11-50": 47,
+    "51-100": 14
+   },
+   "contains_days": 842,
+   "contains_share": 0.8004,
+   "contains_accessible_days": 814,
+   "contains_blocked_days": 28,
+   "monster_mfe_q": {
+    "n": 814,
+    "p50": 0.1762,
+    "p90": 0.7146
+   },
+   "monster_ahead_share_q": {
+    "n": 814,
+    "p50": 0.2871,
+    "p90": 0.6672
+   },
+   "monster_above_H_days": 77,
+   "miss_days": 210,
+   "miss_other_touch_30": 23,
+   "miss_other_touch_50": 10,
+   "miss_other_touch_100": 5,
+   "miss_other_above_100": 2,
+   "miss_other_best_mfe_q": {
+    "n": 210,
+    "p50": 0.1122,
+    "p90": 0.3265
+   }
+  },
+  {
+   "anchor": "hi_prev",
+   "H": 50,
+   "pop": "B",
+   "T": 660,
+   "days": 1052,
+   "buckets": {
+    "1-3": 842,
+    ">100": 67,
+    "11-50": 51,
+    "4-10": 87,
+    "51-100": 5
+   },
+   "contains_days": 842,
+   "contains_share": 0.8004,
+   "contains_accessible_days": 817,
+   "contains_blocked_days": 25,
+   "monster_mfe_q": {
+    "n": 817,
+    "p50": 0.172,
+    "p90": 0.6434
+   },
+   "monster_ahead_share_q": {
+    "n": 817,
+    "p50": 0.2936,
+    "p90": 0.6567
+   },
+   "monster_above_H_days": 68,
+   "miss_days": 210,
+   "miss_other_touch_30": 22,
+   "miss_other_touch_50": 10,
+   "miss_other_touch_100": 3,
+   "miss_other_above_100": 2,
+   "miss_other_best_mfe_q": {
+    "n": 210,
+    "p50": 0.114,
+    "p90": 0.3012
+   }
+  },
+  {
+   "anchor": "hi_prev",
+   "H": 50,
+   "pop": "B",
+   "T": 690,
+   "days": 1052,
+   "buckets": {
+    "1-3": 855,
+    "51-100": 9,
+    "4-10": 73,
+    "11-50": 55,
+    ">100": 60
+   },
+   "contains_days": 855,
+   "contains_share": 0.8127,
+   "contains_accessible_days": 840,
+   "contains_blocked_days": 15,
+   "monster_mfe_q": {
+    "n": 840,
+    "p50": 0.1451,
+    "p90": 0.6288
+   },
+   "monster_ahead_share_q": {
+    "n": 840,
+    "p50": 0.2539,
+    "p90": 0.6512
+   },
+   "monster_above_H_days": 66,
+   "miss_days": 197,
+   "miss_other_touch_30": 11,
+   "miss_other_touch_50": 3,
+   "miss_other_touch_100": 2,
+   "miss_other_above_100": 1,
+   "miss_other_best_mfe_q": {
+    "n": 197,
+    "p50": 0.1006,
+    "p90": 0.2404
+   }
+  },
+  {
+   "anchor": "hi_prev",
+   "H": 50,
+   "pop": "B",
+   "T": 720,
+   "days": 1052,
+   "buckets": {
+    "1-3": 868,
+    ">100": 60,
+    "4-10": 73,
+    "11-50": 41,
+    "51-100": 10
+   },
+   "contains_days": 868,
+   "contains_share": 0.8251,
+   "contains_accessible_days": 848,
+   "contains_blocked_days": 20,
+   "monster_mfe_q": {
+    "n": 848,
+    "p50": 0.1444,
+    "p90": 0.5834
+   },
+   "monster_ahead_share_q": {
+    "n": 848,
+    "p50": 0.2335,
+    "p90": 0.6088
+   },
+   "monster_above_H_days": 63,
+   "miss_days": 184,
+   "miss_other_touch_30": 10,
+   "miss_other_touch_50": 4,
+   "miss_other_touch_100": 1,
+   "miss_other_above_100": 0,
+   "miss_other_best_mfe_q": {
+    "n": 184,
+    "p50": 0.1156,
+    "p90": 0.2376
+   }
+  },
+  {
+   "anchor": "hi_prev",
+   "H": 100,
+   "pop": "A_open",
+   "T": 570,
+   "days": 922,
+   "buckets": {
+    "1-3": 850,
+    ">100": 28,
+    "4-10": 24,
+    "11-50": 10,
+    "51-100": 10
+   },
+   "contains_days": 850,
+   "contains_share": 0.9219,
+   "contains_accessible_days": 832,
+   "contains_blocked_days": 18,
+   "monster_mfe_q": {
+    "n": 832,
+    "p50": 0.1227,
+    "p90": 0.602
+   },
+   "monster_ahead_share_q": {
+    "n": 832,
+    "p50": 0.1268,
+    "p90": 0.5519
+   },
+   "monster_above_H_days": 21,
+   "miss_days": 72,
+   "miss_other_touch_30": 10,
+   "miss_other_touch_50": 2,
+   "miss_other_touch_100": 0,
+   "miss_other_above_100": 0,
+   "miss_other_best_mfe_q": {
+    "n": 72,
+    "p50": 0.1407,
+    "p90": 0.3169
+   }
+  },
+  {
+   "anchor": "hi_prev",
+   "H": 100,
+   "pop": "A_pm",
+   "T": 570,
+   "days": 922,
+   "buckets": {
+    "1-3": 834,
+    "4-10": 26,
+    "absent": 23,
+    ">100": 21,
+    "11-50": 12,
+    "51-100": 6
+   },
+   "contains_days": 834,
+   "contains_share": 0.9046,
+   "contains_accessible_days": 834,
+   "contains_blocked_days": 0,
+   "monster_mfe_q": {
+    "n": 834,
+    "p50": 0.1355,
+    "p90": 0.6729
+   },
+   "monster_ahead_share_q": {
+    "n": 834,
+    "p50": 0.1451,
+    "p90": 0.5838
+   },
+   "monster_above_H_days": 28,
+   "miss_days": 88,
+   "miss_other_touch_30": 17,
+   "miss_other_touch_50": 3,
+   "miss_other_touch_100": 0,
+   "miss_other_above_100": 0,
+   "miss_other_best_mfe_q": {
+    "n": 88,
+    "p50": 0.1811,
+    "p90": 0.3544
+   }
+  },
+  {
+   "anchor": "hi_prev",
+   "H": 100,
+   "pop": "A_pm31",
+   "T": 570,
+   "days": 922,
+   "buckets": {
+    "1-3": 834,
+    "4-10": 26,
+    "absent": 23,
+    ">100": 21,
+    "11-50": 12,
+    "51-100": 6
+   },
+   "contains_days": 834,
+   "contains_share": 0.9046,
+   "contains_accessible_days": 822,
+   "contains_blocked_days": 12,
+   "monster_mfe_q": {
+    "n": 822,
+    "p50": 0.1249,
+    "p90": 0.6856
+   },
+   "monster_ahead_share_q": {
+    "n": 822,
+    "p50": 0.1372,
+    "p90": 0.5892
+   },
+   "monster_above_H_days": 25,
+   "miss_days": 88,
+   "miss_other_touch_30": 16,
+   "miss_other_touch_50": 3,
+   "miss_other_touch_100": 0,
+   "miss_other_above_100": 0,
+   "miss_other_best_mfe_q": {
+    "n": 88,
+    "p50": 0.1637,
+    "p90": 0.37
+   }
+  },
+  {
+   "anchor": "hi_prev",
+   "H": 100,
+   "pop": "B",
+   "T": 575,
+   "days": 922,
+   "buckets": {
+    "4-10": 140,
+    ">100": 297,
+    "51-100": 51,
+    "1-3": 303,
+    "11-50": 131
+   },
+   "contains_days": 303,
+   "contains_share": 0.3286,
+   "contains_accessible_days": 273,
+   "contains_blocked_days": 30,
+   "monster_mfe_q": {
+    "n": 273,
+    "p50": 0.3232,
+    "p90": 1.2313
+   },
+   "monster_ahead_share_q": {
+    "n": 273,
+    "p50": 0.4035,
+    "p90": 0.8208
+   },
+   "monster_above_H_days": 18,
+   "miss_days": 619,
+   "miss_other_touch_30": 104,
+   "miss_other_touch_50": 36,
+   "miss_other_touch_100": 8,
+   "miss_other_above_100": 2,
+   "miss_other_best_mfe_q": {
+    "n": 613,
+    "p50": 0.1412,
+    "p90": 0.3714
+   }
+  },
+  {
+   "anchor": "hi_prev",
+   "H": 100,
+   "pop": "B",
+   "T": 580,
+   "days": 922,
+   "buckets": {
+    "11-50": 107,
+    "1-3": 346,
+    "4-10": 132,
+    ">100": 291,
+    "51-100": 46
+   },
+   "contains_days": 346,
+   "contains_share": 0.3753,
+   "contains_accessible_days": 315,
+   "contains_blocked_days": 31,
+   "monster_mfe_q": {
+    "n": 315,
+    "p50": 0.429,
+    "p90": 1.2465
+   },
+   "monster_ahead_share_q": {
+    "n": 315,
+    "p50": 0.4458,
+    "p90": 0.8432
+   },
+   "monster_above_H_days": 29,
+   "miss_days": 576,
+   "miss_other_touch_30": 106,
+   "miss_other_touch_50": 32,
+   "miss_other_touch_100": 5,
+   "miss_other_above_100": 2,
+   "miss_other_best_mfe_q": {
+    "n": 575,
+    "p50": 0.1489,
+    "p90": 0.407
+   }
+  },
+  {
+   "anchor": "hi_prev",
+   "H": 100,
+   "pop": "B",
+   "T": 585,
+   "days": 922,
+   "buckets": {
+    ">100": 281,
+    "1-3": 397,
+    "51-100": 35,
+    "11-50": 97,
+    "4-10": 112
+   },
+   "contains_days": 397,
+   "contains_share": 0.4306,
+   "contains_accessible_days": 363,
+   "contains_blocked_days": 34,
+   "monster_mfe_q": {
+    "n": 363,
+    "p50": 0.3267,
+    "p90": 1.1004
+   },
+   "monster_ahead_share_q": {
+    "n": 363,
+    "p50": 0.3941,
+    "p90": 0.8048
+   },
+   "monster_above_H_days": 21,
+   "miss_days": 525,
+   "miss_other_touch_30": 132,
+   "miss_other_touch_50": 43,
+   "miss_other_touch_100": 10,
+   "miss_other_above_100": 5,
+   "miss_other_best_mfe_q": {
+    "n": 524,
+    "p50": 0.1695,
+    "p90": 0.447
+   }
+  },
+  {
+   "anchor": "hi_prev",
+   "H": 100,
+   "pop": "B",
+   "T": 590,
+   "days": 922,
+   "buckets": {
+    "51-100": 38,
+    "1-3": 408,
+    "4-10": 106,
+    ">100": 263,
+    "11-50": 107
+   },
+   "contains_days": 408,
+   "contains_share": 0.4425,
+   "contains_accessible_days": 382,
+   "contains_blocked_days": 26,
+   "monster_mfe_q": {
+    "n": 382,
+    "p50": 0.2959,
+    "p90": 1.0734
+   },
+   "monster_ahead_share_q": {
+    "n": 382,
+    "p50": 0.3684,
+    "p90": 0.811
+   },
+   "monster_above_H_days": 21,
+   "miss_days": 514,
+   "miss_other_touch_30": 116,
+   "miss_other_touch_50": 37,
+   "miss_other_touch_100": 8,
+   "miss_other_above_100": 3,
+   "miss_other_best_mfe_q": {
+    "n": 514,
+    "p50": 0.1665,
+    "p90": 0.4325
+   }
+  },
+  {
+   "anchor": "hi_prev",
+   "H": 100,
+   "pop": "B",
+   "T": 595,
+   "days": 922,
+   "buckets": {
+    "1-3": 428,
+    ">100": 269,
+    "4-10": 103,
+    "11-50": 95,
+    "51-100": 27
+   },
+   "contains_days": 428,
+   "contains_share": 0.4642,
+   "contains_accessible_days": 386,
+   "contains_blocked_days": 42,
+   "monster_mfe_q": {
+    "n": 386,
+    "p50": 0.3604,
+    "p90": 1.1629
+   },
+   "monster_ahead_share_q": {
+    "n": 386,
+    "p50": 0.4304,
+    "p90": 0.8229
+   },
+   "monster_above_H_days": 30,
+   "miss_days": 494,
+   "miss_other_touch_30": 105,
+   "miss_other_touch_50": 36,
+   "miss_other_touch_100": 3,
+   "miss_other_above_100": 1,
+   "miss_other_best_mfe_q": {
+    "n": 494,
+    "p50": 0.1672,
+    "p90": 0.435
+   }
+  },
+  {
+   "anchor": "hi_prev",
+   "H": 100,
+   "pop": "B",
+   "T": 600,
+   "days": 922,
+   "buckets": {
+    "1-3": 423,
+    "4-10": 108,
+    ">100": 266,
+    "11-50": 97,
+    "absent": 1,
+    "51-100": 27
+   },
+   "contains_days": 423,
+   "contains_share": 0.4588,
+   "contains_accessible_days": 396,
+   "contains_blocked_days": 27,
+   "monster_mfe_q": {
+    "n": 396,
+    "p50": 0.3374,
+    "p90": 1.1786
+   },
+   "monster_ahead_share_q": {
+    "n": 396,
+    "p50": 0.4024,
+    "p90": 0.8093
+   },
+   "monster_above_H_days": 24,
+   "miss_days": 499,
+   "miss_other_touch_30": 116,
+   "miss_other_touch_50": 40,
+   "miss_other_touch_100": 7,
+   "miss_other_above_100": 2,
+   "miss_other_best_mfe_q": {
+    "n": 499,
+    "p50": 0.1813,
+    "p90": 0.4476
+   }
+  },
+  {
+   "anchor": "hi_prev",
+   "H": 100,
+   "pop": "B",
+   "T": 615,
+   "days": 922,
+   "buckets": {
+    "1-3": 470,
+    "4-10": 91,
+    ">100": 243,
+    "11-50": 82,
+    "51-100": 35,
+    "absent": 1
+   },
+   "contains_days": 470,
+   "contains_share": 0.5098,
+   "contains_accessible_days": 445,
+   "contains_blocked_days": 25,
+   "monster_mfe_q": {
+    "n": 445,
+    "p50": 0.2838,
+    "p90": 1.0264
+   },
+   "monster_ahead_share_q": {
+    "n": 445,
+    "p50": 0.3463,
+    "p90": 0.7849
+   },
+   "monster_above_H_days": 24,
+   "miss_days": 452,
+   "miss_other_touch_30": 107,
+   "miss_other_touch_50": 31,
+   "miss_other_touch_100": 5,
+   "miss_other_above_100": 3,
+   "miss_other_best_mfe_q": {
+    "n": 452,
+    "p50": 0.1721,
+    "p90": 0.4164
+   }
+  },
+  {
+   "anchor": "hi_prev",
+   "H": 100,
+   "pop": "B",
+   "T": 630,
+   "days": 922,
+   "buckets": {
+    "1-3": 491,
+    "11-50": 69,
+    "4-10": 97,
+    ">100": 228,
+    "51-100": 36,
+    "absent": 1
+   },
+   "contains_days": 491,
+   "contains_share": 0.5325,
+   "contains_accessible_days": 467,
+   "contains_blocked_days": 24,
+   "monster_mfe_q": {
+    "n": 467,
+    "p50": 0.2825,
+    "p90": 1.0046
+   },
+   "monster_ahead_share_q": {
+    "n": 467,
+    "p50": 0.3389,
+    "p90": 0.7572
+   },
+   "monster_above_H_days": 22,
+   "miss_days": 431,
+   "miss_other_touch_30": 86,
+   "miss_other_touch_50": 31,
+   "miss_other_touch_100": 8,
+   "miss_other_above_100": 3,
+   "miss_other_best_mfe_q": {
+    "n": 431,
+    "p50": 0.1722,
+    "p90": 0.4209
+   }
+  },
+  {
+   "anchor": "hi_prev",
+   "H": 100,
+   "pop": "B",
+   "T": 645,
+   "days": 922,
+   "buckets": {
+    "1-3": 485,
+    "11-50": 86,
+    ">100": 224,
+    "4-10": 101,
+    "51-100": 25,
+    "absent": 1
+   },
+   "contains_days": 485,
+   "contains_share": 0.526,
+   "contains_accessible_days": 458,
+   "contains_blocked_days": 27,
+   "monster_mfe_q": {
+    "n": 458,
+    "p50": 0.2282,
+    "p90": 0.9903
+   },
+   "monster_ahead_share_q": {
+    "n": 458,
+    "p50": 0.301,
+    "p90": 0.7019
+   },
+   "monster_above_H_days": 19,
+   "miss_days": 437,
+   "miss_other_touch_30": 102,
+   "miss_other_touch_50": 29,
+   "miss_other_touch_100": 8,
+   "miss_other_above_100": 3,
+   "miss_other_best_mfe_q": {
+    "n": 437,
+    "p50": 0.1624,
+    "p90": 0.4213
+   }
+  },
+  {
+   "anchor": "hi_prev",
+   "H": 100,
+   "pop": "B",
+   "T": 660,
+   "days": 922,
+   "buckets": {
+    "1-3": 501,
+    ">100": 228,
+    "4-10": 81,
+    "11-50": 85,
+    "51-100": 27
+   },
+   "contains_days": 501,
+   "contains_share": 0.5434,
+   "contains_accessible_days": 481,
+   "contains_blocked_days": 20,
+   "monster_mfe_q": {
+    "n": 481,
+    "p50": 0.2457,
+    "p90": 0.9958
+   },
+   "monster_ahead_share_q": {
+    "n": 481,
+    "p50": 0.303,
+    "p90": 0.6963
+   },
+   "monster_above_H_days": 18,
+   "miss_days": 421,
+   "miss_other_touch_30": 89,
+   "miss_other_touch_50": 23,
+   "miss_other_touch_100": 4,
+   "miss_other_above_100": 2,
+   "miss_other_best_mfe_q": {
+    "n": 421,
+    "p50": 0.1785,
+    "p90": 0.4203
+   }
+  },
+  {
+   "anchor": "hi_prev",
+   "H": 100,
+   "pop": "B",
+   "T": 690,
+   "days": 922,
+   "buckets": {
+    "4-10": 70,
+    "1-3": 511,
+    "11-50": 95,
+    ">100": 222,
+    "51-100": 22,
+    "absent": 2
+   },
+   "contains_days": 511,
+   "contains_share": 0.5542,
+   "contains_accessible_days": 497,
+   "contains_blocked_days": 14,
+   "monster_mfe_q": {
+    "n": 497,
+    "p50": 0.215,
+    "p90": 0.8803
+   },
+   "monster_ahead_share_q": {
+    "n": 497,
+    "p50": 0.2742,
+    "p90": 0.695
+   },
+   "monster_above_H_days": 14,
+   "miss_days": 411,
+   "miss_other_touch_30": 68,
+   "miss_other_touch_50": 17,
+   "miss_other_touch_100": 4,
+   "miss_other_above_100": 3,
+   "miss_other_best_mfe_q": {
+    "n": 411,
+    "p50": 0.1542,
+    "p90": 0.3941
+   }
+  },
+  {
+   "anchor": "hi_prev",
+   "H": 100,
+   "pop": "B",
+   "T": 720,
+   "days": 922,
+   "buckets": {
+    "1-3": 525,
+    "11-50": 74,
+    ">100": 226,
+    "4-10": 69,
+    "51-100": 27,
+    "absent": 1
+   },
+   "contains_days": 525,
+   "contains_share": 0.5694,
+   "contains_accessible_days": 505,
+   "contains_blocked_days": 20,
+   "monster_mfe_q": {
+    "n": 505,
+    "p50": 0.1958,
+    "p90": 0.7414
+   },
+   "monster_ahead_share_q": {
+    "n": 505,
+    "p50": 0.2483,
+    "p90": 0.6462
+   },
+   "monster_above_H_days": 21,
+   "miss_days": 397,
+   "miss_other_touch_30": 67,
+   "miss_other_touch_50": 18,
+   "miss_other_touch_100": 2,
+   "miss_other_above_100": 1,
+   "miss_other_best_mfe_q": {
+    "n": 397,
+    "p50": 0.1541,
+    "p90": 0.382
+   }
+  },
+  {
+   "anchor": "hi_prev",
+   "H": 200,
+   "pop": "A_open",
+   "T": 570,
+   "days": 712,
+   "buckets": {
+    "1-3": 674,
+    ">100": 23,
+    "4-10": 10,
+    "11-50": 2,
+    "51-100": 3
+   },
+   "contains_days": 674,
+   "contains_share": 0.9466,
+   "contains_accessible_days": 658,
+   "contains_blocked_days": 16,
+   "monster_mfe_q": {
+    "n": 658,
+    "p50": 0.1069,
+    "p90": 0.6924
+   },
+   "monster_ahead_share_q": {
+    "n": 658,
+    "p50": 0.1042,
+    "p90": 0.4813
+   },
+   "monster_above_H_days": null,
+   "miss_days": 38,
+   "miss_other_touch_30": 11,
+   "miss_other_touch_50": 4,
+   "miss_other_touch_100": 0,
+   "miss_other_above_100": 0,
+   "miss_other_best_mfe_q": {
+    "n": 38,
+    "p50": 0.2054,
+    "p90": 0.5166
+   }
+  },
+  {
+   "anchor": "hi_prev",
+   "H": 200,
+   "pop": "A_pm",
+   "T": 570,
+   "days": 712,
+   "buckets": {
+    "1-3": 638,
+    "4-10": 12,
+    "absent": 43,
+    ">100": 12,
+    "51-100": 2,
+    "11-50": 5
+   },
+   "contains_days": 638,
+   "contains_share": 0.8961,
+   "contains_accessible_days": 638,
+   "contains_blocked_days": 0,
+   "monster_mfe_q": {
+    "n": 638,
+    "p50": 0.1164,
+    "p90": 0.7779
+   },
+   "monster_ahead_share_q": {
+    "n": 638,
+    "p50": 0.1137,
+    "p90": 0.5532
+   },
+   "monster_above_H_days": null,
+   "miss_days": 74,
+   "miss_other_touch_30": 29,
+   "miss_other_touch_50": 14,
+   "miss_other_touch_100": 2,
+   "miss_other_above_100": 1,
+   "miss_other_best_mfe_q": {
+    "n": 74,
+    "p50": 0.2465,
+    "p90": 0.5922
+   }
+  },
+  {
+   "anchor": "hi_prev",
+   "H": 200,
+   "pop": "A_pm31",
+   "T": 570,
+   "days": 712,
+   "buckets": {
+    "1-3": 638,
+    "4-10": 12,
+    "absent": 43,
+    ">100": 12,
+    "51-100": 2,
+    "11-50": 5
+   },
+   "contains_days": 638,
+   "contains_share": 0.8961,
+   "contains_accessible_days": 628,
+   "contains_blocked_days": 10,
+   "monster_mfe_q": {
+    "n": 628,
+    "p50": 0.1058,
+    "p90": 0.7507
+   },
+   "monster_ahead_share_q": {
+    "n": 628,
+    "p50": 0.1047,
+    "p90": 0.5355
+   },
+   "monster_above_H_days": null,
+   "miss_days": 74,
+   "miss_other_touch_30": 26,
+   "miss_other_touch_50": 11,
+   "miss_other_touch_100": 2,
+   "miss_other_above_100": 0,
+   "miss_other_best_mfe_q": {
+    "n": 74,
+    "p50": 0.2505,
+    "p90": 0.6034
+   }
+  },
+  {
+   "anchor": "hi_prev",
+   "H": 200,
+   "pop": "B",
+   "T": 575,
+   "days": 712,
+   "buckets": {
+    "4-10": 83,
+    ">100": 332,
+    "1-3": 150,
+    "11-50": 95,
+    "51-100": 51,
+    "absent": 1
+   },
+   "contains_days": 150,
+   "contains_share": 0.2107,
+   "contains_accessible_days": 132,
+   "contains_blocked_days": 18,
+   "monster_mfe_q": {
+    "n": 132,
+    "p50": 0.4388,
+    "p90": 1.5048
+   },
+   "monster_ahead_share_q": {
+    "n": 132,
+    "p50": 0.3788,
+    "p90": 0.7934
+   },
+   "monster_above_H_days": null,
+   "miss_days": 562,
+   "miss_other_touch_30": 131,
+   "miss_other_touch_50": 63,
+   "miss_other_touch_100": 15,
+   "miss_other_above_100": 3,
+   "miss_other_best_mfe_q": {
+    "n": 559,
+    "p50": 0.1775,
+    "p90": 0.5482
+   }
+  },
+  {
+   "anchor": "hi_prev",
+   "H": 200,
+   "pop": "B",
+   "T": 580,
+   "days": 712,
+   "buckets": {
+    ">100": 335,
+    "1-3": 158,
+    "4-10": 85,
+    "11-50": 102,
+    "51-100": 32
+   },
+   "contains_days": 158,
+   "contains_share": 0.2219,
+   "contains_accessible_days": 143,
+   "contains_blocked_days": 15,
+   "monster_mfe_q": {
+    "n": 143,
+    "p50": 0.4768,
+    "p90": 1.9247
+   },
+   "monster_ahead_share_q": {
+    "n": 143,
+    "p50": 0.4311,
+    "p90": 0.843
+   },
+   "monster_above_H_days": null,
+   "miss_days": 554,
+   "miss_other_touch_30": 157,
+   "miss_other_touch_50": 79,
+   "miss_other_touch_100": 17,
+   "miss_other_above_100": 9,
+   "miss_other_best_mfe_q": {
+    "n": 553,
+    "p50": 0.1774,
+    "p90": 0.5815
+   }
+  },
+  {
+   "anchor": "hi_prev",
+   "H": 200,
+   "pop": "B",
+   "T": 585,
+   "days": 712,
+   "buckets": {
+    ">100": 330,
+    "1-3": 184,
+    "4-10": 76,
+    "51-100": 33,
+    "11-50": 89
+   },
+   "contains_days": 184,
+   "contains_share": 0.2584,
+   "contains_accessible_days": 160,
+   "contains_blocked_days": 24,
+   "monster_mfe_q": {
+    "n": 160,
+    "p50": 0.3738,
+    "p90": 1.722
+   },
+   "monster_ahead_share_q": {
+    "n": 160,
+    "p50": 0.3498,
+    "p90": 0.7985
+   },
+   "monster_above_H_days": null,
+   "miss_days": 528,
+   "miss_other_touch_30": 180,
+   "miss_other_touch_50": 89,
+   "miss_other_touch_100": 21,
+   "miss_other_above_100": 13,
+   "miss_other_best_mfe_q": {
+    "n": 527,
+    "p50": 0.1974,
+    "p90": 0.6245
+   }
+  },
+  {
+   "anchor": "hi_prev",
+   "H": 200,
+   "pop": "B",
+   "T": 590,
+   "days": 712,
+   "buckets": {
+    "51-100": 37,
+    "1-3": 188,
+    ">100": 329,
+    "11-50": 91,
+    "4-10": 67
+   },
+   "contains_days": 188,
+   "contains_share": 0.264,
+   "contains_accessible_days": 174,
+   "contains_blocked_days": 14,
+   "monster_mfe_q": {
+    "n": 174,
+    "p50": 0.3655,
+    "p90": 1.7027
+   },
+   "monster_ahead_share_q": {
+    "n": 174,
+    "p50": 0.3414,
+    "p90": 0.8433
+   },
+   "monster_above_H_days": null,
+   "miss_days": 524,
+   "miss_other_touch_30": 177,
+   "miss_other_touch_50": 83,
+   "miss_other_touch_100": 15,
+   "miss_other_above_100": 6,
+   "miss_other_best_mfe_q": {
+    "n": 524,
+    "p50": 0.2041,
+    "p90": 0.6655
+   }
+  },
+  {
+   "anchor": "hi_prev",
+   "H": 200,
+   "pop": "B",
+   "T": 595,
+   "days": 712,
+   "buckets": {
+    "1-3": 204,
+    "4-10": 65,
+    ">100": 328,
+    "11-50": 85,
+    "51-100": 30
+   },
+   "contains_days": 204,
+   "contains_share": 0.2865,
+   "contains_accessible_days": 179,
+   "contains_blocked_days": 25,
+   "monster_mfe_q": {
+    "n": 179,
+    "p50": 0.4028,
+    "p90": 1.8975
+   },
+   "monster_ahead_share_q": {
+    "n": 179,
+    "p50": 0.3917,
+    "p90": 0.8647
+   },
+   "monster_above_H_days": null,
+   "miss_days": 508,
+   "miss_other_touch_30": 163,
+   "miss_other_touch_50": 75,
+   "miss_other_touch_100": 17,
+   "miss_other_above_100": 6,
+   "miss_other_best_mfe_q": {
+    "n": 508,
+    "p50": 0.2097,
+    "p90": 0.6232
+   }
+  },
+  {
+   "anchor": "hi_prev",
+   "H": 200,
+   "pop": "B",
+   "T": 600,
+   "days": 712,
+   "buckets": {
+    "1-3": 204,
+    "4-10": 69,
+    ">100": 315,
+    "11-50": 83,
+    "51-100": 41
+   },
+   "contains_days": 204,
+   "contains_share": 0.2865,
+   "contains_accessible_days": 187,
+   "contains_blocked_days": 17,
+   "monster_mfe_q": {
+    "n": 187,
+    "p50": 0.4768,
+    "p90": 1.8763
+   },
+   "monster_ahead_share_q": {
+    "n": 187,
+    "p50": 0.4264,
+    "p90": 0.861
+   },
+   "monster_above_H_days": null,
+   "miss_days": 508,
+   "miss_other_touch_30": 167,
+   "miss_other_touch_50": 76,
+   "miss_other_touch_100": 18,
+   "miss_other_above_100": 6,
+   "miss_other_best_mfe_q": {
+    "n": 508,
+    "p50": 0.2154,
+    "p90": 0.635
+   }
+  },
+  {
+   "anchor": "hi_prev",
+   "H": 200,
+   "pop": "B",
+   "T": 615,
+   "days": 712,
+   "buckets": {
+    "1-3": 221,
+    "11-50": 87,
+    ">100": 313,
+    "4-10": 62,
+    "51-100": 27,
+    "absent": 2
+   },
+   "contains_days": 221,
+   "contains_share": 0.3104,
+   "contains_accessible_days": 202,
+   "contains_blocked_days": 19,
+   "monster_mfe_q": {
+    "n": 202,
+    "p50": 0.3624,
+    "p90": 1.7312
+   },
+   "monster_ahead_share_q": {
+    "n": 202,
+    "p50": 0.3477,
+    "p90": 0.833
+   },
+   "monster_above_H_days": null,
+   "miss_days": 491,
+   "miss_other_touch_30": 169,
+   "miss_other_touch_50": 73,
+   "miss_other_touch_100": 9,
+   "miss_other_above_100": 4,
+   "miss_other_best_mfe_q": {
+    "n": 491,
+    "p50": 0.2063,
+    "p90": 0.6063
+   }
+  },
+  {
+   "anchor": "hi_prev",
+   "H": 200,
+   "pop": "B",
+   "T": 630,
+   "days": 712,
+   "buckets": {
+    "1-3": 224,
+    "11-50": 79,
+    "4-10": 57,
+    ">100": 312,
+    "51-100": 39,
+    "absent": 1
+   },
+   "contains_days": 224,
+   "contains_share": 0.3146,
+   "contains_accessible_days": 204,
+   "contains_blocked_days": 20,
+   "monster_mfe_q": {
+    "n": 204,
+    "p50": 0.3993,
+    "p90": 1.8178
+   },
+   "monster_ahead_share_q": {
+    "n": 204,
+    "p50": 0.3818,
+    "p90": 0.7955
+   },
+   "monster_above_H_days": null,
+   "miss_days": 488,
+   "miss_other_touch_30": 162,
+   "miss_other_touch_50": 71,
+   "miss_other_touch_100": 15,
+   "miss_other_above_100": 7,
+   "miss_other_best_mfe_q": {
+    "n": 488,
+    "p50": 0.2122,
+    "p90": 0.6239
+   }
+  },
+  {
+   "anchor": "hi_prev",
+   "H": 200,
+   "pop": "B",
+   "T": 645,
+   "days": 712,
+   "buckets": {
+    "1-3": 217,
+    "4-10": 68,
+    ">100": 312,
+    "11-50": 86,
+    "51-100": 28,
+    "absent": 1
+   },
+   "contains_days": 217,
+   "contains_share": 0.3048,
+   "contains_accessible_days": 201,
+   "contains_blocked_days": 16,
+   "monster_mfe_q": {
+    "n": 201,
+    "p50": 0.3954,
+    "p90": 1.3313
+   },
+   "monster_ahead_share_q": {
+    "n": 201,
+    "p50": 0.3775,
+    "p90": 0.7367
+   },
+   "monster_above_H_days": null,
+   "miss_days": 495,
+   "miss_other_touch_30": 158,
+   "miss_other_touch_50": 62,
+   "miss_other_touch_100": 14,
+   "miss_other_above_100": 8,
+   "miss_other_best_mfe_q": {
+    "n": 495,
+    "p50": 0.1943,
+    "p90": 0.5746
+   }
+  },
+  {
+   "anchor": "hi_prev",
+   "H": 200,
+   "pop": "B",
+   "T": 660,
+   "days": 712,
+   "buckets": {
+    "1-3": 219,
+    "11-50": 86,
+    "4-10": 58,
+    ">100": 316,
+    "51-100": 33
+   },
+   "contains_days": 219,
+   "contains_share": 0.3076,
+   "contains_accessible_days": 205,
+   "contains_blocked_days": 14,
+   "monster_mfe_q": {
+    "n": 205,
+    "p50": 0.3861,
+    "p90": 1.4433
+   },
+   "monster_ahead_share_q": {
+    "n": 205,
+    "p50": 0.3683,
+    "p90": 0.7693
+   },
+   "monster_above_H_days": null,
+   "miss_days": 493,
+   "miss_other_touch_30": 148,
+   "miss_other_touch_50": 56,
+   "miss_other_touch_100": 10,
+   "miss_other_above_100": 4,
+   "miss_other_best_mfe_q": {
+    "n": 493,
+    "p50": 0.2052,
+    "p90": 0.5115
+   }
+  },
+  {
+   "anchor": "hi_prev",
+   "H": 200,
+   "pop": "B",
+   "T": 690,
+   "days": 712,
+   "buckets": {
+    "4-10": 44,
+    "1-3": 231,
+    ">100": 318,
+    "51-100": 31,
+    "11-50": 86,
+    "absent": 2
+   },
+   "contains_days": 231,
+   "contains_share": 0.3244,
+   "contains_accessible_days": 223,
+   "contains_blocked_days": 8,
+   "monster_mfe_q": {
+    "n": 223,
+    "p50": 0.3333,
+    "p90": 1.3072
+   },
+   "monster_ahead_share_q": {
+    "n": 223,
+    "p50": 0.3208,
+    "p90": 0.7162
+   },
+   "monster_above_H_days": null,
+   "miss_days": 481,
+   "miss_other_touch_30": 116,
+   "miss_other_touch_50": 55,
+   "miss_other_touch_100": 6,
+   "miss_other_above_100": 4,
+   "miss_other_best_mfe_q": {
+    "n": 481,
+    "p50": 0.1839,
+    "p90": 0.5328
+   }
+  },
+  {
+   "anchor": "hi_prev",
+   "H": 200,
+   "pop": "B",
+   "T": 720,
+   "days": 712,
+   "buckets": {
+    "1-3": 248,
+    "11-50": 69,
+    ">100": 317,
+    "4-10": 46,
+    "51-100": 31,
+    "absent": 1
+   },
+   "contains_days": 248,
+   "contains_share": 0.3483,
+   "contains_accessible_days": 234,
+   "contains_blocked_days": 14,
+   "monster_mfe_q": {
+    "n": 234,
+    "p50": 0.2678,
+    "p90": 1.1969
+   },
+   "monster_ahead_share_q": {
+    "n": 234,
+    "p50": 0.2356,
+    "p90": 0.6885
+   },
+   "monster_above_H_days": null,
+   "miss_days": 464,
+   "miss_other_touch_30": 118,
+   "miss_other_touch_50": 50,
+   "miss_other_touch_100": 5,
+   "miss_other_above_100": 3,
+   "miss_other_best_mfe_q": {
+    "n": 464,
+    "p50": 0.185,
+    "p90": 0.5128
+   }
+  }
+ ],
+ "_producer": "basket_capture_funnel.py",
+ "_definitions": "monster = day with >=1 full-PIT name whose session high reached +H over the stated anchor (hi_open = RTH open, hi_prev = previous close); rank = position in the frozen population ranking computed on SIP compact tables; contains = the monster is in the day's anatomy top-3 for that (pop,T); monster_mfe = post-fill high (touch lens, accessible fills only); ahead_share = (post-fill high - fill) / (day high - anchor); miss_* = on days the monster was NOT in our top-3, what the accessible top-3 members still delivered (touch lens).",
+ "notes": [
+  "hi_open, hi_prev and post-entry excursions are separate objects; never subtract or pool them.",
+  "Diagnostic only; no parameter selected."
+ ]
+}

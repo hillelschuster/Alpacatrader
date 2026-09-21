@@ -292,14 +292,20 @@ def process_day(
         pl.col("open0930").fill_null(pl.col("o_first")).alias("anchor"),
         (pl.col("open0930").is_null()).alias("delayed_open"),
     )
-    w = w.filter((pl.col("anchor") >= MIN_PRICE) & (pl.col("prev_close") > 0))
+    # 2026-09-21 repair: prev_close never gates open-anchored or B admission;
+    # close-anchored (EOD) leaders are their own object.
     w = w.with_columns(
         (pl.col("hi") / pl.col("anchor") - 1).alias("gain_open"),
         (pl.col("hi") / pl.col("prev_close") - 1).alias("gain_prev"),
         (pl.col("cl") / pl.col("anchor") - 1).alias("eod_open"),
+        (pl.col("cl") / pl.col("prev_close") - 1).alias("eod_prev"),
     )
+    w = w.filter(pl.col("anchor") >= MIN_PRICE)
+    wp_prev_ok = w.filter(pl.col("prev_close") > 0)
     win_o = w.sort("gain_open", descending=True).head(K_TOP)
-    win_p = w.sort("gain_prev", descending=True).head(K_TOP)
+    win_p = wp_prev_ok.sort("gain_prev", descending=True).head(K_TOP)
+    win_co = w.sort("eod_open", descending=True).head(K_TOP)
+    win_cp = wp_prev_ok.sort("eod_prev", descending=True).head(K_TOP)
     winners_open = [
         {"ticker": r["ticker"], "gain_open": R(r["gain_open"]), "gain_prev": R(r["gain_prev"]),
          "eod_open": R(r["eod_open"]), "et_hi": int(r["etN"]) if False else None,
@@ -312,6 +318,16 @@ def process_day(
          "split_flag": r["ticker"] in split_set}
         for r in win_p.iter_rows(named=True)
     ]
+    winners_close_open = [
+        {"ticker": r["ticker"], "eod_open": R(r["eod_open"]), "gain_open": R(r["gain_open"]),
+         "eod_prev": R(r["eod_prev"]), "split_flag": r["ticker"] in split_set}
+        for r in win_co.iter_rows(named=True)
+    ]
+    winners_close_prev = [
+        {"ticker": r["ticker"], "eod_prev": R(r["eod_prev"]), "eod_open": R(r["eod_open"]),
+         "split_flag": r["ticker"] in split_set}
+        for r in win_cp.iter_rows(named=True)
+    ]
 
     # ---- snapshot candidate frames
     snaps: list[dict] = []
@@ -319,7 +335,8 @@ def process_day(
     if pm_day is not None:
         pops.append("A_pm")
 
-    def emit(pop: str, T: int, frame: pl.DataFrame, pxcol: str, alt_anchor: str | None):
+    def emit(pop: str, T: int, frame: pl.DataFrame, pxcol: str, alt_anchor: str | None,
+             fill_mode: str | None = None):
         names = []
         for r in frame.iter_rows(named=True):
             base = {
@@ -332,7 +349,7 @@ def process_day(
                 "prev_close": R(r["prev_close"]) if r.get("prev_close") is not None else None,
                 "split_flag": r["ticker"] in split_set,
             }
-            base.update(attach_path(r["ticker"], pop, T, base))
+            base.update(attach_path(r["ticker"], fill_mode or pop, T, base))
             names.append(base)
         snaps.append({"pop": pop, "T": T, "names": names})
 
@@ -395,6 +412,7 @@ def process_day(
             (pl.col("open0930") / pl.col("px") - 1).alias("sel_alt"),
         )
         emit("A_pm", 570, topk(ap, "sel"), "px", None)
+        emit("A_pm31", 570, topk(ap, "sel"), "px", None, fill_mode="A_open")
 
     # B(T)
     for T in T_LIST:
@@ -402,8 +420,8 @@ def process_day(
             pl.col("close").sort_by("et").last().alias("px"),
             pl.col("et").max().alias("et_dec"),
         )
-        b = dec.join(o570, on="ticker", how="inner").join(pc, on="ticker", how="inner").filter(
-            (pl.col("px") >= MIN_PRICE) & (pl.col("open0930") > 0) & (pl.col("prev_close") > 0)
+        b = dec.join(o570, on="ticker", how="inner").join(pc, on="ticker", how="left").filter(
+            (pl.col("px") >= MIN_PRICE) & (pl.col("open0930") > 0)
         )
         b = b.with_columns(
             (pl.col("px") / pl.col("open0930") - 1).alias("sel"),
@@ -438,6 +456,8 @@ def process_day(
         },
         "winners_open": winners_open,
         "winners_prev": winners_prev,
+        "winners_close_open": winners_close_open,
+        "winners_close_prev": winners_close_prev,
         "snapshots": snaps,
         "_bars": bars,
     }
@@ -481,6 +501,31 @@ def selftest() -> None:
     assert st["615"]["ret"] == 0.05  # last completed bar 600 consumed at 10:15
     assert st["615"]["dd"] == -0.125
     assert st["630"] is None  # no new bar after 600
+
+    import datetime as _dt
+    day_str = "2021-02-01"
+    elig = sorted(pit_elig(day_str))[:3]
+    assert len(elig) == 3, "pit_elig must return symbols for 2021-02-01"
+    t_a, t_b, _t_c = elig
+    rows = []
+    for tk in elig:
+        for et, o, h, l, c in ((570, 10.0, 10.5, 9.9, 10.2), (571, 10.2, 11.0, 10.1, 10.8),
+                               (600, 10.8, 30.0, 10.5, 25.0)):
+            rows.append((_dt.date(2021, 2, 1), tk, et, float(o), float(h), float(l),
+                         float(c), 1000.0))
+    day = pl.DataFrame(rows, schema=["date", "ticker", "et", "open", "high", "low",
+                                     "close", "volume"], orient="row")
+    pm = pl.DataFrame({"ticker": [t_a, t_b], "et": [569, 550], "close": [12.0, 6.0]})
+    rec = process_day(day, day_str, {t_a: 5.0}, pm, max_days_flag=False)
+    snaps = {(s["pop"], s["T"]): s for s in rec["snapshots"]}
+    assert ("A_pm", 570) in snaps and ("A_pm31", 570) in snaps
+    m31 = snaps[("A_pm31", 570)]["names"][0]
+    assert m31["ticker"] == t_a and m31["fill"]["et"] == 571, m31
+    assert snaps[("A_pm", 570)]["names"][0]["fill"]["et"] == 570
+    bnames = snaps[("B", 600)]["names"]
+    assert {n["ticker"] for n in bnames} == set(elig), bnames
+    assert sum(1 for n in bnames if n.get("prev_close") is None) == 2, bnames
+    assert len(rec["winners_close_open"]) == 3 and len(rec["winners_close_prev"]) == 1
     print("self-test OK")
 
 

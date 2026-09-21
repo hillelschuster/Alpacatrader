@@ -29,11 +29,14 @@ BASKET-01 planning lane (bullet below).
   data/power (2021+ backbone staging, real-time SIP); both are priced decisions. SIP
   ~$99/mo is NOT needed for the frozen strategy (IEX covers a median 24.6% of session
   minutes per top-3 name; only sub-minute features would justify it).
-- **BASKET-01 participation/survival thesis (H038; Phase 1 read, 2026-09-20).**
+- **BASKET-01 participation/survival thesis (H038; Phase 1 measurement complete 2026-09-21).**
   Phase 0 docs frozen: `researches/THESIS-BASKET-01.md` + `researches/PRE-REG-BASKET-01.md`.
   Phase 1 regenerated on the SIP substrate (1,066 dev days, QA PASS) with the repaired read
-  layer; canonical packet `factory/artifacts/basket/sip/READ_PACKET.md`. Owner gate on the
-  integrated seven-question read next. No release-rule constants; PRE-REG-BASKET-02
+  layer; canonical packet `factory/artifacts/basket/sip/READ_PACKET.md`. Advisor-directed
+  final measurement pass done 2026-09-21 (B(T) prev-close admission gate removed; A_pm31
+  09:31 bound; trade-level T5; T7 monthly rollups + T8 fix; EOD/prev leader objects;
+  capture funnel; race_by_view; provider-fetch recovery -> unresolved 9 -> 2). Integrated
+  seven-question read pending owner gate. No release-rule constants; PRE-REG-BASKET-02
   unfrozen; H025 untouched. Reserved months 2026-06..08 untouched; sealed 2024/2025-01
   acquired mechanically (certified) and unseen.
 - The older sections below (phenomenology, collisions, 2026-09-08 strategy) remain valid

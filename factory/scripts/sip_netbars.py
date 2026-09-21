@@ -121,6 +121,27 @@ def fetch_provider_bars(day: str, symbols: list) -> pl.DataFrame:
             print(f"  provider fetch unavailable after retries ({msg[:120]}); continuing derive-only")
             break
     if not rows:
+        pass  # a failed batch can hide every symbol; the recovery pass below still runs
+    got = {sym for (sym, *_rest) in rows}
+    missing = [s for s in todo if s not in got]
+    for i in range(0, len(missing), 100):
+        chunk = missing[i:i + 100]
+        for attempt in range(3):
+            try:
+                res = client.get_stock_bars(StockBarsRequest(
+                    symbol_or_symbols=chunk, timeframe=TimeFrame.Minute, start=start, end=end,
+                    feed=DataFeed.SIP, adjustment=Adjustment.RAW,
+                ))
+                for sym, bars in res.data.items():
+                    for b in bars:
+                        rows.append((sym, b.timestamp, b.open, b.high, b.low, b.close, b.volume))
+                break
+            except Exception as e:  # noqa: BLE001 - API/network
+                if attempt < 2:
+                    time.sleep(3 * (attempt + 1))
+                    continue
+                print(f"  provider recovery failed for {chunk[:5]}: {str(e)[:100]}")
+    if not rows:
         return pl.DataFrame(schema={"symbol": pl.String, "timestamp": pl.Datetime,
                                     "open": pl.Float64, "high": pl.Float64, "low": pl.Float64,
                                     "close": pl.Float64, "volume": pl.Int64})
@@ -128,6 +149,9 @@ def fetch_provider_bars(day: str, symbols: list) -> pl.DataFrame:
                       orient="row")
     if bad:
         print(f"  provider fetch: dropped invalid symbols {bad}")
+    still = sorted(s for s in todo if s not in set(df["symbol"].unique().to_list()))
+    if still:
+        print(f"  provider fetch: no data for {len(still)} symbols {still[:8]}")
     return df
 
 

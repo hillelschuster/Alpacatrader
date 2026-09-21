@@ -7,9 +7,11 @@ Final   = factory/artifacts/basket/sip/anatomy/<day>.jsonl (selections made on t
 
 For every dev day and every snapshot, compare the top-3 SETS, classify every
 difference by cause, audit promoted names (anatomy top-3 but not Layer-1 top-3),
-check their quote coverage, and audit the 8 unresolved symbol-days. This is the
+check their quote coverage, and audit the 9 originally-unresolved symbol-days
+(7 recovered by the provider recovery pass, 2 genuinely unresolved). This is the
 "no silent promotion of rank #4" evidence: any promoted name must be listed with
-its Layer-1 rank and quote coverage.
+its Layer-1 rank and quote coverage. A_pm31 mirrors the A_pm selection frame and is
+compared against Layer-1's A_pm snapshot.
 
 Measurement/audit only. No selection, no parameter, no strategy, no PnL.
 
@@ -37,9 +39,12 @@ NET = ROOT / "data" / "sip" / "net"  # symlink -> /home/hillel/sip/net
 BARSD = NET / "bars"
 QUOTES = NET / "quotes"
 STAGE = ROOT / "data" / "sip" / "audit_stage"
-UNRESOLVED = [("VVPR", "2022-05-13"), ("HSON", "2022-06-15"), ("PMN", "2023-02-13"),
-              ("HSON", "2023-07-19"), ("MGLD", "2023-09-19"), ("CSLR", "2023-09-28"),
-              ("CSLR", "2023-11-13"), ("HSON", "2025-05-22")]
+AUDIT_SYMBOL_DAYS = [
+    ("VVPR", "2022-05-13", "recovered_provider"), ("HSON", "2022-06-15", "recovered_provider"),
+    ("PMN", "2023-02-13", "unresolved"), ("HSON", "2023-07-19", "recovered_provider"),
+    ("MGLD", "2023-09-19", "unresolved"), ("CSLR", "2023-09-28", "recovered_provider"),
+    ("CSLR", "2023-11-13", "recovered_provider"), ("HSON", "2025-05-22", "recovered_provider"),
+    ("AJX", "2023-07-03", "recovered_provider")]
 
 
 def art_root(arg=None) -> Path:
@@ -134,12 +139,17 @@ def audit_day(day: str, anat_path: Path, cand_path: Path, quotes_cache: dict) ->
     rec = json.load(open(anat_path))
     need_bars = False
     rows = []
+    l1_refs: list = []
     for s in rec.get("snapshots", []):
-        key = (s.get("pop"), s.get("T"))
+        pop = s.get("pop")
+        key = (pop, s.get("T"))
         l1s = l1.get(key)
+        if l1s is None and pop == "A_pm31":
+            l1s = l1.get(("A_pm", s.get("T")))
         out["snapshots"] += 1
         if l1s is None:
             rows.append({"pop": key[0], "T": key[1], "no_layer1_snapshot": True})
+            l1_refs.append(None)
             continue
         l1_top3 = [r["symbol"] for r in l1s["top"][:3]]
         an_top3 = [n["ticker"] for n in s["names"][:3]]
@@ -149,6 +159,7 @@ def audit_day(day: str, anat_path: Path, cand_path: Path, quotes_cache: dict) ->
         need_bars = True
         rows.append({"pop": key[0], "T": key[1], "l1_top3": l1_top3,
                      "an_top3": an_top3, "l1_margin": l1s.get("margin") or []})
+        l1_refs.append(l1s)
     if not rows:
         return out
     merged_tickers: set = set()
@@ -163,11 +174,11 @@ def audit_day(day: str, anat_path: Path, cand_path: Path, quotes_cache: dict) ->
                 merged_dec.setdefault(t, set()).add(int(e))
                 merged_series.setdefault(t, ([], []))[0].append(int(e))
                 merged_series[t][1].append(float(c))
-    for r in rows:
+    for i, r in enumerate(rows):
         if r.get("no_layer1_snapshot"):
             out["diffs"].append(r)
             continue
-        l1s = l1[(r["pop"], r["T"])]
+        l1s = l1_refs[i]
         d = classify_diff(l1s["top"], next(x["names"] for x in rec["snapshots"]
                                            if (x["pop"], x["T"]) == (r["pop"], r["T"])),
                           merged_tickers, merged_dec, T=r["T"],
@@ -195,8 +206,8 @@ def audit_day(day: str, anat_path: Path, cand_path: Path, quotes_cache: dict) ->
 
 def unresolved_audit(cand_dir: Path, anat_dir: Path) -> list:
     res = []
-    for sym, day in UNRESOLVED:
-        rec: dict = {"ticker": sym, "day": day}
+    for sym, day, status in AUDIT_SYMBOL_DAYS:
+        rec: dict = {"ticker": sym, "day": day, "status": status}
         cp = cand_dir / f"{day}.json"
         ap = anat_dir / f"{day}.jsonl"
         if cp.exists():
@@ -274,6 +285,10 @@ def run(root: Path, write: bool, limit: int | None, merge_only: bool = False):
         "promoted": promoted,
         "per_day_diffs": per_day,
         "unresolved_audit": unresolved,
+        "unresolved_symbol_days": {
+            "unresolved": [f"{s} {d}" for s, d, st in AUDIT_SYMBOL_DAYS if st == "unresolved"],
+            "recovered": [f"{s} {d}" for s, d, st in AUDIT_SYMBOL_DAYS if st != "unresolved"],
+        },
         "notes": ["Layer-1 and the anatomy can differ at the margin by construction (different "
                   "bar substrate); this audit quantifies the differences and proves whether any "
                   "name outside the acquired net was selected.",
@@ -308,6 +323,8 @@ def selftest():
     l1b = [dict(l1[0]), {"symbol": "ZZZ", "rank": 2, "px_600": 9.0}, dict(l1[2])]
     d3 = classify_diff(l1b, an2, {"AAA", "CCC"}, {})
     assert d3["dropped"][0]["cause"] == "outside_net", d3
+    assert sum(1 for *_, st in AUDIT_SYMBOL_DAYS if st == "unresolved") == 2
+    assert all(st in ("recovered_provider", "unresolved") for *_, st in AUDIT_SYMBOL_DAYS)
     print("self-test OK")
 
 

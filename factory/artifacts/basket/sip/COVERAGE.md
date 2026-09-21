@@ -4,15 +4,15 @@ Days: **1068** · symbol-days: **70176**
 
 | class | symbol-days | share |
 |---|---:|---:|
-| healthy_raw | 64041 | 0.912577 |
-| provider_only | 6126 | 0.087295 |
-| unresolved | 9 | 0.000128 |
+| healthy_raw | 64042 | 0.912591 |
+| provider_only | 6132 | 0.08738 |
+| unresolved | 2 | 2.8e-05 |
 
-Days containing unresolved symbol-days: **9**
+Days containing unresolved symbol-days: **2**
 
 ## provider_only reasons
 
-- 46x raw insufficient (n_trades=156)
+- 47x raw insufficient (n_trades=156)
 - 45x raw insufficient (n_trades=148)
 - 41x raw insufficient (n_trades=165)
 - 40x raw insufficient (n_trades=123)
@@ -25,9 +25,9 @@ Days containing unresolved symbol-days: **9**
 - 38x raw insufficient (n_trades=113)
 - 37x raw insufficient (n_trades=184)
 - 37x raw insufficient (n_trades=167)
+- 37x raw insufficient (n_trades=103)
 - 36x raw insufficient (n_trades=172)
 - 36x raw insufficient (n_trades=124)
-- 36x raw insufficient (n_trades=103)
 - 36x raw insufficient (n_trades=101)
 - 36x raw insufficient (n_trades=134)
 - 35x raw insufficient (n_trades=75)
@@ -181,6 +181,7 @@ Days containing unresolved symbol-days: **9**
 - 13x raw insufficient (n_trades=210)
 - 13x raw insufficient (n_trades=205)
 - 12x raw insufficient (n_trades=41)
+- 12x raw insufficient (n_trades=248)
 - 12x raw insufficient (n_trades=46)
 - 12x raw insufficient (n_trades=221)
 - 12x raw insufficient (n_trades=201)
@@ -189,11 +190,11 @@ Days containing unresolved symbol-days: **9**
 - 12x raw insufficient (n_trades=251)
 - 12x raw insufficient (n_trades=202)
 - 11x raw insufficient (n_trades=207)
-- 11x raw insufficient (n_trades=248)
 - 11x raw insufficient (n_trades=249)
 - 11x raw insufficient (n_trades=234)
 - 11x raw insufficient (n_trades=212)
 - 11x raw insufficient (n_trades=37)
+- 11x raw insufficient (n_trades=244)
 - 11x raw insufficient (n_trades=237)
 - 10x raw insufficient (n_trades=58)
 - 10x raw insufficient (n_trades=254)
@@ -204,7 +205,6 @@ Days containing unresolved symbol-days: **9**
 - 10x raw insufficient (n_trades=27)
 - 10x raw insufficient (n_trades=233)
 - 10x raw insufficient (n_trades=229)
-- 10x raw insufficient (n_trades=244)
 - 10x raw insufficient (n_trades=272)
 - 9x raw insufficient (n_trades=231)
 - 9x raw insufficient (n_trades=209)
@@ -217,6 +217,7 @@ Days containing unresolved symbol-days: **9**
 - 9x raw insufficient (n_trades=224)
 - 9x raw insufficient (n_trades=34)
 - 9x raw insufficient (n_trades=282)
+- 9x raw insufficient (n_trades=299)
 - 9x raw insufficient (n_trades=217)
 - 8x raw insufficient (n_trades=29)
 - 8x raw insufficient (n_trades=300)
@@ -227,7 +228,6 @@ Days containing unresolved symbol-days: **9**
 - 8x raw insufficient (n_trades=225)
 - 8x raw insufficient (n_trades=326)
 - 8x raw insufficient (n_trades=239)
-- 8x raw insufficient (n_trades=299)
 - 8x raw insufficient (n_trades=22)
 - 7x raw insufficient (n_trades=280)
 - 7x raw insufficient (n_trades=203)
@@ -317,6 +317,7 @@ Days containing unresolved symbol-days: **9**
 - 4x raw insufficient (n_trades=315)
 - 4x raw insufficient (n_trades=267)
 - 4x raw insufficient (n_trades=318)
+- 4x raw insufficient (n_trades=277)
 - 4x raw insufficient (n_trades=329)
 - 4x raw insufficient (n_trades=23)
 - 4x raw insufficient (n_trades=316)
@@ -354,7 +355,6 @@ Days containing unresolved symbol-days: **9**
 - 3x raw insufficient (n_trades=270)
 - 3x raw insufficient (n_trades=541)
 - 3x raw insufficient (n_trades=379)
-- 3x raw insufficient (n_trades=277)
 - 3x raw insufficient (n_trades=364)
 - 3x raw insufficient (n_trades=374)
 - 3x raw insufficient (n_trades=580)
@@ -766,29 +766,15 @@ Days containing unresolved symbol-days: **9**
 
 ## unresolved reasons
 
-- 1x no usable source (n_trades=156, d_bars=36)
-- 1x no usable source (n_trades=244, d_bars=9)
 - 1x no usable source (n_trades=26, d_bars=0)
-- 1x raw>=min but session truncated and no provider reference
-- 1x no usable source (n_trades=103, d_bars=6)
 - 1x no usable source (n_trades=24, d_bars=0)
-- 1x no usable source (n_trades=299, d_bars=29)
-- 1x no usable source (n_trades=277, d_bars=27)
-- 1x no usable source (n_trades=248, d_bars=22)
 
 ## unresolved symbol-days (explicit, never silently dropped)
 
 | day | symbol | n_trades | derived_bars | provider_bars | reason |
 |---|---|---:|---:|---:|---|
-| 2022-05-13 | VVPR | 156 | 36 | 0 | no usable source (n_trades=156, d_bars=36) |
-| 2022-06-15 | HSON | 244 | 9 | 0 | no usable source (n_trades=244, d_bars=9) |
 | 2023-02-13 | PMN | 26 | 0 | 0 | no usable source (n_trades=26, d_bars=0) |
-| 2023-07-03 | AJX | 4549 | 175 | 0 | raw>=min but session truncated and no provider reference |
-| 2023-07-19 | HSON | 103 | 6 | 0 | no usable source (n_trades=103, d_bars=6) |
 | 2023-09-19 | MGLD | 24 | 0 | 0 | no usable source (n_trades=24, d_bars=0) |
-| 2023-09-28 | CSLR | 299 | 29 | 0 | no usable source (n_trades=299, d_bars=29) |
-| 2023-11-13 | CSLR | 277 | 27 | 0 | no usable source (n_trades=277, d_bars=27) |
-| 2025-05-22 | HSON | 248 | 22 | 0 | no usable source (n_trades=248, d_bars=22) |
 
 ## per-month class counts
 
@@ -810,8 +796,8 @@ Days containing unresolved symbol-days: **9**
 | 2022-02 | 1272 | 115 | 0 |
 | 2022-03 | 1398 | 99 | 0 |
 | 2022-04 | 1325 | 144 | 0 |
-| 2022-05 | 1358 | 172 | 1 |
-| 2022-06 | 1319 | 181 | 1 |
+| 2022-05 | 1358 | 173 | 0 |
+| 2022-06 | 1319 | 182 | 0 |
 | 2022-07 | 1252 | 200 | 0 |
 | 2022-08 | 1329 | 132 | 0 |
 | 2022-09 | 1271 | 206 | 0 |
@@ -824,17 +810,17 @@ Days containing unresolved symbol-days: **9**
 | 2023-04 | 1020 | 164 | 0 |
 | 2023-05 | 1244 | 106 | 0 |
 | 2023-06 | 1377 | 176 | 0 |
-| 2023-07 | 1230 | 171 | 2 |
+| 2023-07 | 1231 | 172 | 0 |
 | 2023-08 | 1356 | 196 | 0 |
-| 2023-09 | 1193 | 221 | 2 |
+| 2023-09 | 1193 | 222 | 1 |
 | 2023-10 | 1226 | 274 | 0 |
-| 2023-11 | 1217 | 175 | 1 |
+| 2023-11 | 1217 | 176 | 0 |
 | 2023-12 | 1169 | 130 | 0 |
 | 2025-01 | 69 | 6 | 0 |
 | 2025-02 | 1006 | 81 | 0 |
 | 2025-03 | 1104 | 109 | 0 |
 | 2025-04 | 1211 | 137 | 0 |
-| 2025-05 | 1146 | 91 | 1 |
+| 2025-05 | 1146 | 92 | 0 |
 | 2025-06 | 1075 | 60 | 0 |
 | 2025-07 | 1175 | 63 | 0 |
 | 2025-08 | 1170 | 66 | 0 |

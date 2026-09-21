@@ -135,36 +135,40 @@ def add_snapshot(acc, rec, month, pop, T, names):
     # churn source: top-3 tickers for the main set
     acc["churn"][(rec["date"], pop)].append((T, tickers(names, PRIMARY_N)))
 
-    # ---- T2 containment vs session-max leaders (winners_open)
-    # Day-level numerators over acc["cdays"] (the old "eval" denominator counted one
-    # row per (winner, N) pair = 3x days, printing shares at one third of the day value).
-    winners = rec.get("winners_open", [])[:3]
-    for N in N_LADDER:
-        s = set(n["ticker"] for n in names[:N])
-        for wr, w in enumerate(winners, start=1):
-            if w["ticker"] in s:
-                acc["contain"][(month, pop, T, N)][f"top{wr}_in"] += 1
+    # ---- T2 containment vs the four leader objects; shares use acc["cdays"]
+    # (day counts, not the removed per-(winner,N) "eval" denominator = 3x days).
+    for prefix, lkey, primary in (("", "winners_open", True),
+                                  ("prev_", "winners_prev", False),
+                                  ("eodopen_", "winners_close_open", False),
+                                  ("eodprev_", "winners_close_prev", False)):
+        winners = rec.get(lkey, [])[:3]
+        for N in N_LADDER:
+            s = set(n["ticker"] for n in names[:N])
+            key = (month, pop, T, N)
+            for wr, w in enumerate(winners, start=1):
+                if w["ticker"] not in s:
+                    continue
+                acc["contain"][key][f"{prefix}top{wr}_in"] += 1
+                if not primary:
+                    continue
                 m = next((n for n in names[:N] if n["ticker"] == w["ticker"]), None)
                 f = (m or {}).get("fill")
                 # Shares conditioned on an ACCESSIBLE fill: a blocked slot is cash,
                 # its later raw path is not participation (PRE-REG §5 / T6 semantics).
                 if m and f is not None and not f.get("blocked") and m.get("mfe") is not None:
-                    acc["contain"][(month, pop, T, N)]["filled_in"] += 1
+                    acc["contain"][key]["filled_in"] += 1
                     a = float(m["open0930"]) if m.get("open0930") else None
                     hi = float(m["day_high"]) if m.get("day_high") else None
                     fill = float(f["px"])
                     pxd = float(m["px_decision"]) if m.get("px_decision") is not None else None
                     post_hi = fill * (1.0 + float(m["mfe"]))
                     if a and hi and pxd is not None and hi > a and fill > 0:
-                        sh = acc["shares"][(month, pop, T, N)]
+                        sh = acc["shares"][key]
                         sh["completed"].append((pxd - a) / (hi - a))
-                        # post-fill shares: the part of the day's open-anchored move
-                        # that still lay ahead of OUR fill (accessibility lens).
                         sh["ahead"].append((post_hi - fill) / (hi - a))
                         sh["remaining"].append(post_hi / fill - 1.0)
                 else:
-                    acc["contain"][(month, pop, T, N)]["blocked_in"] += 1
-            acc["contain"][(month, pop, T, N)]["eval"] += 1
+                    acc["contain"][key]["blocked_in"] += 1
 
     # ---- member-level, main set (top-3) and rank-adjacent control (ranks 4-6)
     for setname, mset in (("main", names[:PRIMARY_N]), ("adj", names[PRIMARY_N:2 * PRIMARY_N])):
@@ -275,6 +279,11 @@ def finalize(acc):
                "top2_in_share": round(c["top2_in"] / days, 5) if days else None,
                "top3_in_share": round(c["top3_in"] / days, 5) if days else None,
                "filled_in": c.get("filled_in", 0), "blocked_in": c.get("blocked_in", 0)}
+        for pre in ("prev", "eodopen", "eodprev"):
+            for k in (1, 2, 3):
+                cnt = c.get(f"{pre}_top{k}_in", 0)
+                row[f"{pre}_top{k}_in"] = cnt
+                row[f"{pre}_top{k}_in_share"] = round(cnt / days, 5) if days else None
         sh = acc["shares"].get((month, pop, T, N), {})
         for k in ("completed", "ahead", "remaining"):
             row[k] = _q(sh.get(k, []))
@@ -400,7 +409,11 @@ def selftest():
     m2 = _fake_member("BBB", 100.0, 0.10, 8, 2, up_exec=105.0)     # dn first
     m3 = _fake_member("CCC", 100.0, 0.02, 3, 3, up_exec=101.0)     # amb at H/L
     m4 = _fake_member("DDD", 100.0, 0.30, None, 4, blocked=True)   # gap-blocked, dn only
-    rec = {"date": "2025-06-02", "winners_open": [{"ticker": "AAA", "gain_open": 0.9}],
+    rec = {"date": "2025-06-02",
+           "winners_open": [{"ticker": "AAA", "gain_open": 0.9}],
+           "winners_prev": [{"ticker": "BBB", "gain_prev": 0.5}],
+           "winners_close_open": [{"ticker": "CCC", "eod_open": 0.2}],
+           "winners_close_prev": [{"ticker": "AAA", "eod_prev": 0.4}],
            "snapshots": [{"pop": "B", "T": 585, "names": [m1, m2, m3, m4]}]}
     add_rec(rec, acc)
     t = finalize(acc)
@@ -429,6 +442,11 @@ def selftest():
     row = t2[("B", 585, 3)]
     assert row["days"] == 1 and row["top1_in"] == 1 and row["top1_in_share"] == 1.0, row
     assert row["blocked_in"] == 0 and row["filled_in"] == 1, row
+    assert "eval" not in row, row
+    # the three diagnostic leader objects count on the same day denominator
+    assert row["prev_top1_in"] == 1 and row["prev_top1_in_share"] == 1.0, row
+    assert row["eodopen_top1_in"] == 1 and row["eodopen_top1_in_share"] == 1.0, row
+    assert row["eodprev_top1_in"] == 1 and row["eodprev_top1_in_share"] == 1.0, row
     # post-fill shares: completed (110-100)/(200-100)=.1; post_hi=150 -> ahead .5, remaining .5
     assert row["completed"]["p50"] == 0.1 and row["ahead"]["p50"] == 0.5, row
     assert row["remaining"]["p50"] == 0.5, row

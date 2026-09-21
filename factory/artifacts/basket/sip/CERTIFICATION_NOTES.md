@@ -50,6 +50,9 @@ Consequences observed (descriptive; not conclusions):
   after the panel.
 - prev_close is taken from the legacy carry (not re-derived from the previous SIP session).
 - A_pm ranking is not re-derived (premarket ingestion is 2025-only).
+  [SUPERSEDED 2026-09-20: the SIP regeneration does re-derive A_pm for all 1,066 dev days
+  from the SIP premarket compact tables (`sip_anatomy.pm_day_from` -> `process_day`); this
+  note described the legacy ingestion.]
 - Spreads are quoted spreads at the fill moment; no fill model is applied.
 
 ## Artifacts

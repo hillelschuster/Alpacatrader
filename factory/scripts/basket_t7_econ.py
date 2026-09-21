@@ -17,7 +17,8 @@ Definitions (locked in this file and in the artifact):
                    at cost c; coverage = share of days where the best member's
                    post-fill touch excursion (MFE) / all-hold return reaches r*
 
-Output: <root>/agg/T7_payforteam.json (monthly rows + pooled rows + break-even map)
+Output: <root>/agg/T7_payforteam.json (daily rows + monthly rollups + pooled rows +
+break-even map)
 
 Usage:
   .venv/bin/python factory/scripts/basket_t7_econ.py --self-test
@@ -107,6 +108,37 @@ SUM_FIELDS = (["days", "lt3", "empty", "blocked", "filled",
               + [f"cover_eod_k{k}_c{c}" for k in KEYS for c in COSTS])
 
 
+def monthly_rollup(rows):
+    """One row per (month, pop, T): day-weighted shares/means over the month's days."""
+    grp = defaultdict(list)
+    for r in rows:
+        grp[(r["month"], r["pop"], r["T"])].append(r)
+    out = []
+    for (month, pop, T), sub in sorted(grp.items()):
+        s = _sum(sub, SUM_FIELDS)
+        d = max(s["days"] - s["empty"], 1)
+        row = {"month": month, "pop": pop, "T": T,
+               "days": s["days"], "filled_days": s["days"] - s["empty"],
+               "empty_days": s["empty"], "lt3_days": s["lt3"], "blocked_slots": s["blocked"],
+               "members_filled": s["filled"],
+               "pays_gross": round(s["pays_gross"] / d, 4),
+               "pays_net": round(s["pays_net"] / d, 4),
+               "mean_surplus_gross": round(s["surplus_gross"] / d, 4),
+               "mean_surplus_net": round(s["surplus_net"] / d, 4),
+               "mean_best_gross": round(s["best_gross"] / d, 4),
+               "mean_best_net": round(s["best_net"] / d, 4),
+               "mean_peer_loss_net": round(s["peer_loss_net"] / d, 4)}
+        for c in COSTS:
+            row[f"pays_net_c{c}"] = round(s[f"pays_net_c{c}"] / d, 4)
+            row[f"mean_surplus_net_c{c}"] = round(s[f"surplus_net_c{c}"] / d, 4)
+        for k in KEYS:
+            for c in COSTS:
+                row[f"cover_mfe_k{k}_c{c}"] = round(s[f"cover_mfe_k{k}_c{c}"] / d, 4)
+                row[f"cover_eod_k{k}_c{c}"] = round(s[f"cover_eod_k{k}_c{c}"] / d, 4)
+        out.append(row)
+    return out
+
+
 def finalize(rows):
     pooled = {}
     for (pop, T) in sorted({(r["pop"], r["T"]) for r in rows}):
@@ -142,7 +174,8 @@ def finalize(rows):
                     "days_with_member": n,
                     "cover_mfe": round(tot_mfe / max(n, 1), 4),
                     "cover_eod": round(tot_eod / max(n, 1), 4)}
-    return {"pooled": pooled, "break_even_map": be, "monthly": rows}
+    return {"pooled": pooled, "break_even_map": be, "daily": rows,
+            "monthly": monthly_rollup(rows)}
 
 
 def selftest():
@@ -169,6 +202,10 @@ def selftest():
     assert p["pays_gross"] == 0.5 and p["pays_net"] == 0.5, p
     # day2 net: best -.08 vs peers (.10+.09)=.19 -> fails; c3: 2*.03=.06 -> fails
     assert p["pays_net_c3"] == 0.5, p
+    m = out["monthly"]
+    assert len(m) == 1 and m[0]["month"] == "2025-06" and m[0]["days"] == 2, m
+    assert m[0]["pays_net"] == 0.5 and m[0]["filled_days"] == 2, m
+    assert len(out["daily"]) == 2 and out["daily"][0]["days"] == 1, out["daily"]
     assert out["break_even_map"]["B/600"]["k2_c3"]["required_return"] == 0.06
     rec3 = {"date": "2025-06-04", "snapshots": [{"pop": "B", "T": 600, "names": [
         mk("GGG", None, None, blocked=True)]}]}
@@ -201,8 +238,8 @@ def main(argv=None):
     out_dir.mkdir(parents=True, exist_ok=True)
     with open(out_dir / "T7_payforteam.json", "w") as fh:
         json.dump(out, fh, indent=1, default=str)
-    print(f"T7_payforteam: {len(files)} days, {len(out['monthly'])} monthly rows -> "
-          f"{out_dir/'T7_payforteam.json'}")
+    print(f"T7_payforteam: {len(files)} days, {len(out['daily'])} daily rows, "
+          f"{len(out['monthly'])} monthly rows -> {out_dir/'T7_payforteam.json'}")
     print(f"  pooled keys: {sorted(out['pooled'])[:6]}...")
 
 

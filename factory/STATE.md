@@ -2237,3 +2237,49 @@ B/600 29.3% / B/720 52.4% / A_open 8.7% / A_pm 9.1%; joint touch B/600 k>=1 39.2
 0.56% at +30; above30 k>=1 22.5%; F(30,-10) 31.3% Q 77.2%; F(30,-15) 36.6% Q 92.5%; T7 B/600 pays_net
 30.4%, c3 49.5%. All artifacts under factory/artifacts/basket/sip/; scripts self-test via --self-test;
 integrated read pending owner gate. H025 / flush lane untouched.
+
+## 2026-09-21 (later) — advisor-directed final measurement pass completed; canonical packet regenerated
+
+All of the following is [ART]/[RUN] under `factory/artifacts/basket/sip/` (QA PASS: 1,066 days, 15
+snapshots/day, 159,900 candidate rows, 0 missing/corrupt/structure/bars/tmp). No parameter selected;
+PRE-REG-BASKET-02 remains unfrozen.
+
+Repairs that changed the numbers: (1) B(T) admission no longer requires a previous-session close (the
+gate was never part of B's ranking rule) — the `dropped:no_prev_close` audit class (584) is gone and B
+candidates now carry prev_close as nullable metadata; (2) A_pm31 added (coequal conservative 09:31
+bound, identical premarket selection); (3) T5 rebuilt trade-by-trade from raw SIP prints under the
+Alpaca condition policy (1,066 days, 89,122 members; `peak_recon_vs_stored_mfe` share_within_1e-4 =
+1.0; 24 sparse(<5 prints) members); (4) T7 emits true monthly rollups + daily rows (the old "monthly"
+key held day rows, which had made T8 monthly pays shares invalid); (5) EOD/prev-anchored leader objects
+recorded and reported as separate containment counters; (6) Layer-2 provider fetch now retries symbols
+the bulk request silently dropped — unresolved symbol-days 9 -> 2 (PMN 2023-02-13, MGLD 2023-09-19);
+(7) capture funnel + race_by_view added; market base rates re-run with canonical eligibility ($1 floor
+on open tradeability; `prev_close_prevfloor` sensitivity retained); (8) funnel `stage_day` deletes a
+stale file when a re-staged day yields no rows (this stale-file case caused a 3-day mismatch:
+2021-09-14, 2022-01-13, 2022-02-01).
+
+Headline canonical numbers after the repairs (day-level, 1,066 days; hi_open leader object unless
+stated): containment top1/top2/top3 — A_pm 8.7/7.1/4.0%, A_pm31 same selection (blocked 5), A_open
+8.4/6.3/4.1%, B/575 10.1/9.4/8.0%, B/585 19.3/16.3/13.9%, B/600 28.5/23.4/20.8% (blocked 54), B/720
+51.7/38.0/28.2%. EOD-close-anchored leaders are a separate object (EOD/open anchor top1: A_pm 7.0%,
+A_open 6.5%, B600 22.7%, B720 46.3%). Joint tail (main, touch) — A_pm: +30 44.1% k>=1 / 9.7% k>=2,
++50 25.1/2.6, +100 9.7/0.3; A_pm31 +30 41.5/9.1, +50 23.4/2.4, +100 9.1/0.3; A_open +30 38.9/7.7, +50
+21.5/2.1, +100 8.3/0.4; B/600 +30 39.6/6.3, +50 22.3/1.7, +100 8.0/0.1. Strict saleable (above lens)
+A_pm +30 25.1% / +50 14.7% / +100 5.3%. Frontier: A_pm F(30,-10) 36.1% Q 75.8%, F(30,-15) 39.8% Q
+87.3%, F(100,-10) 7.0% Q 71.7% (10 zero months); A_pm31 32.6/72.4, 37.1/86.1, 6.8/73.0 (10); A_open
+31.1/74.1, 34.9/86.5, 6.3/75.0 (11); B/600 31.6/77.0, 36.9/92.3, 5.6/70.9 (19). Pay-for-team (all-hold
+EOD net of 100bps): A_pm pays 28.1% (stylized -3% cap 50.8%, -10% 37.2%), A_pm31 27.3% (51.3/34.6),
+A_open 26.8% (50.9/34.2), B/600 30.2% (49.4/36.9). Break-even coverage (best member MFE reaches r*) A_pm
+k1c3 98.0% / k2c10 62.0%; B/600 97.8% / 57.6%. Tail destruction (race_by_view, dn-before-up share): a
+-10 release aborts ~24-28% of A_pm/A_open tickets that later touch +50 (B/600 23.0%); a -15 release
+~6-15%. Market base rates: +100 from RTH open on 47.9% of days (511), +200 13.7% (146); prev-close
+anchor +100 86.5% (922), +200 66.8% (712). Capture funnel (hi_open/H100, 511 days): A_pm ranks the
+monster in the top-3 on 103 days (20.2%), A_open 92 (18.0%), B/600 255 (49.9%, 229 with an accessible
+fill); on the miss days another basket member still touched +30 on 159/408 (A_pm) and 68/256 (B/600)
+days. Selection audit: 14,924 snapshots, agree 96.1%; promotions all top-10-internal; CSLR 2023-11-13
+B/575 rank 3 is now selected with its own fill (the one true slot-substitution case resolved); the 8
+recovered provider symbol-days are recorded with status recovered_provider. Verification: containment
+0.2852, joint touch30 0.3959, T8 2025-06 B/600 pays_net 0.2 / c3 0.55, T5 trade-level stats (LODE
+2021-02-01) and the funnel day-level sample all reproduced independently from raw data; funnel vs base
+rates agree on all six (anchor, ruler) counts. Subagents remain unusable here (two further 30-min
+zero-output timeouts) — direct verification used instead.
