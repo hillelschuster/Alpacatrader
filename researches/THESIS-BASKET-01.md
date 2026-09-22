@@ -110,6 +110,18 @@ Phase 1 discovers and characterizes that mechanism as clearly as possible; the s
 faithful implementation is then built around what the market actually shows (PRE-REG-02) —
 not around a predetermined architecture.
 
+### BASKET working mode — Phase 2 (2026-09-22)
+
+Phase 1 established a reproducible, strongly right-tailed top-gainer population on 1,066 SIP
+development days. Work from here is **implementation/EV discovery**. Preserve causal
+measurement rigor and surface real defects immediately, but do not organize research around
+generic attempts to undermine the phenomenon — and do not distrust or handicap a strong
+result merely because it is strong: verify it, reproduce it, understand where the money
+comes from. Optimize for economically faithful extraction of the observed tail: access,
+survivor preservation, failed-ticket cost, execution, sizing and capital deployment.
+Simplicity is valuable when economics are comparable; a modular causal implementation is
+not rejected merely because it is complex if it earns materially more repeatable EV.
+
 ## 3. State semantics (conceptual state machine — no code)
 
 ```
@@ -308,3 +320,9 @@ plus on-demand SIP pulls).
   evidence), the explicit "not a rejection gauntlet" statement, and the central discovery
   question. PRE-REG §5 maps the signatures to the frozen tables; aggregation docstring
   mirrors the posture.
+- 2026-09-22 (working-mode note, owner directive): §2 gains the Phase-2 working-mode note —
+  implementation/EV discovery, no research organized around undermining the phenomenon, no
+  distrust of strong results (verify/reproduce instead), extraction-focused (access,
+  survivor preservation, failed-ticket cost, execution, sizing, capital deployment),
+  simplicity preferred at comparable economics but complexity not rejected when it earns
+  materially more EV. Phase 1 closed; PRE-REG-BASKET-02 frozen at family level.

@@ -326,3 +326,11 @@ constructed later without rerunning the anatomy.
   independently from lower-level inputs by separate implementations. Two symbol-days remain
   genuinely provider-empty (PMN 2023-02-13, MGLD 2023-09-19). No parameter selected;
   PRE-REG-BASKET-02 remains unfrozen.
+- 2026-09-22 (owner-directed sequence amendment): Phase 1 is formally CLOSED (canonical
+  packet, QA PASS, all headline numbers independently reproduced). §7's phase-3 gate is
+  amended on owner directive: Phase 2 now freezes the **family-level** implementation
+  contract (PRE-REG-BASKET-02, frozen 2026-09-22) and runs a bounded parallel
+  implementation-discovery program (sim contract: `factory/BASKET-SIM-CONTRACT.md`); the
+  single (final) strategy freeze moves to Phase 3, before the one-shot holdout inspection
+  of the sealed 2024/2025-01 span. Reserved 2026-06..08 remain untouched; no Phase-2
+  strategy outcome may be inspected before the PRE-REG-02 freeze commit (done: this date).

@@ -2311,3 +2311,19 @@ inputs by separate implementations (containment, joint tail, T5, race, funnel, b
 random control). Selection audit: 1,066 days / 15,990 snapshots / 100% agreement / 2 unresolved
 symbol-days (PMN 2023-02-13, MGLD 2023-09-19). No parameter selected; PRE-REG-BASKET-02 unfrozen.
 Subagents were usable for this pass (5 audits + 2 verifiers completed; two earlier attempts hung).
+
+## 2026-09-22 — Phase 2 opened (owner directive); PRE-REG-02 frozen at family level; sim contract frozen
+
+Phase 1 formally CLOSED (measurement layer signed off; all headline numbers independently
+reproduced). Owner directive: implementation/EV-discovery mode — find the highest-EV causal
+harvest of the measured top-gainer phenomenon; freeze the family-level PRE-REG-BASKET-02
+BEFORE any strategy outcome is inspected; establish ONE canonical event-driven simulation
+contract; run bounded parallel worker families (scope: no generic thesis-defeat research, no
+handicapping of strong results). Frozen this date: `researches/PRE-REG-BASKET-02.md`
+(family registry, finite grids, DOF register, dual-block validation, holdout status) and
+`factory/BASKET-SIM-CONTRACT.md` (fills/actions/accounting/friction/metrics/canaries);
+`researches/THESIS-BASKET-01.md` gains the Phase-2 working-mode note; PRE-REG-01 §7 sequence
+amended (single-strategy freeze moves to Phase 3). Sealed 2024/2025-01 outcomes and reserved
+2026-06..08 remain untouched; no BASKET computation has touched them. Sim-core engine build
++ leaderboard-truth worker launched; family runs start only after the engine passes its
+canaries and this freeze commit exists.
