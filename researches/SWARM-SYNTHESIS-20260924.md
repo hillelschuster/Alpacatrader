@@ -747,3 +747,71 @@ Consequence for the ranked moves: M1–M3 in §3 remain the ranking of *measurem
 the state-action question. The open question is whether causal state identifies the *moments* at
 which another dollar of exposure stops being worth holding (or becomes worth adding), which is a
 different object from both the clock rulers and the barrier classifiers tested so far.
+
+### 2.15 The nine audit questions, answered from the artifacts (2026-09-24, after the window correction)
+
+1. **How much is already answered by the F3 per-bar structural map?** The *descriptive* half is:
+   673,952 rows (671,827 with outcomes), A_pm/T570 **top-2 only**, one row per completed bar, 29
+   columns of own-path state (entry-relative depth, consecutive closes below entry, running high,
+   peak-relative drawdown, MFE to date, MFE surrendered, bars since high, failed reclaim, recovery
+   latency from the episode low), outcomes strictly from bars after t measured from the decision
+   close, dual-block. It is a genuine anatomy of deterioration and recovery. It contains no
+   attention/volume/rank/peer state and no action, and `F3/acceptance_bridge.md` states the boundary
+   itself: *"These are descriptive associations, not fitted triggers, thresholds, gates, composites,
+   cell selection, action effects, profitability, or confirmation"* and *"The map is a prerequisite
+   in sequence, not an outcome-fitting dataset"*.
+2. **Was a boundary or value function ever fitted on that continuous map?** No. The map and the
+   policy layer are unjoined: `basket_f3_sim.py` runs the PRE-REG-fixed R0/R2/R3 grid and does not
+   read the map; no basket script imports a modelling library. The only learned object in the whole
+   BASKET tree is `F2_golden` (below), which is checkpoint-level and barrier-labelled.
+3. **Did F2/F12 estimate executable P&L or action value?** No. `TARGETS = (touch30, touch50,
+   touch100, rem_mfe, rem_mae, nhba)`, `forward_value = rem_mfe` (remaining MFE), and the README
+   says outright: future touch probabilities are *"relative to checkpoint close, not executable
+   P&L"*. State is sampled at exactly five checkpoints {580,585,590,600,615}.
+4. **Did any BASKET model learn hold/exit/add decisions over the evolving path?** No. All policy
+   families are predetermined: R2(L,w), R3(g), fixed partials, fixed new-high add schedules,
+   state67/state33 filters, fixed checkpoints.
+5. **Was released-capital redistribution executed across the full path?** No. F6 is a bounded
+   checkpoint diagnostic (A_pm, N∈{2,3}, p=0.50, checkpoints {585,600}, three arms: cash /
+   equal-redeploy / state-informed, 24 runs); its own reading is that withholding is de-leveraging
+   and the state-conditioned arm is ≈0 with block sign flips. F7 (`RecyclePolicy`, implemented in
+   `basket_f7.py:633`) has **no artifacts** — never run.
+6. **Was exit → causal recovery → re-entry ever tested?** No, and it is not expressible today: one
+   ticket per name per day, entries only at `entry_T`, no later-entry path, no re-entry. Re-arm
+   exists only in the separate H025/lb18 lane.
+7. **Was "stay with one fewer stock" tested as a learned response?** Not as a decision. Cash exists
+   as a by-product (reserve_frac, unfilled slots, closed slots); F6's withholding arms are the
+   closest thing, and there is no per-name entry veto or mid-session cash choice.
+8. **Were state relationships tested continuously or only at frozen checkpoints?** Both, separately:
+   the F3 map is continuous per-bar but own-path only and top-2; F2/F12 is checkpoint-only but has
+   the richer vocabulary (rank, rel_strength, breadth, volume, recovery); F2_golden is checkpoint
+   only and learned. No single object joins continuous grain + attention/peer state + executable
+   action value.
+9. **Which historical modelling programs genuinely constrain this idea?** H12 (30-minute first-touch
+   target, its own population and splits), the PATTERN-01/02 + H030 digests (no separable shape
+   families at 1-minute/60-minute on the top-3 population — a prior about difficulty, not a test of
+   conditional action value), the `factory/artifacts/ml/` composite stack (top-20 *certified events*,
+   60-minute labels, partly invalidated by the rvol data defect, final no-go on that stack), and
+   H029 (day-breadth gating, OOS-only, not robust). Each constrains its own population/horizon/
+   target. `PRE-REG-BASKET-02.md` §7's "no black-box controller" is a **scope rule** for that
+   contract, not an empirical finding, and `HANDOFF.md` records that the learned sequence-embedding
+   branch was never started.
+
+**Two facts found while answering them.**
+
+- **The engine cannot act on the buy side** (verified in `basket_sim.py`): ENTER exists only in the
+  one-shot entry batch at `entry_T` (`:1111`, budget `C0*reserve_frac/N`); the batch hook
+  (`BatchAllocationPolicy`, implemented by `CashReservePolicy`/`EqualReservePolicy` in
+  `basket_f6.py:403,426` and `RecyclePolicy` in `basket_f7.py:633`) can emit **ADD intents only**
+  (`:844-858`); there is no mid-session entry, no re-entry, no per-name entry veto. The entry-side
+  half of a learned handling policy was therefore *structurally untestable*, not merely untried.
+- **One learned BASKET object exists and was never converted into a policy**: in the **main
+  checkout** (untracked work, absent from this branch) `factory/scripts/basket_f2_predict.py` +
+  `factory/artifacts/basket/phase2/F2_golden/predictability.md`. Hand-rolled numpy logistic
+  regression, six causal features selected on the training block, time-blocked validation only,
+  checkpoints 585/600, target future +50%/+100% from the checkpoint price. Out-of-block AUC
+  **0.658–0.751** (+50%, base rate ~0.067), Brier skill +0.017…+0.044 vs the train base rate,
+  monotone calibration deciles; carriers are `mfe_so_far`, `ret_from_prevclose`,
+  `cum_volume`/`dollar_volume`, `basket_breadth_*`, `rel_strength`. So causal path state carries
+  real, block-transferable information about the tail — modest, but not nothing — and its label is a
+  barrier (opportunity), not executable dollars per committed dollar.
