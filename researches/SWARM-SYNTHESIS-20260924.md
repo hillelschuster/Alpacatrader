@@ -342,3 +342,76 @@ peer-relative or rank-migration condition has ever been run through the engine; 
 fixed-gross reweighting, not dynamic switching. Minimum useful study proposed: a bounded
 A_pm/N=2 ET600 paired replay with a control, one fixed rank-migration switch and one fixed
 peer-MFE-residual switch, using the EXT-1 batch hook and per-dollar EV as the metric.
+
+### 2.6 FailureCollapseAnatomist — no verified early death marker; the decisive study is specified
+
+[OBS] No pre-standard-stop marker currently shows a block-stable error-cost advantage at 100 bps.
+The F3 structural map does show large raw rebound opportunity even in deep/long-damage states, but
+it is (a) not executable, (b) weighted by path rows rather than ticket events, and (c) produced
+under the pre-C1 contract while the F3 surface is now C1 (provenance mismatch to note, not a
+semantic conflict for same-session raw paths). [OBS] The corrected R2(L10,w5) cell carries pooled
+false-release rates 13.3% / 16.0% / 13.5% at +30/+50/+100 — i.e. roughly one in seven of the
+tickets it releases would later touch +30%. [OBS] Named counterexamples: VS (2023-12-29, damaged
+then recovered), AVTX (quiet strength that later died), EYEN (2025-02-03, raw intraday loss
+breached −10% while checkpoint closes stayed above the R2 close threshold and the day ended
+negative), HCAI (2026-04-13, −10.5% peak drawdown at ET595 → +16.1% EOD). [HYP] The study that
+would settle it: one row per ticket with (state stratum at the decision bar, subsequent
+continuation, the error cost of cutting versus holding at 100 bps), which does not exist today —
+the structural map is path-row weighted, so its "rebound opportunity" cannot be converted into an
+error-cost comparison without rebuilding it ticket-level.
+
+### 2.7 Own measurement — the time-matched identity-shuffled placebo (100 bps)
+
+Producer: `factory/scripts/basket_diag_placebo.py` (committed); artifacts:
+`factory/artifacts/basket/phase2/PLACEBO_DIAG/placebo_N{2,3}_bps100.json`.
+
+Design: take the harvest arm's own realized exit-time multiset (A_pm, all-+30, 100 bps), shuffle it
+*within each day* across that day's exiting tickets, and run the engine with a rule that fires EXIT
+one completed bar before its assigned exit et (same next-bar-open convention). Ticket count is
+identical across arms (2,125), so entry decisions are arm-independent and only the exit identity
+changes.
+
+| arm (N=2) | mean/day | block1 | block2 | Σ held minutes | avg deployed |
+|---|---|---|---|---|---|
+| hold | −3.938% | −3.753% | −4.346% | 777,979 | 1.154 |
+| **placebo (shuffled times)** | **−3.704%** | −3.800% | −3.492% | 683,882 | 1.015 |
+| harvest (all-+30) | −3.044% | −3.409% | −2.236% | 670,266 | 0.857 |
+
+Exposure is matched within 2% on held minutes (683,882 vs 670,266 = +2.0%), i.e. the placebo does
+almost exactly the same *time-in-market* removal; it fires 2,123 of 2,124 scheduled exits. Yet it
+captures only **+0.233%/day of the harvest's +0.894%/day (26%)**, with a different block pattern
+(−0.047% block1, +0.854% block2). At **N=3 the placebo earns −0.144%/day against a harvest gain of
++0.661%/day** (block1 −0.115%, block2 −0.208%). Interpretation: the "be in the market less" channel
+is small, N-dependent and block-unstable; **the bulk of the harvest edge is the identity of the
+tickets that exit — selling at a locally high print** — which is exactly the state information the
+harvest claim adds. This is the decisive test §2.1 proposed: it does not overturn the harvest
+reading, it decomposes it and kills "exposure removal" as the primary mechanism (consistent with
+§2.1's note that the engine has no reinvestment and no cash return).
+
+Caveat found while checking the placebo: `avg_deployed_capital` is **not** a pure same-day exposure
+measure — it differs 18% between placebo and harvest (1.015 vs 0.857) while held minutes differ only
+2%, because an arm that closes tickets also removes their basis from *later* days' carry accounting.
+Any per-deployed-dollar ratio (§1.6, §2.1) is therefore sensitive to carry composition, not only to
+time-in-market; the held-minutes integral is the honest exposure measure.
+
+### 2.8 Additional truth-critical items (verified this cycle)
+
+1. **Two dead columns in the F2_F12 state panel.** `basket_score_disp` is NaN in all 182,094 rows
+   (verified) because `basket_f2_f12.py:119` reads `x["sel"]` from the `members` wrappers
+   (`{"name": …, "bars": …}`) instead of `x["name"]["sel"]`; `spread_state` is hard-coded `np.nan`
+   (`:164`). The capital map lists both as features, so any "no relationship" reading for them is
+   vacuous. Smallest fix: `x["name"]["sel"]`, and either implement or drop `spread_state`; then
+   re-run F2_F12 (code and artifacts must move together — do not patch the code without the
+   re-run).
+2. **`rank_change` is not an adjacent migration** and `rel_strength` is a current
+   open-to-checkpoint return residual, not a peer-relative MFE (§2.5). Any rank-migration study
+   must rebuild both from raw snapshots, not reuse the panel columns.
+3. **Frozen-carry deployment inflation** (§2.1): a carried ticket certified `no_bars` can never
+   execute its forced-flat pending, so its cost basis keeps counting in `avg_deployed_capital`.
+   Smallest fix: terminalize after N certified `no_bars` sessions (report as
+   `NO_RESUMPTION_MARK`), or report `avg_deployed` excluding frozen carries.
+4. **F3 structural map provenance**: built under the pre-C1 contract while the F3 surface is C1;
+   path-row weighted rather than ticket-event weighted, so its rebound opportunity cannot be read
+   as an error-cost advantage (§2.6).
+5. **Execution-convention framing** on `exit_convention_comparison.json` corrected in place
+   (§2.1): the next-open exit is above the level, i.e. favourable, not conservative.
