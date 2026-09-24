@@ -43,6 +43,16 @@ BASKET-01 planning lane (bullet below).
   seven-question read pending owner gate. No release-rule constants; PRE-REG-BASKET-02
   unfrozen; H025 untouched. Reserved months 2026-06..08 untouched; sealed 2024/2025-01
   acquired mechanically (certified) and unseen.
+  **UPDATE 2026-09-24 (C1 cycle): this bullet is stale.** PRE-REG-BASKET-02 is frozen
+  (2026-09-22); Phase 2 ran and was corrected (C1). Corrected F1 (120 cells), F3 (20) and
+  F4 (54 partials) are ALL net-negative on 1,066 dev days; F5 exists only as a 48-cell
+  diagnostic (0/32 add cells positive in both blocks); F6 is a bounded p=.50 diagnostic;
+  F7 is unrun; no F13 parity artifact, no Phase-3 freeze. Diagnostics this cycle:
+  post-touch mixture 60.0%/40.0% continue/fade (pooled), coarse minute state does not
+  separate them (best AUC ~0.57), the +30% harvest gain is mostly touch identity rather
+  than time-in-market (time-matched identity-shuffled placebo), and the simple
+  resting-limit entry refutation stands. Interpretation reset, ranked next moves and the
+  drift list: `researches/SWARM-SYNTHESIS-20260924.md`.
 - The older sections below (phenomenology, collisions, 2026-09-08 strategy) remain valid
   history; the 2026-09-08 "current strategy" block is superseded by the flush-rule path.
 

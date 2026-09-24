@@ -33,6 +33,17 @@ containment N=3 and `pays_days` weighting fixed; T5 path starts at the actual fi
 coverage restored. Integrated seven-question read pending
 owner gate. No parameter selected; PRE-REG-BASKET-02 stays unfrozen.
 
+STATUS UPDATE (2026-09-24, C1 cycle): this header was stale. PRE-REG-BASKET-02 is
+frozen (2026-09-22); Phase 2 ran and was corrected (C1). Current results: all 120
+corrected F1 cells, all 20 corrected F3 cells and all 54 corrected F4 partial cells are
+net-negative on 1,066 dev days; F5 has only a 48-cell diagnostic (0/32 add cells positive
+in both blocks); F6 is a bounded p=.50 diagnostic; F7 is unrun. The strongest current lead
+is the +30% next-open harvest diagnostic (+89 bps/day at N=2), and the time-matched
+identity-shuffled placebo (this cycle) shows most of it is touch identity rather than
+time-in-market. Interpretation reset and ranked next moves:
+`researches/SWARM-SYNTHESIS-20260924.md`. Do not resurrect the legacy constants
+(+30%, 10:00, N=3, T=600, L=10/g=50) — see that file §2.9.
+
 ## ARCHIVE (2026-09-06 thinking round — planned but NOT executed; superseded by the
 ## 2026-09-08 post-H11 ranking at the bottom of this file. Retained for provenance.)
 

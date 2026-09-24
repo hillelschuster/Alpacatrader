@@ -428,3 +428,64 @@ Caveats found while checking the placebo:
    as an error-cost advantage (§2.6).
 5. **Execution-convention framing** on `exit_convention_comparison.json` corrected in place
    (§2.1): the next-open exit is above the level, i.e. favourable, not conservative.
+
+### 2.9 ThesisReconstructor — lineage, drift list, and what has never been tested in its stated form
+
+**Lineage [OBS]:** project attention/lifecycle thesis (`factory/RESEARCH_GOAL.md`) → H1–H12
+(selection/schedule/gate formulations; H11 collision failure → power doctrine; H12 OOS failure) →
+H025 (separate flush mechanism, genuine OOS pass, different population/rule) → BASKET Phase 0
+thesis → Phase-1 causal SIP anatomy (1,066 days, policy-free pay-for-team/joint-tail) → Phase-2
+family contract (PRE-REG-02) → corrected F1/F3/F4 + bounded F5/F6 diagnostics → this cycle.
+**Strongest current fact is negative [OBS]:** all 120 corrected F1 cells, all 20 corrected F3 cells
+and all 54 corrected F4 partial cells are net-negative on 1,066 days. Phase-1 establishes a right
+tail and post-fill excursions — not an executable policy (`exec` in the Phase-1 lens means "touch
+plus a later bar", not sellability; F8 says MFE is not P&L).
+
+**Rulers that drifted into apparent constants** (each with the smallest discriminating readout):
+1. **+30% as "the exit"** — a Phase-1 ladder ruler; the tested arm is next-open after a completed
+   high touch, *not* a resting sell at the level (`level=None`). Test: predeclared comparison of
+   fixed levels vs state-based exits, per-ticket realized EV, fresh data.
+2. **"The right tail is a touch phenomenon, not a hold phenomenon"** — the population is bimodal
+   (60.0% continue / 40.0% fade pooled; §1.1). Test: conditional hold/sell whose only changed
+   variable is continuation state.
+3. **"10:00 is the checkpoint that matters"** — the allowed grid is 580/585/590/600/615 and no gate
+   at 600 has beaten cash/hold. Test: predeclared checkpoint-action comparison, identical state.
+4. **"N=3 is the basket"** — a measurement convention and a legacy owner decision, explicitly not an
+   economic choice in PRE-REG-02; F1 tests N=2/3/4 (all negative). Test: joint policy with declared
+   breadth alternatives and marginal tail capture net of failed-ticket cost.
+5. **"T=600, L=10, g=50 are the constants"** — legacy draft choices derived from descriptive
+   anatomy, then demoted; R2(L10,w5) being the best F3 cell does not make it an optimum (all F3
+   cells negative). Test: predeclared neighbourhood with both-block incremental EV.
+6. **"Staged capital failed"** — F6 evidence is a p=.50 A_pm N=2/3 R0 diagnostic; F7 is unrun.
+   Narrow to "the tested reserve arms showed no stable positive per-dollar EV".
+7. **"Holding runners is wrong"** — narrow to "unconditional full-basket hold-to-close is negative
+   in these primitives".
+8. **"Improvements are only de-leveraging"** — supported for blanket R2/ET600 cuts, not universal
+   (peak-relative R3 has a different per-dollar ordering; §1.6).
+9. **"The morning is universally worst"** — conditional on the tested A_pm full-deployment sleeve
+   and on touch timing (late means are tail lotteries; §1.5).
+10. **"Phase-1 proves an executable tail"** — it proves path opportunity and access bookkeeping.
+11. **"Phase-1 LS materials enable the last-survivor test"** — direct contract/implementation drift:
+    `basket_aggregate.py` emits only aggregate `dn5_members/*` / `dn10_members/*` counters; the
+    promised per-member state/future/peer-death fields do not exist. This blocks the LS claim.
+12. **"C1 settles the economics"** — C1 fixes several defects, but the carry census prerequisite
+    remains and the certified ticker-day count disagrees between documents (`HANDOFF.md` §19: 33.7k
+    vs `factory/STATE.md`: 44,000+); canaries passing ≠ complete carry coverage.
+
+**Load-bearing claims never tested in their stated form [HYP]:** causal policy pay-for-team
+(realized, not stylized); peer-death/last-survivor event study + causal add comparator; full
+repaired 840-cell F5 (only a 48-cell diagnostic exists, 0/32 add cells positive in both blocks);
+full F6 reserve deployment and any F7 recycling run; basket-level F4 K={2,3} mode (only per-ticket
+scale-out ran); a causal 09:40–10:15 state gate that beats cash/hold rather than predicting MFE;
+causal identification of continuation beyond coarse minute state; later/conditional entry beyond
+the refuted simple resting-limit formulation; quote-aware/queue/partial-fill capacity; rank
+migration / peer-relative MFE / breadth as *decisions*; live leaderboard parity (no accepted F13
+artifact in the active tree); a frozen combined Phase-3 architecture on an untouched holdout; and
+the attention/momentum-flow mechanism itself as a causal driver rather than population selection.
+
+**Other mismatches worth remembering:** F8's EOD-positive/all-profitable counts include marked open
+tickets (not realized exits); F10's 10:00 environment labels are post-entry for A-family entries and
+therefore cannot explain pre-10:00 entry economics; F4's README reports +11–107 bps and 12/27 pooled
+winners while the corrected summary reports +11–101 bps and 24/54 (the two surviving "both blocks"
+rows are one treatment at two frictions, not two treatments); `avg_deployed_capital` is cost basis,
+not market value.
