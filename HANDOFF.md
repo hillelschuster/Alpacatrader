@@ -1083,3 +1083,45 @@ acceptance.
 failure-loss improvement. F5 has no valid reconciled economics yet. No F6/F7 experiment or
 Integration 2 decision exists. Do not accidentally convert descriptive tail observations, a
 single F4 exception, or incomplete F5 output into a strategy claim.
+
+
+---
+
+## 19. 2026-09-24 (evening) - C1 era state, interpretation discipline, swarm synthesis
+
+**Simulator.** Correction C1 is implemented, audited, and pushed (`factory/BASKET-SIM-CONTRACT.md`
+§13, §13.9; engine `factory/scripts/basket_sim.py`). Mandatory canaries pass 7/7 on the corrected
+substrate (1,066 days; the real halt case ZT 2021-10-19 resolves on 2021-10-20 at et=599,
+px=min(open, level)). Carry coverage: `factory/artifacts/basket/sip/carry_bars/manifest.json`
+(1,063 days, 33.7k certified ticker-days of Alpaca SIP-RAW full-market bars; day parquets are
+worktree-local, regenerable with `factory/scripts/basket_carry_bars.py`). A self-healing chain
+repair tool lives at `factory/scripts/basket_carry_repair.py`.
+
+**Corrected baselines (all on the C1 engine).** F1 120 cells: every cell negative, means
+-4.70%..-2.04% basket-day at 100/150 bps; the correction moved cells -9..+51 bps vs the
+quarantined pre-C1 surface. F3 20 cells: all negative; release logic still buys ~110 bps/day by
+cutting failed-ticket cost. F4 74 cells: all partial cells negative; partials beat hold by
++11..+101 bps/day and are a wash against the matched same-trigger full exit (only
+`R2(L15,w5) 50->rest` positive in both blocks). F5: the 840-cell grid was deliberately NOT rerun;
+a 48-cell diagnostic answers the lane (0/32 add cells positive in both blocks).
+
+**Diagnostics that changed the research direction** (producers committed under
+`factory/scripts/basket_diag_*.py`, evidence under
+`factory/artifacts/basket/phase2/DIAGNOSTICS_20260924/`): F6 mechanism decomposition
+(withholding = de-leveraging; equal redeployment destroys 2-3 cents per dollar; state-conditioned
+redeployment is about break-even and beats equal by 1.2-2.6 pp per dollar, cap-limited to a few
+percent of C0); intraday segment map (exit at 09:40 -1.48%/day vs hold -3.94%; the worst loss per
+unit of exposure is in the first 30 minutes); golden-window de-risk (+73 bps/day for an
+unconditional 50% cut at ET600, +49 for a damaged-only cut); sell-into-strength harvest (+89
+bps/day for a 100% exit at the first +30% touch) and the direct path scan behind it (median +30%
+toucher gives back -10.8% into the close, only 30.6% continue).
+
+**Discipline.** Read `researches/INTENT.md` "Research philosophy" and the interpretation-status
+block in `researches/STATE.md` before acting. Evidence, interpretations and rulers are separate
+objects; the current interpretations (touch phenomenon, sell into strength, 10:00 checkpoint,
+de-leveraging explanation) are explicitly listed as things to interrogate.
+
+**Swarm synthesis.** The multi-agent investigation and its ranked next moves are recorded in
+`researches/SWARM-SYNTHESIS-20260924.md` (with per-idea mechanism, supporting/contradicting
+evidence, what prior code actually tested, bugs found, and the smallest decisive experiment).
+No new large research branch is launched before that synthesis is reviewed.

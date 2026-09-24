@@ -326,3 +326,20 @@ plus on-demand SIP pulls).
   survivor preservation, failed-ticket cost, execution, sizing, capital deployment),
   simplicity preferred at comparable economics but complexity not rejected when it earns
   materially more EV. Phase 1 closed; PRE-REG-BASKET-02 frozen at family level.
+
+
+---
+
+## Addendum 2026-09-24 - interpretation status (read before inheriting anything above)
+
+This document is a HYPOTHESIS, not a truth. Its creed, its multi-survivor lock and every constant
+in it (participation size, release shapes, +H rulers, N) are RULERS under the project's
+zero-fixation doctrine (`researches/INTENT.md`). Corrected-engine evidence now on the table:
+primitive full-deployment ownership is negative in every corrected F1 cell; the corrected F3
+release map reduces failed-ticket cost (~4 pp) for +110 bps/day but stays negative; F5 own-ticket
+new-high adds are 0-for-32 cells across both blocks; F6 shows state-conditioned redeployment
+beats indiscriminate redeployment by 1.2-2.6 pp per dollar yet lands at about zero EV per dollar;
+intraday-segment and de-risk diagnostics show the cost of continuing ownership; and a direct path
+scan shows the median +30% toucher gives back ~11% into the close. Each of those is evidence; the
+conclusions drawn from them (e.g. "the tail is a touch phenomenon", "sell into strength") are
+INTERPRETATIONS that must be interrogated, not inherited.

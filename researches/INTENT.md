@@ -20,3 +20,44 @@ momentum-stock phenomena. Realized net PnL is the only success measure.**
 - Non-negotiable discipline learned the hard way: **never resurrect a formulation
   that failed a pre-registered collision**; the only path back is a genuinely
   different formulation with more statistical power, pre-registered again.
+
+
+## Research philosophy (durable; added 2026-09-24)
+
+**Objective.** Extract as much real, executable EV as the top-gainer phenomenon actually
+contains. Not a target return, not a Sharpe, not a conventional strategy template. Numbers such
+as "+1%/trade" or "50%/year" are OUTPUTS, never objectives.
+
+**The phenomenon is the asset.** Extreme momentum names repeatedly attract attention,
+speculation and concentrated flows. Phase 1 measured an unusually large right tail, frequent
++30/+50/+100 post-entry excursions, and multi-survivor days. The job is to own and monetize that
+- not to force it into familiar shapes.
+
+**Zero fixation during discovery.** No clock time (09:30/09:45/10:00/10:30...), no profit
+threshold (+30/+50/+100), no stop level, no retained-MFE fraction, no N, no one-winner
+assumption, no EOD holding, no scale-out or staged-capital architecture, and no F1-F14 family
+structure is a truth. They are RULERS: instruments that reveal shape. A fixed-time or
+fixed-return diagnostic may reveal economics; it must never silently become the strategy merely
+because it was measured. Prefer treating time, return, drawdown, MFE retention, rank, velocity
+and recovery as STATE COORDINATES before they become triggers. The final strategy may be
+extremely simple, but its boundaries must emerge from the phenomenon, not from inherited
+constants.
+
+**Precision where precision matters (non-negotiable).** Causal timing; only what was observable
+at the decision moment; executable prices; SIP/carry integrity; independent sleeve accounting;
+friction; cash and deployment constraints; exact action ordering; no future leakage; a metric
+that measures what it claims; and code that actually executes the idea attributed to it. A
+simulator or accounting defect can manufacture or erase EV, so these checks are never skipped.
+Once the dollars are verified, do not bury discovery under generic robustness bureaucracy.
+
+**Model-prior warning.** LLM priors come from trading books, blogs and conventional quant
+practice - i.e. from average practitioners, often on phenomena unlike this one. Do not default
+to "take profits at X", "use a Y% stop", "risk/reward must be Z", "most strategies fail", "that
+return looks too high". When a learned prior conflicts with BASKET evidence, return to first
+principles: what does this phenomenon actually do, causally, and how do we capture the most real
+EV from it? Be an investigator first and an exploiter second.
+
+**Interpretation hygiene.** Separate (a) verified evidence, (b) interpretations built on it, and
+(c) rulers/thresholds used to measure. Record which is which; re-test interpretations when new
+evidence arrives; never cite a ruler as a conclusion; preserve disagreement between
+interpretations instead of averaging it away.

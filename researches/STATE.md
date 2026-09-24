@@ -170,3 +170,32 @@ structural. P3 restricted to replicated components; own pre-reg required.
 - Live source: TV scanner API (factory/scripts/tv_leaderboard.py, cmd live).
   Historical: same script, cmd hist — prev-close crosses month files by
   IMMEDIATELY prior session date, not prior month's last session.
+
+
+## Reading discipline and interpretation status (2026-09-24, C1 era)
+
+Read `researches/INTENT.md` "Research philosophy" before interpreting anything below. Three
+categories must stay separate:
+
+* **Verified evidence (corrected C1 engine, canaries 7/7 PASS):** F1 primitive surface (120
+  cells, all negative, means -4.70%..-2.04%); F3 release map (20 cells, all negative,
+  R2(L10,w5) best at -2.84%/day with failed-ticket cost -11.7% vs R0 -3.94%/-15.7%); F4
+  scale-out (74 cells, all partial cells negative, partials +11..+101 bps/day vs hold and a wash
+  against matched full exit, 2/54 positive in both blocks); F5 scale-in diagnostic (0/32 add
+  cells positive in both blocks, most add signals unfunded in a fully deployed sleeve); F6
+  decomposition (withholding alone leaves per-dollar EV unchanged; equal redeployment -2.2..-3.2%
+  per dollar; state-conditioned redeployment -1.5%..+0.3% per dollar with block sign flips);
+  intraday segment diagnostic (exit at 09:40 -1.48%/day vs -3.94% hold; loss per unit of exposure
+  worst in the first 30 minutes); de-risk diagnostic (unconditional 50% cut at the completed
+  ET600 bar +73 bps/day at N=2, damaged-only +49); harvest diagnostic (sell 100% at the first
+  +30% touch +89 bps/day, block 2 much stronger than block 1); touch-fade path scan (median +30%
+  toucher gives back -10.8% from the touch-bar close to the close; only 30.6% continue). Artifact
+  paths: `factory/artifacts/basket/phase2/DIAGNOSTICS_20260924/` and the run directories named
+  there.
+* **Interpretations (to be interrogated, not inherited):** "the right tail is a touch phenomenon,
+  not a hold phenomenon"; "sell into strength"; "10:00 is the checkpoint that matters"; "+30% is
+  the exit"; "staged capital failed"; "holding runners is wrong"; "the improvements are only
+  de-leveraging"; "the morning segment is the worst per unit time". Each is a reading of the
+  evidence above and may be wrong or incomplete.
+* **Rulers (never conclusions):** any fixed clock time, +30/+50/+100 thresholds, stop levels,
+  retained-MFE fractions, N, and the F1-F14 family structure.

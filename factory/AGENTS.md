@@ -65,3 +65,21 @@ This project is nuanced. Stay flexible, think independently, and optimize for
 finding the best way to exploit the underlying top-gainer inefficiency — not for
 rigidly following any research template, including this file. If the evidence
 points outside the current framework, follow it and say so plainly.
+
+## Research philosophy (durable; full text in `researches/INTENT.md`)
+
+* **Objective:** extract the maximum real, executable EV from the measured top-gainer
+  phenomenon. Target returns are outputs, not objectives.
+* **ZERO FIXATION:** clock times, profit thresholds, stops, retained-MFE fractions, N, one-winner
+  assumptions, EOD holding, scale-out, staged capital and the F1-F14 architecture are RULERS,
+  not truths. Treat time / return / drawdown / rank / velocity / recovery as state coordinates
+  before they become triggers.
+* **Precision doctrine (non-negotiable):** causal timing, state observable at the decision
+  moment, executable prices, SIP/carry integrity, sleeve accounting, friction, cash and
+  deployment limits, action ordering, no leakage, metric honesty, and code that does what the
+  idea claims. Once the dollars are verified, do not bury discovery under robustness bureaucracy.
+* **Model-prior warning:** do not import conventional trading prescriptions ("take profit at X",
+  "use a Y% stop", "most strategies fail"); when a prior conflicts with BASKET evidence, follow
+  the phenomenon.
+* **Interpretation hygiene:** record evidence, interpretations and rulers separately; preserve
+  disagreements; never promote a ruler to a conclusion.
