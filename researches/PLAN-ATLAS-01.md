@@ -1,105 +1,98 @@
-# PLAN-ATLAS-01 — the window atlas: when does marginal continuation EV die?
+# PLAN-ATLAS-01 — the minute-grain atlas: when does continuation value die?
 
-Status: **proposal, not started.** Written 2026-09-24; rewritten the same day after the owner's
-correction that EOD is not the value horizon (see `researches/INTENT.md` §"THE WINDOW"). Nothing
-here is pre-registered yet; pre-registration with kill rules comes only if the descriptive stage
-shows a signal.
+Status: **proposal, not started.** Written 2026-09-24; rewritten twice the same day — first
+window-first (EOD is not the value horizon), then **minute-grain with no horizon grid** on owner
+directive. Nothing here is pre-registered; pre-registration with kill rules comes only if the
+descriptive stage shows a signal.
 
-## 1. The question
+## 1. Object
 
-We own N top-gainer candidates selected at one moment. The phenomenon is an early-session
-explosive-attention event: the climb and the climax are concentrated in the morning-to-midday hours,
-and the afternoon is the relaxation phase. So the object is **not** "what is the return to the close"
-— it is:
+The phenomenon is an early-session explosive-attention event: the climb and climax happen in the
+morning-to-midday hours, the afternoon is the relaxation phase. So the object is not "what is the
+return to the close" and not "what is the return over the next h bars". It is:
 
-> **At each causal moment, what is the marginal value of another unit of exposure over the next
-> short horizon, and when through the session does that value die?**
+> **At every completed minute, is the climb still alive — and what does it cost to wait?**
 
-Everything else — when to sell, when to hold, when to reinforce, when to re-enter, when to sit in
-cash — is a consequence of that time profile and its state conditioning.
+Estimated as per-minute **hazard and path statistics**, not as a coarse horizon grid:
 
-## 2. What is baked in and what must be discovered
+- `p_climb_over(t)` = P(no new high after t | state at t) — the hazard that the running high is final;
+- `remaining_run(t)` = E[max price after t / price(t) − 1 | state] — what waiting can still earn;
+- `cost_of_waiting(t)` = E[drawdown below price(t) before the next new high | state] — what waiting risks;
+- `bars_to_next_high(t)`, `bars_to_peak(t)`, `peak_time` — the climax clock.
 
-Baked in (the thesis, from the owner): selection of N names at one moment; the window frame; causal
-only; executable prices; friction; cash competes.
+Hold-versus-sell then *emerges* from those four numbers per minute: holding is worth it while the
+hazard is low and `remaining_run` exceeds `cost_of_waiting`; selling belongs where they cross. No
+threshold is chosen in advance, and no horizon is imposed — the same statistics are defined at
+minute 30 and at minute 300, with the remaining session simply being shorter.
 
-**Not** baked in — these must emerge from the statistics, not be assumed by design:
+## 2. What is baked in, what must be discovered
 
-- that selling belongs near a running high, or buying near a local low;
-- that exits belong at a particular clock time (including "before 13:00");
-- that depth, duration, recovery, peak retention or attention is the relevant state;
-- that the value horizon is the session close — it is one horizon among many, and a priori the wrong
-  default.
+Baked in (the thesis): selection of N names at one moment; causal only; executable prices; friction;
+cash competes; minute grain; the window frame.
 
-## 3. Panel (first deliverable)
+**Not** baked in: that selling belongs near a running high or buying near a local low; that any clock
+time is special; that depth, duration, recovery, peak retention or attention is the relevant state;
+that the close is a value horizon. Those must emerge from the statistics.
 
-One row per (sleeve day, originally selected member, completed bar t ≥ fill bar), from the existing
-SIP tapes only.
+## 3. Panel — first deliverable
 
-Causal state (≤ t): own path (return from fill, distance from entry, running MFE/MAE, distance from
-own running high, MFE surrendered, below-entry episode duration, bars since episode low, reclaim
-count, failed-reclaim count, bars since last new high); dynamics (1/3/5/15-bar velocity and
-acceleration, higher-high/higher-low counts, bar persistence); attention proxies (volume and
-dollar-volume intensity vs own prior bars and vs the day's candidates, volume acceleration,
-sparse-bar/halt structure and time since last gap); cross-section (live percentile/rank among the
-day's candidates at that minute, rank change and residency, peer state); bookkeeping (exposure in
-slot, cash, actions taken).
+`factory/scripts/basket_atlas_panel.py` → `factory/artifacts/basket/phase2/ATLAS/panel.parquet`.
+One row per (sleeve day, originally selected member, completed minute t ≥ fill), all 1,066 days,
+A_pm top-3 and B600 top-3 (extendable), built from existing SIP tapes and anatomy only.
 
-Outcomes — **horizon profile, not a terminal mark**:
+State (≤ t): return from fill / prev close / 09:30; running MFE and MAE; distance from entry;
+distance from own running high; MFE surrendered; bars below entry in the current episode; bars since
+that episode's low; reclaim count; failed-reclaim count; bars since last new high; new-high count in
+the last 5/15/30 minutes; 1/3/5-minute returns and acceleration; bar persistence; range
+expansion/contraction; minute volume and dollar-volume versus own prior median and versus the day's
+candidate set; volume acceleration; sparse-bar/gap structure and bars since the last gap; live
+percentile of the member among the day's candidates at that minute; peer state (peers making new
+highs, peers dying); exposure in the slot; cash; actions taken; pending action.
 
-- `forward_return(t → t+h)` from the next open to the close of bar t+h, for h = 5/15/30/60/120 bars;
-- `time_to_peak_from_t` and the realized peak price after t (for climax timing);
-- `forward_max/min` after t (tail and stop feasibility);
-- terminal return, kept as *one* horizon for comparability, never the default;
-- `tail_class` (MFE from t ≥ +50%/+100%/+300%) for the dollar-weighted tail test.
+Outcomes (strictly after t, all from the next open, friction applied separately): the four hazard
+statistics above; `final_high_flag` (whether the running high at t is the session's final high);
+`tail_class` (MFE from t ≥ +50%/+100%/+300%); and the raw future path summary needed for target/stop
+feasibility. The session close appears only as the last minute at which a stop can happen — never as
+a value definition.
 
 ## 4. Analyses, in order (each can kill the next)
 
-1. **The window map (the first object).** Conditional marginal continuation value as a function of
-   time-of-day and state: `E[forward_return(t → t+h) | state, clock]` for the horizon grid, block by
-   block. Question: *where through the session does the conditional mean cross zero, and does it
-   cross the same way in both blocks?* This replaces every prior "when should we exit" question with
-   one estimable surface.
-2. **Climax structure.** Distribution of peak timing by cohort (faders, touchers, giants), and
-   whether the state near the peak identifies it. This is what "ride the wave, exit before the
-   relaxation" has to be built on.
-3. **Action surfaces emerge.** For every bar, compare holding h more bars against exiting now, and
-   (where cash exists) against adding — and let the *crossings* define whether the structure is
-   high-proximity, clock, attention, path-episode, or a combination. No pre-declared "sell near
-   high / buy near low".
-4. **Tail accounting.** For every candidate crossing: dollars of ≥+100% MFE destroyed versus failure
+1. **Death-of-value profile.** `p_climb_over`, `remaining_run`, `cost_of_waiting` as functions of the
+   minute (clock) *and* of state, block by block, with the crossing where holding stops paying marked
+   per cohort. This is the thesis made measurable: *when and in what state does continuation value die?*
+2. **Climax structure.** Distribution of peak time by cohort (faders, touchers, giants), and whether
+   the state near the peak identifies it — i.e. whether "the climax is near" is knowable causally.
+3. **Tail accounting.** For every candidate crossing: dollars of ≥+100% MFE destroyed versus failure
    tax avoided, by block. A rule that wins on average by killing giants is rejected here.
-5. **Matched-pair patterns.** Moments matched on coarse state with divergent futures: what separates
-   them, block-held out; and *when* divergences occur (clustered at halts/reopens → microstructure is
-   the missing input; diffuse → news/attention is the missing input). This is the evidence-based
-   trigger for any finer-data purchase.
-6. **Extraction.** The simplest law that survives 1–5, then the C1 engine run: both blocks,
-   per-committed-dollar EV, against the best simple rulers (hold-to-flat, the 10:00 cut, the +30
-   harvest, R3), with tail preservation.
+4. **Matched pairs.** Minutes matched on coarse state (depth, episode duration, peak retention, clock,
+   prior excursions) with divergent futures: what separates them, block-held out; and *when* the
+   divergences occur. Clustered at halts/reopens → go to SIP trade prints (below); diffuse → the
+   missing input is news/attention, not resolution.
+5. **Extraction and the engine run.** The simplest rule that survives 1–4, as a per-minute stopping
+   rule, run on the C1 engine (sell side and adds are expressible today) against the best simple
+   rulers — hold-to-flat, the 10:00 cut, the +30 harvest, R3 — per committed dollar, both blocks, with
+   tail preservation.
+6. **Sub-minute, on demand.** `basket_t5_rawpaths.py` already builds paths from raw SIP **trade
+   prints**, not bars, so second-level reconstruction is available with no data purchase — used only
+   on the divergence windows that stage 4 identifies.
 
-## 5. Engine feasibility (verified 2026-09-24)
+## 5. Engine gap (verified 2026-09-24)
 
-The C1 engine today: entries happen **once**, at `entry_T` (`basket_sim.py:1111`), budget
-`C0*reserve_frac/N`; actions available are ENTER/ADD/REDUCE/EXIT; the batch hook
-(`BatchAllocationPolicy`) can request **ADD intents only** (`basket_sim.py:844-858`); there is no
-re-entry after exit and no mid-session entry.
-
-Consequence: **the buy side of this plan is structurally untestable today** — the engine can only act
-on the sell side and on adds. Acting on the atlas's buy surface (enter later, re-enter after an exit,
-or skip a name at the entry moment) requires a small, well-specified engine extension. The
-descriptive stages 1–5 need no engine change and can run first.
+Entry happens once, at `entry_T` (`basket_sim.py:1111`); the batch hook emits **ADD intents only**
+(`:844-858`); there is no mid-session entry, no re-entry, no per-name entry veto. The sell side and
+adds are expressible today; the buy side needs a small, explicit extension before stage 5 can act on
+the reinforcement/re-entry half of the idea. Stages 1–4 need no engine change.
 
 ## 6. Falsifiers (what would make me stop)
 
-- The conditional continuation value is flat in clock and state, in both blocks → minute-bar state
-  does not contain the window's information; go to 5's divergence-timing test and then decide on data.
-- The value dies at the same time for everyone with no state conditioning → the answer is a clock
-  ruler, not a learned law; keep the best clock and stop modelling.
-- Signal exists in one block only → the failure mode that killed the previous four formulations; stop.
+- `p_climb_over` and the path statistics are flat in clock and state, in both blocks → minute bars do
+  not carry the window's information; go to stage 4 and then decide on data.
+- Value dies at the same minute for everyone with no state conditioning → the answer is a clock, not a
+  law; keep the best clock and stop modelling.
+- Signal in one block only → the failure mode that killed the previous four formulations; stop.
 - Only giant-destroying rules carry signal → the phenomenon is not harvestable this way.
 
 ## 7. Cost
 
-Panel + window map + climax structure: one focused session, existing tapes only. Matched pairs and
-extraction: a second session. No new data purchase until stage 5 says which data would resolve the
-divergence; no engine change until the policy stage.
+Panel + stage 1: one focused session on existing tapes. Stage 2–4: a second session. Stage 5 after the
+buy-side extension. No data purchase and no engine change before stage 4 says which one is needed.
