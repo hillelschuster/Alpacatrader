@@ -57,6 +57,13 @@ factory/artifacts/h0*/**/*.parquet
 factory/artifacts/**/parts/**
 !factory/artifacts/basket/phase2/sim_core/canary/**
 
+# ATLAS minute panel: heavy but fully reproducible from the committed SIP tapes by
+# factory/scripts/basket_atlas_panel.py. Keep the panel, its month shards and the smoke set out of
+# git; keep coverage.json, README.md and every analysis JSON summary in.
+factory/artifacts/basket/phase2/ATLAS/panel.parquet
+factory/artifacts/basket/phase2/ATLAS/shards/
+factory/artifacts/basket/phase2/ATLAS/smoke/
+
 # regenerable ml backfill/build logs (kept on disk, not in git)
 factory/artifacts/ml/backfill_*.log
 factory/artifacts/ml/build_feat_*.log
