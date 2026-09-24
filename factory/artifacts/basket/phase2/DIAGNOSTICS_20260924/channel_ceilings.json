@@ -1,0 +1,29 @@
+{
+ "cohort_split_oracle": {
+  "mean_per_ticket": 0.00902617407892423,
+  "mean_per_ticket_net": -0.0009738259210757706,
+  "nontouch_cut1000_mean": -0.050609261349405334,
+  "rule": "hold touchers to the close, cut non-touchers at the 10:00 close",
+  "touch_eod_mean": 0.27595110413184265
+ },
+ "days": 1066,
+ "friction_per_round_trip": 0.01,
+ "n": 3187,
+ "note": "ceilings are unattainable rulers: they bound what each channel can contribute, not what is tradable",
+ "per_ticket": {
+  "hold_eod": -0.025080798370233352,
+  "mfe_ceiling": 0.213301239198733,
+  "perfect_entry_and_exit": 0.14836906787732881,
+  "perfect_entry_hold": 0.15836906787732882,
+  "perfect_exit": 0.16339055493732355,
+  "perfect_exit_net": 0.15339055493732354
+ },
+ "producer": "factory/scripts/basket_diag_touch_scan.py",
+ "scope": "entry families: ['A_pm', 'A_open', 'B600']",
+ "selection_oracle": {
+  "mean_per_ticket": 0.0014210219820379219,
+  "mean_per_ticket_net": -0.008578978017962079,
+  "rule": "hold each day's highest-MFE ticket to the close, cut the rest at 10:00 (day-level best member known ex post)"
+ },
+ "touch30_share": 0.182616881079385
+}

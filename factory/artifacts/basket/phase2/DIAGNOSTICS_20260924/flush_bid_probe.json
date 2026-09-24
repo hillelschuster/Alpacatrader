@@ -1,0 +1,69 @@
+{
+ "baseline_hold": -0.025080798370233352,
+ "days": 1066,
+ "levels": {
+  "-10%": {
+   "committed_ev_per_slot": -0.013877811317222676,
+   "committed_ev_per_slot_net": -0.020024657881389605,
+   "fill_rate": 0.6146846564166928,
+   "filled_hold_mean": -0.022577123362934493,
+   "filled_hold_mean_net": -0.032577123362934494,
+   "filled_touch30_share": 0.13016845329249618,
+   "median_minutes_to_fill": 16.0,
+   "unfilled_hold_mean": 0.1285208864098876,
+   "unfilled_touch30_share": 0.2662866449511401
+  },
+  "-15%": {
+   "committed_ev_per_slot": -0.008724666308314208,
+   "committed_ev_per_slot_net": -0.013293226082396416,
+   "fill_rate": 0.45685597740822087,
+   "filled_hold_mean": -0.019097191981179523,
+   "filled_hold_mean_net": -0.02909719198117952,
+   "filled_touch30_share": 0.11607142857142858,
+   "median_minutes_to_fill": 37.0,
+   "unfilled_hold_mean": 0.09584366470290469,
+   "unfilled_touch30_share": 0.2385904101675332
+  },
+  "-20%": {
+   "committed_ev_per_slot": -0.00740213560089652,
+   "committed_ev_per_slot_net": -0.010574397916553879,
+   "fill_rate": 0.3172262315657358,
+   "filled_hold_mean": -0.023333932898177256,
+   "filled_hold_mean_net": -0.03333393289817726,
+   "filled_touch30_share": 0.10781404549950543,
+   "median_minutes_to_fill": 63.0,
+   "unfilled_hold_mean": 0.06571214724812088,
+   "unfilled_touch30_share": 0.21737132352941177
+  },
+  "-30%": {
+   "committed_ev_per_slot": -0.005652909253498924,
+   "committed_ev_per_slot_net": -0.006983314022874513,
+   "fill_rate": 0.13304047693755883,
+   "filled_hold_mean": -0.04249014573325725,
+   "filled_hold_mean_net": -0.05249014573325725,
+   "filled_touch30_share": 0.10141509433962265,
+   "median_minutes_to_fill": 103.0,
+   "unfilled_hold_mean": 0.02199325167350871,
+   "unfilled_touch30_share": 0.19507781397032212
+  },
+  "-5%": {
+   "committed_ev_per_slot": -0.015947782163651027,
+   "committed_ev_per_slot_net": -0.02387686907924563,
+   "fill_rate": 0.7929086915594603,
+   "filled_hold_mean": -0.02011301217077793,
+   "filled_hold_mean_net": -0.030113012170777928,
+   "filled_touch30_share": 0.16026909378709933,
+   "median_minutes_to_fill": 3.0,
+   "unfilled_hold_mean": 0.14771185420163568,
+   "unfilled_touch30_share": 0.2681818181818182
+  }
+ },
+ "low_before_10am_share": 0.3401317853780985,
+ "low_median_minutes": 93.0,
+ "low_median_ret": -0.13475177304964536,
+ "n": 3187,
+ "note": "committed_ev_per_slot = fill_rate x filled return, cash on unfilled slots; this is the per-slot EV of a resting bid, not a per-trade average",
+ "producer": "factory/scripts/basket_diag_touch_scan.py",
+ "scope": "entry families: ['A_pm', 'A_open', 'B600']",
+ "touch30_share": 0.182616881079385
+}

@@ -11,6 +11,9 @@ Reproduces the touch-excursion scans quoted in
     python factory/scripts/basket_diag_touch_scan.py afternoon
     python factory/scripts/basket_diag_touch_scan.py nontouch
     python factory/scripts/basket_diag_touch_scan.py shape
+    python factory/scripts/basket_diag_touch_scan.py ceiling
+    python factory/scripts/basket_diag_touch_scan.py flush
+    python factory/scripts/basket_diag_touch_scan.py flush-rebound
 
 Conventions (identical to the artifacts these regenerate): A_pm anatomy fills, top-3 by canonical
 rank, candidate bars, RTH only; a "touch" is the first bar whose high reaches entry*(1+30%) on a
@@ -296,6 +299,90 @@ def cmd_nontouch() -> dict:
 CHECKPOINTS = (600, 630, 660, 690, 720, 780, 840, 900, 960)
 
 
+def scan_ceiling(families=(("A_pm", "A_pm", 570),), top=3):
+    """One row per fill with the per-channel best case (unattainable rulers, not policies).
+
+    For each fill: the realized hold return, the best achievable exit (next open after the bar of
+    the session MFE), the best achievable entry price (the session low), the 10:00 close, and
+    whether the ticket ever touched +30%. These are ceilings: they answer where the headroom is,
+    not what is tradable.
+    """
+    days = sim.dev_days()
+    sem = sim.session_end_map()
+    rows = []
+    for day in days:
+        bars = sim.load_bars(day, sem[day])
+        for fam, pop, T in families:
+            for nm, fl, tkb in fills(day, bars, fam, pop, T, top):
+                ets, hi, lo, op, cl = tkb["et"], tkb["high"], tkb["low"], tkb["open"], tkb["close"]
+                win = _window(ets, fl, sem[day])
+                if win is None:
+                    continue
+                first, last = win
+                entry = float(fl["px"])
+                seg_hi, seg_lo = hi[first:last + 1], lo[first:last + 1]
+                mfe_i = int(np.argmax(seg_hi)) + first
+                lo_i = int(np.argmin(seg_lo)) + first
+                i600 = next((i for i in range(first, last + 1) if int(ets[i]) >= 600), None)
+                exit_open = (float(op[mfe_i + 1]) if mfe_i + 1 <= last else float(cl[mfe_i]))
+                rows.append({
+                    "day": day, "family": fam, "ticker": nm["ticker"],
+                    "rank": int(nm.get("rank") or 0),
+                    "touch30": bool(float(seg_hi.max()) >= entry * 1.30 - 1e-12),
+                    "ret_eod": float(cl[last]) / entry - 1.0,
+                    "ret_best_exit": exit_open / entry - 1.0,
+                    "ret_best_entry": float(cl[last]) / float(seg_lo.min()) - 1.0,
+                    "ret_1000": (float(cl[i600]) / entry - 1.0) if i600 is not None else None,
+                    "ret_mfe_close": float(seg_hi.max()) / entry - 1.0,
+                })
+    return pl.DataFrame(rows)
+
+
+def cmd_ceiling(friction: float = 0.01) -> dict:
+    frame = scan_ceiling()
+    per_ticket = {
+        "hold_eod": float(frame["ret_eod"].mean()),
+        "perfect_exit": float(frame["ret_best_exit"].mean()),
+        "perfect_exit_net": float(frame["ret_best_exit"].mean() - friction),
+        "perfect_entry_hold": float(frame["ret_best_entry"].mean()),
+        "perfect_entry_and_exit": float((frame["ret_best_entry"] - friction).mean()),
+        "mfe_ceiling": float(frame["ret_mfe_close"].mean()),
+    }
+    touch = frame.filter(pl.col("touch30"))
+    non = frame.filter(~pl.col("touch30"))
+    oracle_cohort = float(
+        (touch["ret_eod"].sum() + non["ret_1000"].sum()) / frame.height)
+    # oracle selection: hold the day's highest-MFE ticket to the close, cut the others at 10:00
+    sel = []
+    for day, part in frame.partition_by("day", as_dict=True).items():
+        best = part.sort("ret_mfe_close", descending=True).row(0, named=True)
+        keep = best["ret_eod"]
+        rest = part.filter(pl.col("ticker") != best["ticker"])
+        cut = rest["ret_1000"].drop_nulls()
+        sel.append((keep + float(cut.sum())) / (1 + cut.len()))
+    return {
+        "n": frame.height, "days": int(frame["day"].n_unique()),
+        "touch30_share": float(touch.height / frame.height),
+        "friction_per_round_trip": friction,
+        "per_ticket": per_ticket,
+        "cohort_split_oracle": {
+            "rule": "hold touchers to the close, cut non-touchers at the 10:00 close",
+            "mean_per_ticket": oracle_cohort,
+            "mean_per_ticket_net": oracle_cohort - friction,
+            "touch_eod_mean": float(touch["ret_eod"].mean()),
+            "nontouch_cut1000_mean": float(non["ret_1000"].mean()),
+        },
+        "selection_oracle": {
+            "rule": ("hold each day's highest-MFE ticket to the close, cut the rest at 10:00 "
+                     "(day-level best member known ex post)"),
+            "mean_per_ticket": float(np.mean(sel)),
+            "mean_per_ticket_net": float(np.mean(sel) - friction),
+        },
+        "note": ("ceilings are unattainable rulers: they bound what each channel can contribute, "
+                 "not what is tradable"),
+    }
+
+
 def scan_shape(families=(("A_pm", "A_pm", 570),), top=3):
     """One row per fill with its return at fixed intraday checkpoints (a ruler, not a policy)."""
     days = sim.dev_days()
@@ -376,6 +463,182 @@ def cmd_shape() -> dict:
     return out
 
 
+def scan_flush(levels=(5, 10, 15, 20, 30), families=(("A_pm", "A_pm", 570),), top=3):
+    """Whole-session resting bid below the fill price: does the price channel realize?
+
+    Fill convention: the first bar whose low reaches ``entry*(1-L%)`` fills at
+    ``min(open of that bar, level)`` (conservative: never better than the open of the touching
+    bar).  An unfilled slot stays in cash, so the portfolio EV per slot is
+    ``fill_rate x filled return``.
+    """
+    days = sim.dev_days()
+    sem = sim.session_end_map()
+    rows = []
+    for day in days:
+        bars = sim.load_bars(day, sem[day])
+        for fam, pop, T in families:
+            for nm, fl, tkb in fills(day, bars, fam, pop, T, top):
+                ets, lo, op, cl = tkb["et"], tkb["low"], tkb["open"], tkb["close"]
+                win = _window(ets, fl, sem[day])
+                if win is None:
+                    continue
+                first, last = win
+                entry = float(fl["px"])
+                seg = lo[first:last + 1]
+                low_i = int(np.argmin(seg)) + first
+                row = {"day": day, "family": fam, "ticker": nm["ticker"],
+                       "ret_eod": float(cl[last]) / entry - 1.0,
+                       "low_ret": float(seg.min()) / entry - 1.0,
+                       "low_min": int(ets[low_i]) - int(fl["et"]),
+                       "touch30": bool(float(tkb["high"][first:last + 1].max()) >= entry * 1.30 - 1e-12)}
+                for L in levels:
+                    level = entry * (1 - L / 100.0)
+                    hit = next((i for i in range(first, last + 1) if float(lo[i]) <= level + 1e-12),
+                               None)
+                    row[f"ret_L{L}"] = (float(cl[last]) / min(float(op[hit]), level) - 1.0
+                                        if hit is not None else None)
+                    row[f"low_before_L{L}"] = (int(ets[hit]) - int(fl["et"])
+                                               if hit is not None else None)
+                rows.append(row)
+    return pl.DataFrame(rows)
+
+
+def cmd_flush(levels=(5, 10, 15, 20, 30), friction: float = 0.01) -> dict:
+    frame = scan_flush(levels)
+    out = {"n": frame.height, "days": int(frame["day"].n_unique()),
+           "baseline_hold": float(frame["ret_eod"].mean()),
+           "low_median_ret": float(frame["low_ret"].median()),
+           "low_median_minutes": float(frame["low_min"].median()),
+           "low_before_10am_share": float((frame["low_min"] <= 30).mean()),
+           "touch30_share": float(frame["touch30"].mean()),
+           "levels": {}}
+    for L in levels:
+        col = f"ret_L{L}"
+        filled = frame.filter(pl.col(col).is_not_null())
+        unfilled = frame.filter(pl.col(col).is_null())
+        rate = filled.height / frame.height
+        filled_mean = float(filled[col].mean())
+        out["levels"][f"-{L}%"] = {
+            "fill_rate": rate,
+            "filled_hold_mean": filled_mean,
+            "filled_hold_mean_net": filled_mean - friction,
+            "unfilled_hold_mean": float(unfilled["ret_eod"].mean()),
+            "committed_ev_per_slot": rate * filled_mean,
+            "committed_ev_per_slot_net": rate * (filled_mean - friction),
+            "filled_touch30_share": float(filled["touch30"].mean()),
+            "unfilled_touch30_share": float(unfilled["touch30"].mean()),
+            "median_minutes_to_fill": float(filled[f"low_before_L{L}"].median()),
+        }
+    out["note"] = ("committed_ev_per_slot = fill_rate x filled return, cash on unfilled slots; "
+                   "this is the per-slot EV of a resting bid, not a per-trade average")
+    return out
+
+
+def scan_flush_rebound(levels=(10, 15, 20), families=(("A_pm", "A_pm", 570),), top=3):
+    """What happens after a deep flush: the mirror of the touch scan.
+
+    A flush bar is the first completed bar whose low reaches ``entry*(1-L%)``; the reference price
+    is that bar's close (the price you could plausibly buy after seeing it).  From there the row
+    carries the forward path (MFE/MAE/time-to-MFE) and whether the original entry price was
+    recovered before the close.
+    """
+    days = sim.dev_days()
+    sem = sim.session_end_map()
+    rows = []
+    for day in days:
+        bars = sim.load_bars(day, sem[day])
+        for fam, pop, T in families:
+            for nm, fl, tkb in fills(day, bars, fam, pop, T, top):
+                ets, hi, lo, cl = tkb["et"], tkb["high"], tkb["low"], tkb["close"]
+                win = _window(ets, fl, sem[day])
+                if win is None:
+                    continue
+                first, last = win
+                entry = float(fl["px"])
+                for L in levels:
+                    level = entry * (1 - L / 100.0)
+                    hit = next((i for i in range(first, last + 1) if float(lo[i]) <= level + 1e-12),
+                               None)
+                    if hit is None or hit >= last:
+                        continue
+                    ref = float(cl[hit])
+                    fwd_hi, fwd_lo, fwd_cl = hi[hit + 1:last + 1], lo[hit + 1:last + 1], cl[last]
+                    rows.append({
+                        "day": day, "ticker": nm["ticker"], "level": L, "ref_px": ref,
+                        "flush_ret": ref / entry - 1.0,
+                        "mfe_after": float(fwd_hi.max()) / ref - 1.0,
+                        "mae_after": float(fwd_lo.min()) / ref - 1.0,
+                        "ret_eod": float(fwd_cl) / ref - 1.0,
+                        "recovered_entry": bool(float(fwd_hi.max()) >= entry),
+                        "minutes_to_mfe": int(ets[hit + 1 + int(np.argmax(fwd_hi))]) - int(ets[hit]),
+                        "forward_hi": fwd_hi, "forward_lo": fwd_lo,
+                    })
+    return rows
+
+
+def _target_stop_outcome(hi, lo, ref, target: float, stop: float) -> tuple[float, str]:
+    """First-touch-wins target/stop on a forward path; same-bar ambiguity resolves to the stop."""
+    t_level, s_level = ref * (1 + target), ref * (1 - stop)
+    for h, l in zip(hi, lo):
+        if float(l) <= s_level + 1e-12:
+            return stop * -1.0, "stop"
+        if float(h) >= t_level - 1e-12:
+            return target, "target"
+    return float(hi[-1]) * 0 + 0.0, "open"          # placeholder, replaced by caller with the close
+
+
+def cmd_flush_rebound(levels=(10, 15, 20), targets=(5, 10, 15, 20, 30), stops=(10, 20, 30)) -> dict:
+    rows = scan_flush_rebound(levels)
+    frame = pl.DataFrame([{k: v for k, v in r.items() if k not in ("forward_hi", "forward_lo")}
+                          for r in rows])
+    out = {"flushes": frame.height, "days": int(frame["day"].n_unique()),
+           "by_level": {}, "target_stop_grid": {}}
+    for L in levels:
+        sub = frame.filter(pl.col("level") == L)
+        if not sub.height:
+            continue
+        out["by_level"][f"-{L}%"] = {
+            "n": int(sub.height),
+            "flush_close_vs_entry_mean": float(sub["flush_ret"].mean()),
+            "mfe_after_mean": float(sub["mfe_after"].mean()),
+            "mfe_after_median": float(sub["mfe_after"].median()),
+            "mae_after_mean": float(sub["mae_after"].mean()),
+            "mae_after_median": float(sub["mae_after"].median()),
+            "ret_eod_mean": float(sub["ret_eod"].mean()),
+            "ret_eod_median": float(sub["ret_eod"].median()),
+            "recovered_entry_share": float(sub["recovered_entry"].mean()),
+            "minutes_to_mfe_median": float(sub["minutes_to_mfe"].median()),
+        }
+    for L in levels:
+        for target in targets:
+            for stop in stops:
+                got, kinds = [], []
+                for row in rows:
+                    if row["level"] != L:
+                        continue
+                    ref = float(row["ref_px"])
+                    outcome, kind = _target_stop_outcome(row["forward_hi"], row["forward_lo"], ref,
+                                                         target / 100.0, stop / 100.0)
+                    if kind == "open":
+                        outcome = float(row["forward_hi"][-1]) * 0 + float(row["ret_eod"])
+                    got.append(outcome)
+                    kinds.append(kind)
+                if not got:
+                    continue
+                arr = np.array(got)
+                out["target_stop_grid"][f"-{L}%|T{target}|S{stop}"] = {
+                    "n": len(got), "mean": float(arr.mean()), "median": float(np.median(arr)),
+                    "positive_share": float((arr > 0).mean()),
+                    "target_share": float(np.mean([k == "target" for k in kinds])),
+                    "stop_share": float(np.mean([k == "stop" for k in kinds])),
+                    "open_share": float(np.mean([k == "open" for k in kinds])),
+                }
+    out["note"] = ("reference price is the flush bar's close; target/stop are first-touch-wins with "
+                   "same-bar ambiguity resolved to the stop; no friction; open = neither level hit "
+                   "before the session close, valued at the close")
+    return out
+
+
 def main(argv=None):
     argv = argv or sys.argv[1:]
     if not argv:
@@ -396,6 +659,15 @@ def main(argv=None):
     elif command == "shape":
         result = cmd_shape()
         name = "intraday_shape.json"
+    elif command == "ceiling":
+        result = cmd_ceiling()
+        name = "channel_ceilings.json"
+    elif command == "flush":
+        result = cmd_flush()
+        name = "flush_bid_probe.json"
+    elif command == "flush-rebound":
+        result = cmd_flush_rebound()
+        name = "flush_rebound.json"
     else:
         families = POPS if family_filter is None else tuple(
             entry for entry in POPS if entry[0] == family_filter)
