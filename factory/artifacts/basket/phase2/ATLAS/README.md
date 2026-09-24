@@ -133,3 +133,47 @@ list of bugs it caught during development: `differential_check.json`.
   next-day behaviour is out of scope.
 - **Fill ETs are anatomy values**, not the nominal 571/601 of the schema text: A_pm fills at 570 on
   3,167 of 3,188 members, B600 at 600 on 2,581 of 2,972 (see `tape_shape.entry_et_histogram`).
+
+## Interpretation discipline and corrections (parent, 2026-09-25)
+
+Rules that apply to every ATLAS reading, learned the hard way in this cycle:
+
+1. **Briefs carry labelled priors and measurement design — never conclusions.** The coarse prior in
+   `DIAGNOSTICS_20260925/clock_cohort.json` splits members by their *eventual* session peak, i.e. a
+   hindsight cohort. Its timing statements ("the broad continuation closes around 11:00-12:00") are a
+   PRIOR, not a law, and must never be restated to an analysis as an instruction. Doing so once
+   already produced an over-learned task brief.
+2. **Dependence.** The 1.9M panel rows are repeated minutes from 6,160 tickets: the effective sample
+   is ~1,066 days, not 1.9M rows. All uncertainty must be clustered at the day level (conservative),
+   ticket-clustered as a secondary. Minute rows are never independent observations.
+3. **Clock is not tenure.** At et=600, A_pm members have a median 30 bars of ownership while B600
+   members have 0; at 30 bars of ownership A_pm sits at et~600 and B600 at et~630. Never pool the two
+   families in a minute profile; report `et` and `bars_since_entry` as separate coordinates.
+4. **Duplicate paths.** 255 (sleeve_day, ticker) pairs appear in both families — 510 of 6,160 members
+   (8.3%) are the same market path held twice. Exclude or explicitly flag them in any pooled statistic.
+5. **Print gaps are not halts.** The sub-minute probe measured >=5-minute no-print intervals
+   (804 of 1,066 days have at least one); illiquidity produces them too and no halt status is joined.
+   Call them print gaps / halt-like gaps.
+
+### Ledger reading (corrected)
+
+`giveback:10` (exit when 10% below the running high), friction on both legs, per-member attribution:
+
+| | block1 | block2 |
+|---|---|---|
+| avoided − non-giant destroyed = **gross benefit** | +156.8 | +99.2 |
+| − giant dollars destroyed (>=+100% forward from exit) | −78.7 | −66.3 |
+| = net dollar ledger | **+78.2** | **+32.9** |
+| giants' share of the gross benefit | **50%** | **67%** |
+| non-giant exits that later traded >=+10% above the exit price | **41.6%** | **51.2%** |
+
+The giants' destroyed dollars are already *inside* `dollars_destroyed`; they must not be subtracted a
+second time from the net. The correct reading: the rule earns a genuine gross benefit on ordinary
+failures, and the tail it cuts consumes half to two-thirds of it. The open question is whether causal
+state can keep the gross benefit while sacrificing less future upside.
+
+The "70/70 cut giants were re-admissible" figure is tautological (a member with >=+100% forward MFE
+from the exit necessarily traded >=+10% above it) and must not be cited. Likewise, "the rule is not
+detecting death" overclaims: what is measured is that it frequently exits *before* subsequent
+recovery. Whether that recovery is timely, executable and worth re-entering is an open question, and
+it is now a required analysis in the matched-pair work.
