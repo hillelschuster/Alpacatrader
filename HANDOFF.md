@@ -1,6 +1,21 @@
 # HANDOFF — Flush-Bid Top-Gainer Mechanism
 
 **Written 2026-09-11, end of day-1 live paper session. For the active BASKET Phase-2 program, read §17 first; it supersedes this document's old research-roadmap framing while preserving the flush-bid/live-operational record.**
+
+**This file is the single project anchor.** Do not create parallel anchor documents; durable
+philosophy lives in `researches/INTENT.md` and is *pointed to* from here, not duplicated.
+
+**Durability split.** §0–§11 are the **durable core** (objective, the frozen flush-bid spec,
+the evidence base, live systems, environment, research discipline, key-file index). They change
+only by deliberate amendment. **§12 onward is live state**: dated research records, expected to
+change, superseded by later sections where they conflict; §17 is the BASKET research handoff and
+§19 is the current C1-era state.
+
+**Authority rule.** When a new verified result materially changes the thesis, the economic center,
+or the known evidence, update this file **immediately** — do not let contradictory context
+accumulate. Dated sections are corrected in place or explicitly superseded; they are never left
+to conflict silently.
+
 You are the next agent continuing a research→live pipeline that just achieved its **first true pre-registered
 out-of-sample pass** and is now in the **live paper-trading validation phase**. Your job: run and monitor the
 live bot, accumulate paper fills, verify fill realism vs the sim, watch for decay, and only then consider
@@ -495,9 +510,14 @@ Phase 2 asks how to monetize the population's observed right tail:
 2. **Survival / release:** cut economic failures selectively, not every drawdown. Depth,
    duration, recovery/reclaim, prior MFE, giveback, and failed reclaim matter because a large
    eventual winner can suffer substantial interim deterioration.
-3. **Golden window (09:45/10:00, ET 585/600):** this is potentially a capital-allocation
-   information event, not merely a stop checkpoint. It can eventually inform hold, add, reduce,
-   release, reserve deployment, or recycling.
+3. **The early-session window (the core hypothesis):** the climb and the climax are concentrated in
+   the morning-to-midday hours and the afternoon is the relaxation phase. **Its exact decay curve
+   must be measured minute-by-minute** (`researches/PLAN-ATLAS-01.md`); what the window *is*, where
+   continuation value peaks and where it dies, is an open empirical question, not a constant. The
+   09:45/10:00 (ET 585/600) checkpoints are **rulers** that current artifacts happen to sample — not
+   established boundaries of the window, and never doctrine. Capital-allocation decisions
+   (hold, add, reduce, release, reserve, recycle) may well live inside this window; that is exactly
+   what the minute-grain atlas is built to answer.
 4. **Dynamic capital:** the final architecture may legitimately combine entry, reserve cash,
    scale-ins, partial reductions, full releases, and redistribution. Complexity is acceptable
    only when each module earns stable incremental net EV and remains causal/operationally clean.
@@ -506,6 +526,13 @@ Do not mentally canonize R0/R2/R3, early finite grids, or any one existing formu
 baselines and measurements. If a causal map reveals a material economic state that the current
 family misses, state it clearly and design one bounded follow-up. Do not silently explode the
 grid.
+
+**Do not treat any current implementation constraint as part of the economic thesis.** The C1
+engine's limits (one-shot entry at `entry_T`, ADD-only batch intents, no mid-session entry, no
+re-entry, no per-name entry veto, forced flat at the close) describe what the simulator can express
+*today*; they are engineering facts to be extended when the economics demand it, never arguments
+about what the phenomenon allows. The same applies to family names, checkpoint choices and artifact
+layouts.
 
 ### 17.3 Non-negotiable measurement contract
 
