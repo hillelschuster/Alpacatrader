@@ -54,45 +54,111 @@ def raw_path_map(days: list[str]) -> dict[tuple[str, str], dict]:
     return paths
 
 
+def _tape_for(day: str, ticker: str, session_ends: dict, carry,
+              raw_paths: Optional[dict] = None) -> Optional[tuple]:
+    """(ets, opens) for ``ticker`` on ``day``: the entry-session path map when
+    available, else canonical candidate bars, else the certified carry overlay
+    (C1).  Uncertified coverage is a hard error, never a silent skip."""
+    entry = raw_paths.get((day, ticker)) if raw_paths else None
+    if entry is not None:
+        return entry["_ets"], entry["_opens"]
+    end = session_ends.get(day, sim.SESSION_END_NORMAL)
+    ticker_bars = sim.load_bars(day, end).ticker(ticker)
+    if ticker_bars is None and carry is not None:
+        try:
+            ticker_bars = carry.bars(day, ticker, end)
+        except sim.MissingCarrySubstrate as exc:
+            raise F4ContractError(str(exc)) from exc
+    if ticker_bars is None:
+        return None
+    return ticker_bars["et"].tolist(), ticker_bars["open"].tolist()
+
+
 def _action_execution_dates(ticket: sim.Ticket, rule: ScaleOutRule | FullExitRule,
                             days: list[str], raw_paths: dict) -> list[str]:
-    start = days.index(ticket.sleeve_day)
-    date_cursor = start
-    prior_et = -1
-    dates = []
+    """Execution dates for a ticket's REDUCE/EXIT actions.
+
+    C1: the engine records the execution session on every action, so the dates
+    are authoritative and only *validated* here against that session's tape
+    (candidate bars, or the carry overlay when the ticker is not a candidate);
+    the pre-C1 version re-derived them by scanning candidate bars and could not
+    see a carried execution at all.
+    """
     session_ends = sim.session_end_map()
+    carry = sim.CarrySubstrate()
+    dates = []
     for action in ticket.actions:
         if action["action"] not in ("REDUCE", "EXIT"):
             continue
-        found = None
-        for day_index in range(date_cursor, len(days)):
-            day = days[day_index]
-            if day_index == start:
-                bars = raw_paths[(ticket.sleeve_day, ticket.ticker)]
-                ets, opens = bars["_ets"], bars["_opens"]
-            else:
-                ticker_bars = sim.load_bars(day, session_ends[day]).ticker(ticket.ticker)
-                if ticker_bars is None:
-                    continue
-                ets, opens = ticker_bars["et"].tolist(), ticker_bars["open"].tolist()
-            for et, open_px in zip(ets, opens):
-                if et != action["et"] or (day_index == date_cursor and et <= prior_et):
-                    continue
-                level = (ticket.entry_px * (1 + rule.trigger.L)
-                         if isinstance(rule.trigger, sim.R2) and
-                         action["reason"] != "FORCED_FLAT" else None)
-                expected_px = min(open_px, level) if level is not None else open_px
-                if abs(expected_px - action["px"]) <= 1e-9:
-                    found = (day_index, day, int(et))
-                    break
-            if found:
-                break
-        if found is None:
-            raise F4ContractError(f"could not map executed {action['action']} to canonical bar: "
-                                  f"{ticket.sleeve_day} {ticket.ticker} {action}")
-        date_cursor, day, prior_et = found
+        day = action.get("day") or ticket.sleeve_day
+        tape = _tape_for(day, ticket.ticker, session_ends, carry, raw_paths)
+        if tape is None:
+            raise F4ContractError(
+                f"no tape for executed {action['action']} on {day}: "
+                f"{ticket.sleeve_day} {ticket.ticker}")
+        ets, opens = tape
+        hit = [open_px for et, open_px in zip(ets, opens) if int(et) == int(action["et"])]
+        if not hit:
+            raise F4ContractError(
+                f"execution bar {action['et']} missing from {day} tape: "
+                f"{ticket.sleeve_day} {ticket.ticker}")
+        level = (ticket.entry_px * (1 + rule.trigger.L)
+                 if isinstance(rule.trigger, sim.R2) and action["reason"] != "FORCED_FLAT"
+                 else None)
+        expected_px = min(hit[0], level) if level is not None else hit[0]
+        if abs(expected_px - action["px"]) > 1e-9:
+            raise F4ContractError(
+                f"execution price mismatch on {day} et={action['et']}: "
+                f"{ticket.sleeve_day} {ticket.ticker} engine={action['px']} tape={expected_px}")
         dates.append(day)
     return dates
+
+
+def _touch_records(ticket: sim.Ticket, path: dict) -> dict[str, dict]:
+    """First-touch (day, et) per level: the engine's own post-fill record when
+    present, else the entry-session path map."""
+    touches: dict[str, dict] = {}
+    levels = {int(lv) for lv in path["first_touch_et"]} | set(ticket.h_touch_et)
+    for level in sorted(levels):
+        day = ticket.h_touch_day.get(level)
+        et = ticket.h_touch_et.get(level)
+        if day is not None and et is not None:
+            touches[str(level)] = {"day": day, "et": int(et)}
+        elif str(level) in path["first_touch_et"]:
+            touches[str(level)] = {"day": ticket.sleeve_day,
+                                   "et": int(path["first_touch_et"][str(level)])}
+    return touches
+
+
+def _path_positions(ticket: sim.Ticket, touches: dict[str, dict],
+                    sequence: list[dict]) -> tuple[dict, dict, dict]:
+    """Per-level (tail fraction at touch, cumulative >=50% reduction before the
+    touch, fully flat before the touch) using the (day, et) total order and the
+    contract's cumulative-share definition of an early reduction (C1)."""
+    tail, reduced_half, released = {}, {}, {}
+    for level_text, touch in touches.items():
+        key = (touch["day"], touch["et"])
+        remaining = ticket.shares_entry
+        peak = ticket.shares_entry
+        reduced_shares = 0.0
+        flat_before = False
+        for event in sequence:
+            # shares held at the touch bar (events on the touch bar included)
+            if (event["execution_date"], event["et"]) <= key:
+                remaining = event["shares_remaining"]
+            if (event["execution_date"], event["et"]) >= key:
+                continue
+            if event["action"] == "REDUCE":
+                reduced_shares += event["shares_sold"]
+            after = event["shares_remaining"]
+            if after > peak:
+                peak = after
+            if event["action"] == "EXIT":
+                flat_before = True
+        tail[level_text] = remaining / ticket.shares_entry
+        reduced_half[level_text] = bool(peak > 0 and reduced_shares >= 0.5 * peak - 1e-12)
+        released[level_text] = flat_before
+    return tail, reduced_half, released
 
 
 def ticket_chronology(rule: ScaleOutRule | FullExitRule, bps: int,
@@ -126,35 +192,22 @@ def ticket_chronology(rule: ScaleOutRule | FullExitRule, bps: int,
                              "shares_remaining": shares_left - sold})
             shares_left -= sold
             cost_left -= cost
-        tail_fraction_at_touch = {}
-        reduced_before_touch = {}
-        released_before_touch = {}
-        for level, touch_text in path["first_touch_et"].items():
-            touch_et = int(touch_text)
-            remaining = ticket.shares_entry
-            reduced = False
-            exited = False
-            for event in sequence:
-                if (event["execution_date"] == day and event["et"] <= touch_et
-                        and event["action"] in ("REDUCE", "EXIT")):
-                    remaining = event["shares_remaining"]
-                    if event["et"] < touch_et:
-                        reduced |= event["action"] == "REDUCE"
-                        exited |= event["action"] == "EXIT"
-            tail_fraction_at_touch[level] = remaining / ticket.shares_entry
-            reduced_before_touch[level] = reduced
-            released_before_touch[level] = exited
+        touches = _touch_records(ticket, path)
+        tail_fraction_at_touch, reduced_before_touch, released_before_touch = (
+            _path_positions(ticket, touches, sequence))
         records.append({
             "sleeve_day": day, "ticker": ticker, "entry_et": ticket.entry_et,
             "shares_entry": ticket.shares_entry, "entry_px": ticket.entry_px,
-            "actions": sequence, "first_touch_et": path["first_touch_et"],
+            "actions": sequence, "first_touch": touches,
+            # raw path metrics are the engine's post-fill, post-exit record (C1)
+            "mfe_raw": ticket.mfe, "mae_raw": ticket.mae,
             "tail_fraction_at_touch": tail_fraction_at_touch,
             "reduced_before_touch": reduced_before_touch,
             "released_before_touch": released_before_touch,
-            "mfe_raw": path["mfe_raw"], "mae_raw": path["mae_raw"],
             "net": ticket.net(), "net_return": ticket.net_return(),
             "friction_cost": ticket.unit_notional - ticket.shares_entry * ticket.entry_px + exit_friction,
             "open_end": ticket.open, "remaining_shares": ticket.shares,
+            "terminal_kind": ticket.terminal_kind,
             "pending": ticket.pending, "flags": list(ticket.flags),
         })
     return records
@@ -173,27 +226,37 @@ def ticket_actions(rule, bps: int, raw_paths: dict[tuple[str, str], dict],
 
 
 def refresh_touch_chronology(records: list[dict]) -> list[dict]:
+    """Recompute per-level tail/reduction fields from the stored sequence and
+    the stored first-touch (day, et) record (idempotent; used on resume)."""
     for record in records:
-        remaining_by_level = {}
-        reduced_by_level = {}
-        released_by_level = {}
-        for level, touch_et in record["first_touch_et"].items():
-            remaining = record["shares_entry"]
-            reduced = False
-            released = False
-            for action in record["actions"]:
-                if (action["execution_date"] != record["sleeve_day"]
-                        or action["et"] > touch_et
-                        or action["action"] not in ("REDUCE", "EXIT")):
+        touches = record.get("first_touch")
+        if not touches:
+            touches = {level: {"day": record["sleeve_day"], "et": int(et)}
+                       for level, et in record.get("first_touch_et", {}).items()}
+        sequence = record["actions"]
+        shares_entry = record["shares_entry"]
+        tail, reduced_half, released = {}, {}, {}
+        for level_text, touch in touches.items():
+            key = (touch["day"], touch["et"])
+            remaining = shares_entry
+            peak = shares_entry
+            reduced_shares = 0.0
+            flat_before = False
+            for event in sequence:
+                if (event["execution_date"], event["et"]) <= key:
+                    remaining = event["shares_remaining"]
+                if (event["execution_date"], event["et"]) >= key:
                     continue
-                remaining = action["shares_remaining"]
-                if action["et"] < touch_et:
-                    reduced |= action["action"] == "REDUCE"
-                    released |= action["action"] == "EXIT"
-            remaining_by_level[level] = remaining / record["shares_entry"]
-            reduced_by_level[level] = reduced
-            released_by_level[level] = released
-        record["tail_fraction_at_touch"] = remaining_by_level
-        record["reduced_before_touch"] = reduced_by_level
-        record["released_before_touch"] = released_by_level
+                if event["action"] == "REDUCE":
+                    reduced_shares += event["shares_sold"]
+                if event["shares_remaining"] > peak:
+                    peak = event["shares_remaining"]
+                if event["action"] == "EXIT":
+                    flat_before = True
+            tail[level_text] = remaining / shares_entry
+            reduced_half[level_text] = bool(peak > 0 and reduced_shares >= 0.5 * peak - 1e-12)
+            released[level_text] = flat_before
+        record["tail_fraction_at_touch"] = tail
+        record["reduced_before_touch"] = reduced_half
+        record["released_before_touch"] = released
     return records

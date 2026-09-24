@@ -1,0 +1,294 @@
+{
+ "arms": [
+  {
+   "N": 2,
+   "arm": "equal@600",
+   "block1": {
+    "ev_per_dollar": -0.029201971336057536,
+    "n": 1282,
+    "net": -9.35923181320644,
+    "notional": 320.5
+   },
+   "block2": {
+    "ev_per_dollar": -0.021733318946247866,
+    "n": 565,
+    "net": -3.069831301157511,
+    "notional": 141.25
+   },
+   "bps": 100,
+   "paired_delta_pooled": -0.011659533878390195,
+   "tranche_pooled": {
+    "ev_per_dollar": -0.02691729965211467,
+    "n": 1847,
+    "net": -12.429063114363949,
+    "notional": 461.75
+   }
+  },
+  {
+   "N": 2,
+   "arm": "state67@600",
+   "block1": {
+    "ev_per_dollar": -0.026313357913817892,
+    "n": 160,
+    "net": -1.0525343165527157,
+    "notional": 40.0
+   },
+   "block2": {
+    "ev_per_dollar": 0.01234717060633897,
+    "n": 66,
+    "net": 0.20372831500459299,
+    "notional": 16.5
+   },
+   "bps": 100,
+   "paired_delta_pooled": -0.0007962532847543335,
+   "tranche_pooled": {
+    "ev_per_dollar": -0.01502311507164819,
+    "n": 226,
+    "net": -0.8488060015481227,
+    "notional": 56.5
+   }
+  },
+  {
+   "N": 2,
+   "arm": "state33@600",
+   "block1": {
+    "ev_per_dollar": -0.019485858235781535,
+    "n": 343,
+    "net": -1.6709123437182667,
+    "notional": 85.75
+   },
+   "block2": {
+    "ev_per_dollar": -0.03973743435809098,
+    "n": 156,
+    "net": -1.5497599399655484,
+    "notional": 39.0
+   },
+   "bps": 100,
+   "paired_delta_pooled": -0.0030212685588028245,
+   "tranche_pooled": {
+    "ev_per_dollar": -0.025817012294058635,
+    "n": 499,
+    "net": -3.2206722836838146,
+    "notional": 124.75
+   }
+  },
+  {
+   "N": 2,
+   "arm": "equal@600",
+   "block1": {
+    "ev_per_dollar": -0.03404403789048707,
+    "n": 1282,
+    "net": -10.911114143901107,
+    "notional": 320.5
+   },
+   "block2": {
+    "ev_per_dollar": -0.026608277539287226,
+    "n": 565,
+    "net": -3.758419202424321,
+    "notional": 141.25
+   },
+   "bps": 150,
+   "paired_delta_pooled": -0.013761288317378455,
+   "tranche_pooled": {
+    "ev_per_dollar": -0.03176942792923753,
+    "n": 1847,
+    "net": -14.669533346325428,
+    "notional": 461.75
+   }
+  },
+  {
+   "N": 2,
+   "arm": "state67@600",
+   "block1": {
+    "ev_per_dollar": -0.03116983205667214,
+    "n": 160,
+    "net": -1.2467932822668857,
+    "notional": 40.0
+   },
+   "block2": {
+    "ev_per_dollar": 0.007297868659351589,
+    "n": 66,
+    "net": 0.12041483287930121,
+    "notional": 16.5
+   },
+   "bps": 150,
+   "paired_delta_pooled": -0.0010566401964236314,
+   "tranche_pooled": {
+    "ev_per_dollar": -0.01993590175907229,
+    "n": 226,
+    "net": -1.1263784493875844,
+    "notional": 56.5
+   }
+  },
+  {
+   "N": 2,
+   "arm": "state33@600",
+   "block1": {
+    "ev_per_dollar": -0.024376386019934256,
+    "n": 343,
+    "net": -2.0902751012093623,
+    "notional": 85.75
+   },
+   "block2": {
+    "ev_per_dollar": -0.044526952996653185,
+    "n": 156,
+    "net": -1.7365511668694742,
+    "notional": 39.0
+   },
+   "bps": 150,
+   "paired_delta_pooled": -0.0035898933096424387,
+   "tranche_pooled": {
+    "ev_per_dollar": -0.03067596206876823,
+    "n": 499,
+    "net": -3.8268262680788365,
+    "notional": 124.75
+   }
+  },
+  {
+   "N": 3,
+   "arm": "equal@600",
+   "block1": {
+    "ev_per_dollar": -0.024932716781991365,
+    "n": 1951,
+    "net": -8.10728840694419,
+    "notional": 325.16666666666663
+   },
+   "block2": {
+    "ev_per_dollar": -0.01742530172597458,
+    "n": 864,
+    "net": -2.5092434485403383,
+    "notional": 143.99999999999994
+   },
+   "bps": 100,
+   "paired_delta_pooled": -0.009959223128972282,
+   "tranche_pooled": {
+    "ev_per_dollar": -0.022628487080961695,
+    "n": 2815,
+    "net": -10.616531855484528,
+    "notional": 469.16666666666663
+   }
+  },
+  {
+   "N": 3,
+   "arm": "state67@600",
+   "block1": {
+    "ev_per_dollar": -0.020952798337194444,
+    "n": 241,
+    "net": -0.8416040665439771,
+    "notional": 40.16666666666668
+   },
+   "block2": {
+    "ev_per_dollar": 0.059778441768662385,
+    "n": 103,
+    "net": 1.0261965836953713,
+    "notional": 17.16666666666667
+   },
+   "bps": 100,
+   "paired_delta_pooled": 0.00017316371214953202,
+   "tranche_pooled": {
+    "ev_per_dollar": 0.003219636927059195,
+    "n": 344,
+    "net": 0.1845925171513939,
+    "notional": 57.33333333333335
+   }
+  },
+  {
+   "N": 3,
+   "arm": "state33@600",
+   "block1": {
+    "ev_per_dollar": -0.019585005804045635,
+    "n": 517,
+    "net": -1.6875746667819307,
+    "notional": 86.16666666666659
+   },
+   "block2": {
+    "ev_per_dollar": -0.0062553583803115044,
+    "n": 233,
+    "net": -0.24291641710209655,
+    "notional": 38.8333333333333
+   },
+   "bps": 100,
+   "paired_delta_pooled": -0.0018109672456698004,
+   "tranche_pooled": {
+    "ev_per_dollar": -0.015443928671072232,
+    "n": 750,
+    "net": -1.9304910838840268,
+    "notional": 124.99999999999986
+   }
+  },
+  {
+   "N": 3,
+   "arm": "equal@600",
+   "block1": {
+    "ev_per_dollar": -0.029796077173118374,
+    "n": 1951,
+    "net": -9.688691094125657,
+    "notional": 325.16666666666663
+   },
+   "block2": {
+    "ev_per_dollar": -0.022323256159549606,
+    "n": 864,
+    "net": -3.2145488869751424,
+    "notional": 143.99999999999997
+   },
+   "bps": 150,
+   "paired_delta_pooled": -0.01210435270272113,
+   "tranche_pooled": {
+    "ev_per_dollar": -0.027502465323838297,
+    "n": 2815,
+    "net": -12.9032399811008,
+    "notional": 469.16666666666663
+   }
+  },
+  {
+   "N": 3,
+   "arm": "state67@600",
+   "block1": {
+    "ev_per_dollar": -0.025836009438172422,
+    "n": 241,
+    "net": -1.0377463790999262,
+    "notional": 40.166666666666686
+   },
+   "block2": {
+    "ev_per_dollar": 0.05449256602882827,
+    "n": 103,
+    "net": 0.9354557168282189,
+    "notional": 17.16666666666667
+   },
+   "bps": 150,
+   "paired_delta_pooled": -9.59574692980289e-05,
+   "tranche_pooled": {
+    "ev_per_dollar": -0.0017841394582274492,
+    "n": 344,
+    "net": -0.10229066227170713,
+    "notional": 57.33333333333336
+   }
+  },
+  {
+   "N": 3,
+   "arm": "state33@600",
+   "block1": {
+    "ev_per_dollar": -0.02447503906811277,
+    "n": 517,
+    "net": -2.108932533035715,
+    "notional": 86.16666666666659
+   },
+   "block2": {
+    "ev_per_dollar": -0.011211876163369286,
+    "n": 233,
+    "net": -0.4353945243441736,
+    "notional": 38.8333333333333
+   },
+   "bps": 150,
+   "paired_delta_pooled": -0.0023867983652719202,
+   "tranche_pooled": {
+    "ev_per_dollar": -0.020354616459039132,
+    "n": 750,
+    "net": -2.5443270573798884,
+    "notional": 124.99999999999986
+   }
+  }
+ ],
+ "estimand": "incremental net EV per dollar actually deployed by the reserve policy",
+ "note": "Only funded reserve allocations count (executed_notional > 0, including cap-truncated ones). 'paired' is the sleeve-level mean basket-day delta vs the same-p cash control, which also counts the reserve that never deployed."
+}

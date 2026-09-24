@@ -54,6 +54,13 @@ ANAT_DIR = SIP_ROOT / "anatomy"
 BARS_DIR = SIP_ROOT / "bars"
 CAL_PATH = SIP_ROOT / "phase2_session_calendar.json"
 SIM_CORE = BASKET_ART_ROOT / "phase2" / "sim_core"
+# Declared full-market carry substrate (2026-09-24 correction): per-day RTH bars
+# for tickers under cross-session carry, certified in ``carry_bars/manifest.json``.
+CARRY_BARS_ROOT = Path(os.environ.get("BASKET_CARRY_BARS_ROOT", SIP_ROOT / "carry_bars"))
+CARRY_MANIFEST_NAME = "manifest.json"
+CARRY_BARS_SCHEMA = ("date", "ticker", "et", "open", "high", "low", "close", "volume")
+
+CONTRACT_VERSION = "FROZEN-2026-09-22+SUBSTRATE-CORRECTION-2026-09-24"
 
 C0 = 1.0                                    # one sleeve unit per basket-day
 FIRST_ET = 570                              # 09:30 ET
@@ -71,6 +78,9 @@ DN_LADDER = (3, 5, 8, 10, 15)
 # Hard evidence boundary: never open these.
 SEALED_PREFIXES = ("2024-", "2025-01")
 RESERVED_MONTHS = ("2026-06", "2026-07", "2026-08")
+# A calendar gap larger than this between consecutive dev days is a dev-block
+# boundary (2021-02..2023-12 | 2025-02..2026-05).  Carries never bridge it.
+DEV_BLOCK_GAP_DAYS = 30
 
 CONTRACT_PATH = FACTORY / "BASKET-SIM-CONTRACT.md"
 
@@ -207,6 +217,213 @@ def load_bars(day: str, session_end: Optional[int] = None) -> Bars:
     if session_end is not None:
         df = df.filter(pl.col("et") <= session_end)
     return Bars(day, df)
+
+
+# --------------------------------------------------------------------------- #
+# Declared full-market carry substrate (2026-09-24 correction)
+# --------------------------------------------------------------------------- #
+
+
+class MissingCarrySubstrate(RuntimeError):
+    """A cross-session carry needs full-market bars that are not certified.
+
+    Raised instead of silently treating the absence of candidate bars as "no
+    trade".  Produce the missing overlay entries with::
+
+        python factory/scripts/basket_carry_bars.py --request DAY:TICKER [...]
+
+    or enumerate every request from the candidate-bar artifact census with
+    ``--scan`` (see the producer docstring).
+    """
+
+    def __init__(self, requests: list[tuple[str, str]], detail: str = ""):
+        self.requests = sorted(set(requests))
+        req = ", ".join(f"{d}:{t}" for d, t in self.requests) or "<none>"
+        msg = (f"missing carry substrate for {len(self.requests)} (day, ticker) "
+               f"request(s): {req}")
+        if detail:
+            msg += f" [{detail}]"
+        super().__init__(msg)
+
+
+class CarrySubstrate:
+    """Per-day full-RTH carry overlay plus its certification manifest.
+
+    Layout (root defaults to ``BASKET_ART_ROOT/sip/carry_bars``):
+
+    * ``<day>.parquet`` — schema ``(date, ticker, et, open, high, low, close,
+      volume)``, regular session only, sorted by ``(ticker, et)``.
+    * ``manifest.json`` — ``{"contract": <contract_version>,
+      "days": {day: {"session_end": int, "source": {"production": bool,
+      "certification": str, "overlay_sha256": str, ...},
+      "tickers": {ticker: {"status": "bars"|"no_bars"|"unavailable", ...}}}}}``.
+
+    ``bars(day, ticker, session_end)`` returns the per-ticker numpy arrays (same
+    shape as ``Bars.ticker``) for certified ``bars`` entries, ``None`` for
+    certified ``no_bars`` entries, and raises :class:`MissingCarrySubstrate`
+    when the day/ticker is not certified, the manifest contract does not match
+    the engine contract, the recorded session end disagrees, or (in production
+    mode) the entry is not production-certified / its overlay hash is missing
+    or mismatched.  Absence of data is therefore never silently equivalent to
+    "no trade".
+
+    ``require_production`` (default True) is the production rule; test-only
+    fixture overlays must opt out explicitly (``require_production=False``) and
+    can never certify a production run.
+    """
+
+    def __init__(self, root: Optional[Path] = None, require_production: bool = True):
+        self.root = Path(root) if root is not None else CARRY_BARS_ROOT
+        self.require_production = bool(require_production)
+        self._manifest: Optional[dict] = None
+        self._day_cache: dict[str, Optional[Bars]] = {}
+        self._sha_cache: dict[str, Optional[str]] = {}
+
+    # -- loading ---------------------------------------------------------- #
+    def manifest(self) -> dict:
+        if self._manifest is None:
+            path = self.root / CARRY_MANIFEST_NAME
+            if not path.exists():
+                raise MissingCarrySubstrate(
+                    [], f"carry manifest missing at {path}; run the carry-bar producer")
+            doc = json.loads(path.read_text())
+            if self.require_production and doc.get("contract") != CONTRACT_VERSION:
+                raise MissingCarrySubstrate(
+                    [], f"carry manifest contract {doc.get('contract')!r} != engine "
+                        f"contract {CONTRACT_VERSION!r} at {path}; regenerate the overlay")
+            self._manifest = doc
+        return self._manifest
+
+    def _day_entry(self, day: str) -> Optional[dict]:
+        return self.manifest().get("days", {}).get(day)
+
+    def _reject_reason(self, day: str, entry: Optional[dict],
+                       session_end: Optional[int]) -> Optional[str]:
+        """Why this day's overlay may not be used, or None."""
+        if entry is None:
+            return "day not certified in carry manifest"
+        source = entry.get("source", {})
+        if self.require_production and not source.get("production", False):
+            return ("overlay is not production-certified (fixture/test-only); "
+                    "produce it with factory/scripts/basket_carry_bars.py --env-file ...")
+        recorded_se = entry.get("session_end")
+        if self.require_production and recorded_se is None:
+            return "production overlay is missing its session_end in the manifest"
+        if session_end is not None and recorded_se is not None and int(recorded_se) != int(session_end):
+            return (f"manifest session_end {recorded_se} != run session_end {session_end}; "
+                    f"overlay was produced for a different calendar")
+        if self.require_production:
+            missing = [key for key in ("overlay_sha256", "feed", "adjustment", "timeframe")
+                       if not source.get(key)]
+            if missing:
+                return (f"production overlay manifest is missing {sorted(missing)}; "
+                        f"regenerate it with the declared Alpaca SIP/RAW producer")
+            if (source.get("feed") != "sip" or source.get("adjustment") != "raw"
+                    or source.get("timeframe") != "1Min"):
+                return ("production overlay source is not Alpaca SIP/RAW 1-minute "
+                        f"(feed={source.get('feed')!r}, adjustment={source.get('adjustment')!r}, "
+                        f"timeframe={source.get('timeframe')!r})")
+        return None
+
+    def certified(self, day: str, ticker: str,
+                  session_end: Optional[int] = None) -> Optional[str]:
+        """``"bars"``, ``"no_bars"``, ``"unavailable"`` or ``None`` (not usable).
+
+        A missing/invalid manifest is reported as ``None`` here so callers can
+        collect every unusable request for a day before failing; :meth:`bars`
+        is the strict accessor that raises with the precise reason.
+        """
+        try:
+            entry = self._day_entry(day)
+            reason = self._reject_reason(day, entry, session_end)
+        except MissingCarrySubstrate:
+            return None
+        if reason is not None:
+            return None
+        info = entry.get("tickers", {}).get(ticker)
+        return None if info is None else str(info.get("status"))
+
+    def bars(self, day: str, ticker: str,
+             session_end: Optional[int] = None) -> Optional[dict[str, np.ndarray]]:
+        guard_day(day)
+        entry = self._day_entry(day)
+        reason = self._reject_reason(day, entry, session_end)
+        if reason is not None:
+            raise MissingCarrySubstrate([(day, ticker)], reason)
+        info = entry.get("tickers", {}).get(ticker)
+        if info is None:
+            raise MissingCarrySubstrate([(day, ticker)], "ticker not certified in carry manifest")
+        status = str(info.get("status"))
+        expected_sha = entry.get("source", {}).get("overlay_sha256")
+        if self.require_production:
+            # Integrity is verified BEFORE the status branch: a missing or
+            # tampered day file must never be accepted as "genuine no trade".
+            # One refresh is allowed because the producer may be extending the
+            # overlay while a run is in flight (it rewrites the day file and then
+            # republishes the manifest); a second mismatch is a hard failure.
+            for attempt in (1, 2):
+                actual_sha = self._day_sha(day)
+                if expected_sha is not None and actual_sha == expected_sha:
+                    break
+                if attempt == 1:
+                    self._refresh(day)
+                    entry = self._day_entry(day)
+                    reason = self._reject_reason(day, entry, session_end)
+                    if reason is not None:
+                        raise MissingCarrySubstrate([(day, ticker)], reason)
+                    info = entry.get("tickers", {}).get(ticker)
+                    if info is None:
+                        raise MissingCarrySubstrate([(day, ticker)],
+                                                    "ticker not certified in carry manifest")
+                    status = str(info.get("status"))
+                    expected_sha = entry.get("source", {}).get("overlay_sha256")
+                    continue
+                if expected_sha is None or actual_sha is None:
+                    raise MissingCarrySubstrate(
+                        [(day, ticker)],
+                        "production overlay day file is missing (or has no recorded sha256)")
+                raise MissingCarrySubstrate([(day, ticker)],
+                                            "overlay parquet sha256 does not match the manifest")
+        elif expected_sha and self._day_sha(day) != expected_sha:
+            raise MissingCarrySubstrate([(day, ticker)],
+                                        "overlay parquet sha256 does not match the manifest")
+        if status == "no_bars":
+            return None
+        if status != "bars":
+            raise MissingCarrySubstrate([(day, ticker)],
+                                        f"coverage status '{status}' is not usable")
+        frame = self._day_frame(day)
+        if frame is None:
+            raise MissingCarrySubstrate([(day, ticker)], "certified 'bars' but day file missing")
+        tk = frame.ticker(ticker)
+        if tk is None:
+            raise MissingCarrySubstrate([(day, ticker)], "certified 'bars' but ticker rows missing")
+        return tk
+
+    def _refresh(self, day: str) -> None:
+        """Drop cached manifest/day state so a rewritten overlay is re-read."""
+        self._manifest = None
+        self._sha_cache.pop(day, None)
+        self._day_cache.pop(day, None)
+
+    def _day_sha(self, day: str) -> Optional[str]:
+        if day not in self._sha_cache:
+            path = self.root / f"{day}.parquet"
+            self._sha_cache[day] = (
+                _sha256_bytes(path.read_bytes()) if path.exists() else None)
+        return self._sha_cache[day]
+
+    def _day_frame(self, day: str) -> Optional[Bars]:
+        if day not in self._day_cache:
+            path = self.root / f"{day}.parquet"
+            if not path.exists():
+                self._day_cache[day] = None
+            else:
+                df = pl.read_parquet(path, columns=list(CARRY_BARS_SCHEMA))
+                df = df.filter((pl.col("et") >= FIRST_ET) &
+                               (pl.col("et") <= SESSION_END_NORMAL))
+                self._day_cache[day] = Bars(day, df)
+        return self._day_cache[day]
 
 
 # --------------------------------------------------------------------------- #
@@ -467,17 +684,27 @@ class Ticket:
     flags: list = field(default_factory=list)
     rule_state: dict = field(default_factory=dict)
     exit_et: Optional[int] = None
+    exit_day: Optional[str] = None  # session date of the closing EXIT (cross-session safe)
     exit_px: Optional[float] = None
     exit_reason: Optional[str] = None
+    terminal_value: float = 0.0     # data-boundary/data-end mark (not a trade)
+    terminal_kind: Optional[str] = None
     n_adds: int = 0
     n_reduces: int = 0
     shares_entry: float = 0.0
-    h_touch_et: dict = field(default_factory=dict)  # H -> first bar et with high >= (1+H/100)*fill
-    reduced_before: dict = field(default_factory=dict)
+    # H -> session date / minute-of-day of the first bar with
+    # high >= (1+H/100)*fill; (h_touch_day[H], h_touch_et[H]) is the total order.
+    h_touch_et: dict = field(default_factory=dict)
+    h_touch_day: dict = field(default_factory=dict)
+    # Canonical snapshot rank of this ticket's entry (EXT-1, descriptive only: no
+    # engine rule reads it; batch policies use it for deterministic ordering).
+    entry_rank: int = -1
 
     def net(self) -> float:
-        """Total net P&L in sleeve units (incl. terminal mark if still open)."""
-        return self.proceeds - self.cash_in + (self.mark if self.open else 0.0)
+        """Total net P&L in sleeve units (incl. open mark or boundary mark)."""
+        return (self.proceeds - self.cash_in
+                + (self.mark if self.open else 0.0)
+                + self.terminal_value)
 
     def net_return(self) -> float:
         return self.net() / self.unit_notional if self.unit_notional else 0.0
@@ -496,6 +723,9 @@ class StrategySpec:
     release: list = field(default_factory=list)      # list[ReleaseRule]
     scale_in: list = field(default_factory=list)     # list[ScaleInRule]
     name: str = "cell"
+    # EXT-1 opt-in whole-sleeve capital allocator (factory/BASKET-SIM-EXTENSIONS.md).
+    # None (the default) leaves the engine byte-identical to the pre-extension engine.
+    batch_policy: Optional["BatchAllocationPolicy"] = None
 
     @staticmethod
     def from_json(obj: dict) -> "StrategySpec":
@@ -539,7 +769,10 @@ class Strategy:
 
     def __init__(self, spec: StrategySpec):
         self.spec = spec
-        self.open_tickets: dict[str, Ticket] = {}
+        # Independent ticket identity is (sleeve_day, ticker): the same ticker
+        # may be held simultaneously by two basket-day sleeves (2026-09-24
+        # correction).  Never key by bare ticker.
+        self.open_tickets: dict[tuple[str, str], Ticket] = {}
         self.closed: list[Ticket] = []
         self.sleeve_cash: dict[str, float] = {}
         self.deployed: dict[str, float] = {}     # sleeve_day -> open cost basis
@@ -550,6 +783,18 @@ class Strategy:
         self.n_carries = 0
         self.n_skipped_adds = 0
         self.flags: list[str] = []
+        # EXT-1: a declared batch policy may only use the contract's golden-window
+        # points.  Inert when no policy is declared.
+        policy = getattr(spec, "batch_policy", None)
+        if policy is not None:
+            declared = tuple(getattr(policy, "checkpoint_ets", ()) or ())
+            if not declared:
+                raise ValueError("batch_policy must declare at least one checkpoint et")
+            outside = [et for et in declared if et not in CHECKPOINTS]
+            if outside:
+                raise ValueError(
+                    f"batch_policy checkpoint ets {outside} are outside CHECKPOINTS "
+                    f"{CHECKPOINTS}")
 
     # -- hooks families may override ------------------------------------- #
     def on_checkpoint(self, et: int, ticket: Ticket, bar: dict) -> None:
@@ -574,8 +819,102 @@ class Strategy:
 
 
 # --------------------------------------------------------------------------- #
+# Batch checkpoint hook (EXT-1 — factory/BASKET-SIM-EXTENSIONS.md)
+#
+# Additive and opt-in: a strategy that declares no ``batch_policy`` never reaches this
+# code, and the contract version, the §7 event order for existing strategies, and every
+# engine-owned rule (ADD cap, cash/no-leverage, carries, friction) are unchanged.
+# --------------------------------------------------------------------------- #
+
+
+@dataclass
+class BatchAllocationIntent:
+    """One ``ADD`` requested by a batch checkpoint policy for one ticket.
+
+    ``frac`` is the ADD notional as a fraction of *that ticket's* unit notional, so the
+    existing ADD cap and the cash/no-leverage invariants apply unchanged.  ``reason`` is
+    recorded on the pending action and on the executed action; ``alloc_id`` is the
+    policy's own identity for its evidence tables.
+    """
+
+    sleeve_day: str
+    ticker: str
+    frac: float
+    reason: str
+    alloc_id: str = ""
+
+
+@dataclass
+class BatchCheckpointContext:
+    """Read-only context handed to :meth:`BatchAllocationPolicy.plan` once per completed
+    checkpoint bar, after every ticket decision for that bar."""
+
+    day: str                       # session date of the completed bar
+    et: int                        # the completed checkpoint bar (decision minute)
+    session_end: int
+    strategy: "Strategy"
+    spec: "StrategySpec"
+    rec: dict                      # anatomy record for ``day`` (canonical ranking)
+    bars: "Bars"                   # candidate tape for ``day``
+    side: float                    # per-side friction fraction
+    # eligible: ordered by (entry_rank, ticker); open, same sleeve, no pending action,
+    # and a completed bar at ``et``.
+    eligible: list
+    # excluded: [(Ticket, "pending_action" | "halted_at_checkpoint")].
+    excluded: list
+
+
+class BatchAllocationPolicy:
+    """Opt-in whole-sleeve capital allocator (EXT-1).
+
+    ``checkpoint_ets`` must be a non-empty subset of ``CHECKPOINTS``; ``plan`` is called
+    only on those bars.  The engine schedules each returned intent as an ordinary pending
+    action with decision et = the checkpoint bar, so it executes at the recipient's first
+    later bar open and is funded, capped, carried and accounted for by the existing rules.
+    """
+
+    name = "batch_policy"
+    checkpoint_ets: tuple = ()
+
+    def plan(self, ctx: BatchCheckpointContext) -> list:
+        raise NotImplementedError
+
+
+# --------------------------------------------------------------------------- #
 # Engine (§5-§8)
 # --------------------------------------------------------------------------- #
+
+
+def _track_raw_path(tk: "Ticket", tkb: Optional[dict], session_end: int, day: str) -> None:
+    """Strategy-independent raw post-fill path tracking for one session.
+
+    Updates ``mfe``/``mae`` and first-touch ``(day, et)`` for +30/+50/+100/+200
+    over the ticket's full session tape, starting at the entry bar's open on the
+    entry day and at the session start on later (carry) days.  Runs after the
+    event loop, so bars after an exit still count: the tail classes
+    (``path_contrib``, ``tail_retained``, ``false_release_rate``,
+    ``half_release_rate``) are properties of the path, not of the holding period.
+    """
+    if tkb is None:
+        return
+    fill = tk.entry_px
+    start = int(tk.entry_et) if day == tk.sleeve_day else FIRST_ET
+    ets = tkb["et"]
+    first = int(np.searchsorted(ets, start, side="left"))
+    for i in range(first, len(ets)):
+        e = int(ets[i])
+        if e > session_end:
+            break
+        high = float(tkb["high"][i])
+        low = float(tkb["low"][i])
+        if high / fill - 1.0 > tk.mfe:
+            tk.mfe = high / fill - 1.0
+        if low / fill - 1.0 < tk.mae:
+            tk.mae = low / fill - 1.0
+        for H in (30, 50, 100, 200):
+            if H not in tk.h_touch_et and high >= fill * (1 + H / 100.0):
+                tk.h_touch_et[H] = e
+                tk.h_touch_day[H] = day
 
 
 def _bar(tk_bars: dict, pos: int) -> dict:
@@ -618,42 +957,16 @@ def _fill_mismatches(rec: dict, bars_full: Bars, out: list) -> int:
     return n
 
 
-def _apply_pending(strat: Strategy, tk: Ticket, bars: Bars, fix_side: float) -> Optional[dict]:
-    """Execute ``tk.pending`` at its scheduled et if that bar exists today.
-
-    Returns the executed action record, or None if it must carry.
-    """
-    pend = tk.pending
-    if pend is None:
-        return None
-    tkb = bars.ticker(tk.ticker)
-    if tkb is None:
-        # no bars at all today -> involuntary carry, mark at last known close
-        tk.flags.append("no_resumption")
-        strat.n_carries += 1
-        return None
-    ets = tkb["et"]
-    after = int(pend.get("after_et", -1))
-    if pend.get("carry"):
-        pos = 0
-    else:
-        pos = int(np.searchsorted(ets, after, side="right"))
-    if pos >= len(ets):
-        return None
-    exec_et = int(ets[pos])
-    open_px = float(tkb["open"][pos])
-    level = pend.get("level")
-    px = min(open_px, level) if level is not None else open_px
-    act = pend["action"]
-    tk.pending = None
-    _execute(strat, tk, act, px, exec_et, pend.get("reason", act), fix_side,
-             frac=pend.get("frac"))
-    return {"action": act, "et": exec_et, "px": px, "reason": pend.get("reason", act)}
-
-
 def _execute(strat: Strategy, tk: Ticket, action: str, px: float, et: int,
-             reason: str, side: float, frac: Optional[float] = None) -> None:
+             reason: str, side: float, frac: Optional[float] = None,
+             day: Optional[str] = None) -> None:
+    """Apply one action.  ``day`` is the execution session date; it is recorded
+    on the action/exit so chronology is a total order across sessions (a later
+    session's 09:30 must never compare as "before" an earlier session's 10:00).
+    """
     sd = tk.sleeve_day
+    day = day or sd
+    qty = 0.0
     if action == "ENTER":
         budget = tk.unit_notional
         shares = budget / (px * (1.0 + side))
@@ -664,6 +977,7 @@ def _execute(strat: Strategy, tk: Ticket, action: str, px: float, et: int,
         strat.sleeve_cash[sd] = strat._cash(sd) - budget
         strat.deployed[sd] = strat._deployed(sd) + budget
         tk.peak = px
+        qty = shares
     elif action == "ADD":
         notional = float(frac) * tk.unit_notional
         # cap: total ADD notional per ticket <= unit_notional (+100%)
@@ -688,6 +1002,7 @@ def _execute(strat: Strategy, tk: Ticket, action: str, px: float, et: int,
         strat.sleeve_cash[sd] = strat._cash(sd) - notional
         strat.deployed[sd] = strat._deployed(sd) + notional
         tk.n_adds += 1
+        qty = shares
     elif action == "REDUCE":
         old_shares = tk.shares
         sh = float(frac) * old_shares
@@ -702,6 +1017,7 @@ def _execute(strat: Strategy, tk: Ticket, action: str, px: float, et: int,
         strat.sleeve_cash[sd] = strat._cash(sd) + proceeds
         strat.deployed[sd] = max(0.0, strat._deployed(sd) - cost_removed)
         tk.n_reduces += 1
+        qty = sh
     elif action == "EXIT":
         shares = tk.shares
         proceeds = shares * px * (1.0 - side)
@@ -713,26 +1029,67 @@ def _execute(strat: Strategy, tk: Ticket, action: str, px: float, et: int,
         tk.cost_open = 0.0
         tk.open = False
         tk.exit_et = et
+        tk.exit_day = day
         tk.exit_px = px
         tk.exit_reason = reason
+        qty = shares
     else:
         raise ValueError(f"unknown action {action}")
-    tk.actions.append({"et": et, "action": action, "px": px, "reason": reason})
+    tk.actions.append({"day": day, "et": et, "action": action, "px": px,
+                       "reason": reason, "shares": qty, "shares_after": tk.shares})
     strat._check_invariants(tk, action)
     if not tk.open:
         strat.closed.append(tk)
-        strat.open_tickets.pop(tk.ticker, None)
+        strat.open_tickets.pop((tk.sleeve_day, tk.ticker), None)
 
 
 def _schedule(strat: Strategy, tk: Ticket, action: str, reason: str,
-              decision_et: int, level: Optional[float], frac: Optional[float] = None) -> None:
+              decision_et: int, level: Optional[float], frac: Optional[float] = None,
+              decision_day: Optional[str] = None) -> None:
     tk.pending = {"action": action, "reason": reason, "after_et": decision_et,
+                  "decision_day": decision_day or tk.sleeve_day,
                   "level": level, "frac": frac, "carry": False}
+
+
+def _run_batch_checkpoint(strat: Strategy, day: str, et: int, session_end: int,
+                          rec: dict, bars: Bars, side: float,
+                          eligible: list, excluded: list) -> int:
+    """EXT-1 call site: ask the declared policy for ADD intents and schedule them.
+
+    Called after every ticket decision for the completed bar ``et`` and before that bar's
+    §7 step-4 state updates.  Each intent becomes an ordinary pending action with
+    ``decision_et = et``, so execution happens at the recipient's first later bar open
+    (never same-bar) and the engine's cap/cash/carry rules decide funding.  Returns the
+    number of scheduled intents; a strategy with no declared policy never reaches the
+    body.
+    """
+    policy = strat.spec.batch_policy
+    if policy is None:
+        return 0
+    if et not in tuple(getattr(policy, "checkpoint_ets", ()) or ()):
+        return 0
+    ctx = BatchCheckpointContext(
+        day=day, et=et, session_end=session_end, strategy=strat, spec=strat.spec,
+        rec=rec, bars=bars, side=side,
+        eligible=list(eligible), excluded=list(excluded),
+    )
+    scheduled = 0
+    for intent in policy.plan(ctx) or ():
+        tk = strat.open_tickets.get((intent.sleeve_day, intent.ticker))
+        if tk is None or not tk.open or tk.pending is not None:
+            continue                      # a pending action is never overwritten
+        frac = float(intent.frac)
+        if frac <= 0.0:
+            continue
+        _schedule(strat, tk, "ADD", intent.reason, et, None, frac=frac, decision_day=day)
+        scheduled += 1
+    return scheduled
 
 
 def simulate_day(strat: Strategy, day: str, rec: dict, bars: Bars,
                  session_end: int, bps_total: float,
-                 do_entries: bool = True) -> dict:
+                 do_entries: bool = True,
+                 carry: Optional["CarrySubstrate"] = None) -> dict:
     """Run one strategy on one day.  Mutates strategy state; returns day row."""
     side = bps_total / 2.0 / 10000.0
     # --- 1. entries ------------------------------------------------------ #
@@ -743,7 +1100,7 @@ def simulate_day(strat: Strategy, day: str, rec: dict, bars: Bars,
             budget = C0 * strat.spec.reserve_frac / N
             seen: set[str] = set()
             n_new = 0
-            for nm in snap["names"][: strat.spec.top_n]:
+            for rank_index, nm in enumerate(snap["names"][: strat.spec.top_n]):
                 t = nm["ticker"]
                 if t in seen:
                     continue
@@ -752,14 +1109,16 @@ def simulate_day(strat: Strategy, day: str, rec: dict, bars: Bars,
                 if not fl or fl.get("blocked"):
                     strat.n_blocked_slots += 1
                     continue
-                if t in strat.open_tickets:
+                key = (day, t)
+                if key in strat.open_tickets:
                     continue
                 tk = Ticket(ticker=t, sleeve_day=day, entry_et=int(fl["et"]),
-                            entry_px=float(fl["px"]), unit_notional=budget)
+                            entry_px=float(fl["px"]), unit_notional=budget,
+                            entry_rank=int(nm.get("rank", rank_index)))
                 tk.pending = {"action": "ENTER", "reason": "ENTRY", "after_et": int(fl["et"]) - 1,
-                              "level": None, "frac": None, "carry": False}
+                              "decision_day": day, "level": None, "frac": None, "carry": False}
                 strat._cash(day)
-                strat.open_tickets[t] = tk
+                strat.open_tickets[key] = tk
                 n_new += 1
             if n_new:
                 strat.filled_days += 1
@@ -767,10 +1126,34 @@ def simulate_day(strat: Strategy, day: str, rec: dict, bars: Bars,
     # --- active tickets: carries inherit their pending ------------------- #
     active = list(strat.open_tickets.values())
 
+    # --- tapes: candidate bars are canonical; the carry substrate covers
+    #     later sessions where the ticker is not a candidate.  Collect every
+    #     uncertified/unavailable carry (day, ticker) before failing, so the
+    #     producer can be run once per day with the full request list. ------ #
+    tapes: dict[tuple[str, str], Optional[dict]] = {}
+    uncertified: list[tuple[str, str]] = []
+    for tk in active:
+        key = (tk.sleeve_day, tk.ticker)
+        tkb = bars.ticker(tk.ticker)
+        if tkb is None and tk.sleeve_day != day:
+            status = None if carry is None else carry.certified(day, tk.ticker, session_end)
+            if status not in ("bars", "no_bars"):
+                uncertified.append((day, tk.ticker))
+            else:
+                tkb = carry.bars(day, tk.ticker, session_end)   # None == certified no_bars
+                if tkb is None:
+                    tk.flags.append("no_resumption")
+        tapes[key] = tkb
+    if uncertified:
+        detail = f"day {day}"
+        if carry is not None:
+            detail += f"; substrate root {carry.root}"
+        raise MissingCarrySubstrate(uncertified, detail)
+
     # --- bar set: union of active ticket ets within session + session_end-1 #
     et_set: set[int] = set()
     for tk in active:
-        tkb = bars.ticker(tk.ticker)
+        tkb = tapes[(tk.sleeve_day, tk.ticker)]
         if tkb is None:
             continue
         for e in tkb["et"]:
@@ -786,19 +1169,22 @@ def simulate_day(strat: Strategy, day: str, rec: dict, bars: Bars,
     deployed_sum = 0.0
     deployed_bars = 0
 
-    for t in ordered:
+    # Contract §7 cross-ticket order: same-et executions apply in ticker order
+    # (one pending per ticket, so ticker asc is the complete tie-break).  This
+    # fixes the cash-allocation order when two same-sleeve tickets execute on
+    # the same bar; insertion order was rank order, not ticker order.
+    exec_order = sorted(active, key=lambda tk: (tk.ticker, tk.sleeve_day))
+
+    for i_t, t in enumerate(ordered):
         # -- A. execute pendings scheduled for this et --------------------- #
-        for tk in list(active):
+        for tk in exec_order:
             if not tk.open:
                 continue
             pend = tk.pending
             if pend is None:
                 continue
-            tkb = bars.ticker(tk.ticker)
-            if tkb is not None:
-                pos = _pos_of_et(tkb, t)
-            else:
-                pos = -1
+            tkb = tapes[(tk.sleeve_day, tk.ticker)]
+            pos = _pos_of_et(tkb, t) if tkb is not None else -1
             # a pending executes at the first bar with et > decision_et, or -- for
             # cross-session carries -- at the first available bar of the new session.
             exec_here = (pos >= 0 and
@@ -811,29 +1197,50 @@ def simulate_day(strat: Strategy, day: str, rec: dict, bars: Bars,
                 action = pend["action"]
                 tk.pending = None
                 _execute(strat, tk, action, px, t, pend.get("reason", action), side,
-                         frac=pend.get("frac"))
+                         frac=pend.get("frac"), day=day)
                 cash_after = strat._cash(tk.sleeve_day)
                 day_cashflow += cash_after - cash_before
-                actions_today.append({"et": t, "ticker": tk.ticker, "action": action,
-                                      "px": px, "reason": pend.get("reason", action)})
+                actions_today.append({"day": day, "et": t, "ticker": tk.ticker,
+                                      "action": action, "px": px,
+                                      "reason": pend.get("reason", action)})
                 if not tk.open:
                     continue
+                if t == session_end:
+                    # The pending action executed on the forced-flat execution
+                    # bar and left shares open (e.g. a staged REDUCE).  The
+                    # position must still be flat, so carry a forced EXIT: the
+                    # EOD block marks it carry=True and it executes at the next
+                    # session's first executable bar.
+                    _schedule(strat, tk, "EXIT", "FORCED_FLAT", session_end, None,
+                              decision_day=day)
 
         # -- B. decisions on the completed bar t ---------------------------- #
+        # EXT-1: when a batch policy declares this bar, collect the sleeve's decision
+        # outcome so the policy can run between the decisions and the state updates.
+        policy = strat.spec.batch_policy
+        checkpoint_bar = (policy is not None and t in CHECKPOINTS
+                          and t in tuple(getattr(policy, "checkpoint_ets", ()) or ()))
+        eligible: list = []
+        excluded: list = []
+        deferred: list = []
         for tk in list(active):
             if not tk.open or tk.pending is not None:
+                if checkpoint_bar and tk.open and tk.sleeve_day == day:
+                    excluded.append((tk, "pending_action"))
                 continue
-            tkb = bars.ticker(tk.ticker)
+            tkb = tapes[(tk.sleeve_day, tk.ticker)]
             pos = _pos_of_et(tkb, t) if tkb is not None else -1
             bar = _bar(tkb, pos) if pos >= 0 else None
 
             # 1. forced flat: a market-clock decision at the last completed
             #    session bar; applies to every open ticket (halted names carry).
             if t == session_end - 1:
-                _schedule(strat, tk, "EXIT", "FORCED_FLAT", t, None)
+                _schedule(strat, tk, "EXIT", "FORCED_FLAT", t, None, decision_day=day)
                 continue
 
             if bar is None:
+                if checkpoint_bar and tk.sleeve_day == day:
+                    excluded.append((tk, "halted_at_checkpoint"))
                 continue
 
             # 2. release modules (first firing consumes the bar)
@@ -843,10 +1250,11 @@ def simulate_day(strat: Strategy, day: str, rec: dict, bars: Bars,
                 if act is not None:
                     if act["action"] == "EXIT":
                         _schedule(strat, tk, "EXIT", act.get("reason", rule.name), t,
-                                  act.get("level"))
+                                  act.get("level"), decision_day=day)
                     else:  # REDUCE scale-out variant
                         _schedule(strat, tk, "REDUCE", act.get("reason", rule.name), t,
-                                  act.get("level"), frac=act.get("frac", 0.5))
+                                  act.get("level"), frac=act.get("frac", 0.5),
+                                  decision_day=day)
                     fired = True
                     break
 
@@ -856,29 +1264,51 @@ def simulate_day(strat: Strategy, day: str, rec: dict, bars: Bars,
                     act = sc.evaluate(tk, bar, pos)
                     if act is not None:
                         _schedule(strat, tk, "ADD", act.get("reason", sc.name), t,
-                                  None, frac=act.get("frac"))
+                                  None, frac=act.get("frac"), decision_day=day)
                         break
 
             # 3b. golden-window checkpoint hook
             if t in CHECKPOINTS:
                 strat.on_checkpoint(t, tk, bar)
 
-            # 4. state updates AFTER checks
+            if checkpoint_bar and tk.sleeve_day == day:
+                # a release/reduce/scale-in scheduled on the checkpoint bar itself
+                # occupies that bar: it is a pending action and cannot also receive
+                # reserve capital (pending actions are never overwritten).
+                if tk.pending is not None:
+                    excluded.append((tk, "pending_action"))
+                else:
+                    eligible.append(tk)
+            deferred.append((tk, bar))
+
+        # 3c. batch checkpoint hook (EXT-1): after every decision for this completed
+        #     bar, before this bar's state updates.  Inert without a declared policy.
+        if checkpoint_bar:
+            eligible.sort(key=lambda item: (item.entry_rank, item.ticker))
+            _run_batch_checkpoint(strat, day, t, session_end, rec, bars, side,
+                                  eligible, excluded)
+
+        # 4. state updates AFTER checks
+        for tk, bar in deferred:
             if bar["high"] > tk.peak:
                 tk.peak = bar["high"]
-            tk.mfe = max(tk.mfe, bar["high"] / tk.entry_px - 1.0)
-            tk.mae = min(tk.mae, bar["low"] / tk.entry_px - 1.0)
             tk.last_close = bar["close"]
             tk.last_et = t
-            for H in (30, 50, 100, 200):
-                if H not in tk.h_touch_et and bar["high"] >= tk.entry_px * (1 + H / 100.0):
-                    tk.h_touch_et[H] = t
-                    tk.reduced_before[H] = False
 
-        # -- deployed time-weight ------------------------------------------ #
+        # -- deployed time-weight (minutes) -------------------------------- #
         dep = sum(tk.cost_open for tk in active if tk.open)
-        deployed_sum += dep
-        deployed_bars += 1
+        nxt = ordered[i_t + 1] if i_t + 1 < len(ordered) else session_end
+        span = max(0, nxt - t)
+        deployed_sum += dep * span
+        deployed_bars += span
+
+    # --- strategy-independent raw path tracking (C1 implementation fix) ---- #
+    # MFE/MAE and first-touch of +30/+50/+100/+200 are properties of the
+    # ticker's post-fill session path, not of the position's lifetime: a ticket
+    # released at 10:00 must keep accruing touches from the rest of the tape,
+    # otherwise false_release_rate / tail cohorts are truncated at the exit bar.
+    for tk in active:
+        _track_raw_path(tk, tapes.get((tk.sleeve_day, tk.ticker)), session_end, day)
 
     # --- end of day: mark open tickets, finalize marks, carry flags ------- #
     mark_end_total = 0.0
@@ -886,7 +1316,7 @@ def simulate_day(strat: Strategy, day: str, rec: dict, bars: Bars,
     for tk in active:
         mark_prev_total += tk.mark
         if tk.open:
-            tkb = bars.ticker(tk.ticker)
+            tkb = tapes[(tk.sleeve_day, tk.ticker)]
             if tkb is not None:
                 in_sess = np.flatnonzero(tkb["et"] <= session_end)
                 if len(in_sess):
@@ -900,7 +1330,11 @@ def simulate_day(strat: Strategy, day: str, rec: dict, bars: Bars,
         mark_end_total += mark
         if tk.open:
             if tk.pending is None:
-                tk.flags.append("open_no_pending")
+                # The tape ended before the forced-flat decision bar (a halted
+                # name still held): an involuntary carry with no pending action.
+                # It is re-evaluated on its next session's tape.
+                tk.flags.append("open_carry_no_pending")
+                strat.n_carries += 1
             else:
                 tk.pending["carry"] = True
                 strat.n_pending += 1
@@ -912,14 +1346,81 @@ def simulate_day(strat: Strategy, day: str, rec: dict, bars: Bars,
         "date": day,
         "r_day": r_day,
         "pnl": pnl,
-        "deployed_end": sum(tk.cash_in for tk in active if tk.open),
+        # current open cost basis (deployed), not lifetime cash_in: a REDUCE
+        # releases capital and must lower deployed_end (2026-09-24 correction).
+        "deployed_end": sum(tk.cost_open for tk in active if tk.open),
         "deployed_avg": (deployed_sum / deployed_bars) if deployed_bars else 0.0,
         "n_actions": len(actions_today),
+        "actions": json.dumps(actions_today, sort_keys=True),
         "n_open_end": sum(1 for tk in active if tk.open),
         "flags": sorted({f for tk in active for f in tk.flags}),
     }
     strat.day_rows.append(row)
     return row
+
+
+# --------------------------------------------------------------------------- #
+# Dev-block data boundary (C1)
+# --------------------------------------------------------------------------- #
+
+
+def _gap_days(day_a: str, day_b: str) -> int:
+    return (_date.fromisoformat(day_b) - _date.fromisoformat(day_a)).days
+
+
+def _block_end_after(days: list[str], day: str) -> bool:
+    """True when ``day`` is the last dev day before a declared dev-block gap."""
+    i = days.index(day)
+    return i + 1 < len(days) and _gap_days(day, days[i + 1]) > DEV_BLOCK_GAP_DAYS
+
+
+_DEV_DAYS_LAST: Optional[str] = None
+
+
+def _dev_days_last() -> str:
+    """Last canonical development day (memoized; avoids re-globbing per day)."""
+    global _DEV_DAYS_LAST
+    if _DEV_DAYS_LAST is None:
+        _DEV_DAYS_LAST = dev_days()[-1]
+    return _DEV_DAYS_LAST
+
+
+def terminalize(strat: Strategy, kind: str = "BLOCK_BOUNDARY_MARK") -> list[Ticket]:
+    """Data-boundary terminalization: a carry may not bridge a dev-block gap or
+    outlive the end of the development data.
+
+    The ticket's last mark becomes a *terminal value* (no friction, no trade):
+    it is recognized in :meth:`Ticket.net` but is not booked as realized
+    proceeds, does not count as an EXIT and does not enter turnover.  The mark
+    was already included in the boundary day's P&L, so nothing is double-counted.
+    """
+    done: list[Ticket] = []
+    for key, tk in list(strat.open_tickets.items()):
+        terminal = (float(tk.mark) if tk.mark
+                    else float(tk.shares) * float(tk.last_close or tk.entry_px))
+        sd = tk.sleeve_day
+        tk.terminal_value += terminal
+        tk.terminal_kind = kind
+        strat.deployed[sd] = max(0.0, strat._deployed(sd) - tk.cost_open)
+        tk.cost_open = 0.0
+        tk.shares = 0.0
+        tk.mark = 0.0
+        tk.mark_prev = 0.0
+        tk.open = False
+        tk.exit_day = None
+        tk.exit_et = None
+        tk.exit_px = tk.last_close
+        tk.exit_reason = kind
+        tk.flags.append("block_boundary_carry" if kind == "BLOCK_BOUNDARY_MARK"
+                        else "data_end_carry")
+        strat.closed.append(tk)
+        del strat.open_tickets[key]
+        done.append(tk)
+    return done
+
+
+# Backwards-compatible alias (pre-fix name used by the runner and tests).
+terminalize_block = terminalize
 
 
 # --------------------------------------------------------------------------- #
@@ -1020,7 +1521,13 @@ def compute_metrics(days: list[dict], tickets: list[Ticket], n_dev_days: int,
         path_contrib[str(H)] = (float(nets[mask].sum() / total_net)
                                 if total_net > 0 and mask.any() else None)
 
-    # false / half release rates
+    # false / half release rates (2026-09-24 correction)
+    # Chronology is a total order over (session_day, et): a later session's
+    # 09:30 (570) must never compare as "before" an earlier session's 10:00.
+    # half_release_rate[H] requires the *cumulative* REDUCE share quantity
+    # executed strictly before the first H-touch bar to be >= 50% of the
+    # pre-touch peak share count (entry shares plus pre-touch ADDs); a single
+    # token reduction no longer counts.
     false_release, half_release = {}, {}
     for H in (30, 50, 100):
         touch = [tk for tk in tickets if H in tk.h_touch_et]
@@ -1030,17 +1537,24 @@ def compute_metrics(days: list[dict], tickets: list[Ticket], n_dev_days: int,
             h = 0
             for tk in touch:
                 tet = tk.h_touch_et[H]
-                # fully flat before touch?
-                flat_et = tk.exit_et if (not tk.open and tk.shares == 0) else None
-                if flat_et is not None and flat_et < tet:
+                tday = tk.h_touch_day.get(H, tk.sleeve_day)
+                # fully flat before the touch bar?
+                flat_key = (tk.exit_day, tk.exit_et) if (
+                    not tk.open and tk.shares == 0 and tk.exit_day is not None) else None
+                if flat_key is not None and flat_key < (tday, tet):
                     f += 1
-                # reduced >=50% before touch?
-                red = 0.0
+                # cumulative pre-touch reduction >= 50% of pre-touch peak shares?
+                peak = tk.shares_entry
+                reduced = 0.0
                 for a in tk.actions:
-                    if a["action"] == "REDUCE" and a["et"] < tet:
-                        red += 0.0  # counted below via n_reduces timing
-                early_red = any(a["action"] == "REDUCE" and a["et"] < tet for a in tk.actions)
-                if early_red:
+                    if (a.get("day", tk.sleeve_day), a["et"]) >= (tday, tet):
+                        continue
+                    if a["action"] == "REDUCE":
+                        reduced += float(a.get("shares", 0.0))
+                    after = a.get("shares_after")
+                    if after is not None and float(after) > peak:
+                        peak = float(after)
+                if peak > 0 and reduced >= 0.5 * peak - 1e-12:
                     h += 1
             fr = f / len(touch)
             hr = h / len(touch)
@@ -1068,7 +1582,10 @@ def compute_metrics(days: list[dict], tickets: list[Ticket], n_dev_days: int,
     n_entries = len(tickets)
     n_adds = sum(tk.n_adds for tk in tickets)
     n_reduces = sum(tk.n_reduces for tk in tickets)
-    n_exits = sum(1 for tk in tickets if not tk.open)
+    # An EXIT is an executed trade (exit_day set); data-boundary/data-end
+    # terminal marks close a ticket without trading, so they are not exits.
+    n_exits = sum(1 for tk in tickets if not tk.open and tk.exit_day is not None)
+    n_terminal_marks = sum(1 for tk in tickets if tk.terminal_kind is not None)
 
     m = {
         "days_n": n,
@@ -1095,6 +1612,7 @@ def compute_metrics(days: list[dict], tickets: list[Ticket], n_dev_days: int,
         "n_adds": n_adds,
         "n_reduces": n_reduces,
         "n_exits": n_exits,
+        "n_terminal_marks": n_terminal_marks,
         "n_blocked_slots": n_blocked_slots,
         "n_pending": n_pending,
         "n_carries": n_carries,
@@ -1131,9 +1649,12 @@ def _ticket_row(tk: Ticket) -> dict:
         "shares_entry": tk.shares_entry,
         "n_adds": tk.n_adds,
         "n_reduces": tk.n_reduces,
+        "exit_day": tk.exit_day,
         "exit_et": tk.exit_et,
         "exit_px": tk.exit_px,
         "exit_reason": tk.exit_reason,
+        "terminal_value": tk.terminal_value,
+        "terminal_kind": tk.terminal_kind,
         "open_end": tk.open,
         "net": tk.net(),
         "net_return": tk.net_return(),
@@ -1166,11 +1687,54 @@ def _read_day_pair(day: str, session_end: int, filter_session: bool) -> tuple[di
     return rec, bars
 
 
+def _engine_hash() -> str:
+    """sha256 of the engine + carry producer sources.
+
+    Part of the run fingerprint: resuming or trusting a stored run after any
+    engine-code change would silently mix semantics (the contract hash only
+    covers the contract document).
+    """
+    h = hashlib.sha256()
+    for path in (HERE, HERE.parent / "basket_carry_bars.py"):
+        if path.exists():
+            h.update(path.name.encode())
+            h.update(path.read_bytes())
+    return h.hexdigest()[:16]
+
+
+def _run_fingerprint(cfg: "RunConfig", days: list[str]) -> str:
+    """Contract + engine + run-identity fingerprint for resume/complete trust.
+
+    Binds every trusted-output path to the current contract version/hash, the
+    engine source and the run's identity, so a resumed or "already complete"
+    run id can never silently return outputs produced under different semantics.
+    """
+    payload = {
+        "contract_version": CONTRACT_VERSION,
+        "contract_hash": _contract_hash(),
+        "engine_hash": _engine_hash(),
+        "family_id": cfg.family_id,
+        "run_id": cfg.run_id,
+        "spec": cfg.spec.name,
+        "entry_pop": cfg.spec.entry_pop,
+        "entry_T": cfg.spec.entry_T,
+        "top_n": cfg.spec.top_n,
+        "n_slots": cfg.spec.n_slots,
+        "reserve_frac": cfg.spec.reserve_frac,
+        "release": [r.name for r in cfg.spec.release],
+        "scale_in": [s.name for s in cfg.spec.scale_in],
+        "bps_total": cfg.bps_total,
+        "days": [days[0], days[-1], len(days)] if days else [],
+    }
+    return _sha256_bytes(json.dumps(payload, sort_keys=True).encode())[:16]
+
+
 def run(cfg: RunConfig, progress: bool = True) -> dict:
     """Day-major run.  Writes month parts incrementally; returns summary."""
     days = cfg.days or dev_days()
     if cfg.max_days:
         days = days[: cfg.max_days]
+    fingerprint = _run_fingerprint(cfg, days)
     run_dir = cfg.run_dir
     part_daily = run_dir / "parts" / "daily"
     part_tick = run_dir / "parts" / "tickets"
@@ -1182,7 +1746,12 @@ def run(cfg: RunConfig, progress: bool = True) -> dict:
     progress_valid = not progress_path.exists() and not part_files
     if progress_path.exists():
         try:
-            raw_done = json.loads(progress_path.read_text()).get("done")
+            raw = json.loads(progress_path.read_text())
+            if (raw.get("fingerprint") != fingerprint
+                    or raw.get("contract_version") != CONTRACT_VERSION):
+                raise ValueError(
+                    "progress was written under a different contract/run fingerprint")
+            raw_done = raw.get("done")
             if (not isinstance(raw_done, list)
                     or any(not isinstance(day, str) for day in raw_done)
                     or len(set(raw_done)) != len(raw_done)):
@@ -1235,6 +1804,10 @@ def run(cfg: RunConfig, progress: bool = True) -> dict:
     if days and set(days) <= done and summary_path.exists():
         try:
             saved = json.loads(summary_path.read_text())
+            if (saved.get("fingerprint") != fingerprint
+                    or saved.get("contract_version") != CONTRACT_VERSION):
+                raise ValueError(
+                    "completed summary does not match the current contract/run fingerprint")
             for kind, hash_key, rows_key in (
                 ("daily", "daily_sha256", "daily_rows"),
                 ("tickets", "tickets_sha256", "ticket_rows"),
@@ -1252,6 +1825,7 @@ def run(cfg: RunConfig, progress: bool = True) -> dict:
 
     sem = session_end_map()
     strat = Strategy(cfg.spec)
+    carry = CarrySubstrate()
 
     # month buffers
     buf_daily: dict[str, list[dict]] = {}
@@ -1265,7 +1839,11 @@ def run(cfg: RunConfig, progress: bool = True) -> dict:
         tl = time.time()
         rec, bars = _read_day_pair(day, se, True)
         load_s += time.time() - tl
-        simulate_day(strat, day, rec, bars, se, cfg.bps_total)
+        simulate_day(strat, day, rec, bars, se, cfg.bps_total, carry=carry)
+        if _block_end_after(days, day):
+            # state reconstruction only: the terminalized rows were already
+            # flushed into the parts when this day was first completed
+            terminalize_block(strat)
 
     # Sliding-window threaded prefetch: overlap parquet/JSON reads with compute.
     todo = [d for d in days if d not in done]
@@ -1287,15 +1865,23 @@ def run(cfg: RunConfig, progress: bool = True) -> dict:
             nd = todo[nxt]
             pending[nd] = ex.submit(_read_day_pair, nd, sem.get(nd, SESSION_END_NORMAL), True)
         prev_closed = len(strat.closed)
-        row = simulate_day(strat, day, rec, bars, se, cfg.bps_total)
+        row = simulate_day(strat, day, rec, bars, se, cfg.bps_total, carry=carry)
         buf_daily.setdefault(day[:7], []).append(row)
+        if _block_end_after(days, day):
+            terminalize(strat, "BLOCK_BOUNDARY_MARK")
+        elif days and day == days[-1] and day == _dev_days_last():
+            # The run covers the end of the development data: an unresolved
+            # carry is terminally marked at its last close (not traded).
+            terminalize(strat, "DATA_END_MARK")
         for tk in strat.closed[prev_closed:]:
             buf_tickets.setdefault(day[:7], []).append(_ticket_row(tk))
         n_done += 1
         done.add(day)
         if (idx + 1) % 25 == 0 or idx == len(todo) - 1:
             _flush_parts(part_daily, part_tick, buf_daily, buf_tickets)
-            _atomic_write_json(progress_path, {"done": sorted(done)})
+            _atomic_write_json(progress_path, {"done": sorted(done),
+                                               "fingerprint": fingerprint,
+                                               "contract_version": CONTRACT_VERSION})
             if progress:
                 el = time.time() - t0
                 print(f"  [{idx+1}/{len(todo)}] days, {el:.0f}s, load {load_s:.0f}s, "
@@ -1337,7 +1923,8 @@ def run(cfg: RunConfig, progress: bool = True) -> dict:
         "seed": BOOT_SEED,
         "git_head": _git_head(),
         "sim_contract_hash": _contract_hash(),
-        "contract_version": "FROZEN-2026-09-22",
+        "engine_hash": _engine_hash(),
+        "contract_version": CONTRACT_VERSION,
     }
     _atomic_write_json(run_dir / "config.json", cfg_obj)
     _atomic_write_json(run_dir / "metrics.json", metrics)
@@ -1354,6 +1941,8 @@ def run(cfg: RunConfig, progress: bool = True) -> dict:
         "ticket_rows": tick_df.height,
         "daily_sha256": _sha256_bytes((run_dir / "daily.parquet").read_bytes()),
         "tickets_sha256": _sha256_bytes((run_dir / "tickets.parquet").read_bytes()),
+        "fingerprint": fingerprint,
+        "contract_version": CONTRACT_VERSION,
         "metrics": metrics,
     }
     _atomic_write_json(run_dir / "run_summary.json", summary)
@@ -1372,13 +1961,14 @@ def _git_head() -> str:
 _DAILY_SCHEMA = {
     "date": pl.Utf8, "r_day": pl.Float64, "pnl": pl.Float64,
     "deployed_end": pl.Float64, "deployed_avg": pl.Float64,
-    "n_actions": pl.Int64, "n_open_end": pl.Int64, "flags": pl.Utf8,
+    "n_actions": pl.Int64, "actions": pl.Utf8, "n_open_end": pl.Int64, "flags": pl.Utf8,
 }
 _TICKET_SCHEMA = {
     "ticker": pl.Utf8, "sleeve_day": pl.Utf8, "entry_et": pl.Int64, "entry_px": pl.Float64,
     "unit_notional": pl.Float64, "shares_entry": pl.Float64, "n_adds": pl.Int64,
-    "n_reduces": pl.Int64, "exit_et": pl.Int64, "exit_px": pl.Float64,
-    "exit_reason": pl.Utf8, "open_end": pl.Boolean, "net": pl.Float64,
+    "n_reduces": pl.Int64, "exit_day": pl.Utf8, "exit_et": pl.Int64, "exit_px": pl.Float64,
+    "exit_reason": pl.Utf8, "terminal_value": pl.Float64, "terminal_kind": pl.Utf8,
+    "open_end": pl.Boolean, "net": pl.Float64,
     "net_return": pl.Float64, "mfe_raw": pl.Float64, "mae_raw": pl.Float64,
     "peak": pl.Float64, "flags": pl.Utf8,
 }
@@ -1489,7 +2079,8 @@ def run_canaries(out_dir: Optional[Path] = None, full_days: Optional[list[str]] 
     all_days = full_days or dev_days()
     sample = _canary_sample_days(all_days)
     sem = session_end_map()
-    report: dict = {"contract_version": "FROZEN-2026-09-22", "seed": BOOT_SEED}
+    carry = CarrySubstrate()
+    report: dict = {"contract_version": CONTRACT_VERSION, "seed": BOOT_SEED}
 
     # ---- canary 1: fill.px == bars.open[fill.et] over all dev days -------- #
     t0 = time.time()
@@ -1565,13 +2156,13 @@ def run_canaries(out_dir: Optional[Path] = None, full_days: Optional[list[str]] 
 
     # ---- canary 5: forced-flat plumbing over full span ------------------- #
     t0 = time.time()
-    c5 = _canary_forced_flat(all_days, sem)
+    c5 = _canary_forced_flat(all_days, sem, carry)
     c5["seconds"] = round(time.time() - t0, 1)
     report["canary5_forced_flat"] = c5
 
     # ---- canary 4: R1(-10) independent scan ------------------------------ #
     t0 = time.time()
-    c4 = _canary_r1(all_days, sem)
+    c4 = _canary_r1(all_days, sem, carry)
     c4["seconds"] = round(time.time() - t0, 1)
     report["canary4_r1_scan"] = c4
 
@@ -1617,7 +2208,8 @@ def _ladder_eq(got: Optional[dict], ref: Optional[dict]) -> bool:
               abs(round(got["exec"], 6) - ref["exec"]) <= 1e-9)))
 
 
-def _canary_forced_flat(days: list[str], sem: dict[str, int]) -> dict:
+def _canary_forced_flat(days: list[str], sem: dict[str, int],
+                        carry: Optional[CarrySubstrate] = None) -> dict:
     """Canary 5: all-hold baseline; exit price == open[session_end]; mean match."""
     spec = StrategySpec(family_id="canary", name="canary5_allhold",
                         entry_pop="A_pm", entry_T=570, top_n=10, n_slots=10,
@@ -1645,8 +2237,10 @@ def _canary_forced_flat(days: list[str], sem: dict[str, int]) -> dict:
                     continue
                 dir_pts.append(float(tkb["open"][pos]) / float(fl["px"]) - 1.0)
         strat = Strategy(spec)
-        simulate_day(strat, day, rec, sbars, se, 100.0)
+        simulate_day(strat, day, rec, sbars, se, 100.0, carry=carry)
         for tk in strat.closed:
+            if tk.exit_day != day:
+                continue
             n_held += 1
             if tk.exit_reason == "FORCED_FLAT":
                 tkb = sbars.ticker(tk.ticker)
@@ -1668,7 +2262,8 @@ def _canary_forced_flat(days: list[str], sem: dict[str, int]) -> dict:
                     "this canary compares open[session_end]-based exit."}
 
 
-def _canary_r1(days: list[str], sem: dict[str, int], n_target: int = 20) -> dict:
+def _canary_r1(days: list[str], sem: dict[str, int],
+               carry: Optional[CarrySubstrate] = None, n_target: int = 20) -> dict:
     """Canary 4: engine R1(-10) exit et/px vs independent scan."""
     spec = StrategySpec(family_id="canary", name="canary4_r1",
                         entry_pop="A_pm", entry_T=570, top_n=10, n_slots=10,
@@ -1682,7 +2277,7 @@ def _canary_r1(days: list[str], sem: dict[str, int], n_target: int = 20) -> dict
         se = sem.get(day, SESSION_END_NORMAL)
         bars = load_bars(day, se)
         strat = Strategy(spec)
-        simulate_day(strat, day, rec, bars, se, 100.0)
+        simulate_day(strat, day, rec, bars, se, 100.0, carry=carry)
         for tk in strat.closed:
             if tk.exit_reason is None or not tk.exit_reason.startswith("R1"):
                 continue
@@ -1710,7 +2305,8 @@ def _canary_r1(days: list[str], sem: dict[str, int], n_target: int = 20) -> dict
                             saw_gap = True
                     else:
                         pend = True
-            if tk.exit_et is not None and tk.exit_et <= se and ref_et is not None:
+            if tk.exit_day == day and tk.exit_et is not None and tk.exit_et <= se \
+                    and ref_et is not None:
                 checked += 1
                 if abs(tk.exit_et - ref_et) > 0 or abs(tk.exit_px - ref_px) > 1e-9:
                     mismatches.append({"day": day, "ticker": tk.ticker,
@@ -1719,7 +2315,7 @@ def _canary_r1(days: list[str], sem: dict[str, int], n_target: int = 20) -> dict
             elif pend:
                 saw_pending = True
     # a dedicated pending/halt case (may be on any day)
-    pend_case = _find_pending_case(days, sem)
+    pend_case = _find_pending_case(days, sem, carry)
     return {"ok": len(mismatches) == 0 and checked >= n_target and saw_gap and
             bool(pend_case and pend_case.get("ok")),
             "tickets_checked": checked, "mismatches": len(mismatches),
@@ -1728,15 +2324,15 @@ def _canary_r1(days: list[str], sem: dict[str, int], n_target: int = 20) -> dict
             "note": "engine R1(-10): level=fill*0.90; exit next bar open, price=min(open,level)"}
 
 
-def _find_pending_case(days: list[str], sem: dict[str, int]) -> Optional[dict]:
+def _find_pending_case(days: list[str], sem: dict[str, int],
+                       carry: Optional[CarrySubstrate] = None) -> Optional[dict]:
     """Real pending/halt carry case.
 
-    Across 1,066 dev days R1(-10) never first-breaches exactly on a halt bar (all
-    candidate tickers have bars through session end).  We therefore demonstrate the
-    pending-through-halt plumbing on a *real* halt ticker-day by using the engine's
-    R1 with the level pinned to the halt bar's low (so the first breach is that bar),
-    then verify the engine carries the exit to the next session that has bars and
-    executes it at ``min(open, level)``.
+    Across 1,066 dev days R1(-10) never first-breaches exactly on a halt bar, so
+    the engine's R1 level is pinned to the halt bar's low (first breach is that
+    bar) on a *real* halt ticker-day.  The exit must then carry to the first
+    genuinely executable later-session bar from the declared full-market carry
+    substrate -- never to the next candidate-neighborhood appearance.
     """
     for idx, day in enumerate(days):
         se = sem.get(day, SESSION_END_NORMAL)
@@ -1767,41 +2363,56 @@ def _find_pending_case(days: list[str], sem: dict[str, int]) -> Optional[dict]:
                                     entry_pop="A_pm", entry_T=570, top_n=10, n_slots=10,
                                     release=[R1(L_pct)])
                 strat = Strategy(spec)
-                simulate_day(strat, day, rec, bars, se, 100.0)
-                carried = strat.open_tickets.get(nm["ticker"])
+                simulate_day(strat, day, rec, bars, se, 100.0, carry=carry)
+                carried = strat.open_tickets.get((day, nm["ticker"]))
                 if carried is None or carried.pending is None or \
                         not str(carried.pending.get("reason", "")).startswith("R1"):
                     continue
                 pend_reason = carried.pending.get("reason")
-                # resolve in the next session(s) that carry bars for the ticker
+                # resolve in the first later dev session that genuinely has a bar
                 resolved = None
-                for j in range(idx + 1, min(idx + 61, len(days))):
-                    se2 = sem.get(days[j], SESSION_END_NORMAL)
-                    b2 = load_bars(days[j], se2)
-                    if b2.ticker(nm["ticker"]) is None:
-                        continue
-                    simulate_day(strat, days[j], load_anatomy(days[j]), b2, se2, 100.0)
+                for j in range(idx + 1, min(idx + 250, len(days))):
+                    d2 = days[j]
+                    se2 = sem.get(d2, SESSION_END_NORMAL)
+                    b2 = load_bars(d2, se2)
+                    tb2 = b2.ticker(nm["ticker"])
+                    if tb2 is None:
+                        status = None if carry is None else carry.certified(d2, nm["ticker"])
+                        if status == "no_bars":
+                            continue               # certified: still no bars, carry on
+                        if status != "bars":
+                            return {"day": day, "ticker": nm["ticker"],
+                                    "halt_bar_et": int(tkb["et"][n - 1]), "level": level,
+                                    "ok": False,
+                                    "blocked_on": {"day": d2, "ticker": nm["ticker"],
+                                                   "certified_status": status},
+                                    "note": "carry resolution blocked: carry substrate "
+                                            "does not certify this later session"}
+                    simulate_day(strat, d2, load_anatomy(d2), b2, se2, 100.0, carry=carry)
                     if not carried.open:
-                        resolved = {"session_day": days[j], "exit_et": carried.exit_et,
-                                    "exit_px": carried.exit_px}
+                        resolved = {"session_day": d2, "exit_day": carried.exit_day,
+                                    "exit_et": carried.exit_et, "exit_px": carried.exit_px}
                         break
                 if resolved is None:
                     continue
                 # independent check: first bar of the resolving session, min(open, level)
                 b2 = load_bars(resolved["session_day"], sem.get(resolved["session_day"], 959))
                 tb2 = b2.ticker(nm["ticker"])
+                if tb2 is None and carry is not None:
+                    tb2 = carry.bars(resolved["session_day"], nm["ticker"])
                 exp_et = int(tb2["et"][0])
                 exp_px = min(float(tb2["open"][0]), level)
                 ok = (int(resolved["exit_et"]) == exp_et and
                       abs(float(resolved["exit_px"]) - exp_px) <= 1e-9)
                 return {"day": day, "ticker": nm["ticker"], "fill_et": int(fl["et"]),
                         "halt_bar_et": int(tkb["et"][n - 1]), "level": level,
-                        "L_pct": L_pct,                         "engine_carried_pending": True,
+                        "L_pct": L_pct, "engine_carried_pending": True,
                         "engine_pending_reason": pend_reason,
                         "resolved": resolved, "independent_exit": [exp_et, exp_px],
                         "ok": ok,
-                        "note": "real halt: R1 first-breach on the halt bar -> carry to next "
-                                "session, exit at min(open, level)"}
+                        "note": "real halt: R1 first-breach on the halt bar -> carry to the "
+                                "first later-session bar from the declared carry substrate, "
+                                "exit at min(open, level)"}
     return None
 
 
@@ -1824,7 +2435,9 @@ def _canary_full_baseline(days: list[str], sem: dict[str, int]) -> dict:
     cfg = RunConfig(family_id="canary", run_id="baseline_full", spec=spec,
                     bps_total=100.0, out_root=SIM_CORE / "canary", days=days)
     summary = run(cfg, progress=True)
-    return {"ok": summary["days_run"] == len(days), "days_run": summary["days_run"],
+    installed = days and (summary["daily_rows"] == len(days))
+    return {"ok": bool(installed), "days_run": summary["days_run"],
+            "days_span": len(days), "daily_rows": summary["daily_rows"],
             "wall_seconds": round(summary["wall_seconds"], 1),
             "per_day_load_seconds": round(summary["per_day_load_seconds"], 4),
             "daily_sha256": summary["daily_sha256"],
@@ -1977,8 +2590,12 @@ def self_test() -> None:
                          release=[R1(-10)])
     st3 = Strategy(spec3)
     simulate_day(st3, "2021-03-02", rec_a, bars_a, 960, 100.0)
-    check("pending exit carried (not closed today)", not st3.closed and "BB" in st3.open_tickets)
-    check("carry pending flagged", st3.open_tickets["BB"].pending is not None)
+    check("pending exit carried (not closed today)",
+          not st3.closed and ("2021-03-02", "BB") in st3.open_tickets)
+    check("carry pending flagged",
+          st3.open_tickets[("2021-03-02", "BB")].pending is not None)
+    check("executed actions carry their session date",
+          all(a.get("day") == "2021-03-02" for a in st3.open_tickets[("2021-03-02", "BB")].actions))
 
     # --- R3 same-bar high cannot trigger its own rule --- #
     series3 = {"CC": [

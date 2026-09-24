@@ -1,0 +1,10 @@
+{
+ "quarantined": "2026-09-24",
+ "reason": "non-SIP provenance: derived from data/clean_ohlcv_2022-03.parquet (HF mito0o852/upstream Finnhub, feed unknown, filtered close>=2/volume>=100); invalid as a C1 carry source. Replaced by the Alpaca SIP/RAW overlay.",
+ "legacy_files": [
+  "2022-03-24.finnhub-legacy.parquet",
+  "manifest.finnhub-legacy.json"
+ ],
+ "legacy_parquet_sha256": "c5948e4348fd3820fc5d381d8a35324c96ff8c6837d1df420df251166843f8b4",
+ "legacy_rows": 16
+}

@@ -1,14 +1,15 @@
 {
  "bps_total": 100.0,
- "contract_version": "FROZEN-2026-09-22",
+ "contract_version": "FROZEN-2026-09-22+SUBSTRATE-CORRECTION-2026-09-24",
  "days": [
   "2021-02-01",
   "2026-05-29"
  ],
+ "engine_hash": "d9d9eae2608deacc",
  "entry_T": 570,
  "entry_pop": "A_pm",
  "family_id": "canary",
- "git_head": "78442f25977b1598350167fda1c756fcbf5dbbea",
+ "git_head": "258958208feccde3fbe031539c433ec32dcad3af",
  "n_days": 1066,
  "n_slots": 10,
  "release": [
@@ -18,7 +19,7 @@
  "run_id": "baseline_full",
  "scale_in": [],
  "seed": 20260922,
- "sim_contract_hash": "15dc8a28b24c230a",
+ "sim_contract_hash": "6bdb708dbd5ac726",
  "strategy": "baseline_allhold",
  "top_n": 10
 }

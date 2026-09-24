@@ -157,16 +157,18 @@ def run_cells(out_root: Path, days: list[str], workers: int = 4) -> list[dict]:
         spec = build_strategy(cell)
         run_dir = out_root / "F4" / cell.run_id
         chronology_path = run_dir / "action_chronology.json"
+        meta_path = run_dir / "action_chronology.meta.json"
         if cell.kind in ("partial", "full_exit"):
-            if chronology_path.exists():
-                stored = json.loads(chronology_path.read_text())
-                schema_current = all(
-                    "execution_date" in action
-                    for ticket in stored for action in ticket.get("actions", []))
-            else:
-                schema_current = False
-            if not schema_current and (run_dir / "run_summary.json").exists():
+            # Freshness: a stored chronology is reusable only when it was
+            # produced under the current simulator contract (C1).  The pre-C1
+            # form had no meta file/fingerprint and must be rebuilt.
+            stored_meta = (json.loads(meta_path.read_text())
+                           if meta_path.exists() else {})
+            freshness = (stored_meta.get("contract_version") == sim.CONTRACT_VERSION
+                         and stored_meta.get("sim_contract_hash") == sim._contract_hash())
+            if not freshness and (run_dir / "run_summary.json").exists():
                 chronology_path.unlink(missing_ok=True)
+                meta_path.unlink(missing_ok=True)
                 (run_dir / "run_summary.json").unlink()
         summary = sim.run(sim.RunConfig("F4", cell.run_id, spec, float(cell.bps),
                                         out_root=out_root, days=days, workers=workers))
@@ -181,6 +183,8 @@ def run_cells(out_root: Path, days: list[str], workers: int = 4) -> list[dict]:
         rows.append(cell_metrics(cell, run_dir, days, summary["metrics"], chronology, paths))
         if cell.kind in ("partial", "full_exit"):
             _atomic_json(chronology_path, chronology)
+            _atomic_json(meta_path, {"contract_version": sim.CONTRACT_VERSION,
+                                     "sim_contract_hash": sim._contract_hash()})
         _atomic_json(out_root / "surface.json", {
             "family_id": "F4", "cells": attach_control_deltas(rows),
             "registered_cell_count": len(cells)})

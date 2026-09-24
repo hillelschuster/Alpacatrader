@@ -28,7 +28,7 @@ def test_fraction_is_current_shares_and_action_waits_for_next_bar_open():
         "volume": [1.0] * 5,
     }))
     strategy = sim.Strategy(sim.StrategySpec(n_slots=1, release=[rule]))
-    strategy.open_tickets["X"] = tk
+    strategy.open_tickets[(tk.sleeve_day, tk.ticker)] = tk
     strategy.sleeve_cash[tk.sleeve_day] = 0.0
     strategy.deployed[tk.sleeve_day] = 1.0
     sim.simulate_day(strategy, tk.sleeve_day, {"date": tk.sleeve_day, "snapshots": []},
@@ -70,7 +70,7 @@ def test_r1_release_has_priority_over_scaleout_and_consumes_trigger_bar():
                                               release=[sim.R1(-10), rule]))
     tk = sim.Ticket("X", "2021-02-01", 570, 10.0, 1.0, shares=.1,
                     cost_open=1.0, cash_in=1.0, shares_entry=.1, peak=20.0)
-    strategy.open_tickets["X"] = tk
+    strategy.open_tickets[(tk.sleeve_day, tk.ticker)] = tk
     strategy.sleeve_cash[tk.sleeve_day] = 0
     strategy.deployed[tk.sleeve_day] = 1
     import polars as pl
@@ -128,13 +128,16 @@ def test_raw_path_tail_uses_every_post_fill_bar_including_after_exit():
 
 
 def test_carried_execution_at_earlier_clock_minute_is_not_before_prior_session_touch(monkeypatch):
+    """C1: actions carry their execution session; chronology is the total order
+    (day, et), so a next-session 09:30 action is AFTER an entry-day 13:20 touch."""
     import polars as pl
 
     day1, day2 = "2021-02-01", "2021-02-02"
-    ticket = sim.Ticket("X", day1, 570, 10.0, 1.0, shares=.1,
-                        shares_entry=.1, actions=[{"action": "REDUCE", "et": 570,
-                                                   "px": 11.0,
-                                                   "reason": "F4(R3_g40,0.25):stage1"}])
+    ticket = sim.Ticket("X", day1, 570, 10.0, 1.0, shares=.1, shares_entry=.1,
+                        actions=[{"action": "REDUCE", "et": 570, "px": 11.0,
+                                  "day": day2, "reason": "F4(R3_g40,0.25):stage1"}])
+    ticket.h_touch_et[50] = 800
+    ticket.h_touch_day[50] = day1
     rule = f4.ScaleOutRule(f4.Trigger("R3", g=40), (.25,))
     rule._tickets[(day1, "X")] = ticket
     future = sim.Bars(day2, pl.DataFrame({"ticker": ["X"], "et": [570],
@@ -148,7 +151,11 @@ def test_carried_execution_at_earlier_clock_minute_is_not_before_prior_session_t
     rows = f4.ticket_chronology(rule, 100, paths, [day1, day2])
     action = rows[0]["actions"][0]
     assert action["execution_date"] == day2
+    # the next-session reduction is after the entry-day touch: nothing was
+    # reduced before it, so the full entry position was held at the touch
     assert rows[0]["reduced_before_touch"]["50"] is False
+    assert rows[0]["tail_fraction_at_touch"]["50"] == pytest.approx(1.0)
+    assert rows[0]["first_touch"]["50"] == {"day": day1, "et": 800}
 
 
 def test_r2_forced_flat_is_not_clamped_to_deterioration_level():
@@ -235,7 +242,7 @@ def test_pending_reduce_executes_first_available_new_session_open():
                         pending={"action": "REDUCE", "reason": "carried partial",
                                  "frac": .25, "after_et": 959, "level": None,
                                  "carry": True})
-    strategy.open_tickets["X"] = ticket
+    strategy.open_tickets[(ticket.sleeve_day, ticket.ticker)] = ticket
     strategy.sleeve_cash[day1] = 0.0
     strategy.deployed[day1] = 1.0
     bars = sim.Bars(day2, pl.DataFrame({
@@ -261,7 +268,7 @@ def test_trigger_at_forced_flat_bar_does_not_schedule_a_reduce():
     strategy = sim.Strategy(sim.StrategySpec(n_slots=1, release=[rule]))
     ticket = sim.Ticket("X", day, 570, 10.0, 1.0, shares=.1,
                         cost_open=1.0, cash_in=1.0, shares_entry=.1, peak=20.0)
-    strategy.open_tickets["X"] = ticket
+    strategy.open_tickets[(ticket.sleeve_day, ticket.ticker)] = ticket
     strategy.sleeve_cash[day] = 0.0
     strategy.deployed[day] = 1.0
     bars = sim.Bars(day, pl.DataFrame({

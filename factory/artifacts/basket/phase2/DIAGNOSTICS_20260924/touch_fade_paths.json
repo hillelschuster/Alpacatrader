@@ -1,0 +1,33 @@
+{
+ "method": "A_pm top-3 anatomy fills, candidate bars, 1,066 dev days; entry = anatomy fill px; touch = first bar whose high reaches the level; 'touch->EOD' uses that bar's close and the session's last close.",
+ "question": "after a first +30/+50/+100% touch, does the ticket continue or fade into the close?",
+ "summary": {
+  "100": {
+   "days": 102,
+   "n": 105,
+   "ret_entry_to_eod_mean": 1.0095736603977643,
+   "ret_to_touch_close_mean": 0.9983292812892104,
+   "ret_touch_to_eod_mean": 0.008530430502534667,
+   "ret_touch_to_eod_median": -0.1359027777777777,
+   "ret_touch_to_eod_positive_share": 0.3619047619047619
+  },
+  "30": {
+   "days": 470,
+   "n": 582,
+   "ret_entry_to_eod_mean": 0.2759511041318427,
+   "ret_to_touch_close_mean": 0.30673443596678424,
+   "ret_touch_to_eod_mean": -0.02234678076879123,
+   "ret_touch_to_eod_median": -0.10758450539146747,
+   "ret_touch_to_eod_positive_share": 0.30584192439862545
+  },
+  "50": {
+   "days": 268,
+   "n": 297,
+   "ret_entry_to_eod_mean": 0.48283651697958047,
+   "ret_to_touch_close_mean": 0.5094531116486472,
+   "ret_touch_to_eod_mean": -0.01792927010604389,
+   "ret_touch_to_eod_median": -0.12414645948706926,
+   "ret_touch_to_eod_positive_share": 0.2962962962962963
+  }
+ }
+}

@@ -1,0 +1,19 @@
+{
+ "question": "how much does the conservative next-open execution cost versus a resting limit sell at the touch level?",
+ "summary": {
+  "30": {
+   "exit_limit_to_eod_mean": -0.018499150667813356,
+   "exit_next_open_to_eod_mean": -0.02345611152997154,
+   "exit_touch_close_to_eod_mean": -0.022346780768791222,
+   "n": 582,
+   "next_open_over_touch_close_mean": 1.0021818957512265
+  },
+  "50": {
+   "exit_limit_to_eod_mean": -0.011442322013613048,
+   "exit_next_open_to_eod_mean": -0.021121266995587813,
+   "exit_touch_close_to_eod_mean": -0.01792927010604389,
+   "n": 297,
+   "next_open_over_touch_close_mean": 1.0040163233017503
+  }
+ }
+}

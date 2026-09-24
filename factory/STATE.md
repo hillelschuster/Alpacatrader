@@ -2338,3 +2338,112 @@ basket-day ranges: 100bps -4.60%..-1.99%, 150bps -5.07%..-2.44%; dual-block per-
 2021-02..2023-12 -4.90%..-2.16% / -5.37%..-2.59%, 2025-02..2026-05 -5.29%..-0.94% /
 -5.73%..-1.42% (100/150bps respectively). Descriptive dev surface only: no OOS, selection,
 profitability, or live inference; see `factory/artifacts/basket/phase2/F1/README.md`.
+
+
+2026-09-24 — SIMULATOR SUBSTRATE CORRECTION C1 [code/RUN in progress]: the Phase-2 shared
+simulator was quarantined after the restart audit found that later sessions were resolved from
+`factory/artifacts/basket/sip/bars/YYYY-MM-DD.parquet` (a candidate-neighborhood slice), so a
+held ticker absent from the next day's candidate net was treated as "did not trade". Concrete
+negative evidence: HSDT halted 2022-03-23 (candidate tape ends et=942) actually traded
+2022-03-24 (full-market first bar et=570, open 3.32, last et=940), yet the pre-C1 engine carried
+the pending exit to 2022-04-26, the next candidate appearance (recorded in
+`factory/artifacts/basket/phase2/F1/canary_recheck/canary_report.json`). Coupled defects:
+`Strategy.open_tickets` keyed by bare ticker (a carried name could suppress a new same-ticker
+sleeve), `deployed_end` reported lifetime `cash_in` instead of current cost basis, and
+`half_release_rate` counted any single REDUCE as a >=50% reduction.
+Correction C1 (declared and dated in `factory/BASKET-SIM-CONTRACT.md` §13): ticket identity is
+`(sleeve_day, ticker)`; cross-session actions resolve from a declared full-market carry overlay
+(`sip/carry_bars/`, per-day parquet + manifest with `bars`/`no_bars`/`unavailable`, Alpaca SIP
+RAW 1-minute bars, sha256-verified before use, fail-closed when uncertified); actions, exits and
+touches carry their session date so chronology is a total order; `deployed_end` = open cost
+basis; `half_release_rate` = cumulative pre-touch REDUCE shares >= 50% of pre-touch peak shares.
+Implementation fixes folded into the same correction (contract §13.9): terminal marks
+(`BLOCK_BOUNDARY_MARK`, `DATA_END_MARK`) no longer count as exits/turnover; raw MFE/MAE and
++30/+50/+100/+200 first touches are tracked from the ticket's whole session tape after the event
+loop (a release no longer truncates tail cohorts); same-et executions apply in ticker order;
+`deployed_avg` is minute-weighted; daily output carries action records; resume/complete trust is
+bound to contract + engine-source hashes (pre-C1 progress is refused).
+Substrate provenance: `factory/scripts/basket_carry_bars.py` fetches targeted Alpaca SIP/RAW
+minute bars (window 09:25 ET..session_end+5), retries, resolves every omitted symbol
+individually (empty success = `no_bars`, failed request = `unavailable`), refuses sealed/reserved
+days, and stops at dev-block boundaries. Coverage currently 1,063 days / 44,000+ certified
+ticker-days, internally audited (0 `bars` entries without rows, 0 rows without certification,
+all day-file sha256s matching the manifest). The Finnhub-derived first attempt is quarantined
+under `carry_bars/_quarantine/` and must never be used. F1/F3/F4/F5 results produced before C1
+are not comparable and are being re-run; the first corrected cells (B600 N2 R0/R1m8) show only
++11..+19 bps mean basket-day versus the old values, i.e. the qualitative negative conclusion is
+unchanged so far. New families on the corrected engine: F6 staged reserve capital
+(`basket_f6.py`, EXT-1 batch hook declared in `factory/BASKET-SIM-EXTENSIONS.md`) and F7
+release recycling (`basket_f7.py`); neither has been run yet.
+
+
+2026-09-24 (later) — PHASE-2 DIAGNOSTIC PASS [RUN]: corrected-engine results for the capital-
+sequencing hypothesis. All numbers are development evidence on the 1,066 canonical days with the
+C1 simulator (canaries 7/7 PASS), 100/150 bps round trip, month-blocked blocks reported.
+Corrected F1 (120 cells, `phase2/F1_C1`): every cell still negative, means -4.70%..-2.04%
+basket-day at 100/150 bps; C1 moved cells by -9..+51 bps (mean +16 bps) vs the quarantined pre-C1
+surface (`F1_C1/comparison_vs_pre_c1.json`) - the carry defect changed levels, not the verdict.
+Corrected F3 (20 cells, `phase2/F3_C1`): all still negative (-4.41%..-2.84% at 100 bps); the
+release-rule ordering survives (R2(L10,w5) best at -2.84%/day with failed-ticket cost -11.7% vs
+R0 -3.94%/-15.7%); C1 shift +7.5..+18 bps (`F3_C1/comparison_vs_pre_c1.json`).
+F5 scale-in diagnostic (48 cells: A_pm/B600, N 2/3, R0/R1m10, schedules []/[50]/[50,25];
+`phase2/F5_DIAG`): 0 of 32 add cells are positive in both blocks. Structural finding: in a fully
+deployed sleeve (R0) most add signals are skipped as `add_unfunded` (e.g. 2,024 of 3,677 signals
+in one cell), because the sleeve holds no free cash; executed tranches are few and their EV per
+deployed dollar is ~0 to -2%. A strict own-ticket new-high ADD is not a promising marginal-dollar
+mechanism as formulated.
+F6 mechanism decomposition (A_pm, p=0.50, ET585/600, R0; `phase2/F6_DIAG2` + `F6_COMBO`), which
+separates the three questions: (1) WITHHOLDING capital alone is pure de-leveraging - per-deployed-
+dollar EV is unchanged (p=1.00 -3.94%/day on 1.0 deployed; p=0.50 cash -1.97%/day on ~0.5
+deployed); (2) INDISCRIMINATE redeployment is negative in both blocks: -2.2..-3.2% per dollar
+deployed (equal split across eligible survivors, 462-469 notional units deployed); (3) INFORMED
+redeployment (reserve only to survivors still up on the day and still holding >=2/3 of their
+running MFE, `state67`) recovers almost all of that loss: -1.5% per dollar at N=2, +0.3% at N=3,
+with block 2 positive (+1.2%, +6.0%) and block 1 negative (-2.7%, -2.1%) - i.e. the state
+conditioning carries real information about where the next dollar should NOT go, but no stable
+positive incremental EV. Combining an F3 release rule (R2 L=10,w=5) with the reserve arm
+(`F6_COMBO`) gives +2.6% per dollar (N=2, 35 adds) and -2.5% (N=3, 52 adds) with opposite block
+signs - not a demonstrated edge. Two structural limits stand out: the ADD cap (+100% of unit
+notional) binds for most reserve allocations, and only 9-57 notional units are deployable over
+1,066 days at p=0.50, so even a positive rule would move the strategy by a few bps per day.
+F7 (recycling) is implemented (`basket_f7.py`, EXT-1 hook) but NOT run: the precondition it
+needs - positive continuation EV of a surviving original at the moment another ticket fails - is
+the same quantity that the F6 arms measured as approximately zero, so recycling is not yet
+justified. F4 corrected rerun (74 cells) is in flight; no F4 read yet.
+
+
+2026-09-24 (evening) — WHERE THE MONEY IS NOT, AND THE FIRST ALPHA-SHAPED LEAD [RUN]: three
+small corrected-engine diagnostics locate the day's economics for the A_pm top-N population.
+(1) SEGMENT (`phase2/SEGMENT_DIAG`): exiting everything at the first bar after ET580 (09:40)
+returns -1.48%/day vs -3.94% for holding to the close at N=2/100bps (+246 bps), ET600 -2.49%
+(+145), ET630 -2.68% (+126); N=3 shows the same ordering. Dividing by time-weighted deployed
+capital shows the loss per unit of exposure is WORST in the first 30 minutes (09:30-10:00) and
+slowly negative afterwards - there is no positive intraday segment to hold for; the sleeve bleeds
+from the fill.
+(2) DE-RISK (`phase2/DERISK_DIAG`, full deployment): cutting 50% of every position at the
+completed ET600 bar gains +73 bps/day at N=2 (+83 block1 / +49 block2) and +56 at N=3, both
+frictions; cutting only the "damaged" subset (ret_from_fill <= 0 or retained MFE <= 1/3) gains
++49/+42 bps, and a tighter subset +31/+30. The unconditional cut beats the state-conditioned one,
+so the gain is exposure removal, not state information.
+(3) HARVEST (`phase2/HARVEST_DIAG`): selling 100% at the first +30% MFE touch (next-bar-open
+execution) gains +89 bps/day at N=2 (+34 block1 / +211 block2) and +66 at N=3; 50% scale-outs at
++30/+50/+100 gain +45/+20/+11. Earlier selling is monotonically better.
+The decisive measurement behind all three (`HARVEST_DIAG/touch_fade_paths.json`, direct path scan,
+A_pm top-3 anatomy fills over 1,066 days): after a first +30% touch (582 tickets, 470 days) the
+median ticket gives back -10.8% from the touch-bar close to the session close (mean -2.2%,
+positive share 30.6%); after +50% (297 tickets) median -12.4%, positive 29.6%; after +100% (105)
+median -13.6%, positive 36.2%. The excursion is a local maximum that fades: the right tail is a
+TOUCH phenomenon, not a HOLD phenomenon, and the median toucher surrenders ~11% of it.
+Consequences: the measured "right tail" cannot be monetized by holding; it must be SOLD INTO
+(ideally with a resting limit sell at the level, the same execution shape the live H025 lane
+uses). The non-touching majority (about 82% of fills never reach +30%) is where the remaining loss
+lives, and it is incurred at entry and in the first 30 minutes. Neither the F6 staged-capital
+decomposition (withholding = de-leveraging; equal redeploy -2.2..-3.2% per dollar; state-conditioned
+redeploy -1.5%..+0.3% per dollar with block sign flips) nor the F5 new-high add lane (+0 of 32 cells
+positive in both blocks) survives as a marginal-dollar mechanism. F7 recycling stays unrun: its
+precondition (positive continuation EV of a survivor) is exactly what the fade measurement refutes
+for the post-touch path. Next branch, in order: (a) resting-limit sell-into-strength harvest with
+executable level pricing (needs a small favourable-price exit convention, EXT-2) and staged
+levels; (b) entry-side cost reduction (later entry / limit entry into the morning flush), since
+the 09:30 fill is the worst price of the day for this population; (c) only then re-test capital
+sequencing on top of a non-bleeding base.

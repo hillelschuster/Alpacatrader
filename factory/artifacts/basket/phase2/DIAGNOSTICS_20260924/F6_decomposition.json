@@ -1,0 +1,255 @@
+{
+ "design": "A_pm, N in {2,3}, p=0.50, R0 hold. Arms: p=1.00 full deployment; p=0.50 cash; p=0.50 equal split across eligible survivors at ET585/600; p=0.50 state67/state33 (reserve only to survivors still holding >=2/3 or >=1/3 of running MFE with ret_from_fill > 0) at ET585/600. 100/150 bps, 1,066 dev days.",
+ "question": "does the next dollar at 09:45/10:00 earn positive EV, and does causal state improve where that dollar goes?",
+ "reading": "Divide sleeve means by average deployed capital: withholding alone scales a negative-EV exposure, equal redeployment is worse than cash, state-conditioned redeployment recovers nearly all of that loss but does not turn positive.",
+ "rows": [
+  {
+   "N": 2,
+   "arm": "p=1.00 full",
+   "bps": 100
+  },
+  {
+   "N": 2,
+   "arm": "p=0.50 cash",
+   "bps": 100
+  },
+  {
+   "N": 2,
+   "arm": "p=0.50 equal@585",
+   "avg_deployed": 0.9857634317825684,
+   "block1": -0.03409306810126487,
+   "block2": -0.03242905392525053,
+   "bps": 100,
+   "cap_limited_n": 270,
+   "executed_n": 1818,
+   "passed_through_cash": 78.5,
+   "per_deployed_dollar": -0.034059713214425295,
+   "pooled": -0.033574819783781976
+  },
+  {
+   "N": 2,
+   "arm": "p=0.50 equal@600",
+   "avg_deployed": 1.0437200042516823,
+   "block1": -0.03151649743158046,
+   "block2": -0.03097723502062101,
+   "bps": 100,
+   "cap_limited_n": 241,
+   "executed_n": 1847,
+   "passed_through_cash": 71.25,
+   "per_deployed_dollar": -0.03003539925408333,
+   "pooled": -0.03134854703717283
+  },
+  {
+   "N": 2,
+   "arm": "p=0.50 state67@600",
+   "avg_deployed": 0.6259221719174662,
+   "block1": -0.02019947086938194,
+   "block2": -0.021117115694831542,
+   "bps": 100,
+   "cap_limited_n": 200,
+   "executed_n": 226,
+   "passed_through_cash": 476.5,
+   "per_deployed_dollar": -0.032728136759849674,
+   "pooled": -0.020485266443536973
+  },
+  {
+   "N": 2,
+   "arm": "p=0.50 state33@600",
+   "avg_deployed": 0.6847975182349388,
+   "block1": -0.02104194774562928,
+   "block2": -0.026398706824259682,
+   "bps": 100,
+   "cap_limited_n": 379,
+   "executed_n": 499,
+   "passed_through_cash": 408.25,
+   "per_deployed_dollar": -0.0331634988633152,
+   "pooled": -0.022710281717585462
+  },
+  {
+   "N": 2,
+   "arm": "p=1.00 full",
+   "bps": 150
+  },
+  {
+   "N": 2,
+   "arm": "p=0.50 cash",
+   "bps": 150
+  },
+  {
+   "N": 2,
+   "arm": "p=0.50 equal@585",
+   "avg_deployed": 0.9857634317825684,
+   "block1": -0.038577121365062604,
+   "block2": -0.03677975333510942,
+   "bps": 150,
+   "cap_limited_n": 270,
+   "executed_n": 1818,
+   "passed_through_cash": 78.5,
+   "per_deployed_dollar": -0.03856639379904622,
+   "pooled": -0.03801734070282577
+  },
+  {
+   "N": 2,
+   "arm": "p=0.50 equal@600",
+   "avg_deployed": 1.0437200042516823,
+   "block1": -0.03602094522744021,
+   "block2": -0.035427216228753874,
+   "bps": 150,
+   "cap_limited_n": 241,
+   "executed_n": 1847,
+   "passed_through_cash": 71.25,
+   "per_deployed_dollar": -0.034334909132278546,
+   "pooled": -0.03583603150552289
+  },
+  {
+   "N": 2,
+   "arm": "p=0.50 state67@600",
+   "avg_deployed": 0.6259221719174662,
+   "block1": -0.022854295552189235,
+   "block2": -0.023743981182658618,
+   "bps": 150,
+   "cap_limited_n": 200,
+   "executed_n": 226,
+   "passed_through_cash": 476.5,
+   "per_deployed_dollar": -0.03695568622166999,
+   "pooled": -0.023131383384568063
+  },
+  {
+   "N": 2,
+   "arm": "p=0.50 state33@600",
+   "avg_deployed": 0.6847975182349388,
+   "block1": -0.024003453343663994,
+   "block2": -0.029337252266239264,
+   "bps": 150,
+   "cap_limited_n": 379,
+   "executed_n": 499,
+   "passed_through_cash": 408.25,
+   "per_deployed_dollar": -0.037477700801161355,
+   "pooled": -0.025664636497786875
+  },
+  {
+   "N": 3,
+   "arm": "p=1.00 full",
+   "bps": 100
+  },
+  {
+   "N": 3,
+   "arm": "p=0.50 cash",
+   "bps": 100
+  },
+  {
+   "N": 3,
+   "arm": "p=0.50 equal@585",
+   "avg_deployed": 0.9658917207567351,
+   "block1": -0.030414991656630287,
+   "block2": -0.026217041907907142,
+   "bps": 100,
+   "cap_limited_n": 654,
+   "executed_n": 2769,
+   "passed_through_cash": 71.49999999999987,
+   "per_deployed_dollar": -0.03013543032692025,
+   "pooled": -0.0291075626542137
+  },
+  {
+   "N": 3,
+   "arm": "p=0.50 equal@600",
+   "avg_deployed": 1.0012306221695682,
+   "block1": -0.02831398412317134,
+   "block2": -0.025522109085650096,
+   "bps": 100,
+   "cap_limited_n": 586,
+   "executed_n": 2815,
+   "passed_through_cash": 63.83333333333318,
+   "per_deployed_dollar": -0.027410737310129787,
+   "pooled": -0.027444469571147843
+  },
+  {
+   "N": 3,
+   "arm": "p=0.50 state67@600",
+   "avg_deployed": 0.6004647035465649,
+   "block1": -0.01841523161581417,
+   "block2": -0.014873193325904054,
+   "bps": 100,
+   "cap_limited_n": 341,
+   "executed_n": 344,
+   "passed_through_cash": 475.66666666666526,
+   "per_deployed_dollar": -0.02883114132733284,
+   "pooled": -0.01731208273002603
+  },
+  {
+   "N": 3,
+   "arm": "p=0.50 state33@600",
+   "avg_deployed": 0.6588253693170337,
+   "block1": -0.01956778011750074,
+   "block2": -0.01869582284637834,
+   "bps": 100,
+   "cap_limited_n": 714,
+   "executed_n": 750,
+   "passed_through_cash": 407.99999999999864,
+   "per_deployed_dollar": -0.029288813980931902,
+   "pooled": -0.01929621368784536
+  },
+  {
+   "N": 3,
+   "arm": "p=1.00 full",
+   "bps": 150
+  },
+  {
+   "N": 3,
+   "arm": "p=0.50 cash",
+   "bps": 150
+  },
+  {
+   "N": 3,
+   "arm": "p=0.50 equal@585",
+   "avg_deployed": 0.9658917207567351,
+   "block1": -0.03494931810360607,
+   "block2": -0.030636962899735703,
+   "bps": 150,
+   "cap_limited_n": 654,
+   "executed_n": 2769,
+   "passed_through_cash": 71.49999999999987,
+   "per_deployed_dollar": -0.03479298705199718,
+   "pooled": -0.03360625813392036
+  },
+  {
+   "N": 3,
+   "arm": "p=0.50 equal@600",
+   "avg_deployed": 1.0012306221695682,
+   "block1": -0.03286608377117302,
+   "block2": -0.030044414678705115,
+   "bps": 150,
+   "cap_limited_n": 586,
+   "executed_n": 2815,
+   "passed_through_cash": 63.83333333333318,
+   "per_deployed_dollar": -0.03194797413480486,
+   "pooled": -0.03198729002004794
+  },
+  {
+   "N": 3,
+   "arm": "p=0.50 state67@600",
+   "avg_deployed": 0.6004647035465649,
+   "block1": -0.021080055549067188,
+   "block2": -0.017544400811827586,
+   "bps": 150,
+   "cap_limited_n": 341,
+   "executed_n": 344,
+   "passed_through_cash": 475.66666666666526,
+   "per_deployed_dollar": -0.033272388316285956,
+   "pooled": -0.019978894786624835
+  },
+  {
+   "N": 3,
+   "arm": "p=0.50 state33@600",
+   "avg_deployed": 0.6588253693170337,
+   "block1": -0.02253943723017861,
+   "block2": -0.021673467803310687,
+   "bps": 150,
+   "cap_limited_n": 714,
+   "executed_n": 750,
+   "passed_through_cash": 407.9999999999987,
+   "per_deployed_dollar": -0.033802182975565254,
+   "pooled": -0.022269735682598726
+  }
+ ]
+}

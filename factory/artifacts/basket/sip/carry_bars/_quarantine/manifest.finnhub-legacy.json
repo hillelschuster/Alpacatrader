@@ -1,0 +1,28 @@
+{
+ "contract": "FROZEN-2026-09-22+SUBSTRATE-CORRECTION-2026-09-24",
+ "created": "2026-09-24",
+ "days": {
+  "2022-03-24": {
+   "session_end": 959,
+   "source": {
+    "provider": {
+     "kind": "provider_full_market",
+     "path": "/home/hillel/projects/Alpacatrader/data/clean_ohlcv_2022-03.parquet",
+     "sha256": "bbf438373b2fd164c68f36c9e7bd157ab093c389f04c3212fd255eaa370a02de",
+     "symbols": 11362
+    },
+    "raw_root": null
+   },
+   "tickers": {
+    "HSDT": {
+     "first_et": 570,
+     "last_et": 940,
+     "rows": 16,
+     "source_kind": "provider",
+     "status": "bars"
+    }
+   }
+  }
+ },
+ "purpose": "declared full-market RTH carry overlay for cross-session carry resolution"
+}
