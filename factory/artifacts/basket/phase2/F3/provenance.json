@@ -1,0 +1,26 @@
+{
+ "anatomy_manifest_sha256": "ce7b4344cac4e47d364b28258daa5858db90d08000465e297092d8c3974735c8",
+ "bars_manifest_sha256": "803ca6bd21cc1ff10327e6e0112aac123cb49de22de7cf8ed2c1e2f4f2dfa2ab",
+ "blocks": {
+  "block1": {
+   "days": 734,
+   "months": 35
+  },
+  "block2": {
+   "days": 332,
+   "months": 16
+  }
+ },
+ "calendar_sha256": "c209136c5b0f0d9d7436529dbe2ada8cb6f364a2f42b677f8554e9484ee414d0",
+ "contract_sha256": "15dc8a28b24c230a5d6720e9db1119efa38903cf845f266596ba62f17d11e382",
+ "day_manifest_sha256": "7ac7a3fd60782a874de67d7d11e1d9c6f8b6813c7742818781a62ca18aa1b285",
+ "development_days": {
+  "first": "2021-02-01",
+  "last": "2026-05-29",
+  "n": 1066
+ },
+ "label": "RUN",
+ "producer": "factory/scripts/basket_f3_sim.py",
+ "sealed_reserved_access": false,
+ "simulator": "factory/scripts/basket_sim.py (unchanged)"
+}

@@ -1,0 +1,187 @@
+{
+ "blocks": {
+  "block1": [
+   "2021-02",
+   "2023-12"
+  ],
+  "block2": [
+   "2025-02",
+   "2026-05"
+  ]
+ },
+ "capital": "C0=1, no leverage",
+ "entry": {
+  "T": 570,
+  "n_slots": 2,
+  "pop": "A_pm",
+  "top_n": 2
+ },
+ "family_id": "F3",
+ "frictions_bps_total": [
+  100,
+  150
+ ],
+ "grid": [
+  {
+   "L": null,
+   "bps": 100,
+   "g": null,
+   "kind": "R0",
+   "release_id": "R0",
+   "w": null
+  },
+  {
+   "L": null,
+   "bps": 150,
+   "g": null,
+   "kind": "R0",
+   "release_id": "R0",
+   "w": null
+  },
+  {
+   "L": 10,
+   "bps": 100,
+   "g": null,
+   "kind": "R2",
+   "release_id": "R2_L10_w3",
+   "w": 3
+  },
+  {
+   "L": 10,
+   "bps": 150,
+   "g": null,
+   "kind": "R2",
+   "release_id": "R2_L10_w3",
+   "w": 3
+  },
+  {
+   "L": 10,
+   "bps": 100,
+   "g": null,
+   "kind": "R2",
+   "release_id": "R2_L10_w5",
+   "w": 5
+  },
+  {
+   "L": 10,
+   "bps": 150,
+   "g": null,
+   "kind": "R2",
+   "release_id": "R2_L10_w5",
+   "w": 5
+  },
+  {
+   "L": 10,
+   "bps": 100,
+   "g": null,
+   "kind": "R2",
+   "release_id": "R2_L10_w10",
+   "w": 10
+  },
+  {
+   "L": 10,
+   "bps": 150,
+   "g": null,
+   "kind": "R2",
+   "release_id": "R2_L10_w10",
+   "w": 10
+  },
+  {
+   "L": 15,
+   "bps": 100,
+   "g": null,
+   "kind": "R2",
+   "release_id": "R2_L15_w3",
+   "w": 3
+  },
+  {
+   "L": 15,
+   "bps": 150,
+   "g": null,
+   "kind": "R2",
+   "release_id": "R2_L15_w3",
+   "w": 3
+  },
+  {
+   "L": 15,
+   "bps": 100,
+   "g": null,
+   "kind": "R2",
+   "release_id": "R2_L15_w5",
+   "w": 5
+  },
+  {
+   "L": 15,
+   "bps": 150,
+   "g": null,
+   "kind": "R2",
+   "release_id": "R2_L15_w5",
+   "w": 5
+  },
+  {
+   "L": 15,
+   "bps": 100,
+   "g": null,
+   "kind": "R2",
+   "release_id": "R2_L15_w10",
+   "w": 10
+  },
+  {
+   "L": 15,
+   "bps": 150,
+   "g": null,
+   "kind": "R2",
+   "release_id": "R2_L15_w10",
+   "w": 10
+  },
+  {
+   "L": null,
+   "bps": 100,
+   "g": 40,
+   "kind": "R3",
+   "release_id": "R3_g40",
+   "w": null
+  },
+  {
+   "L": null,
+   "bps": 150,
+   "g": 40,
+   "kind": "R3",
+   "release_id": "R3_g40",
+   "w": null
+  },
+  {
+   "L": null,
+   "bps": 100,
+   "g": 50,
+   "kind": "R3",
+   "release_id": "R3_g50",
+   "w": null
+  },
+  {
+   "L": null,
+   "bps": 150,
+   "g": 50,
+   "kind": "R3",
+   "release_id": "R3_g50",
+   "w": null
+  },
+  {
+   "L": null,
+   "bps": 100,
+   "g": 60,
+   "kind": "R3",
+   "release_id": "R3_g60",
+   "w": null
+  },
+  {
+   "L": null,
+   "bps": 150,
+   "g": 60,
+   "kind": "R3",
+   "release_id": "R3_g60",
+   "w": null
+  }
+ ],
+ "release_order": "one rule per cell"
+}
