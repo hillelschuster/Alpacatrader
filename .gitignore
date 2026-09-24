@@ -52,8 +52,10 @@ factory/artifacts/h0*/**/*.parquet
 
 # Engine resume shards: run dirs are committed as merged daily/tickets parquet + metrics/config;
 # the incremental parts/ shards are resume state only (observed convention: HARVEST_DIAG et al.
-# keep parts/ on disk but out of git).
-factory/artifacts/**/parts/
+# keep parts/ on disk but out of git). The engine canary tree is the exception: its parts are
+# committed evidence, so it is re-included explicitly.
+factory/artifacts/**/parts/**
+!factory/artifacts/basket/phase2/sim_core/canary/**
 
 # regenerable ml backfill/build logs (kept on disk, not in git)
 factory/artifacts/ml/backfill_*.log
