@@ -1,0 +1,26 @@
+{
+ "anatomy_manifest_sha256": "ce7b4344cac4e47d364b28258daa5858db90d08000465e297092d8c3974735c8",
+ "bars_manifest_sha256": "803ca6bd21cc1ff10327e6e0112aac123cb49de22de7cf8ed2c1e2f4f2dfa2ab",
+ "basket_level_mode": "not run; see README shared dynamic-capital extension requirement",
+ "blocks": {
+  "block1": 734,
+  "block2": 332
+ },
+ "calendar_sha256": "c209136c5b0f0d9d7436529dbe2ada8cb6f364a2f42b677f8554e9484ee414d0",
+ "contract_sha256": "15dc8a28b24c230a5d6720e9db1119efa38903cf845f266596ba62f17d11e382",
+ "day_manifest_sha256": "7ac7a3fd60782a874de67d7d11e1d9c6f8b6813c7742818781a62ca18aa1b285",
+ "days_n": 1066,
+ "f3_acceptance_bridge_sha256": "0e482babafe24a8319bf96458ed8dd7ee07ef66c8e1cfa20a0106e04a2a388e8",
+ "f3_structural_map_provenance_sha256": "9d1a0cbb67e8fedd12af2ae3e9d0ad2311f863d0f7b89e77cb1e4a8e5dcdd4f4",
+ "label": "RUN",
+ "producer": "factory/scripts/basket_f4_scaleout.py",
+ "producer_sha256": {
+  "basket_f4_blocks.py": "fee99eccac63c1d085998120528eb646037a474269eb2a94ba9db1019b45e9c7",
+  "basket_f4_metrics.py": "a29340db9102c1afcd307ff178fa915b81b0e78bc81a8c6693649b5f22d012ee",
+  "basket_f4_paths.py": "bca9e843f571da1f9abb49bcce19a648b03cdc2176ad5f42cd314a102b16f702",
+  "basket_f4_rules.py": "c336a2225bc183121a92f870b7e9584f5e1a3f1cf4f0aa35641f53726cda17e4",
+  "basket_f4_scaleout.py": "e03900193a466466b7305a2fe24d8b13bb8302d527e715fcbe70625dd76d17d4"
+ },
+ "sealed_reserved_access": false,
+ "simulator": "factory/scripts/basket_sim.py (unchanged)"
+}

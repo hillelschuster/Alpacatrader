@@ -1,0 +1,541 @@
+{
+ "basket_level_mode": "not run",
+ "blocks": {
+  "block1": [
+   "2021-02",
+   "2023-12"
+  ],
+  "block2": [
+   "2025-02",
+   "2026-05"
+  ]
+ },
+ "capital": "C0=1, no leverage",
+ "cell_count": 74,
+ "entry": {
+  "T": 570,
+  "n_slots": 2,
+  "pop": "A_pm",
+  "top_n": 2
+ },
+ "family_id": "F4",
+ "frictions_bps_total": [
+  100,
+  150
+ ],
+ "grid": [
+  {
+   "bps": 100,
+   "kind": "hold",
+   "pattern_id": null,
+   "trigger_id": null
+  },
+  {
+   "bps": 150,
+   "kind": "hold",
+   "pattern_id": null,
+   "trigger_id": null
+  },
+  {
+   "bps": 100,
+   "kind": "full_exit",
+   "pattern_id": null,
+   "trigger_id": "R2_L10_w3"
+  },
+  {
+   "bps": 150,
+   "kind": "full_exit",
+   "pattern_id": null,
+   "trigger_id": "R2_L10_w3"
+  },
+  {
+   "bps": 100,
+   "kind": "full_exit",
+   "pattern_id": null,
+   "trigger_id": "R2_L10_w5"
+  },
+  {
+   "bps": 150,
+   "kind": "full_exit",
+   "pattern_id": null,
+   "trigger_id": "R2_L10_w5"
+  },
+  {
+   "bps": 100,
+   "kind": "full_exit",
+   "pattern_id": null,
+   "trigger_id": "R2_L10_w10"
+  },
+  {
+   "bps": 150,
+   "kind": "full_exit",
+   "pattern_id": null,
+   "trigger_id": "R2_L10_w10"
+  },
+  {
+   "bps": 100,
+   "kind": "full_exit",
+   "pattern_id": null,
+   "trigger_id": "R2_L15_w3"
+  },
+  {
+   "bps": 150,
+   "kind": "full_exit",
+   "pattern_id": null,
+   "trigger_id": "R2_L15_w3"
+  },
+  {
+   "bps": 100,
+   "kind": "full_exit",
+   "pattern_id": null,
+   "trigger_id": "R2_L15_w5"
+  },
+  {
+   "bps": 150,
+   "kind": "full_exit",
+   "pattern_id": null,
+   "trigger_id": "R2_L15_w5"
+  },
+  {
+   "bps": 100,
+   "kind": "full_exit",
+   "pattern_id": null,
+   "trigger_id": "R2_L15_w10"
+  },
+  {
+   "bps": 150,
+   "kind": "full_exit",
+   "pattern_id": null,
+   "trigger_id": "R2_L15_w10"
+  },
+  {
+   "bps": 100,
+   "kind": "full_exit",
+   "pattern_id": null,
+   "trigger_id": "R3_g40"
+  },
+  {
+   "bps": 150,
+   "kind": "full_exit",
+   "pattern_id": null,
+   "trigger_id": "R3_g40"
+  },
+  {
+   "bps": 100,
+   "kind": "full_exit",
+   "pattern_id": null,
+   "trigger_id": "R3_g50"
+  },
+  {
+   "bps": 150,
+   "kind": "full_exit",
+   "pattern_id": null,
+   "trigger_id": "R3_g50"
+  },
+  {
+   "bps": 100,
+   "kind": "full_exit",
+   "pattern_id": null,
+   "trigger_id": "R3_g60"
+  },
+  {
+   "bps": 150,
+   "kind": "full_exit",
+   "pattern_id": null,
+   "trigger_id": "R3_g60"
+  },
+  {
+   "bps": 100,
+   "kind": "partial",
+   "pattern_id": "25_25_rest",
+   "trigger_id": "R2_L10_w3"
+  },
+  {
+   "bps": 150,
+   "kind": "partial",
+   "pattern_id": "25_25_rest",
+   "trigger_id": "R2_L10_w3"
+  },
+  {
+   "bps": 100,
+   "kind": "partial",
+   "pattern_id": "33_33_rest",
+   "trigger_id": "R2_L10_w3"
+  },
+  {
+   "bps": 150,
+   "kind": "partial",
+   "pattern_id": "33_33_rest",
+   "trigger_id": "R2_L10_w3"
+  },
+  {
+   "bps": 100,
+   "kind": "partial",
+   "pattern_id": "50_rest",
+   "trigger_id": "R2_L10_w3"
+  },
+  {
+   "bps": 150,
+   "kind": "partial",
+   "pattern_id": "50_rest",
+   "trigger_id": "R2_L10_w3"
+  },
+  {
+   "bps": 100,
+   "kind": "partial",
+   "pattern_id": "25_25_rest",
+   "trigger_id": "R2_L10_w5"
+  },
+  {
+   "bps": 150,
+   "kind": "partial",
+   "pattern_id": "25_25_rest",
+   "trigger_id": "R2_L10_w5"
+  },
+  {
+   "bps": 100,
+   "kind": "partial",
+   "pattern_id": "33_33_rest",
+   "trigger_id": "R2_L10_w5"
+  },
+  {
+   "bps": 150,
+   "kind": "partial",
+   "pattern_id": "33_33_rest",
+   "trigger_id": "R2_L10_w5"
+  },
+  {
+   "bps": 100,
+   "kind": "partial",
+   "pattern_id": "50_rest",
+   "trigger_id": "R2_L10_w5"
+  },
+  {
+   "bps": 150,
+   "kind": "partial",
+   "pattern_id": "50_rest",
+   "trigger_id": "R2_L10_w5"
+  },
+  {
+   "bps": 100,
+   "kind": "partial",
+   "pattern_id": "25_25_rest",
+   "trigger_id": "R2_L10_w10"
+  },
+  {
+   "bps": 150,
+   "kind": "partial",
+   "pattern_id": "25_25_rest",
+   "trigger_id": "R2_L10_w10"
+  },
+  {
+   "bps": 100,
+   "kind": "partial",
+   "pattern_id": "33_33_rest",
+   "trigger_id": "R2_L10_w10"
+  },
+  {
+   "bps": 150,
+   "kind": "partial",
+   "pattern_id": "33_33_rest",
+   "trigger_id": "R2_L10_w10"
+  },
+  {
+   "bps": 100,
+   "kind": "partial",
+   "pattern_id": "50_rest",
+   "trigger_id": "R2_L10_w10"
+  },
+  {
+   "bps": 150,
+   "kind": "partial",
+   "pattern_id": "50_rest",
+   "trigger_id": "R2_L10_w10"
+  },
+  {
+   "bps": 100,
+   "kind": "partial",
+   "pattern_id": "25_25_rest",
+   "trigger_id": "R2_L15_w3"
+  },
+  {
+   "bps": 150,
+   "kind": "partial",
+   "pattern_id": "25_25_rest",
+   "trigger_id": "R2_L15_w3"
+  },
+  {
+   "bps": 100,
+   "kind": "partial",
+   "pattern_id": "33_33_rest",
+   "trigger_id": "R2_L15_w3"
+  },
+  {
+   "bps": 150,
+   "kind": "partial",
+   "pattern_id": "33_33_rest",
+   "trigger_id": "R2_L15_w3"
+  },
+  {
+   "bps": 100,
+   "kind": "partial",
+   "pattern_id": "50_rest",
+   "trigger_id": "R2_L15_w3"
+  },
+  {
+   "bps": 150,
+   "kind": "partial",
+   "pattern_id": "50_rest",
+   "trigger_id": "R2_L15_w3"
+  },
+  {
+   "bps": 100,
+   "kind": "partial",
+   "pattern_id": "25_25_rest",
+   "trigger_id": "R2_L15_w5"
+  },
+  {
+   "bps": 150,
+   "kind": "partial",
+   "pattern_id": "25_25_rest",
+   "trigger_id": "R2_L15_w5"
+  },
+  {
+   "bps": 100,
+   "kind": "partial",
+   "pattern_id": "33_33_rest",
+   "trigger_id": "R2_L15_w5"
+  },
+  {
+   "bps": 150,
+   "kind": "partial",
+   "pattern_id": "33_33_rest",
+   "trigger_id": "R2_L15_w5"
+  },
+  {
+   "bps": 100,
+   "kind": "partial",
+   "pattern_id": "50_rest",
+   "trigger_id": "R2_L15_w5"
+  },
+  {
+   "bps": 150,
+   "kind": "partial",
+   "pattern_id": "50_rest",
+   "trigger_id": "R2_L15_w5"
+  },
+  {
+   "bps": 100,
+   "kind": "partial",
+   "pattern_id": "25_25_rest",
+   "trigger_id": "R2_L15_w10"
+  },
+  {
+   "bps": 150,
+   "kind": "partial",
+   "pattern_id": "25_25_rest",
+   "trigger_id": "R2_L15_w10"
+  },
+  {
+   "bps": 100,
+   "kind": "partial",
+   "pattern_id": "33_33_rest",
+   "trigger_id": "R2_L15_w10"
+  },
+  {
+   "bps": 150,
+   "kind": "partial",
+   "pattern_id": "33_33_rest",
+   "trigger_id": "R2_L15_w10"
+  },
+  {
+   "bps": 100,
+   "kind": "partial",
+   "pattern_id": "50_rest",
+   "trigger_id": "R2_L15_w10"
+  },
+  {
+   "bps": 150,
+   "kind": "partial",
+   "pattern_id": "50_rest",
+   "trigger_id": "R2_L15_w10"
+  },
+  {
+   "bps": 100,
+   "kind": "partial",
+   "pattern_id": "25_25_rest",
+   "trigger_id": "R3_g40"
+  },
+  {
+   "bps": 150,
+   "kind": "partial",
+   "pattern_id": "25_25_rest",
+   "trigger_id": "R3_g40"
+  },
+  {
+   "bps": 100,
+   "kind": "partial",
+   "pattern_id": "33_33_rest",
+   "trigger_id": "R3_g40"
+  },
+  {
+   "bps": 150,
+   "kind": "partial",
+   "pattern_id": "33_33_rest",
+   "trigger_id": "R3_g40"
+  },
+  {
+   "bps": 100,
+   "kind": "partial",
+   "pattern_id": "50_rest",
+   "trigger_id": "R3_g40"
+  },
+  {
+   "bps": 150,
+   "kind": "partial",
+   "pattern_id": "50_rest",
+   "trigger_id": "R3_g40"
+  },
+  {
+   "bps": 100,
+   "kind": "partial",
+   "pattern_id": "25_25_rest",
+   "trigger_id": "R3_g50"
+  },
+  {
+   "bps": 150,
+   "kind": "partial",
+   "pattern_id": "25_25_rest",
+   "trigger_id": "R3_g50"
+  },
+  {
+   "bps": 100,
+   "kind": "partial",
+   "pattern_id": "33_33_rest",
+   "trigger_id": "R3_g50"
+  },
+  {
+   "bps": 150,
+   "kind": "partial",
+   "pattern_id": "33_33_rest",
+   "trigger_id": "R3_g50"
+  },
+  {
+   "bps": 100,
+   "kind": "partial",
+   "pattern_id": "50_rest",
+   "trigger_id": "R3_g50"
+  },
+  {
+   "bps": 150,
+   "kind": "partial",
+   "pattern_id": "50_rest",
+   "trigger_id": "R3_g50"
+  },
+  {
+   "bps": 100,
+   "kind": "partial",
+   "pattern_id": "25_25_rest",
+   "trigger_id": "R3_g60"
+  },
+  {
+   "bps": 150,
+   "kind": "partial",
+   "pattern_id": "25_25_rest",
+   "trigger_id": "R3_g60"
+  },
+  {
+   "bps": 100,
+   "kind": "partial",
+   "pattern_id": "33_33_rest",
+   "trigger_id": "R3_g60"
+  },
+  {
+   "bps": 150,
+   "kind": "partial",
+   "pattern_id": "33_33_rest",
+   "trigger_id": "R3_g60"
+  },
+  {
+   "bps": 100,
+   "kind": "partial",
+   "pattern_id": "50_rest",
+   "trigger_id": "R3_g60"
+  },
+  {
+   "bps": 150,
+   "kind": "partial",
+   "pattern_id": "50_rest",
+   "trigger_id": "R3_g60"
+  }
+ ],
+ "patterns": {
+  "25_25_rest": [
+   0.25,
+   0.25
+  ],
+  "33_33_rest": [
+   0.33,
+   0.33
+  ],
+  "50_rest": [
+   0.5
+  ]
+ },
+ "triggers": [
+  {
+   "L": 10,
+   "g": null,
+   "kind": "R2",
+   "w": 3
+  },
+  {
+   "L": 10,
+   "g": null,
+   "kind": "R2",
+   "w": 5
+  },
+  {
+   "L": 10,
+   "g": null,
+   "kind": "R2",
+   "w": 10
+  },
+  {
+   "L": 15,
+   "g": null,
+   "kind": "R2",
+   "w": 3
+  },
+  {
+   "L": 15,
+   "g": null,
+   "kind": "R2",
+   "w": 5
+  },
+  {
+   "L": 15,
+   "g": null,
+   "kind": "R2",
+   "w": 10
+  },
+  {
+   "L": null,
+   "g": 40,
+   "kind": "R3",
+   "w": null
+  },
+  {
+   "L": null,
+   "g": 50,
+   "kind": "R3",
+   "w": null
+  },
+  {
+   "L": null,
+   "g": 60,
+   "kind": "R3",
+   "w": null
+  }
+ ]
+}
