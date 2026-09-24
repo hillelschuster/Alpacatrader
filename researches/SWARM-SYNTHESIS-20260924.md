@@ -521,3 +521,90 @@ Three facts:
    level).
 3. The aggregate of this cohort is −240.5 return-units against the touchers' positive aggregate
    (§2.1) — the sleeve's sign is decided by the majority, not by the tail.
+
+### 2.11 Own measurement — the intraday return shape and the false-cut accounting (A_pm top-3, n=3,187)
+
+Producer: `factory/scripts/basket_diag_touch_scan.py shape`; artifact
+`factory/artifacts/basket/phase2/DIAGNOSTICS_20260924/intraday_shape.json`. A ruler, not a policy:
+the expected return path of the sleeve at fixed checkpoints, by cohort and by 10:00 state.
+
+| checkpoint (ET) | 10:00 | 10:30 | 11:00 | 11:30 | 12:00 | 13:00 | 14:00 | 15:00 |
+|---|---|---|---|---|---|---|---|---|
+| mean | −1.24% | −1.65% | −2.18% | −2.57% | −2.51% | −2.43% | −2.82% | −2.62% |
+| median | −2.41% | −3.22% | −3.69% | −4.27% | −4.43% | −4.70% | −5.09% | −5.32% |
+| positive share | 38.6% | 36.8% | 35.5% | 35.0% | 34.6% | 35.5% | 34.7% | 34.2% |
+
+- **Non-touchers (n=2,605, EOD −9.23%)** bleed steadily all day: −5.06% at 10:00 → −9.29% at 15:00.
+- **Touchers (n=582, EOD +27.60%)** gain through the day: +15.88% at 10:00 → +27.36% at 15:00.
+- **Early-down cohort (10:00 < 0, n=1,928 = 60.5% of fills)** is nearly flat after 10:00 in
+  aggregate (−9.47% → −10.16%) — *because* it contains a recovering minority; see below.
+- **Early-up cohort (n=1,259)** gives back after 10:00: +11.37% → +9.21%.
+
+**False-cut accounting (what a blanket cut at 10:00 would destroy):**
+
+| cohort | n | 10:00 | EOD mean | EOD median | positive | aggregate |
+|---|---|---|---|---|---|---|
+| early-down non-touchers | 1,805 | −9.60% | −13.26% | −11.19% | 14.8% | −239.4 |
+| **early-down touchers** | **123** | −7.66% | **+35.37%** | +22.53% | **77.2%** | **+43.5** |
+| early-up non-touchers | 800 | +5.17% | −0.14% | +0.44% | 54.5% | −1.1 |
+| early-up touchers | 459 | +22.18% | +25.51% | +15.82% | 70.8% | +117.1 |
+
+Reading: cutting the early-down cohort at 10:00 saves ≈ +3.7% × 1,805 = +66.8 return-units on the
+non-touchers but destroys +43.5 on the 123 recoverers → net ≈ **+23 units (≈ +0.73% per sleeve
+ticket)**; a blanket cut at 10:00 is worth ≈ +40 units (≈ +1.27% per ticket) because the early-up
+non-touchers give back everything and the early-up touchers give back ~3%. This reproduces DERISK's
+ordering (unconditional cut beat the state-conditioned cut) from raw paths, and quantifies the
+false-cut cost: **6.4% of early-down fills end at +35% median +22.5%** — the recovery tail is small
+in count and large in dollars, which is exactly why a state-conditioned cut underperforms.
+Unit caveat: these are per-ticket return units on the fill population; the engine's basket-day
+figures (§2.7) are day-weighted and exposure-normalized, so the two are not directly comparable.
+
+### 2.12 GiantRunnerAnatomist — the extreme tail is a peak/late-continuation phenomenon, not a touch phenomenon
+
+[OBS] A fixed +30 (or +50) exit **eliminates 100% of every MFE≥100% band, mechanically**: A_open
+92/92, A_pm 106/106, B600 86/86, B615 73/73 (`T11_dist.json:per_pop_T[*].member_mfe_bands`).
+Named giants (MFE / terminal mark): SGOC +598.9% / +261.7%; ISPO +661.1% / +555.4%; COSM +519.2% /
++500.5%; BSLK +419.2% / +314.2%; WSHP +443.5% / +416.1%; QMMM A_open +1,947.3% / +1,609.1%;
+the B615 QMMM ticket +1,600.3% MFE / +1,319.5% EOD (a +30 rule forfeits 1,289 return points).
+Across ten named ≥+100% tickets, +30 sold 10/10 and produced a materially worse result on **8/10**;
+the two exceptions are WNW (MFE +415%, EOD −18.3%) and KELYB (exited at −50.3%).
+
+[OBS] Corrected T5 monthly medians for MFE≥100 main tickets: **time to high 179–234 minutes**
+(hours after entry), pre-high print retracement −19% to −25%, post-high giveback −28% to −38%.
+So the largest moves are *formed* by multi-hour continuation with deep intermediate drawdowns —
+e.g. COSM was −13.0% from fill and 25.9% below its running high at ET600, then +24.4% at ET720
+before its +30 touch at ET726; QMMM fell >55% from its running high by ET660 and still closed
++1,609% from fill. Two shapes exist (smooth: BSLK gap_post=1, 386/390 slots; interrupted: WSHP 71,
+QMMM 40), so there is **no single halt signature**.
+
+[OBS] Rank is enriched but not determinative: named continuations span A_pm/B575/A_open ranks 1, 2,
+6 and 9; p99 MFE by rank ≈ +239% / +60% / +26% for ranks 1/2/3. `ratio_anchor` (decision price /
+prior close) is **not** peer-relative strength, and both its extremes (SGOC 1.04, COSM 11.67)
+produced giants.
+
+**This contradicts the synthesis's earlier "sell into strength" framing and must be preserved as a
+disagreement:** the +30 arm earns a small *mean* improvement by harvesting the fade majority (§1.1:
+60% continue / 40% fade; median touch→EOD −10.8%) while giving up nearly all convex continuation.
+Mean P&L and tail capture are different objectives, and the arm is not a monetization of the
+phenomenon — it is a harvest of the fade majority. Note also that the harvest arm's mean is still
+*negative* (−3.04%/day at N=2): it reduces the loss, it does not make money.
+
+**Defects found (verified by reading the producers):** `basket_dist.py:add_rec` appends a row per
+snapshot and does not deduplicate by name-day/ticker/fill, so the T11 "top-40 extremes" list is a
+raw ticket/snapshot list (SGOC, TCGL, TDIC, AFJK, BQ consume multiple rows) and cuts off above
++372%; `basket_f4_paths.py:raw_path_map` covers only A_pm top-2, so a ticker appearing elsewhere in
+a chronology file is not evidence that the B snapshot was tested; F2/F12 covers only
+A_pm/A_pm31/A_open/B585/B600 at 580–615, excluding the B615/B630/B660/B690/B720 leaders, and its
+`time_below_recent_high` is elapsed time since the running high (not time below entry) while
+`recovery_5/10` are booleans rather than durations; `basket_t5_rawpaths.py` retracement statistics
+use transaction prices, not minute extremes, so they understate intrabar retracement.
+
+**Smallest decisive study it proposes (better than another exit grid):** one read-only,
+deduplicated anatomical pass over filled tickets with MFE≥100% — at exactly five minutes before the
+first +30 touch, compute only decision-observable state (rank and rank change; own return minus
+median basket return; minutes and deepest excursion below entry; recovery above entry and drawdown
+from the running high; dollar-volume acceleration and basket breadth; no-trade minutes since fill),
+label the post-touch branch as continuation vs fade, and report a 2×2 of recovered × peer-relative
+strength, with the 100–300% stratum included explicitly. Success criterion it sets: a pre-touch
+state capturing at least half of the >+300% MFE mass while retaining no more than ~30% of the fade
+cases — otherwise stop searching for a fixed +30/+50 ontology.

@@ -10,6 +10,7 @@ Reproduces the touch-excursion scans quoted in
     python factory/scripts/basket_diag_touch_scan.py identifiability
     python factory/scripts/basket_diag_touch_scan.py afternoon
     python factory/scripts/basket_diag_touch_scan.py nontouch
+    python factory/scripts/basket_diag_touch_scan.py shape
 
 Conventions (identical to the artifacts these regenerate): A_pm anatomy fills, top-3 by canonical
 rank, candidate bars, RTH only; a "touch" is the first bar whose high reaches entry*(1+30%) on a
@@ -292,6 +293,89 @@ def cmd_nontouch() -> dict:
     return out
 
 
+CHECKPOINTS = (600, 630, 660, 690, 720, 780, 840, 900, 960)
+
+
+def scan_shape(families=(("A_pm", "A_pm", 570),), top=3):
+    """One row per fill with its return at fixed intraday checkpoints (a ruler, not a policy)."""
+    days = sim.dev_days()
+    sem = sim.session_end_map()
+    rows = []
+    for day in days:
+        bars = sim.load_bars(day, sem[day])
+        for fam, pop, T in families:
+            for nm, fl, tkb in fills(day, bars, fam, pop, T, top):
+                ets, hi, cl = tkb["et"], tkb["high"], tkb["close"]
+                win = _window(ets, fl, sem[day])
+                if win is None:
+                    continue
+                first, last = win
+                entry = float(fl["px"])
+                hit30 = next((i for i in range(first, last + 1)
+                              if float(hi[i]) >= entry * 1.30 - 1e-12), None)
+                row = {"day": day, "family": fam, "ticker": nm["ticker"],
+                       "cohort": "touch30" if hit30 is not None else "nontouch",
+                       "ret_eod": float(cl[last]) / entry - 1.0}
+                for cp in CHECKPOINTS:
+                    idx = next((i for i in range(first, last + 1) if int(ets[i]) >= cp), None)
+                    row[f"ret_{cp}"] = (float(cl[idx]) / entry - 1.0) if idx is not None else None
+                rows.append(row)
+    return pl.DataFrame(rows)
+
+
+def _cp_mean(sub: pl.DataFrame, cp: int):
+    col = sub.filter(pl.col(f"ret_{cp}").is_not_null())
+    return float(col[f"ret_{cp}"].mean()) if col.height else None
+
+
+def cmd_shape() -> dict:
+    frame = scan_shape()
+    out = {"n": frame.height, "checkpoints": {}, "by_cohort": {}}
+    for cp in CHECKPOINTS:
+        col = f"ret_{cp}"
+        sub = frame.filter(pl.col(col).is_not_null())
+        out["checkpoints"][str(cp)] = ({
+            "n": int(sub.height),
+            "mean": float(sub[col].mean()),
+            "median": float(sub[col].median()),
+            "positive_share": float((sub[col] > 0).mean()),
+        } if sub.height else {"n": 0, "mean": None, "median": None, "positive_share": None})
+    for cohort in ("touch30", "nontouch"):
+        sub = frame.filter(pl.col("cohort") == cohort)
+        out["by_cohort"][cohort] = {
+            "n": int(sub.height),
+            "eod_mean": float(sub["ret_eod"].mean()),
+            "path": {str(cp): _cp_mean(sub, cp) for cp in CHECKPOINTS},
+        }
+    # early-state split at 10:00, held fixed through the day
+    up = frame.filter(pl.col("ret_600") >= 0)
+    dn = frame.filter(pl.col("ret_600") < 0)
+    out["by_early_state"] = {
+        "early_up": {"n": int(up.height), "eod_mean": float(up["ret_eod"].mean()),
+                     "path": {str(cp): _cp_mean(up, cp) for cp in CHECKPOINTS}},
+        "early_down": {"n": int(dn.height), "eod_mean": float(dn["ret_eod"].mean()),
+                       "path": {str(cp): _cp_mean(dn, cp) for cp in CHECKPOINTS}},
+    }
+    # false-cut accounting: inside the early-down cohort, what does the recovering minority
+    # contribute (i.e. what would a blanket cut at 10:00 destroy)?
+    false_cut = {}
+    for state, sub in (("early_up", up), ("early_down", dn)):
+        for cohort in ("touch30", "nontouch", "all"):
+            s = sub if cohort == "all" else sub.filter(pl.col("cohort") == cohort)
+            if not s.height:
+                continue
+            false_cut[f"{state}|{cohort}"] = {
+                "n": int(s.height),
+                "ret_600_mean": _cp_mean(s, 600),
+                "ret_eod_mean": float(s["ret_eod"].mean()),
+                "ret_eod_median": float(s["ret_eod"].median()),
+                "aggregate_eod": float(s["ret_eod"].sum()),
+                "positive_share": float((s["ret_eod"] > 0).mean()),
+            }
+    out["false_cut_accounting"] = false_cut
+    return out
+
+
 def main(argv=None):
     argv = argv or sys.argv[1:]
     if not argv:
@@ -309,6 +393,9 @@ def main(argv=None):
     elif command == "nontouch":
         result = cmd_nontouch()
         name = "nontouch_majority.json"
+    elif command == "shape":
+        result = cmd_shape()
+        name = "intraday_shape.json"
     else:
         families = POPS if family_filter is None else tuple(
             entry for entry in POPS if entry[0] == family_filter)
