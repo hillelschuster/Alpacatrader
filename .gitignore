@@ -50,6 +50,11 @@ factory/artifacts/events_2025-*.parquet
 factory/artifacts/h00*_results*.parquet
 factory/artifacts/h0*/**/*.parquet
 
+# Engine resume shards: run dirs are committed as merged daily/tickets parquet + metrics/config;
+# the incremental parts/ shards are resume state only (observed convention: HARVEST_DIAG et al.
+# keep parts/ on disk but out of git).
+factory/artifacts/**/parts/
+
 # regenerable ml backfill/build logs (kept on disk, not in git)
 factory/artifacts/ml/backfill_*.log
 factory/artifacts/ml/build_feat_*.log
