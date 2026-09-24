@@ -10,7 +10,9 @@ separate objects. Everything below is one of those three, labelled.
 
 ---
 
+
 ## 1. Parent measurements taken during the swarm
+
 
 ### 1.1 The post-touch population is a mixture, not a fade [OBS]
 
@@ -27,6 +29,7 @@ Reading [INFERENCE]: the earlier "median toucher gives back 11%" is real but it 
 bimodal mixture. The unconditional post-touch mean is ≈0 because +9.2% × 0.60 and −19.7% × 0.40
 roughly cancel. Selling every toucher is therefore close to **mean-neutral variance reduction**,
 not the capture of a systematic fade.
+
 
 ### 1.2 Continuation is not identifiable from coarse touch-moment state [OBS]
 
@@ -50,6 +53,7 @@ price-path shape. If continuation is predictable at all, it must come from finer
 (trade/seconds microstructure, quote behaviour, halt sequencing) or from cross-sectional state —
 not from the minute-bar state we have been conditioning on.
 
+
 ### 1.3 The HARVEST gain is exposure removal, not a better exit price [OBS]
 
 From the arms' own artifacts (`HARVEST_DIAG/SUMMARY.json`): hold N=2/100 bps mean −3.938% on
@@ -64,23 +68,6 @@ cannot be a large price edge.
 
 ---
 
-## 2. Agent findings
-
-(to be merged as the swarm reports land; each idea carries mechanism, plausibility, evidence,
-what prior code actually tested, bugs found, smallest decisive study, and what a meaningful
-result would look like)
-
----
-
-## 3. Ranked next moves
-
-(to be filled after §2)
-
----
-
-## 4. Preserved disagreements
-
-(to be filled after §2)
 
 ### 1.4 The fade is conditional on WHEN the touch happens (and mildly on halt count) [OBS]
 
@@ -113,6 +100,7 @@ fitted threshold. It also weakens the earlier "the morning is the worst segment"
 morning is worst for *continuation after an early spike*, not because the afternoon is uniformly
 better.
 
+
 ### 1.5 The apparent afternoon continuation is a tail lottery, not drift [OBS]
 
 `factory/artifacts/basket/phase2/DIAGNOSTICS_20260924/afternoon_touch_continuation.json` — pooled
@@ -127,6 +115,7 @@ positive mean is a handful of giant survivors, exactly the pattern that has fail
 testing repeatedly in this project. This also demotes the §1.4 "late touches carry positive
 drift" observation to "late touches contain more of the lottery", and reinforces the standing
 power doctrine: tail-driven means from a few observations are not evidence.
+
 
 ### 1.6 Peak-relative exits improve EV per deployed dollar; entry-relative stops do not [OBS]
 
@@ -157,54 +146,6 @@ question is why peak-relative state pays as an *exit* but not as an *add*.
 
 ---
 
-## 3. Ranked next moves (parent draft; to be revised with the agent findings)
-
-Ranked by expected economic information and potential EV unlocked, not by family number or ease.
-
-**M1. Peak-relative state as the primary decision variable (exit side proven, add side not).**
-Mechanism: what a ticket has given back from its *own* best excursion is the one state variable
-that has improved EV per deployed dollar anywhere in the corrected results (R3, §1.6), while
-entry-relative depth (R2) and blanket de-risking only remove exposure. Smallest decisive study:
-replace the fixed `g` ruler with a state-dependent retention boundary (halt count, elapsed time,
-velocity at the breach) and measure per-dollar EV against R3 rulers and hold, both blocks, both
-frictions. Meaningful result: per-dollar EV materially better than R3's −3.08% and not confined to
-one block. Contradicting evidence to respect: the F6 state rule used the same variable family as a
-*deployment* rule and landed at ≈0, so the exit/add asymmetry itself needs explaining.
-
-**M2. Is continuation identifiable at all? (the bottleneck question).**
-Mechanism: the post-touch population is bimodal (§1.1) and no coarse minute feature separates the
-branches (§1.2); if nothing finer does either, per-ticket timing is not where the money is.
-Smallest decisive study: a causal identifiability study on finer data — trade-level/seconds
-microstructure and halt sequencing around the excursion, raw SIP available — measured on unseen
-months with an explicit EV-separation metric, not accuracy. Meaningful result: either a stable
-conditional EV gap (which converts directly into a hold/sell policy) or a clean negative that
-redirects the program to portfolio-level policies.
-
-**M3. Excursion-timing regime split (early versus late touches).**
-Mechanism: early touches (before ~10:00) fade; later ones contain the lottery (§1.4, §1.5).
-Smallest decisive study: one pre-registered two-bucket harvest/de-risk rule with per-dollar EV and
-block splits, plus the tail-concentration check that already demoted the late bucket. Meaningful
-result: a conditional policy beating both unconditional sell-all and hold in both blocks; or
-confirmation that the split is noise.
-
-**M4. Cross-sectional / basket-relative state.**
-Mechanism: capital allocation is a portfolio decision; the race between members (rank migration,
-relative MFE, dispersion, handoffs) is observable and untested as a decision variable.
-Smallest decisive study: a causal switching test on EXT-1 machinery with per-dollar EV as the
-metric. Meaningful result: a reallocation rule that beats equal-weight ownership in both blocks.
-
-**M5. Entry-side cost (the fill is the worst price of the day).**
-Mechanism: the sleeve's hole is created at entry and in the first 30 minutes; the anatomy fill is
-the 09:30 open. Smallest decisive study: resting-limit entry versus market entry on the same
-population with explicit fill rules. Meaningful result: a per-dollar EV shift comparable to the
-~250 bps hole, or evidence that limit entry simply misses the survivors.
-
-**M6. Microstructure microscope (feeds M2).** Trade-level inspection of a small archetype set
-(giant runner, violent-damaged recovery, quiet death, multi-survivor day) before any
-seconds-level modelling.
-
-**M7. Truth-critical audits** (engine semantics, diagnostic producers, manual dollar tracing,
-ledger-vs-artifact audit) — required before any promotion, but not alpha-generating.
 
 ### 1.7 Cheaper entry via a resting limit is refuted as formulated [OBS]
 
@@ -228,7 +169,13 @@ reclaim — a different mechanism that would need its own causal definition.)
 
 ---
 
+
 ## 2. Agent findings
+
+(8 of 8 swarm reports merged: TouchHarvestChallenger, PathStateThinker, HoldConvexityChallenger,
+RankMigrationAnalyst, FailureCollapseAnatomist, ThesisReconstructor, GiantRunnerAnatomist,
+MultiSurvivorAnalyst. Findings are verbatim-in-substance; where an agent contradicted the parent
+reading, both are kept and the disagreement is carried into section 4.)
 
 ### 2.1 TouchHarvestChallenger — the "sell into strength" reading is fragile and partly mis-attributed
 
@@ -281,6 +228,7 @@ harvest's +89.4; falsified if the placebo reaches ≥+70 bps/day. Economically m
 the state component (harvest − placebo) clearing +50 bps/day with the same sign in both blocks —
 today it does not (block1 +21, block2 +204).
 
+
 ### 2.2 PathStateThinker — a causal state vector with provenance, and where it is missing
 
 [OBS] Coordinates that exist today and are causal: `ret_from_fill`, `mfe_so_far`, `mae_so_far`,
@@ -300,6 +248,7 @@ as a deployment rule (F6 state67). The agent's proposed shape-revealing studies:
 hazard versus `retained` with path progress (bars since fill / bars since running high) as the
 time coordinate instead of wall clock, and the same for the basket-relative coordinates.
 
+
 ### 2.3 Truth-critical queue opened by the swarm (not alpha, but blocking precision)
 
 * **Frozen carries inflate deployed capital.** A carried ticket whose ticker is certified `no_bars`
@@ -318,6 +267,7 @@ time coordinate instead of wall clock, and the same for the basket-relative coor
   own result (next-open is *above* a resting limit at the level, i.e. favourable). Needs a
   correcting note in the artifact or a re-run with the honest framing.
 
+
 ### 2.4 HoldConvexityChallenger — the conditional-hold case is suggestive but unproven
 
 [OBS] Confirms the mixture (A_pm: 582 touchers, 60.3% continue, 39.7% fade) and the time split
@@ -329,6 +279,7 @@ is the unconditional all-+30 exit at the next bar open, and it beats hold-to-clo
 (+0.894%/day pooled, +0.344% block1, +2.110% block2). Verdict: **a conditional hold has not been
 shown to beat unconditional selling**; it needs one event-level, next-open, day-clustered policy
 comparison (the same machinery as the harvest arm, with the condition as the only change).
+
 
 ### 2.5 RankMigrationAnalyst — rank/relative-strength state exists but has never been tested as a decision
 
@@ -342,6 +293,7 @@ peer-relative or rank-migration condition has ever been run through the engine; 
 fixed-gross reweighting, not dynamic switching. Minimum useful study proposed: a bounded
 A_pm/N=2 ET600 paired replay with a control, one fixed rank-migration switch and one fixed
 peer-MFE-residual switch, using the EXT-1 batch hook and per-dollar EV as the metric.
+
 
 ### 2.6 FailureCollapseAnatomist — no verified early death marker; the decisive study is specified
 
@@ -359,6 +311,7 @@ would settle it: one row per ticket with (state stratum at the decision bar, sub
 continuation, the error cost of cutting versus holding at 100 bps), which does not exist today —
 the structural map is path-row weighted, so its "rebound opportunity" cannot be converted into an
 error-cost comparison without rebuilding it ticket-level.
+
 
 ### 2.7 Own measurement — the time-matched identity-shuffled placebo (100 bps)
 
@@ -407,6 +360,7 @@ Caveats found while checking the placebo:
    parameterized rule MUST override it. Verified: same run id + different seed now recomputes
    instead of reusing the cached summary.
 
+
 ### 2.8 Additional truth-critical items (verified this cycle)
 
 1. **Two dead columns in the F2_F12 state panel.** `basket_score_disp` is NaN in all 182,094 rows
@@ -428,6 +382,7 @@ Caveats found while checking the placebo:
    as an error-cost advantage (§2.6).
 5. **Execution-convention framing** on `exit_convention_comparison.json` corrected in place
    (§2.1): the next-open exit is above the level, i.e. favourable, not conservative.
+
 
 ### 2.9 ThesisReconstructor — lineage, drift list, and what has never been tested in its stated form
 
@@ -490,6 +445,7 @@ winners while the corrected summary reports +11–101 bps and 24/54 (the two sur
 rows are one treatment at two frictions, not two treatments); `avg_deployed_capital` is cost basis,
 not market value.
 
+
 ### 2.10 Own measurement — the non-toucher majority and the false-cut question (A_pm top-3)
 
 Producer: `factory/scripts/basket_diag_touch_scan.py nontouch` (committed); artifact
@@ -521,6 +477,7 @@ Three facts:
    level).
 3. The aggregate of this cohort is −240.5 return-units against the touchers' positive aggregate
    (§2.1) — the sleeve's sign is decided by the majority, not by the tail.
+
 
 ### 2.11 Own measurement — the intraday return shape and the false-cut accounting (A_pm top-3, n=3,187)
 
@@ -558,6 +515,7 @@ false-cut cost: **6.4% of early-down fills end at +35% median +22.5%** — the r
 in count and large in dollars, which is exactly why a state-conditioned cut underperforms.
 Unit caveat: these are per-ticket return units on the fill population; the engine's basket-day
 figures (§2.7) are day-weighted and exposure-normalized, so the two are not directly comparable.
+
 
 ### 2.12 GiantRunnerAnatomist — the extreme tail is a peak/late-continuation phenomenon, not a touch phenomenon
 
@@ -608,3 +566,160 @@ label the post-touch branch as continuation vs fade, and report a 2×2 of recove
 strength, with the 100–300% stratum included explicitly. Success criterion it sets: a pre-touch
 state capturing at least half of the >+300% MFE mass while retaining no more than ~30% of the fade
 cases — otherwise stop searching for a fixed +30/+50 ontology.
+
+
+### 2.13 MultiSurvivorAnalyst — multi-survivor is real at modest excursions, singleton at the harvesting ruler; and F8 was stale
+
+[OBS] Multi-survivor geometry (canonical Phase-1 SIP, main top-3, 1,066 days): days with ≥2 touches
+at +5%: A_pm 801, A_open 737, B600 720; at +10%: 531 / 480 / 448; at +30%: **103 / 82 / 67**; at
++50%: 28 / 22 / 18; at +100%: **3 / 4 / 1**. Conditional on at least one +30 touch, the ≥2 share is
+21.9% (A_pm), 19.8% (A_open), 15.9% (B600). So breadth is real at ±5–10% and rare at the harvesting
+ruler — the +30/+100 tail is predominantly **one giant plus lower-quality co-members**.
+
+[OBS] F8 (120 cells, pre-C1 — see below): ≥2 EOD-net-positive members 3.66–37.99% of days, ≥2 +30
+touches 1.03–15.76%, all-filled-positive 0.28–14.92%. Pooled pairwise **net-return** correlations are
+weak: A_pm N2/N3/N4 = 0.058/0.063/0.034, A_open N2 = 0.130, B600 N2 = −0.008. [INFERENCE] Final P&L
+is not a simple common basket move — but this is terminal-net correlation, *not* excursion-path or
+leader-state correlation, so it says nothing about whether continuations are independent.
+
+[OBS] The apparent rank-1 advantage is **hindsight**: `T5_mfe_ranks.json` assigns ranks by sorting
+each day's MFE vector after the fact (rank1 mean MFE 30.5%, rank2 8.9%, rank3 3.4%), and
+`basket_t7_econ.py` states explicitly that the best member is known only after the fact (A_open
+best-net 14.12% vs peer loss 24.91%, `pays_net` 28.64%, mean surplus −10.80%; B600 11.14% / 18.37% /
+34.18% / −7.22%). No causal 100%-rank-1 arm has ever been run; the closest causal tests are F9's
+fixed-gross rank-linear/score-gap weights (negative or weak) and F6's `state67` reserve arm
+(N=3 pooled +0.322% per deployed dollar but block1 −2.10% / block2 +5.98% — sign flip).
+
+[OBS] Handoffs are **not measured**: T1's top-3 overlap (1.30 names retained of 3 from B575→580,
+rising to 2.14 by 660→690) shows churn, not rank-1 identity change; `race_by_view.json` classifies
+each ticket independently (up-first/down-first), with no simultaneous pair or leader field. No
+rank-1 switch count, incoming-leader forward return, or handoff-conditioned outcome table exists.
+
+**Truth-critical finding (verified and fixed this cycle):** F8 and the capital-allocation map were
+built from the **pre-C1** F1 tree. The F8 input configs say `FROZEN-2026-09-22` while the engine is
+`FROZEN-2026-09-22+SUBSTRATE-CORRECTION-2026-09-24`, and F8's reported A_pm_N4_R0_bps100 mean
+(−0.0308568487) is exactly the pre-C1 value (C1: −0.0293282347) — so every joint rate above is a
+pre-C1 measurement. `basket_f8_joint.py:validate_surface` checked family, dates, entry, N, bps and
+release but **not** `contract_version`, so the stale tree was accepted silently. Fix applied: the
+per-cell config check now compares `contract_version` to the engine and refuses to run (verified: it
+now raises on the old tree); the surface loader accepts the corrected tree's per-entry
+`surface_*.json` files; and F8 is being regenerated from `F1_C1` into `F8_C1`. The capital map must
+be regenerated from that in turn.
+
+**Regeneration result (done this cycle):** `F8_C1` was rebuilt from `F1_C1` (120 cells, 1,066
+days/cell, 127,920 rows) and its A_pm_N4_R0_bps100 C0 mean equals the corrected C1 value exactly
+(−0.02932823472). The joint rates move by ≤0.5pp and the reading is unchanged: A_pm_N2
+`p_ge2_reach_30` 3.94%→3.94%, A_pm_N4 15.76%→16.23%, B600_N3 6.29%→6.47%; `p_ge2_profitable`
+11.63%→11.73% / 37.52%→38.09% / 23.36%→23.64%. So the stale-input defect was real but did not
+change the multi-survivor conclusion — it changed the *provenance* of the numbers. The capital map
+still hashes the pre-C1 F8 context and must be regenerated from `F8_C1`.
+
+**Smallest decisive study it proposes:** after the C1 regeneration, build one day × member panel
+keyed by `(sleeve_day, ticker)` with causal entry rank, completed-bar rank at fixed checkpoints,
+MFE/touch time, next-open executable outcomes and F6 state flags; predeclare exactly two allocation
+arms on the same sleeve — (a) equal across currently eligible members, (b) follow the current causal
+rank-1 / handoff recipient — with actions at the first later eligible open, reporting initial,
+checkpoint and handoff events separately, incremental net EV per deployed dollar at 100/150 bps in
+both blocks, tail preservation and failed-ticket cost. A larger `ge2_reach_30` rate is *not* a
+meaningful result.
+
+## 3. Ranked next moves
+
+Ranked by expected economic information, not by family number. Each move names the mechanism, the
+smallest decisive study, and the result that would be meaningful.
+
+**M0. Make the evidence current before acting on it (truth-critical, in progress).**
+Mechanism: F8 and the capital-allocation map were built from the **pre-C1** F1 tree and would
+silently quote pre-C1 joint rates as current (verified: F8's A_pm_N4_R0_bps100 mean equals the
+pre-C1 value exactly). A `contract_version` guard now refuses stale inputs; F8 is being regenerated
+from `F1_C1` into `F8_C1`; the map follows from that. Meaningful result: every current number in
+this file either regenerated under C1 or explicitly labelled pre-C1. Same class as the
+rule-parameter fingerprint bug fixed in §2.7.
+
+**M1. Is continuation identifiable — asked on the right population?**
+Mechanism: the post-touch population is bimodal (60/40) and coarse minute state does not separate it
+(best AUC ≈ 0.57), but the *economic* tail is formed by multi-hour continuation (§2.12: MFE≥100 names
+peak 179–234 minutes after entry, with −19…−25% pre-high retracement), so the question must be asked
+where the money is, not on all touchers. Smallest decisive study: the deduplicated pre-+30 state
+anatomy over the ≥+100% stratum (rank and rank change; own minus median basket return; minutes and
+deepest excursion below entry; recovery above entry and drawdown from running high; dollar-volume
+acceleration and breadth; no-trade minutes), labelled continuation vs fade, reported as a 2×2 of
+recovered × peer-relative strength. Meaningful result (the standard the swarm set): a pre-touch state
+capturing ≥half of the >+300% MFE mass while retaining ≤~30% of fade cases; otherwise stop searching
+for a fixed +30/+50 ontology.
+
+**M2. Peak-relative state as the primary exit variable.**
+Mechanism: the one state variable that has improved EV per deployed dollar anywhere in the corrected
+results is what a ticket has given back from its *own* best excursion (R3, §1.6); entry-relative
+depth (R2) and blanket de-risking only remove exposure. Smallest decisive study: replace the fixed
+`g` ruler with a state-dependent retention boundary (halt count, elapsed bars, velocity at the
+breach) and measure per-dollar EV against R3 rulers and hold, both blocks, both frictions. Meaningful
+result: per-dollar EV materially better than R3's −3.08% and not confined to one block. Respect the
+asymmetry: the same variable family as a *deployment* rule (F6) landed at ≈0.
+
+**M3. Time/state-conditioned de-risking with the false-cut cost priced in.**
+Mechanism: the sleeve's level is essentially set by 10:00 (§2.11); a blanket 10:00 cut is worth
+≈+1.27% per ticket and a state-conditioned (early-down only) cut only ≈+0.73%, because 6.4% of
+early-down fills recover to +35% median +22.5%. Smallest decisive study: a two-sided rule — cut the
+early-down cohort *except* names showing recovery state at the decision bar, evaluated with next-open
+execution, per-dollar EV and both blocks. Meaningful result: beats both the blanket cut and hold in
+both blocks; the recovery split must not be fitted to the same days.
+
+**M4. Cross-sectional allocation (rank migration, handoffs, peer-relative MFE).**
+Mechanism: capital allocation is a portfolio decision and the race between members is observable,
+but every existing rank/handoff number is descriptive or hindsight (§2.5, §2.13). Smallest decisive
+study: after M0, one day × member panel with causal rank at fixed checkpoints and handoff events,
+then two predeclared arms (equal vs follow-current-rank-1/handoff recipient), incremental net EV per
+deployed dollar, both blocks, tail preservation. Meaningful result: a stable causal increment; a
+larger `ge2_reach_30` count is not one.
+
+**M5. The non-toucher majority (where the loss lives).**
+Mechanism: 82% of fills never touch +30% and carry the aggregate loss (−240.5 return units, §2.10);
+the simple resting-limit entry is refuted (it selects against the runners). Smallest decisive study:
+a state-based entry formulation with its own causal definition (dip-and-reclaim at a completed bar,
+or a later checkpoint entry) measured on per-dollar EV and adverse-selection against survivors.
+Meaningful result: a per-dollar EV shift comparable to the ~250 bps entry hole, or evidence that the
+hole is the price of access.
+
+**M6. Execution realism and the microstructure microscope (feeds M1).**
+Mechanism: 100/150 bps is necessary but not sufficient — quote-aware fills, queue position, partial
+fills and capacity are unmeasured (F11 is stored-open only); and the identifiability question may
+need trade-level data. Smallest decisive study: trade-level inspection of a small archetype set
+(giant, damaged-recovery, quiet death, multi-survivor day) plus an explicit fill model for the one
+mechanism that survives M1–M3.
+
+**M7. Truth-critical queue (blocking precision, not alpha).**
+F8/map C1 regeneration (M0); dead `basket_score_disp`/`spread_state` columns with the exact fix
+(§2.8); frozen-carry deployment inflation; `avg_deployed_capital` semantics (use held minutes);
+`rank_change`/`rel_strength` semantics; T11 non-deduplication; F4 `raw_path_map` and F2/F12 coverage
+limits; artifact-framing corrections; producer commit coverage.
+
+## 4. Preserved disagreements
+
+1. **Harvest: state premium or time-in-market?** The placebo (§2.7) attributes roughly 18–41% of the
+   harvest gain at N=2 to the exit-time profile and the rest to touch identity, with sign instability
+   at N=3; TouchHarvestChallenger argues the +89 bps/day is a bookend difference whose CI includes
+   zero. Both readings survive; the arm is not promotable either way.
+2. **"The tail is a touch phenomenon" vs "the tail is peak/late-continuation".** §1.1/§1.4/§1.5
+   measure a 60/40 fade majority with negative medians; §2.12 shows the ≥+100% stratum is formed by
+   multi-hour continuation and that a +30 rule eliminates 100% of it. Both are correct: the
+   disagreement is about the objective (mean P&L of the majority vs capture of the convex tail), not
+   about the data.
+3. **"Exposure removal" is not a mechanism inside this engine.** With no reinvestment and no cash
+   return, removing exposure can only change *which minutes* you are in the market and *at what
+   price* (§2.1). Statements like "the gain is de-leveraging" must be read as accounting, not
+   economics.
+4. **`avg_deployed_capital` is not pure exposure.** It differs 18% between arms whose held minutes
+   differ 2% (§2.7), because closing tickets also removes their basis from later days' carry
+   accounting. Per-dollar ratios must use the held-minutes integral.
+5. **Conditional hold unproven vs unconditional exit unopposed.** HoldConvexityChallenger: the only
+   executable arm run is the unconditional +30 exit, and no conditional hold has been shown to beat
+   it. Holders of the "keep the winners" reading must produce that comparison, not a mixture table.
+6. **Rank/relative strength: observable but untested; the rank-1 advantage is hindsight.** T5/T7 rank
+   and best-member economics sort outcomes after the fact; no causal concentration arm exists
+   (§2.5, §2.13).
+7. **"The morning is worst" is conditional**, on the tested A_pm full-deployment sleeve and on touch
+   timing — not a clock law (§2.9, §1.5).
+8. **DERISK (state adds nothing at a fixed clock) vs the touch result (state adds a lot at a variable
+   clock).** Compatible only if "state" means damage-at-10:00 in the first case and the excursion
+   itself in the second; the reconciliation is M3's two-sided rule.

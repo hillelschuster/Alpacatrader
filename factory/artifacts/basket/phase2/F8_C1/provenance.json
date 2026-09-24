@@ -1,0 +1,1220 @@
+{
+  "f1_surface_sha256": {
+    "surface_A_open.json": "7ed1c284646f184cf543aa0161f42c0450933bd0b977f868e45490e35bdf6e9f",
+    "surface_A_pm.json": "b303f9ac2acd820269ce553f83045db1cd82d4cd21159017a954cecd2fdcf93f",
+    "surface_A_pm31.json": "b44c7b9f9f71c22618cf10b47d40ed732a82c08ab54babc0f2922e6636501a07",
+    "surface_B585.json": "844f9b9c6abae10a2dae5c46f75a41f2015b107ce3526860f52a384c532498a5",
+    "surface_B600.json": "9e1788a8efba008358b3d9691c5fc10fbf34b2d9e35488ef5ae753aa5713942b"
+  },
+  "f1_surface_files": [
+    "surface_A_open.json",
+    "surface_A_pm.json",
+    "surface_A_pm31.json",
+    "surface_B585.json",
+    "surface_B600.json"
+  ],
+  "f1_inputs": [
+    {
+      "run_id": "A_open_N2_R0_bps100",
+      "files": {
+        "config.json": "d93b2c0560857a39bad86227cafee8ffe67fa74c6aefa76dc72fe7bad01f444a",
+        "daily.parquet": "75b1a3e29aebd47f98eda187aecefb9f8847918c33536760461d884649918664",
+        "tickets.parquet": "8cd739d0610cc3cfa9825e68d854aa4825e2337bcdac759a9bd591a33e3a7bb9",
+        "metrics.json": "797fa708dd772aca1afef431a466a667874d7d756ff7390ad265f853a9f57a84",
+        "run_summary.json": "c527de83a4bd35f1a3844d72f80f3bfc6d4b75b42e0ed51e23ba67ac79af3656"
+      }
+    },
+    {
+      "run_id": "A_open_N2_R0_bps150",
+      "files": {
+        "config.json": "a7e69e244e59e4cd228285ceb796ef859556f90a9635db655816bb0fbde6e555",
+        "daily.parquet": "205671655c3946a1bba2bbec0f8f40ec192ce52832da8d20df71de692410cb7c",
+        "tickets.parquet": "517caf07a5bebad298049a530da4cfa9d8946df592062f61bf340452a2b43a90",
+        "metrics.json": "56a4d6c9f7d029b7d52ea6d59f7455281c6ded3c0ab28b10eae6eb6af0052ccf",
+        "run_summary.json": "9fd2fa83168887005d2594fbb91733998c22841f245aaa814641500768a2f79c"
+      }
+    },
+    {
+      "run_id": "A_open_N2_R1m8_bps100",
+      "files": {
+        "config.json": "1e986797a933ebac61b7fbbb323fa5bd5ccd978da6e65a46bad7a022d17581fb",
+        "daily.parquet": "963d8929fd86e065cc16af7df9954954bc449e8e932c97d7df33991187961e03",
+        "tickets.parquet": "7b111e54e5c093a310e58afdf94c32a98699e377a2cd03288c478ba47c9447f4",
+        "metrics.json": "76c720aa57a8e4609cc20c33b11cb966df14184a5e51e291bd56baf2f24d220a",
+        "run_summary.json": "057d45490c6c9ca5f333fc1636aac461aae8b10f97633e0420a463e01249761b"
+      }
+    },
+    {
+      "run_id": "A_open_N2_R1m8_bps150",
+      "files": {
+        "config.json": "c5ad16eb628b895846dede35b9db140efb12695045ee072039eb5965e91fd3ac",
+        "daily.parquet": "d144e879dacdfad255392339512347b2b30b654caba10d35db742172daaefca7",
+        "tickets.parquet": "9154152c458dcfee5da45ba3f81e452c25f9598d9fb4389156f9ef2840c81561",
+        "metrics.json": "857fdabced3cca107c70645f8162b7703ba16a8079fe3519357a76a5cad9ee7a",
+        "run_summary.json": "be5256a38b70bc2de08283643b5f4189a236892f2be408f7f0a4d3332f21237d"
+      }
+    },
+    {
+      "run_id": "A_open_N2_R1m10_bps100",
+      "files": {
+        "config.json": "d747209bb3751d2d965d919270b70664145dff6229c697cf7f2504a93275848a",
+        "daily.parquet": "4cec4bd6120fcaf80afcaaa7b5d6465b215826c63ef0656295f87a27177858c5",
+        "tickets.parquet": "58f717b3b03294a664680b91e45cb7f6a12fdfae1d6b1c4dbe62af77867e4c3b",
+        "metrics.json": "a2d365513afca546e5ec10e6a0ee93d81873c96b77925787b1c954dc7caaa62e",
+        "run_summary.json": "d53e07edfd0157acbfe7b269a055aeb68242d18c4de3b204a225617aae8e8d1d"
+      }
+    },
+    {
+      "run_id": "A_open_N2_R1m10_bps150",
+      "files": {
+        "config.json": "026a76c5beeb9118a4a2f3dec2258c3bab2a3f2445cc8f94718806cc2685e8db",
+        "daily.parquet": "a804536b74b42b5c5a75c3eb549654700e9104da27de6744d1e5a472c32c0e00",
+        "tickets.parquet": "36ab1cab3e8f5bb1ad6489e31d3bb1a9c2a032a57693e14363ce4d218aeb669e",
+        "metrics.json": "59ab93d7f89695fcdca909fd403b6609eabf9fde7ada21d2944642ac227b7321",
+        "run_summary.json": "aabd278ec6af9fd9e66cc2bd9142349f21789baca5edffe73941dbcc8d5f3e69"
+      }
+    },
+    {
+      "run_id": "A_open_N2_R1m15_bps100",
+      "files": {
+        "config.json": "e2be6b83bc0890b00666422af89e23be9444cafab3551ec45fe810d2c98c96ce",
+        "daily.parquet": "89e65d727d2bb8ace1ab620092cf31a20e8bbf070f4bad48d16e325822bfaa55",
+        "tickets.parquet": "2f0dff18a076d494335eec276f60f6a42ae9d3a350fec1326ea8b7aafbd9eb87",
+        "metrics.json": "47a66e3c1873bb2d13fa40e723d8a362873454baba8c65d4a9d98292ff21567e",
+        "run_summary.json": "92f4040de0cf9661f0fa88418dfe4e7592ec879d3ee703018238c628772b6033"
+      }
+    },
+    {
+      "run_id": "A_open_N2_R1m15_bps150",
+      "files": {
+        "config.json": "2d6729448cfd4d7f8f02a52245cdac0ca478b2f217d25d5d444249652a7eea77",
+        "daily.parquet": "3cfad4823789be786638558e3cdb24c473b8ea8a59d8df2f33e5c47bc96d15a1",
+        "tickets.parquet": "7334ec4a97c20c160f22e39ab01da83640ff0f0254fea16d83b8bb84ea0bd8af",
+        "metrics.json": "0203e13fe81b75dde5cc57402b46d2a9f0fb93b5d8f1984a841ad92c3f0b4648",
+        "run_summary.json": "3c26b8d8601bf116999a48aecf8f342a08a37e3cdd28b86a5f3dcc733287c138"
+      }
+    },
+    {
+      "run_id": "A_open_N3_R0_bps100",
+      "files": {
+        "config.json": "5bbe3ad86f4cb52f3939c39578da93e60342793377bf5ec8e51ec2d544809e3f",
+        "daily.parquet": "66cc0194a95f8c7337bb1e5ef127feef7ef5b7bfaf33e0a1436aae3043434f9e",
+        "tickets.parquet": "3633319ab039c402142cdb6679493b150a6139ef3c98561f6829230447de56b5",
+        "metrics.json": "daa6a8d788f5b4925094f0a0c5cad99a135ea27a6b175c77be183f083b1194b7",
+        "run_summary.json": "21fab72a926061ec0606662c77e4ebf490b6805f932eb365c005e10fadef9167"
+      }
+    },
+    {
+      "run_id": "A_open_N3_R0_bps150",
+      "files": {
+        "config.json": "e88f7417f300555e1ec239f623ba857d5a5d2e684e7bc90994673b683002b635",
+        "daily.parquet": "dc897ce9ecb277ad0dedc6067b01cf311cf1c2b535373669e415df681b123e5d",
+        "tickets.parquet": "f2c484c81d66947785c2df47e23631aeabfb14a6dd80cb0e74e0c9d1a334fe3b",
+        "metrics.json": "bbf288629aa01b7abde5d0c1ffd24d3c3d0b1e9b7e3a7ad5825b58b07c7611b0",
+        "run_summary.json": "72abb36335dc3e5e531f0e0de019133ea42cc431b988ef77aecd3786420c2b9f"
+      }
+    },
+    {
+      "run_id": "A_open_N3_R1m8_bps100",
+      "files": {
+        "config.json": "717f521b2eaac3bf54a2c8f1f0acb1241e153691a27f80ff7d740d1cd83a7d6c",
+        "daily.parquet": "365346dee28b6da60b1fe0190cd917c7981f7e12bfcc6594def6a9fdc2be7932",
+        "tickets.parquet": "0f411800d2c580c1855829681a98c420863ec51391c8d6000362c60a50fcdae4",
+        "metrics.json": "c20053816588518b1ed7990682658ea6d6b8ca5185a18e2b530faa2754b68235",
+        "run_summary.json": "fdccbabe369aa827a2c4dfde08c487ce4e64766571b1f6b6068258c8e83e5889"
+      }
+    },
+    {
+      "run_id": "A_open_N3_R1m8_bps150",
+      "files": {
+        "config.json": "ab32341b856b77dfca07b803f8c431706ebdb904a6c71629c18e36c2306881b6",
+        "daily.parquet": "5eee7a8ddcea927ef7b47a06124910d6411aeb4cf44d482c2a70903366acff94",
+        "tickets.parquet": "667c3c498873454dae145072cce67171700f3be3232605002177ee5672c592e5",
+        "metrics.json": "fcb21a0e28dd4b25b857c3bee749c7c6e68ebe8fa6c888d06ae91d3b0f0daecc",
+        "run_summary.json": "d60b508b00911caef214f65a44c73a01534e808937ac39b546d99c4b5ae0c673"
+      }
+    },
+    {
+      "run_id": "A_open_N3_R1m10_bps100",
+      "files": {
+        "config.json": "465c6532f7df07fd43b70d1d4f5b31b66c060fba0cec7acc4ec0ced641ca2837",
+        "daily.parquet": "ec2718244c6adc9d768a14d235bea45cd62e518a7b48ff7cd66b677f3f7d8ac8",
+        "tickets.parquet": "0a0e09b97055d3568be21b846c5e85c60d68b425d68f294779b6a99084a9bf1c",
+        "metrics.json": "8709740733987da78ca7c2d30e067a048a866ffbd44a319fb9af74ebc4b3b16d",
+        "run_summary.json": "b4297971e6834ab480121611c919da2f967132c40496e86fc0f02ad320f6b5dc"
+      }
+    },
+    {
+      "run_id": "A_open_N3_R1m10_bps150",
+      "files": {
+        "config.json": "223d9f48158d119116201930a1418398701057d0e3d1cc62cb4eb044be3ff31a",
+        "daily.parquet": "5613502ef92f9552981f94963771a8f109b55aa2b575adcdb18ba20f211cb250",
+        "tickets.parquet": "8d983fd290c1d8f79b1222183ca7f01d4d4f2d33d424b0358c30d84a3dc5b174",
+        "metrics.json": "01fefb2f4a99a7911f0931dffd85f5c3059e00bfdcbf7fcfd2073cf38b141ec3",
+        "run_summary.json": "f7b5e443aece6ecf72be85d7b36727165acba350af41244fd2b159dc91e9a6ee"
+      }
+    },
+    {
+      "run_id": "A_open_N3_R1m15_bps100",
+      "files": {
+        "config.json": "26ba1d405563a65adef5efc4d7e8b9f1780602930370f185ed8d1249049459f9",
+        "daily.parquet": "e24deb306be2aa1e64c78821f536e4992651fbf7058d4f448cc8032ed1f83f43",
+        "tickets.parquet": "7b14148527584b8baa903708c7a19c2683f6ab91efb6350a565c81a0b0e79cbf",
+        "metrics.json": "0265119055813be080a1f5b3367258b1dd71f412bbaf9e2906c506a6519770b3",
+        "run_summary.json": "2fb1c8c1e367247e15634a26ca842996ee506b475b63100fe9f9ae5bf6c7b6a5"
+      }
+    },
+    {
+      "run_id": "A_open_N3_R1m15_bps150",
+      "files": {
+        "config.json": "ebe55e141a8851ccff9647e5897276a125e73c86b2fa9bb03c75358c0f848900",
+        "daily.parquet": "a484acac24a5eea6ea73e6c2fb55db62bcd7d79e0019808735b6b4f80e4c35b6",
+        "tickets.parquet": "d9faa9b27745712bcd9ea95a063a92c8b3dd7c1eb132309ee79e7434f4d8f7eb",
+        "metrics.json": "399c58901e426f852310250505284128d7769a82f50018a02802bf58916147cd",
+        "run_summary.json": "7df49db45fd999f7d9c74fd3e1b79cf08ea93128365ef009ede2758dbf214592"
+      }
+    },
+    {
+      "run_id": "A_open_N4_R0_bps100",
+      "files": {
+        "config.json": "23a43ed45644cbda4a29c39c317feb39463d18f42199d167e826f063eef6ba26",
+        "daily.parquet": "4abf3d4e8d84b0c6dfd7f73ede1ad4bb4f0a6580024875763d5a0bf9d5d8aa54",
+        "tickets.parquet": "5f4c303a96486d144f494a32ea41d663399e28076f5a70100d52d60032c1b136",
+        "metrics.json": "e1f4d602a4985df88087f9ffd004804a812499897e7b86e920ef88efbaae02ee",
+        "run_summary.json": "e8b868f53ee2fe93a7f24b780906b02d7289165886c652a85fbf01f701449a33"
+      }
+    },
+    {
+      "run_id": "A_open_N4_R0_bps150",
+      "files": {
+        "config.json": "33ed3f05f2b1f22e56d10a84d4f27ca0647219c895636c17d277271ff591c8c3",
+        "daily.parquet": "509b5bc952271eb9853912dd15137f9557332a8e8cd5ee731ca979b4370532cb",
+        "tickets.parquet": "94021b1c0986866ad7b25db82c59598f77017f7b20ae6b598b02b2671f8afd00",
+        "metrics.json": "f31febb98cec3505c13ae70675261d8ca9168efc611af64ab2819947993a9607",
+        "run_summary.json": "6f77cd9f7774b7ce5a1006dc2c990c620e8cd4160b2d8a9f533fe5e89c650a70"
+      }
+    },
+    {
+      "run_id": "A_open_N4_R1m8_bps100",
+      "files": {
+        "config.json": "df4dab8756803c917c57cd561709bf8a15cc171984744f8711322972ab505d78",
+        "daily.parquet": "9b8f10d2d90ff38d0157265a41d98406f094c17018296e1a91d1f7b68e656242",
+        "tickets.parquet": "ca9a21835b8de4efd7ea0ee5ffce4bf2ec80cc8baf14edf1f95ad0956ab8de0a",
+        "metrics.json": "8689b02bdbaef711f943fa007f2c845124708047c851a2128a47e797d59e140d",
+        "run_summary.json": "ed2120d8bb031bc69699c12eb91f679939c31eefee139f7c7fdaf773ad3bc230"
+      }
+    },
+    {
+      "run_id": "A_open_N4_R1m8_bps150",
+      "files": {
+        "config.json": "f8fe534cb851babffea90800699416b8aa146db809d65bd18060d4d2609704a7",
+        "daily.parquet": "6a3f851b2acced485f30c5e6751c0e21084b215b994fd5d33a55672196c7f8e4",
+        "tickets.parquet": "183b6ae44bd8059d67d79ed0384cb24d32d23674729adb3b40fcc8abcfc54756",
+        "metrics.json": "3522237faca7eedb2a1109336c86477f5c06db03f341d59667485c9b888376a9",
+        "run_summary.json": "91496f161b38ea2216a8fc45f4a459fee7312a160c8ae3ec6cb7c46473c21960"
+      }
+    },
+    {
+      "run_id": "A_open_N4_R1m10_bps100",
+      "files": {
+        "config.json": "5b13667798af7f77679fd7e61250e5c1b88486850fe8149ecbd5051033f09722",
+        "daily.parquet": "d0392143591c2e49af1c40001e20a893620cebf4be17855663af68bd1aab6270",
+        "tickets.parquet": "bb876124cd641b082f8c7b9c2f4775487f7fe6753b9e141d8011c4248a0fae57",
+        "metrics.json": "51277f35becde7ab60ea6e5421ce87e3fc4b788f95c7e6516c98c5a0de796baa",
+        "run_summary.json": "699dc709e87bc98c04be25770c0b0ad7815666c636d67cd7a5b93473afc134f9"
+      }
+    },
+    {
+      "run_id": "A_open_N4_R1m10_bps150",
+      "files": {
+        "config.json": "6c7f7c2923e9dc9f79180a28d9b5b106e4226e45f52915f1f5d37c233fdb1d9c",
+        "daily.parquet": "34ef4dd854047eafe3c8e0e9360f470ab6c1fc4d49db6c10b03d291a6e4d686f",
+        "tickets.parquet": "49a5bf00dbad705181bff5822cbb3c7b787e834036b13f86bf18e0a5c3e7fbc3",
+        "metrics.json": "311bfb52a7df0cc5a8dd6a2cb7147cac89f5eef6fd290686318e4edce61c8829",
+        "run_summary.json": "7076383e1f617451a428c4508ec3c1dc2beb16d5e77b13424a462a45083a3ab2"
+      }
+    },
+    {
+      "run_id": "A_open_N4_R1m15_bps100",
+      "files": {
+        "config.json": "6833b6d94531ab1e2999716a980426342da3e8c8da78aafa5cc6680e3c17426f",
+        "daily.parquet": "c6ef46f44a8d2c42733e519f874abb495d192aacdae052458183ea94ffcf3f97",
+        "tickets.parquet": "ea3603b1e948b6ee72482ca71da00b5c4412207d3c365074f36e35f1415d1645",
+        "metrics.json": "9416cffbdbb486246b18fe2c6d62a7e2e9868da623362009589d257c25ef12e4",
+        "run_summary.json": "fd57c26765b7c14060c781eeab5d2c78daca405e8fcc2ca78164d5d7ab529279"
+      }
+    },
+    {
+      "run_id": "A_open_N4_R1m15_bps150",
+      "files": {
+        "config.json": "566a1f415c8e1cbff383965ba3c50af76dd763f5f7f24827f921bc758788e942",
+        "daily.parquet": "07483f9fb0161086983531d5b5f90fe84ac3de83ebdba06fd9c1cc7e01e2ce8e",
+        "tickets.parquet": "92c49192ea8ed105fbfa1b5f6e5b1e40f934476be1fc3729f6fbb6b8938785c9",
+        "metrics.json": "001f371d2d8e9c50f18e2be6b247482b90667633cbc51e77d0e88bbc5f404af2",
+        "run_summary.json": "e9219defbfc8973e3a887e5b9254d80adad77cc79f7eab203e0c08a7ecb6b434"
+      }
+    },
+    {
+      "run_id": "A_pm_N2_R0_bps100",
+      "files": {
+        "config.json": "a3d071895f8563f47c2284b622f76c2c1163fccb7c3e80cccae9dfaa5fb9e227",
+        "daily.parquet": "a2f1520e4443569b712c3690d14a89f8e6cf56ff60da0016bded48d4ada11840",
+        "tickets.parquet": "8e38be8cc9f6119386eb9781270be73421124da87899eac0d68d41e79da6eb65",
+        "metrics.json": "58081e2c825a582d43793b3a3e624504e43666e79e6e29b90310eeb707aba51e",
+        "run_summary.json": "0f3a40a5c70ab252b1b6298828ab4198d39a29c43d2e28a645a662d23cf01c87"
+      }
+    },
+    {
+      "run_id": "A_pm_N2_R0_bps150",
+      "files": {
+        "config.json": "4c1d3b51031c4870418fafd69914e0ed5bb2799b9218da7e26479219e50d3e08",
+        "daily.parquet": "e3f2b332349d408fcd7d4d81e3f0ca159062afad55e4c180e2300f722d9596da",
+        "tickets.parquet": "eda16038b5113a58113a546f76e2460d33e981094a3f3a9ec4ad82314cc5a4bb",
+        "metrics.json": "a72894d7115811b2eda38f63f600f49a5ae8de227a7af70ecc073885b918fe43",
+        "run_summary.json": "71a7e25997a729f1c02b24238e8a668c6989f85d3acbeb582ef39f03c4efdd57"
+      }
+    },
+    {
+      "run_id": "A_pm_N2_R1m8_bps100",
+      "files": {
+        "config.json": "8d9c40233209c7ff2f9eaa5c28034581a3b722132aa89d5ad274f469306e80e5",
+        "daily.parquet": "7a05ae34617089e2b2f58896e3641888a7f1293b0bbf71f42467758825c688a9",
+        "tickets.parquet": "fe8c948abebea1b70dbad0c4ce06658e58234fcdc6e214a6009f64170bccc607",
+        "metrics.json": "02dc0b5347ed5f42fd5c7f323826481ddcc437f03fef802ad94bd6f9446a8c51",
+        "run_summary.json": "618be6a129531bcae0a9e63b464153013c79ff39c63e90c4039c35ccf60392e7"
+      }
+    },
+    {
+      "run_id": "A_pm_N2_R1m8_bps150",
+      "files": {
+        "config.json": "f196e6bc51f428a3e23221e70e1fe7a60ef9e8e25b61378eca1cc26d7f3068e0",
+        "daily.parquet": "c3c339c33a54c8dae10860e9a06604557ba964e826b30094f8ca97297c6f4207",
+        "tickets.parquet": "ac946bb00d4c673460750332ecd94a0b089c43fdcd7b959ab23ce81839781a40",
+        "metrics.json": "6783292b7159a29855b7d56a673ceb850f5aeb51564c1f5f9da7af8cf60fba27",
+        "run_summary.json": "ac39c5b90fb8448cba6751a04307777a3a6989b93622f82eed3ed1904e20895b"
+      }
+    },
+    {
+      "run_id": "A_pm_N2_R1m10_bps100",
+      "files": {
+        "config.json": "f22d1a7c132f62220fdff888ff101f0faec59dd55d8013de3c99bb1ee8f6cf80",
+        "daily.parquet": "35ae1569d978cb563e8fc9c99089e547ae4e638a0d6d228bc1d05b13c7aa34f7",
+        "tickets.parquet": "c493109100d05d261175027a7cd39a5a3137e93834081139b59ea865484fc9a2",
+        "metrics.json": "c513ae1f1874208d2364b68924bf3a217e2ca155f64c6cc40622ea6a87822e6c",
+        "run_summary.json": "dfa2467d6642d29ebee0a87dd18d61417a6ba3b3946102055474cbfffe509255"
+      }
+    },
+    {
+      "run_id": "A_pm_N2_R1m10_bps150",
+      "files": {
+        "config.json": "2024afef86dc4fd42f2fbf6d2665a24915e2a6b4b66f7aba455520e19a9a8d8c",
+        "daily.parquet": "62f9507684820da1ebab24be23d95abb8d93a8cf59d405562f6f34c8fdf39a9a",
+        "tickets.parquet": "980cc64b920f27afc6eaa368dd6359b7f5918b6b3a4a41ae212f3acfa5f57d72",
+        "metrics.json": "07c6fe07da56e3cd6ddd0787971acfbde858cae0a4d3ee453eb170464afde4cb",
+        "run_summary.json": "7863c6389bb441fb240603f2a082cafcfe9e2e391341bf2b71b22b2234c5971a"
+      }
+    },
+    {
+      "run_id": "A_pm_N2_R1m15_bps100",
+      "files": {
+        "config.json": "0b14d5c8ae88b06ba9c48d054023d7bb76c475c75e9f8f1b040fdd7cb4e150d6",
+        "daily.parquet": "c72f2a214516166a85d2e73c7599c119a09830ed679f8456c6768ff1146e0975",
+        "tickets.parquet": "eb2ecb1025d43e7910e3e4065cc353fa203a4441f5271aae5df4e71b2717e192",
+        "metrics.json": "9692599e0b16af5a50b3bb161584e0d3f3448227b74b1df333bf8bdb15786794",
+        "run_summary.json": "f3b5e4ff422960e7bfc3db6c3a14bf589e454e2393fc757537466a1681878ff8"
+      }
+    },
+    {
+      "run_id": "A_pm_N2_R1m15_bps150",
+      "files": {
+        "config.json": "5dd32fa0558b0d04b93e00b7578b536cf7df6b40508bc9fce422df18ec843c53",
+        "daily.parquet": "7b47aae5fab5572ee2348a6703653b400de68a8f85554975ba3162dd84fb59de",
+        "tickets.parquet": "86aadcef09cefee10676714825aaa151ee604348552571cde400c672cd128a69",
+        "metrics.json": "2777b0e29644ffd2cbf8c047ce1f11843d98359b1240859254b36c45c57a20d8",
+        "run_summary.json": "40838d0d9c3d3a3751d072469d35df6b191c105a225867c67b9546bcc29362ca"
+      }
+    },
+    {
+      "run_id": "A_pm_N3_R0_bps100",
+      "files": {
+        "config.json": "53cc708a696fa3420b63082b99bc1214fb1f379612b9757e81799da8d7b73880",
+        "daily.parquet": "8824be9173a656cfb3308665f98b898cdc7be1bc0b0fa9c2203504fd7e5d87d9",
+        "tickets.parquet": "24fbc94e2a70147de2ae6829269708c47c7a3af996fd98bc19a5259b8cbba4c3",
+        "metrics.json": "975cf3f475eca2e309ff8c82fe88326e49d48e399a8f803462e8ef18b39a0061",
+        "run_summary.json": "2631d5af600279e367ba1e699d56eecfd2eda228af90b13bd5dd28f6a547ae1d"
+      }
+    },
+    {
+      "run_id": "A_pm_N3_R0_bps150",
+      "files": {
+        "config.json": "bc818e25be1c92630919dc2f46a12bef05b3d97475aff575680a38aad38a888c",
+        "daily.parquet": "6b75c09ebe0d1ec89ab9a894dff3445da44880304886d2c3d42f6e24e997b832",
+        "tickets.parquet": "2a8954a29c7cb5701d2eded0ad02f742bdd7d13323c2b5b1d7889bef1ed6848f",
+        "metrics.json": "7248cab659a52361ae70fb69703e5cb71ee2bbb73e6f1faea54cb93b10a08a8d",
+        "run_summary.json": "56476b092f8872db76f208e8faf7ebaa6fde7611a47167658aafc3695fbe564a"
+      }
+    },
+    {
+      "run_id": "A_pm_N3_R1m8_bps100",
+      "files": {
+        "config.json": "ae30041d9c81336748716b8943eeb5ad45d60fa0a814ff19026877abd7c1d90a",
+        "daily.parquet": "1292b37efd80916b71e475344df57e35a4763428b77db493c01ea4275e5a6dc2",
+        "tickets.parquet": "0096bb74edc11122387a64d30331d89c4ea038e9db6f13146049a0c93f14b914",
+        "metrics.json": "557ab05dba7d6df214db89a216f758eedf481f6a6977b5c11bbe25c35d95fc1a",
+        "run_summary.json": "df225a9ee87d19e950410aae354a4dd8abb25b986976d50b0eb2560a158b8025"
+      }
+    },
+    {
+      "run_id": "A_pm_N3_R1m8_bps150",
+      "files": {
+        "config.json": "628c507e28fd952f8f719a3021f10ee592b112553f15de13e21f25fc444f92d1",
+        "daily.parquet": "85ea323c6f192ce64fdba3dfe2be7a6caf8c290b47f1f6a6fc0911bf05c2c84f",
+        "tickets.parquet": "091242a25fa56464fb18ad63126bb2a459f43ae6a5b15612e53e2f48117e05f9",
+        "metrics.json": "94aeb8c27f849903bfece268291616106663b88d04297789c4897c215d697750",
+        "run_summary.json": "9fd56c2b6411313dac6285b445d731b4c86606cbd86a4862e57875e056245ce3"
+      }
+    },
+    {
+      "run_id": "A_pm_N3_R1m10_bps100",
+      "files": {
+        "config.json": "11547afe52bb47ab02e8cee8048eacbb92b7bd62b5de145b44cedb6f4f5e44cf",
+        "daily.parquet": "c70cabe0748aa40fd162e9c44d034823dcc57c12ad23637dc82aa0635238ad6d",
+        "tickets.parquet": "936509234f12ac3b4b6b91838c456f4fe5f1c4806ba4a471435df4b650d567b5",
+        "metrics.json": "a436599f8882dee0bacf566d62b94224bbf99650bccf4c822689afbff9109830",
+        "run_summary.json": "c9f1d45bce74d4b71f56177494ef43efbc3dc81bdcf0a50d16ca2611e6d6194f"
+      }
+    },
+    {
+      "run_id": "A_pm_N3_R1m10_bps150",
+      "files": {
+        "config.json": "1fbfe8b88ee041bafe094fbc1dced48c157d7cdf2799233179ef0a38f08beaae",
+        "daily.parquet": "95d7551ae45200e0b0709fe299f26123f84b1d9725fde9fae0b3fb7ef4d93d1c",
+        "tickets.parquet": "0f5b99f8bf61da1fb2e0d329d81987e1adc4168c00b99e356f43145c9c19bb15",
+        "metrics.json": "062e3de7088aecf3f5463625c3e58d4b7b6e2852eb83c7b94d26469484b553c4",
+        "run_summary.json": "9469bdddf4ef300b8c2949a174db78cd776991d45722e98e3099a01845c66a59"
+      }
+    },
+    {
+      "run_id": "A_pm_N3_R1m15_bps100",
+      "files": {
+        "config.json": "3617569d962421fa391fa863a0f122c96498eae13a55c2955c561f257221bfd2",
+        "daily.parquet": "ca07e047fae6a736658110fa55133d955fdea7d98cb0d67c85fe75cc14d59603",
+        "tickets.parquet": "8f1f134264866a49cc60171ab2ede76d5fc86d40430e82d418269f5de4c34cae",
+        "metrics.json": "175ded6f0eb6d0fb912edb9d80fee21951b942d2ed56ff4b4fd7bc2207ac4d5c",
+        "run_summary.json": "a02cf608288a841cd02ba54ae9b0635393dc2807f384040f2902f2711f4ab11e"
+      }
+    },
+    {
+      "run_id": "A_pm_N3_R1m15_bps150",
+      "files": {
+        "config.json": "4bf9c268d857f6aab4ad9f7d280c78005c87867d74c7b212bf64b214e1521a1c",
+        "daily.parquet": "f97742f6edf30169e2aa9d34d806a96f8ae39f9f5cec225fa6ab994b7f9f21c1",
+        "tickets.parquet": "df23da3f854c261d4c05b8a8a379828c73a8d70ff0aa347cc8d9d5acb04dd538",
+        "metrics.json": "9768cdc36ee3e0bfce315dde1e5f98d0af1add8a3ebd8591f4fdb29c8b8f5516",
+        "run_summary.json": "2992211b9da323955ac973ceec85b6c2f51422d2cb5b90d9da34043a5b6605fd"
+      }
+    },
+    {
+      "run_id": "A_pm_N4_R0_bps100",
+      "files": {
+        "config.json": "6687b54b6bb48fa84cd998b53d2370d658fbf230665fdd73baaa113a8d6ce339",
+        "daily.parquet": "a682d5bb78fc012dcc30077f1cf2f6b3f81b12b5bf50af59b3996d71248cf3fb",
+        "tickets.parquet": "092533dd4bcd020374d987565a22fe62f2614d652e54756f3849cc881c20e683",
+        "metrics.json": "ad278709fa33163142be2a22f3e7ff8584f528d41c8e8b5249b45f4ca3b94e4d",
+        "run_summary.json": "43d71c79c389469a8295f8024a0d9b0ad90cd1b2b4bef1a2d08a4f8949f4dcc9"
+      }
+    },
+    {
+      "run_id": "A_pm_N4_R0_bps150",
+      "files": {
+        "config.json": "d5ac9c7aaae7642d0901b819e9a276fec4a22facb10d53494453d3ab28907743",
+        "daily.parquet": "41125de26ff748c2d2d3dbc13c43e2d1ef2bfc31ca1aca010a3a00605e49fe29",
+        "tickets.parquet": "81f557fa86d37ed637536d3c17f5c347791ce97b61a36f29f12103580c4e9357",
+        "metrics.json": "3083d397630e6adec0a6167a2c223697c5c4b69f9d7647f91ccfa3823a92a18b",
+        "run_summary.json": "204849f014f624d6045cd5ffd87207ba4cd1218731b09ba4cfac4d908dc62a1c"
+      }
+    },
+    {
+      "run_id": "A_pm_N4_R1m8_bps100",
+      "files": {
+        "config.json": "61734dc9bd89bfe17b3bb759f089c99183456c4ab691fa58e77d4e3464ce3959",
+        "daily.parquet": "30645c6431652fdd1a5053ca8ddc83f5a7cb354518d90dc19fcc09bf94042910",
+        "tickets.parquet": "05c54f1d5428fc4202851eae37989be120d2439b880a21259c68288bc961c82b",
+        "metrics.json": "a4912d2f577646ad73da81f47da8ff612f1efb849d4e84a3c4c3cad293433190",
+        "run_summary.json": "f272d6c09009d8788026fd5402cd2056749e19cd5c319e41a65095db0f29db6d"
+      }
+    },
+    {
+      "run_id": "A_pm_N4_R1m8_bps150",
+      "files": {
+        "config.json": "d1076f3a27a2f61a5d6c3613cd6b01a7bc90653576ab6b5418816d9453710892",
+        "daily.parquet": "e0b0a3ecafcc9d63130686379273d0ca277346dab85d0510987111c2e48532c2",
+        "tickets.parquet": "449daf7407da3ee2c4c5af92fa71e565a816467fdbfad5e545d594cbe062e392",
+        "metrics.json": "b772aec7e4a764610d1c1ab764f55fc35a362f13b3df377d364f3ec1b22884da",
+        "run_summary.json": "5c660dd6abb9fa97f244d9ffa0e434b7b06748e2ea55f652880ac1845a3d4de8"
+      }
+    },
+    {
+      "run_id": "A_pm_N4_R1m10_bps100",
+      "files": {
+        "config.json": "16e7d9ddc98807cf0af442bf11e2f645d7d8a354454d1ded10d9d4736cd14336",
+        "daily.parquet": "d372fb3a59439444d46d10b3d4439fcdb97ede689cb86f1adbda077e1a3a392d",
+        "tickets.parquet": "ad43a19a66769231e3b9546fa204622be023caf9822fcc53e4e488089d84f36b",
+        "metrics.json": "19eecf2b6a2b00b56b412dadc92d32d9b50a794b7723b01b7658ebb86f2c9991",
+        "run_summary.json": "68437f21ec942141bdf5c89918c0f777814cfe2b179368d5413568be984a3f05"
+      }
+    },
+    {
+      "run_id": "A_pm_N4_R1m10_bps150",
+      "files": {
+        "config.json": "e7806674c621a2ed00389428a5a45084db46d04dbff64c5c1562cd5cec7a6978",
+        "daily.parquet": "645a7c78d603ef974c01abfb700c28287a15a719193138d2ff096cc29c5bcab3",
+        "tickets.parquet": "b8dfde159441dd69919cb79ba8f1df408fa5d37a16b6f5841f9a596a089bcb8c",
+        "metrics.json": "dde9038a68a9821affedc2217b351c1cef677834cb3a6bad25d89d9b8b134b3d",
+        "run_summary.json": "bac62484abf285acff5bf36020896e60b6c3c2e5eab68329a1631321fc96d697"
+      }
+    },
+    {
+      "run_id": "A_pm_N4_R1m15_bps100",
+      "files": {
+        "config.json": "384b49202cc90a74e390b8427419d860c7736088d0f45b10e797f81c1400aeab",
+        "daily.parquet": "bbaadf5645ad18531208afb1f3d9fdcedd7fecdc198c410d71b0a0dad9e0b54d",
+        "tickets.parquet": "0babc459c550764c79c17ec7d21abefaf5be05550dd9a5a270e4cd2beddb3748",
+        "metrics.json": "162fd9dfe67df065151a82d432d79b1bdb02cbfcad69f4964f7d8f4db44a5508",
+        "run_summary.json": "14bdf29423c1b7295ed0d5f98190494a5a3f8566b296bcbac4dbe3a6a9771151"
+      }
+    },
+    {
+      "run_id": "A_pm_N4_R1m15_bps150",
+      "files": {
+        "config.json": "9e2f9f5db1478bc3442eb3fd062b093173ef736d439b05264b2945e380c09946",
+        "daily.parquet": "85016a99b8b790463e87190c4c43f9c2f07904a573c457eaf07c877b9bdf017b",
+        "tickets.parquet": "cd0fa5c652533be9b53640eda057d955d8b7260bca6f0d379737c0454091054f",
+        "metrics.json": "58b581abe643d20c0f44f0838cc1f769698745245ae13f7509870ff0e404822e",
+        "run_summary.json": "2d9815876b4034575af7b919814e866b3259f71e83f1958697d25a84a9446932"
+      }
+    },
+    {
+      "run_id": "A_pm31_N2_R0_bps100",
+      "files": {
+        "config.json": "10d84bc352b377996bc465502e4d06733ad0dc22b3d51f9d4a29c710bb126db1",
+        "daily.parquet": "2aaf4dcf4d9e1852654444cc25e0229f91f19c2cb2ac109e3972b6f0d1add0fe",
+        "tickets.parquet": "553650ee29ec6ebfa9cab03c334276037e021f920e80d4f0ac1dbb6908c25f47",
+        "metrics.json": "e78419d47659ed7f1b4e6d000667f6301d63bb3a16b1a92603dbea60f82a1899",
+        "run_summary.json": "845008b688a17eac28f46ba15847e29ba517bf9e13e289ec68065ab6628e8200"
+      }
+    },
+    {
+      "run_id": "A_pm31_N2_R0_bps150",
+      "files": {
+        "config.json": "37432d1b6ddfd70905e2a1372750990ce468a1ff54443cfa968bae6f886e679d",
+        "daily.parquet": "44f6cdb6f1fd48d88def4df399d4890247275b48635bcee544d03e2f5b820010",
+        "tickets.parquet": "53e157246d3073eba1034605217b2d3224a301ff716e28fde97dca738ebc2b69",
+        "metrics.json": "fb08ba48fce08a10ed01d1a2b677c9196f0516c88260efffb8c7b8b0ecadaf05",
+        "run_summary.json": "54be1e31b92e8b66c154a76b449e9f0a20e6165926f6e2dc84aa809f74b47e3d"
+      }
+    },
+    {
+      "run_id": "A_pm31_N2_R1m8_bps100",
+      "files": {
+        "config.json": "89b9a10ad70a2efb60212bcf0a555bbd50c6bbe3d3084e472699f31124de38d0",
+        "daily.parquet": "6f3b02d418d560bcdc782b920033b92b12ce328b605c0f87b8b8298e366a0356",
+        "tickets.parquet": "a948fb67a4790da1912e9886a8f0b01fe8479710271b413d047164bbce378b6c",
+        "metrics.json": "d76a02df699629b269ce6039fec57b37ca8c98f298f0596dc19f4e6c60d168c5",
+        "run_summary.json": "5aaffbdb2ff83c49efa2bbfd0030713e86aa39a8d4647be6bd7eef7c64bb6140"
+      }
+    },
+    {
+      "run_id": "A_pm31_N2_R1m8_bps150",
+      "files": {
+        "config.json": "2298b79752a1617bbc05e50e2458e0b52170c09f79641d969e3632089c18a0c0",
+        "daily.parquet": "2ea9b96ac6a611a9610260dcfef6509c6f34fc208fa5066e9126771975759ce4",
+        "tickets.parquet": "1f1ed0f0b8ff9f9c0ce056f382713c003e28dd5cff308925409e59277829f317",
+        "metrics.json": "ed2843399de556ee6fb9cd486571aee5b3850cf77c6ef0971a2ac5f915d0d1fe",
+        "run_summary.json": "6e30b3168fb48a82a1225c5df6f95664066cb2627ce9137e89a8696acdc6b0f0"
+      }
+    },
+    {
+      "run_id": "A_pm31_N2_R1m10_bps100",
+      "files": {
+        "config.json": "ccc121b48ce49562ec9f2907c8a52734a398dbd8a8f1d2c3a10d0a6e3f8740c3",
+        "daily.parquet": "315f5df1ae3ea105f9932e3c57641033e3039f18343955056ada1256cca04e3b",
+        "tickets.parquet": "26e7f5b2b607ace572be1e8869bbdaf331484834d8b2be329b95b6f6abe4b8a9",
+        "metrics.json": "6763fd7396cb310f3befa3c0118ff28a34c2125c91f281919d5aa5b9821e34a2",
+        "run_summary.json": "f8b313a1ed7307415331a73a57bf6e6d604063a6f079b16424973e35bbca0899"
+      }
+    },
+    {
+      "run_id": "A_pm31_N2_R1m10_bps150",
+      "files": {
+        "config.json": "1ffd5ee8e3e4bbf325d905b8c4656b0af5184c2c4329d2af8f2b60a446edb3d0",
+        "daily.parquet": "be514b484156976d89e71d38f90140322734350a86f3c0317caf34623b67b1c5",
+        "tickets.parquet": "75778da6c54df7badcd5c569fd08c1b2fe2dd98634d545d79930dcc493724aa2",
+        "metrics.json": "9d003a3c020b88b2e14db373de6bfc4c7303e6adcf7b3e0e58f4c11710a8e5ca",
+        "run_summary.json": "983ad28453b8d38d0a718570bab93e4063db221b5f6018bc525835ca94dd07e1"
+      }
+    },
+    {
+      "run_id": "A_pm31_N2_R1m15_bps100",
+      "files": {
+        "config.json": "f553473d7e0a5c81db742f5508b21fa2d6d3a454cde619d2732707e4fba6a1f7",
+        "daily.parquet": "5b448138540d509700cf7a7941c0823d1b77d847e3514d4a54b905f44a25bfae",
+        "tickets.parquet": "b24707805009c99c1a3972046032177d863ca572622e2afadb81930bb82f4b2b",
+        "metrics.json": "dd5a6252c9b7b3c47af81afe46ba1fd6ad4fd49b86695a1988ad5f052d880df2",
+        "run_summary.json": "d699547ade7716b5b06287655348a78034b6ebeb78df7f678bbab0bc92aa3354"
+      }
+    },
+    {
+      "run_id": "A_pm31_N2_R1m15_bps150",
+      "files": {
+        "config.json": "f066bf925cc7872086f86db1d9fbab7c761c846bf3978cd26130554954f3e7ca",
+        "daily.parquet": "2196e78babc22cb3b4005ba5a12befd7c9551e98b93cadc4c638c107382aac42",
+        "tickets.parquet": "950b7e9b6fac5f9a4d8bbc94fddf0509ee6040a6a43ea1a86f80a08874bbe436",
+        "metrics.json": "53e6688751fd093bea81bc9c36ddb41cddcc2ed5c1d63153afb110d63ebe375b",
+        "run_summary.json": "7b3c5080459e9768bcb9957f7e76c27399916b547684b6d4c44ddb9d032690a1"
+      }
+    },
+    {
+      "run_id": "A_pm31_N3_R0_bps100",
+      "files": {
+        "config.json": "85ff68e3474cf30ad024a7aaf2678b85a04985649b092860614df2c5438ec0df",
+        "daily.parquet": "d60143321a44ae3cf436af5fe15398b7634243ec898bcbfa018fe0bbc5931153",
+        "tickets.parquet": "0e17d44eb64e8345d42845170a8c1f8353a6414de459d79016ef8e9bedc6afb9",
+        "metrics.json": "47b9ba372a6d3958c28d5e6553ad198cd0a78bbe70ef0e3279f470c50ba32437",
+        "run_summary.json": "b18a5cc989b34ea338eec5787694c6be7ab3868ea6a0ae82d4b88cba715bdcda"
+      }
+    },
+    {
+      "run_id": "A_pm31_N3_R0_bps150",
+      "files": {
+        "config.json": "55bf3f58f0c8eb1ee5f31ef1791340502cafab4596a877c292ee46ae1214004d",
+        "daily.parquet": "2e1e4edf8fb6915a53a6194367a7379279c02af476f76d7c4311c3f78c96dff3",
+        "tickets.parquet": "ff2ef6cab11689d57719504eb9bbdb6769953a24b32edf1607f48b908cd6843b",
+        "metrics.json": "3630b82a541fcecbe8e3ab73e1d09c2742c31e5554ee30142e38557fc876a0ec",
+        "run_summary.json": "17d2e52b80c7bf7ee1c3d2f9b752f4a3a3645e8f64430202d263bea1a149f162"
+      }
+    },
+    {
+      "run_id": "A_pm31_N3_R1m8_bps100",
+      "files": {
+        "config.json": "81eaadf4d56b4f0c9743b9efa94b6332b7d5cc73390eace6e905c85d85856ed1",
+        "daily.parquet": "3e7c61b457d40cf374bd0d1e45fdb04436025b327dd9e5d2bbb1123da42f39fb",
+        "tickets.parquet": "00acec037c63d8c52a0a69ff0e9c98105cb08bee0b18c4777b7490831712aa37",
+        "metrics.json": "4ea3bf09bad2d8b6bb222cc091772660737e047a8ad2ed05c7a3eae0c45230f9",
+        "run_summary.json": "c5248a1612a85ac131100fe15cbbafb1c17352288786f955ee2541adc78c1292"
+      }
+    },
+    {
+      "run_id": "A_pm31_N3_R1m8_bps150",
+      "files": {
+        "config.json": "a57001bd4cdd93ea9ff67857d9ac0b8f2dbf8c49e502630454d0a729579def11",
+        "daily.parquet": "e867f8de2510a5c9ea9e4f6f525c1c7c1e5396b28bb49772c6ba119ea4bc3480",
+        "tickets.parquet": "fab042722b0104dd31c299902ac7aa21567ec71c4f894c1669736742f728a684",
+        "metrics.json": "d3f7e9f983d558302cf29026ecde485a4f2cb1f6286c7f061abd637d4335f8f7",
+        "run_summary.json": "f588351b971a134335383fd00647b538ea5cac6d14ae2a311a03265bacfe4435"
+      }
+    },
+    {
+      "run_id": "A_pm31_N3_R1m10_bps100",
+      "files": {
+        "config.json": "8ae90aa3fdfa4d979b576734abda116462acab12c447931327324336eaa46540",
+        "daily.parquet": "5710d51ae67e18ff96f7952e1d15c4c4edd73c084990bcbf4a4eef34b811851e",
+        "tickets.parquet": "ef8a12bd7a354dc9578e34972fe775ba66ce94d4bf579fe26ea3faf8c0959f2f",
+        "metrics.json": "13a54ba36e529813f36f5e71c07bde4e491d90fbd75d0d9663c4cf7cd54f4d4d",
+        "run_summary.json": "8af9c8ee9f7cac674459622451591d100be6d310436fa556270e96a6857327c4"
+      }
+    },
+    {
+      "run_id": "A_pm31_N3_R1m10_bps150",
+      "files": {
+        "config.json": "f051c1086cea84d49c9962cf1021199fd0776714488045ead2105cb0c4c26e72",
+        "daily.parquet": "902b6ac4923dfb640a1492782f295cec87f2d7e7e73a2a060b5204b3755d8c86",
+        "tickets.parquet": "2d2033950993a62b1e98e309837c73eb36bbb14c4b7c234de7a5adcb71f15b8d",
+        "metrics.json": "2b0c3b1c977049938ff1143b3a5b678086850c965b4827d457c9db287ac965de",
+        "run_summary.json": "cf7d31f69d1c9ff36dd89cb038180aab7eed18452133d269a37d9fea443bd537"
+      }
+    },
+    {
+      "run_id": "A_pm31_N3_R1m15_bps100",
+      "files": {
+        "config.json": "822b4fb3a2326b06cb2dfd1648079530fa80d05e3aefda0a6e8e5bd005f4a644",
+        "daily.parquet": "fffbd984bd595fe9ff5b552fdeb25ffafc667e6d168ab3ca74d2dab83f4901d4",
+        "tickets.parquet": "e7957ca046f465f5622680663a22c7aad548c913e8ceb44a587aecb947ce5a06",
+        "metrics.json": "6f78f626cc14f698cfbe6c66ba7a5d19890ba8930f42f1f706476cb71c5ff8fb",
+        "run_summary.json": "cbc31bd220f88a964f62822edc58deb736f50a62f83b98fe6c29acb3a46f8982"
+      }
+    },
+    {
+      "run_id": "A_pm31_N3_R1m15_bps150",
+      "files": {
+        "config.json": "aaa16e8b4537cd07d2e90857551958f75e3e3c69deccc6bebe26185eb1af0371",
+        "daily.parquet": "c2dd49ce66c25cbc1849869c02b7aa1dba628e2b4df584ec7bb7bc1fad3f5435",
+        "tickets.parquet": "749bd9499f1fd479861c52e9db5e3fc53880e1ac2bbe674e8b4dc063333edf1f",
+        "metrics.json": "3cc91368a8dcb7ce5a8112f257599c67e3c31245f2a45c9fda98439d633a5bea",
+        "run_summary.json": "fc93164155f606d9f8f88d3232ebeb9493cc5a7690fca19f707b3c0abe5416d0"
+      }
+    },
+    {
+      "run_id": "A_pm31_N4_R0_bps100",
+      "files": {
+        "config.json": "b831ffdbb5117ff4443c90217beb79d27f38939e5b13e0b6c6cb3eb43622b288",
+        "daily.parquet": "cdfc69da962fe2b1d52e662c195a2d17a29eef1977e8e9a1dc18aa40cf4474fd",
+        "tickets.parquet": "632dbdf1e227093a2edcc61298686967edc2ceb008bb30d215aeeacfb0fcb73a",
+        "metrics.json": "34e5d3430615cd6fa752f24116406fd5ad2760a549fbcb38f710b737ed87e3f1",
+        "run_summary.json": "a4bbd84c01241cb0c55de7c67c071531495137cf820185666c8343ea6555d8a1"
+      }
+    },
+    {
+      "run_id": "A_pm31_N4_R0_bps150",
+      "files": {
+        "config.json": "0800221d83764571ca2b2758519ed2f07657d060a3d3b1632f9493a67defeb13",
+        "daily.parquet": "fc11de23c8bdca48570f6726a7d350e53326848f7820cd05be7452e2fc761891",
+        "tickets.parquet": "d5f9f22bf360adb9a7f27716cfb49c98c64020202925541f487ebb33679ea8d2",
+        "metrics.json": "f36b80f974bd3a6c6d032959bb47ecdc9163fae2ed3bd6a211110390c5d5e401",
+        "run_summary.json": "4d550286d2a92515e1ffccfa73647e3d6af21a5d40c3a84dbdd06ec521f2e6d4"
+      }
+    },
+    {
+      "run_id": "A_pm31_N4_R1m8_bps100",
+      "files": {
+        "config.json": "9e4f2ad74abeaa0868bb65cdf4553ecb35bcb4988bb9bf2a077946b8f6a5c5ea",
+        "daily.parquet": "c2acafe941d2c3f9da7e361fd9a1d7965933bff5a7f5e4e41910a826ea3c71c0",
+        "tickets.parquet": "54f21526028bf0bbc81bf76593da77e45ee3ca3f72230e71489dde3ccaf15f71",
+        "metrics.json": "f9729cd0da67e16a983b5e481e21d14838f03c308cbd7c971af5d9f6d244ac5c",
+        "run_summary.json": "bb94f1269352c4d312e9a7c4d2fcdd2fb432bf5ebf67ec271f66849fe8d6e1da"
+      }
+    },
+    {
+      "run_id": "A_pm31_N4_R1m8_bps150",
+      "files": {
+        "config.json": "23ecdfc05409aa8c7de7eee253952d1fffd7129f4e601ac03f9c9c02926f165d",
+        "daily.parquet": "1645856326dd8e372ce6a342787e74118a12d55e6418ad42f0a7b5abcf87c0be",
+        "tickets.parquet": "42af92cea0e13a1a2423c3d7fa10e25ecc7739a7112d575ed4e4bda21f30e5ab",
+        "metrics.json": "0dd3e5b173867e9c30b11c9b47a1d16bb3494f4fa7d5ecbe377a67b7c5c6e988",
+        "run_summary.json": "ccf6ccc4338aa03d413052cbb50790efa9db7246fdc92e554ee00bf6124746e3"
+      }
+    },
+    {
+      "run_id": "A_pm31_N4_R1m10_bps100",
+      "files": {
+        "config.json": "e4ae0efea42539cb2549f216cdd5e8edc6484e4f7f11178cd73f388b396e423a",
+        "daily.parquet": "41869c547c82c9d82e6c4ff6187c8c152044c2204582153554911ae8f2bfc7bd",
+        "tickets.parquet": "2a45165211855824137861d0a447d05b6b6c075f27be315f4962f980c3cbafa7",
+        "metrics.json": "83cb8d667067f664632b688f51e74ad80b7d27afaacd243d5776e9db2e5dd8ed",
+        "run_summary.json": "dbdc89c31bf65436fb5453085ca890ab34ad5bd86c7e264fc876ffebdf089444"
+      }
+    },
+    {
+      "run_id": "A_pm31_N4_R1m10_bps150",
+      "files": {
+        "config.json": "c40d2d6668ff095e30205a75115340ae4e1f1ba15ed1c91e858f4137de28be2c",
+        "daily.parquet": "9c1164ca90a435358d09ac0b0eca61f40228025a8c79060c755a1f9e8d3f5114",
+        "tickets.parquet": "3a9af898c352689b614aef4e237b7b42ffa8a6e53b7a3d7e83d6f0ac5bcee655",
+        "metrics.json": "c609113b5058ad8c644f0d96da96fe04143b832ddfa60b959ac25b912a0a3e52",
+        "run_summary.json": "59040189a4c2a89407c0242a92b9557aac81d02fcbff85c8b9ed436c50c04035"
+      }
+    },
+    {
+      "run_id": "A_pm31_N4_R1m15_bps100",
+      "files": {
+        "config.json": "e4fc0cb0baa1d2c4233b996ba6167153d11ae9a13c54f436579335f8456d08ce",
+        "daily.parquet": "2ea55d8ecbafdf4a336804b87086d3c02e97111fbc9dd4f34ac31163ba06fea8",
+        "tickets.parquet": "f6d55cc31fbd15c2d66210f4b4840955c856c8bb65dfa80b41c99fbe9ee71e10",
+        "metrics.json": "9de85d4652d45e6f4674dba366217398c1f9aa8c68fbf7489a7c65f4d39e8295",
+        "run_summary.json": "1de63c599480d3128111a68bf0ba3ae43bd896695593cdc0b4db422f32c40477"
+      }
+    },
+    {
+      "run_id": "A_pm31_N4_R1m15_bps150",
+      "files": {
+        "config.json": "4130f4e9b3d742745b518f943e94bacf73a4abdae376922246f5b5d69ea1c412",
+        "daily.parquet": "ddefb1960747c347f71567d69d9255cde7ab9ad4c3407ced60fd6917bd2dd30d",
+        "tickets.parquet": "0edb33f4f1a638c9372f4554415f83ae513f44a60c16698ea30e3b3f910e93a0",
+        "metrics.json": "54b8f4c5eddbfde8b529fc76821d02ffef27288bc454072682379040f1af27ca",
+        "run_summary.json": "ceed2291efbdf707ea31b1eebbd3788cd3b757676d158c651f29479f7140b6ab"
+      }
+    },
+    {
+      "run_id": "B585_N2_R0_bps100",
+      "files": {
+        "config.json": "99edec265ab751d54d399dd3838e55013497e20004ccd4427a89d2f532ae894b",
+        "daily.parquet": "2982721bc2eba9d13fd48564153f82c12ed648ff344497217dce691f03df3f2a",
+        "tickets.parquet": "0d63164509f2be32fb4b9239dfa9d2056a05301391474be287d7abb3f5bd81af",
+        "metrics.json": "55fc43021089105c1047a264526490aee6f6ce5dd358885be6e7f9bc180778f0",
+        "run_summary.json": "1ad607c83b2cdf5ad7efbfba29eda2d5bb18d7098ab651fd5a187d88f987d4ed"
+      }
+    },
+    {
+      "run_id": "B585_N2_R0_bps150",
+      "files": {
+        "config.json": "6545b975d28f0d14f52fba92c7171343acb78a235f53706fafd76a4d8770d31d",
+        "daily.parquet": "54add6d9bce8f207721eaa2a066587d1d7a2046d55b34fd22779f91f5776f34b",
+        "tickets.parquet": "6796fdd2fd768a75e128ba007d0cdc3fa3eed0874de1864d5cd4b9e83e68a42a",
+        "metrics.json": "531db82c759608a8ffb23aac1917e0c705ce02d7afc792ae02eed3407d3ffc63",
+        "run_summary.json": "d3d4f36590d3edff9e4339b740bd1c69398017630719015d85248083aca3f99b"
+      }
+    },
+    {
+      "run_id": "B585_N2_R1m8_bps100",
+      "files": {
+        "config.json": "d5901f147452e4ceb8482bf496710df25e095a4d5d4e5a77cccd102390ed4200",
+        "daily.parquet": "9c2bdc0b2082c4c62b9a85555d92d1dc197481c0bd65e0fa4e04221487d18d4c",
+        "tickets.parquet": "01a7b6b6848254a454e8c63cb02115e8096e77124df23cfcb4950f33959c2b95",
+        "metrics.json": "4fe6865e6f19dbb55dc86b2f273592d53f6a633e4e6bd9fb9553296299f92ef5",
+        "run_summary.json": "d94d446fc35d527ccb915536fc5c8f80123ec8cfcdca28f86629853ad1beff9b"
+      }
+    },
+    {
+      "run_id": "B585_N2_R1m8_bps150",
+      "files": {
+        "config.json": "b99911ecedae8af8d711433af54d5d7feb8726a1d5773d9db4e036c98c3e4160",
+        "daily.parquet": "33ffc5c10b9d76edd37df4906949165b3ccfd4f7836e0cf27cb418102127b7fb",
+        "tickets.parquet": "c41788b098f27acda37532b0b8f6834b6e6a7c459fc96cdd9cb299598fe6948e",
+        "metrics.json": "98bcc333b3dd39ab74e6d8f26d4c4ff03b462f9b9a9400739edc2aeb51c363bc",
+        "run_summary.json": "6872190d32d271e1da1fd47a66ba00a50e46d344cf13cebd4bc8796a9ee6e215"
+      }
+    },
+    {
+      "run_id": "B585_N2_R1m10_bps100",
+      "files": {
+        "config.json": "2615cf39e1ae8aee1a161edcba617ed079c7e3804e62da986ae6340f2d6572d5",
+        "daily.parquet": "ccc20c4a52b3c0f298cf308b7a1fbc3f36f128cbf02cab71d328353585283650",
+        "tickets.parquet": "c2ed0287d9dfd518b2f77092a1a758132d018d9019b9ef8e6415240ef63bc030",
+        "metrics.json": "689ad9234ddc270481c64f0d313a9e997b06efba490a8050c10af065818c4c17",
+        "run_summary.json": "2bba47c5ccae893a9c82d29964bf53eb05b67b0c531aa6b01e1bfbabf31dcd85"
+      }
+    },
+    {
+      "run_id": "B585_N2_R1m10_bps150",
+      "files": {
+        "config.json": "16ed41f8836b344193c33544357e4c8f19f5b5105c30ee620d0bb429af0f5787",
+        "daily.parquet": "bc48aa079b57b1a498ddb6084f743a5c9680d09e682aff582251dcce0d4f2b52",
+        "tickets.parquet": "360f9060f2689eb37d6be4954b82729de898a17073a4f1fc34356cf66a36c0c8",
+        "metrics.json": "bbf3af684e87d8c0b733664b2051007283377a3a0b4a242ba730f42570594b55",
+        "run_summary.json": "c58bd2b84b584e858d3c43c184e8344b392c4b1656c1c742b3aaaf62c818d9b2"
+      }
+    },
+    {
+      "run_id": "B585_N2_R1m15_bps100",
+      "files": {
+        "config.json": "5452f312ddc1ab80598f3d570de5302e0160a2f6b9a673fc5a4061b9f2f1a639",
+        "daily.parquet": "6756c0dfbcc54dfa212f4720cb0d134266f5d4119629eeb6e6e4e5c3eadf082f",
+        "tickets.parquet": "e6544511c2e6c6f9148ee97937b19ca0071ac7cc205add90d47416da63392399",
+        "metrics.json": "933a3cb4b386db5b0fa77a90bf602a7074375db8c9cce10a496f4db141d4f1f3",
+        "run_summary.json": "b6d0cd0f2ab7279ed8562b9655c92175b92b9b08da3d3cc0565fed27451150ba"
+      }
+    },
+    {
+      "run_id": "B585_N2_R1m15_bps150",
+      "files": {
+        "config.json": "502fc7e9cd6894b928565a7573e9001e70d1007d2b87a58ce89a5beb07de8b98",
+        "daily.parquet": "5df763c4d83de314bdd7b8a29354d54feffb325b70405b3e526a91242200a89f",
+        "tickets.parquet": "8cdd8ea3d15e5530cc702dea657bbdd1d81b106ff9db2a758521e0ad35b19dd8",
+        "metrics.json": "19c87eceda6a5434fe33eef97f549b629b2ef1e09fe0fc43af9943d84a825cbc",
+        "run_summary.json": "1f59f13f141d90c8bfac74eb0efb9e495cbe2053f018368b213f6f8f45998ac8"
+      }
+    },
+    {
+      "run_id": "B585_N3_R0_bps100",
+      "files": {
+        "config.json": "30f5f4d465a3d5b2b6ab30f8046a5bc3fb60f8395f973623cc176b436d0fb722",
+        "daily.parquet": "ee084e22d6586660ab8ad2d5b4fc0263342f92ab5d539f1b12c712c13944a353",
+        "tickets.parquet": "5e83865aff8c5cfdf035c28988b522af4e90dfc223f8e8cb1da6dea726356fc8",
+        "metrics.json": "867ca75c039f1ee66ef9efbaef51049ef64f3605815ced4a40ac7d9a5f0ec46a",
+        "run_summary.json": "eaf32e7c66b361db1e69b2d7b9ceff75bc69b52bc6bca0f68f867b6c39a553cc"
+      }
+    },
+    {
+      "run_id": "B585_N3_R0_bps150",
+      "files": {
+        "config.json": "8c28ba3bbc98b439e2563c91c736d844826b32db39567dba7cef1c7f092d2f4a",
+        "daily.parquet": "0c7ccc0afc35eb912a043042372eadd515944d412f927d2b955bc86c93c82509",
+        "tickets.parquet": "05cf0818684859319f2fd1fd99471734ba156986db27be9b7612755f037888c0",
+        "metrics.json": "735115b90789e7edcfc876689bb790f794bfd148d640c0d9f81fdd401c10bcc0",
+        "run_summary.json": "3800ddd2de95fb6a4581fdf8c7d9d16cfc7c761f6ab9c48f085b49b090b0fd93"
+      }
+    },
+    {
+      "run_id": "B585_N3_R1m8_bps100",
+      "files": {
+        "config.json": "440300d0f21cea0fe8c98677744635a56dd38ee100ffa38c244bf45c3b89d06d",
+        "daily.parquet": "ec57c4349f765ab591dc26b5d927c0a3f50e603a93abdb747f2426f434d642e6",
+        "tickets.parquet": "348a882a302c0fba56e4ffdb6289c72b8b43f2638ca4cfbd0a9c95f97170878c",
+        "metrics.json": "cc5747a415bf61c5ac7d139522e6799d8efa8f15bf55fbd3391a2619015e6249",
+        "run_summary.json": "cd9b9a8c24a1406a7fd07309be4fa294bdaa0bcaf1e2253e448f2e28c07d408d"
+      }
+    },
+    {
+      "run_id": "B585_N3_R1m8_bps150",
+      "files": {
+        "config.json": "5d09a12cb839bec5f992d91008bee2885cb516456aa6106cab9efb7c5c54ba21",
+        "daily.parquet": "2e71ba6e85275d67a2b53b83b30cd2963b61147a765708afb2d67a9135176f26",
+        "tickets.parquet": "7ba1f60291ce98e8d92dd9daa954e682ee17e2945a128a3e22d8e8217fecfc05",
+        "metrics.json": "cfcde15b0e4b262f3c410c79df23136b5943e889408c46114b3aaec6bd678245",
+        "run_summary.json": "2f16e0a7b73a229bf6437d22aefe3de3dc79896fd37e8918a595547415b929e7"
+      }
+    },
+    {
+      "run_id": "B585_N3_R1m10_bps100",
+      "files": {
+        "config.json": "4bdef69de49d68ab8015898fbb2fce8323ece3de85184a92e3467a8d8aa86bfe",
+        "daily.parquet": "50c1fd83351b70a518e8223ab9655e161651ccaa2a9834789c308a560a3091c6",
+        "tickets.parquet": "565e8f84b6ed20e9e2e2424b3fa879e0418d5860a4b86bd5d698d2bb8b4cd804",
+        "metrics.json": "fc992b8d60d871b437564aa7b3e19120b2d1ae27930370baeec2f4f5f8aeb5cf",
+        "run_summary.json": "5d39279be847275eff6f892bdcae8907743411defa2cd2da165e9247b53b95b2"
+      }
+    },
+    {
+      "run_id": "B585_N3_R1m10_bps150",
+      "files": {
+        "config.json": "f7faab0db76053e57471ce1dac46a6f29b11209d7de06bdf8e0a3cc0b0d77b2e",
+        "daily.parquet": "e63a38b26670fb1e01cf05d4e1ec10a759896728350994152aa808b3a1a7c644",
+        "tickets.parquet": "d2a9de4884a9befc76e9ab136671ac8f071f9f01841128c77db50f323e926484",
+        "metrics.json": "f15d29cd2ad61d3bba641d72a51aabb21328ad8d00132bcb213fc63608ee4bf8",
+        "run_summary.json": "0b0e3eb67eb3661102e2094df1e649d50f20995e556b7847007ff5b1315800f6"
+      }
+    },
+    {
+      "run_id": "B585_N3_R1m15_bps100",
+      "files": {
+        "config.json": "503c3499dfc994a433cd16857394cf1705365950c9c03a76dc5e96160dcd18ca",
+        "daily.parquet": "897fdbfffef84310396a9d4838e1f637713899586e85d63e2ad35c82738efbc8",
+        "tickets.parquet": "c0c97bb5bec730614480b9fcad2d8ba24a85c4b749fa03f6f377b0efc6d1524a",
+        "metrics.json": "cc1ee60ba498718db33f2b946dcb6ae2e14eef51b80533d9018719d780e8c346",
+        "run_summary.json": "1e7f380861ed8d4afe8f19c67103245c9aa899c42eb4a79a43ebd5545247cf05"
+      }
+    },
+    {
+      "run_id": "B585_N3_R1m15_bps150",
+      "files": {
+        "config.json": "8770347222ac968982f054ddceb2ac59ad19b144e6c40cca4d8ade11e6a24aa6",
+        "daily.parquet": "a31590d91c1b3629f246529f86f2be8a5f8ec5d4516a1576263d4d8d44777c0b",
+        "tickets.parquet": "7971f1fa027cfc93570d52522654a5e0d2426843610c04150a2983c82a82fd59",
+        "metrics.json": "03068453a3664697673e7dad691ccaa53d083d9d261418ec6cc2871d2b212525",
+        "run_summary.json": "c5e0a0d9f6a783484dada36d8d12740e95fb27f3c7f9ec469ab50f0c0c0677c1"
+      }
+    },
+    {
+      "run_id": "B585_N4_R0_bps100",
+      "files": {
+        "config.json": "7cd1f6a4f625f7688b5b23adc5a831d8ac8ac159b02aa9c8b9fced8695decee2",
+        "daily.parquet": "b40d61e49b3dcd317457e51d96889ff53b176b153f6606e82f81f50a57303158",
+        "tickets.parquet": "8def1a8161cd0302b2cfd070d4d43bd001c975fbc2a4fc1d436d5c277969f297",
+        "metrics.json": "07cb1b47a4aa3c81f0cf8181b78a3f247840a7083e1b99c180c703c1254e7b21",
+        "run_summary.json": "539aa64a67b5e1f1b904b8d3319b16166f11349796d065f2ea1b0bee0de2735e"
+      }
+    },
+    {
+      "run_id": "B585_N4_R0_bps150",
+      "files": {
+        "config.json": "dc154f1666ee9049bc08629e6c9a3633e5b7e26d24b318dfb301c631bc744cb2",
+        "daily.parquet": "aeff9a7f62e5825ca97eea2e8cd9ea30fd58e406c2bfaa29f3321cd21a3669d1",
+        "tickets.parquet": "24db6e6068716757e4d40a3aa8bd2d39313e2972f45243cb39fef9ff64c4c130",
+        "metrics.json": "39190745953372f92267bc761daf6f805a3eb18fdd1aff518557acba25f97cd8",
+        "run_summary.json": "ac4e86ecec8f87457e16fcbadc3b679000ca17d00fbea5e80b6f1cd2992ae839"
+      }
+    },
+    {
+      "run_id": "B585_N4_R1m8_bps100",
+      "files": {
+        "config.json": "428b173d466559933ca70a4500b0980a145d9f4a7e1cfc344a0d2ad2d2fa1f92",
+        "daily.parquet": "88211cdb1c02e07105548929318aadd61d9bd5528b91dcc4ce9e88af4afd5f3b",
+        "tickets.parquet": "d770dec375cd5eb5ae1e76fdb33f1fe191e64ea2ffd5598a0032e820dceb9f9e",
+        "metrics.json": "b110e9d6771d019898748f1b597263539fcdcf831bebd0b08aaffd59c41f316e",
+        "run_summary.json": "4b593a8e337e2f19d5bdb5c6f33eff0ee6dce45e935d25ac2ea060e4662dc3c9"
+      }
+    },
+    {
+      "run_id": "B585_N4_R1m8_bps150",
+      "files": {
+        "config.json": "9d5d9cc3b0155eeebbb7b1b72c15076e0bddb0c9a38c797c34d0d58e8ffa8424",
+        "daily.parquet": "288259d728a9f98b1c33b5ac1c0fb162e64505a7154377634d2ccbbec164c231",
+        "tickets.parquet": "13f5c15b047fffa00ace32f16550390d6c150fb00418fb3dd5d5a9775a51d92b",
+        "metrics.json": "907e3fb8ce39899394399ab121c19d27cd35e5e1eb307785fb0634e22dd7244f",
+        "run_summary.json": "5589e84b6178f021b02b19d0775c4dddafc06fa645c9f8060a0ca1f09fcdd24a"
+      }
+    },
+    {
+      "run_id": "B585_N4_R1m10_bps100",
+      "files": {
+        "config.json": "a48db8fd29dcb534de27451823ebd3beaae825b6b0fb4e74ef142ee0621e5803",
+        "daily.parquet": "82401d53dd4d888c514fd3bdf605defbf3bbc864e60b487133dfa539fcbaa24a",
+        "tickets.parquet": "d9bb46450485f043d8cfc4bd30e97f60d8baf501cb6faffcb3771a56b60a5036",
+        "metrics.json": "7e27f569b0e2f26fefa6d3861d5872326e2e1002175fc776a8992d10c0d13076",
+        "run_summary.json": "d33fbabe22b956580d4e12d5501f2947805219d39cd6c80653bf4ed6c8d02a18"
+      }
+    },
+    {
+      "run_id": "B585_N4_R1m10_bps150",
+      "files": {
+        "config.json": "e03a8f1f432cadff6d1d38e4aa61de0533006c8b6a20a949776b0766ca1cdd1b",
+        "daily.parquet": "b8962eb4a331b9c59d20b35a9eb13ae6d1c8e43dccf4c8f440390857403a4614",
+        "tickets.parquet": "75d437e1e9ca1f4b393940f604a0c9209357352be797e5e139b9b71db00f117a",
+        "metrics.json": "27536d810a8153eaad3c684f68bc6786ee88adfaea1bf4495d54000c4292b2cc",
+        "run_summary.json": "706cea43690a6d026c1928a570289e1e4abc53a59a20594c34fdba79beba2083"
+      }
+    },
+    {
+      "run_id": "B585_N4_R1m15_bps100",
+      "files": {
+        "config.json": "b445c2b8bc79b6bf4dac30aba266630c7d2b2a72a0951b07edd28454f1531930",
+        "daily.parquet": "d23077786f7e990df8b144bf5029b2d20997033efd2069b42e9d81d1d2993a52",
+        "tickets.parquet": "a4a897b9cb74447f64ec091eda2a361556577edbb4d3f660b1d931b446009053",
+        "metrics.json": "e87ce74935ad0851817d773930052c262b1693829ad9832f7e5cdf9c6709ff60",
+        "run_summary.json": "3bcb7be46d11d54a7357f702580fad01bacbc151d6865b2f3cdebe5a331e5f9b"
+      }
+    },
+    {
+      "run_id": "B585_N4_R1m15_bps150",
+      "files": {
+        "config.json": "24b0e79b85d762d1949c7b5643c5f2b6ce2d137c5c02af60cef8c88192812d81",
+        "daily.parquet": "b6820ff76a22d9bd68a0c8166351a42374bc1c44ce761ebc170b7b07ae2fcd9e",
+        "tickets.parquet": "19649d564c29eee49f64460a87ce986bded37315abe32a20588f924f6f0df2b7",
+        "metrics.json": "538e0ef893c3bc98c1e8f7d6b9c41af4a322460bf046f6538e4e1a043478a778",
+        "run_summary.json": "b2ec1cbe752e3109c80f23bddb259640990af264b6b20a2d84dc712dd626e094"
+      }
+    },
+    {
+      "run_id": "B600_N2_R0_bps100",
+      "files": {
+        "config.json": "d4770aa3480b0a2981891b2f1a28d653e497c4abda0d85881bd9f5b503ad3eda",
+        "daily.parquet": "a0ec0b5993274ff1cf48ead88318e982804e6f70c2a077fb32a8ddafbfda0ae6",
+        "tickets.parquet": "4c1f8754aab05dc821515593d02a4aea7d97f1fba83655e740a274c4a8cb5daa",
+        "metrics.json": "0c737915e354c54a3d8af015c7c9dc70f675a0c036d23923c946650151bc9ac7",
+        "run_summary.json": "08f2cf361447e156f62ae9cf63a95a285eff3bdb988a1185e27c9846f9e042b9"
+      }
+    },
+    {
+      "run_id": "B600_N2_R0_bps150",
+      "files": {
+        "config.json": "32e8acd5b0ab42ffbff2516ae7eaddce25e487b5c79678d89ee5147473837649",
+        "daily.parquet": "3c5511c4bbfcd96ac9b94e1448f7cc450db80fd6655d76add06a268008eda10c",
+        "tickets.parquet": "78aa154476369b353f957b139452dd6e72e06c16350783d5ae64b0be70d994ea",
+        "metrics.json": "81515b781033ccd5a468f231dc96bb812b7d4ab7fb5a39294d860de20e7d2890",
+        "run_summary.json": "59da9029fdf8b3829f468e5acbbadc38df6accd9bfaea9813410b496f5243d6f"
+      }
+    },
+    {
+      "run_id": "B600_N2_R1m8_bps100",
+      "files": {
+        "config.json": "d5cce3a5af2dfa86c5ec150b601b2481e4b0e4323628de958df2326354057756",
+        "daily.parquet": "2ab605ad622544bd6ae138ea7aab5b2d283e5c87d44d14a73b60df6a3a9a3771",
+        "tickets.parquet": "1c98933ca107e687b19db77bf96b98de760f9a4b6678fee641a610d830a4f0fa",
+        "metrics.json": "a31fd33a59ff3f265cbecf4dd43f4c3411c26de9347d56dcf1dcbec2a0112405",
+        "run_summary.json": "cb9807b219bb22703e1d64590d2d16b9284e44951ca06b55cac53d0cbb887bc4"
+      }
+    },
+    {
+      "run_id": "B600_N2_R1m8_bps150",
+      "files": {
+        "config.json": "90ee3870f8d8841ddc34e0d9efde8c59cc5dcc1e5f4136e5ee9bb0119ce4938b",
+        "daily.parquet": "078fb7dd9a78b52245a0abf4bf237bcf01739fa683c770025229bf3a7e667104",
+        "tickets.parquet": "aa144c1a0a503c88df58053a18a8e44b2ddf483996c28b8ae96aebce461300fa",
+        "metrics.json": "81b341e8a2c558a9c0aaf48e685081a52df2409329370535a4156aebcb613bd6",
+        "run_summary.json": "0bfc718fa76ab4042f546da62e867caf08dd608212e25733be5f5ce55fd01180"
+      }
+    },
+    {
+      "run_id": "B600_N2_R1m10_bps100",
+      "files": {
+        "config.json": "3265930431a0d74d6419e141015cec3ca420b07f921b8e480d7514615e942a7a",
+        "daily.parquet": "714ac35b6144bbf03b47effd96501a385a1ff51e325ba27178bd5b632ef2c353",
+        "tickets.parquet": "50ad27fb659a40ab87e8f156a452ea02e93f53b95fd95b1adb37d78f542173a6",
+        "metrics.json": "18ffb0ef5b86a43c4dd20123ea6b96687e81b041a30f52a960e51c973965039e",
+        "run_summary.json": "a85af9de655fd034c9382bbf04dfdd5002e459d6b98fe4f1852dcd7f0d9f5166"
+      }
+    },
+    {
+      "run_id": "B600_N2_R1m10_bps150",
+      "files": {
+        "config.json": "7712eeff7be63791364759b9da17a9b191a01ad3215acdb8e2e3900a10c2a4e7",
+        "daily.parquet": "da7dd9dcf3a55beff890d42aa6ae3ffb905fe3fa709f18c31e551f4c4b19c0d0",
+        "tickets.parquet": "50d6fec3381679e591cd4f134eaadc90f8d8e3b75fb5c1eae72f8bf367da433a",
+        "metrics.json": "9c327577d6776dc7dc0c25711a4920d5779840d6238d1ce533bfba3729c5671b",
+        "run_summary.json": "a1b53e0db42830bcc08521cccc6bbb9b19f0666da18e253491400949163f7fdb"
+      }
+    },
+    {
+      "run_id": "B600_N2_R1m15_bps100",
+      "files": {
+        "config.json": "e25a3738ce4ec62649f672b8cb2259db1198ca8edd0ec49fb9d35c1cf63d0477",
+        "daily.parquet": "3d4a01453ba46e5b0b3a5a31106260a942d5b79748c03bc3a76460ceb6b33261",
+        "tickets.parquet": "fb9a893fdb0e926252abc30103344b4b0a1d461fd4440682896666e302e04daf",
+        "metrics.json": "d1c7de10974703f86a4bbd8d4e3528988b8368b8dc33196971714b9b113212e5",
+        "run_summary.json": "9aeaf8a22ab15552a45863f2a4d6b2244d63766e8acf6d8dca9caaff848041c2"
+      }
+    },
+    {
+      "run_id": "B600_N2_R1m15_bps150",
+      "files": {
+        "config.json": "5c349793fb6cd5323210210cbc3244877ae0bbd260bdee35bb2dfedad73ce15a",
+        "daily.parquet": "87d6deb0f4153c79eb1c2fabfa24dd78ab72d0926bdb05ef1b61ec7b1b8f24a9",
+        "tickets.parquet": "37b9a907c2d0399103536ceab34c76b461c1087a2069c407360804484ccdcd95",
+        "metrics.json": "74342ec5a4397e006ef32e0cb10d0e1c9c864204f48c475cc69eaff46ecfad3d",
+        "run_summary.json": "70b1ad7907ff95dcb18e497534ddcb2d3192087fb6713c3a8af97a6568509362"
+      }
+    },
+    {
+      "run_id": "B600_N3_R0_bps100",
+      "files": {
+        "config.json": "b95e811d54e32cb85dadbee4a3fcf280ab93ec99c514a34e654854dbf3db2434",
+        "daily.parquet": "ceece0443b91e33c8aeb540cb62ed178f159b9b440c6adb71e8829e28005834a",
+        "tickets.parquet": "4f7b96086f47b7199643af5f63a144e3be2431ff7a9dfcbd92d47b0e9384631b",
+        "metrics.json": "634a2e617c3a3fad48f4b9be8eb7d1bdcedc725dae173ae7b5aa55b9459e6db0",
+        "run_summary.json": "596b6766ee87ef663cca35a0ee49b7c3f0558674f4df8da7ab69091cf2405d95"
+      }
+    },
+    {
+      "run_id": "B600_N3_R0_bps150",
+      "files": {
+        "config.json": "b63a306d8ff39cf80539b0fa460ff3a8edcd169ee31e39ede4e10ceaa43094a3",
+        "daily.parquet": "4d8bdf0be7e234f8f6a417f0f211d408c2616cba2fcfb44852c5473c0fc84827",
+        "tickets.parquet": "2aa5172aeb7ef67586c884b47d394753a14f8e7cd4163d4a5c1ec326b2ba6325",
+        "metrics.json": "a07d571d8798f644a22353e1717aecb3316a56acca77a4e8c01ca114674994f3",
+        "run_summary.json": "4303fede90173086d61057af71ecc40c12fb7921fdca6489969074d687a6190f"
+      }
+    },
+    {
+      "run_id": "B600_N3_R1m8_bps100",
+      "files": {
+        "config.json": "3dca798d93804a7795791e968b5d6186eff8ce73785a9ac08f060460dcc02e75",
+        "daily.parquet": "42ca056e2254f626f1a6684ca18ff06fb3dc3909fd6e596ebd7308594e895eaf",
+        "tickets.parquet": "ed9245b7715f93a33086daa57d4139c561e3443ebd7481267f793abffe62971f",
+        "metrics.json": "4d5c5d9d13c493b9f4da1d0df6b06fdf5862fcde04fdfbab6068b7a79404d788",
+        "run_summary.json": "263710e75c60aa1165bf59fbb41be0371ed119bafe5d09d6835eecf293df17b5"
+      }
+    },
+    {
+      "run_id": "B600_N3_R1m8_bps150",
+      "files": {
+        "config.json": "5fe62ae66453408b71c06860af2a04da2bac74f400c071658db99fe6e3781b4a",
+        "daily.parquet": "a103e11b262707f4bd37ec3fd4a7191dba9b9b8c602085b48f3af4e35bccf53c",
+        "tickets.parquet": "fa3955b321afe0c80d15b48479fcb0041efbfeb667d599b9026d185d380121d9",
+        "metrics.json": "3743676a4602c26a6949ec053fe8d5c2da174c8daaa8b95d70bd41269fef1fe9",
+        "run_summary.json": "67f5768ae5c0e26a05f74bce5dd9f5cbf4ce53c3b8c1ec0ee26296c9f462199a"
+      }
+    },
+    {
+      "run_id": "B600_N3_R1m10_bps100",
+      "files": {
+        "config.json": "249ec5f7c8f361c7885bd1d8f36ae02fd658aabfa1ecec0cd14852d344d88a6e",
+        "daily.parquet": "fb296bc4d157ccd61ae54b9bed562c96ae4e7e8c881843af3b2e59211ed390ff",
+        "tickets.parquet": "65690fc93cc0e682736124c6a2a418a7f19399118587c47d472ae1e0d624ef1f",
+        "metrics.json": "6c30f520f1c8d6b87c52fc18ec5c0fcd4ed625a04c527aeb56ab0a54532c5e66",
+        "run_summary.json": "3d6afc697b6ba9a5540b16db14bd7823727ca956e8748384861c63217d8d034b"
+      }
+    },
+    {
+      "run_id": "B600_N3_R1m10_bps150",
+      "files": {
+        "config.json": "0cc6f6cf0bbc9ce4d2ed2b2304dd30c227fd6a69ec552a8501b02e69547fa0a6",
+        "daily.parquet": "8c7a94300701e611d63e61277fe192f923b990b3be186c5d302e4a77515fb26e",
+        "tickets.parquet": "0d473cb039185a850abf9ed2654afbf249e7b00876e9f2ff88f05c32aa44713c",
+        "metrics.json": "14a941b9ab7ab43a2b25fb3b0e4fee4d4964eeaade67985011579546a4047cc8",
+        "run_summary.json": "68b5b2ac4a337126c03c1d96dc12f1f4f21aaa2ca42bf7530505dc8cab268b97"
+      }
+    },
+    {
+      "run_id": "B600_N3_R1m15_bps100",
+      "files": {
+        "config.json": "2d101f62e8eeb165b94f6ebc33e87727a309f13f809abfb03c8be9fdf915e795",
+        "daily.parquet": "0976ec2348527ccf7a7c8edbbdbcd7cd604a050ad5b5910dedd4b4ae744b5066",
+        "tickets.parquet": "4f2aa995d248e8971171592c0c61ffecfe056cfd1660d83189bb05a1c3b5ac27",
+        "metrics.json": "82fa1f84d66afe1db5fb0cf0248997cce77af71df5320935c01f86c6b34bdee0",
+        "run_summary.json": "e2880bd6da49d62e4fa4bc966f1b4346d80f7863a7d2b3e2c44d024119f3698d"
+      }
+    },
+    {
+      "run_id": "B600_N3_R1m15_bps150",
+      "files": {
+        "config.json": "b7a6ce38173e015962dac526136df51ad3b0e3e2606b47a9868a58b881a32847",
+        "daily.parquet": "be54ac24aaf80cf1a5429d9cb7ef39f09a2fc706dd46ee6cc901afcebefbd51a",
+        "tickets.parquet": "462c129df4bb13ac382316085d00e64f6b5866c77b16505def496ef9705afb54",
+        "metrics.json": "aa34d297bbbb6a2530ad6afc276da01ae9e617aec925bb4cdbbfabf1169a052c",
+        "run_summary.json": "fc6157f90ad93e210107ff72b4019f6f7c603686457f29959d5f374a2c214c0c"
+      }
+    },
+    {
+      "run_id": "B600_N4_R0_bps100",
+      "files": {
+        "config.json": "b8d32102841df7cddae8384147fb376a07cfa0843b2819ffedc9ae9a69e1133a",
+        "daily.parquet": "8cc9404514f4ec01e59d077b7b569f012118afc520ceb8bb8f006436abc60ea5",
+        "tickets.parquet": "4ab416f19416127ae947893e770f0911d5e081e61e618c9984af93ecb6bc503c",
+        "metrics.json": "f4c7c548e721220f43f0b3c1d6b3973be0b74c80d344067aea0ccc587d4d2007",
+        "run_summary.json": "2885b4b8d11bd9fbc35ce98500573825c68552041c532658afe903befd13c638"
+      }
+    },
+    {
+      "run_id": "B600_N4_R0_bps150",
+      "files": {
+        "config.json": "8a0f7f54028928c0902228b5200b0288dfbdb7ab1e7728092f96cac7a2c60476",
+        "daily.parquet": "58fa87369aa22188e4297a7c13934ef4e5dd89ebb0aaa97ea0d52fc4602dcaed",
+        "tickets.parquet": "97eeb5450b662f9e35af30302d5ac06636ed4d2f20d3f052989501068948a0cc",
+        "metrics.json": "3ddb249b536cb72948bb816603fae15c478d2b889fcee700efb74e43c89ba060",
+        "run_summary.json": "6beffc266bd6bc21a5a39da65bc0f37cf3dad4108358a0de407d0382e96ec136"
+      }
+    },
+    {
+      "run_id": "B600_N4_R1m8_bps100",
+      "files": {
+        "config.json": "999d5857979b3f5434588a43ad2359c1a34e4b87ec3e0d77ce14b942c6822c7d",
+        "daily.parquet": "0aa6051026075445387c86d5d7536ac19fb2a3f132ea27f8e536f8731337f4ca",
+        "tickets.parquet": "055e0b23c192913e2e12456cac200284460f61b6f04ceef0564bc6cdcf8cd1d2",
+        "metrics.json": "d701047049bf433cb381f73bb1b47770bfebdd764746e3c65dbe3d3dced0799c",
+        "run_summary.json": "363ce6ff90b76792639da4af222bd70ae73a722995ae2e44304d7a6863d63648"
+      }
+    },
+    {
+      "run_id": "B600_N4_R1m8_bps150",
+      "files": {
+        "config.json": "73459c64133e4f6ea7faa9295f769444e42ca85db302043b94c0d91826e8658e",
+        "daily.parquet": "771659f57cc3f22d63ddaacdba6c7d6414502a6d192733ee92c651d662844b5b",
+        "tickets.parquet": "970247264d78dad9eb724916225300183f2383bdbb0e7caa086711746487d1a4",
+        "metrics.json": "0aa15d3f94334a7eb51f4a20cfb30fd46d0cfe8011c69a0d953df3cfb1555c3d",
+        "run_summary.json": "6f770a6e3264a3e86493f2eb59602e4ff39776f3cc466125fdbf80feecc205e1"
+      }
+    },
+    {
+      "run_id": "B600_N4_R1m10_bps100",
+      "files": {
+        "config.json": "e08e99f359aa85cb82e593ea6e5b0ceea305e26155ec14c5b89ef1cc5fd3b841",
+        "daily.parquet": "36e6f24dc4834790cee77770684a5d72cda69ce900ecfedfb7b01449e193aabc",
+        "tickets.parquet": "699e6b743164d2d617f75ae7e72fc8b96755dc19a9f50a5796c61c40b6b08554",
+        "metrics.json": "575bcbcea703dbd054ebf16c8689149839ec6177824020a1db36d4e87a8ab2cd",
+        "run_summary.json": "dbe896ae8991e53403b27d84650a0ee0e1b172037c3b79f39ddfcb9b19288af5"
+      }
+    },
+    {
+      "run_id": "B600_N4_R1m10_bps150",
+      "files": {
+        "config.json": "a15922e79e9fb04bfbcbc2e311478181dfbc8565843064afa614033696889865",
+        "daily.parquet": "d0e359b4be6c0757fe43358ddc6184f69b7dbf2a3d6528be5369ca807da97e02",
+        "tickets.parquet": "6c8ee5ed55cc46b3fca85dc350b42296ba30095b841a51ca98b1a78116e4acf6",
+        "metrics.json": "e122a27f7a976984bddbfd1528db17b17a1c89f40a2bb1fc14970592a60463d2",
+        "run_summary.json": "f874434bdcd117955b25707ae900ff822cc427e4b25a7370508687cb97795c74"
+      }
+    },
+    {
+      "run_id": "B600_N4_R1m15_bps100",
+      "files": {
+        "config.json": "4ed1b832398e10cb101c9f9b4d584131c87c23d66d43de69a5b820300fc91b8c",
+        "daily.parquet": "2caa35ff2b592157398b8c0eb80bb495fbe3521d8ae8cccf0fc0e9717588f1c5",
+        "tickets.parquet": "f4f06d6db39b7ef99dafc2ec414bc32c365515f16db58f0272f48c4036e1297d",
+        "metrics.json": "f245845427667267757b953f21244478f3265cebdf6119c19b9007cc1a9e2c56",
+        "run_summary.json": "39264fcc3d95c27ef4d491e52cd1b6fdb9dde217956eadaff6f0eef222480be6"
+      }
+    },
+    {
+      "run_id": "B600_N4_R1m15_bps150",
+      "files": {
+        "config.json": "a6e9c616a79d9aabd0d6b5b0be31f2eaf104c5f909d05d69055eb559641649b4",
+        "daily.parquet": "0caa78c8e8b8aa397b22179426e98844c3b5b7ec5ef1197f455a90a4d77b485f",
+        "tickets.parquet": "2ed1ab2ccf50656ea0bacaef5ee13b73f25477ab48c6f85fbf1393652bd81856",
+        "metrics.json": "a56436b9db731d57494a00385a3c386d55a05b8fb681217d3d828c112282b64c",
+        "run_summary.json": "5277a00244a8908a387fdf6303093fef132fe54eeb6204a050880285c71478ba"
+      }
+    }
+  ],
+  "day_count": 1066,
+  "dates_sha256": "7ac7a3fd60782a874de67d7d11e1d9c6f8b6813c7742818781a62ca18aa1b285"
+}

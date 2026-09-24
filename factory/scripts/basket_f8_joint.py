@@ -5,11 +5,18 @@ import hashlib
 import itertools
 import json
 from pathlib import Path
+from typing import Optional
 
 import numpy as np
 import polars as pl
 
+import sys
+
 ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from factory.scripts import basket_sim as sim  # noqa: E402
 F1 = ROOT / "factory/artifacts/basket/phase2/F1"
 OUT = ROOT / "factory/artifacts/basket/phase2/F8"
 EXPECTED_CELLS = 120
@@ -26,7 +33,11 @@ def validate_surface(surface: dict) -> list[dict]:
     ids = [cell.get("run_id") for cell in cells]
     if surface.get("family_id") != "F1" or len(cells) != EXPECTED_CELLS or len(set(ids)) != EXPECTED_CELLS:
         raise ValueError("F1 surface must contain 120 unique frozen cells")
-    if any(cell.get("status") != "validated_frozen" or cell.get("days_n") != 1066 for cell in cells):
+    # "validated_frozen" is the pre-C1 tree's marker; the corrected C1 tree marks cells "ran"
+    # or "skipped_complete" (the resumable runner's already-done marker).  Completeness is the
+    # load-bearing condition: 1,066 development days per cell.
+    if any(cell.get("status") not in ("validated_frozen", "ran", "skipped_complete")
+           or cell.get("days_n") != 1066 for cell in cells):
         raise ValueError("F1 surface contains a non-frozen or incomplete cell")
     return cells
 
@@ -100,8 +111,21 @@ def _summarize_rows(rows: list[dict], n_slots: int) -> dict:
     return metric
 
 
-def run() -> dict:
-    surface = json.loads((F1 / "surface.json").read_text())
+def load_surface(f1_dir: Path) -> dict:
+    """One surface.json, or the per-entry surface_*.json files the corrected tree emits."""
+    single = f1_dir / "surface.json"
+    if single.is_file():
+        return json.loads(single.read_text())
+    cells: list[dict] = []
+    for path in sorted(f1_dir.glob("surface_*.json")):
+        cells.extend(json.loads(path.read_text()).get("cells", []))
+    return {"family_id": "F1", "cells": cells}
+
+
+def run(f1_dir: Path | None = None, out_dir: Path | None = None) -> dict:
+    F1 = f1_dir or globals()["F1"]
+    OUT = out_dir or globals()["OUT"]
+    surface = load_surface(F1)
     cells = validate_surface(surface)
     output_rows: list[dict] = []
     results: list[dict] = []
@@ -119,6 +143,14 @@ def run() -> dict:
                 or config.get("entry_T") != ENTRY_CONFIG[cell["entry"]][1] or n != cell["N"]
                 or config.get("bps_total") != cell["bps"] or config.get("release") != [EXIT_CONFIG[cell["exit"]]]):
             raise ValueError(f"F1 config mismatch: {run_id}")
+        # Truth-critical: the joint surface is only valid for the contract generation its inputs
+        # were produced under.  Without this check a pre-C1 F1 tree is silently accepted and the
+        # joint rates are quoted as current evidence (found 2026-09-24 by the swarm).
+        if config.get("contract_version") != sim.CONTRACT_VERSION:
+            raise ValueError(
+                f"F1 input {run_id} was produced under contract "
+                f"{config.get('contract_version')!r}, engine is {sim.CONTRACT_VERSION!r}; "
+                "regenerate the F1 tree (e.g. F1_C1) before rebuilding the joint surface")
         daily = pl.read_parquet(run_dir / "daily.parquet").sort("date")
         tickets = pl.read_parquet(run_dir / "tickets.parquet")
         days = daily["date"].to_list()
@@ -158,7 +190,11 @@ def run() -> dict:
     OUT.mkdir(parents=True, exist_ok=True)
     pl.DataFrame(output_rows).write_parquet(OUT / "joint_daily.parquet")
     (OUT / "joint_surface.json").write_text(json.dumps({"family_id": "F8", "cells": results}, indent=2, allow_nan=False))
-    (OUT / "provenance.json").write_text(json.dumps({"f1_surface_sha256": _hash(F1 / "surface.json"),
+    surface_sources = ([F1 / "surface.json"] if (F1 / "surface.json").is_file()
+                       else sorted(F1.glob("surface_*.json")))
+    (OUT / "provenance.json").write_text(json.dumps({
+        "f1_surface_sha256": {path.name: _hash(path) for path in surface_sources},
+        "f1_surface_files": [path.name for path in surface_sources],
         "f1_inputs": provenance, "day_count": len(canonical_days), "dates_sha256": hashlib.sha256(
             "\n".join(canonical_days).encode()).hexdigest()}, indent=2))
     metrics = ("p_all_profitable", "p_ge2_profitable", "p_all_reach_5", "p_all_reach_10",
@@ -218,5 +254,15 @@ def run() -> dict:
     return {"cells": len(results), "days_per_cell": len(canonical_days), "rows": len(output_rows)}
 
 
+def main(argv: Optional[list[str]] = None) -> int:
+    import argparse
+    ap = argparse.ArgumentParser(description="F8 joint-survivor surface from an F1 tree")
+    ap.add_argument("--f1", type=Path, default=F1)
+    ap.add_argument("--out", type=Path, default=OUT)
+    args = ap.parse_args(argv)
+    print(json.dumps(run(args.f1, args.out), sort_keys=True))
+    return 0
+
+
 if __name__ == "__main__":
-    print(json.dumps(run(), sort_keys=True))
+    raise SystemExit(main())
