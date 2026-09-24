@@ -1,0 +1,940 @@
+{
+ "A2_further_windows": {
+  "block2_window": {
+   "contains": null,
+   "days": [
+    "2025-02-03",
+    "2025-03-03",
+    20
+   ],
+   "identical_daily": true,
+   "identical_tickets": true,
+   "post": {
+    "daily_sha256": "e17cf7db12fdcf4f9525c238d7c239c9c0dfe39ec33eb54bcb12348183c37623",
+    "fingerprint": "d508d8938da91acf",
+    "rows": [
+     20,
+     40
+    ],
+    "tickets_sha256": "0a353b157b067fdf7410623543888c21ee3c2a2327c4a1c808d95b7df7093d65"
+   },
+   "pre": {
+    "daily_sha256": "e17cf7db12fdcf4f9525c238d7c239c9c0dfe39ec33eb54bcb12348183c37623",
+    "fingerprint": "b5d49b01d4326b19",
+    "rows": [
+     20,
+     40
+    ],
+    "tickets_sha256": "0a353b157b067fdf7410623543888c21ee3c2a2327c4a1c808d95b7df7093d65"
+   }
+  },
+  "early_close_window": {
+   "contains": "2021-11-26",
+   "days": [
+    "2021-11-11",
+    "2021-12-09",
+    20
+   ],
+   "identical_daily": true,
+   "identical_tickets": true,
+   "post": {
+    "daily_sha256": "299e63aab0b3d260bd0c16bcc34f00df523b4263c68c3d6d086536af0a2f4ff8",
+    "fingerprint": "764d3204140b470f",
+    "rows": [
+     20,
+     40
+    ],
+    "tickets_sha256": "2427dc99e655dff36e9054e8a3d62114f683756dc349e44e38b3031fa054ec52"
+   },
+   "pre": {
+    "daily_sha256": "299e63aab0b3d260bd0c16bcc34f00df523b4263c68c3d6d086536af0a2f4ff8",
+    "fingerprint": "68b0f828f80f3043",
+    "rows": [
+     20,
+     40
+    ],
+    "tickets_sha256": "2427dc99e655dff36e9054e8a3d62114f683756dc349e44e38b3031fa054ec52"
+   }
+  }
+ },
+ "A_default_inertness": {
+  "config": {
+   "bps_total": 100.0,
+   "days": [
+    "2021-02-01",
+    "2021-03-01"
+   ],
+   "entry_T": 570,
+   "entry_pop": "A_pm",
+   "family_id": "ATLAS_bs_canary",
+   "max_days": 20,
+   "n_slots": 2,
+   "release": [
+    "R0"
+   ],
+   "spec": "bs_default_20d",
+   "spec_json": {
+    "entry_T": 570,
+    "entry_pop": "A_pm",
+    "family_id": "ATLAS_bs_canary",
+    "n_slots": 2,
+    "name": "bs_default_20d",
+    "release": [
+     {
+      "rule": "R0"
+     }
+    ],
+    "top_n": 2
+   },
+   "top_n": 2
+  },
+  "daily_bytes_identical": true,
+  "fingerprints": {
+   "note": "the run fingerprint is *expected* to differ: it binds engine_hash and the new field set. Output bytes are what the inertness claim is about.",
+   "post": "3e569645317fe4c8",
+   "pre": "d9150870a8f410c4"
+  },
+  "metrics_delta": {
+   "added_keys": [
+    "buy_side"
+   ],
+   "added_values": {
+    "n_entry_capped": 0,
+    "n_entry_unfilled": 0,
+    "n_entry_unfunded": 0,
+    "n_mid_entries": 0,
+    "n_reentries": 0,
+    "n_vetoed_slots": 0
+   },
+   "shared_keys_identical": true
+  },
+  "post_change": {
+   "daily_rows": 20,
+   "daily_sha256": "70f74b4962ea045a671eb91e3cada4dbfd71832bfd588c0642188c5dbf6ae69e",
+   "ticket_rows": 40,
+   "tickets_sha256": "1e8e7d47f38ba91a1f0cd9b8651e7f61c4caabdf39f8862986d52a95a971e8ba"
+  },
+  "pre_change": {
+   "daily_rows": 20,
+   "daily_sha256": "70f74b4962ea045a671eb91e3cada4dbfd71832bfd588c0642188c5dbf6ae69e",
+   "ticket_rows": 40,
+   "tickets_sha256": "1e8e7d47f38ba91a1f0cd9b8651e7f61c4caabdf39f8862986d52a95a971e8ba"
+  },
+  "ticket_frames_equal": true,
+  "tickets_bytes_identical": true
+ },
+ "B_exercising_configuration": {
+  "buy_side_metrics": {
+   "n_entry_capped": 0,
+   "n_entry_unfilled": 0,
+   "n_entry_unfunded": 3,
+   "n_mid_entries": 9,
+   "n_reentries": 15,
+   "n_vetoed_slots": 20
+  },
+  "daily_flags": {
+   "entry_unfunded": 3,
+   "mid_entry": 9,
+   "reentry": 15,
+   "veto_skip": 20
+  },
+  "daily_visibility": {
+   "2021-02-01": {
+    "flags": "reentry,veto_skip",
+    "n_actions": 4,
+    "new_entries": [
+     {
+      "et": 596,
+      "px": 4.44,
+      "reason": "REENTRY:TCross(ref='exit_px',pct=0.0,side='above')",
+      "ticker": "MBRX"
+     }
+    ]
+   },
+   "2021-02-02": {
+    "flags": "mid_entry,reentry,veto_skip",
+    "n_actions": 6,
+    "new_entries": [
+     {
+      "et": 572,
+      "px": 1.6989,
+      "reason": "REENTRY:TCross(ref='exit_px',pct=0.0,side='above')",
+      "ticker": "ARTL"
+     },
+     {
+      "et": 601,
+      "px": 8.11,
+      "reason": "MID_ENTRY:TCross(ref='px_decision',pct=-2.0,side='above')",
+      "ticker": "MBRX"
+     }
+    ]
+   },
+   "2021-02-03": {
+    "flags": "mid_entry,reentry,veto_skip",
+    "n_actions": 6,
+    "new_entries": [
+     {
+      "et": 577,
+      "px": 9.76,
+      "reason": "REENTRY:TCross(ref='exit_px',pct=0.0,side='above')",
+      "ticker": "SINO"
+     },
+     {
+      "et": 601,
+      "px": 4.639,
+      "reason": "MID_ENTRY:TCross(ref='px_decision',pct=-2.0,side='above')",
+      "ticker": "TYME"
+     }
+    ]
+   },
+   "2021-02-04": {
+    "flags": "reentry,veto_skip",
+    "n_actions": 4,
+    "new_entries": [
+     {
+      "et": 573,
+      "px": 19.4886,
+      "reason": "REENTRY:TCross(ref='exit_px',pct=0.0,side='above')",
+      "ticker": "AVXL"
+     }
+    ]
+   },
+   "2021-02-05": {
+    "flags": "veto_skip",
+    "n_actions": 2,
+    "new_entries": []
+   },
+   "2021-02-08": {
+    "flags": "entry_unfunded,mid_entry,veto_skip",
+    "n_actions": 4,
+    "new_entries": [
+     {
+      "et": 601,
+      "px": 11.7042,
+      "reason": "MID_ENTRY:TCross(ref='px_decision',pct=-2.0,side='above')",
+      "ticker": "OCGN"
+     }
+    ]
+   },
+   "2021-02-09": {
+    "flags": "mid_entry,reentry,veto_skip",
+    "n_actions": 6,
+    "new_entries": [
+     {
+      "et": 598,
+      "px": 14.21,
+      "reason": "REENTRY:TCross(ref='exit_px',pct=0.0,side='above')",
+      "ticker": "CHCI"
+     },
+     {
+      "et": 607,
+      "px": 39.9101,
+      "reason": "MID_ENTRY:TCross(ref='px_decision',pct=-2.0,side='above')",
+      "ticker": "KALV"
+     }
+    ]
+   },
+   "2021-02-10": {
+    "flags": "reentry,veto_skip",
+    "n_actions": 4,
+    "new_entries": [
+     {
+      "et": 572,
+      "px": 19.0,
+      "reason": "REENTRY:TCross(ref='exit_px',pct=0.0,side='above')",
+      "ticker": "BPTH"
+     }
+    ]
+   },
+   "2021-02-11": {
+    "flags": "reentry,veto_skip",
+    "n_actions": 4,
+    "new_entries": [
+     {
+      "et": 587,
+      "px": 9.8,
+      "reason": "REENTRY:TCross(ref='exit_px',pct=0.0,side='above')",
+      "ticker": "RCMT"
+     }
+    ]
+   },
+   "2021-02-12": {
+    "flags": "mid_entry,reentry,veto_skip",
+    "n_actions": 6,
+    "new_entries": [
+     {
+      "et": 576,
+      "px": 8.49,
+      "reason": "REENTRY:TCross(ref='exit_px',pct=0.0,side='above')",
+      "ticker": "CLEU"
+     },
+     {
+      "et": 601,
+      "px": 3.4504,
+      "reason": "MID_ENTRY:TCross(ref='px_decision',pct=-2.0,side='above')",
+      "ticker": "ARTL"
+     }
+    ]
+   },
+   "2021-02-16": {
+    "flags": "entry_unfunded,mid_entry,veto_skip",
+    "n_actions": 4,
+    "new_entries": [
+     {
+      "et": 601,
+      "px": 12.5265,
+      "reason": "MID_ENTRY:TCross(ref='px_decision',pct=-2.0,side='above')",
+      "ticker": "SCKT"
+     }
+    ]
+   },
+   "2021-02-17": {
+    "flags": "mid_entry,reentry,veto_skip",
+    "n_actions": 6,
+    "new_entries": [
+     {
+      "et": 572,
+      "px": 9.05,
+      "reason": "REENTRY:TCross(ref='exit_px',pct=0.0,side='above')",
+      "ticker": "LODE"
+     },
+     {
+      "et": 601,
+      "px": 8.97,
+      "reason": "MID_ENTRY:TCross(ref='px_decision',pct=-2.0,side='above')",
+      "ticker": "PETZ"
+     }
+    ]
+   },
+   "2021-02-18": {
+    "flags": "reentry,veto_skip",
+    "n_actions": 4,
+    "new_entries": [
+     {
+      "et": 572,
+      "px": 23.2,
+      "reason": "REENTRY:TCross(ref='exit_px',pct=0.0,side='above')",
+      "ticker": "GTEC"
+     }
+    ]
+   },
+   "2021-02-19": {
+    "flags": "reentry,veto_skip",
+    "n_actions": 4,
+    "new_entries": [
+     {
+      "et": 802,
+      "px": 5.78,
+      "reason": "REENTRY:TCross(ref='exit_px',pct=0.0,side='above')",
+      "ticker": "VCNX"
+     }
+    ]
+   },
+   "2021-02-22": {
+    "flags": "veto_skip",
+    "n_actions": 2,
+    "new_entries": []
+   },
+   "2021-02-23": {
+    "flags": "entry_unfunded,reentry,veto_skip",
+    "n_actions": 4,
+    "new_entries": [
+     {
+      "et": 604,
+      "px": 3.8293,
+      "reason": "REENTRY:TCross(ref='exit_px',pct=0.0,side='above')",
+      "ticker": "CTIB"
+     }
+    ]
+   },
+   "2021-02-24": {
+    "flags": "mid_entry,reentry,veto_skip",
+    "n_actions": 6,
+    "new_entries": [
+     {
+      "et": 574,
+      "px": 7.47,
+      "reason": "REENTRY:TCross(ref='exit_px',pct=0.0,side='above')",
+      "ticker": "SYPR"
+     },
+     {
+      "et": 611,
+      "px": 3.14,
+      "reason": "MID_ENTRY:TCross(ref='px_decision',pct=-2.0,side='above')",
+      "ticker": "RRD"
+     }
+    ]
+   },
+   "2021-02-25": {
+    "flags": "veto_skip",
+    "n_actions": 2,
+    "new_entries": []
+   },
+   "2021-02-26": {
+    "flags": "mid_entry,reentry,veto_skip",
+    "n_actions": 6,
+    "new_entries": [
+     {
+      "et": 573,
+      "px": 6.2,
+      "reason": "REENTRY:TCross(ref='exit_px',pct=0.0,side='above')",
+      "ticker": "LIXT"
+     },
+     {
+      "et": 619,
+      "px": 5.15,
+      "reason": "MID_ENTRY:TCross(ref='px_decision',pct=-2.0,side='above')",
+      "ticker": "AFI"
+     }
+    ]
+   },
+   "2021-03-01": {
+    "flags": "reentry,veto_skip",
+    "n_actions": 4,
+    "new_entries": [
+     {
+      "et": 584,
+      "px": 2.6971,
+      "reason": "REENTRY:TCross(ref='exit_px',pct=0.0,side='above')",
+      "ticker": "GHSI"
+     }
+    ]
+   }
+  },
+  "mid_entry_tickets": [
+   {
+    "entry_et": 601,
+    "entry_px": 8.11,
+    "exit_et": 612,
+    "exit_px": 7.7001,
+    "exit_reason": "R1(-5)",
+    "flags": "mid_entry",
+    "net_return": -0.05999,
+    "sleeve_day": "2021-02-02",
+    "ticker": "MBRX",
+    "unit_notional": 0.5
+   },
+   {
+    "entry_et": 601,
+    "entry_px": 4.639,
+    "exit_et": 604,
+    "exit_px": 4.385,
+    "exit_reason": "R1(-5)",
+    "flags": "mid_entry",
+    "net_return": -0.064159,
+    "sleeve_day": "2021-02-03",
+    "ticker": "TYME",
+    "unit_notional": 0.5
+   },
+   {
+    "entry_et": 601,
+    "entry_px": 11.7042,
+    "exit_et": 603,
+    "exit_px": 10.91,
+    "exit_reason": "R1(-5)",
+    "flags": "mid_entry",
+    "net_return": -0.077131,
+    "sleeve_day": "2021-02-08",
+    "ticker": "OCGN",
+    "unit_notional": 0.5
+   },
+   {
+    "entry_et": 607,
+    "entry_px": 39.9101,
+    "exit_et": 639,
+    "exit_px": 37.9146,
+    "exit_reason": "R1(-5)",
+    "flags": "mid_entry",
+    "net_return": -0.059453,
+    "sleeve_day": "2021-02-09",
+    "ticker": "KALV",
+    "unit_notional": 0.5
+   },
+   {
+    "entry_et": 601,
+    "entry_px": 3.4504,
+    "exit_et": 610,
+    "exit_px": 3.2689,
+    "exit_reason": "R1(-5)",
+    "flags": "mid_entry",
+    "net_return": -0.062029,
+    "sleeve_day": "2021-02-12",
+    "ticker": "ARTL",
+    "unit_notional": 0.5
+   },
+   {
+    "entry_et": 601,
+    "entry_px": 12.5265,
+    "exit_et": 605,
+    "exit_px": 11.9002,
+    "exit_reason": "R1(-5)",
+    "flags": "mid_entry",
+    "net_return": -0.059453,
+    "sleeve_day": "2021-02-16",
+    "ticker": "SCKT",
+    "unit_notional": 0.5
+   },
+   {
+    "entry_et": 601,
+    "entry_px": 8.97,
+    "exit_et": 602,
+    "exit_px": 8.394,
+    "exit_reason": "R1(-5)",
+    "flags": "mid_entry",
+    "net_return": -0.073525,
+    "sleeve_day": "2021-02-17",
+    "ticker": "PETZ",
+    "unit_notional": 0.5
+   },
+   {
+    "entry_et": 611,
+    "entry_px": 3.14,
+    "exit_et": 959,
+    "exit_px": 3.1185,
+    "exit_reason": "FORCED_FLAT",
+    "flags": "mid_entry",
+    "net_return": -0.016729,
+    "sleeve_day": "2021-02-24",
+    "ticker": "RRD",
+    "unit_notional": 0.5
+   },
+   {
+    "entry_et": 619,
+    "entry_px": 5.15,
+    "exit_et": 633,
+    "exit_px": 4.8925,
+    "exit_reason": "R1(-5)",
+    "flags": "mid_entry",
+    "net_return": -0.059453,
+    "sleeve_day": "2021-02-26",
+    "ticker": "AFI",
+    "unit_notional": 0.5
+   }
+  ],
+  "reentry_tickets": [
+   {
+    "entry_et": 596,
+    "entry_px": 4.44,
+    "exit_et": 959,
+    "exit_px": 4.6892,
+    "exit_reason": "FORCED_FLAT",
+    "flags": "reentry",
+    "net_return": 0.045617,
+    "sleeve_day": "2021-02-01",
+    "ticker": "MBRX",
+    "unit_notional": 0.5
+   },
+   {
+    "entry_et": 572,
+    "entry_px": 1.6989,
+    "exit_et": 574,
+    "exit_px": 1.6021,
+    "exit_reason": "R1(-5)",
+    "flags": "reentry",
+    "net_return": -0.066361,
+    "sleeve_day": "2021-02-02",
+    "ticker": "ARTL",
+    "unit_notional": 0.5
+   },
+   {
+    "entry_et": 577,
+    "entry_px": 9.76,
+    "exit_et": 587,
+    "exit_px": 9.05,
+    "exit_reason": "R1(-5)",
+    "flags": "reentry",
+    "net_return": -0.081972,
+    "sleeve_day": "2021-02-03",
+    "ticker": "SINO",
+    "unit_notional": 0.5
+   },
+   {
+    "entry_et": 573,
+    "entry_px": 19.4886,
+    "exit_et": 674,
+    "exit_px": 18.5142,
+    "exit_reason": "R1(-5)",
+    "flags": "reentry",
+    "net_return": -0.059453,
+    "sleeve_day": "2021-02-04",
+    "ticker": "AVXL",
+    "unit_notional": 0.5
+   },
+   {
+    "entry_et": 598,
+    "entry_px": 14.21,
+    "exit_et": 599,
+    "exit_px": 13.4995,
+    "exit_reason": "R1(-5)",
+    "flags": "reentry",
+    "net_return": -0.059453,
+    "sleeve_day": "2021-02-09",
+    "ticker": "CHCI",
+    "unit_notional": 0.5
+   },
+   {
+    "entry_et": 572,
+    "entry_px": 19.0,
+    "exit_et": 573,
+    "exit_px": 15.95,
+    "exit_reason": "R1(-5)",
+    "flags": "reentry",
+    "net_return": -0.168879,
+    "sleeve_day": "2021-02-10",
+    "ticker": "BPTH",
+    "unit_notional": 0.5
+   },
+   {
+    "entry_et": 587,
+    "entry_px": 9.8,
+    "exit_et": 588,
+    "exit_px": 9.1,
+    "exit_reason": "R1(-5)",
+    "flags": "reentry",
+    "net_return": -0.080668,
+    "sleeve_day": "2021-02-11",
+    "ticker": "RCMT",
+    "unit_notional": 0.5
+   },
+   {
+    "entry_et": 576,
+    "entry_px": 8.49,
+    "exit_et": 577,
+    "exit_px": 8.0655,
+    "exit_reason": "R1(-5)",
+    "flags": "reentry",
+    "net_return": -0.059453,
+    "sleeve_day": "2021-02-12",
+    "ticker": "CLEU",
+    "unit_notional": 0.5
+   },
+   {
+    "entry_et": 572,
+    "entry_px": 9.05,
+    "exit_et": 573,
+    "exit_px": 8.3378,
+    "exit_reason": "R1(-5)",
+    "flags": "reentry",
+    "net_return": -0.087863,
+    "sleeve_day": "2021-02-17",
+    "ticker": "LODE",
+    "unit_notional": 0.5
+   },
+   {
+    "entry_et": 572,
+    "entry_px": 23.2,
+    "exit_et": 577,
+    "exit_px": 22.04,
+    "exit_reason": "R1(-5)",
+    "flags": "reentry",
+    "net_return": -0.059453,
+    "sleeve_day": "2021-02-18",
+    "ticker": "GTEC",
+    "unit_notional": 0.5
+   },
+   {
+    "entry_et": 802,
+    "entry_px": 5.78,
+    "exit_et": 825,
+    "exit_px": 5.42,
+    "exit_reason": "R1(-5)",
+    "flags": "reentry",
+    "net_return": -0.071614,
+    "sleeve_day": "2021-02-19",
+    "ticker": "VCNX",
+    "unit_notional": 0.5
+   },
+   {
+    "entry_et": 604,
+    "entry_px": 3.8293,
+    "exit_et": 713,
+    "exit_px": 3.6378,
+    "exit_reason": "R1(-5)",
+    "flags": "reentry",
+    "net_return": -0.059453,
+    "sleeve_day": "2021-02-23",
+    "ticker": "CTIB",
+    "unit_notional": 0.5
+   },
+   {
+    "entry_et": 574,
+    "entry_px": 7.47,
+    "exit_et": 575,
+    "exit_px": 7.0701,
+    "exit_reason": "R1(-5)",
+    "flags": "reentry",
+    "net_return": -0.062952,
+    "sleeve_day": "2021-02-24",
+    "ticker": "SYPR",
+    "unit_notional": 0.5
+   },
+   {
+    "entry_et": 573,
+    "entry_px": 6.2,
+    "exit_et": 591,
+    "exit_px": 5.89,
+    "exit_reason": "R1(-5)",
+    "flags": "reentry",
+    "net_return": -0.059453,
+    "sleeve_day": "2021-02-26",
+    "ticker": "LIXT",
+    "unit_notional": 0.5
+   },
+   {
+    "entry_et": 584,
+    "entry_px": 2.6971,
+    "exit_et": 610,
+    "exit_px": 2.5622,
+    "exit_reason": "R1(-5)",
+    "flags": "reentry",
+    "net_return": -0.059453,
+    "sleeve_day": "2021-03-01",
+    "ticker": "GHSI",
+    "unit_notional": 0.5
+   }
+  ],
+  "run": {
+   "daily_rows": 20,
+   "daily_sha256": "c3f83f7ea7fce5c5a7026f4ec47dd443ddf26d2bf7d1caad4764aead61128e0b",
+   "fingerprint": "877e0484054f3ac7",
+   "ticket_rows": 44,
+   "tickets_sha256": "b18c97f48f2551466b22870a9d155f66398a4c9e68a1fa4e85d745fa16ea1c59"
+  },
+  "sibling_without_hooks": {
+   "run_id": "post_r1",
+   "spec_json": {
+    "entry_T": 570,
+    "entry_pop": "A_pm",
+    "family_id": "ATLAS_bs_canary",
+    "n_slots": 2,
+    "name": "bs_r1_20d",
+    "release": [
+     {
+      "L": -5,
+      "rule": "R1"
+     }
+    ],
+    "top_n": 2
+   }
+  },
+  "spec_json": {
+   "entry_T": 570,
+   "entry_pop": "A_pm",
+   "entry_veto": [
+    {
+     "field": "rank",
+     "op": "above",
+     "rule": "VGate",
+     "value": 1
+    }
+   ],
+   "family_id": "ATLAS_bs_canary",
+   "mid_entry": {
+    "label": "MID_ENTRY",
+    "max_per_bar": 1,
+    "max_per_day": 1,
+    "trigger": {
+     "pct": -2.0,
+     "ref": "px_decision",
+     "rule": "TCross",
+     "side": "above"
+    },
+    "window": [
+     600,
+     660
+    ]
+   },
+   "n_slots": 2,
+   "name": "bs_exercise_20d",
+   "reentry": {
+    "cooldown_bars": 0,
+    "label": "REENTRY",
+    "max_notional_per_day_frac": 1.0,
+    "max_per_day": 1,
+    "max_per_ticker": 1,
+    "trigger": {
+     "pct": 0.0,
+     "ref": "exit_px",
+     "rule": "TCross",
+     "side": "above"
+    }
+   },
+   "release": [
+    {
+     "L": -5,
+     "rule": "R1"
+    }
+   ],
+   "top_n": 2
+  },
+  "ticket_diff_vs_plain": {
+   "added_mid_entry": 9,
+   "added_reentry": 15,
+   "added_tickets": 24,
+   "common_rows_changed": 0,
+   "common_rows_identical": true,
+   "exercise_run_id": "post_exercise",
+   "exercise_tickets": 44,
+   "plain_run_id": "post_r1",
+   "plain_tickets": 40,
+   "removed_are_the_rank_2_names": true,
+   "removed_tickets": 20
+  }
+ },
+ "C_fingerprint_binding": {
+  "evidence": [
+   {
+    "entry_veto": [],
+    "fingerprint": "3e569645317fe4c8",
+    "outputs": "70f74b4962ea045a671eb91e3cada4dbfd71832bfd588c0642188c5dbf6ae69e",
+    "run_id": "post_default"
+   },
+   {
+    "entry_veto": [
+     "VGate(field='rank',op='above',value=2.0,on_missing='veto')"
+    ],
+    "fingerprint": "a987589edbedbbd5",
+    "note": "identical outputs to post_default (no rank > 2 exists at top_n=2) but a different fingerprint: the parameter is bound, not the behaviour.",
+    "outputs": "70f74b4962ea045a671eb91e3cada4dbfd71832bfd588c0642188c5dbf6ae69e",
+    "run_id": "post_veto_rank2"
+   },
+   {
+    "entry_veto": [
+     "VGate(field='rank',op='above',value=1.0,on_missing='veto')"
+    ],
+    "fingerprint": "73d9e43d78de766a",
+    "outputs": "ae68e4b2977bc3117b45ffc8745f87a5eb1de049523649da7a7a6abd1c66e311",
+    "run_id": "post_veto"
+   },
+   {
+    "fingerprint": "877e0484054f3ac7",
+    "hooks": "veto + mid_entry + reentry",
+    "run_id": "post_exercise"
+   }
+  ],
+  "property": "a declared hook parameter moves the fingerprint even when the tape never exercises it, and an unchanged spec keeps its fingerprint",
+  "unbound_rule_fails_at_run_start": "EntryVetoRule/EntryTrigger base classes raise NotImplementedError in signature(); asserted in `--self-test`."
+ },
+ "D_resume_probe": {
+  "daily_sha256": [
+   "c3f83f7ea7fce5c5a7026f4ec47dd443ddf26d2bf7d1caad4764aead61128e0b",
+   "c3f83f7ea7fce5c5a7026f4ec47dd443ddf26d2bf7d1caad4764aead61128e0b"
+  ],
+  "days_run_on_resume": 3,
+  "dropped_days": [
+   "2021-02-25",
+   "2021-02-26",
+   "2021-03-01"
+  ],
+  "fingerprint_identical": true,
+  "identical": true,
+  "tickets_sha256": [
+   "b18c97f48f2551466b22870a9d155f66398a4c9e68a1fa4e85d745fa16ea1c59",
+   "b18c97f48f2551466b22870a9d155f66398a4c9e68a1fa4e85d745fa16ea1c59"
+  ]
+ },
+ "E_self_test": {
+  "all_pass": true,
+  "checks_total": 48,
+  "command": "/home/hillel/projects/Alpacatrader/.venv/bin/python factory/scripts/basket_sim.py --self-test",
+  "ext2_check_failures": [],
+  "ext2_checks": 25
+ },
+ "artifact": "ATLAS engine buy-side canary (EXT-2)",
+ "contract_version": "FROZEN-2026-09-22+SUBSTRATE-CORRECTION-2026-09-24",
+ "created": "2026-09-25",
+ "how_the_canary_was_run": {
+  "comparison_made": "sha256 of the *merged* run outputs (daily.parquet, tickets.parquet) plus a raw byte comparison (cmp) and a polars frame equality check, between the pre-change engine copy and the post-change engine, over the same spec JSON, substrate and day list, with fresh run ids (`pre_default` / `post_default`) and separate out roots.",
+  "post_change_engine": {
+   "path": "/home/hillel/.config/opencode/worktrees/Alpacatrader/basket-phase2-f1/factory/scripts/basket_sim.py",
+   "sha256": "852434d78c668db77b31eb334238ee4dce93f2aba83e9fb197e28be0a77e0dfc"
+  },
+  "pre_change_engine": {
+   "copy": "/tmp/atlas_bs_canary/pre/factory/scripts/basket_sim.py",
+   "sha256": "cf640e180b2f431d73037cedc5aa76646978b0568247dc6c6fdd95179413329c",
+   "source": "git show HEAD:factory/scripts/basket_sim.py (worktree HEAD == the engine file before this change; `git diff HEAD -- factory/scripts/basket_sim.py` was empty at copy time)"
+  },
+  "run_outputs": {
+   "location": "/tmp/atlas_bs_canary/{pre_out,post_out,<window>}/ATLAS_bs_canary/<run_id>",
+   "note": "run directories are outside the repository on purpose: this task owns only the engine, the extension doc and this JSON."
+  },
+  "substrate": {
+   "env": "BASKET_ART_ROOT=<worktree>/factory/artifacts/basket",
+   "note": "identical for every run; canonical anatomy + bars + carry overlay"
+  }
+ },
+ "limits_and_declared_deviations": [
+  "no engine invariant was relaxed: cash >= 0, deployed <= C0, per-side friction, the ADD cap, forced flat and the exit-carry rules are untouched",
+  "a scheduled NEW entry never carries into a later session (unlike a pending EXIT, \u00a76): it is cancelled at the session end, counted in buy_side.n_entry_unfilled and flagged",
+  "when a hook is declared, the day's candidate bars join the event grid, so deployed_avg for an extension run is sampled on that grid (no existing run moves)",
+  "new entries are full slot budgets or nothing; after a stop-out a re-entry may be unfunded and is then skipped (counted once per day)",
+  "the unfunded/capped counters count (day, hook, kind) once, not once per scanned bar",
+  "re-entry is same-session only, and mid/re-entry candidates come only from the entry snapshot's top_n",
+  "resume validation widened to (sleeve_day, ticker, entry_et) because a sleeve day can now hold two tickets for one name (entry + re-entry) - see D_resume_probe",
+  "the EXT-1 fingerprint gap is closed in the same change: batch_policy is now bound (documented in EXTENSIONS.md EXT-1 item 6)",
+  "not verified here: EXT-1 batch_policy together with EXT-2 hooks in one cell (call sites are independent; no canary run declares both)"
+ ],
+ "reproduce": [
+  "cd <worktree>",
+  "export BASKET_ART_ROOT=$PWD/factory/artifacts/basket",
+  "git show HEAD:factory/scripts/basket_sim.py > /tmp/atlas_bs_canary/pre/factory/scripts/basket_sim.py",
+  "cp factory/BASKET-SIM-CONTRACT.md /tmp/atlas_bs_canary/pre/factory/",
+  "<py> /tmp/atlas_bs_canary/pre/factory/scripts/basket_sim.py --run --spec /tmp/atlas_bs_canary/spec_default.json --family-id ATLAS_bs_canary --run-id pre_default --bps 100 --max-days 20 --out-root /tmp/atlas_bs_canary/pre_out",
+  "<py> factory/scripts/basket_sim.py --run --spec /tmp/atlas_bs_canary/spec_default.json --family-id ATLAS_bs_canary --run-id post_default --bps 100 --max-days 20 --out-root /tmp/atlas_bs_canary/post_out",
+  "<py> factory/scripts/basket_sim.py --run --spec /tmp/atlas_bs_canary/spec_exercise.json --family-id ATLAS_bs_canary --run-id post_exercise --bps 100 --max-days 20 --out-root /tmp/atlas_bs_canary/post_out",
+  "<py> factory/scripts/basket_sim.py --self-test",
+  "driver scripts (read-only w.r.t. the repo): /tmp/atlas_bs_canary/{replay.py,analyze.py}"
+ ],
+ "subject": {
+  "contract_untouched": true,
+  "doc": "factory/BASKET-SIM-EXTENSIONS.md",
+  "doc_sha256": "45960200ac3bf30363b3c3df877f9047deb0e944c58fadcf156c1d39effba15c",
+  "engine": "factory/scripts/basket_sim.py",
+  "engine_sha256": "852434d78c668db77b31eb334238ee4dce93f2aba83e9fb197e28be0a77e0dfc",
+  "extension": "EXT-2 BUY-SIDE-ENTRY-HOOKS-2026-09-25 (entry veto, mid-session entry, re-entry)"
+ },
+ "veto_only_evidence": {
+  "added_tickets": 0,
+  "default_tickets": 40,
+  "hook": "entry_veto = [VGate(field='rank', op='above', value=1)]",
+  "removed_are_the_rank_2_names": true,
+  "removed_examples": [
+   {
+    "entry_et": 570,
+    "px_decision": 2.71,
+    "rank": 2,
+    "sleeve_day": "2021-02-01",
+    "ticker": "ASM"
+   },
+   {
+    "entry_et": 570,
+    "px_decision": 7.4101,
+    "rank": 2,
+    "sleeve_day": "2021-02-02",
+    "ticker": "MBRX"
+   },
+   {
+    "entry_et": 570,
+    "px_decision": 3.03,
+    "rank": 2,
+    "sleeve_day": "2021-02-03",
+    "ticker": "TYME"
+   },
+   {
+    "entry_et": 570,
+    "px_decision": 3.19,
+    "rank": 2,
+    "sleeve_day": "2021-02-04",
+    "ticker": "THTX"
+   }
+  ],
+  "removed_ranks": [
+   2
+  ],
+  "removed_tickets": 20,
+  "survivor_rows_changed": 0,
+  "survivors_byte_equal": true,
+  "veto_tickets": 20
+ },
+ "why_this_file_exists": "EXT-2 claims opt-in, additive behaviour. This file is the evidence: (A) the default engine path is byte-identical to the pre-change engine on three independent 20-day windows, (B) a configuration that exercises the new actions changes exactly the tickets it should and nothing else, (C) the run fingerprint binds the new fields, (D) an interrupted run of a re-entry cell resumes rather than silently rebuilding."
+}

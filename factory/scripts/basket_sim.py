@@ -668,6 +668,415 @@ class ScaleInOnGain(ScaleInRule):
 
 
 # --------------------------------------------------------------------------- #
+# Buy-side entry hooks (EXT-2 — factory/BASKET-SIM-EXTENSIONS.md)
+#
+# Additive and opt-in.  With no ``entry_veto`` / ``mid_entry`` / ``reentry`` declared the
+# engine never reaches this code and stays byte-identical to the EXT-1 engine.  Every new
+# entry is an ordinary ``ENTER`` (slot budget, per-side friction, no leverage) whose
+# decision is taken on a *completed* bar and executed at the open of that ticker's next
+# bar (§3 / §7 step 0).  Nothing here may reorder, weaken or re-define an existing rule.
+# --------------------------------------------------------------------------- #
+
+
+#: Scalar entry-moment fields an :class:`EntryVetoRule` may read.  Every field is causal
+#: at ``EntryCausal.cutoff_et``; anything else (close, mfe, ladders, day_high, ...) is not
+#: handed to the rule at all.
+VETO_FIELDS = ("gap_pct", "pre_run_pct", "sel", "decision_px", "prev_close", "pre_high",
+               "open0930", "bar_close", "rank")
+
+#: Reference prices an :class:`EntryTrigger` may cross, and the hook kinds allowed to use
+#: them.  ``exit_px`` / ``entry_px`` exist only for a name that already traded today.
+TRIGGER_REF_KINDS = {
+    "px_decision": ("mid", "reentry"),
+    "open0930": ("mid", "reentry"),
+    "pre_high": ("mid", "reentry"),
+    "prev_close": ("mid", "reentry"),
+    "session_open": ("mid", "reentry"),
+    "exit_px": ("reentry",),
+    "entry_px": ("reentry",),
+}
+
+#: Ticket flag written on every ticket opened by an EXT-2 hook (also the day-level flag).
+MID_ENTRY_FLAG = "mid_entry"
+REENTRY_FLAG = "reentry"
+
+
+@dataclass(frozen=True)
+class EntryCausal:
+    """Entry-moment causal view handed to an :class:`EntryVetoRule`.
+
+    The engine builds this itself so a veto can never reach future tape through the raw
+    anatomy record.  The entry decision is made from the anatomy snapshot plus completed
+    bars with ``et <= cutoff_et``, where ``cutoff_et = fill.et - 1`` -- the contract's
+    "a bar at ``et=t`` is complete at ``t+1``, and a decision from completed bars executes
+    at the next open" (§3).  For ``A_pm``/``A_pm31`` (fill at ET 570) that is premarket
+    state only; for ``A_open`` (fill 571) the completed 09:30 bar; for the ``B`` families
+    the completed bars up to ``T-1``.
+
+    A field the engine cannot fill causally is ``None`` -- never fabricated.  ``bar_*`` /
+    ``n_bars`` describe the last completed bar at or before the cutoff (for ``A_pm`` that
+    is no bar at all).
+    """
+
+    day: str
+    ticker: str
+    rank: int
+    entry_pop: str
+    entry_T: int
+    cutoff_et: int
+    prev_close: Optional[float] = None
+    px_decision: Optional[float] = None
+    open0930: Optional[float] = None
+    pre_high: Optional[float] = None
+    sel: Optional[float] = None
+    gap_pct: Optional[float] = None          # 100 * (px_decision / prev_close - 1)
+    pre_run_pct: Optional[float] = None      # 100 * (pre_high / px_decision - 1)
+    bar_open: Optional[float] = None         # last completed bar at or before cutoff_et
+    bar_high: Optional[float] = None
+    bar_low: Optional[float] = None
+    bar_close: Optional[float] = None
+    n_bars: int = 0                          # completed bars for this ticker <= cutoff
+
+    def field_value(self, field: str) -> Optional[float]:
+        if field == "decision_px":
+            return self.px_decision
+        if field not in VETO_FIELDS:
+            raise ValueError(f"unknown veto field {field!r}")
+        return getattr(self, field)
+
+
+class EntryVetoRule:
+    """Per-name entry veto, evaluated at the entry moment.
+
+    ``veto(ctx) -> True`` skips that name's slot for the day, before any ticket exists.
+    A vetoed slot is counted (``Strategy.n_vetoed_slots``, metrics ``buy_side``), flagged
+    on the day (``veto_skip``) and **never substituted** -- no backfill, exactly like a
+    blocked fill.  The veto is evaluated once per candidate in the entry batch, in
+    canonical rank order.
+    """
+
+    name = "V?"
+
+    def veto(self, ctx: EntryCausal) -> bool:
+        raise NotImplementedError
+
+    def signature(self) -> str:
+        """Run-identity token; MUST bind every constructor parameter.
+
+        ``_run_fingerprint`` calls this, so a rule that returns a constant for different
+        parameters would let a resumed run silently mix semantics.  Deliberately raising
+        in the base class: an unbound veto must fail at run start, not pass silently.
+        """
+        raise NotImplementedError
+
+
+class V0(EntryVetoRule):
+    """Never veto (explicit no-op, so a declarative spec can be explicit)."""
+
+    name = "V0"
+
+    def veto(self, ctx: EntryCausal) -> bool:
+        return False
+
+    def signature(self) -> str:
+        return "V0()"
+
+
+class VGate(EntryVetoRule):
+    """Veto when a causal entry-moment field crosses a threshold.
+
+    ``on_missing`` decides what an unavailable field means (``None``): ``"veto"`` (the
+    default, fail closed: no capital on a name the declared rule cannot evaluate) or
+    ``"pass"``.  A gate on ``open0930``/``bar_close`` is therefore a *veto-everything*
+    rule for ``A_pm``/``A_pm31`` (premarket cutoff has no bars) -- deliberate and loud.
+    """
+
+    def __init__(self, field: str, op: str, value: float, on_missing: str = "veto"):
+        if field not in VETO_FIELDS:
+            raise ValueError(f"unknown veto field {field!r}; known {VETO_FIELDS}")
+        if op not in ("above", "below"):
+            raise ValueError(f"veto op must be 'above' or 'below', got {op!r}")
+        if on_missing not in ("veto", "pass"):
+            raise ValueError(f"on_missing must be 'veto' or 'pass', got {on_missing!r}")
+        self.field = str(field)
+        self.op = str(op)
+        self.value = float(value)
+        self.on_missing = str(on_missing)
+        self.name = f"VGate({self.field}{'>' if op == 'above' else '<'}{self.value:g})"
+
+    def veto(self, ctx: EntryCausal) -> bool:
+        v = ctx.field_value(self.field)
+        if v is None:
+            return self.on_missing == "veto"
+        return v > self.value if self.op == "above" else v < self.value
+
+    def signature(self) -> str:
+        return (f"VGate(field={self.field!r},op={self.op!r},value={self.value!r},"
+                f"on_missing={self.on_missing!r})")
+
+
+class EntryTrigger:
+    """Completed-bar trigger for a new entry (mid-session entry or re-entry).
+
+    ``fires(close_px, ref_px)`` is called on the candidate's **own completed bar** ``et``
+    with that bar's close and the declared reference price; the engine never invents a
+    bar and never evaluates a trigger on a bar the ticker does not have.  ``ref`` names
+    the reference-price source (see :data:`TRIGGER_REF_KINDS`); the decision executes at
+    the open of that ticker's first bar strictly after ``et`` (§3).
+    """
+
+    name = "T?"
+    ref: Optional[str] = None
+    kind = "any"
+
+    def fires(self, close_px: float, ref_px: float) -> bool:
+        raise NotImplementedError
+
+    def signature(self) -> str:
+        """Run-identity token; MUST bind every constructor parameter (see
+        :meth:`EntryVetoRule.signature`)."""
+        raise NotImplementedError
+
+
+class TAlways(EntryTrigger):
+    """Fire on every completed bar inside the policy window (no reference price)."""
+
+    name = "TAlways"
+    ref = None
+
+    def fires(self, close_px: float, ref_px: float) -> bool:
+        return True
+
+    def signature(self) -> str:
+        return "TAlways()"
+
+
+class TCross(EntryTrigger):
+    """Fire at a completed bar whose close crosses a declared reference price.
+
+    ``above``: ``close >= ref * (1 + pct/100)``; ``below``: ``close <= ...``.  ``pct`` is
+    a percent of the reference price, so ``TCross("exit_px", 0.0)`` is "reclaim the exit
+    price" and ``TCross("px_decision", -5.0, "below")`` is "still 5% under the decision
+    print".
+    """
+
+    kind = "any"
+
+    def __init__(self, ref: str, pct: float = 0.0, side: str = "above"):
+        if ref not in TRIGGER_REF_KINDS:
+            raise ValueError(f"unknown trigger ref {ref!r}; known {tuple(TRIGGER_REF_KINDS)}")
+        if side not in ("above", "below"):
+            raise ValueError(f"trigger side must be 'above' or 'below', got {side!r}")
+        self.ref = str(ref)
+        self.pct = float(pct)
+        self.side = str(side)
+        self.name = f"TCross({self.ref},{self.side},{self.pct:g})"
+
+    def fires(self, close_px: float, ref_px: float) -> bool:
+        thr = ref_px * (1.0 + self.pct / 100.0)
+        return close_px >= thr - 1e-12 if self.side == "above" else close_px <= thr + 1e-12
+
+    def signature(self) -> str:
+        return (f"TCross(ref={self.ref!r},pct={self.pct!r},side={self.side!r})")
+
+
+class BuySidePolicy:
+    """Common base for the two EXT-2 opt-in entry hooks.
+
+    ``window`` is an inclusive ``(lo, hi)`` decision-et range in ET minutes; either end
+    may be ``None`` for "open at the start of the session" / "open at the engine's hard
+    limit".  The engine intersects every declared window with ``[FIRST_ET,
+    session_end - 2]``: a new entry is never scheduled on the last two completed session
+    bars, so an execution bar can never be the forced-flat bar (or fall outside the
+    session).
+    """
+
+    kind = "any"
+
+    def __init__(self, trigger: EntryTrigger, window=None, label: str = "ENTRY",
+                 allow_reserve: bool = False):
+        if not isinstance(trigger, EntryTrigger):
+            raise TypeError("trigger must be an EntryTrigger")
+        ref = getattr(trigger, "ref", None)
+        if ref is not None and self.kind not in TRIGGER_REF_KINDS[ref]:
+            raise ValueError(f"{type(self).__name__} cannot use trigger ref {ref!r} "
+                             f"(allowed: {TRIGGER_REF_KINDS[ref]})")
+        self.trigger = trigger
+        self.window = None if window is None else tuple(window)
+        self.label = str(label)
+        # False (default): a new entry may only use the capital of a slot that stayed in
+        # cash, i.e. the sleeve's deployed cost basis may never exceed
+        # ``C0 * reserve_frac``.  True: the parked reserve (``1 - reserve_frac``) is
+        # deployable too, still bounded by ``C0`` and by sleeve cash.
+        self.allow_reserve = bool(allow_reserve)
+
+    def window_bounds(self, session_end: int) -> tuple[int, int]:
+        hi = session_end - 2
+        if self.window is None:
+            return FIRST_ET, hi
+        lo = FIRST_ET if self.window[0] is None else int(self.window[0])
+        if len(self.window) > 1 and self.window[1] is not None:
+            hi = min(hi, int(self.window[1]))
+        return max(FIRST_ET, lo), hi
+
+
+class MidEntryPolicy(BuySidePolicy):
+    """OPT-IN mid-session entry for a slot that is still in cash.
+
+    A candidate is a snapshot name in canonical rank order that today has **no** ticket
+    and no pending entry (so: a blocked fill, a vetoed name, a name absent from the batch,
+    or a name beyond the filled slots).  ``include_blocked_fills=False`` restricts the
+    candidates to names the batch did not take for any other reason.  The declared
+    ``trigger`` is evaluated on the candidate's own completed bar inside the window; the
+    first candidate that fires is entered at the open of its next bar with the ordinary
+    slot budget ``C0 * reserve_frac / n_slots``, and only when sleeve cash can fund it
+    (never partially, never with leverage).
+    """
+
+    kind = "mid"
+
+    def __init__(self, trigger: EntryTrigger, window=None, max_per_day: int = 1,
+                 max_per_bar: int = 1, include_blocked_fills: bool = True,
+                 label: str = "MID_ENTRY", allow_reserve: bool = False):
+        super().__init__(trigger, window, label, allow_reserve)
+        if int(max_per_day) < 1 or int(max_per_bar) < 1:
+            raise ValueError("mid_entry max_per_day/max_per_bar must be >= 1")
+        self.max_per_day = int(max_per_day)
+        self.max_per_bar = int(max_per_bar)
+        self.include_blocked_fills = bool(include_blocked_fills)
+
+    def signature(self) -> str:
+        return (f"MidEntryPolicy(trigger={self.trigger.signature()},window={self.window!r},"
+                f"max_per_day={self.max_per_day},max_per_bar={self.max_per_bar},"
+                f"include_blocked_fills={self.include_blocked_fills},"
+                f"allow_reserve={self.allow_reserve},label={self.label!r})")
+
+
+class ReentryPolicy(BuySidePolicy):
+    """OPT-IN re-entry for a name that already exited today (same sleeve).
+
+    Budget/cap is declared, not implicit: ``max_per_ticker`` re-entries per (day, ticker),
+    ``max_per_day`` re-entries per sleeve-day, and ``max_notional_per_day_frac`` of ``C0``
+    as the ceiling on notional committed by re-entries that day.  ``cooldown_bars`` bars
+    must have completed since the ticket's exit.  The declared ``trigger`` is evaluated on
+    the candidate's own completed bar inside the window; the entry is the ordinary slot
+    budget and must be fundable from sleeve cash.  Only tickets that exited **today** and
+    only the same session are eligible: re-entry never carries into a later session.
+    """
+
+    kind = "reentry"
+
+    def __init__(self, trigger: EntryTrigger, max_per_ticker: int = 1, max_per_day: int = 1,
+                 max_notional_per_day_frac: float = 1.0, cooldown_bars: int = 0,
+                 max_per_bar: int = 1, window=None, label: str = "REENTRY",
+                 allow_reserve: bool = False):
+        super().__init__(trigger, window, label, allow_reserve)
+        if int(max_per_ticker) < 1 or int(max_per_day) < 1 or int(max_per_bar) < 1:
+            raise ValueError("reentry max_per_ticker/max_per_day/max_per_bar must be >= 1")
+        if float(max_notional_per_day_frac) <= 0.0:
+            raise ValueError("reentry max_notional_per_day_frac must be > 0")
+        if int(cooldown_bars) < 0:
+            raise ValueError("reentry cooldown_bars must be >= 0")
+        self.max_per_ticker = int(max_per_ticker)
+        self.max_per_day = int(max_per_day)
+        self.max_notional_per_day_frac = float(max_notional_per_day_frac)
+        self.cooldown_bars = int(cooldown_bars)
+        self.max_per_bar = int(max_per_bar)
+
+    def signature(self) -> str:
+        return (f"ReentryPolicy(trigger={self.trigger.signature()},window={self.window!r},"
+                f"max_per_ticker={self.max_per_ticker},max_per_day={self.max_per_day},"
+                f"max_per_bar={self.max_per_bar},"
+                f"max_notional_per_day_frac={self.max_notional_per_day_frac!r},"
+                f"cooldown_bars={self.cooldown_bars},allow_reserve={self.allow_reserve},"
+                f"label={self.label!r})")
+
+
+def _veto_from_json(obj: dict) -> EntryVetoRule:
+    kind = obj.get("rule", "V0")
+    if kind == "V0":
+        return V0()
+    if kind == "VGate":
+        return VGate(obj["field"], obj.get("op", "above"), obj["value"],
+                     obj.get("on_missing", "veto"))
+    raise ValueError(f"unknown veto rule {kind}")
+
+
+def _trigger_from_json(obj: dict) -> EntryTrigger:
+    kind = obj.get("rule", "TAlways")
+    if kind == "TAlways":
+        return TAlways()
+    if kind == "TCross":
+        return TCross(obj["ref"], obj.get("pct", 0.0), obj.get("side", "above"))
+    raise ValueError(f"unknown entry trigger {kind}")
+
+
+def _window_from_json(obj) -> Optional[tuple]:
+    if obj is None:
+        return None
+    if not isinstance(obj, (list, tuple)) or len(obj) != 2:
+        raise ValueError("window must be [lo, hi] with either end null")
+    return tuple(obj)
+
+
+def _canonical(obj: Any) -> Any:
+    """Deterministic JSON-ready normalization for fingerprint payloads."""
+    if obj is None or isinstance(obj, (str, bool, int, float)):
+        return obj
+    if isinstance(obj, (list, tuple)):
+        return [_canonical(v) for v in obj]
+    if isinstance(obj, (set, frozenset)):
+        return sorted((_canonical(v) for v in obj), key=repr)
+    if isinstance(obj, dict):
+        return {str(k): _canonical(v)
+                for k, v in sorted(obj.items(), key=lambda kv: str(kv[0]))}
+    return f"<opaque:{type(obj).__name__}>"
+
+
+def _policy_signature(policy) -> Optional[Any]:
+    """Fingerprint token for an EXT-1/EXT-2 policy object.
+
+    ``signature()`` when the policy declares one; otherwise a structural token derived
+    from its class, name, checkpoint ets and its own attributes (opaque attribute values
+    degrade to ``"<opaque:Type>"``, which is honest but *not* binding -- a policy with
+    behaviour-carrying opaque parameters must declare ``signature()``).
+    """
+    if policy is None:
+        return None
+    sig = getattr(policy, "signature", None)
+    if callable(sig):
+        return str(sig())
+    return {
+        "class": type(policy).__name__,
+        "name": str(getattr(policy, "name", "")),
+        "checkpoint_ets": _canonical(list(getattr(policy, "checkpoint_ets", ()) or ())),
+        "attrs": _canonical({k: v for k, v in vars(policy).items()
+                             if k != "checkpoint_ets"}),
+    }
+
+
+@dataclass
+class _BuySideDay:
+    """Per-session EXT-2 bookkeeping (never persisted, never read by §7 rules)."""
+
+    day: str
+    session_end: int
+    budget: float
+    entered: set = field(default_factory=set)          # tickers with a ticket today
+    pending: list = field(default_factory=list)        # scheduled-but-unexecuted entries
+    pending_notional: float = 0.0                      # cash reserved by those entries
+    mid_count: int = 0
+    reentry_count: int = 0
+    reentry_notional: float = 0.0
+    reentry_by_ticker: dict = field(default_factory=dict)
+    capped: int = 0                                    # budget refusals after a firing trigger
+    marked: set = field(default_factory=set)           # (hook, refusal kind) counted today
+
+    def pending_tickers(self) -> set:
+        return {p["ticker"] for p in self.pending}
+
+
+# --------------------------------------------------------------------------- #
 # Ticket / strategy
 # --------------------------------------------------------------------------- #
 
@@ -740,6 +1149,17 @@ class StrategySpec:
     # EXT-1 opt-in whole-sleeve capital allocator (factory/BASKET-SIM-EXTENSIONS.md).
     # None (the default) leaves the engine byte-identical to the pre-extension engine.
     batch_policy: Optional["BatchAllocationPolicy"] = None
+    # EXT-2 opt-in buy side (factory/BASKET-SIM-EXTENSIONS.md).  All four default to the
+    # pre-extension behaviour: no veto, no mid-session entry, no re-entry, no extra
+    # fingerprint payload.
+    entry_veto: list = field(default_factory=list)             # list[EntryVetoRule]
+    mid_entry: Optional["MidEntryPolicy"] = None
+    reentry: Optional["ReentryPolicy"] = None
+    # Canonical, JSON-serializable identity a family pins into the run fingerprint for
+    # behaviour that is not expressible as a declared field (e.g. the parameters of a
+    # Python predicate).  MUST be deterministic across processes: no ids, no reprs of
+    # objects whose repr carries an address, no timestamps.
+    fingerprint_extra: dict = field(default_factory=dict)
 
     @staticmethod
     def from_json(obj: dict) -> "StrategySpec":
@@ -760,6 +1180,36 @@ class StrategySpec:
         for s in obj.get("scale_in", []):
             scales.append(ScaleInOnGain(s.get("trig", 10), s.get("size", 25),
                                         s.get("once", True)))
+        vetoes = [_veto_from_json(v) for v in obj.get("entry_veto", [])]
+        mid_obj = obj.get("mid_entry")
+        mid = None
+        if mid_obj:
+            mid = MidEntryPolicy(
+                trigger=_trigger_from_json(mid_obj.get("trigger", {"rule": "TAlways"})),
+                window=_window_from_json(mid_obj.get("window")),
+                max_per_day=int(mid_obj.get("max_per_day", 1)),
+                max_per_bar=int(mid_obj.get("max_per_bar", 1)),
+                include_blocked_fills=bool(mid_obj.get("include_blocked_fills", True)),
+                label=str(mid_obj.get("label", "MID_ENTRY")),
+                allow_reserve=bool(mid_obj.get("allow_reserve", False)),
+            )
+        re_obj = obj.get("reentry")
+        reentry = None
+        if re_obj:
+            reentry = ReentryPolicy(
+                trigger=_trigger_from_json(re_obj.get("trigger", {"rule": "TAlways"})),
+                max_per_ticker=int(re_obj.get("max_per_ticker", 1)),
+                max_per_day=int(re_obj.get("max_per_day", 1)),
+                max_per_bar=int(re_obj.get("max_per_bar", 1)),
+                max_notional_per_day_frac=float(re_obj.get("max_notional_per_day_frac", 1.0)),
+                cooldown_bars=int(re_obj.get("cooldown_bars", 0)),
+                window=_window_from_json(re_obj.get("window")),
+                label=str(re_obj.get("label", "REENTRY")),
+                allow_reserve=bool(re_obj.get("allow_reserve", False)),
+            )
+        extra = obj.get("fingerprint_extra", {})
+        if not isinstance(extra, dict):
+            raise ValueError("fingerprint_extra must be a JSON object")
         return StrategySpec(
             family_id=obj.get("family_id", "cell"),
             entry_pop=obj.get("entry_pop", "A_pm"),
@@ -770,6 +1220,10 @@ class StrategySpec:
             release=rules,
             scale_in=scales,
             name=obj.get("name", "cell"),
+            entry_veto=vetoes,
+            mid_entry=mid,
+            reentry=reentry,
+            fingerprint_extra=extra,
         )
 
 
@@ -797,6 +1251,12 @@ class Strategy:
         self.n_carries = 0
         self.n_skipped_adds = 0
         self.flags: list[str] = []
+        # EXT-2 buy-side counters and day flags (all inert unless a hook is declared).
+        self.n_vetoed_slots = 0
+        self.n_entry_unfunded = 0
+        self.n_entry_unfilled = 0
+        self.n_entry_capped = 0
+        self.buy_side_day_flags: dict[str, set] = {}
         # EXT-1: a declared batch policy may only use the contract's golden-window
         # points.  Inert when no policy is declared.
         policy = getattr(spec, "batch_policy", None)
@@ -1100,20 +1560,306 @@ def _run_batch_checkpoint(strat: Strategy, day: str, et: int, session_end: int,
     return scheduled
 
 
+# --------------------------------------------------------------------------- #
+# Buy-side call sites (EXT-2 — factory/BASKET-SIM-EXTENSIONS.md)
+#
+# Reached only from ``simulate_day`` and only when a hook is declared; see the EXT-2
+# section header for the semantics and ``factory/BASKET-SIM-EXTENSIONS.md`` for the
+# declared contract.
+# --------------------------------------------------------------------------- #
+
+
+def _entry_causal(day: str, snap: dict, nm: dict, bars: Bars, fill_et: int) -> EntryCausal:
+    """Entry-moment causal view for one batch candidate.
+
+    ``cutoff_et = fill_et - 1`` is the last minute that is complete before the entry
+    fill's own bar (§3).  ``open0930`` and the bar fields are filled only when the
+    relevant bar is complete at that cutoff; anything else stays ``None``.
+    """
+    cutoff = int(fill_et) - 1
+    tkb = bars.ticker(nm["ticker"])
+    bar = None
+    n_bars = 0
+    if tkb is not None and len(tkb["et"]):
+        pos = int(np.searchsorted(tkb["et"], cutoff, side="right")) - 1
+        n_bars = pos + 1
+        if pos >= 0:
+            bar = _bar(tkb, pos)
+    prev_close = nm.get("prev_close")
+    px_dec = nm.get("px_decision")
+    pre_high = nm.get("pre_high")
+    sel = nm.get("sel")
+    open0930 = nm.get("open0930") if cutoff >= FIRST_ET else None
+    gap_pct = (100.0 * (float(px_dec) / float(prev_close) - 1.0)
+               if (px_dec and prev_close and float(prev_close) > 0) else None)
+    pre_run_pct = (100.0 * (float(pre_high) / float(px_dec) - 1.0)
+                   if (pre_high is not None and px_dec) else None)
+    return EntryCausal(
+        day=day, ticker=str(nm["ticker"]), rank=int(nm.get("rank", -1)),
+        entry_pop=str(snap["pop"]), entry_T=int(snap["T"]), cutoff_et=cutoff,
+        prev_close=None if prev_close is None else float(prev_close),
+        px_decision=None if px_dec is None else float(px_dec),
+        open0930=None if open0930 is None else float(open0930),
+        pre_high=None if pre_high is None else float(pre_high),
+        sel=None if sel is None else float(sel),
+        gap_pct=gap_pct, pre_run_pct=pre_run_pct,
+        bar_open=None if bar is None else bar["open"],
+        bar_high=None if bar is None else bar["high"],
+        bar_low=None if bar is None else bar["low"],
+        bar_close=None if bar is None else bar["close"],
+        n_bars=n_bars,
+    )
+
+
+def _trigger_ref_px(ref: Optional[str], nm: Optional[dict], tk: Optional[Ticket],
+                    tkb: Optional[dict], cutoff_et: int) -> Optional[float]:
+    """Resolve a declared trigger reference price causally, or ``None``.
+
+    ``nm`` is the candidate's anatomy name record (premarket fields), ``tk`` the closed
+    ticket for a re-entry candidate.  A reference that is not knowable at ``cutoff_et``
+    returns ``None`` and the trigger never fires on it -- the engine never substitutes a
+    different price.
+    """
+    if ref is None:
+        return 0.0                                  # TAlways needs no reference
+    if ref in ("px_decision", "open0930", "pre_high", "prev_close"):
+        if nm is None:
+            return None
+        if ref == "open0930" and cutoff_et < FIRST_ET:
+            return None
+        v = nm.get(ref)
+        return None if v is None else float(v)
+    if ref == "session_open":
+        if tkb is None or not len(tkb["et"]) or int(tkb["et"][0]) > cutoff_et:
+            return None
+        return float(tkb["open"][0])
+    if ref == "exit_px":
+        return None if (tk is None or tk.exit_px is None) else float(tk.exit_px)
+    if ref == "entry_px":
+        return None if tk is None else float(tk.entry_px)
+    raise ValueError(f"unknown trigger ref {ref!r}")
+
+
+def _slot_budget_free(strat: Strategy, st: _BuySideDay, allow_reserve: bool) -> bool:
+    """Can this sleeve fund one more full slot budget right now?
+
+    ``cash >= budget`` (net of entries already scheduled but not executed) **and** the
+    deployed cost basis stays inside its limit: ``C0 * reserve_frac`` by default (a new
+    entry may only use the capital of a slot that stayed in cash), or ``C0`` when the
+    policy explicitly allows the parked reserve to be deployed.  Never partial.
+    """
+    b = st.budget
+    limit = C0 if allow_reserve else C0 * strat.spec.reserve_frac
+    return (strat._cash(st.day) - st.pending_notional >= b - 1e-12
+            and strat._deployed(st.day) + st.pending_notional + b <= limit + 1e-12)
+
+
+def _note_buy_side_refusal(strat: Strategy, st: _BuySideDay, hook: str, kind: str) -> None:
+    """Record a refusal once per (day, hook, kind).
+
+    A firing trigger that cannot act is counted on the day it happened, not once per
+    scanned bar: the counters in metrics ``buy_side`` are *days* on which a policy wanted
+    in and was refused, and the day flag carries the same information in ``daily.parquet``.
+    """
+    key = (hook, kind)
+    if key in st.marked:
+        return
+    st.marked.add(key)
+    strat.buy_side_day_flags.setdefault(st.day, set()).add(f"entry_{kind}")
+    if kind == "unfunded":
+        strat.n_entry_unfunded += 1
+    elif kind == "capped":
+        st.capped += 1
+
+
+def _push_pending_entry(strat: Strategy, st: _BuySideDay, ticker: str, rank: int,
+                        et: int, flag: str, reason: str) -> None:
+    st.pending.append({"ticker": str(ticker), "after_et": int(et), "rank": int(rank),
+                       "budget": float(st.budget), "flag": flag, "reason": reason})
+    st.pending_notional += st.budget
+
+
+def _drop_pending_entry(strat: Strategy, st: _BuySideDay, pe: dict, why: str) -> None:
+    """Cancel a scheduled-but-unexecuted new entry.
+
+    A new entry is a same-session intent: unlike a pending *exit* (§6) it is never carried
+    into a later session, because the entry decision belongs to the day's selection and a
+    carried entry would not be a decision at all.  Nothing was committed (no cash moved,
+    no ticket existed), so the slot simply stays in cash.
+    """
+    st.pending.remove(pe)
+    st.pending_notional -= pe["budget"]
+    strat.n_entry_unfilled += 1
+    strat.buy_side_day_flags.setdefault(st.day, set()).add(f"entry_unfilled_{why}")
+
+
+def _buy_side_decide(strat: Strategy, st: _BuySideDay, et: int, snap: Optional[dict],
+                     bars: Bars) -> int:
+    """EXT-2 decision pass on the completed bar ``et``: schedule new ENTERs.
+
+    Order inside one bar: mid-session candidates in canonical snapshot rank order, then
+    re-entry candidates in ``(exit_et, ticker)`` order, each policy capped by
+    ``max_per_bar``.  A window is intersected with the engine's hard limit
+    ``[FIRST_ET, session_end - 2]``, so an execution bar can never be the forced-flat bar.
+    Returns the number of scheduled entries.
+    """
+    spec = strat.spec
+    mid = spec.mid_entry
+    re_entry = spec.reentry
+    if mid is None and re_entry is None:
+        return 0
+    scheduled = 0
+    nm_by_ticker = {nm["ticker"]: nm for nm in (snap or {}).get("names", [])}
+
+    if mid is not None and st.mid_count < mid.max_per_day:
+        lo, hi = mid.window_bounds(st.session_end)
+        taken = 0
+        if lo <= et <= hi:
+            for rank_index, nm in enumerate((snap or {}).get("names", [])[: spec.top_n]):
+                if taken >= mid.max_per_bar:
+                    break
+                t = nm["ticker"]
+                if (st.day, t) in strat.open_tickets or t in st.entered:
+                    continue
+                if t in st.pending_tickers():
+                    continue
+                fl = nm.get("fill")
+                if (not fl or fl.get("blocked")) and not mid.include_blocked_fills:
+                    continue
+                tkb = bars.ticker(t)
+                pos = _pos_of_et(tkb, et) if tkb is not None else -1
+                if pos < 0:
+                    continue
+                ref = _trigger_ref_px(mid.trigger.ref, nm, None, tkb, et)
+                if ref is None or not mid.trigger.fires(float(tkb["close"][pos]), ref):
+                    continue
+                if not _slot_budget_free(strat, st, mid.allow_reserve):
+                    _note_buy_side_refusal(strat, st, "mid_entry", "unfunded")
+                    break
+                _push_pending_entry(strat, st, t, int(nm.get("rank", rank_index)), et,
+                                    MID_ENTRY_FLAG,
+                                    f"{mid.label}:{mid.trigger.signature()}")
+                st.mid_count += 1
+                taken += 1
+                scheduled += 1
+
+    if re_entry is not None and st.reentry_count < re_entry.max_per_day:
+        lo, hi = re_entry.window_bounds(st.session_end)
+        taken = 0
+        if lo <= et <= hi:
+            closed_today = sorted(
+                (c for c in strat.closed
+                 if c.sleeve_day == st.day and c.exit_et is not None),
+                key=lambda c: (int(c.exit_et), c.ticker))
+            for tk in closed_today:
+                if taken >= re_entry.max_per_bar:
+                    break
+                t = tk.ticker
+                if (st.day, t) in strat.open_tickets or t in st.pending_tickers():
+                    continue
+                if et - int(tk.exit_et) < re_entry.cooldown_bars:
+                    continue                      # timing gate: resolves itself
+                nm = nm_by_ticker.get(t)
+                tkb = bars.ticker(t)
+                pos = _pos_of_et(tkb, et) if tkb is not None else -1
+                if pos < 0:
+                    continue
+                ref = _trigger_ref_px(re_entry.trigger.ref, nm, tk, tkb, et)
+                if ref is None or not re_entry.trigger.fires(float(tkb["close"][pos]), ref):
+                    continue
+                # The name wanted to come back: a declared budget refusing it is
+                # recorded, so a policy read never confuses "the cap said no" with
+                # "the rule never fired".
+                if (st.reentry_by_ticker.get(t, 0) >= re_entry.max_per_ticker
+                        or st.reentry_notional + st.budget > (re_entry.max_notional_per_day_frac
+                                                              * C0 + 1e-12)):
+                    _note_buy_side_refusal(strat, st, "reentry", "capped")
+                    continue
+                if not _slot_budget_free(strat, st, re_entry.allow_reserve):
+                    _note_buy_side_refusal(strat, st, "reentry", "unfunded")
+                    break
+                _push_pending_entry(strat, st, t, int(tk.entry_rank), et, REENTRY_FLAG,
+                                    f"{re_entry.label}:{re_entry.trigger.signature()}")
+                st.reentry_count += 1
+                st.reentry_notional += st.budget
+                st.reentry_by_ticker[t] = st.reentry_by_ticker.get(t, 0) + 1
+                taken += 1
+                scheduled += 1
+
+    return scheduled
+
+
+def _apply_pending_entries(strat: Strategy, st: _BuySideDay, bar_et: int, bars: Bars,
+                           side: float, tapes: dict, active: list, exec_order: list,
+                           actions_today: list) -> float:
+    """EXT-2 execution pass for one bar: apply every scheduled entry whose execution bar
+    has arrived.
+
+    Runs after the bar's ordinary pending executions (so capital released on this bar can
+    fund an entry) and before the bar's decision pass, so the new ticket is a normal open
+    ticket from its entry bar onwards.  The execution price is the open of the ticker's
+    first bar strictly after the decision minute (§3), recorded at that minute.  A declared
+    hook puts the day's candidate bars on the event grid, so the execution bar is itself a
+    scheduled minute and this resolves exactly; the ``>=`` test below is a robustness net
+    for a caller that hands the engine a custom bar set.  Returns the cashflow delta of the
+    entries applied here.
+    """
+    if not st.pending:
+        return 0.0
+    delta = 0.0
+    for pe in list(st.pending):
+        t = pe["ticker"]
+        tkb = bars.ticker(t)
+        pos = -1
+        if tkb is not None and len(tkb["et"]):
+            p = int(np.searchsorted(tkb["et"], pe["after_et"], side="right"))
+            pos = p if p < len(tkb["et"]) else -1
+        if pos < 0:
+            _drop_pending_entry(strat, st, pe, "no_later_bar")
+            continue
+        exec_et = int(tkb["et"][pos])
+        if exec_et > st.session_end - 1:
+            _drop_pending_entry(strat, st, pe, "too_late")
+            continue
+        if exec_et > bar_et:
+            continue
+        px = float(tkb["open"][pos])
+        tk = Ticket(ticker=t, sleeve_day=st.day, entry_et=exec_et, entry_px=px,
+                    unit_notional=pe["budget"], entry_rank=pe["rank"])
+        tk.flags.append(pe["flag"])
+        strat.open_tickets[(st.day, t)] = tk
+        cash_before = strat._cash(st.day)
+        _execute(strat, tk, "ENTER", px, exec_et, pe["reason"], side, day=st.day)
+        delta += strat._cash(st.day) - cash_before
+        st.pending.remove(pe)
+        st.pending_notional -= pe["budget"]
+        st.entered.add(t)
+        active.append(tk)
+        tapes[(st.day, t)] = tkb
+        exec_order.append(tk)
+        exec_order.sort(key=lambda x: (x.ticker, x.sleeve_day))
+        actions_today.append({"day": st.day, "et": exec_et, "ticker": t,
+                              "action": "ENTER", "px": px, "reason": pe["reason"]})
+    return delta
+
+
 def simulate_day(strat: Strategy, day: str, rec: dict, bars: Bars,
                  session_end: int, bps_total: float,
                  do_entries: bool = True,
                  carry: Optional["CarrySubstrate"] = None) -> dict:
     """Run one strategy on one day.  Mutates strategy state; returns day row."""
     side = bps_total / 2.0 / 10000.0
+    snap = snapshot_of(rec, strat.spec.entry_pop, strat.spec.entry_T)
+    bs = _BuySideDay(day=day, session_end=int(session_end),
+                     budget=C0 * strat.spec.reserve_frac / max(1, strat.spec.n_slots))
     # --- 1. entries ------------------------------------------------------ #
     if do_entries:
-        snap = snapshot_of(rec, strat.spec.entry_pop, strat.spec.entry_T)
         if snap is not None:
             N = max(1, strat.spec.n_slots)
             budget = C0 * strat.spec.reserve_frac / N
             seen: set[str] = set()
             n_new = 0
+            veto_rules = strat.spec.entry_veto
             for rank_index, nm in enumerate(snap["names"][: strat.spec.top_n]):
                 t = nm["ticker"]
                 if t in seen:
@@ -1126,6 +1872,15 @@ def simulate_day(strat: Strategy, day: str, rec: dict, bars: Bars,
                 key = (day, t)
                 if key in strat.open_tickets:
                     continue
+                # EXT-2 entry veto: per-name, evaluated on causal entry-moment state,
+                # before any ticket exists.  Skipped in favour of the extension being
+                # declared at all -- the default engine never builds this view.
+                if veto_rules:
+                    ctx = _entry_causal(day, snap, nm, bars, int(fl["et"]))
+                    if any(r.veto(ctx) for r in veto_rules):
+                        strat.n_vetoed_slots += 1
+                        strat.buy_side_day_flags.setdefault(day, set()).add("veto_skip")
+                        continue
                 tk = Ticket(ticker=t, sleeve_day=day, entry_et=int(fl["et"]),
                             entry_px=float(fl["px"]), unit_notional=budget,
                             entry_rank=int(nm.get("rank", rank_index)))
@@ -1133,6 +1888,7 @@ def simulate_day(strat: Strategy, day: str, rec: dict, bars: Bars,
                               "decision_day": day, "level": None, "frac": None, "carry": False}
                 strat._cash(day)
                 strat.open_tickets[key] = tk
+                bs.entered.add(t)
                 n_new += 1
             if n_new:
                 strat.filled_days += 1
@@ -1176,6 +1932,20 @@ def simulate_day(strat: Strategy, day: str, rec: dict, bars: Bars,
                 et_set.add(e)
     et_set.add(session_end - 1)
     et_set.add(session_end)
+    # EXT-2: a declared buy-side hook needs the day's *candidate* bars on the event grid,
+    # otherwise its trigger minute might not be a scheduled minute and a slot whose entry
+    # family filled nothing would have no grid at all.  Inert without a hook, and the
+    # extension is opt-in, so no existing run's grid (hence ``deployed_avg``) moves.
+    if do_entries and snap is not None and (strat.spec.mid_entry is not None
+                                            or strat.spec.reentry is not None):
+        for nm in snap["names"][: strat.spec.top_n]:
+            ctkb = bars.ticker(nm["ticker"])
+            if ctkb is None:
+                continue
+            for e in ctkb["et"]:
+                e = int(e)
+                if e <= session_end:
+                    et_set.add(e)
     ordered = sorted(e for e in et_set if e >= FIRST_ET)
 
     day_cashflow = 0.0
@@ -1227,6 +1997,13 @@ def simulate_day(strat: Strategy, day: str, rec: dict, bars: Bars,
                     # session's first executable bar.
                     _schedule(strat, tk, "EXIT", "FORCED_FLAT", session_end, None,
                               decision_day=day)
+
+        # -- A2. EXT-2 new entries whose execution bar has arrived ----------- #
+        #     After the bar's ordinary pending executions, so capital released on
+        #     this bar can fund them; inert without a declared buy-side hook.
+        if do_entries and bs.pending:
+            day_cashflow += _apply_pending_entries(
+                strat, bs, t, bars, side, tapes, active, exec_order, actions_today)
 
         # -- B. decisions on the completed bar t ---------------------------- #
         # EXT-1: when a batch policy declares this bar, collect the sleeve's decision
@@ -1302,6 +2079,12 @@ def simulate_day(strat: Strategy, day: str, rec: dict, bars: Bars,
             _run_batch_checkpoint(strat, day, t, session_end, rec, bars, side,
                                   eligible, excluded)
 
+        # 3d. buy-side entry hooks (EXT-2): mid-session entry / re-entry decisions on
+        #     this completed bar.  Inert without a declared hook.  Scheduling only --
+        #     execution happens in step A of the bar the entry's own price belongs to.
+        if do_entries:
+            _buy_side_decide(strat, bs, t, snap, bars)
+
         # 4. state updates AFTER checks
         for tk, bar in deferred:
             if bar["high"] > tk.peak:
@@ -1315,6 +2098,12 @@ def simulate_day(strat: Strategy, day: str, rec: dict, bars: Bars,
         span = max(0, nxt - t)
         deployed_sum += dep * span
         deployed_bars += span
+
+    # --- EXT-2: a new entry is a same-session intent; nothing carries ------- #
+    # (Only reachable when a hook is declared: without one ``bs.pending`` is empty.)
+    for pe in list(bs.pending):
+        _drop_pending_entry(strat, bs, pe, "session_end")
+    strat.n_entry_capped += bs.capped
 
     # --- strategy-independent raw path tracking (C1 implementation fix) ---- #
     # MFE/MAE and first-touch of +30/+50/+100/+200 are properties of the
@@ -1367,7 +2156,10 @@ def simulate_day(strat: Strategy, day: str, rec: dict, bars: Bars,
         "n_actions": len(actions_today),
         "actions": json.dumps(actions_today, sort_keys=True),
         "n_open_end": sum(1 for tk in active if tk.open),
-        "flags": sorted({f for tk in active for f in tk.flags}),
+        # Ticket flags plus EXT-2 day-level flags (veto skips, unfunded/unfilled new
+        # entries).  The day-level set is empty unless a buy-side hook is declared.
+        "flags": sorted({f for tk in active for f in tk.flags}
+                        | strat.buy_side_day_flags.get(day, set())),
     }
     strat.day_rows.append(row)
     return row
@@ -1448,7 +2240,8 @@ def _pctile(a: np.ndarray, q: float) -> float:
 
 def compute_metrics(days: list[dict], tickets: list[Ticket], n_dev_days: int,
                     n_blocked_slots: int, n_pending: int, n_carries: int,
-                    seed: int = BOOT_SEED, draws: int = BOOT_DRAWS) -> dict:
+                    seed: int = BOOT_SEED, draws: int = BOOT_DRAWS,
+                    buy_side: Optional[dict] = None) -> dict:
     """All §9 metrics.  Returns a JSON-safe dict."""
     r = np.array([d["r_day"] for d in days], dtype=np.float64)
     dates = [d["date"] for d in days]
@@ -1644,6 +2437,17 @@ def compute_metrics(days: list[dict], tickets: list[Ticket], n_dev_days: int,
         "tail_retained": tail_retained,
         "per_year": per_year,
         "per_quarter": per_quarter,
+        # EXT-2 buy side.  Executed hook entries are identified by their ticket flag
+        # (the ticket, not a counter, is the record of what happened); the strategy-side
+        # numbers are decisions that produced no ticket.
+        "buy_side": {
+            "n_mid_entries": sum(1 for tk in tickets if MID_ENTRY_FLAG in tk.flags),
+            "n_reentries": sum(1 for tk in tickets if REENTRY_FLAG in tk.flags),
+            "n_vetoed_slots": int((buy_side or {}).get("n_vetoed_slots", 0)),
+            "n_entry_unfunded": int((buy_side or {}).get("n_entry_unfunded", 0)),
+            "n_entry_unfilled": int((buy_side or {}).get("n_entry_unfilled", 0)),
+            "n_entry_capped": int((buy_side or {}).get("n_entry_capped", 0)),
+        },
     }
     return m
 
@@ -1722,6 +2526,13 @@ def _run_fingerprint(cfg: "RunConfig", days: list[str]) -> str:
     Binds every trusted-output path to the current contract version/hash, the
     engine source and the run's identity, so a resumed or "already complete"
     run id can never silently return outputs produced under different semantics.
+
+    Every declared policy object is bound too (EXT-1 ``batch_policy``, EXT-2
+    ``entry_veto``/``mid_entry``/``reentry``): a rule whose behaviour depends on its
+    parameters must expose them through ``signature()``, and the base classes of the
+    EXT-2 rules raise rather than return a constant, so an unbound rule fails at run
+    start instead of silently changing what a stored run id means.  ``fingerprint_extra``
+    carries any identity that is not expressible as a declared field.
     """
     payload = {
         "contract_version": CONTRACT_VERSION,
@@ -1737,6 +2548,11 @@ def _run_fingerprint(cfg: "RunConfig", days: list[str]) -> str:
         "reserve_frac": cfg.spec.reserve_frac,
         "release": [r.signature() for r in cfg.spec.release],
         "scale_in": [s.signature() for s in cfg.spec.scale_in],
+        "batch_policy": _policy_signature(cfg.spec.batch_policy),
+        "entry_veto": [v.signature() for v in cfg.spec.entry_veto],
+        "mid_entry": _policy_signature(cfg.spec.mid_entry),
+        "reentry": _policy_signature(cfg.spec.reentry),
+        "fingerprint_extra": _canonical(cfg.spec.fingerprint_extra),
         "bps_total": cfg.bps_total,
         "days": [days[0], days[-1], len(days)] if days else [],
     }
@@ -1783,9 +2599,10 @@ def run(cfg: RunConfig, progress: bool = True) -> dict:
                 for day in pl.read_parquet(path, columns=["sleeve_day"])["sleeve_day"].to_list()
             }
             ticket_keys = [
-                (row["sleeve_day"], row["ticker"])
+                (row["sleeve_day"], row["ticker"], row["entry_et"])
                 for path in part_tick.glob("*.parquet")
-                for row in pl.read_parquet(path, columns=["sleeve_day", "ticker"]).iter_rows(named=True)
+                for row in pl.read_parquet(
+                    path, columns=["sleeve_day", "ticker", "entry_et"]).iter_rows(named=True)
             ]
             progress_valid = (
                 done == part_days
@@ -1919,7 +2736,11 @@ def run(cfg: RunConfig, progress: bool = True) -> dict:
         os.replace(tick_tmp, tick_path)
     metrics = compute_metrics(strat.day_rows, strat.closed + list(strat.open_tickets.values()),
                               len(days), strat.n_blocked_slots, strat.n_pending,
-                              strat.n_carries)
+                              strat.n_carries,
+                              buy_side={"n_vetoed_slots": strat.n_vetoed_slots,
+                                        "n_entry_unfunded": strat.n_entry_unfunded,
+                                        "n_entry_unfilled": strat.n_entry_unfilled,
+                                        "n_entry_capped": strat.n_entry_capped})
     cfg_obj = {
         "family_id": cfg.family_id,
         "run_id": cfg.run_id,
@@ -1931,6 +2752,11 @@ def run(cfg: RunConfig, progress: bool = True) -> dict:
         "reserve_frac": cfg.spec.reserve_frac,
         "release": [r.signature() for r in cfg.spec.release],
         "scale_in": [s.signature() for s in cfg.spec.scale_in],
+        "entry_veto": [v.signature() for v in cfg.spec.entry_veto],
+        "mid_entry": _policy_signature(cfg.spec.mid_entry),
+        "reentry": _policy_signature(cfg.spec.reentry),
+        "fingerprint_extra": _canonical(cfg.spec.fingerprint_extra),
+        "fingerprint": fingerprint,
         "bps_total": cfg.bps_total,
         "days": [days[0], days[-1]] if days else [],
         "n_days": len(days),
@@ -2626,6 +3452,214 @@ def self_test() -> None:
     simulate_day(st4, "2021-03-03", rec3, bars3, 572, 100.0)
     check("R3 does not trigger on the peak-setting bar itself",
           all(not a["reason"].startswith("R3") for tk in st4.closed for a in tk.actions))
+
+    # ------------------------------------------------------------------ #
+    # EXT-2 buy side: veto / mid-session entry / re-entry
+    # ------------------------------------------------------------------ #
+    DAY = "2021-04-01"
+    SE = 580
+
+    def _flat_bars(tkr, base=10.0, lo=9.5, hi=10.5, start=570, end=SE):
+        return (tkr, [(e, base, hi, lo, base, 100) for e in range(start, end + 1)])
+
+    def _rec(names, pop="A_pm", T=570):
+        return {"date": DAY, "snapshots": [{"pop": pop, "T": T, "names": names}]}
+
+    def _nm(t, rank, px=10.0, prev=9.5, blocked=False, et=570, extra=None):
+        nm = {"ticker": t, "rank": rank, "sel": 0.05, "px_decision": px, "prev_close": prev,
+              "open0930": 10.0, "pre_high": px * 1.02,
+              "fill": {"et": et, "px": px, "blocked": blocked}}
+        if extra:
+            nm.update(extra)
+        return nm
+
+    two = ["AA", "BB"]
+    flat = _synthetic_bars(DAY, {t: _flat_bars(t)[1] for t in two})
+    rec2 = _rec([_nm("AA", 1), _nm("BB", 2)])
+    base_spec = dict(family_id="bs", entry_pop="A_pm", entry_T=570, top_n=2, n_slots=2)
+
+    # inertness: no hook declared -> no day flag, no extra ticket, no counter
+    st_base = Strategy(StrategySpec(name="bs_base", **base_spec))
+    row_base = simulate_day(st_base, DAY, rec2, flat, SE, 100.0)
+    check("EXT-2 inert: two batch tickets, no buy-side flag",
+          len(st_base.closed) == 2 and row_base["flags"] == []
+          and st_base.n_vetoed_slots == 0 and st_base.n_entry_unfunded == 0
+          and st_base.n_entry_unfilled == 0)
+
+    # entry veto: rank gate skips the second name and nothing else moves
+    st_v = Strategy(StrategySpec(name="bs_veto", entry_veto=[VGate("rank", "above", 1)],
+                                 **base_spec))
+    row_v = simulate_day(st_v, DAY, rec2, flat, SE, 100.0)
+    aa_v = [tk for tk in st_v.closed if tk.ticker == "AA"]
+    aa_b = [tk for tk in st_base.closed if tk.ticker == "AA"]
+    check("EXT-2 veto skips the name (one ticket, counter, day flag)",
+          len(st_v.closed) == 1 and st_v.n_vetoed_slots == 1
+          and row_v["flags"] == ["veto_skip"])
+    check("EXT-2 veto leaves the surviving ticket untouched",
+          len(aa_v) == 1 and aa_v[0].net() == aa_b[0].net()
+          and aa_v[0].exit_px == aa_b[0].exit_px)
+
+    # veto causality: A_pm cutoff (569) has no bar and no 09:30 open; A_open (fill 571) does
+    nma, nmb = _nm("AA", 1), _nm("AA", 1, et=571)
+    c_pm = _entry_causal(DAY, rec2["snapshots"][0], nma, flat, 570)
+    c_open = _entry_causal(DAY, rec2["snapshots"][0], nmb, flat, 571)
+    check("EXT-2 veto view is causal (A_pm: no bar, no open0930)",
+          c_pm.bar_close is None and c_pm.n_bars == 0 and c_pm.open0930 is None
+          and c_pm.cutoff_et == 569)
+    check("EXT-2 veto view fills the completed 09:30 bar for A_open",
+          c_open.bar_open == 10.0 and c_open.n_bars == 1 and c_open.open0930 == 10.0
+          and abs(c_open.gap_pct - (10.0 / 9.5 - 1) * 100) < 1e-9)
+    check("EXT-2 veto fails closed on a missing field by default",
+          VGate("open0930", "above", 0.0).veto(c_pm)
+          and not VGate("open0930", "above", 0.0, on_missing="pass").veto(c_pm))
+
+    # mid-session entry for a blocked slot, on the candidate's own completed bar
+    bb_bars = [(570, 10.0, 10.1, 9.7, 9.8, 100),
+               (575, 9.9, 10.4, 9.8, 10.3, 100),
+               (576, 10.1, 10.2, 10.0, 10.1, 100),
+               (577, 9.9, 10.0, 9.8, 9.9, 100),
+               (578, 9.9, 10.0, 9.8, 9.9, 100),
+               (579, 9.9, 10.0, 9.8, 9.9, 100),
+               (580, 9.8, 9.9, 9.7, 9.8, 100)]
+    bars_mid = _synthetic_bars(DAY, {**{t: _flat_bars(t)[1] for t in two}, "BB": bb_bars})
+    rec_mid = _rec([_nm("AA", 1), _nm("BB", 2, blocked=True)])
+    mid = MidEntryPolicy(TCross("px_decision"), window=[575, 576], label="MID")
+    st_m = Strategy(StrategySpec(name="bs_mid", mid_entry=mid, **base_spec))
+    row_m = simulate_day(st_m, DAY, rec_mid, bars_mid, SE, 100.0)
+    bb_m = [tk for tk in st_m.closed if tk.ticker == "BB"]
+    exp_px = 10.1
+    exp_sh = 0.5 / (exp_px * (1 + 100.0 / 2 / 10000.0))
+    check("EXT-2 mid entry fires on the candidate's completed bar and fills next open",
+          len(bb_m) == 1 and bb_m[0].entry_et == 576 and abs(bb_m[0].entry_px - exp_px) < 1e-12
+          and abs(bb_m[0].shares_entry - exp_sh) < 1e-15)
+    check("EXT-2 mid entry carries the slot budget and the mid_entry flag",
+          abs(bb_m[0].unit_notional - 0.5) < 1e-12 and MID_ENTRY_FLAG in bb_m[0].flags
+          and any(a["action"] == "ENTER" and a["et"] == 576 and a["reason"].startswith("MID:")
+                  for a in bb_m[0].actions))
+    check("EXT-2 mid entry keeps the no-leverage invariant (both slots deployed, both flat)",
+          abs(st_m.deployed[DAY]) < 1e-12 and st_m.sleeve_cash[DAY] > 0.9
+          and row_m["n_actions"] == 4 and row_m["n_open_end"] == 0)
+    check("EXT-2 mid entry is a no-op when entries are disabled",
+          simulate_day(Strategy(StrategySpec(name="bs_mid_off", mid_entry=mid, **base_spec)),
+                       DAY, rec_mid, bars_mid, SE, 100.0, False)["n_actions"] == 0)
+
+    st_mc = Strategy(StrategySpec(name="bs_mid_cap2", entry_pop="A_pm", entry_T=570, top_n=2,
+                                  n_slots=1,
+                                  mid_entry=MidEntryPolicy(TCross("px_decision"),
+                                                           window=[575, 575])))
+    row_mc = simulate_day(st_mc, DAY, rec_mid, bars_mid, SE, 100.0)
+    check("EXT-2 unfunded new entry is skipped, flagged, never leveraged",
+          len(st_mc.closed) == 1 and st_mc.n_entry_unfunded == 1
+          and row_mc["flags"] == ["entry_unfunded"])
+    st_mw = Strategy(StrategySpec(name="bs_mid_win", mid_entry=MidEntryPolicy(
+        TCross("px_decision"), window=[900, 950]), **base_spec))
+    row_mw = simulate_day(st_mw, DAY, rec_mid, bars_mid, SE, 100.0)
+    check("EXT-2 a window outside the session never fires",
+          len(st_mw.closed) == 1 and row_mw["flags"] == [])
+
+    # a scheduled entry with no bar left before the forced-flat bar is cancelled
+    bb_late = [(570, 10.0, 10.1, 9.7, 9.8, 100), (578, 9.9, 10.4, 9.8, 10.3, 100),
+               (580, 10.2, 10.3, 10.1, 10.2, 100)]
+    bars_late = _synthetic_bars(DAY, {**{t: _flat_bars(t)[1] for t in two}, "BB": bb_late})
+    st_late = Strategy(StrategySpec(name="bs_late", mid_entry=MidEntryPolicy(
+        TCross("px_decision"), window=[578, 578]), **base_spec))
+    row_late = simulate_day(st_late, DAY, rec_mid, bars_late, SE, 100.0)
+    check("EXT-2 entry that cannot execute before the flat bar is cancelled, not carried",
+          len(st_late.closed) == 1 and st_late.n_entry_unfilled == 1
+          and row_late["flags"] == ["entry_unfilled_too_late"]
+          and all(tk.sleeve_day == DAY for tk in st_late.closed))
+
+    # re-entry after an exit, with cooldown + per-ticker cap
+    cc_bars = [(570, 10.0, 10.1, 9.9, 10.0, 100),
+               (571, 10.0, 10.0, 9.40, 9.60, 100),    # low breaches the -5% level (9.5)
+               (572, 9.55, 9.70, 9.50, 9.60, 100),    # EXIT executes here at min(open, 9.5)
+               (573, 9.60, 9.65, 9.55, 9.60, 100),
+               (574, 9.60, 10.30, 9.60, 10.20, 100),  # close reclaims the exit price
+               (575, 10.30, 10.40, 10.10, 10.20, 100),
+               (576, 10.20, 10.30, 10.00, 10.10, 100),
+               (577, 10.10, 10.20, 9.90, 10.00, 100),
+               (578, 10.00, 10.10, 9.90, 10.00, 100),
+               (579, 10.00, 10.10, 9.90, 10.00, 100),
+               (580, 9.95, 10.05, 9.90, 10.00, 100)]
+    bars_re = _synthetic_bars(DAY, {"CC": cc_bars})
+    rec_re = _rec([_nm("CC", 1, px=10.0, prev=9.5)])
+    re_pol = ReentryPolicy(TCross("exit_px"), max_per_ticker=1, cooldown_bars=2, label="RE")
+    st_re = Strategy(StrategySpec(name="bs_re", top_n=1, n_slots=1, reserve_frac=0.5,
+                                  release=[R1(-5)], reentry=re_pol))
+    simulate_day(st_re, DAY, rec_re, bars_re, SE, 100.0)
+    cc = [tk for tk in st_re.closed if tk.ticker == "CC"]
+    check("EXT-2 re-entry: first ticket stops out at min(open, level)",
+          len(cc) == 2 and cc[0].exit_et == 572 and abs(cc[0].exit_px - 9.5) < 1e-12
+          and cc[1].unit_notional == 0.5 and st_re.n_entry_unfunded == 0)
+    check("EXT-2 re-entry executes at the next open after the cooldown-limited reclaim",
+          cc[1].entry_et == 575 and abs(cc[1].entry_px - 10.30) < 1e-12
+          and REENTRY_FLAG in cc[1].flags
+          and sum(1 for tk in st_re.closed if REENTRY_FLAG in tk.flags) == 1)
+    check("EXT-2 re-entry opens a fresh full-budget ticket after the exit",
+          abs(cc[1].unit_notional - 0.5) < 1e-12 and cc[1].shares_entry > 0
+          and cc[1].n_adds == 0 and cc[0].open is False and cc[0].shares == 0.0)
+    check("EXT-2 re-entry respects max_per_ticker (two tickets, no third)",
+          len(st_re.closed) == 2
+          and sum(1 for tk in st_re.closed if REENTRY_FLAG in tk.flags) == 1)
+
+    # a declared notional budget refusing a fired trigger is recorded, not silent
+    st_cap = Strategy(StrategySpec(
+        name="bs_re_cap", top_n=1, n_slots=1, reserve_frac=0.5, release=[R1(-5)],
+        reentry=ReentryPolicy(TCross("exit_px"), max_per_ticker=1,
+                              max_notional_per_day_frac=0.25)))
+    row_cap = simulate_day(st_cap, DAY, rec_re, bars_re, SE, 100.0)
+    check("EXT-2 a re-entry budget refusal is counted and flagged, never traded",
+          len(st_cap.closed) == 1 and st_cap.n_entry_capped >= 1
+          and "entry_capped" in row_cap["flags"])
+
+    st_re2 = Strategy(StrategySpec(name="bs_re_off", top_n=1, n_slots=1, reserve_frac=0.5,
+                                   release=[R1(-5)]))
+    simulate_day(st_re2, DAY, rec_re, bars_re, SE, 100.0)
+    check("EXT-2 without a reentry policy the name never comes back",
+          len([tk for tk in st_re2.closed if tk.ticker == "CC"]) == 1)
+
+    st_re3 = Strategy(StrategySpec(name="bs_re_tight", top_n=1, n_slots=1,
+                                   release=[R1(-5)],
+                                   reentry=ReentryPolicy(TCross("exit_px"),
+                                                         max_per_ticker=1)))
+    simulate_day(st_re3, DAY, rec_re, bars_re, SE, 100.0)
+    check("EXT-2 a stopped-out slot cannot refill itself after the loss (no top-up)",
+          len([tk for tk in st_re3.closed if tk.ticker == "CC"]) == 1
+          and st_re3.n_entry_unfunded >= 1)
+
+    # fingerprint binds every declared field
+    def _fp(**kw):
+        spec = StrategySpec(**{**{"family_id": "bs", "name": "fp", "entry_pop": "A_pm",
+                                  "entry_T": 570, "top_n": 2, "n_slots": 2}, **kw})
+        return _run_fingerprint(RunConfig("bs", "fp", spec, 100.0), [DAY, DAY])
+
+    f0 = _fp()
+    check("EXT-2 fingerprint is stable for identical specs", f0 == _fp())
+    check("EXT-2 fingerprint binds the veto parameters",
+          f0 != _fp(entry_veto=[VGate("gap_pct", "above", 25.0)])
+          != _fp(entry_veto=[VGate("gap_pct", "above", 30.0)]))
+    check("EXT-2 fingerprint binds the mid-entry and re-entry parameters",
+          f0 != _fp(mid_entry=mid)
+          and _fp(mid_entry=mid) != _fp(mid_entry=MidEntryPolicy(TCross("px_decision"),
+                                                                 window=[600, 660]))
+          and _fp(reentry=re_pol) != _fp(reentry=ReentryPolicy(TCross("exit_px"),
+                                                               max_per_ticker=2))
+          and f0 != _fp(reentry=re_pol))
+    check("EXT-2 fingerprint binds fingerprint_extra",
+          f0 != _fp(fingerprint_extra={"predicate": "v1"}))
+
+    class _UnboundVeto(EntryVetoRule):
+        name = "VUnbound"
+
+        def veto(self, ctx):
+            return True
+
+    try:
+        _fp(entry_veto=[_UnboundVeto()])
+        unbound_raised = False
+    except NotImplementedError:
+        unbound_raised = True
+    check("EXT-2 an unbound rule fails at run start, not silently", unbound_raised)
 
     # --- metrics smoke --- #
     days = [{"date": "2021-01-04", "r_day": 0.01, "pnl": 0.01, "deployed_avg": 1.0,
