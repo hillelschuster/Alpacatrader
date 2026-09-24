@@ -1,0 +1,42 @@
+{
+ "cells": [
+  "A_pm_N2_hold_bps100",
+  "A_pm_N2_R2_L10_w3_full_exit_bps100",
+  "A_pm_N2_R2_L10_w3_25_25_rest_bps100"
+ ],
+ "days": [
+  "2021-02-01",
+  "2021-02-02",
+  "2021-02-03",
+  "2021-02-04",
+  "2021-02-05"
+ ],
+ "deterministic": true,
+ "hashes": {
+  "first/A_pm_N2_R2_L10_w3_25_25_rest_bps100": {
+   "daily": "d4fcb5f421f4c2231a7630fed19ce9917f63bdc89dba660cb1917f557eaa09c3",
+   "tickets": "53a623ac53d1556b820fbe67985ca67238ed8ce53f1a5b2dc81a2605d302f6db"
+  },
+  "first/A_pm_N2_R2_L10_w3_full_exit_bps100": {
+   "daily": "547509f4af126396ca4270a4f7c9726b6015a060ff2b0d6b184817d8334716f7",
+   "tickets": "4dec25b3035cd7bfa878559a7482581b0432797b7b9a772e4afef5eae01a0e9f"
+  },
+  "first/A_pm_N2_hold_bps100": {
+   "daily": "45bac66fda4c7fac0f2a4b1841ea348d3ba4b72db25b003f94b7fd2c0b9d1e99",
+   "tickets": "55240a15c1e7e5bc134f135f30834a333656d91e6c20093ffb0de2b811ed98e8"
+  },
+  "second/A_pm_N2_R2_L10_w3_25_25_rest_bps100": {
+   "daily": "d4fcb5f421f4c2231a7630fed19ce9917f63bdc89dba660cb1917f557eaa09c3",
+   "tickets": "53a623ac53d1556b820fbe67985ca67238ed8ce53f1a5b2dc81a2605d302f6db"
+  },
+  "second/A_pm_N2_R2_L10_w3_full_exit_bps100": {
+   "daily": "547509f4af126396ca4270a4f7c9726b6015a060ff2b0d6b184817d8334716f7",
+   "tickets": "4dec25b3035cd7bfa878559a7482581b0432797b7b9a772e4afef5eae01a0e9f"
+  },
+  "second/A_pm_N2_hold_bps100": {
+   "daily": "45bac66fda4c7fac0f2a4b1841ea348d3ba4b72db25b003f94b7fd2c0b9d1e99",
+   "tickets": "55240a15c1e7e5bc134f135f30834a333656d91e6c20093ffb0de2b811ed98e8"
+  }
+ },
+ "label": "PASS"
+}
