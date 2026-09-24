@@ -64,8 +64,13 @@ class ShuffledExit(sim.ReleaseRule):
 
     name = "S_shuffled_exit"
 
-    def __init__(self, schedule: dict[tuple[str, str], tuple[int, int]]):
+    def __init__(self, schedule: dict[tuple[str, str], tuple[int, int]], seed: int = 0):
         self.schedule = schedule
+        self.seed = int(seed)
+
+    def signature(self) -> str:
+        # the shuffle is a parameter, so it must bind the run fingerprint
+        return f"{self.name}:{self.seed}"
 
     def evaluate(self, tk, bar, idx):
         target = self.schedule.get((tk.sleeve_day, tk.ticker))
@@ -87,9 +92,11 @@ class ShuffledExit(sim.ReleaseRule):
 
 def run_cell(n: int, bps: int, source_run: str, seed: int = 20260924) -> dict:
     schedule = build_schedule(source_run, seed)
-    run_id = f"A_pm_N{n}_placebo_bps{bps}"
+    suffix = "" if seed == 20260924 else f"_s{seed}"
+    run_id = f"A_pm_N{n}_placebo{suffix}_bps{bps}"
     spec = sim.StrategySpec(family_id="PLACEBO", entry_pop="A_pm", entry_T=570, top_n=n,
-                            n_slots=n, reserve_frac=1.0, release=[ShuffledExit(schedule)],
+                            n_slots=n, reserve_frac=1.0,
+                            release=[ShuffledExit(schedule, seed)],
                             scale_in=[], name=run_id)
     summary = sim.run(sim.RunConfig("PLACEBO", run_id, spec, float(bps), out_root=OUT,
                                     days=sim.dev_days(), workers=2), progress=False)
@@ -127,7 +134,8 @@ def main(argv=None) -> int:
     args = ap.parse_args(argv)
     row = run_cell(args.n, args.bps, args.source_run, args.seed)
     OUT.mkdir(parents=True, exist_ok=True)
-    out = OUT / f"placebo_N{args.n}_bps{args.bps}.json"
+    suffix = "" if args.seed == 20260924 else f"_s{args.seed}"
+    out = OUT / f"placebo_N{args.n}_bps{args.bps}{suffix}.json"
     out.write_text(json.dumps(row, indent=1, sort_keys=True))
     print(json.dumps(row, indent=1, sort_keys=True))
     return 0

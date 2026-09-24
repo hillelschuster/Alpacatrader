@@ -1,0 +1,22 @@
+{
+ "avg_deployed": 0.9798632155453721,
+ "block1": -0.03306747494764306,
+ "block2": -0.03136577124963615,
+ "bps": 100,
+ "delta_b1": 0.0014697891925848153,
+ "delta_b2": 0.004562522532866979,
+ "delta_vs_hold": 0.0024330044542862014,
+ "harvest_delta_vs_hold": 0.006609284862151045,
+ "harvest_mean": -0.02836120802220008,
+ "hold_avg_deployed": 1.1020215076582227,
+ "hold_block1": -0.034537264140227876,
+ "hold_block2": -0.03592829378250313,
+ "hold_mean": -0.034970492884351126,
+ "interpretation": "placebo delta \u2248 0 \u2192 the exit-time profile alone earns nothing and the harvest gain is touch identity; placebo delta \u2248 harvest delta \u2192 the gain is time-in-market, not state.",
+ "mean": -0.032537488430064924,
+ "n": 3,
+ "n_exits": 3185,
+ "run_id": "A_pm_N3_placebo_s12_bps100",
+ "scheduled_exits": 3187,
+ "seed": 12
+}

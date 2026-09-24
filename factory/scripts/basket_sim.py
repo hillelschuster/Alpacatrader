@@ -539,6 +539,16 @@ class ReleaseRule:
     def evaluate(self, tk: "Ticket", bar: dict, idx: int) -> Optional[dict]:
         raise NotImplementedError
 
+    def signature(self) -> str:
+        """Run-identity token for the resume/complete fingerprint.
+
+        A rule whose behaviour depends on constructor parameters MUST override
+        this (default: ``name``); otherwise two runs sharing a run id but
+        differing in parameters share a fingerprint and the second silently
+        reuses the first one's artifacts.
+        """
+        return self.name
+
     def state(self, tk: "Ticket") -> dict:
         return tk.rule_state.setdefault(self.name, {})
 
@@ -629,6 +639,10 @@ class ScaleInRule:
 
     def evaluate(self, tk: "Ticket", bar: dict, idx: int) -> Optional[dict]:
         raise NotImplementedError
+
+    def signature(self) -> str:
+        """Run-identity token; see ``ReleaseRule.signature``."""
+        return self.name
 
     def state(self, tk: "Ticket") -> dict:
         return tk.rule_state.setdefault(self.name, {})
@@ -1721,8 +1735,8 @@ def _run_fingerprint(cfg: "RunConfig", days: list[str]) -> str:
         "top_n": cfg.spec.top_n,
         "n_slots": cfg.spec.n_slots,
         "reserve_frac": cfg.spec.reserve_frac,
-        "release": [r.name for r in cfg.spec.release],
-        "scale_in": [s.name for s in cfg.spec.scale_in],
+        "release": [r.signature() for r in cfg.spec.release],
+        "scale_in": [s.signature() for s in cfg.spec.scale_in],
         "bps_total": cfg.bps_total,
         "days": [days[0], days[-1], len(days)] if days else [],
     }
@@ -1915,8 +1929,8 @@ def run(cfg: RunConfig, progress: bool = True) -> dict:
         "top_n": cfg.spec.top_n,
         "n_slots": cfg.spec.n_slots,
         "reserve_frac": cfg.spec.reserve_frac,
-        "release": [r.name for r in cfg.spec.release],
-        "scale_in": [s.name for s in cfg.spec.scale_in],
+        "release": [r.signature() for r in cfg.spec.release],
+        "scale_in": [s.signature() for s in cfg.spec.scale_in],
         "bps_total": cfg.bps_total,
         "days": [days[0], days[-1]] if days else [],
         "n_days": len(days),

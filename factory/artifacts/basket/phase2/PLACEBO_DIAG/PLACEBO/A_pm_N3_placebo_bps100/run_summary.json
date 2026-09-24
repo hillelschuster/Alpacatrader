@@ -3,8 +3,8 @@
  "daily_rows": 1066,
  "daily_sha256": "70668fb15234a141c1c33d97c7312aefe8b6112336b46004f250796290287a62",
  "days_run": 1066,
- "fingerprint": "0922dea31cb612f1",
- "load_seconds_total": 0.5170125961303711,
+ "fingerprint": "dd074d0387c11f7c",
+ "load_seconds_total": 0.625014066696167,
  "metrics": {
   "avg_deployed_capital": 0.9821015911663388,
   "avg_failed_ticket_cost": -0.1442891725355961,
@@ -333,9 +333,9 @@
   "worst_month": -2.121120161645767,
   "worst_week": -1.044712463134975
  },
- "per_day_load_seconds": 0.0004850024353943444,
+ "per_day_load_seconds": 0.0005863171357374925,
  "run_dir": "/home/hillel/.config/opencode/worktrees/Alpacatrader/basket-phase2-f1/factory/artifacts/basket/phase2/PLACEBO_DIAG/PLACEBO/A_pm_N3_placebo_bps100",
  "ticket_rows": 3188,
  "tickets_sha256": "72f5c463cabaa2a9f1d57c9a77ebd8f1a3f4630e8e67c6456619c187a9edd0a1",
- "wall_seconds": 26.22679853439331
+ "wall_seconds": 31.775074243545532
 }

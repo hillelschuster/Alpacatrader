@@ -5,15 +5,15 @@
   "2021-02-01",
   "2026-05-29"
  ],
- "engine_hash": "79c9ce6201f21d16",
+ "engine_hash": "7f771509e9e2aa8e",
  "entry_T": 570,
  "entry_pop": "A_pm",
  "family_id": "PLACEBO",
- "git_head": "0dbe26bddcc057883c54aa998c1ed944818f7d53",
+ "git_head": "a7499aa2bd315b78a4c9293a10643209d62fdaa3",
  "n_days": 1066,
  "n_slots": 3,
  "release": [
-  "S_shuffled_exit"
+  "S_shuffled_exit:20260924"
  ],
  "reserve_frac": 1.0,
  "run_id": "A_pm_N3_placebo_bps100",

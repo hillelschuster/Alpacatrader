@@ -363,36 +363,49 @@ error-cost comparison without rebuilding it ticket-level.
 ### 2.7 Own measurement — the time-matched identity-shuffled placebo (100 bps)
 
 Producer: `factory/scripts/basket_diag_placebo.py` (committed); artifacts:
-`factory/artifacts/basket/phase2/PLACEBO_DIAG/placebo_N{2,3}_bps100.json`.
+`factory/artifacts/basket/phase2/PLACEBO_DIAG/placebo_N{2,3}_bps100{,_s11,_s12}.json`.
 
 Design: take the harvest arm's own realized exit-time multiset (A_pm, all-+30, 100 bps), shuffle it
 *within each day* across that day's exiting tickets, and run the engine with a rule that fires EXIT
 one completed bar before its assigned exit et (same next-bar-open convention). Ticket count is
 identical across arms (2,125), so entry decisions are arm-independent and only the exit identity
-changes.
+changes; three shuffle seeds per N.
 
-| arm (N=2) | mean/day | block1 | block2 | Σ held minutes | avg deployed |
-|---|---|---|---|---|---|
-| hold | −3.938% | −3.753% | −4.346% | 777,979 | 1.154 |
-| **placebo (shuffled times)** | **−3.704%** | −3.800% | −3.492% | 683,882 | 1.015 |
-| harvest (all-+30) | −3.044% | −3.409% | −2.236% | 670,266 | 0.857 |
+| arm | mean/day | Δ vs hold | block1 Δ | block2 Δ |
+|---|---|---|---|---|
+| hold (N=2) | −3.938% | — | — | — |
+| harvest all-+30 (N=2) | −3.044% | **+0.894%** | +0.344% | +2.110% |
+| placebo N=2, seed 20260924 | −3.704% | +0.233% | −0.047% | +0.854% |
+| placebo N=2, seed 11 | −3.779% | +0.159% | −0.133% | +0.805% |
+| placebo N=2, seed 12 | −3.568% | +0.370% | +0.247% | +0.642% |
+| harvest all-+30 (N=3) | −2.836% | **+0.661%** | +0.290% | +1.400% |
+| placebo N=3, seed 20260924 | −3.641% | −0.144% | −0.115% | −0.208% |
+| placebo N=3, seed 11 | −3.339% | +0.158% | +0.154% | +0.165% |
+| placebo N=3, seed 12 | −3.253% | +0.243% | +0.147% | +0.456% |
 
-Exposure is matched within 2% on held minutes (683,882 vs 670,266 = +2.0%), i.e. the placebo does
-almost exactly the same *time-in-market* removal; it fires 2,123 of 2,124 scheduled exits. Yet it
-captures only **+0.233%/day of the harvest's +0.894%/day (26%)**, with a different block pattern
-(−0.047% block1, +0.854% block2). At **N=3 the placebo earns −0.144%/day against a harvest gain of
-+0.661%/day** (block1 −0.115%, block2 −0.208%). Interpretation: the "be in the market less" channel
-is small, N-dependent and block-unstable; **the bulk of the harvest edge is the identity of the
-tickets that exit — selling at a locally high print** — which is exactly the state information the
-harvest claim adds. This is the decisive test §2.1 proposed: it does not overturn the harvest
-reading, it decomposes it and kills "exposure removal" as the primary mechanism (consistent with
-§2.1's note that the engine has no reinvestment and no cash return).
+Exposure is matched within 2% on held minutes (placebo 683,882 vs harvest 670,266 for seed
+20260924) and the placebo fires 2,122–2,123 of 2,124 scheduled exits, i.e. it does almost exactly
+the same *time-in-market* removal. Result: **the time channel earns +0.16…+0.37%/day at N=2 (18–41%
+of the harvest gain) and −0.14…+0.24%/day at N=3 (−22…+37%), with sign instability across seeds.**
+The bulk of the harvest edge (roughly 60–80%) is the **identity** of the tickets that exit —
+selling at a locally high print — which is the state information the harvest claim adds. This is
+the decisive test §2.1 proposed; it decomposes the harvest reading rather than overturning it, and
+it kills "exposure removal" as the primary mechanism (consistent with §2.1's note that the engine
+has no reinvestment and no cash return).
 
-Caveat found while checking the placebo: `avg_deployed_capital` is **not** a pure same-day exposure
-measure — it differs 18% between placebo and harvest (1.015 vs 0.857) while held minutes differ only
-2%, because an arm that closes tickets also removes their basis from *later* days' carry accounting.
-Any per-deployed-dollar ratio (§1.6, §2.1) is therefore sensitive to carry composition, not only to
-time-in-market; the held-minutes integral is the honest exposure measure.
+Caveats found while checking the placebo:
+1. `avg_deployed_capital` is **not** a pure same-day exposure measure — it differs 18% between
+   placebo and harvest (1.015 vs 0.857) while held minutes differ only 2%, because an arm that
+   closes tickets also removes their basis from *later* days' carry accounting. Per-deployed-dollar
+   ratios (§1.6, §2.1) are therefore sensitive to carry composition, not only to time-in-market;
+   the held-minutes integral is the honest exposure measure.
+2. **Engine defect found and fixed** (`factory/scripts/basket_sim.py`): the run fingerprint bound
+   only `rule.name`, so two runs sharing a run id but differing in rule *parameters* (e.g. a shuffle
+   seed) shared a fingerprint and the second silently returned the first's cached summary — my
+   first three seeds produced byte-identical numbers in ~1 s each before the fix. `ReleaseRule` and
+   `ScaleInRule` now expose `signature()` (default `name`) and the fingerprint uses it; a
+   parameterized rule MUST override it. Verified: same run id + different seed now recomputes
+   instead of reusing the cached summary.
 
 ### 2.8 Additional truth-critical items (verified this cycle)
 

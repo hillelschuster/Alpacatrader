@@ -2447,3 +2447,39 @@ executable level pricing (needs a small favourable-price exit convention, EXT-2)
 levels; (b) entry-side cost reduction (later entry / limit entry into the morning flush), since
 the 09:30 fill is the worst price of the day for this population; (c) only then re-test capital
 sequencing on top of a non-bleeding base.
+
+## 2026-09-24 (C1 cycle, swarm session) — placebo decomposition, engine fingerprint fix, panel defects
+
+(1) TIME-MATCHED IDENTITY-SHUFFLED PLACEBO (`phase2/PLACEBO_DIAG`, producer
+`factory/scripts/basket_diag_placebo.py`, three shuffle seeds per N). The harvest arm's own realized
+exit-time multiset is shuffled within day across that day's exiting tickets, so time-in-market is
+matched (held minutes within 2%; 2,122-2,123 of 2,124 scheduled exits fire) and only touch identity
+is removed. Placebo delta vs hold: +0.159/+0.233/+0.370 %/day at N=2 (harvest +0.894) and
+-0.144/+0.158/+0.243 at N=3 (harvest +0.661). So the "be in the market less" channel is worth
+roughly 0-40% of the harvest gain with sign instability across seeds and N; the bulk is the IDENTITY
+of the tickets that exit (selling at a locally high print), i.e. the state information the harvest
+claim adds. This kills "exposure removal" as the primary mechanism and keeps "sell into the
+touch" alive as a state mechanism - but note the harvest delta itself is fragile
+(month-blocked CI95 [-20.3, +183.9] bps/day; block1 t=0.48 vs block2 t=2.31).
+(2) `avg_deployed_capital` is NOT a pure same-day exposure measure: placebo vs harvest differ 18%
+(1.015 vs 0.857) while held minutes differ 2%, because closing tickets also removes their basis from
+later days' carry accounting. Every per-deployed-dollar ratio must use the held-minutes integral
+instead, or state the carry composition.
+(3) ENGINE FIX (truth-critical, `factory/scripts/basket_sim.py`): the run fingerprint bound only
+`rule.name`, so two runs sharing a run id but differing in rule PARAMETERS shared a fingerprint and
+the second silently returned the first's cached summary (three "different seeds" produced
+byte-identical numbers in ~1 s each). `ReleaseRule`/`ScaleInRule` now expose `signature()`
+(default `name`); the fingerprint uses it and a parameterized rule must override it. Verified: same
+run id + different seed now recomputes; no change for existing frozen rules (default is the name).
+(4) PANEL DEFECTS (verified): `basket_score_disp` is NaN in all 182,094 F2_F12 rows
+(`basket_f2_f12.py:119` reads `x["sel"]` from the `{"name","bars"}` wrappers instead of
+`x["name"]["sel"]`) and `spread_state` is hard-coded NaN; the capital map lists both as features, so
+their "no relationship" readings are vacuous. `rank_change` is not an adjacent migration and
+`rel_strength` is a return residual, not a peer-relative MFE.
+(5) INTERPRETATION GUARD: a carried ticket certified `no_bars` can never execute its forced-flat
+pending, so its cost basis keeps counting in `deployed_avg` (phantom exposure; ASPA 2023-10-25,
+GATE 2025-04-01 in the A_pm hold arm). Smallest fix: terminalize after N certified `no_bars`
+sessions as NO_RESUMPTION_MARK, or report deployed excluding frozen carries.
+(6) The engine's next-bar-open exit is ABOVE a resting limit at the level (mean +85 bps on the 582
++30 touchers; 53.4% of fills above the level) - the convention is favourable, not conservative;
+`exit_convention_comparison.json` framing corrected in place.

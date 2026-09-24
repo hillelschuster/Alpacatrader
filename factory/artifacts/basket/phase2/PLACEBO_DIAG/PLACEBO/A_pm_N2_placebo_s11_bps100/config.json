@@ -1,0 +1,25 @@
+{
+ "bps_total": 100.0,
+ "contract_version": "FROZEN-2026-09-22+SUBSTRATE-CORRECTION-2026-09-24",
+ "days": [
+  "2021-02-01",
+  "2026-05-29"
+ ],
+ "engine_hash": "7f771509e9e2aa8e",
+ "entry_T": 570,
+ "entry_pop": "A_pm",
+ "family_id": "PLACEBO",
+ "git_head": "a7499aa2bd315b78a4c9293a10643209d62fdaa3",
+ "n_days": 1066,
+ "n_slots": 2,
+ "release": [
+  "S_shuffled_exit:11"
+ ],
+ "reserve_frac": 1.0,
+ "run_id": "A_pm_N2_placebo_s11_bps100",
+ "scale_in": [],
+ "seed": 20260922,
+ "sim_contract_hash": "6bdb708dbd5ac726",
+ "strategy": "A_pm_N2_placebo_s11_bps100",
+ "top_n": 2
+}
