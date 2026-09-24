@@ -2483,3 +2483,43 @@ sessions as NO_RESUMPTION_MARK, or report deployed excluding frozen carries.
 (6) The engine's next-bar-open exit is ABOVE a resting limit at the level (mean +85 bps on the 582
 +30 touchers; 53.4% of fills above the level) - the convention is favourable, not conservative;
 `exit_convention_comparison.json` framing corrected in place.
+
+## 2026-09-24 (same cycle) — swarm complete: F8 stale-input defect fixed, joint surface regenerated
+
+(7) TRUTH-CRITICAL (found by the swarm, fixed): F8 and the capital-allocation map were built from
+the **pre-C1** F1 tree. F8's input configs say `FROZEN-2026-09-22` while the engine is
+`FROZEN-2026-09-22+SUBSTRATE-CORRECTION-2026-09-24`, and F8's A_pm_N4_R0_bps100 mean was exactly the
+pre-C1 value (-0.0308568487 vs C1 -0.0293282347). `basket_f8_joint.py` validated family/dates/entry/
+N/bps/release but NOT `contract_version`, so the stale tree was accepted silently. Fix: the per-cell
+check now refuses a contract mismatch (verified it raises on the old tree); the loader accepts the
+corrected tree's per-entry `surface_*.json`; provenance hashes the actual sources; `--f1/--out` added
+so one producer serves both generations. `F8_C1` regenerated from `F1_C1` (120 cells, 1,066
+days/cell, 127,920 rows) and its C0 mean matches C1 exactly. Joint rates moved <=0.5pp
+(p_ge2_reach_30: A_pm N2 3.94%->3.94%, N4 15.76%->16.23%, B600 N3 6.29%->6.47%), so the
+multi-survivor reading is unchanged but the provenance is now correct. The capital map still hashes
+the pre-C1 F8 context and must be regenerated from `F8_C1` before its F8 columns are quoted.
+(8) Multi-survivor geometry (canonical SIP, main top-3, 1,066 days): days with >=2 touches at +5%:
+A_pm 801, A_open 737, B600 720; +10%: 531/480/448; +30%: 103/82/67; +100%: 3/4/1. Conditional on
+>=1 +30 touch the >=2 share is 21.9%/19.8%/15.9%. Breadth is real at +5/+10 and rare at the
+harvesting ruler: the +30/+100 tail is predominantly one giant plus co-members. Rank-1 concentration
+is hindsight (T5 MFE ranks and T7 best-member economics sort outcomes after the fact; no causal
+100%-rank-1 arm exists); handoffs are unmeasured (T1 top-3 overlap is set churn, `race_by_view` is
+per-ticket).
+(9) Intraday shape ruler (A_pm top-3, n=3,187): mean return -1.24% at 10:00 -> -2.62% at 15:00,
+median -2.41% -> -5.32%; non-touchers bleed all day (-5.06% -> -9.29%), touchers gain all day
+(+15.88% -> +27.36%). False-cut accounting: of 1,928 early-down fills, 123 touchers (6.4%) end at
++35.4% mean (median +22.5%, 77.2% positive, aggregate +43.5 return units), so a blanket 10:00 cut is
+worth ~+1.27% per ticket and a state-conditioned (early-down only) cut only ~+0.73% - reproducing
+DERISK's ordering from raw paths.
+(10) Giant-runner anatomy (swarm): a fixed +30/+50 exit eliminates 100% of every MFE>=100% band
+(A_open 92/92, A_pm 106/106, B600 86/86, B615 73/73); named giants peak 179-234 minutes after entry
+with -19..-25% pre-high retracement and -28..-38% post-peak giveback; 8/10 named >=100% tickets were
+materially better held (exceptions WNW, KELYB). Two shapes exist (smooth vs interrupted reopening),
+so there is no single halt signature. Preserved as a disagreement with the "sell into strength"
+framing: the +30 arm harvests the fade majority's mean while forfeiting the convex tail.
+(11) Thesis reconstruction (swarm): all 120 corrected F1 cells, all 20 corrected F3 cells and all 54
+corrected F4 partials are net-negative; twelve rulers drifted into apparent constants (+30%, 10:00,
+N=3, T=600, L=10/g=50, staged capital, hold/sell conclusions); the load-bearing claims never tested
+in their stated form are listed in `researches/SWARM-SYNTHESIS-20260924.md` section 2.9; the T10
+"LS materials" contract is unimplemented (aggregate counters only). Stale BASKET headers in
+`researches/HYPOTHESES.md` / `researches/STATE.md` corrected this cycle.
