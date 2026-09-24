@@ -1,0 +1,143 @@
+{
+ "title": "HARVEST / 'sell into strength' critique — mechanism, decomposition, decisive test",
+ "headline": {
+  "parent_decomposition_verdict": "ARITHMETIC OK, INTERPRETATION WRONG. The +101/-12 split is a valid shift-share of (avg_deployed x r/dep), but avg_deployed for the hold arm is inflated by 0.153 of PHANTOM exposure from two never-resuming carried tickets (ASPA 2023-10-25, GATE 2025-04-01, flags no_resumption). Corrected delta_dep is 0.144, not 0.297, and the price/selection residual flips sign: roughly +55 bps/day exposure (at the basket-average rate) vs +35 bps/day state premium. The engine has no reinvestment and no cash return, so 'exposure removal' is not a separate mechanism inside the model at all — it is a restatement of the exit decision; the only causal channels are WHICH minutes you are in the market and AT WHAT price you exit.",
+  "magnitude_honesty": "The +89.4 bps/day is a difference of two bookends: excluding the 2 worst touchers (ISPO 2022-02-17, COSM 2022-12-16, 0.5% of tickets) the gain is +137.9 bps/day; those two alone cost -48.5 bps/day. Excluding the 2 best it is +79.8. Month-blocked bootstrap CI95 of the paired daily delta is [-20.3, +183.9] bps/day (N=2) and [-28.1, +150.5] (N=3); block1 t=0.48, block2 t=2.31.",
+  "single_decisive_study": "A time-matched, identity-shuffled placebo: same tickets-per-day count and the SAME realized exit-time multiset as the harvest arm, assigned to the wrong tickets (within-day swap of the harvest's exit times). Prediction from anatomy: ~+25 bps/day vs the harvest's +89.4, i.e. ~70% of the gain is touch-identity and ~30% is time-in-market. Falsified if the placebo lands >= +70 bps/day (then 'sell into strength' is just 'hold less'), confirmed as a state effect if placebo <= +35 and harvest-minus-placebo keeps its sign in both blocks."
+ },
+ "code_facts": {
+  "identity_exact": "For each (sleeve_day,ticker): net_return_hold - net_return_all30 == (exit_px_hold - exit_px_all30)*(1-s)/(entry_px*(1+s)). Verified over all 2,125 N=2 tickets, max abs error 4.4e-16. Therefore the entire arm delta is an exit-price difference on touchers; there is no separate exposure/de-leveraging term. Non-touchers: sum of delta == 0.000, max abs == 0.000 (the rule literally cannot affect them).",
+  "harvest_pricing": "basket_diag_harvest.py HarvestAt returns {'action':'EXIT'|'REDUCE','level':None}. basket_sim.simulate_day step A prices any pendings at px = min(open_px, lvl) if lvl is not None else open_px -> with level=None the fill is the RAW next bar open, never clamped to the +30% level. Measured on the 386 touchers: exit_px/(1.30*entry_px)-1 mean +0.85%, median +0.24%, 53.4% of fills at or above the level. That is +15.4 bps/day of the +89.4 (386*0.0085*0.5/1066).",
+  "timing": "HarvestAt fires on the completed bar t whose high >= entry*1.30, _schedule(decision_et=t), and step A of the next bar executes at the first bar with et > t (1-minute lag). Same convention as the SEGMENT clock arms (ExitAt fires on completed et=580 -> exit at 581 open), so the lag is not differentially biased across arms.",
+  "why_execution_convention_is_favorable_not_conservative": "exit_convention_comparison.json's own numbers: exit_limit_to_eod_mean -1.85% vs exit_next_open_to_eod_mean -2.35% at level 30 -> next_open/level = 1.00508, i.e. the next open is ~+51 bps ABOVE a resting limit at the level; next_open_over_touch_close_mean = 1.00218 (+22 bps vs the touch-bar close). The artifact's stated question ('how much does the conservative next-open execution cost versus a resting limit') has the sign backwards relative to its own summary.",
+  "no_friction_saving": "Both arms make exactly one entry and one exit per ticket (n_exits 2124 vs 2122), so the harvest saves no round-trip cost: delta_vs_hold is +89.4 bps at 100 bps friction and +89.0 at 150 bps. r_day = pnl/C0 with C0 = 1.0 fixed regardless of deployment, and cash never earns interest, so exiting early can only change P&L through the exit price.",
+  "metrics_semantics": "basket_sim.compute_metrics avg_deployed_capital = time-weighted mean of sum(cost_open) over open tickets on the union bar grid; cost_open is the COST BASIS (a +100% toucher's capital at risk is ~2x what is counted); _track_raw_path runs after the event loop so mfe_raw/h_touch_* are properties of the full session tape, not of the holding period (correct, and the reason path_contrib/tail_retained are strategy-independent)."
+ },
+ "measurements": {
+  "cohort": "N=2, bps=100, 1,066 dev days, 2,125 tickets; 386 touchers (18.2%); 1,739 non-touchers.",
+  "who_owns_the_loss": {
+   "touchers": "+47.99 sleeve units total (+24.87% mean net return per ticket, 18.3% of dollar-minutes, rate +6.75 bps/min)",
+   "non_touchers": "-89.97 sleeve units (-10.35% mean, 81.7% of dollar-minutes, rate -2.83 bps/min)",
+   "arm_total": "-41.977 sleeve units = -3.938%/day; the touchers are the profit centre, the non-touchers are 214% of the loss",
+   "toucher_sub_rates": "pre-touch ramp +33.4 bps/min over 17,205 sleeve-dollar-min; post-touch window -1.77 bps/min over 53,903 sleeve-dollar-min"
+  },
+  "per_toucher_edge_and_mixture": {
+   "mean_advantage": "+4.94% per toucher (net return difference), hurt share 30.1% (mean -51.0% when wrong), helped 69.9% (mean +29.0%)",
+   "gross_vs_net": "gross +61.6 return-units vs gross -42.6 -> the net +19.1 is 31% of the gross; break-even hurt share 36.2% vs observed 30.1% (a 6pp move kills it)",
+   "by_raw_mfe": "mfe 30-40% n=118 +24.9% each (sum +29.4); 40-60% n=120 +20.3% (+24.4); 60-100% n=74 +10.6% (+7.8); >100% n=74 -57.5% each (sum -42.5). Non-giant touchers (n=312, mfe<100%) contribute +289 bps/day gross; the 74 giants give back -200 bps/day.",
+   "by_touch_time": "<10:00 n=161 +10.8%; 10:00-11:00 n=113 +4.5%; 11:00-12:00 n=25 +10.1%; >=12:00 n=87 -6.8%",
+   "single_tickets": "worst two: ISPO (hold net_return +564.7%, harvest exit +20.7%, advantage -544pp) and COSM (+502.8% vs +12.4%, -490pp); together -10.34 return-units = -48.5 bps/day. Rank-3 touchers (N=3 minus N=2, n=194) average only +1.06% vs +4.94% for ranks 1-2."
+  },
+  "exposure_decomposition": {
+   "removed_exposure": "107,806 minute-rows x u/C0=0.5 = 53,903 sleeve-dollar-min over 1,066 days = 50.6/day = 13.0% of the hold arm's ~389 sleeve-dollar-min/day.",
+   "rates": "basket average 1.08 bps/min (ticket-time measure); harvest-removed minutes 1.77 bps/min (1.65x the average).",
+   "corrected_split_all_day_baseline": "+55 bps/day exposure-at-average-rate (61%) / +35 bps/day state premium (39%).",
+   "time_matched_baseline": "at the same clock windows the untouched rate is -0.45 to -0.55 bps/min -> exposure term only ~+25 bps/day (28%) and the state term ~+64 (72%).",
+   "parent_version": "+101 / -12 bps/day, using delta_dep = 0.297 from avg_deployed; delta_dep is inflated because hold's 1.1544 contains 0.1534 of phantom exposure (331 of 1,066 days at deployed_avg 1.5; all30 has none, max 1.0) -> corrected delta_dep 0.144.",
+   "conclusion": "the 'how much is de-leveraging' question is not answerable by the ratio-of-averages identity; it needs an explicit counterfactual for the removed minutes, and the three plausible baselines give 26% / 61% / 100%. The decision-relevant counterfactual is the time-matched one (+25 bps/day)."
+  },
+  "fixed_clock_2x2": {
+   "method": "tickets alive at T (price at T taken from the SEGMENT arm's own exit price, observable); touched_by_T = the harvest arm's exit et <= T (a past-only state); drift = exit_px_hold/px_T - 1",
+   "T=580 (09:40)": "touched n=36 drift -13.44% vs untouched n=1,970 -2.43% (-11.0pp)",
+   "T=600 (10:00)": "touched n=157 drift -5.57% (median -7.82%) vs untouched n=1,849 -1.45% (median -0.96%); per minute -1.97 vs -0.45 bps/min (4.3x)",
+   "T=630 (10:30)": "touched n=230 drift -6.12% (median -10.69%) vs untouched n=1,776 -1.02% (median 0.00%)",
+   "gain_conditioned_control": "among untouched tickets, a high-but-sub-30% gain does NOT fade the same way: at T=630 gain>5% drifts +0.47%; at T=600 gain>5% drifts -1.36%. So it is the touch level, not merely 'being up', that predicts the bleed.",
+   "reading": "the touch carries genuine, real-time-observable state information — but it identifies the SECOND-worst exposure class: post-touch minutes bleed 1.77 bps/min while the untouched majority (82% of tickets) bleeds 2.83 bps/min."
+  },
+  "clock_exit_placebo": {
+   "arms": "SEGMENT_DIAG (basket_diag_segment.py ExitAt at the completed 580/600/630 bar, exit at the next open)",
+   "deltas_vs_hold_N2_100bps": "exit580 +246.3 bps/day CI95 [+143.6,+338.5] b1 +281 / b2 +197; exit600 +145.1 [+33.0,+249.0] b1 +163 / b2 +94; exit630 +125.6 [+37.1,+217.2] b1 +141 / b2 +80; all30 +89.4 [-20.3,+183.9] b1 +21 / b2 +204",
+   "rates_per_removed_dollar_minute": "exit580 0.80; exit600 0.49; exit630 0.47; DERISK 50%-cut-at-600 156 bps/unit (linear in the fraction exited); all30 1.77 (the highest).",
+   "same_cohort_placebo": "on the 386 touchers, exit630 LOSES -100.5 bps/day while removing 105,771 minute-rows, versus all30 +89.4 bps/day on 107,806 minute-rows — same tickets, ~same minutes removed, opposite sign. (Steelman for the touch: the clock's window includes the positive-drift ramp; the harvest's does not.)",
+   "verdict": "the +89 bps/day is NOT 'any exit rule would do this': price-blind clock exits earn MORE in absolute sleeve-days but at a LOWER rate per unit of exposure removed, and they earn their money on the non-touch cohort (+470/+326/+226 bps/day) while losing on the touchers. The touch is not redundant, but it is also not the best available action."
+  },
+  "execution_channel": {
+   "what_the_code_prices": "next bar open after the completed touch bar, level=None (no clamp); 1-bar lag; bar-grid derived from the union of active tickets' ETs.",
+   "measured": "mean fill +85 bps above the +30% level (median +24), 53.4% at or above the level; artifact cross-check next_open/level ~ +51 bps.",
+   "consequences": "+15.4 bps/day of the +89.4 is the favorable next-open convention; a resting limit at the level (the STATE.md item (a) plan) would EARN LESS (+74 bps/day), while the artifact's framing claims the opposite. The convention is unfavorable exactly on the extreme runners (ISPO's fill was ~8pp BELOW the level), which is where the P&L is lost, so switching to a resting limit changes the tail slightly but not the sign.",
+   "live_realism": "the trigger bar's high is known only at the bar close, and the engine sells at that instant's open; a live event-driven implementation has ~1 minute less information than the engine assumes, and the fill lands in a spiking minute (wide spreads) charged at a flat 50 bps/side. This is an optimistic, not conservative, convention."
+  },
+  "bugs_and_semantic_mismatches": [
+   "PHANTOM EXPOSURE (material): a carried ticket whose name is certified 'no_bars' on the new session (basket_sim.simulate_day tapes loop -> tk.flags 'no_resumption', tkb=None) can never execute its forced-flat pending (pos<0 every session); it stays open with cost_open counted in deployed_sum until a block-boundary/data-end terminal mark. Hold: 2 such tickets (ASPA 2023-10-25 -> block end, GATE 2025-04-01 -> data end) inflate avg_deployed by 0.153 (331/1066 days at 1.5). all30 has 0 (both names touched +30% and were harvested), R2_L10_w5 has 2. Any cross-arm exposure decomposition built on avg_deployed_capital is invalid.",
+   "avg_deployed_capital measures COST BASIS, not market value: a ticket at +100% is carrying 2x the risk counted. Any exposure-removal arithmetic on a rule that acts after a large move (harvest, R3 trailing) is biased.",
+   "FORCED-FLAT PRECEDENCE: for t == session_end-1 (=958) the decision loop schedules EXIT FORCED_FLAT and 'continue's BEFORE the release modules, so release rules are never evaluated on bar 958. The actionable ceiling for a +30% touch is bar 957 (exit 958). Cross-check: touch_fade_paths.json counts 582 first +30% touches on the top-3 cohort; the engine's N=3 all30 arm acts on 580; max harvest execution bar observed 957. ~2 touches in the last 90 seconds are silently unactionable [INFERENCE, consistent with the counts].",
+   "exit_convention_comparison.json's question text inverts its own finding ('conservative next-open execution ... cost' vs a next open that is +51 bps ABOVE the level).",
+   "ExitAt (basket_diag_segment.py) fires only when bar['et'] == T exactly: a data gap at the checkpoint silently converts a clock exit into a hold-to-close - fine for a measurement arm, but it is exactly the failure mode a live 'exit at 10:01' rule would NOT have, and the artifact does not report how often it happened.",
+   "The producers of touch_fade_paths.json, exit_convention_comparison.json and touch_mixture.json are NOT in the worktree (no .py contains 'ret_to_touch_close'/'post_touch_max'); their cohort and price conventions are unverifiable from code. Cross-check: the engine independently reproduces the touch count (580 vs 582) and the time gradient, but NOT the means, because the artifacts report means of RATIOS (dominated by names whose EOD price collapses) whereas the P&L-relevant statistic is the mean of per-ticket return DIFFERENCES (+4.94%/toucher vs the artifact's -2.23% touch-close->EOD).",
+   "HARVEST_DIAG/SUMMARY.json reports delta_vs_hold with no uncertainty; the CI computed here straddles zero, and the SUMMARY's 'n' column (2,3) is the slot count, not a sample size - easy to misread as a replicated effect."
+  ],
+  "ideas": [
+   {
+    "id": "I1",
+    "name": "Exposure timing, not information (the parent's reading, refined)",
+    "mechanism": "Any rule that shortens time in a negatively-drifting asset gains in sleeve space; the harvest is one such rule.",
+    "plausible_because": "the removed minutes do bleed (1.77 bps/min) and the exposure term at the all-day average rate accounts for ~55 of the ~89 bps/day; clock exits that remove more exposure gain more in absolute terms.",
+    "evidence": "SEGMENT exit580 +246 / exit600 +145 / exit630 +126 bps/day (all block-consistent); DERISK 50%-cut +73 = exactly half of the 100%-cut +145 (linear in exposure); R2_L10_w5 +110 bps/day removes exposure at ~1.0 bps/min (i.e. the average rate).",
+    "refutation": "the matched-cohort placebo removes almost the same minutes from the same tickets and LOSES money; and the harvest's removed minutes run at 1.65x the average rate. So the magnitude is exposure-shaped but the sign is set by WHERE the minutes come from.",
+    "smallest_test": "the identity-shuffled time-matched placebo below."
+   },
+   {
+    "id": "I2",
+    "name": "The touch is a regime flip in the ticket's own drift (state information)",
+    "mechanism": "A +30% intraday excursion marks the exhaustion of the ramp: the ticket's own expected drift flips from strongly positive to negative.",
+    "plausible_because": "the toucher cohort's own rates flip: +33.4 bps/min before the touch, -1.77 bps/min after, against a basket average of -1.08 bps/min.",
+    "evidence": "fixed-clock 2x2 (touched bleeds 4.3x the untouched rate at 10:00; -13.4% vs -2.4% at 09:40); gain-conditioned control (a +5-30% untouched ticket does NOT fade at 10:30, drift +0.47%); the state term is ~+35 to +64 bps/day depending on the baseline (39-72% of the gain).",
+    "what_the_code_tested": "HarvestAt: one-shot per ticket, trigger = completed-bar high >= entry*(1+level/100); it tests exactly 'first touch' with no other state (no volume, no halt, no touch-time conditioning) - so the measured +89 mixes the morning regime (which fades) with the afternoon regime (which does not).",
+    "smallest_test": "the same placebo, plus the already-computed 2x2 at a fixed T."
+   },
+   {
+    "id": "I3",
+    "name": "The fade is a two-population mixture and the rule's P&L is a thin residual of it",
+    "mechanism": "Touchers split into small faders (MFE ends just above +30% -> the touch is near the high) and giant continuers (MFE > +100% -> the touch is a waypoint); selling all of them at the touch is a bet on the mixture weights.",
+    "plausible_because": "the sell-side edge is +289 bps/day gross from 312 tickets and -200 bps/day from 74 tickets; two tickets (ISPO/COSM, mfe +661%/+519%) alone cost 48.5 bps/day.",
+    "evidence": "engine mixture by mfe_raw (see measurements); parent's touch_mixture.json adds the path view: 60.3% of touchers make a further excursion >= +10% above the touch close with mean post-touch max +52%, yet only 30.6% close above the touch bar close. Path continues, close fades.",
+    "implication": "'the median toucher surrenders 11%' is true of the CLOSE; the PATH offers +52% more on the continuer side, so a touch-anchored rule deliberately discards the entire intraday tail of 60% of touchers. That is not a fade phenomenon, it is a close-fade phenomenon.",
+    "smallest_test": "one extra column in the existing path scan: per toucher, post-touch max overshoot vs the harvest fill, and the fraction of the post-touch max that a resting limit at +40/+50/+60% would have captured. No engine run needed."
+   },
+   {
+    "id": "I4",
+    "name": "Part of the measured edge is the execution convention, and it is favorable, not conservative",
+    "mechanism": "the fill is the open of the bar AFTER the touch bar and is never clamped to the level; the price is typically still above the level at that instant (the 1-bar-lag grab).",
+    "evidence": "+85 bps mean / +24 bps median above the +30% level, 53.4% at or above; +15.4 bps/day of the +89.4; artifact's next_open/level ~ +51 bps.",
+    "implication": "the STATE.md plan (a) 'resting-limit sell-into-strength with executable level pricing (needs a small favourable-price exit convention, EXT-2)' is asking for a convention the engine already grants for free; implementing it will make the measured edge SMALLER, and the 'favourable-price' framing is backwards.",
+    "smallest_test": "add a level-clamped arm (return {'level': entry*1.30}) - one-line change to HarvestAt, and it is the honest comparator for any live implementation."
+   },
+   {
+    "id": "I5",
+    "name": "Conditioning bias: the statistic is measured on 18% of tickets, and the loss lives in the other 82%",
+    "mechanism": "the fade is conditional on touching; the strategy must own non-touchers, on which the rule's effect is exactly zero by construction.",
+    "evidence": "1,739/2,125 tickets never touch; they carry -89.97 sleeve units (214% of the arm's loss) and 81.7% of the dollar-minutes at -2.83 bps/min, WORSE per minute than the post-touch window (-1.77). The harvest's improvement (+9.53 sleeve units) is 19.9% of the toucher block's +47.99 and 0% of the non-toucher block.",
+    "implication": "'the right tail must be sold into' addresses the profit centre, not the loss source; any real fix has to change the non-toucher path (entry price, holding rule) - which is what the SEGMENT/DERISK arms actually measure.",
+    "smallest_test": "already answered: the non-toucher block's rate profile is in the three clock arms; the missing piece is a state-conditioned entry/hold rule for non-touchers, not more exit timing on touchers."
+   }
+  ],
+  "decisive_test": {
+   "name": "Time-matched identity-shuffled placebo (2 cells)",
+   "why_this_one": "it holds the exposure profile EXACTLY fixed (same per-day count of exits, same exit-time multiset) and removes only the touch identity, which is the only thing 'sell into strength' claims to add. It is the smallest change that separates the two channels and it needs no new data or engine features.",
+   "implementation": "one ReleaseRule (~20 lines) that reads a JSON schedule {(sleeve_day,ticker): exit_et} built by shuffling the harvest arm's own realized (ticket -> exit_et) assignment within each day (days with no harvest exit keep none); run A_pm N in {2,3}, bps=100, same engine, deltas paired against the same hold arms. ~2 engine cells.",
+   "prediction": "+20 to +30 bps/day (50.6 removed sleeve-dollar-min/day priced at the contemporaneous untouched rate of -0.45..-0.55 bps/min), versus the harvest's +89.4.",
+   "falsification": "placebo >= +70 bps/day -> the harvest gain is time-in-market, 'sell into strength' is falsified as an explanation (the touch is not doing the work); placebo <= +35 bps/day AND harvest-minus-placebo same-signed in both blocks -> the touch carries a real ~+55-65 bps/day state premium and the next question becomes which observable at the touch (touch time, rank, halt) separates the continuers.",
+   "economically_meaningful": "the arm is still -3.04%/day; nothing here is a strategy. The meaningful threshold is whether the STATE component (harvest minus placebo) clears +50 bps/day with the same sign in both dev blocks. Today the state component's block1 contribution is +21 bps/day (t=0.48) versus block2 +204 (t=2.31), so it does not - the honest reading is a block2 phenomenon."
+  },
+  "{\"honest_reading_for_parent_q\"": {
+   "sell_early_touchers_hold_late_ones": "DIRECTIONALLY SUPPORTED but NOT separable from the clock with the current artifacts, and it is a two-parameter (touch-time cutoff) fit to the same 386 tickets, so it is a ruler, not a finding.",
+   "why_it_cannot_be_separated": "the touch-time gradient (+10.8% before 10:00 -> -6.8% after 12:00) and the basket's own clock gradient (loss worst early: the clock arms are monotone in earliness) are the same variable; and the strongest 'late' cells are also the smallest (n=87) and are the ones whose post-touch window is shortest.",
+   "what_is_separable_and_positive": "at a FIXED clock minute the touched cohort bleeds ~4x faster than the untouched cohort (T=600: -1.97 vs -0.45 bps/min; T=630 similar). That is a genuine state effect at fixed time.",
+   "practical_consequence": "the filtered rule 'sell at the first +30% touch before ~11:00, hold later touches' would have scored +105 bps/day in-sample (touches <11:00 carry +22.47 of the +19.07 return-units) - an in-sample selection, and its CI would still contain zero."
+  },
+  "unverified": [
+   "the producers of touch_fade_paths.json / exit_convention_comparison.json / touch_mixture.json / touch_halt_time_splits.json are absent from the worktree, so their exact cohort, bar grid and price conventions could not be read; all cross-checks were done against engine tickets instead.",
+   "whether the artifact's 'next open' is the immediately following minute or the next available bar (ticker gaps after a touch are not handled explicitly anywhere in the harvest path).",
+   "the 582-vs-580 touch gap: attributed to the bar-958 precedence short-circuit by inference, not by direct bar inspection.",
+   "halt state is not carried in tickets.parquet, so the parent's halt-conditioned measurement could not be reproduced or refuted engine-side; note only that 2 of the 386 touchers are halt-adjacent (ASPA/GATE) and they contribute just +1.4 bps/day of the +89.4.",
+   "no intra-bar path data: limit-vs-market fills inside the touch bar, and anything about resting-limit fill probability, cannot be priced from these artifacts."
+  ],
+  "disagreements_with_stated_observations": [
+   "'the gain is exposure removal, not state information' (STATE.md, DERISK reading) - the DERISK comparison (unconditional 50% cut +73 > damaged-only +49) shows that STATE SELECTION adds nothing at a fixed clock, but the harvest measurement shows the touch does: at a fixed clock the touched cohort bleeds 4.3x the untouched rate, and per removed dollar-minute the harvest (1.77 bps/min) exceeds every clock arm (0.47-0.80) and R2 (1.00). The two findings are compatible only if 'state' is defined as 'the damage state at 10:00' rather than 'the touch'.",
+   "'the right tail is a TOUCH phenomenon' - the post-touch PATH keeps making new highs for 60% of touchers (mean post-touch max +52% above the touch close). What fades is the CLOSE. A touch-anchored exit does not capture the tail; it captures the close-fade at the cost of the tail.",
+   "'the 09:30 fill is the worst price of the day for this population' - true for the 82% non-touchers, false for the 18% touchers (mean entry->EOD +27.6%; the entry is the best print of the day for them). This matters because the plan sequence (b) 'entry-side cost reduction' targets the wrong half of the P&L.",
+   "'10:00 is the optimal checkpoint' - among the clock arms the ordering is monotone in EARLINESS (09:41 > 10:00 > 10:30); 10:00 is not special, it is just one point on a decreasing curve, and the curve is contaminated by the phantom-exposure exposure metric.",
+   "'Earlier selling is monotonically better' (STATE.md, HARVEST reading) - true within the clock family, but the harvest arm sells LATER than exit580 and earns less; the ordering that actually holds is 'more exposure removed is better', not 'earlier is better', and on a per-deployed-dollar basis the harvest (3.55%/unit) is WORSE than hold (3.41%/unit)."
+  ]
+ }
+}

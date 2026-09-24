@@ -1,0 +1,177 @@
+{
+ "scope": {
+  "worktree": "/home/hillel/.config/opencode/worktrees/Alpacatrader/basket-phase2-f1",
+  "mode": "read-only: no repo writes, no simulations, no reconciliation, no data fetch, sealed/reserved untouched",
+  "what_i_did": "read the 5 target files end-to-end; parsed state_panel.parquet schema + sample rows; ran 6 small descriptive probes on the EXISTING F3/F2-F12 panels and on 128 sampled canonical bar days (read-only, ~40s total compute); no new simulation",
+  "probes_are_evidence": "every number tagged [PROBE] below was computed by me from the cited artifact; every number tagged [ARTIFACT] is quoted from a committed artifact; [INFERENCE]/[HYP] marked explicitly"
+ },
+ "target_files_read": {
+  "factory/scripts/basket_f2_f12.py": "433 lines: builds 182,094 obs x 51 cols at 5 frozen clock checkpoints (580/585/590/600/615), 5 entry families",
+  "factory/artifacts/basket/phase2/F2_F12/state_panel.parquet": "schema confirmed: STATE_FEATURES (31) + TARGETS (touch30/50/100, rem_mfe, rem_mae, nhba) + cohort; 21 family/checkpoint dims",
+  "factory/scripts/basket_capital_map.py": "269 lines: pooled family/checkpoint quintile bins of 31 features x 4 cohorts x 3 interactions, at et 585/600 only",
+  "factory/scripts/basket_sim.py": "2710 lines: read Ticket dataclass, ScaleInOnGain, R0-R3, _schedule, _execute, EXT-1 batch hook, the full event loop (1150-1345), and _track_raw_path (888-915)",
+  "factory/artifacts/basket/phase2/F3/structural_map/structural_daily.parquet": "673,952 rows x 29 cols, one row per completed own-path bar t for A_pm/T570 top-2, decision_et 570..959, 1,066 days, 1,342 tickers"
+ },
+ "state_vector": {
+  "principle": "A coordinate qualifies only if (a) it is computable from bars/volume at or before the completed decision bar, (b) it exists as a column somewhere in the repo OR is a stated arithmetic function of columns that exist, and (c) its provenance is a committed artifact. Fixed-percentage and fixed-clock quantities appear only as measurement rulers, never as triggers.",
+  "group_A_position_relative_to_fill": {
+   "ret_from_fill": {
+    "formula": "close_t / fill_px - 1",
+    "where": "F2_F12 state_panel.ret_from_fill [ARTIFACT]; F3 structural_daily.entry_drawdown_pct [ARTIFACT]",
+    "causal": "yes: fill_px is the anatomy fill (sim asserts fill.px == bars.open[fill.et], basket_sim.py:_fill_mismatches / f2_f12.checkpoint_row asserts the same)",
+    "note": "F3 shows entry_et = 570 for 2,112 of 2,125 date-ticker groups, so in F3 this is nearly identical to elapsed minutes - a coverage defect, not a semantic one"
+   },
+   "mfe_so_far": {
+    "formula": "max(high[fi..t]) / fill_px - 1",
+    "where": "F2_F12.mfe_so_far; F3.mfe_to_date_pct",
+    "causal": "yes"
+   },
+   "mae_so_far": {
+    "formula": "min(low[fi..t]) / fill_px - 1",
+    "where": "F2_F12.mae_so_far ONLY; F3 has no mae_to_date column [GAP]"
+   },
+   "pos_in_range_fill": {
+    "formula": "(close_t - min low)/(max high - min low) over [fi..t]",
+    "where": "F2_F12.pos_in_range_fill"
+   }
+  },
+  "group_B_retention_from_running_high": {
+   "retained": {
+    "formula": "close_t / running_peak_px - 1, running_peak = max(high[fi..t])",
+    "where": "F3.peak_drawdown_pct (identical expression, F3 producer line 'peak_dd = close / peak - 1'); F2_F12.dd_from_running_high",
+    "role": "the single coordinate that is monotone in forward value in BOTH blocks and survives matching on remaining exposure [PROBE] - see idea I2"
+   },
+   "dd_from_day_high": {
+    "formula": "close_t / max(high[0..t]) - 1 (includes pre-fill bars)",
+    "where": "F2_F12.dd_from_day_high"
+   },
+   "mfe_surrendered": {
+    "formula": "max(0, mfe - ret_from_fill)/mfe",
+    "where": "F3.mfe_surrendered_pct; F2_F12 has no equivalent"
+   },
+   "time_since_running_high": {
+    "where": "F2_F12.time_since_running_high / time_below_recent_high (the latter normalised by minutes-since-fill); F3.time_since_high_bars",
+    "defect": "F2_F12's normaliser divides by CLOCK minutes since fill, reintroducing the clock; F3's bar count is the clock-free form"
+   },
+   "failed_reclaim": {
+    "where": "F3.failed_reclaim only"
+   }
+  },
+  "group_C_episode_and_recovery": {
+   "breach_duration_bars": {
+    "where": "F3.breach_duration_bars = consecutive completed closes below fill"
+   },
+   "reclaimed_entry": {
+    "where": "F3.reclaimed_entry"
+   },
+   "recovery_speed_bars_from_low": {
+    "where": "F3.recovery_speed_bars_from_low = bars from the trough of the current below-entry episode; explicit 'live episode unresolved' semantics in the producer",
+    "quality": "good: state is well defined while the episode is open"
+   },
+   "recovery_5/recovery_10": {
+    "where": "F2_F12 (bool: after breaching fill*0.95 / fill*0.90 did close ever exceed it again)",
+    "ruler_warning": "these are anchored on fixed -5%/-10% from fill, i.e. rulers; keep them as measurements, do not promote to triggers"
+   }
+  },
+  "group_D_velocity_acceleration": {
+   "velocity_1/3/5": {
+    "where": "F2_F12 only (close_t / close_{t-k} - 1)",
+    "defect_CONFIRMED": "the lookback `prior(lag)` searches the whole session, so for checkpoints at or near the fill the window is PRE-FILL. Concretely: B600 family at et=600 uses close at et<=595 for velocity_5 and et<=597 for velocity_3, both before the 600 fill. B585 at et=585 uses et<=580. A_pm at 580 uses et<=575 (post-fill, OK). Same defect contaminates accel_proxy.",
+    "missing": "no velocity/acceleration column in F3 at all"
+   },
+   "bar_persistence": {
+    "where": "F2_F12 = share of up-closes since fill",
+    "causal": "yes"
+   },
+   "new_high_count / new_high_freq": {
+    "where": "F2_F12; strict new session highs vs the cumulative max (verified array alignment is correct, off-by-one NOT present)"
+   }
+  },
+  "group_E_live_tape_instead_of_clock": {
+   "live_bars_since_fill": {
+    "formula": "row index within (date,ticker) of F3 structural_daily",
+    "meaning": "number of the ticker's own bars between fill and t - the clock-free path-age coordinate",
+    "new_derivation": "not a stored column; derived by me in [PROBE] with pl.int_range(pl.len()).over(['date','ticker']) on F3 sorted by decision_et"
+   },
+   "live_bars_remaining": {
+    "formula": "group height - index - 1",
+    "meaning": "clock-free remaining exposure. Tercile edges measured [PROBE]: 1 / 108 / 232 / 389 bars; marginal forward-close means by tercile: b1 -5bp / -699bp / -2148bp; b2 +724bp / +586bp / -1440bp",
+    "why_it_matters": "this is the coordinate that separates 'how much tape is left' from 'what time it is'; for A_pm entries the two are nearly identical because entry is always 570"
+   },
+   "tape_gap_minutes / gap_count": {
+    "formula": "clock_bars - live_bars, and count of decision_et diffs > 1 within (date,ticker)",
+    "measured": "[PROBE] per (date,ticker) end-of-day: mean 71 gap-minutes, median 8, 66.0% of name-days have >=1 gap, mean gap count 22.7, median 3, max 102; mean bars in panel 317 per ~390 clock minutes",
+    "critically_NOT_halts": "the canonical tape is print-update bars: 19% of clock minutes carry no bar. The anatomy stores the same thing as gap_pre/gap_post (basket_anatomy.py:173 `ngaps`, line 386). No LULD/halt feed exists anywhere in factory/artifacts/basket/sip. So 'halt state' is NOT recoverable from canonical inputs, and any field called halts_so_far is a tape-gap count."
+   }
+  },
+  "group_F_cross_sectional_peers": {
+   "rank, rank_change, rank_std, rank_mode_share": {
+    "where": "F2_F12 only, from anatomy B snapshots at <=t; F3 has no rank column"
+   },
+   "rel_strength": {
+    "where": "F2_F12.rel_strength = own close_t/open0930 - median(member close_t/open0930) [ARTIFACT, f2_f12.checkpoint_row]",
+    "quality": "correct and causal, but measured only at the 5 checkpoints and only over the snapshot's 10 names"
+   },
+   "basket_breadth_10 / breadth_30 / basket_score_disp": {
+    "where": "F2_F12 only",
+    "measured_signal": "[PROBE] AUC for predicting the adverse cohort across 21 family/checkpoint cells: basket_breadth_10 share_blocks_agree = 0.286, basket_breadth_30 = 0.524, rank_mode_share = 0.619 - i.e. near-noise and block-unstable. Cross-sectional/attention coordinates carry essentially nothing at this granularity."
+   },
+   "simultaneous_survivor_count_and_quality": {
+    "where": "NOT AVAILABLE as decision-time state. F8/joint_daily.parquet has n_reach_20/30, n_filled, member_net_returns, member_mfe_raw but these are day-level OUTCOMES of already-run F1 cells; capital_allocation_map.py's own config says 'F8 member summaries are aligned by entry/N/date but not by ticker state; joint context is unconditional over its already-run exit/friction cells'. F8/README.md says golden-window conditional work 'remain[s] pending F2/F12'.",
+    "status": "GENUINELY UNTESTED. Constructible today from the anatomy B snapshots + member bars (F2_F12 already loops basket members; extending that loop from the 5 checkpoints to every bar is a ~15-line change)."
+   }
+  },
+  "group_G_decisions_relevant_position_geometry": {
+   "note": "Present in the engine's Ticket, NOT in any panel: cost_open, shares, shares_entry, add_notional, proceeds, cash_in, realized, peak (1-bar-lagged running bar high), last_close, last_et, entry_rank, pending, n_adds, n_reduces, h_touch_et/h_touch_day.",
+   "exposure_gross_and_net": "repo-wide exposure is per-sleeve with C0=1 and no leverage (asserted); 'thinner but wider' vs 'thicker but narrower' can only be scored by the engine metric strength_bps = r_day / avg_deployed (used in INTEGRATION_1/SEQ_ROBUST), which is a gross-exposure normaliser, NOT the covariance-weighted net-beta version. The true net-beta comparator (sum_j w_i w_j cov_i,j) does not exist as a risk object anywhere.",
+   "halting_at_a_checkpoint": "the engine records it as excluded reason 'halted_at_checkpoint' (basket_sim.py:1243) whenever _pos_of_et(tkb, t) < 0, i.e. whenever the ticker has no EXACT bar at the checkpoint minute - which includes no-print minutes, not just halts. F2_F12 never records it as a column; the only trace is excluded.jsonl reasons (blocked 3,117 / no_fill 25 across all families, which is a different concept)."
+  },
+  "group_H_bar_shape_microstructure": {
+   "note": "Partially exists: F2_F12 has cum_volume, dollar_volume, vol_accel, bar_persistence. All relative to 09:30 (absolute index), never normalised by the vol curve, and never in a bar-quantile function that could absorb the clock.",
+   "role_of_this_family": "it is the ONLY candidate that can make 09:30-09:35 look identical to any other time (a bar at the 99th volume percentile is not a 9:35 bar). Not tested anywhere in the repo."
+  },
+  "group_I_asymmetry": {
+   "note": "F2_F12 has `recovery_5` and `recovery_10`, plus mae_so_far. MFE is measured from the bar high, entry-relative dd from the last valid regular-session close before one or more halts; mfe_so_far is unaffected (path-wise spanning both sessions)."
+  },
+  "group_J_direction_of_active_flow": {
+   "note": "F2_F12 has `bar_persistence` (share of up-closes); a signed sign-return-run-length coordinate is derivable today (up-run vs down-run lengths)."
+  },
+  "group_K_broken_RTH_data": {
+   "note": "F2_F12 rebuilds everything from session bars only (session_end filter), so overnight drift is excluded by construction. F3 structural also only uses same-day bars, so within-day carry tickets' MAE of the CARRIED position is invisible. Any carried ticket's state must be rebuilt from the carry-day bars; basket_f4_paths._tape_for / sim.CarrySubstrate already own that tape for F4 but no panel exposes a carried ticket's own-path state."
+  }
+ },
+ "estimand": {
+  "marginal_value_of_continuing": "For a single ticket at decision bar t, with s = the observable state vector and pi_t = the executable price (the engine's own rule: open of the first bar with et > t, clamped by min(open, level) when a level exists), define V(s) = the supremum over stopping times tau > t of E[ P_tau / pi_t - 1 | s ] restricted to exits the engine can actually execute (a bar open, next-bar-open timing, minus friction). Then: hold = V(s); reduce by rho = rho*V(s) (scale-free, no new information); add = V(s) - f_entry_side; switch to peer j = V(s_j) - V(s_i) - 2*f_side. cash = 0.",
+  "why_the_collapse_is_the_point": "ALL FOUR candidate actions are functions of the SAME one scalar V(s) plus the friction of the action that creates new exposure. F1-F14 searched scale (how much), timing of the same scalar (when), and partialness (how much of the same scalar) - none of which can create EV once V(s) < 0 on the traded population. That is the structural reason every arm landed negative or within a few bps of hold.",
+  "what_shape_means": "Not 'what threshold on s makes V(s) > 0'. Shape = (i) is V monotone in each coordinate; (ii) is the ordering stable across the two development blocks; (iii) how much of the raw E[fwd ret] is a pure exposure-length effect (arithmetic) vs state (choice); (iv) is the spread of V(s) inside the executable price noise. The last one is decisive: measured |next-open / prior-close - 1| has mean 0.29-0.39% and median 0.093-0.19% per bar [PROBE], versus state-conditional drifts of 0.5-4.4 bp per remaining minute - so only actions that change exposure for MANY minutes can ever pay for one execution step.",
+  "friction_constant_being_used": "basket_sim.py _execute: side = bps / 20_000, ENTER shares = budget / (px*(1+side)), REDUCE/EXIT proceeds = sh*px*(1-side). So the label bps is the ROUND-TRIP cost: 100 bps = 50 bps per side, 150 bps = 75 bps per side. Every F1-F14 conclusion inherits this constant."
+ },
+ "ideas": [
+  {
+   "id": "I1",
+   "title": "The decision collapse: every F1-F14 architecture is a re-parameterisation of one scalar (V(s)) plus fresh friction, which is why none of them found EV",
+   "mechanism": "Holding pays no new friction. Reducing to cash realises the same V(s) at scale rho and pays no new friction (one exit either way). Adding pays an entry side. Switching pays an exit plus an entry. So EV can only be created by (a) identifying states where V(s) > 0, or (b) reducing exposure when V(s) < 0 - and (b) is arithmetic, not edge.",
+   "plausibility": "It predicts three measured facts exactly, including two that look puzzling otherwise. (i) F4's partial scale-out is 'a wash against the matched same-trigger full exit' - predicted, because partial = rho x full at the same trigger. (ii) F6's 'withholding alone leaves EV per deployed dollar unchanged' - predicted, because withholding scales exposure and nothing else. (iii) HARVEST's +89 bps/day is exposure removal - predicted, and the arithmetic confirms 101 of the 89... see numbers.",
+   "evidence": {
+    "harvest_arithmetic_verified": "[ARTIFACT + recomputation] HARVEST_DIAG/SUMMARY.json A_pm_N2_hold_bps100 mean -0.039378 on avg_deployed 1.154388 -> -3.4112% per unit of exposure-time; times the all30 arm's 0.857369 = -2.9242%. Realised all30 mean -0.030436. Realised is 12.0 bps WORSE than the pure-deleveraging benchmark, so the touch-triggered exit removed exposure that was, if anything, slightly above-average - the +89 bps/day is exposure removal, not a better exit price.",
+    "f4_scaleout": "[ARTIFACT] DIAGNOSTICS_20260924/F4_C1_surface_summary.json summary: only 2 of 74 cells beat the matched same-trigger full exit in BOTH blocks (A_pm_N2_R2_L15_w5_50_rest, +0.00082 b1 / +0.00074 b2 at 100 bps); block1_beats_matched = 38 of the surface, block2 = 8; mean_range_100bps = [-3.826%, -2.926%] - the whole 74-cell surface is negative.",
+    "f6": "[ARTIFACT] DIAGNOSTICS_20260924/F6_decomposition.json reading field: 'withholding alone scales a negative-EV exposure, equal redeployment is worse than cash, state-conditioned redeployment recovers nearly all of that loss but does not turn positive'; per_deployed_dollar stays in -0.027..-0.038 for every arm."
+   },
+   "what_prior_code_actually_tested": "F4 (factory/scripts/basket_f4_scaleout.py + basket_f4_rules.py Trigger/ScaleOutRule) tested WHICH TRIGGER fires and WHAT FRACTION is sold; F5 (basket_f5_scalein.py ScaleInOnGain) tested ADD on a +trig% close with a cap; F6 (basket_f6.py) tested whether the reserve dollar goes to cash / equal split / state67 / state33. None of them ever estimated V(s) itself: no artifact in the repo reports an executable forward P&L conditional on state. The F2_F12 panel - the only state panel - carries NO forward P&L target at all (TARGETS = touch30, touch50, touch100, rem_mfe, rem_mae, nhba; forward_value is literally an alias of rem_mfe).",
+   "bugs_or_mismatches": [
+    "The F2_F12 outcome vocabulary cannot express the estimand. rem_mfe/rem_mae are excursion extremes, and touch*/nhba/adverse_first are barrier crossings. None is a price you could receive. This is the central vocabulary gap: a state with high rem_mfe and negative expected close return is scored as 'good'.",
+    "F6's per_deployed_dollar rows exist for the redeployment arms but are missing for the p=1.00 full and p=0.50 cash rows, so the headline comparison ('withholding alone leaves EV per dollar unchanged') cannot be read off the artifact's own rows - it needs the reader to recompute r/avg_deployed. Cosmetic, but it is the load-bearing comparison."
+   ],
+   "smallest_study": "Add one target column to the F2/F12 panel - `fwd_close_ret_t = close(session_end_bar)/close_t - 1` and `fwd_close_ret_to_next_open = close(session_end_bar)/open(next bar) - 1` - and one derived normaliser `live_bars_remaining`. Both are 3-line additions inside f2_f12.checkpoint_row, no new data, no simulation. Then table V(s) by state quintile x block. Output: one parquet + one JSON table. Runtime: minutes.",
+   "meaningful_result": "Any (state, block) cell with mean fwd_close_ret net of a full round trip > 0 would falsify the current 'all cells negative' reading and locate the phenomenon's EV. Symmetrically, if the whole surface stays negative after the exposure-length term is divided out, the correct conclusion is that A_pm/T570 top-N buy-and-hold contains no EV at this friction - which is itself the decision-relevant answer, and it would end the family search rather than extend it."
+  },
+  {
+   "id": "I2",
+   "title": "The loss side, not the right tail: the population mean is set by a large adverse cohort, and the value ordering is monotone in retention-from-running-high",
+   "mechanism": "The traded population is dominated by names that spike and then give the spike back. Value per unit of remaining exposure is monotone in how far below its own running high the ticket currently is: deep in the red = negative per-bar drift; near the high = non-negative. Because 60% of observations sit in the adverse cohort, that cohort - not the tail - determines the sign of the sleeve.",
+   "what_prior_code_actually_tested": "RESEARCH_REPORT §4.4/§4.5 measured MFE/MAE capability versus leniency, and F4's own-path metrics (basket_f4_paths.path_metrics, F4_C1 path_metrics.json) are constructed per-plan (per trigger, per armour). The F2/F12 checkpoint panel (basket_f2_f12.py) measures retention as `dd_from_running_high`/`dd_from_day_high`, but the point of the panel is the target columns (touch30/50/100, rem_mfe, rem_mae, NHBA), not the marginal value of continuing. No artifact reports an executable forward P&L conditional on retention at a decision bar, so the monotone-in-retention value ordering has never been estimated - only probabilities of future barrier crossings.",
+   "missing": "The engine's own-path MFE/MAE are recorded ONLY after the path completes (basket_sim._track_raw_path runs after the session loop, so tk.mfe/tk.mae/h_touch_et are stale or empty during the session). There is no causal intraday MFE/MAE/halt/pullback state in the decision interface. Any model must build its own running state inside the strategy (or from a panel)."
+  },
+  "evidence"
+ ]
+}
