@@ -9,6 +9,7 @@ Reproduces the touch-excursion scans quoted in
     python factory/scripts/basket_diag_touch_scan.py limit
     python factory/scripts/basket_diag_touch_scan.py identifiability
     python factory/scripts/basket_diag_touch_scan.py afternoon
+    python factory/scripts/basket_diag_touch_scan.py nontouch
 
 Conventions (identical to the artifacts these regenerate): A_pm anatomy fills, top-3 by canonical
 rank, candidate bars, RTH only; a "touch" is the first bar whose high reaches entry*(1+30%) on a
@@ -217,6 +218,80 @@ def cmd_afternoon() -> dict:
                           for fam in ("A_pm", "A_open", "B600")}}
 
 
+def scan_nontouchers(families=(("A_pm", "A_pm", 570),), top=3):
+    """One row per fill that never reaches +30%, with its early and full-session outcome.
+
+    This is the majority of the sleeve and, per the harvest decomposition, where the loss
+    lives; the row carries the causal early state (10:00 return) and the realized outcome.
+    """
+    days = sim.dev_days()
+    sem = sim.session_end_map()
+    rows = []
+    for day in days:
+        bars = sim.load_bars(day, sem[day])
+        for fam, pop, T in families:
+            for nm, fl, tkb in fills(day, bars, fam, pop, T, top):
+                ets, hi, lo, cl = tkb["et"], tkb["high"], tkb["low"], tkb["close"]
+                win = _window(ets, fl, sem[day])
+                if win is None:
+                    continue
+                first, last = win
+                entry = float(fl["px"])
+                hit30 = next((i for i in range(first, last + 1)
+                              if float(hi[i]) >= entry * 1.30 - 1e-12), None)
+                if hit30 is not None:
+                    continue
+                i600 = next((i for i in range(first, last + 1) if int(ets[i]) >= 600), None)
+                if i600 is None:
+                    continue
+                rows.append({
+                    "day": day, "family": fam, "ticker": nm["ticker"],
+                    "rank": int(nm.get("rank") or 0),
+                    "early_ret": float(cl[i600]) / entry - 1.0,
+                    "ret_eod": float(cl[last]) / entry - 1.0,
+                    "mfe": float(hi[first:last + 1].max()) / entry - 1.0,
+                    "mae": float(lo[first:last + 1].min()) / entry - 1.0,
+                    "touch10": bool(float(hi[first:last + 1].max()) >= entry * 1.10),
+                    "halted": bool((np.diff(ets[first:last + 1]) > 1).any()),
+                })
+    return pl.DataFrame(rows)
+
+
+def cmd_nontouch() -> dict:
+    frame = scan_nontouchers()
+    buckets = ((">=+10%", 0.10, 1e9), ("0..+10%", 0.0, 0.10),
+               ("-10..0%", -0.10, 0.0), ("<-10%", -1e9, -0.10))
+    out = {"n": frame.height, "days": int(frame["day"].n_unique()),
+           "mean_ret_eod": float(frame["ret_eod"].mean()),
+           "median_ret_eod": float(frame["ret_eod"].median()),
+           "positive_share": float((frame["ret_eod"] > 0).mean()),
+           "aggregate_ret": float(frame["ret_eod"].sum()),
+           "touch10_share": float(frame["touch10"].mean()),
+           "by_early_ret": {}}
+    for label, lo, hi in buckets:
+        sub = frame.filter((pl.col("early_ret") >= lo) & (pl.col("early_ret") < hi))
+        if not sub.height:
+            continue
+        out["by_early_ret"][label] = {
+            "n": int(sub.height),
+            "share": float(sub.height / frame.height),
+            "early_ret_mean": float(sub["early_ret"].mean()),
+            "ret_eod_mean": float(sub["ret_eod"].mean()),
+            "ret_eod_median": float(sub["ret_eod"].median()),
+            "positive_share": float((sub["ret_eod"] > 0).mean()),
+            "mfe_mean": float(sub["mfe"].mean()),
+            "mae_mean": float(sub["mae"].mean()),
+            "touch10_share": float(sub["touch10"].mean()),
+            "halt_share": float(sub["halted"].mean()),
+            "aggregate_ret": float(sub["ret_eod"].sum()),
+            # exit at the 10:00 close versus holding to the session close, per ticket, no
+            # friction: `cut_minus_hold_1000` > 0 means cutting at 10:00 beats holding.
+            "cut_minus_hold_1000": float(sub["early_ret"].mean() - sub["ret_eod"].mean()),
+            "cut_wins_share": float((sub["early_ret"] > sub["ret_eod"]).mean()),
+        }
+    return out
+
+
 def main(argv=None):
     argv = argv or sys.argv[1:]
     if not argv:
@@ -231,6 +306,9 @@ def main(argv=None):
     elif command == "afternoon":
         result = cmd_afternoon()
         name = "afternoon_touch_continuation.json"
+    elif command == "nontouch":
+        result = cmd_nontouch()
+        name = "nontouch_majority.json"
     else:
         families = POPS if family_filter is None else tuple(
             entry for entry in POPS if entry[0] == family_filter)

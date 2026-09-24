@@ -489,3 +489,35 @@ therefore cannot explain pre-10:00 entry economics; F4's README reports +11–10
 winners while the corrected summary reports +11–101 bps and 24/54 (the two surviving "both blocks"
 rows are one treatment at two frictions, not two treatments); `avg_deployed_capital` is cost basis,
 not market value.
+
+### 2.10 Own measurement — the non-toucher majority and the false-cut question (A_pm top-3)
+
+Producer: `factory/scripts/basket_diag_touch_scan.py nontouch` (committed); artifact
+`factory/artifacts/basket/phase2/DIAGNOSTICS_20260924/nontouch_majority.json`.
+
+One row per A_pm top-3 fill that never reaches +30% within the session (n=2,605 over 1,054 days),
+carrying the causal 10:00 state and the realized outcome. This is the cohort the harvest arm never
+touches and, per §2.1, where the loss lives.
+
+| 10:00 return | n | share | EOD mean | EOD median | positive | later touch +10% | cut@10:00 minus hold |
+|---|---|---|---|---|---|---|---|
+| ≥ +10% | 130 | 5.0% | **+1.45%** | +4.06% | 56.2% | 100% | **+12.8%** |
+| 0..+10% | 670 | 25.7% | −0.45% | +0.38% | 54.2% | 59.9% | +3.9% |
+| −10..0% | 1,105 | 42.4% | −7.72% | −6.57% | 21.4% | 30.7% | +2.9% |
+| < −10% | 700 | 26.9% | **−22.0%** | −20.2% | 4.6% | 20.9% | +4.9% |
+| **all** | **2,605** | 100% | **−9.23%** | −7.33% | 27.0% | 39.0% | — |
+
+Three facts:
+1. **The majority's outcome is largely determined by 10:00.** Early losers (69.3% of the cohort)
+   end the day at −7.7% to −22.0% with 4.6–21.4% positive; early flat/up names end roughly flat with
+   a *positive median*. Unlike the toucher-continuation question (§1.2, best AUC 0.57), the 10:00
+   state separates the majority's level strongly.
+2. **Cutting at 10:00 beats holding to the close in every state bucket**, by +2.9% to +12.8% per
+   ticket (winning on 59–79% of tickets) — *including* the early winners, where the false-cut cost
+   is smallest. So the fixed-clock cut's gain is not a state effect: the sleeve bleeds after 10:00
+   whatever the 10:00 state is. This is the missing false-cut/false-hold decomposition for the
+   majority cohort (§2.6 asked for it) and it explains why DERISK's unconditional cut beat its
+   state-conditioned variant (the state adds nothing to the *decision* even though it predicts the
+   level).
+3. The aggregate of this cohort is −240.5 return-units against the touchers' positive aggregate
+   (§2.1) — the sleeve's sign is decided by the majority, not by the tail.
