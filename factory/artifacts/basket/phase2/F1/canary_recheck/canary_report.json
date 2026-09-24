@@ -1,0 +1,94 @@
+{
+ "all_pass": false,
+ "canary1_fill_open": {
+  "days": 1066,
+  "examples": [],
+  "filled_names_checked": 159785,
+  "mismatches": 0,
+  "seconds": 21.3
+ },
+ "canary2_mfe_mae": {
+  "examples": [],
+  "formula": "mfe=max(high[fi:])/fill-1; mae=min(low[fi:])/fill-1; i=argmax/argmin offset from fi; full bar array (no session filter), fi=first et>=target",
+  "mismatches": 0,
+  "names_checked": 4649,
+  "sample_days": 31,
+  "seconds": 5.2
+ },
+ "canary3_ladders": {
+  "cells_checked": 51139,
+  "examples": [],
+  "formula": "first i>=fi with high>=fill*(1+H/100) or low<=fill*(1-L/100); touch=high/low at i; exec=open[i+1]",
+  "mismatches": 0,
+  "sample_days": 31
+ },
+ "canary4_r1_scan": {
+  "examples": [],
+  "mismatches": 0,
+  "note": "engine R1(-10): level=fill*0.90; exit next bar open, price=min(open,level)",
+  "ok": true,
+  "pending_halt_case": {
+   "L_pct": -7.9999999999999964,
+   "day": "2022-03-23",
+   "engine_carried_pending": true,
+   "engine_pending_reason": "R1(-8)",
+   "fill_et": 570,
+   "halt_bar_et": 942,
+   "independent_exit": [
+    570,
+    3.22
+   ],
+   "level": 3.22,
+   "note": "real halt: R1 first-breach on the halt bar -> carry to next session, exit at min(open, level)",
+   "ok": true,
+   "resolved": {
+    "exit_et": 570,
+    "exit_px": 3.22,
+    "session_day": "2022-04-26"
+   },
+   "ticker": "HSDT"
+  },
+  "saw_gap_through": true,
+  "seconds": 50.7,
+  "tickets_checked": 20
+ },
+ "canary5_forced_flat": {
+  "direct_scan_mean": -0.016305032038205425,
+  "engine_mean_open_se_over_fill": -0.016305032038205425,
+  "examples": [],
+  "n_held_exits": 10193,
+  "note": "eod_ret (close-based) is a documented different convention; this canary compares open[session_end]-based exit.",
+  "ok": true,
+  "price_mismatches": 0,
+  "seconds": 58.8
+ },
+ "canary6_determinism": {
+  "days": 60,
+  "ok": true,
+  "seconds": 0.1,
+  "sha256_run1": "68d561765ad6306e08c2902f9657ddd39ca3c7111ed3eb6e1a16733cd1901312",
+  "sha256_run2": "68d561765ad6306e08c2902f9657ddd39ca3c7111ed3eb6e1a16733cd1901312"
+ },
+ "canary7_invariants": {
+  "daily_sha256": "0c064e79a45ee341084cf9cbe37190efe357a4343e1c15c1a7f275aa5088fc25",
+  "days_run": 0,
+  "n_entries": 0,
+  "note": "invariants enforced by _check_invariants at every event; run completed without AssertionError => cash>=0 and deployed<=C0.",
+  "ok": false,
+  "per_day_load_seconds": 0.0,
+  "seconds": 0.4,
+  "wall_seconds": 0.4
+ },
+ "canary_verdicts": {
+  "1": "PASS",
+  "2": "PASS",
+  "3": "PASS",
+  "4": "PASS",
+  "5": "PASS",
+  "6": "PASS",
+  "7": "FAIL"
+ },
+ "contract_version": "FROZEN-2026-09-22",
+ "generated": "2026-09-23T20:52:09",
+ "seed": 20260922
+}

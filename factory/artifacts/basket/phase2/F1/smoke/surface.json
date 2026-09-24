@@ -1,0 +1,1205 @@
+{
+ "cells": [
+  {
+   "N": 2,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "A_pm",
+   "exit": "R0",
+   "mean_basket_day": -0.18526223751608775,
+   "run_id": "A_pm_N2_R0_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 2,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "A_pm",
+   "exit": "R0",
+   "mean_basket_day": -0.18932591951159353,
+   "run_id": "A_pm_N2_R0_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 2,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "A_pm",
+   "exit": "R1m8",
+   "mean_basket_day": -0.07708452096183921,
+   "run_id": "A_pm_N2_R1m8_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 2,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "A_pm",
+   "exit": "R1m8",
+   "mean_basket_day": -0.0816877628738219,
+   "run_id": "A_pm_N2_R1m8_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 2,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "A_pm",
+   "exit": "R1m10",
+   "mean_basket_day": -0.0830579539608276,
+   "run_id": "A_pm_N2_R1m10_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 2,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "A_pm",
+   "exit": "R1m10",
+   "mean_basket_day": -0.0876314020750423,
+   "run_id": "A_pm_N2_R1m10_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 2,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "A_pm",
+   "exit": "R1m15",
+   "mean_basket_day": -0.122167976001758,
+   "run_id": "A_pm_N2_R1m15_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 2,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "A_pm",
+   "exit": "R1m15",
+   "mean_basket_day": -0.1265463543650297,
+   "run_id": "A_pm_N2_R1m15_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 3,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "A_pm",
+   "exit": "R0",
+   "mean_basket_day": -0.1672671603292406,
+   "run_id": "A_pm_N3_R0_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 3,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "A_pm",
+   "exit": "R0",
+   "mean_basket_day": -0.1714205966905548,
+   "run_id": "A_pm_N3_R0_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 3,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "A_pm",
+   "exit": "R1m8",
+   "mean_basket_day": -0.08174426689931344,
+   "run_id": "A_pm_N3_R1m8_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 3,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "A_pm",
+   "exit": "R1m8",
+   "mean_basket_day": -0.08632426731379639,
+   "run_id": "A_pm_N3_R1m8_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 3,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "A_pm",
+   "exit": "R1m10",
+   "mean_basket_day": -0.0614938598544818,
+   "run_id": "A_pm_N3_R1m10_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 3,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "A_pm",
+   "exit": "R1m10",
+   "mean_basket_day": -0.06617486358352673,
+   "run_id": "A_pm_N3_R1m10_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 3,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "A_pm",
+   "exit": "R1m15",
+   "mean_basket_day": -0.09666514934148615,
+   "run_id": "A_pm_N3_R1m15_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 3,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "A_pm",
+   "exit": "R1m15",
+   "mean_basket_day": -0.10117072860584045,
+   "run_id": "A_pm_N3_R1m15_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 4,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "A_pm",
+   "exit": "R0",
+   "mean_basket_day": -0.012120199210123583,
+   "run_id": "A_pm_N4_R0_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 4,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "A_pm",
+   "exit": "R0",
+   "mean_basket_day": -0.017047464822502634,
+   "run_id": "A_pm_N4_R0_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 4,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "A_pm",
+   "exit": "R1m8",
+   "mean_basket_day": 0.01334952752346058,
+   "run_id": "A_pm_N4_R1m8_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 4,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "A_pm",
+   "exit": "R1m8",
+   "mean_basket_day": 0.008295226103090775,
+   "run_id": "A_pm_N4_R1m8_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 4,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "A_pm",
+   "exit": "R1m10",
+   "mean_basket_day": 0.06720977614594556,
+   "run_id": "A_pm_N4_R1m10_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 4,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "A_pm",
+   "exit": "R1m10",
+   "mean_basket_day": 0.06188683500776848,
+   "run_id": "A_pm_N4_R1m10_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 4,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "A_pm",
+   "exit": "R1m15",
+   "mean_basket_day": 0.040831309030692264,
+   "run_id": "A_pm_N4_R1m15_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 4,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "A_pm",
+   "exit": "R1m15",
+   "mean_basket_day": 0.03563993624103326,
+   "run_id": "A_pm_N4_R1m15_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 2,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "A_pm31",
+   "exit": "R0",
+   "mean_basket_day": -0.17521292977999633,
+   "run_id": "A_pm31_N2_R0_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 2,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "A_pm31",
+   "exit": "R0",
+   "mean_basket_day": -0.17932673488602277,
+   "run_id": "A_pm31_N2_R0_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 2,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "A_pm31",
+   "exit": "R1m8",
+   "mean_basket_day": -0.07304212532980503,
+   "run_id": "A_pm31_N2_R1m8_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 2,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "A_pm31",
+   "exit": "R1m8",
+   "mean_basket_day": -0.07766552957021405,
+   "run_id": "A_pm31_N2_R1m8_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 2,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "A_pm31",
+   "exit": "R1m10",
+   "mean_basket_day": -0.08776711134825765,
+   "run_id": "A_pm31_N2_R1m10_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 2,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "A_pm31",
+   "exit": "R1m10",
+   "mean_basket_day": -0.0923170715146068,
+   "run_id": "A_pm31_N2_R1m10_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 2,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "A_pm31",
+   "exit": "R1m15",
+   "mean_basket_day": -0.12900299775492113,
+   "run_id": "A_pm31_N2_R1m15_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 2,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "A_pm31",
+   "exit": "R1m15",
+   "mean_basket_day": -0.13334728495890674,
+   "run_id": "A_pm31_N2_R1m15_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 3,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "A_pm31",
+   "exit": "R0",
+   "mean_basket_day": -0.16367413502361194,
+   "run_id": "A_pm31_N3_R0_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 3,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "A_pm31",
+   "exit": "R0",
+   "mean_basket_day": -0.16784549238100138,
+   "run_id": "A_pm31_N3_R0_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 3,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "A_pm31",
+   "exit": "R1m8",
+   "mean_basket_day": -0.08171414724072365,
+   "run_id": "A_pm31_N3_R1m8_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 3,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "A_pm31",
+   "exit": "R1m8",
+   "mean_basket_day": -0.08629429788356213,
+   "run_id": "A_pm31_N3_R1m8_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 3,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "A_pm31",
+   "exit": "R1m10",
+   "mean_basket_day": -0.06221837946277525,
+   "run_id": "A_pm31_N3_R1m10_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 3,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "A_pm31",
+   "exit": "R1m10",
+   "mean_basket_day": -0.0668957694925133,
+   "run_id": "A_pm31_N3_R1m10_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 3,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "A_pm31",
+   "exit": "R1m15",
+   "mean_basket_day": -0.09795938499424905,
+   "run_id": "A_pm31_N3_R1m15_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 3,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "A_pm31",
+   "exit": "R1m15",
+   "mean_basket_day": -0.10245850897647177,
+   "run_id": "A_pm31_N3_R1m15_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 4,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "A_pm31",
+   "exit": "R0",
+   "mean_basket_day": -0.027849700753672824,
+   "run_id": "A_pm31_N4_R0_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 4,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "A_pm31",
+   "exit": "R0",
+   "mean_basket_day": -0.032698512052082185,
+   "run_id": "A_pm31_N4_R0_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 4,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "A_pm31",
+   "exit": "R1m8",
+   "mean_basket_day": -0.0835741676444732,
+   "run_id": "A_pm31_N4_R1m8_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 4,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "A_pm31",
+   "exit": "R1m8",
+   "mean_basket_day": -0.08814504103053777,
+   "run_id": "A_pm31_N4_R1m8_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 4,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "A_pm31",
+   "exit": "R1m10",
+   "mean_basket_day": 0.015497134024098358,
+   "run_id": "A_pm31_N4_R1m10_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 4,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "A_pm31",
+   "exit": "R1m10",
+   "mean_basket_day": 0.010432120948675905,
+   "run_id": "A_pm31_N4_R1m10_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 4,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "A_pm31",
+   "exit": "R1m15",
+   "mean_basket_day": 0.021436361768349288,
+   "run_id": "A_pm31_N4_R1m15_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 4,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "A_pm31",
+   "exit": "R1m15",
+   "mean_basket_day": 0.01634172550131502,
+   "run_id": "A_pm31_N4_R1m15_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 2,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "A_open",
+   "exit": "R0",
+   "mean_basket_day": -0.17521292977999633,
+   "run_id": "A_open_N2_R0_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 2,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "A_open",
+   "exit": "R0",
+   "mean_basket_day": -0.17932673488602277,
+   "run_id": "A_open_N2_R0_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 2,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "A_open",
+   "exit": "R1m8",
+   "mean_basket_day": -0.07304212532980503,
+   "run_id": "A_open_N2_R1m8_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 2,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "A_open",
+   "exit": "R1m8",
+   "mean_basket_day": -0.07766552957021405,
+   "run_id": "A_open_N2_R1m8_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 2,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "A_open",
+   "exit": "R1m10",
+   "mean_basket_day": -0.08776711134825765,
+   "run_id": "A_open_N2_R1m10_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 2,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "A_open",
+   "exit": "R1m10",
+   "mean_basket_day": -0.0923170715146068,
+   "run_id": "A_open_N2_R1m10_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 2,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "A_open",
+   "exit": "R1m15",
+   "mean_basket_day": -0.12900299775492113,
+   "run_id": "A_open_N2_R1m15_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 2,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "A_open",
+   "exit": "R1m15",
+   "mean_basket_day": -0.13334728495890674,
+   "run_id": "A_open_N2_R1m15_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 3,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "A_open",
+   "exit": "R0",
+   "mean_basket_day": -0.07708593829810179,
+   "run_id": "A_open_N3_R0_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 3,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "A_open",
+   "exit": "R0",
+   "mean_basket_day": -0.08168917314081126,
+   "run_id": "A_open_N3_R0_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 3,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "A_open",
+   "exit": "R1m8",
+   "mean_basket_day": -0.08164725198726114,
+   "run_id": "A_open_N3_R1m8_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 3,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "A_open",
+   "exit": "R1m8",
+   "mean_basket_day": -0.08622773628474253,
+   "run_id": "A_open_N3_R1m8_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 3,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "A_open",
+   "exit": "R1m10",
+   "mean_basket_day": 0.024369817262734905,
+   "run_id": "A_open_N3_R1m10_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 3,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "A_open",
+   "exit": "R1m10",
+   "mean_basket_day": 0.01926054974767688,
+   "run_id": "A_open_N3_R1m10_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 3,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "A_open",
+   "exit": "R1m15",
+   "mean_basket_day": -0.011371188268738841,
+   "run_id": "A_open_N3_R1m15_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 3,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "A_open",
+   "exit": "R1m15",
+   "mean_basket_day": -0.01630218973628164,
+   "run_id": "A_open_N3_R1m15_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 4,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "A_open",
+   "exit": "R0",
+   "mean_basket_day": -0.027849700753672824,
+   "run_id": "A_open_N4_R0_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 4,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "A_open",
+   "exit": "R0",
+   "mean_basket_day": -0.032698512052082185,
+   "run_id": "A_open_N4_R0_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 4,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "A_open",
+   "exit": "R1m8",
+   "mean_basket_day": -0.0835741676444732,
+   "run_id": "A_open_N4_R1m8_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 4,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "A_open",
+   "exit": "R1m8",
+   "mean_basket_day": -0.08814504103053777,
+   "run_id": "A_open_N4_R1m8_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 4,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "A_open",
+   "exit": "R1m10",
+   "mean_basket_day": 0.015497134024098358,
+   "run_id": "A_open_N4_R1m10_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 4,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "A_open",
+   "exit": "R1m10",
+   "mean_basket_day": 0.010432120948675905,
+   "run_id": "A_open_N4_R1m10_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 4,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "A_open",
+   "exit": "R1m15",
+   "mean_basket_day": 0.021436361768349288,
+   "run_id": "A_open_N4_R1m15_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 4,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "A_open",
+   "exit": "R1m15",
+   "mean_basket_day": 0.01634172550131502,
+   "run_id": "A_open_N4_R1m15_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 2,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "B585",
+   "exit": "R0",
+   "mean_basket_day": -0.02881064929537297,
+   "run_id": "B585_N2_R0_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 2,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "B585",
+   "exit": "R0",
+   "mean_basket_day": -0.03365466765368874,
+   "run_id": "B585_N2_R0_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 2,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "B585",
+   "exit": "R1m8",
+   "mean_basket_day": -0.05637926021256953,
+   "run_id": "B585_N2_R1m8_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 2,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "B585",
+   "exit": "R1m8",
+   "mean_basket_day": -0.06108577412100724,
+   "run_id": "B585_N2_R1m8_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 2,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "B585",
+   "exit": "R1m10",
+   "mean_basket_day": -0.07359010799005924,
+   "run_id": "B585_N2_R1m10_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 2,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "B585",
+   "exit": "R1m10",
+   "mean_basket_day": -0.07821077904762977,
+   "run_id": "B585_N2_R1m10_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 2,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "B585",
+   "exit": "R1m15",
+   "mean_basket_day": -0.10764508819777102,
+   "run_id": "B585_N2_R1m15_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 2,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "B585",
+   "exit": "R1m15",
+   "mean_basket_day": -0.11209590262625213,
+   "run_id": "B585_N2_R1m15_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 3,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "B585",
+   "exit": "R0",
+   "mean_basket_day": -0.04650977809819998,
+   "run_id": "B585_N3_R0_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 3,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "B585",
+   "exit": "R0",
+   "mean_basket_day": -0.051265518197713966,
+   "run_id": "B585_N3_R0_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 3,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "B585",
+   "exit": "R1m8",
+   "mean_basket_day": -0.06730424976028654,
+   "run_id": "B585_N3_R1m8_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 3,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "B585",
+   "exit": "R1m8",
+   "mean_basket_day": -0.07195627290449277,
+   "run_id": "B585_N3_R1m8_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 3,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "B585",
+   "exit": "R1m10",
+   "mean_basket_day": -0.08537847995357165,
+   "run_id": "B585_N3_R1m10_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 3,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "B585",
+   "exit": "R1m10",
+   "mean_basket_day": -0.08994035393911445,
+   "run_id": "B585_N3_R1m10_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 3,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "B585",
+   "exit": "R1m15",
+   "mean_basket_day": -0.10453446470147862,
+   "run_id": "B585_N3_R1m15_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 3,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "B585",
+   "exit": "R1m15",
+   "mean_basket_day": -0.10900079404197041,
+   "run_id": "B585_N3_R1m15_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 4,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "B585",
+   "exit": "R0",
+   "mean_basket_day": -0.052817755824325546,
+   "run_id": "B585_N4_R0_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 4,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "B585",
+   "exit": "R0",
+   "mean_basket_day": -0.057542033511399554,
+   "run_id": "B585_N4_R0_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 4,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "B585",
+   "exit": "R1m8",
+   "mean_basket_day": -0.061492873445691265,
+   "run_id": "B585_N4_R1m8_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 4,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "B585",
+   "exit": "R1m8",
+   "mean_basket_day": -0.06617388209466485,
+   "run_id": "B585_N4_R1m8_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 4,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "B585",
+   "exit": "R1m10",
+   "mean_basket_day": -0.07876523771344718,
+   "run_id": "B585_N4_R1m10_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 4,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "B585",
+   "exit": "R1m10",
+   "mean_basket_day": -0.08336009668466349,
+   "run_id": "B585_N4_R1m10_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 4,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "B585",
+   "exit": "R1m15",
+   "mean_basket_day": -0.09813854580938847,
+   "run_id": "B585_N4_R1m15_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 4,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "B585",
+   "exit": "R1m15",
+   "mean_basket_day": -0.10263677618803424,
+   "run_id": "B585_N4_R1m15_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 2,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "B600",
+   "exit": "R0",
+   "mean_basket_day": -0.12461239698339854,
+   "run_id": "B600_N2_R0_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 2,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "B600",
+   "exit": "R0",
+   "mean_basket_day": -0.12897858326476372,
+   "run_id": "B600_N2_R0_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 2,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "B600",
+   "exit": "R1m8",
+   "mean_basket_day": -0.09087904486948134,
+   "run_id": "B600_N2_R1m8_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 2,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "B600",
+   "exit": "R1m8",
+   "mean_basket_day": -0.09541348358978538,
+   "run_id": "B600_N2_R1m8_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 2,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "B600",
+   "exit": "R1m10",
+   "mean_basket_day": -0.12103079907097375,
+   "run_id": "B600_N2_R1m10_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 2,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "B600",
+   "exit": "R1m10",
+   "mean_basket_day": -0.1254148493518024,
+   "run_id": "B600_N2_R1m10_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 2,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "B600",
+   "exit": "R1m15",
+   "mean_basket_day": -0.16044919082747175,
+   "run_id": "B600_N2_R1m15_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 2,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "B600",
+   "exit": "R1m15",
+   "mean_basket_day": -0.16463663329625522,
+   "run_id": "B600_N2_R1m15_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 3,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "B600",
+   "exit": "R0",
+   "mean_basket_day": 0.0013153627226460962,
+   "run_id": "B600_N3_R0_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 3,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "B600",
+   "exit": "R0",
+   "mean_basket_day": -0.003678915680399769,
+   "run_id": "B600_N3_R0_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 3,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "B600",
+   "exit": "R1m8",
+   "mean_basket_day": 0.023804264131924185,
+   "run_id": "B600_N3_R1m8_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 3,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "B600",
+   "exit": "R1m8",
+   "mean_basket_day": 0.01869781743625243,
+   "run_id": "B600_N3_R1m8_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 3,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "B600",
+   "exit": "R1m10",
+   "mean_basket_day": 0.003703094664262524,
+   "run_id": "B600_N3_R1m10_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 3,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "B600",
+   "exit": "R1m10",
+   "mean_basket_day": -0.001303093071758854,
+   "run_id": "B600_N3_R1m10_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 3,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "B600",
+   "exit": "R1m15",
+   "mean_basket_day": -0.022575833173402726,
+   "run_id": "B600_N3_R1m15_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 3,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "B600",
+   "exit": "R1m15",
+   "mean_basket_day": -0.027450949034727362,
+   "run_id": "B600_N3_R1m15_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 4,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "B600",
+   "exit": "R0",
+   "mean_basket_day": 0.002041633957979072,
+   "run_id": "B600_N4_R0_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 4,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "B600",
+   "exit": "R0",
+   "mean_basket_day": -0.0029562668809949844,
+   "run_id": "B600_N4_R0_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 4,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "B600",
+   "exit": "R1m8",
+   "mean_basket_day": 0.06750750487883805,
+   "run_id": "B600_N4_R1m8_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 4,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "B600",
+   "exit": "R1m8",
+   "mean_basket_day": 0.06218307875377668,
+   "run_id": "B600_N4_R1m8_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 4,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "B600",
+   "exit": "R1m10",
+   "mean_basket_day": 0.04995650339998248,
+   "run_id": "B600_N4_R1m10_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 4,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "B600",
+   "exit": "R1m10",
+   "mean_basket_day": 0.044719616716440536,
+   "run_id": "B600_N4_R1m10_bps150",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 4,
+   "bps": 100,
+   "days_n": 2,
+   "entry": "B600",
+   "exit": "R1m15",
+   "mean_basket_day": 0.022995425991161694,
+   "run_id": "B600_N4_R1m15_bps100",
+   "status": "skipped_complete"
+  },
+  {
+   "N": 4,
+   "bps": 150,
+   "days_n": 2,
+   "entry": "B600",
+   "exit": "R1m15",
+   "mean_basket_day": 0.0178930135518377,
+   "run_id": "B600_N4_R1m15_bps150",
+   "status": "skipped_complete"
+  }
+ ],
+ "family_id": "F1"
+}
