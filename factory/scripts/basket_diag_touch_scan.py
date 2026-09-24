@@ -576,18 +576,27 @@ def scan_flush_rebound(levels=(10, 15, 20), families=(("A_pm", "A_pm", 570),), t
     return rows
 
 
-def _target_stop_outcome(hi, lo, ref, target: float, stop: float) -> tuple[float, str]:
-    """First-touch-wins target/stop on a forward path; same-bar ambiguity resolves to the stop."""
+def _target_stop_outcome(hi, lo, ref, target: float, stop: float,
+                         horizon: int | None = None) -> tuple[float, str]:
+    """First-touch-wins target/stop on a forward path; same-bar ambiguity resolves to the stop.
+
+    ``horizon`` caps how long the position may be held (bars).  With a horizon the fallback is the
+    close at that bar rather than the session close - i.e. the trade is valued *inside the window*
+    instead of into the relaxation phase.
+    """
     t_level, s_level = ref * (1 + target), ref * (1 - stop)
+    hi = hi[:horizon] if horizon else hi
+    lo = lo[:horizon] if horizon else lo
     for h, l in zip(hi, lo):
         if float(l) <= s_level + 1e-12:
             return stop * -1.0, "stop"
         if float(h) >= t_level - 1e-12:
             return target, "target"
-    return float(hi[-1]) * 0 + 0.0, "open"          # placeholder, replaced by caller with the close
+    return (float(hi[-1]) / ref - 1.0 if len(hi) else 0.0), "time"
 
 
-def cmd_flush_rebound(levels=(10, 15, 20), targets=(5, 10, 15, 20, 30), stops=(10, 20, 30)) -> dict:
+def cmd_flush_rebound(levels=(10, 15, 20), targets=(5, 10, 15, 20, 30), stops=(10, 20, 30),
+                      horizons=(30, 60, 120, None)) -> dict:
     rows = scan_flush_rebound(levels)
     frame = pl.DataFrame([{k: v for k, v in r.items() if k not in ("forward_hi", "forward_lo")}
                           for r in rows])
@@ -610,32 +619,42 @@ def cmd_flush_rebound(levels=(10, 15, 20), targets=(5, 10, 15, 20, 30), stops=(1
             "minutes_to_mfe_median": float(sub["minutes_to_mfe"].median()),
         }
     for L in levels:
-        for target in targets:
-            for stop in stops:
-                got, kinds = [], []
-                for row in rows:
-                    if row["level"] != L:
+        for horizon in horizons:
+            for target in targets:
+                for stop in stops:
+                    got, kinds = [], []
+                    for row in rows:
+                        if row["level"] != L:
+                            continue
+                        ref = float(row["ref_px"])
+                        outcome, kind = _target_stop_outcome(
+                            row["forward_hi"], row["forward_lo"], ref,
+                            target / 100.0, stop / 100.0, horizon)
+                        got.append(outcome)
+                        kinds.append(kind)
+                    if not got:
                         continue
-                    ref = float(row["ref_px"])
-                    outcome, kind = _target_stop_outcome(row["forward_hi"], row["forward_lo"], ref,
-                                                         target / 100.0, stop / 100.0)
-                    if kind == "open":
-                        outcome = float(row["forward_hi"][-1]) * 0 + float(row["ret_eod"])
-                    got.append(outcome)
-                    kinds.append(kind)
-                if not got:
-                    continue
-                arr = np.array(got)
-                out["target_stop_grid"][f"-{L}%|T{target}|S{stop}"] = {
-                    "n": len(got), "mean": float(arr.mean()), "median": float(np.median(arr)),
-                    "positive_share": float((arr > 0).mean()),
-                    "target_share": float(np.mean([k == "target" for k in kinds])),
-                    "stop_share": float(np.mean([k == "stop" for k in kinds])),
-                    "open_share": float(np.mean([k == "open" for k in kinds])),
-                }
+                    arr = np.array(got)
+                    tag = f"H{horizon if horizon else 'eod'}"
+                    out["target_stop_grid"][f"-{L}%|{tag}|T{target}|S{stop}"] = {
+                        "n": len(got), "mean": float(arr.mean()), "median": float(np.median(arr)),
+                        "positive_share": float((arr > 0).mean()),
+                        "target_share": float(np.mean([k == "target" for k in kinds])),
+                        "stop_share": float(np.mean([k == "stop" for k in kinds])),
+                        "time_share": float(np.mean([k == "time" for k in kinds])),
+                    }
+    # best cell per horizon, for the window comparison
+    out["best_by_horizon"] = {}
+    for horizon in horizons:
+        tag = f"H{horizon if horizon else 'eod'}"
+        cells = {k: v for k, v in out["target_stop_grid"].items() if f"|{tag}|" in k}
+        if cells:
+            best = max(cells.items(), key=lambda kv: kv[1]["mean"])
+            out["best_by_horizon"][tag] = {"cell": best[0], **best[1]}
     out["note"] = ("reference price is the flush bar's close; target/stop are first-touch-wins with "
-                   "same-bar ambiguity resolved to the stop; no friction; open = neither level hit "
-                   "before the session close, valued at the close")
+                   "same-bar ambiguity resolved to the stop; no friction; H<n> caps the hold at n "
+                   "bars and values the unhit remainder at that bar's close (the window horizon), "
+                   "eod = the old session-close convention")
     return out
 
 
