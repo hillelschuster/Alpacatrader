@@ -2523,3 +2523,33 @@ N=3, T=600, L=10/g=50, staged capital, hold/sell conclusions); the load-bearing 
 in their stated form are listed in `researches/SWARM-SYNTHESIS-20260924.md` section 2.9; the T10
 "LS materials" contract is unimplemented (aggregate counters only). Stale BASKET headers in
 `researches/HYPOTHESES.md` / `researches/STATE.md` corrected this cycle.
+
+## 2026-09-24 (same cycle) — doctrine correction: THE WINDOW; and an existing learned BASKET component found
+
+(12) DOCTRINE (owner directive, written into the injected context files): **EOD is not the value
+horizon.** The phenomenon is an early-session explosive-attention event; the climb and climax are
+concentrated in the morning-to-midday hours and the afternoon is the relaxation phase where these
+names die or return to base camp. Any forward value defined "to the session close" measures the fade
+and is biased against the thesis by construction. Written into `researches/INTENT.md` (new section
+"THE WINDOW"), `AGENTS.md` (operating rules) and `factory/AGENTS.md` (core claim), and reflected in
+`researches/PLAN-ATLAS-01.md`, which now estimates continuation value over a horizon grid
+(5/15/30/60/120 bars) and makes the *time profile of when marginal continuation EV dies* the first
+object of study. Grounding: ≥60% runners complete half their open-to-high move by 11:25 (H019);
+corrected T5 puts the peak of MFE≥100 main tickets at ~180–234 minutes after entry with −28…−38%
+post-peak giveback; the A_pm sleeve's mean is flat after 11:30 while its median keeps decaying.
+(13) EXISTING LEARNED COMPONENT (found during the audit; lives in the MAIN checkout, not on this
+branch): `factory/scripts/basket_f2_predict.py` + `factory/artifacts/basket/phase2/F2_golden/`
+(both UNTRACKED on main, i.e. another session's uncommitted work). It is a hand-rolled numpy
+logistic regression on 6 causal features at checkpoints 585/600, time-blocked validation only,
+targets future +50%/+100% from the checkpoint price. Out-of-block AUC **0.658–0.751** for +50%
+(base rate ~0.067), Brier skill +0.017…+0.044 vs train base rate, monotone calibration deciles; the
+carriers are `mfe_so_far`, `ret_from_prevclose`, `cum_volume`/`dollar_volume`, `basket_breadth_*`
+and `rel_strength`. So causal path state *does* carry out-of-block information about the tail — but
+it was never converted into an action policy, and its label is a barrier (opportunity), not
+executable dollars per committed dollar. This is the closest existing object to the state→action
+atlas and it should be read before building a new one.
+(14) ENGINE ACTION SPACE (verified): entries happen once at `entry_T` (`basket_sim.py:1111`, budget
+`C0*reserve_frac/N`); available actions are ENTER/ADD/REDUCE/EXIT; the batch hook can request **ADD
+intents only** (`basket_sim.py:844-858`). There is no mid-session entry, no re-entry after exit, and
+no per-name entry veto. The buy side of any learned handling policy is therefore structurally
+untestable today — the sell side and adds are expressible, nothing else.

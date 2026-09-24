@@ -15,6 +15,7 @@ evidence. (Full principle in the parent folder AGENTS.md.)
 
 ## Operating rules
 
+* **The window is the thesis.** The phenomenon is an *early-session* explosive-attention event: the morning catalyst lights it, the climb and climax are concentrated in the morning-to-midday hours, and the afternoon is the relaxation phase where these names die or return to base camp. **The session close is not the value horizon — it is the opposite side of the phenomenon.** Never define forward value "to the EOD mark" by default; estimate continuation value at multiple short intraday horizons and let the *time profile* (when marginal EV dies) be the first object of study. Full doctrine: `researches/INTENT.md` §"THE WINDOW".
 * **Profitability is the priority.** Research, code, tooling and process exist only to help find, validate or execute an edge.
 * **The user is the decision maker.** Follow explicit instructions strictly.
 * Deviate only when there is a clearly better or more practical route toward profitability; state why briefly.

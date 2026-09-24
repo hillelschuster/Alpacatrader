@@ -723,3 +723,27 @@ limits; artifact-framing corrections; producer commit coverage.
 8. **DERISK (state adds nothing at a fixed clock) vs the touch result (state adds a lot at a variable
    clock).** Compatible only if "state" means damage-at-10:00 in the first case and the excursion
    itself in the second; the reconciliation is M3's two-sided rule.
+
+### 2.14 Corrections after the ceiling/flush audit (2026-09-24, later in the same cycle)
+
+Two readings in §2.10/§2.11 and §3 were too strong and are corrected here.
+
+1. **"The selection oracle is +0.14%, therefore selection does not matter" — withdrawn.** That
+   oracle chose among the *three names already selected* and then still applied crude 10:00/EOD
+   management to all positions. It is not an upper bound on selection, and it says nothing about
+   dynamic capital allocation (which member gets the marginal dollar, when, or whether a released
+   member should be re-admitted). The defensible statement is narrower: *within the three
+   already-selected names, ex-post knowledge of which one would have the largest excursion is worth
+   little under the management rules that were tested.*
+2. **"The cohort oracle caps exit-side intelligence at +0.90%" — withdrawn.** That oracle is one
+   hypothetical rule (hold touchers to the close, cut non-touchers at 10:00), not a ceiling on
+   exit-side intelligence. What the ceilings actually bound is the **price** channels: perfect exit
+   +16.34%, perfect entry +15.84% per ticket, versus −2.51% for hold-to-flat. They say the headroom
+   is in *which price you transact at*, and that mechanical rulers captured ≤1.5pp of it; they do
+   not bound what a state-conditional policy could capture.
+
+Consequence for the ranked moves: M1–M3 in §3 remain the ranking of *measurements*, but the
+"selection is not the prize" and "exits are capped" framings must not be used to justify skipping
+the state-action question. The open question is whether causal state identifies the *moments* at
+which another dollar of exposure stops being worth holding (or becomes worth adding), which is a
+different object from both the clock rulers and the barrier classifiers tested so far.

@@ -10,6 +10,9 @@
 ### Objective
 Discover whether statistically identifiable states/transitions in top-gainer stocks predict subsequent price behavior with **executable positive expectancy after realistic costs**.
 
+### The Window (core economic claim)
+The top-gainer phenomenon is an **early-session explosive-attention event**: catalyst in the morning, climb and climax concentrated in the morning-to-midday hours (measured: half the open-to-high move of ≥60% runners done by 11:25; MFE≥100 names peak ~180–234 minutes after entry; −28…−38% giveback after the peak), and the afternoon is the **relaxation** phase where these names die or return to base camp. **EOD is not the value horizon — it is the contradiction of the thesis.** Therefore: value every action over short intraday horizons (minutes to a few hours) and study the *time profile* of when marginal continuation EV dies before choosing triggers, levels or thresholds. Full doctrine: `researches/INTENT.md` §"THE WINDOW".
+
 ### Integrity Rules (NON-NEGOTIABLE)
 - **No lookahead.** Ranking, feature computation, and filtering must use only data observable at timestamp T.
 - **Chronological integrity.** Train/validate always on past data relative to test/OOS periods.

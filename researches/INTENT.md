@@ -33,6 +33,34 @@ speculation and concentrated flows. Phase 1 measured an unusually large right ta
 +30/+50/+100 post-entry excursions, and multi-survivor days. The job is to own and monetize that
 - not to force it into familiar shapes.
 
+**THE WINDOW (the core economic claim; added 2026-09-24 on owner directive).** The phenomenon is
+an *early-session* explosive-attention event, not a day-long move. The morning catalyst lights it;
+the climb and the climax are concentrated in the morning-to-midday hours; the afternoon is the
+relaxation phase, where these names die or return to base camp. **The session close is not the value
+horizon — it is the opposite side of the phenomenon.** Measuring forward value "to the EOD mark"
+therefore measures the fade, and any statistic built that way is biased against the thesis by
+construction.
+
+Grounded in the project's own numbers: ≥60% runners (H019, 141 names/172 days) complete *half* their
+open-to-high move by 11:25; corrected T5 for MFE≥100 main tickets puts the peak at ~180–234 minutes
+after entry (≈12:30–13:20) with −19…−25% pre-high retracement and −28…−38% post-high giveback; the
+A_pm sleeve's mean return is essentially flat after 11:30 while its median keeps decaying. Retail
+attention and volume in this cohort are concentrated in the late morning; the biggest names peak
+around midday and give back a third of the move into the close.
+
+Consequences for how we work:
+- **Default value horizon is short and intraday.** Any continuation value must be estimated at
+  multiple horizons (minutes to a few hours) and reported as a *time profile*; "to the terminal
+  mark" is one option among many, never the default.
+- **The first question is when marginal continuation EV dies through the morning** — that time
+  profile (and its state conditioning) is the object, before any trigger, level or threshold.
+- **Do not bake in structure.** "Sell near the running high", "buy near a local low", "exit before
+  13:00" are hypotheses to be discovered from the statistics, not assumptions to design around.
+- **Ride the wave, do not ride the relaxation.** Later ownership is permitted only where the
+  statistics justify it; holding into the afternoon is an empirical question, not the baseline.
+- Attention/catalyst timing (when the name is being *discovered*) is a first-class state dimension,
+  alongside price-path state.
+
 **Zero fixation during discovery.** No clock time (09:30/09:45/10:00/10:30...), no profit
 threshold (+30/+50/+100), no stop level, no retained-MFE fraction, no N, no one-winner
 assumption, no EOD holding, no scale-out or staged-capital architecture, and no F1-F14 family
