@@ -1,0 +1,36 @@
+{
+ "purpose": "independent recomputation of the ATLAS panel's columns from the raw SIP bars + anatomy, written to catch exactly the kind of sign/index/definition error the in-script self-test samples might miss",
+ "method": "naive Python loops (no producer code path) over bars/YYYY-MM-DD.parquet and sip/anatomy/YYYY-MM-DD.json, comparing every non-trivial column of a pseudo-random row sample",
+ "checked_against": "factory/artifacts/basket/phase2/ATLAS/panel.parquet",
+ "panel_sha256": "8ce4615946e2f5eed41e32858bb4020246a448720e81d74cebf8db2d1b7d990c",
+ "runs": [
+  {"target": "smoke/panel.parquet", "rows_sampled": 402, "column_comparisons": 22110, "mismatches": 0},
+  {"target": "panel.parquet", "rows_sampled": 122, "column_comparisons": 6710, "mismatches": 0},
+  {"target": "panel.parquet", "rows_sampled": 902, "column_comparisons": 49604, "mismatches": 0}
+ ],
+ "columns_compared": [
+  "ret_from_fill", "ret_from_prevclose", "ret_from_open0930", "mfe_so_far", "mae_so_far",
+  "running_high", "dist_from_running_high", "mfe_surrendered", "bars_below_entry_episode",
+  "episode_low", "bars_since_episode_low", "reclaim_count", "failed_reclaim_count",
+  "bars_since_new_high", "new_high_count_5", "new_high_count_15", "new_high_count_30",
+  "ret_1", "ret_3", "ret_5", "accel_1_5", "up_close_streak", "range_expansion", "bar_range_pct",
+  "volume_vs_own_median", "volume_accel", "gap_count_so_far", "bars_since_gap",
+  "candidate_count_t", "ret_percentile_candidates", "peer_ret_median", "peer_new_high_5",
+  "next_open", "next_et", "level_ret", "v_sell", "v_hold_flat", "remaining_run",
+  "cost_of_waiting", "final_high_flag", "tail_class_50", "tail_class_100", "tail_class_300",
+  "bars_to_next_high", "dd_before_next_high", "bars_to_peak", "peak_et_after_t",
+  "v_giveback_5", "v_giveback_10", "v_giveback_15", "v_giveback_20",
+  "giveback_fired_5", "giveback_fired_10", "giveback_fired_15", "giveback_fired_20"
+ ],
+ "bugs_this_found_and_fixed": [
+  "ret_from_prevclose / ret_from_open0930 were missing the -1 (return vs ratio)",
+  "ret_1/3/5 were inverted (close(t-k)/close(t) instead of close(t)/close(t-k))",
+  "range_expansion was missing the -1",
+  "episode_low / bars_since_episode_low restarted the episode every bar (run end index not tracked)",
+  "bars_to_peak / peak_et_after_t resolved max-high ties to the last bar instead of the first",
+  "peer_new_high_5 summed peer new-high bars instead of distinct peer members",
+  "ret_percentile_candidates produced 0.0 (fabricated) when the member's own 09:30 return was missing"
+ ],
+ "tolerance": "1e-9 relative for values, exact for booleans; give-back triggers compare with the documented 1e-9 relative tie tolerance",
+ "reproduce": "python factory/scripts/basket_atlas_panel.py selftest --panel factory/artifacts/basket/phase2/ATLAS/panel.parquet   (the in-script check (d) is the durable, reproducible subset of this)"
+}
