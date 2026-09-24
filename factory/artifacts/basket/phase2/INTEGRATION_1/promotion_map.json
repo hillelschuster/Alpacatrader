@@ -1,0 +1,126 @@
+{
+  "schema_version": 1,
+  "artifact": "BASKET-01 Phase-2 integration 1",
+  "status": "measurement_integration_only_no_strategy_promotion",
+  "scope": {
+    "source": "F1",
+    "days": 1066,
+    "blocks": {
+      "block1": {"dates": "2021-02..2023-12", "days": 734},
+      "block2": {"dates": "2025-02..2026-05", "days": 332}
+    },
+    "sealed_reserved_access": false,
+    "f1_rerun": false
+  },
+  "timing_contract": {
+    "minute_bar_complete": "et=t completes at t+1",
+    "decision": "only information observable by the declared decision minute t",
+    "execution": "first eligible later bar open under BASKET-SIM-CONTRACT",
+    "outcomes": "score strictly after action; keep realized P&L separate from end-of-day marks and MFE touches",
+    "blocked_slots": "cash retained; no replacement or leverage",
+    "friction_bps_round_trip": [100, 150],
+    "a_family_pre10_entry": "10:00 environment labels are post-entry and cannot justify pre-10:00 A_pm/A_pm31/A_open entry economics"
+  },
+  "accepted_evidence": [
+    {
+      "id": "F1_negative_primitive_surface",
+      "source": ["../F1/README.md", "../F1/surface.json"],
+      "finding": "120 frozen entry/breadth/primitive-exit cells over the shared 1,066 dev days; every reported surface-wide basket-day mean is negative at 100 and 150 bps.",
+      "interpretation": "baseline constraint; does not reject untested conditional actions",
+      "claim_type": "descriptive"
+    },
+    {
+      "id": "F8_joint_eod_and_tail",
+      "source": ["../F8/joint_surface.json", "../F8/joint_daily.parquet", "../F8/provenance.json"],
+      "finding": "At-least-two +30% post-fill MFE touch rates span 0.68%-12.67% in block1 and 1.51%-22.59% in block2 across all cells; all-filled EOD-positive rates span 0.27%-15.94% and 0%-14.16%, respectively.",
+      "interpretation": "joint opportunity and EOD distribution only; EOD-positive open_end tickets are marked, not realized exits",
+      "claim_type": "descriptive_association"
+    },
+    {
+      "id": "F2_remaining_tail_at_600",
+      "source": ["../F2_F12/README.md", "../F2_F12/state_panel.parquet", "../F2_F12/surface.json"],
+      "finding": "At ET 600, mean remaining MFE and +50/+100 touch probability are higher in block2 than block1 for all five entry families. B600 mean remaining MFE is 11.80% vs 15.29%; +50 touch is 3.70% vs 5.40%; +100 touch is 0.97% vs 1.64%.",
+      "interpretation": "checkpoint-close-relative future outcomes; no executable return, action effect, gate, or selected feature bucket",
+      "claim_type": "descriptive_association"
+    },
+    {
+      "id": "F9_initial_reweighting",
+      "source": ["../F9/README.md", "../F9/surface.json"],
+      "finding": "All computed equal, rank-linear and mild score-gap mean outcomes are negative in both blocks; changes versus equal are sparse and average changes are negative.",
+      "interpretation": "initial fixed-path reweighting does not establish sizing alpha; later checkpoint multipliers remain non-computable",
+      "claim_type": "descriptive_association"
+    },
+    {
+      "id": "F10_F14_asof_environment",
+      "source": ["../F10_F14/README.md", "../F10_F14/run_config.json", "../F10_F14/maps.json"],
+      "finding": "All 1,066 daily environment rows use fixed labels, anatomy and bars with et < 600 and map all 120 F1 cells across both blocks.",
+      "interpretation": "10:00 A-family outcome associations are retrospective for pre-10 entries; selected-name trend is not broad-market regime",
+      "claim_type": "descriptive_association"
+    }
+  ],
+  "rejected_or_limited_evidence": [
+    {"claim": "F8 MFE reach implies realizable capture or added-capital EV", "reason": "MFE is a post-fill path maximum; no action executes at the maximum. open_end ticket net is an EOD mark, not a realized exit."},
+    {"claim": "F9 golden_gate_1p5x or survival_state_1p5x results", "reason": "F2/F12 contains no registered simple gate predicate and no compatible checkpoint allocation/execution path; remain not-computable."},
+    {"claim": "F10 10:00 state explains or validates pre-10:00 A-family entry", "reason": "label occurs after the A-family entry and must not condition its entry economics."},
+    {"claim": "Any winning cell, threshold, or strategy is promoted", "reason": "shared-development descriptive data, negative F1 net surface, overlapping cells/names, and no causal action comparison."},
+    {"claim": "F10 cohort trend is a broad-market regime", "reason": "permitted inputs have no SPY/IWM or PIT market-cap series."}
+  ],
+  "ranked_next_registered_tests": [
+    {
+      "rank": 1,
+      "family": "F3",
+      "candidate_action": "Release deteriorating exposure using entry-relative/peak-relative structure, then only frozen R2 or R3 modules.",
+      "evidence_warrant": "negative primitive F1 economics coexist with joint member tail touches and measurable checkpoint remaining outcomes in both blocks; directly tests whether reducing failed-ticket cost sacrifices survivors.",
+      "test_definition": "Map depth, duration, recovery/reclaim, MFE surrendered and time since peak without outcome-fitted thresholds; then register R2 L={10,15}, grace w={3,5,10} and/or R3 g={40,50,60} under the frozen event timing and execution contract.",
+      "causal_timing": "state only from completed bars through declared decision; exit at first eligible later bar open; outcome after execution; no same-bar lookahead.",
+      "falsifier": "No net C0 EV / failed-ticket-loss improvement in both blocks at 100 bps without materially reducing raw-MFE>=50/100 captured contribution; 150 bps is adversity.",
+      "depends_on": [],
+      "promotion": "test_candidate_only"
+    },
+    {
+      "rank": 2,
+      "family": "F5",
+      "candidate_action": "Add capital only on a declared own-state strengthening event (new-high continuation, recovery-after-breach, or separately frozen simple golden gate).",
+      "evidence_warrant": "F2/F12 ET-600 remaining-tail means and +50/+100 touch rates are higher in block2 for all five entry families; this motivates an incremental-capital test, not a gate claim.",
+      "test_definition": "Pre-register a single event/eligibility rule and checkpoint; compare permitted +25/+50/+100% original unit notional adds, total adds <= +100%; report incremental tranche net EV and remaining tail at add time.",
+      "causal_timing": "no pre-10 A entry condition may use 10:00; add decision uses only completed bars; execute next eligible bar open; measure subsequent outcome only.",
+      "falsifier": "Incremental net EV is non-positive after friction, positive in only one block, or add funding violates cash / gross<=C0 constraints.",
+      "depends_on": ["F2/F12 state panel; no current gate declared"],
+      "promotion": "test_candidate_only"
+    },
+    {
+      "rank": 3,
+      "family": "F4",
+      "candidate_action": "Scale out a deteriorating member or de-risk the basket only after F3 establishes a registered deterioration event worth testing.",
+      "evidence_warrant": "joint basket EOD failures coexist with members reaching meaningful raw MFE; a finite tranche test can quantify the opportunity cost of releasing risk earlier.",
+      "test_definition": "Use only F3/golden deterioration modules; frozen tranche sizes 25/33/50% and patterns 25->25->rest, 33->33->rest, 50->rest; compare per-ticket and declared basket mode K={2,3}, x={25%,50%}.",
+      "causal_timing": "trigger from completed bars; execute next eligible open; attribute EV to each tranche and track tail retained/false releases.",
+      "falsifier": "No dual-block net basket EV improvement after friction without worse tail-retention/captured-net tradeoff than full release.",
+      "depends_on": ["F3 structural map and registered module"],
+      "promotion": "conditional_test_candidate"
+    },
+    {
+      "rank": 4,
+      "family": "F6",
+      "candidate_action": "Hold a fixed C0 reserve and deploy once to equal surviving members at checkpoint 585 or 600, with cash as control.",
+      "evidence_warrant": "F2/F12 confirms remaining outcome exists at the golden checkpoints across blocks, while F1 shows full equal deployment loses net; reserve can test whether delaying exposure improves incremental capital EV.",
+      "test_definition": "Register p={0.67,0.5,0.33}, one permitted deployment checkpoint, equal-across-survivor rule and cash control; no gate-survivor allocation until a gate is independently declared.",
+      "causal_timing": "reserve amount fixed at entry; deploy only from state known by chosen checkpoint and fill at next eligible open; record undeployed cash and missed tail.",
+      "falsifier": "Reserve tranche incremental net C0 EV is non-positive after friction or positive in one block only.",
+      "depends_on": ["pre-registered checkpoint eligibility; gate missing"],
+      "promotion": "conditional_test_candidate"
+    },
+    {
+      "rank": 5,
+      "family": "F7",
+      "candidate_action": "Recycle released capital equally among eligible surviving members, versus retaining released cash.",
+      "evidence_warrant": "F1 R1 release paths create a testable capital-release event, but no current artifact shows that released funds have positive later-use EV.",
+      "test_definition": "After a registered F3/F4 release, compare recycle fractions {0,50%,100%} using equal survivor allocation and cash control; prohibit leverage and golden-gate allocation until a gate exists.",
+      "causal_timing": "only after actual executed release and at a later eligible action event; fills at next eligible open; incremental recycled-tranche net return separated from prior realized P&L.",
+      "falsifier": "Recycled incremental net C0 EV is non-positive in either block or cash/gross<=C0 constraints fail.",
+      "depends_on": ["F3/F4 registered release path; demonstrated later eligible event"],
+      "promotion": "conditional_test_candidate"
+    }
+  ],
+  "nonclaims": ["profitability", "out_of_sample_validity", "strategy_selection", "live_readiness"]
+}
