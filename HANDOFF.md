@@ -1,6 +1,6 @@
 # HANDOFF — Flush-Bid Top-Gainer Mechanism
 
-**Written 2026-09-11, end of day-1 live paper session. Read this file completely before doing anything.**
+**Written 2026-09-11, end of day-1 live paper session. For the active BASKET Phase-2 program, read §17 first; it supersedes this document's old research-roadmap framing while preserving the flush-bid/live-operational record.**
 You are the next agent continuing a research→live pipeline that just achieved its **first true pre-registered
 out-of-sample pass** and is now in the **live paper-trading validation phase**. Your job: run and monitor the
 live bot, accumulate paper fills, verify fill realism vs the sim, watch for decay, and only then consider
@@ -431,3 +431,655 @@ paper tests it for free.
 **Next step (the only one that matters):** accumulate ~30 forward fills → judge vs A3b →
 tiny real-money sizing (start far below 5% of fill-bar volume; capacity p25 ≈ $84k/trade).
 More data/power (2021+ backbone staging) and SIP are priced decisions, not defaults.
+
+---
+
+## 17. Active BASKET-01 Phase-2 EV-Harvesting Handoff (2026-09-24, in progress)
+
+**Read this section before acting on the BASKET research work.** It is the current handoff for
+the active isolated worktree:
+
+```text
+/home/hillel/.config/opencode/worktrees/Alpacatrader/basket-phase2-f1
+```
+
+The older flush-bid work remains a separate validated/paper-trading mechanism. Do not alter the
+bot while working BASKET. BASKET is research-only under `factory/` and `researches/`; it must
+earn a validated architecture before anything moves into `src/`.
+
+### 17.1 The user's operating intent
+
+The objective is not procedural completion, nor another broad proof that top-gainer opportunity
+exists. The objective is to discover the strongest **causal, executable architecture for
+harvesting the already measured top-gainer right tail**.
+
+The economic center of gravity is:
+
+> Enter early enough to own the exceptional continuation tail; then use causal survival,
+> golden-window, and capital-allocation information to make ordinary failed participation cheap
+> without prematurely destroying the rare survivors that pay for the book.
+
+This creates a deliberate asymmetry. A false positive can cost a few percentage points; a false
+negative can forfeit +50%, +100%, or much more. Never score a BASKET module as generic
+winner/loser classification accuracy. Score it as preserved future economic value minus the cost
+of failures, capital usage, friction, drawdown, and execution.
+
+The user explicitly wants strong subagents assigned to **whole coherent economic families**, not
+micro-tasks or arbitrary parameter sweeps. Good parallel lanes include survival/release,
+golden-window continuation signatures, scale-in, per-ticket/basket scale-out, reserve deployment,
+released-capital recycling, breadth/joint-survivor economics, weak-regime behavior, execution,
+and independent code/result verification. Parallel depth is valuable; random knob multiplication
+is not.
+
+The hierarchy for every lane is:
+
+```text
+economic mechanism -> causal/statistical definition -> implementation -> artifacts/results -> interpretation
+```
+
+The code is part of the research argument. A perfectly tested answer to the wrong economic
+question is worthless. An economically interesting claim with leakage, wrong fills, or bad cash
+accounting is equally worthless.
+
+### 17.2 Current BASKET thesis and boundaries
+
+Phase 1 is closed. It supplied an independently audited, causal measurement layer on the same
+1,066 permitted development days. Do not reopen a generic "does BASKET exist?" investigation
+unless a concrete material measurement defect is found.
+
+Phase 2 asks how to monetize the population's observed right tail:
+
+1. **Entry / breadth:** early participation preserves tail; later checkpoints improve identity
+   resolution. Do not assume one ticket must win: multi-survivor outcomes are material enough to
+   measure and must shape capital decisions.
+2. **Survival / release:** cut economic failures selectively, not every drawdown. Depth,
+   duration, recovery/reclaim, prior MFE, giveback, and failed reclaim matter because a large
+   eventual winner can suffer substantial interim deterioration.
+3. **Golden window (09:45/10:00, ET 585/600):** this is potentially a capital-allocation
+   information event, not merely a stop checkpoint. It can eventually inform hold, add, reduce,
+   release, reserve deployment, or recycling.
+4. **Dynamic capital:** the final architecture may legitimately combine entry, reserve cash,
+   scale-ins, partial reductions, full releases, and redistribution. Complexity is acceptable
+   only when each module earns stable incremental net EV and remains causal/operationally clean.
+
+Do not mentally canonize R0/R2/R3, early finite grids, or any one existing formulation. They are
+baselines and measurements. If a causal map reveals a material economic state that the current
+family misses, state it clearly and design one bounded follow-up. Do not silently explode the
+grid.
+
+### 17.3 Non-negotiable measurement contract
+
+Authoritative sources: `researches/PRE-REG-BASKET-02.md` and
+`factory/BASKET-SIM-CONTRACT.md`.
+
+- Exact permitted development calendar: **1,066 days** total:
+  - Block 1: `2021-02` through `2023-12`, **734 days / 35 months**.
+  - Block 2: `2025-02` through `2026-05`, **332 days / 16 months**.
+- Never read sealed `2024` / `2025-01` or reserved `2026-06..08` in a BASKET dev lane.
+- Causal timing: a bar stamped `t` completes at `t+1`; decision state uses only the completed
+  bar history permitted by the family; any action fills at the first eligible **later bar open**.
+  Do not use same-bar high as a subsequent outcome.
+- Sleeve accounting: `C0 = 1` per independent basket-day sleeve; no leverage, cash never
+  negative, deployed notional never above `C0`. Blocked slots stay cash; no replacement unless a
+  family explicitly and causally implements it.
+- Costs: report net at **100 bps** total round trip and adversity at **150 bps**. Report gross
+  where contract-required, but never confuse gross/MFE with executable net P&L.
+- Retain every declared cell and both blocks. Do not select a strong-looking dev cell. A future
+  strategy claim needs a pre-declared fresh test; development results are mechanism evidence.
+- Long computations must write incremental month/day parts and resume safely. Verify artifacts
+  before reasoning from them.
+
+### 17.4 Evidence already established
+
+#### Frozen Phase-1 / baseline facts
+
+- **F1 primitive surface:** 120 frozen entry/breadth/primitive-exit cells over the common 1,066
+  days. Every surface-wide mean is negative at 100 and 150 bps. This is a baseline constraint,
+  not a denial of untested conditional management/capital actions.
+- **F2/F12 causal golden-window panel:** `factory/artifacts/basket/phase2/F2_F12/`.
+  - 182,094 unique observations, 51 fields, 51 monthly shards, five entry families
+    (`A_pm`, `A_pm31`, `A_open`, `B585`, `B600`) and applicable checkpoints
+    `{580,585,590,600,615}`.
+  - State uses bars `et <= checkpoint`; forward outcomes use `et > checkpoint` only.
+  - At ET 600, remaining-tail base rates are substantial but non-executable path facts. For
+    example B600 mean remaining MFE is 11.80% in block 1 and 15.29% in block 2; +50% touch is
+    3.70% / 5.40%; +100% touch 0.97% / 1.64%.
+  - Rank change, relative strength, MFE-so-far, and short velocity vary descriptively, but F2
+    did **not** declare an executable golden gate.
+- **F8 joint basket economics:** `factory/artifacts/basket/phase2/F8/`.
+  - Multiple survivors are plausible, not an assumption to dismiss. Across its 120 frozen F1
+    cells, pooled at-least-two +30% MFE-touch rates span 1.03%--15.76%; at-least-two EOD
+    net-positive member rates span 3.66%--37.99%.
+  - These are input/path/economic shape measurements, not proof of executable profitability or
+    a one-winner architecture.
+- **F9 weighting:** initial equal/rank-linear/score-gap reweighting is negative surface-wide;
+  it does not establish sizing alpha.
+- **F10/F14:** causal descriptive environment map, not a pre-10 entry gate.
+- **F11:** stored-open F1 baseline stays negative throughout its 0/50/100/150/200-bps ladder.
+  Conservative minute and quote-aware execution were blocked by unregistered fill semantics and
+  missing quote input; no capacity claim was fabricated.
+
+#### Integration-1 promotion map
+
+`factory/artifacts/basket/phase2/INTEGRATION_1/promotion_map.json` is the current bridge from
+baseline evidence to implementation discovery. It explicitly makes **no strategy promotion**.
+Its original queue is F3 -> F5 -> F4 -> F6 -> F7, but treat this as dependency guidance, not a
+reason to stop economically independent mapping lanes. The map's falsification standard is the
+right one: a management/capital module must improve net C0 economics across both blocks after
+friction without materially destroying the valuable tail it is meant to harvest.
+
+### 17.5 Completed Phase-2 deliverables (verify before relying on them)
+
+#### F3: survival / weakening / release
+
+Paths:
+
+```text
+factory/scripts/basket_f3_sim.py
+factory/scripts/basket_f3_structural_map.py
+factory/scripts/basket_f3_economics.py
+tests/test_basket_f3_sim.py
+tests/test_basket_f3_structural_map.py
+tests/test_basket_f3_economics.py
+factory/artifacts/basket/phase2/F3/
+```
+
+1. **Causal structural map** is complete.
+   - `structural_map/structural_daily.parquet`: **673,952** completed-bar own-path state rows.
+   - 51 monthly resumable parts; exact 1,066 / 734+332 day guard and input hashes.
+   - Maps entry-relative drawdown, consecutive below-entry duration, reclaim/recovery behavior,
+     running-peak drawdown, MFE surrendered, time since high, and failed reclaim.
+   - Future high/low/close outcomes are measured from decision close using only bars strictly
+     after the decision bar. Empty strata are retained. It is descriptive; it creates no fitted
+     threshold or selected rule.
+2. **Fixed release-module surface** is retained and audited.
+   - A fixed A_pm/T570/N2 R0/R2/R3 experiment: R0, six R2 cells
+     (`L={10,15}`, `w={3,5,10}`), three R3 cells (`g={40,50,60}`), each at 100/150 bps:
+     **20 cells** total.
+   - Direct audit performed in this session: every cell has 1,066 daily rows and 51 monthly
+     daily parts; no `.tmp`. `basket_sim.py --self-test` and focused F3 tests passed.
+   - All pooled net means remain negative. The release cells improved mean versus their matching
+     R0 comparator in both blocks, but that is development-only and does not make an edge.
+3. **Economic synthesis** was generated after the map:
+   - `F3/economic_synthesis.json` and `F3/ECONOMIC_SYNTHESIS.md` retain all 20 cells and
+     separate daily C0 accounting, ticket realized/marked economics, MFE-tail contribution,
+     action timing/counts, monthly/block/year results, and the R0-only F8 joint context.
+   - Reported mechanism result: R2 reduces failed-ticket loss more but has lower ticket net in
+     the raw-MFE>=50% tail cohort; R3 preserves more of that tail cohort but reduces failure
+     losses less. All 18 release cells improve mean C0 EV versus same-friction R0 in both
+     blocks, while all remain negative. This is the real trade-off for F4/F6/F7; raw MFE is not
+     executable P&L.
+   - Agent-reported verification: 22 economics tests, compile, artifact audit, two identical
+     output-hash runs; re-run locally before any selection/integration claim.
+
+**F3 interpretation:** release is not dead merely because it does not rescue the full basket
+mean. It gives an empirically measured cost-versus-tail frontier. F4 must ask whether partial
+reductions improve that frontier; F6/F7 must ask whether capital released or held can earn more
+elsewhere without creating a new tail-destruction problem.
+
+#### Golden-window capital-allocation map
+
+Paths:
+
+```text
+factory/scripts/basket_capital_map.py
+tests/test_basket_capital_map.py
+factory/artifacts/basket/phase2/capital_allocation_map/
+```
+
+This is a newly completed descriptive map built from F2/F12 state rows and F8 MFE-only
+multi-survivor context. It does not alter F2/F12 or execute trades.
+
+- Scope: **78,088** eligible observations at ET 585/600 across all applicable entry
+  family/checkpoint/block combinations. It records **450** fixed feature tables,
+  **54** fixed interaction tables, and **30** F8 multi-survivor summaries.
+- Important causal boundary: B600 does not exist as an already-entered candidate at ET 585; the
+  map retains that combination as explicitly not applicable rather than fabricating a row.
+- Current-rank top versus bottom quintiles show median remaining-MFE differences of +7.45pp /
+  +6.89pp and +50%-touch differences +5.19pp / +4.32pp across the nine applicable
+  family/checkpoint pairs in blocks 1/2, **but** adverse-first risk is also +21.89pp / +18.64pp.
+  Stronger return-from-fill quintiles have more remaining upside and lower adverse-first
+  incidence in both blocks. These are associations, not gates or action effects.
+- F8's >=2-member +30% MFE frequency is higher at N=4 than N=2, but varies materially by entry
+  family/block. Do not turn it into a simplistic "always own four" conclusion.
+- Agent-reported verification: tests 3 passed, compile/output completeness passed, repeated
+  generation byte-identical, no `.tmp`; LSP unavailable for this worktree. Reverify before a
+  strategy claim.
+
+**Use:** This map makes the golden window a serious candidate capital-allocation event. It does
+not authorize a gate. Its observations should motivate bounded next-open F5/F6/F7 execution
+tests, each with incremental net EV and tail-preservation accounting.
+
+### 17.6 Active workers -- DO NOT KILL
+
+At the time this handoff was written, two whole-family compute agents are still active. Do not
+cancel, restart, or duplicate them. Wait for their actual completion notification and then call
+`background_output` on the listed task ID.
+
+| Worker | Task ID | Scope | What must be checked when it finishes |
+|---|---|---|---|
+| F5 full lane | `bg_eec5ec64` | Repair staged ADD reservation bug; add real executed-tranche net-EV accounting; rerun all 840 cells x 1,066 days. | The RED regression must show a reservation-skipped new-high does not consume `next_add`; full 840-cell rerun must be clean; decision/event files real; tranche EV separated from paired basket delta; both blocks/frictions and source hashes verified. |
+| F4 per-ticket scale-out | `bg_a85c0e4b` | Full per-ticket partial-reduction family using F3 R2/R3 vocabulary, patterns `{25->25->rest, 33->33->rest, 50->rest}`. | Confirm exact grid/control count, next-open reductions, no double-fire, C0/tail accounting, full 1,066-day surface, and that any basket-level K-mode limitation is explicit rather than silently omitted. |
+
+The current status may expose intermediate untracked F4 scripts/tests; they are agent-owned
+while the worker is running. Do not edit/revert them in a new session.
+
+### 17.7 F5: why the prior surface is invalid until the worker returns
+
+Paths:
+
+```text
+factory/scripts/basket_f5_scalein.py
+tests/test_basket_f5_scalein.py
+factory/artifacts/basket/phase2/F5/
+```
+
+The initial 840-cell F5 surface (five entry families x N={2,3,4} x R0/R1(-8,-10,-15) x
+seven registered add schedules x 100/150 bps) was useful exploration but **not acceptable
+evidence**:
+
+1. `ScaleInRule.evaluate` advanced `next_add` before marking an early strict-new-high event as
+   `pending_entry_cash_reserved`; this can spend a staged tranche slot even though no ADD was
+   funded/scheduled, suppressing a later eligible first tranche.
+2. Paired basket-day P&L versus no-add was reported, but PRE-REG requires the incremental net EV
+   of the actually executed added capital. A full repair must retain decision, later-open fill,
+   allocated notional, friction, subsequent tranche outcome, skip reason, and matched no-add
+   comparison. Unfunded/cap/reservation skips cannot be called executed adds.
+3. Existing reuse logic could synthesize missing decision artifacts as `[]`; full rerun must
+   demand genuine decision/event evidence for add cells.
+
+The F5 mechanism remains strategically important: a threshold-free own-ticket strict new high
+is a coherent continuation hypothesis. Do not weaken it into an F2-derived gate or make it a
+generic strength classifier. The question is whether the extra tranche earns net EV after its
+next-open fill while preserving/harvesting remaining tail, separately in both blocks.
+
+### 17.8 Next shared-core lane: F6/F7 dynamic capital
+
+Do not edit `factory/scripts/basket_sim.py` while F5 is running. Once F5's completed source and
+surface are verified, launch **one whole shared dynamic-capital owner** for the required batch
+engine extension and the F6/F7 families. This serialization is technical, not ceremonial: F5
+uses the shared simulator, and mid-run core changes can invalidate its hashes/reproducibility.
+
+The existing F6 design specification says the smallest correct change is a batch checkpoint hook:
+
+- `reserve_frac` currently only reduces entry budget; it does not deploy reserve.
+- The current per-ticket `on_checkpoint(et, ticket, bar)` cannot know the whole current survivor
+  set or allocate one sleeve reserve deterministically.
+- Add a batch callback after all ticket decisions at ET 585/600, but before/with no same-bar
+  execution. It receives the ordered eligible open survivor set and schedules standard `ADD`
+  actions at each recipient's first later bar open.
+- A release/reduce pending on the checkpoint bar excludes that ticket; earlier pending actions,
+  cap, cash, order, carry/no-resumption, and C0 invariants are honored. Unallocated/cap-limited/
+  unfunded reserve remains cash and is reported; never partially fill it by assumption.
+
+F6 minimum economic experiment after the core is stable:
+
+- `p={0.67,0.50,0.33}` reserve at entry, plus `p=1.0` full-deployment control.
+- checkpoint `585` or `600`.
+- policy `cash` versus equal across currently eligible survivors.
+- no golden-gate survivor policy until a simple predicate is explicitly declared from an economic
+  map and tested as a bounded new formulation.
+
+F7 follows a demonstrated F3/F4 release path and tests recycle fractions `{0,50,100}%` versus
+cash/equal survivors. It must measure incremental recycled-tranche net EV; it is not permission
+to pour released cash into rank 1. Prefer a single combined dynamic-capital owner to avoid
+conflicting `basket_sim.py` changes.
+
+### 17.9 What the eventual integration must do
+
+The final `INTEGRATION_2` owner must not merely concatenate READMEs. For each candidate module,
+personally answer:
+
+1. What economic question did it test?
+2. Did the code implement that question with causal state and next-open execution?
+3. What capital/execution assumptions actually applied?
+4. What did it do to ordinary failed-ticket cost?
+5. What did it do to exceptional-tail contribution, false/early release, and multi-survivor
+   opportunity?
+6. Did incremental net EV survive both blocks, friction adversity, nearby declared variants,
+   month/year concentration, and realistic capital utilization?
+7. Does it add independent value to another module, or merely duplicate/undo it?
+
+Only combine modules that earn a stable independent place. A spectacular cumulative dev cell is
+not a strategy. Conversely, do not dismiss a large verified result merely because it is large:
+audit it, understand where the money came from, and test it fresh.
+
+The desired output is a small, coherent causal architecture for harvesting the inefficiency, not
+a giant report and not a minimalist hold-or-sell dogma.
+
+### 17.10 Worker and workspace discipline
+
+- The worktree is intentionally dirty. At handoff time, `factory/STATE.md`, most Phase-2 scripts,
+  tests, canonical SIP artifacts, and Phase-2 result directories are untracked/modified by
+  concurrent work. Never blindly stage, revert, reset, checkout, or commit all changes.
+- `uv.lock` can be touched incidentally by `uv run`; it is **not** part of these research lanes.
+  Check it before/after a worker; restore only a confirmed agent-introduced lock refresh, never
+  user changes. A prior F3 lock refresh was removed; it may become dirty again while F4/F5 run.
+- Subagents sometimes start in a clean sibling checkout and falsely conclude active untracked
+  files do not exist. Every agent prompt must require exact active-root confirmation and absolute
+  paths/workdir before it reads or writes:
+  `/home/hillel/.config/opencode/worktrees/Alpacatrader/basket-phase2-f1`.
+- This environment's LSP diagnostics reject isolated-worktree file paths as outside the request
+  cwd. Do not call that a clean diagnostic run. Use focused tests, `py_compile`, deterministic
+  canaries, and artifact audits; record the actual LSP limitation.
+- Use `apply_patch` for edits. Do not use destructive git commands. Never delete a failing test
+  or weaken it to force a pass.
+- Research output must be incremental/resumable. Before interpreting an artifact, check exact
+  date counts, both blocks, required parts, hashes, no temporary files, and full grid coverage.
+- After a meaningful completed experiment, append concise current facts to `factory/STATE.md`,
+  `researches/HYPOTHESES.md`, and experiment ledgers **only after** the owner/orchestrator has
+  verified the actual result. Do not confuse agent self-report with accepted evidence.
+
+### 17.11 Immediate commands for the next agent
+
+Start in the active worktree and do not touch a running worker's paths:
+
+```bash
+git status --short
+git diff -- uv.lock
+/home/hillel/projects/Alpacatrader/.venv/bin/python factory/scripts/basket_sim.py --self-test
+```
+
+When a worker-complete system notification arrives, retrieve the exact result via
+`background_output(task_id=...)`, then independently read every changed source/test/README and
+run its focused tests plus a direct artifact audit. Do not mark a family complete from its
+self-report alone.
+
+### 17.12 Current task ledger
+
+1. Baseline/integration-1 validation: complete.
+2. F3 release surface + structural map + economic synthesis: complete, locally audited in part;
+   reverify the economics producer before integration.
+3. Golden-window capital-allocation map: generated; needs normal independent source/artifact
+   verification before any follow-up predicate is declared.
+4. F5 full repair/re-run: active worker, do not interrupt.
+5. F4 per-ticket scale-out: active worker, do not interrupt.
+6. F6/F7 dynamic capital core + surfaces: queued after F5, then use F3/F4/golden evidence without
+   cherry-picking.
+7. Integration-2: queued after family results; it must decide what genuinely earns inclusion in a
+   causal architecture.
+
+**Bottom line:** pursue EV extraction aggressively, not process for process's sake. Preserve the
+right tail; make failures cheap; let the golden window and joint-survivor structure inform capital
+only through causal, execution-correct incremental tests. Use strong agents for full economic
+lanes, inspect their code and evidence, and integrate only what earns its place.
+
+## 18. 2026-09-24 BASKET Phase-2 restart handoff (current override)
+
+**Read this section after the repository orientation and before doing any BASKET work.** It
+overrides the stale worker statuses in section 17.12. The active worktree is:
+
+```text
+/home/hillel/.config/opencode/worktrees/Alpacatrader/basket-phase2-f1
+```
+
+There are no running BASKET worker processes at this handoff. F4 completed and its worker result
+was collected. F5 was explicitly cancelled only after its core simulations finished and its
+post-processing had demonstrably stopped making progress. No commit was made.
+
+### 18.1 Objective and non-negotiable measurement contract
+
+The project objective remains a profitable, execution-realistic top-gainer/momentum mechanism.
+BASKET Phase 2 is not an exercise in classifier accuracy or loss minimization. The desired
+architecture must preserve exceptional right-tail survivors while reducing ordinary failure cost
+and deploying capital only where incremental **net** EV earns it.
+
+Keep these rules fixed unless a new pre-registered formulation explicitly replaces them:
+
+- Use only the canonical 1,066 development days:
+  - block 1: `2021-02` through `2023-12`, 734 days / 35 months.
+  - block 2: `2025-02` through `2026-05`, 332 days / 16 months.
+- Do not load sealed `2024`, sealed `2025-01`, or reserved `2026-06..08`.
+- Decisions see completed-bar state only. All actions fill at a strictly later, eligible bar open.
+- `C0=1`, no leverage, no invented partial fills, and explicit cash/deployed accounting.
+- Evaluate both 100 and 150 bps round-trip friction; distinguish realized from marked open P&L.
+- Require full finite surfaces, both blocks, calendar/month coverage, no temporary artifacts, and
+  retained negative/null rows. Never cherry-pick a cell into a strategy.
+- The relevant asymmetry is that prematurely releasing a real +50%/+100%/+300% survivor can cost
+  much more than carrying an ordinary failure briefly. Tail shares/MFE are opportunity measures,
+  not executable P&L or a substitute for tranche economics.
+
+Read `researches/INTENT.md`, `researches/STATE.md`, `researches/HYPOTHESES.md`, the tail of
+`factory/STATE.md`, this handoff, `researches/PRE-REG-BASKET-02.md`, and
+`factory/BASKET-SIM-CONTRACT.md` before changing research logic.
+
+### 18.2 Worktree and evidence hygiene
+
+The worktree is intentionally dirty. At this handoff, `HANDOFF.md`, `factory/STATE.md`, and
+`uv.lock` are modified; BASKET scripts/tests/artifacts and canonical SIP data are untracked in
+this checkout. These are not permission to bulk-add, reset, checkout, revert, clean, or commit.
+Do not touch `uv.lock` unless a change can be attributed to this work; it is not research output.
+
+- Use the absolute active-worktree path above in every agent prompt. Several earlier agents used
+  clean sibling checkouts and falsely reported active untracked paths missing.
+- Use `/home/hillel/projects/Alpacatrader/.venv/bin/python` for focused project checks. `uv run`
+  may incidentally dirty `uv.lock`; use frozen/no-sync invocations only if it is needed for
+  read-only data inspection.
+- LSP diagnostics reject this isolated worktree as outside the configured request cwd. Record that
+  limitation; use focused pytest, `py_compile`, simulator self-test, deterministic canaries, and
+  direct artifact audits instead of claiming LSP is clean.
+- Long computations must write incrementally and resume. But generated output is not accepted from
+  an agent self-report: independently verify the exact code, tests, calendar, grid, parts, hashes,
+  and economics after it is stable.
+- Do not modify `factory/scripts/basket_sim.py` while doing F5 recovery. F6/F7 are the later,
+  intentional shared-core owners.
+
+### 18.3 Baseline, F3, and descriptive capital-map state
+
+Phase 1 is closed. Do not rerun broad existence tests unless a concrete measurement defect is
+found. The known baseline work is:
+
+- F1: 120 `validated_frozen` cells over all 1,066 days; primitive net surface is negative at 100
+  and 150 bps.
+- F2/F12: causal 182,094-row, 51-column state panel with the five frozen entry families and
+  checkpoints `{580,585,590,600,615}`. Outcomes are strictly later than checkpoint.
+- F8: multi-survivor/joint sleeve economics show concurrent right-tail opportunity is material.
+- F9/F10/F11/F14: descriptive weighting/environment/execution maps only; no executable gate or
+  promotion was declared.
+- `factory/artifacts/basket/phase2/INTEGRATION_1/promotion_map.json` says
+  `measurement_integration_only_no_strategy_promotion` and preserves the dependency direction
+  F3 -> F5 -> F4 -> F6 -> F7.
+
+F3 is complete as a descriptive release-cost lane:
+
+- `factory/scripts/basket_f3_sim.py`: 20 fixed A_pm/T570/N2 R0/R2/R3 cells at both frictions.
+- `factory/scripts/basket_f3_structural_map.py`: causal 673,952-row own-path map in 51 monthly
+  parts; direct audit found 20 cells, 1,066 days/cell, 51 map parts, and no temporary artifacts.
+- `factory/artifacts/basket/phase2/F3/acceptance_bridge.md` explicitly says the map supplies
+  vocabulary, not an outcome-fitted module choice.
+- Earlier independent check passed:
+  `pytest -q tests/test_basket_f3_sim.py tests/test_basket_f3_structural_map.py` = 18 passed;
+  simulator self-test and F3 compilation passed.
+- F3 economics synthesis was generated in `basket_f3_economics.py` and
+  `factory/artifacts/basket/phase2/F3/`, but its source/artifact acceptance should be repeated
+  before it is used in Integration 2. Agent-reported direction: R2 reduces failure loss more but
+  gives up more ticket-tail than R3; all F3 mean C0 outcomes remain negative.
+
+The golden-window capital allocation map exists at
+`factory/scripts/basket_capital_map.py` and
+`factory/artifacts/basket/phase2/capital_allocation_map/`. It reports 78,088 eligible ET585/600
+observations and does not fabricate B600-at-ET585. It is descriptive only: no F2/F12/golden gate,
+allocation predicate, or capital deployment rule has been promoted.
+
+### 18.4 F4 final per-ticket scale-out lane
+
+F4 is now a completed **per-ticket** economic lane, but no strategy was promoted.
+
+Source ownership:
+
+- `factory/scripts/basket_f4_scaleout.py`: runner, provenance, and audit.
+- `factory/scripts/basket_f4_rules.py`: finite cell/trigger definitions and local release rules.
+- `factory/scripts/basket_f4_paths.py`: raw path map and executed action chronology.
+- `factory/scripts/basket_f4_metrics.py` and `basket_f4_blocks.py`: report metrics.
+- `tests/test_basket_f4_scaleout.py`.
+- `factory/artifacts/basket/phase2/F4/`.
+
+The registered grid is exactly 74 cells:
+
+- Fixed anchor `A_pm`, ET570, N=2, two equal slots, `C0=1`, no leverage.
+- Nine F3-vocabulary triggers: R2 with `L={10,15}` and `w={3,5,10}`, plus R3 with
+  `g={40,50,60}`.
+- Partial current-share patterns: `25 -> 25 -> rest`, `33 -> 33 -> rest`, and `50 -> rest`.
+- 54 partials, 18 same-trigger full exits, and two hold controls; every cell at 100/150 bps.
+- A pending action blocks a new stage until execution. R2 preserves adverse
+  `min(next_open, level)` execution; R3 uses next eligible open. The core simulator owns release
+  precedence, carry, forced flat, friction, cash, and deterministic action ordering.
+
+Final stable artifact snapshot checked directly after worker completion:
+
+- `surface.json` has 74 rows: one hold, nine full exits, and 27 partials per friction.
+- `coverage_audit.json` exists; `README.md` exists and documents the full calendar/part contract.
+- Earlier direct audit saw exact 1,066 days/cell, 51 monthly daily/ticket parts/cell, action
+  chronology where required, and no temporary files. Earlier focused F4 pytest passed 17 tests.
+- The F4 worker reports 36 focused F4/F3/simulator tests, simulator self-test, compilation,
+  deterministic canary, and F3-parity checks passed. Treat that as a claim until a fresh
+  independent final test/audit is run against the stable final sources/artifacts.
+- During the worker's final report refresh, `surface.json` was temporarily observed at 68 rows,
+  missing six R3_g60 partial rows. Do not reuse that snapshot or its preliminary aggregation. The
+  current post-completion snapshot is back to the exact 74-row registered grid.
+
+F4 economic result from its final README:
+
+- Every partial treatment improves pooled EV versus hold, but every partial treatment remains
+  negative. At 100 bps the partial mean C0 range is -4.01% to -3.05%/basket-day; at 150 bps it is
+  -4.48% to -3.53%.
+- Partial scale-out usually loses to full exit at the same trigger: 12/27 partial cells beat
+  matched full exit on pooled EV at each friction, but only one
+  `R2(L=15,w=5), 50 -> rest` cell beats it in both blocks. That one cell is not a selection rule.
+- Partial reductions improve failed-ticket loss versus hold, but reduced tranches themselves are
+  negative on average at both frictions. At raw +50% MFE touch, 84.6-100% of shares remain, yet
+  retained shares do not make sold tranches profitable or establish tail capture.
+- The correct conclusion is no F4 promotion: partials soften failure cost relative to holding, but
+  are not a stable family-level improvement over same-trigger full exit and preserve insufficient
+  tranche EV at realistic friction.
+
+F4 deliberately does **not** implement basket-level simultaneous de-risking K={2,3}; that needs
+the later shared batch callback. Do not create a local alternate simulator to fake it.
+
+### 18.5 F5 state: core simulations preserved, reconciliation cancelled and broken
+
+F5 tests causal own-ticket continuation adds; it is not a golden-window gate.
+
+Registered full grid in `factory/scripts/basket_f5_scalein.py`:
+
+- Five F1 entry forms: `A_pm`, `A_pm31`, `A_open` at ET570, B at ET585, B at ET600.
+- N={2,3,4}; exits hold R0 or R1(-8/-10/-15).
+- Add schedules `[]`, `[25]`, `[50]`, `[100]`, `[25,25]`, `[25,50]`, `[50,25]`, fractions of the
+  original ticket notional, capped at +100% cumulative original-unit add.
+- Both 100 and 150 bps: 5 * 3 * 4 * 7 * 2 = **840 cells**.
+- Trigger is strict own-ticket completed-bar `high > prior running peak`, evaluated before peak
+  update, with execution at the first later open. Existing reservation logic records an early
+  high before all selected entries fill as `pending_entry_cash_reserved` and must not consume the
+  staged add index.
+
+The original F5 worker was stopped because it was inactive, not because core simulation was slow:
+
+- All 840 cell `run_summary.json` files had `days_n=1066`; the initial `surface.json` contains
+  all 840 core rows and only the core keys `family_id`, `cells`, `completed_cells`, and
+  `expected_cells`.
+- At the stop snapshot, 168 `add_events.json` files existed, zero `executed_tranches.json` files
+  existed, no F5 `README.md` existed, and there was no `coverage_audit.json`.
+- `surface.json` last modified at 2026-09-24T11:36:22+03:00; at 12:23 no Python process existed
+  and no output had advanced. The F5 background task was explicitly cancelled after user approval.
+- No one reran the 840 core simulations after cancellation. Preserve existing simulator outputs:
+  `daily.parquet`, `tickets.parquet`, `run_summary.json`, configs, and monthly parts.
+
+Confirmed F5 reconciliation defects in `factory/scripts/basket_f5_scalein.py`:
+
+1. `_complete_surface()` lines 289-308 loads a variable named `tickets` for each initial cell, but
+   its second loop (lines 309-337) calls `_add_event_outcomes(..., tickets.to_dicts(), ...)` without
+   loading the current cell's tickets. Python therefore passes tickets from the **last** row of the
+   first loop to every event reconstruction. This is a correctness defect, not merely speed.
+2. `_add_event_outcomes()` lines 377-395 rebuilds a day/ticker view by calling
+   `pl.read_parquet(sim.BARS_DIR / f"{day}.parquet")` for every event day in every add cell. It
+   has no cross-cell batching/cache. After 840 simulations, this can reread canonical raw bars an
+   enormous number of times. It is the likely reason the reconciliation phase appeared stuck, but
+   no terminal traceback/log from the cancelled agent was collected, so do not claim a specific
+   exception without reproducing it.
+3. Existing F5 tests cover strict highs, reservation behavior, grid size, next-open fills,
+   `add_event_outcomes`, and unfunded/cap skips. They do **not** prove that `_complete_surface()`
+   uses each current cell's ticket table, nor that bar loading is bounded/reused.
+
+The cancelled F5 worker must be replaced by a small TDD repair, not a new full simulation run:
+
+- First add a RED regression that creates two distinct cell ticket tables and proves
+  reconciliation passes the current cell's tickets to event accounting; it must fail on the stale
+  variable implementation.
+- Add a separate focused test for safe reuse/batching of immutable canonical day-bar data. Do not
+  change event timing, selected columns, session-end filtering, friction, or terminal mark/exit
+  math.
+- Implement a reconciliation-only entry point that loads and validates the 840 already-complete
+  core rows. It must never call `_clean_cell_outputs`, `sim.run`, or overwrite core daily/ticket
+  files, summaries, or monthly parts.
+- Correct current-cell ticket loading in the second loop. Use atomic writes for derived
+  `add_events.json`, `executed_tranches.json`, final `surface.json`, and README; it must be safe
+  to rerun after interruption. A persistent reconciliation manifest was intentionally not chosen;
+  idempotent atomic derived-file replacement is the desired minimum.
+- Design bar reuse from actual memory/data-size evidence. A naive cache of all canonical days may
+  be too large; a bounded cache that thrashes will not solve the repeated-load cost. The correct
+  small approach may batch event reconstruction by day/ticker before reading bars, but prove it
+  with a focused test and do not introduce a framework.
+- After repair, regenerate derived evidence for all 840 existing cells, require all 720 add cells
+  to have valid decision/event/tranche evidence, run the surface validator, write `README.md`, and
+  independently audit exact rows/days/month parts/no temporary files. Only then interpret F5 EV.
+
+The uncompleted planning subagent asked whether atomic derived-file replacement was acceptable;
+the intended answer was yes, but the plan call was interrupted when the user requested this
+handoff. No recovery code was written, no test was added, and no artifacts were deleted.
+
+### 18.6 F6, F7, and Integration 2 remain queued
+
+Do not begin these until F5 is repaired and independently accepted, and do not edit the shared
+simulator during F5 recovery.
+
+F6 requires a real shared batch checkpoint hook in `factory/scripts/basket_sim.py`:
+
+- `reserve_frac` currently only constrains initial entry; it does not deploy reserve.
+- At ET585/600, after all ticket decisions for the completed bar, an ordered batch callback must
+  choose currently eligible open survivors and schedule normal later-open ADDs.
+- Pending releases/reductions exclude recipients. Cash, cap, priority, carry/no-resumption,
+  forced-flat precedence, `cash>=0`, and `deployed<=C0` remain engine-owned.
+- Test p={0.67,0.50,0.33} against full-deployment p=1, ET585/600, and cash vs equal-survivor
+  policies. No golden gate exists yet.
+
+F7 may recycle only a demonstrated F3/F4 release path, with recycle fractions {0,50,100}% versus
+cash/equal survivors. Measure incremental recycled-tranche net EV. It is not permission to pour
+released cash into rank 1.
+
+`INTEGRATION_2` must synthesize, not concatenate. For each candidate module it must establish the
+economic question, causal implementation, actual capital/fill assumptions, failure-cost change,
+tail/multi-survivor effect, both-block/friction/nearby-variant stability, capital utilization, and
+independent contribution. The likely honest outcome remains no promotion unless the stable
+incremental net evidence says otherwise.
+
+### 18.7 Restart protocol and verification commands
+
+Before any edit, inspect the current state rather than trusting this prose blindly:
+
+```bash
+git status --short
+git diff -- HANDOFF.md factory/STATE.md uv.lock
+/home/hillel/projects/Alpacatrader/.venv/bin/python factory/scripts/basket_sim.py --self-test
+```
+
+Start with F4 final independent acceptance, read all F4 producer/test files, then run at least:
+
+```bash
+/home/hillel/projects/Alpacatrader/.venv/bin/python -m pytest -q tests/test_basket_f4_scaleout.py
+/home/hillel/projects/Alpacatrader/.venv/bin/python -m py_compile \
+  factory/scripts/basket_f4_scaleout.py factory/scripts/basket_f4_rules.py \
+  factory/scripts/basket_f4_paths.py factory/scripts/basket_f4_metrics.py \
+  factory/scripts/basket_f4_blocks.py
+```
+
+Then repair F5 test-first. Use only focused F5 tests while changing F5, and add a reconciliation
+canary that copies a minimal completed core-cell fixture rather than touching canonical F5 output.
+After its full derived-output refresh, run the F5 suite, simulator self-test, source compilation,
+and a direct 840-cell artifact audit. Update `factory/STATE.md`,
+`researches/HYPOTHESES.md`, experiment ledgers, and this handoff only after actual independent
+acceptance.
+
+**Current decision state:** F4 is a negative/no-promotion per-ticket scale-out result despite
+failure-loss improvement. F5 has no valid reconciled economics yet. No F6/F7 experiment or
+Integration 2 decision exists. Do not accidentally convert descriptive tail observations, a
+single F4 exception, or incomplete F5 output into a strategy claim.
