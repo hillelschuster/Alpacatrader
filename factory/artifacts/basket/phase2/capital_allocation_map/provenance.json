@@ -1,0 +1,23 @@
+{
+  "block_days": {
+    "block1": 734,
+    "block2": 332
+  },
+  "days": 1066,
+  "family_checkpoint_block_dimensions": 18,
+  "feature_table_count": 450,
+  "inputs": {
+    "factory/BASKET-SIM-CONTRACT.md": "15dc8a28b24c230a5d6720e9db1119efa38903cf845f266596ba62f17d11e382",
+    "factory/artifacts/basket/phase2/F2_F12/coverage.json": "54271040de0b1466b4fda94c2c5210465f2ccade30fed5f27fc228c1c7532fb0",
+    "factory/artifacts/basket/phase2/F2_F12/state_panel.parquet": "d4c60161240d6dc662047a21345112988b04c0c19c17ce75f75a77464cf8846b",
+    "factory/artifacts/basket/phase2/F8/joint_daily.parquet": "daf551471a3fc7fd89b8e1d01e4f4c51f7c15bc8df179c9e49844e255a971196",
+    "factory/artifacts/basket/phase2/F8/joint_surface.json": "7257fc13227b5cc660925c777dfa7efc2d016163c503bc5aae3c7f8f83bbf27b",
+    "factory/artifacts/basket/phase2/F8/provenance.json": "51cdf47c616cc56a5f893a554961c294f01bd596c114efbf23192319ea99c696",
+    "factory/scripts/basket_capital_map.py": "afd3feeb1cecd7582595bdadaf75654552d896557c469f85cd6dfbede7e0b42f",
+    "factory/scripts/basket_f2_f12.py": "054ac87c59ce4ab3a8353064bac56b5aa6e18284b3ae9c08d9f89e474b83397f",
+    "factory/scripts/basket_f8_joint.py": "d4e3dab3d113a4222a36675c372b5322d8583f93dfa5d5d78947ea5e5d34191b",
+    "researches/PRE-REG-BASKET-02.md": "cf9b2a8ddec5c5a4b2e9a7e54a8a4efdabf5dd8f3a7576ee270f3debc1c0a0b7"
+  },
+  "interaction_table_count": 54,
+  "panel_rows": 78088
+}
