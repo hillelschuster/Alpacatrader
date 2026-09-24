@@ -2327,3 +2327,14 @@ amended (single-strategy freeze moves to Phase 3). Sealed 2024/2025-01 outcomes 
 2026-06..08 remain untouched; no BASKET computation has touched them. Sim-core engine build
 + leaderboard-truth worker launched; family runs start only after the engine passes its
 canaries and this freeze commit exists.
+
+2026-09-23 — F1 closure [RUN]: validated the 120 frozen cells against PRE-REG-BASKET-02 §3.1 and
+the FROZEN-2026-09-22 simulator contract; all had the exact 1,066 permitted unique dev dates,
+required outputs, matching mapping/parameters/seed/contract hash/version, and consistent daily,
+metrics, and run-summary evidence. Existing canary recovery report: 7/7 PASS; c7 = 1,066 days,
+10,528 entries, cash/deployment invariants enforced. Atomically rebuilt only the shared F1
+`surface.json` (sorted grid, neutral `validated_frozen` statuses; no reruns). Full-surface mean
+basket-day ranges: 100bps -4.60%..-1.99%, 150bps -5.07%..-2.44%; dual-block per-cell means:
+2021-02..2023-12 -4.90%..-2.16% / -5.37%..-2.59%, 2025-02..2026-05 -5.29%..-0.94% /
+-5.73%..-1.42% (100/150bps respectively). Descriptive dev surface only: no OOS, selection,
+profitability, or live inference; see `factory/artifacts/basket/phase2/F1/README.md`.
