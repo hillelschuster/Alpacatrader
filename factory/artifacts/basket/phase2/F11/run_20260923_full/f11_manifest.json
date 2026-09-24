@@ -1,0 +1,16 @@
+{
+  "contract_sha256": "15dc8a28b24c230a5d6720e9db1119efa38903cf845f266596ba62f17d11e382",
+  "days_n": 1066,
+  "f1_cells_n": 120,
+  "family_id": "F11",
+  "first_day": "2021-02-01",
+  "friction_bps": [
+    0,
+    50,
+    100,
+    150,
+    200
+  ],
+  "last_day": "2026-05-29",
+  "pre_registration_sha256": "cf9b2a8ddec5c5a4b2e9a7e54a8a4efdabf5dd8f3a7576ee270f3debc1c0a0b7"
+}
