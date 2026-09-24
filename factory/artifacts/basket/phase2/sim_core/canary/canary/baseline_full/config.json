@@ -1,0 +1,24 @@
+{
+ "bps_total": 100.0,
+ "contract_version": "FROZEN-2026-09-22",
+ "days": [
+  "2021-02-01",
+  "2026-05-29"
+ ],
+ "entry_T": 570,
+ "entry_pop": "A_pm",
+ "family_id": "canary",
+ "git_head": "78442f25977b1598350167fda1c756fcbf5dbbea",
+ "n_days": 1066,
+ "n_slots": 10,
+ "release": [
+  "R0"
+ ],
+ "reserve_frac": 1.0,
+ "run_id": "baseline_full",
+ "scale_in": [],
+ "seed": 20260922,
+ "sim_contract_hash": "15dc8a28b24c230a",
+ "strategy": "baseline_allhold",
+ "top_n": 10
+}

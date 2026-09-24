@@ -1,0 +1,72 @@
+{
+ "avg_deployed_capital": 0.0,
+ "avg_failed_ticket_cost": null,
+ "avg_survivor_contribution": {
+  "mean_net_return": null,
+  "share_of_total_net": null
+ },
+ "bootstrap_ci95": [
+  NaN,
+  NaN
+ ],
+ "bootstrap_draws": 10000,
+ "bootstrap_method": "month-resample with replacement, day-clustered",
+ "bootstrap_seed": 20260922,
+ "compounded_growth": 1.0,
+ "compounded_max_dd": 0.0,
+ "daily_percentiles": {
+  "p1": NaN,
+  "p10": NaN,
+  "p25": NaN,
+  "p5": NaN,
+  "p50": NaN,
+  "p75": NaN,
+  "p90": NaN,
+  "p95": NaN,
+  "p99": NaN
+ },
+ "days_n": 0,
+ "dev_days_n": 1066,
+ "false_release_rate": {
+  "100": null,
+  "30": null,
+  "50": null
+ },
+ "filled_days": 0,
+ "half_release_rate": {
+  "100": null,
+  "30": null,
+  "50": null
+ },
+ "mean_basket_day": NaN,
+ "median_basket_day": NaN,
+ "n_adds": 0,
+ "n_blocked_slots": 0,
+ "n_carries": 0,
+ "n_entries": 0,
+ "n_exits": 0,
+ "n_pending": 0,
+ "n_reduces": 0,
+ "path_contrib": {
+  "100": null,
+  "200": null,
+  "50": null
+ },
+ "per_quarter": {},
+ "per_year": {},
+ "positive_day_share": null,
+ "std_basket_day": 0.0,
+ "tail_retained": {
+  "mean": null,
+  "median": null,
+  "n": 0
+ },
+ "top10_day_share": null,
+ "top1_day_share": null,
+ "top5_day_share": null,
+ "turnover_annualized": 0.0,
+ "turnover_per_day": 0.0,
+ "worst_day": null,
+ "worst_month": NaN,
+ "worst_week": NaN
+}

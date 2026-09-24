@@ -1,0 +1,107 @@
+{
+ "avg_deployed_capital": 1.0541367521367526,
+ "avg_failed_ticket_cost": -0.12209688445446013,
+ "avg_survivor_contribution": {
+  "mean_net_return": 0.16774584672442452,
+  "share_of_total_net": null
+ },
+ "bootstrap_ci95": [
+  -0.05984159009692506,
+  -0.029493835850816878
+ ],
+ "bootstrap_draws": 10000,
+ "bootstrap_method": "month-resample with replacement, day-clustered",
+ "bootstrap_seed": 20260922,
+ "compounded_growth": 0.05102476994985772,
+ "compounded_max_dd": -0.954540689019467,
+ "daily_percentiles": {
+  "p1": -0.19409580099747287,
+  "p10": -0.13840666764171425,
+  "p25": -0.09304524694951566,
+  "p5": -0.161119045740439,
+  "p50": -0.053096802199751575,
+  "p75": -0.01683573130579597,
+  "p90": 0.043855722071162874,
+  "p95": 0.09710218040390531,
+  "p99": 0.1616126879676803
+ },
+ "days_n": 60,
+ "dev_days_n": 60,
+ "false_release_rate": {
+  "100": 0.08333333333333333,
+  "30": 0.024096385542168676,
+  "50": 0.047619047619047616
+ },
+ "filled_days": 60,
+ "half_release_rate": {
+  "100": 0.0,
+  "30": 0.0,
+  "50": 0.0
+ },
+ "mean_basket_day": -0.04544072389962197,
+ "median_basket_day": -0.053096802199751575,
+ "n_adds": 0,
+ "n_blocked_slots": 2,
+ "n_carries": 48,
+ "n_entries": 596,
+ "n_exits": 591,
+ "n_pending": 48,
+ "n_reduces": 0,
+ "path_contrib": {
+  "100": null,
+  "200": null,
+  "50": null
+ },
+ "per_quarter": {
+  "2021-Q1": {
+   "compounded_growth": 0.09002681418739829,
+   "compounded_max_dd": -0.9098663222997919,
+   "days_n": 42,
+   "mean": -0.05227510449196701,
+   "median": -0.05559702078031692,
+   "positive_share": 0.21428571428571427,
+   "std": 0.08306796017043534,
+   "sum": -2.1955543886626145,
+   "worst_day": -0.20245286029072018
+  },
+  "2021-Q2": {
+   "compounded_growth": 0.5667730265745652,
+   "compounded_max_dd": -0.5449268448108349,
+   "days_n": 18,
+   "mean": -0.02949383585081687,
+   "median": -0.052974379592778065,
+   "positive_share": 0.2222222222222222,
+   "std": 0.057869375843532654,
+   "sum": -0.5308890453147037,
+   "worst_day": -0.09705513849385289
+  }
+ },
+ "per_year": {
+  "2021": {
+   "compounded_growth": 0.05102476994985772,
+   "compounded_max_dd": -0.954540689019467,
+   "days_n": 60,
+   "mean": -0.04544072389962197,
+   "median": -0.053096802199751575,
+   "positive_share": 0.21666666666666667,
+   "std": 0.07662163827249932,
+   "sum": -2.7264434339773183,
+   "worst_day": -0.20245286029072018
+  }
+ },
+ "positive_day_share": 0.21666666666666667,
+ "std_basket_day": 0.07662163827249932,
+ "tail_retained": {
+  "mean": 0.36320978907653795,
+  "median": 0.3635839499323804,
+  "n": 42
+ },
+ "top10_day_share": null,
+ "top1_day_share": null,
+ "top5_day_share": null,
+ "turnover_annualized": 487.1741710553851,
+ "turnover_per_day": 1.9332308375213694,
+ "worst_day": -0.20245286029072018,
+ "worst_month": -1.1369902118415762,
+ "worst_week": -0.4378701855302495
+}
