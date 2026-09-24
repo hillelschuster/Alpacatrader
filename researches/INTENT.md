@@ -85,6 +85,14 @@ return looks too high". When a learned prior conflicts with BASKET evidence, ret
 principles: what does this phenomenon actually do, causally, and how do we capture the most real
 EV from it? Be an investigator first and an exploiter second.
 
+**Briefs carry labelled priors, never conclusions.** When delegating analysis, a brief may state the
+frame (the window doctrine), the measurement design, and priors *labelled as priors with their cohort
+definition* — never a conclusion dressed as an instruction. A hindsight-cohorted statistic ("members
+whose eventual peak was ≥+100% still had a median +45% of move left at 10:00") is a prior; restating
+it as "the EV is before 11:00" converts a hypothesis into a finding that the analysis then confirms by
+construction. This is the drift mechanism to watch: an absorbed correction gets over-learned into a
+law. State priors with their definitions, and require the analysis to test them.
+
 **Interpretation hygiene.** Separate (a) verified evidence, (b) interpretations built on it, and
 (c) rulers/thresholds used to measure. Record which is which; re-test interpretations when new
 evidence arrives; never cite a ruler as a conclusion; preserve disagreement between
