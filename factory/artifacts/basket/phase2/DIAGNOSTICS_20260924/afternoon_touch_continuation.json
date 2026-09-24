@@ -1,0 +1,24 @@
+{
+ "by_family": {
+  "A_open": {
+   "mean": 0.03452805218408565,
+   "n": 160
+  },
+  "A_pm": {
+   "mean": 0.044005802401535725,
+   "n": 173
+  },
+  "B600": {
+   "mean": -0.0257536727213339,
+   "n": 229
+  }
+ },
+ "days": 364,
+ "mean": 0.012882386319811248,
+ "median": -0.03566738106156547,
+ "n": 562,
+ "note": "Descriptive, right-skewed, small n; the mean is not an executable result and the top-5 share must be read before believing it.",
+ "positive_share": 0.3879003558718861,
+ "question": "do +30% excursions that first occur after 11:00 ET carry positive forward drift, i.e. is there an afternoon continuation mechanism?",
+ "top5_share_of_sum": 2.024208721292741
+}

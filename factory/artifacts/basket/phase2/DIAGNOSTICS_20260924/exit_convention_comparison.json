@@ -1,4 +1,5 @@
 {
+ "correction_2026_09_24": "The 'question' field states the comparison with the sign inverted: the next-open exit is ABOVE a resting limit at the level (next_open/level ~ +51 bps; next_open/touch_close ~ +22 bps), i.e. the engine's next-bar-open convention is favourable, not conservative. Verified independently in SWARM-SYNTHESIS-20260924.md section 2.1. The measured numbers in this file are unaffected; only the framing was wrong.",
  "question": "how much does the conservative next-open execution cost versus a resting limit sell at the touch level?",
  "summary": {
   "30": {

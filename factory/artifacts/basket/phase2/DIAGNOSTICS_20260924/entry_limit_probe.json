@@ -1,0 +1,23 @@
+{
+ "baseline_entry_to_eod_mean": -0.025080798370233352,
+ "limits": {
+  "-10pct": {
+   "fill_rate": 0.4747411358644493,
+   "filled_entry_to_eod_mean": -0.026609846771514494,
+   "unfilled_entry_to_eod_mean": 0.06534372712047501
+  },
+  "-2pct": {
+   "fill_rate": 0.8471917163476623,
+   "filled_entry_to_eod_mean": -0.026408978438733906,
+   "unfilled_entry_to_eod_mean": 0.09651042149891503
+  },
+  "-5pct": {
+   "fill_rate": 0.7072481957954189,
+   "filled_entry_to_eod_mean": -0.02155460491172708,
+   "unfilled_entry_to_eod_mean": 0.08719192553005968
+  }
+ },
+ "n": 3187,
+ "note": "Descriptive only; no engine run. Fill assumes the limit fills at min(open of the touching bar, level).",
+ "question": "would a resting limit below the 09:30 open have filled, and would it have improved the economics on the filled subset versus the names it misses?"
+}

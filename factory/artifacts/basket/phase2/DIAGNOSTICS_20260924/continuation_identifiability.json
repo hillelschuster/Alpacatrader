@@ -1,0 +1,40 @@
+{
+ "continuers": 351,
+ "features": {
+  "drawdown_from_runhigh_at_touch": {
+   "cont_mean": -0.027209315611969542,
+   "fade_mean": -0.03089932454039364
+  },
+  "gap_pre": {
+   "cont_mean": 0.0,
+   "fade_mean": 0.0
+  },
+  "halts_so_far": {
+   "cont_mean": 2.8945868945868947,
+   "fade_mean": 5.0476190476190474
+  },
+  "minutes_since_fill": {
+   "cont_mean": 80.82621082621083,
+   "fade_mean": 99.16017316017316
+  },
+  "rank": {
+   "cont_mean": 2.0626780626780628,
+   "fade_mean": 1.922077922077922
+  },
+  "ret_entry_to_touch": {
+   "cont_mean": 0.310004449953529,
+   "fade_mean": 0.30176571341549674
+  },
+  "velocity_5": {
+   "cont_mean": 0.16280078273665416,
+   "fade_mean": 0.13499488412601768
+  },
+  "vol_ratio": {
+   "cont_mean": 3.0975877731572696,
+   "fade_mean": 3.6691359030292694
+  }
+ },
+ "n": 582,
+ "note": "AUC near 0.5 means no separation; the touch-moment coarse state looks similar for both outcomes, so continuation is not obviously identifiable from minute-level path state.",
+ "question": "at the first +30% touch, do coarse causal path features separate later continuers from faders?"
+}

@@ -1,0 +1,43 @@
+{
+ "continuers": 351,
+ "features": {
+  "drawdown_from_runhigh": {
+   "auc": 0.5509428842762176,
+   "cont_mean": -0.027209315611969542,
+   "fade_mean": -0.030899324540393642
+  },
+  "halts_so_far": {
+   "auc": 0.4595527928861262,
+   "cont_mean": 2.8945868945868947,
+   "fade_mean": 5.0476190476190474
+  },
+  "minutes_since_fill": {
+   "auc": 0.4344421011087678,
+   "cont_mean": 80.82621082621083,
+   "fade_mean": 99.16017316017316
+  },
+  "rank": {
+   "auc": 0.5738335738335738,
+   "cont_mean": 2.0626780626780628,
+   "fade_mean": 1.922077922077922
+  },
+  "ret_to_touch_close": {
+   "auc": 0.5376475376475377,
+   "cont_mean": 0.310004449953529,
+   "fade_mean": 0.30176571341549674
+  },
+  "velocity_5": {
+   "auc": 0.57332790666124,
+   "cont_mean": 0.16280078273665416,
+   "fade_mean": 0.13499488412601762
+  },
+  "vol_ratio": {
+   "auc": 0.44878578211911546,
+   "cont_mean": 3.0975877731572696,
+   "fade_mean": 3.6691359030292685
+  }
+ },
+ "n": 582,
+ "producer": "factory/scripts/basket_diag_touch_scan.py",
+ "scope": "entry families: A_pm"
+}

@@ -1,0 +1,15 @@
+{
+ "days": 470,
+ "levels": {
+  "30": {
+   "entry_to_eod_mean": 0.2759511041318427,
+   "n": 582,
+   "positive_share": 0.30584192439862545,
+   "touch_to_eod_mean": -0.022346780768791222,
+   "touch_to_eod_median": -0.10758450539146747
+  }
+ },
+ "n": 582,
+ "producer": "factory/scripts/basket_diag_touch_scan.py",
+ "scope": "entry families: A_pm"
+}

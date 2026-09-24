@@ -1,0 +1,14 @@
+{
+ "continued": {
+  "n": 948,
+  "touch_to_eod_mean": 0.08097126540722803
+ },
+ "continued_share": 0.5996204933586338,
+ "faded": {
+  "n": 633,
+  "touch_to_eod_mean": -0.19375448076451596
+ },
+ "n": 1581,
+ "producer": "factory/scripts/basket_diag_touch_scan.py",
+ "unconditional_touch_to_eod_mean": -0.029023293306696035
+}
