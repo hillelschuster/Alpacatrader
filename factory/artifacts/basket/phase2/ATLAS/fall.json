@@ -1,8 +1,8 @@
 {
  "producer": "factory/scripts/basket_atlas_fall.py",
  "reproduce": "python factory/scripts/basket_atlas_fall.py",
- "generated": "2026-09-27T16:06:52Z",
- "runtime_s": 236.0,
+ "generated": "2026-09-27T18:02:42Z",
+ "runtime_s": 646.5,
  "panel": {
   "path": "factory/artifacts/basket/phase2/ATLAS/panel.parquet",
   "rows": 1900432,
@@ -45,7 +45,8 @@
    "tail_class_",
    "peak_",
    "session_"
-  ]
+  ],
+  "volatility_control": "volatility_control is an ADDITIVE section: it asks whether the hazard finding is a life/decay signal or a volatility restatement, using label-side forward dispersion (realized range and mean absolute 1-minute return over the next 30/60 bars). No existing section is changed by it, and its labels are future quantities that no feature set sees."
  },
  "descriptive": {
   "uses_outcome_labels": 1,
@@ -67506,12 +67507,16 @@
          "n_eval": 5931,
          "train_base_rate": 0.150014,
          "eval_base_rate": 0.15478,
-         "seconds": 1.3,
+         "seconds": 4.5,
          "results": {
           "clock_only": {
            "auc_pooled": 0.5369160009682885,
            "auc_within_clock": 0.5,
+           "auc_within_clock_groups": 230,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.5040918312073159,
+           "auc_within_tenure_groups": 217,
+           "auc_within_tenure_thin": 0,
            "brier": 0.13360080384865497,
            "mean_pred": 0.18843089065633967,
            "top_decile_within_minute": {
@@ -67600,7 +67605,11 @@
           "tenure_only": {
            "auc_pooled": 0.5294331687503558,
            "auc_within_clock": 0.4994455396747166,
+           "auc_within_clock_groups": 230,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.5,
+           "auc_within_tenure_groups": 217,
+           "auc_within_tenure_thin": 0,
            "brier": 0.1332608795818532,
            "mean_pred": 0.18510486954016958,
            "top_decile_within_minute": {
@@ -67682,7 +67691,11 @@
           "state_only": {
            "auc_pooled": 0.690314876310699,
            "auc_within_clock": 0.67674683005511,
+           "auc_within_clock_groups": 230,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.6787713354080148,
+           "auc_within_tenure_groups": 217,
+           "auc_within_tenure_thin": 0,
            "brier": 0.12303515288786912,
            "mean_pred": 0.16013798058961226,
            "top_decile_within_minute": {
@@ -67783,7 +67796,11 @@
           "clock_plus_state": {
            "auc_pooled": 0.6573895888120082,
            "auc_within_clock": 0.673408866884717,
+           "auc_within_clock_groups": 230,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.6739838132361844,
+           "auc_within_tenure_groups": 217,
+           "auc_within_tenure_thin": 0,
            "brier": 0.12982034731156636,
            "mean_pred": 0.19102495077754178,
            "top_decile_within_minute": {
@@ -67892,7 +67909,11 @@
           "tenure_plus_state": {
            "auc_pooled": 0.654784705734589,
            "auc_within_clock": 0.6719583090640261,
+           "auc_within_clock_groups": 230,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.6722605176790475,
+           "auc_within_tenure_groups": 217,
+           "auc_within_tenure_thin": 0,
            "brier": 0.12897387718294268,
            "mean_pred": 0.18723673108639374,
            "top_decile_within_minute": {
@@ -67994,7 +68015,11 @@
           "clock_plus_tenure_plus_state": {
            "auc_pooled": 0.6595473772548672,
            "auc_within_clock": 0.6734480711501412,
+           "auc_within_clock_groups": 230,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.6752530509500696,
+           "auc_within_tenure_groups": 217,
+           "auc_within_tenure_thin": 0,
            "brier": 0.1285676388939776,
            "mean_pred": 0.18067768539111925,
            "top_decile_within_minute": {
@@ -68136,12 +68161,16 @@
          "n_eval": 13872,
          "train_base_rate": 0.15478,
          "eval_base_rate": 0.150014,
-         "seconds": 1.7,
+         "seconds": 5.4,
          "results": {
           "clock_only": {
            "auc_pooled": 0.5044433787553535,
            "auc_within_clock": 0.5,
+           "auc_within_clock_groups": 319,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.5056619729389553,
+           "auc_within_tenure_groups": 323,
+           "auc_within_tenure_thin": 0,
            "brier": 0.13989121855723108,
            "mean_pred": 0.2245687984100648,
            "top_decile_within_minute": {
@@ -68224,7 +68253,11 @@
           "tenure_only": {
            "auc_pooled": 0.4949179957135063,
            "auc_within_clock": 0.49814792491996135,
+           "auc_within_clock_groups": 319,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.5,
+           "auc_within_tenure_groups": 323,
+           "auc_within_tenure_thin": 0,
            "brier": 0.14105278123777004,
            "mean_pred": 0.22361516367181888,
            "top_decile_within_minute": {
@@ -68300,7 +68333,11 @@
           "state_only": {
            "auc_pooled": 0.6886977259836758,
            "auc_within_clock": 0.6645879771417363,
+           "auc_within_clock_groups": 319,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.6675503461296413,
+           "auc_within_tenure_groups": 323,
+           "auc_within_tenure_thin": 0,
            "brier": 0.11857071762271151,
            "mean_pred": 0.14796381670840097,
            "top_decile_within_minute": {
@@ -68401,7 +68438,11 @@
           "clock_plus_state": {
            "auc_pooled": 0.6449421571140256,
            "auc_within_clock": 0.6525142455526702,
+           "auc_within_clock_groups": 319,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.6552612688797986,
+           "auc_within_tenure_groups": 323,
+           "auc_within_tenure_thin": 0,
            "brier": 0.12546698443136378,
            "mean_pred": 0.16563241552864943,
            "top_decile_within_minute": {
@@ -68510,7 +68551,11 @@
           "tenure_plus_state": {
            "auc_pooled": 0.6440406028902146,
            "auc_within_clock": 0.6522312754494322,
+           "auc_within_clock_groups": 319,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.655239144115796,
+           "auc_within_tenure_groups": 323,
+           "auc_within_tenure_thin": 0,
            "brier": 0.12515507804491088,
            "mean_pred": 0.16551939248920583,
            "top_decile_within_minute": {
@@ -68612,7 +68657,11 @@
           "clock_plus_tenure_plus_state": {
            "auc_pooled": 0.6472494822222261,
            "auc_within_clock": 0.6536696216781659,
+           "auc_within_clock_groups": 319,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.6562642581812461,
+           "auc_within_tenure_groups": 323,
+           "auc_within_tenure_thin": 0,
            "brier": 0.12520955157828506,
            "mean_pred": 0.1623660545954475,
            "top_decile_within_minute": {
@@ -68774,12 +68823,16 @@
          "n_eval": 291992,
          "train_base_rate": 0.79604,
          "eval_base_rate": 0.796138,
-         "seconds": 4.8,
+         "seconds": 16.2,
          "results": {
           "clock_only": {
            "auc_pooled": 0.722683415751621,
            "auc_within_clock": 0.5,
+           "auc_within_clock_groups": 389,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.5382152971211845,
+           "auc_within_tenure_groups": 389,
+           "auc_within_tenure_thin": 0,
            "brier": 0.14342988411613608,
            "mean_pred": 0.7934177211961336,
            "top_decile_within_minute": {
@@ -68868,7 +68921,11 @@
           "clock_plus_state": {
            "auc_pooled": 0.8659213812002756,
            "auc_within_clock": 0.808980076344302,
+           "auc_within_clock_groups": 389,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.8054107875982379,
+           "auc_within_tenure_groups": 389,
+           "auc_within_tenure_thin": 0,
            "brier": 0.11272117433682005,
            "mean_pred": 0.8210796072820821,
            "top_decile_within_minute": {
@@ -69016,12 +69073,16 @@
          "n_eval": 721259,
          "train_base_rate": 0.796138,
          "eval_base_rate": 0.79604,
-         "seconds": 8.9,
+         "seconds": 29.2,
          "results": {
           "clock_only": {
            "auc_pooled": 0.7024303485464469,
            "auc_within_clock": 0.5,
+           "auc_within_clock_groups": 389,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.5286109932112074,
+           "auc_within_tenure_groups": 389,
+           "auc_within_tenure_thin": 0,
            "brier": 0.1467427222985178,
            "mean_pred": 0.7960024120254773,
            "top_decile_within_minute": {
@@ -69110,7 +69171,11 @@
           "clock_plus_state": {
            "auc_pooled": 0.8556344571156363,
            "auc_within_clock": 0.8058729926371034,
+           "auc_within_clock_groups": 389,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.804342501948211,
+           "auc_within_tenure_groups": 389,
+           "auc_within_tenure_thin": 0,
            "brier": 0.11517511369946637,
            "mean_pred": 0.7660395084952782,
            "top_decile_within_minute": {
@@ -69274,12 +69339,16 @@
          "n_eval": 303548,
          "train_base_rate": 0.019595,
          "eval_base_rate": 0.020811,
-         "seconds": 4.6,
+         "seconds": 19.4,
          "results": {
           "clock_only": {
            "auc_pooled": 0.7861779224085175,
            "auc_within_clock": 0.5,
+           "auc_within_clock_groups": 389,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.46824210615378686,
+           "auc_within_tenure_groups": 378,
+           "auc_within_tenure_thin": 0,
            "brier": 0.016293316785380107,
            "mean_pred": 0.022486344086526465,
            "top_decile_within_minute": {
@@ -69368,7 +69437,11 @@
           "clock_plus_state": {
            "auc_pooled": 0.9935976255178605,
            "auc_within_clock": 0.9811591359805459,
+           "auc_within_clock_groups": 389,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.9795326352216664,
+           "auc_within_tenure_groups": 378,
+           "auc_within_tenure_thin": 0,
            "brier": 0.007477124368688586,
            "mean_pred": 0.024993701454615463,
            "top_decile_within_minute": {
@@ -69516,12 +69589,16 @@
          "n_eval": 733966,
          "train_base_rate": 0.020811,
          "eval_base_rate": 0.019595,
-         "seconds": 11.9,
+         "seconds": 29.2,
          "results": {
           "clock_only": {
            "auc_pooled": 0.7830656176780383,
            "auc_within_clock": 0.5,
+           "auc_within_clock_groups": 389,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.482079091750482,
+           "auc_within_tenure_groups": 389,
+           "auc_within_tenure_thin": 0,
            "brier": 0.015482165677980992,
            "mean_pred": 0.025370330969417924,
            "top_decile_within_minute": {
@@ -69610,7 +69687,11 @@
           "clock_plus_state": {
            "auc_pooled": 0.9927625515674419,
            "auc_within_clock": 0.9800100349923152,
+           "auc_within_clock_groups": 389,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.9776849548887995,
+           "auc_within_tenure_groups": 389,
+           "auc_within_tenure_thin": 0,
            "brier": 0.00801502177987281,
            "mean_pred": 0.02335991017339205,
            "top_decile_within_minute": {
@@ -71369,12 +71450,16 @@
          "n_eval": 4618,
          "train_base_rate": 0.154002,
          "eval_base_rate": 0.157644,
-         "seconds": 0.1,
+         "seconds": 0.5,
          "results": {
           "clock_only": {
            "auc_pooled": 0.5477734187406423,
            "auc_within_clock": 0.5,
+           "auc_within_clock_groups": 113,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.5040614104511133,
+           "auc_within_tenure_groups": 108,
+           "auc_within_tenure_thin": 0,
            "brier": 0.1332364485797611,
            "mean_pred": 0.17617837145180293,
            "top_decile_within_minute": {
@@ -71457,7 +71542,11 @@
           "tenure_only": {
            "auc_pooled": 0.5366083787677618,
            "auc_within_clock": 0.4994203453166153,
+           "auc_within_clock_groups": 113,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.5,
+           "auc_within_tenure_groups": 108,
+           "auc_within_tenure_thin": 0,
            "brier": 0.13351701882133127,
            "mean_pred": 0.17592630551304952,
            "top_decile_within_minute": {
@@ -71533,7 +71622,11 @@
           "state_only": {
            "auc_pooled": 0.689453445012571,
            "auc_within_clock": 0.6719210769196137,
+           "auc_within_clock_groups": 113,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.6741165964364398,
+           "auc_within_tenure_groups": 108,
+           "auc_within_tenure_thin": 0,
            "brier": 0.12482653313212996,
            "mean_pred": 0.1645373814761669,
            "top_decile_within_minute": {
@@ -71634,7 +71727,11 @@
           "clock_plus_state": {
            "auc_pooled": 0.659173634848442,
            "auc_within_clock": 0.6664227990005177,
+           "auc_within_clock_groups": 113,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.6673279715941905,
+           "auc_within_tenure_groups": 108,
+           "auc_within_tenure_thin": 0,
            "brier": 0.12882454582053016,
            "mean_pred": 0.18075181568507337,
            "top_decile_within_minute": {
@@ -71743,7 +71840,11 @@
           "tenure_plus_state": {
            "auc_pooled": 0.6581578928783299,
            "auc_within_clock": 0.6659894649168223,
+           "auc_within_clock_groups": 113,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.6674910697097388,
+           "auc_within_tenure_groups": 108,
+           "auc_within_tenure_thin": 0,
            "brier": 0.1290498818893021,
            "mean_pred": 0.17950109243505996,
            "top_decile_within_minute": {
@@ -71845,7 +71946,11 @@
           "clock_plus_tenure_plus_state": {
            "auc_pooled": 0.660817042854318,
            "auc_within_clock": 0.6671375188528464,
+           "auc_within_clock_groups": 113,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.6684295523090416,
+           "auc_within_tenure_groups": 108,
+           "auc_within_tenure_thin": 0,
            "brier": 0.12868248634820434,
            "mean_pred": 0.17591302721132218,
            "top_decile_within_minute": {
@@ -71959,12 +72064,16 @@
          "n_eval": 10844,
          "train_base_rate": 0.157644,
          "eval_base_rate": 0.154002,
-         "seconds": 0.2,
+         "seconds": 0.5,
          "results": {
           "clock_only": {
            "auc_pooled": 0.51029301762727,
            "auc_within_clock": 0.5,
+           "auc_within_clock_groups": 136,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.505391563138042,
+           "auc_within_tenure_groups": 135,
+           "auc_within_tenure_thin": 0,
            "brier": 0.1353899557125919,
            "mean_pred": 0.19886103685904338,
            "top_decile_within_minute": {
@@ -72047,7 +72156,11 @@
           "tenure_only": {
            "auc_pooled": 0.49672496080435596,
            "auc_within_clock": 0.4983128130763144,
+           "auc_within_clock_groups": 136,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.5,
+           "auc_within_tenure_groups": 135,
+           "auc_within_tenure_thin": 0,
            "brier": 0.13613789699196768,
            "mean_pred": 0.1994050717295387,
            "top_decile_within_minute": {
@@ -72123,7 +72236,11 @@
           "state_only": {
            "auc_pooled": 0.6941781903818263,
            "auc_within_clock": 0.6617185086663321,
+           "auc_within_clock_groups": 136,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.6646616801546379,
+           "auc_within_tenure_groups": 135,
+           "auc_within_tenure_thin": 0,
            "brier": 0.12054822505100599,
            "mean_pred": 0.15196003202030747,
            "top_decile_within_minute": {
@@ -72225,7 +72342,11 @@
           "clock_plus_state": {
            "auc_pooled": 0.6630540423404336,
            "auc_within_clock": 0.6533184934775447,
+           "auc_within_clock_groups": 136,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.6559420404490827,
+           "auc_within_tenure_groups": 135,
+           "auc_within_tenure_thin": 0,
            "brier": 0.12455954318111807,
            "mean_pred": 0.15851048792836261,
            "top_decile_within_minute": {
@@ -72335,7 +72456,11 @@
           "tenure_plus_state": {
            "auc_pooled": 0.6628739577744446,
            "auc_within_clock": 0.6535360625942244,
+           "auc_within_clock_groups": 136,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.6570286584371091,
+           "auc_within_tenure_groups": 135,
+           "auc_within_tenure_thin": 0,
            "brier": 0.1238798255434518,
            "mean_pred": 0.15890847322565746,
            "top_decile_within_minute": {
@@ -72438,7 +72563,11 @@
           "clock_plus_tenure_plus_state": {
            "auc_pooled": 0.6630918999150163,
            "auc_within_clock": 0.6545561743960148,
+           "auc_within_clock_groups": 136,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.6573925123220898,
+           "auc_within_tenure_groups": 135,
+           "auc_within_tenure_thin": 0,
            "brier": 0.12444521911813157,
            "mean_pred": 0.15676660125914013,
            "top_decile_within_minute": {
@@ -72573,12 +72702,16 @@
          "n_eval": 117828,
          "train_base_rate": 0.678851,
          "eval_base_rate": 0.668712,
-         "seconds": 0.2,
+         "seconds": 0.6,
          "results": {
           "clock_only": {
            "auc_pooled": 0.6478182013813051,
            "auc_within_clock": 0.5,
+           "auc_within_clock_groups": 151,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.5208348278457521,
+           "auc_within_tenure_groups": 151,
+           "auc_within_tenure_thin": 0,
            "brier": 0.20551468610663495,
            "mean_pred": 0.6770883315089501,
            "top_decile_within_minute": {
@@ -72667,7 +72800,11 @@
           "clock_plus_state": {
            "auc_pooled": 0.80385653714371,
            "auc_within_clock": 0.7713373639944923,
+           "auc_within_clock_groups": 151,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.7680846650801443,
+           "auc_within_tenure_groups": 151,
+           "auc_within_tenure_thin": 0,
            "brier": 0.16849276103785332,
            "mean_pred": 0.7141108589745166,
            "top_decile_within_minute": {
@@ -72787,12 +72924,16 @@
          "n_eval": 286615,
          "train_base_rate": 0.668712,
          "eval_base_rate": 0.678851,
-         "seconds": 0.6,
+         "seconds": 1.2,
          "results": {
           "clock_only": {
            "auc_pooled": 0.6336335032365741,
            "auc_within_clock": 0.5,
+           "auc_within_clock_groups": 151,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.5104532043710034,
+           "auc_within_tenure_groups": 151,
+           "auc_within_tenure_thin": 0,
            "brier": 0.204894248823164,
            "mean_pred": 0.6692387640294056,
            "top_decile_within_minute": {
@@ -72881,7 +73022,11 @@
           "clock_plus_state": {
            "auc_pooled": 0.7999230657345355,
            "auc_within_clock": 0.7708394392905489,
+           "auc_within_clock_groups": 151,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.7683078338125152,
+           "auc_within_tenure_groups": 151,
+           "auc_within_tenure_thin": 0,
            "brier": 0.16746600353661756,
            "mean_pred": 0.6262207784033147,
            "top_decile_within_minute": {
@@ -73017,12 +73162,16 @@
          "n_eval": 123095,
          "train_base_rate": 0.038317,
          "eval_base_rate": 0.040018,
-         "seconds": 0.3,
+         "seconds": 0.7,
          "results": {
           "clock_only": {
            "auc_pooled": 0.8096792673397044,
            "auc_within_clock": 0.5,
+           "auc_within_clock_groups": 150,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.47278184412054813,
+           "auc_within_tenure_groups": 150,
+           "auc_within_tenure_thin": 0,
            "brier": 0.028955130522225897,
            "mean_pred": 0.04113924259253743,
            "top_decile_within_minute": {
@@ -73111,7 +73260,11 @@
           "clock_plus_state": {
            "auc_pooled": 0.991927636123944,
            "auc_within_clock": 0.9787343611512412,
+           "auc_within_clock_groups": 150,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.9768065256082833,
+           "auc_within_tenure_groups": 150,
+           "auc_within_tenure_thin": 0,
            "brier": 0.012066936553736767,
            "mean_pred": 0.04473786224607377,
            "top_decile_within_minute": {
@@ -73231,12 +73384,16 @@
          "n_eval": 291799,
          "train_base_rate": 0.040018,
          "eval_base_rate": 0.038317,
-         "seconds": 0.6,
+         "seconds": 1.8,
          "results": {
           "clock_only": {
            "auc_pooled": 0.8097974917026265,
            "auc_within_clock": 0.5,
+           "auc_within_clock_groups": 150,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.48210598590939596,
+           "auc_within_tenure_groups": 150,
+           "auc_within_tenure_thin": 0,
            "brier": 0.027980936026364853,
            "mean_pred": 0.04347456952191207,
            "top_decile_within_minute": {
@@ -73325,7 +73482,11 @@
           "clock_plus_state": {
            "auc_pooled": 0.9915813607911018,
            "auc_within_clock": 0.9791279564086226,
+           "auc_within_clock_groups": 150,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.9766768592731222,
+           "auc_within_tenure_groups": 150,
+           "auc_within_tenure_thin": 0,
            "brier": 0.012578024640853147,
            "mean_pred": 0.041591855335243906,
            "top_decile_within_minute": {
@@ -73477,12 +73638,16 @@
          "n_eval": 7432,
          "train_base_rate": 0.127853,
          "eval_base_rate": 0.120425,
-         "seconds": 1.2,
+         "seconds": 5.1,
          "results": {
           "clock_only": {
            "auc_pooled": 0.5265238782589523,
            "auc_within_clock": 0.5,
+           "auc_within_clock_groups": 259,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.4784786953058401,
+           "auc_within_tenure_groups": 259,
+           "auc_within_tenure_thin": 0,
            "brier": 0.1092018378232327,
            "mean_pred": 0.16436845913768033,
            "top_decile_within_minute": {
@@ -73571,7 +73736,11 @@
           "tenure_only": {
            "auc_pooled": 0.5337972161900928,
            "auc_within_clock": 0.5159944248975915,
+           "auc_within_clock_groups": 259,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.5,
+           "auc_within_tenure_groups": 259,
+           "auc_within_tenure_thin": 0,
            "brier": 0.10876852565609224,
            "mean_pred": 0.16307759372212616,
            "top_decile_within_minute": {
@@ -73653,7 +73822,11 @@
           "state_only": {
            "auc_pooled": 0.6941374539257839,
            "auc_within_clock": 0.6980096204511074,
+           "auc_within_clock_groups": 259,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.7069608843299747,
+           "auc_within_tenure_groups": 259,
+           "auc_within_tenure_thin": 0,
            "brier": 0.09973359222317141,
            "mean_pred": 0.1359062214690387,
            "top_decile_within_minute": {
@@ -73753,7 +73926,11 @@
           "clock_plus_state": {
            "auc_pooled": 0.668013704542172,
            "auc_within_clock": 0.6935223429027927,
+           "auc_within_clock_groups": 259,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.6948237069748592,
+           "auc_within_tenure_groups": 259,
+           "auc_within_tenure_thin": 0,
            "brier": 0.10574988945690307,
            "mean_pred": 0.16390466767404477,
            "top_decile_within_minute": {
@@ -73861,7 +74038,11 @@
           "tenure_plus_state": {
            "auc_pooled": 0.6756999050527167,
            "auc_within_clock": 0.6960039433651182,
+           "auc_within_clock_groups": 259,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.7021814777030898,
+           "auc_within_tenure_groups": 259,
+           "auc_within_tenure_thin": 0,
            "brier": 0.10441040303850078,
            "mean_pred": 0.16284873268109273,
            "top_decile_within_minute": {
@@ -73962,7 +74143,11 @@
           "clock_plus_tenure_plus_state": {
            "auc_pooled": 0.6749842537921227,
            "auc_within_clock": 0.6964543708462938,
+           "auc_within_clock_groups": 259,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.6974439956957391,
+           "auc_within_tenure_groups": 259,
+           "auc_within_tenure_thin": 0,
            "brier": 0.10389045208056544,
            "mean_pred": 0.1554399739714696,
            "top_decile_within_minute": {
@@ -74103,12 +74288,16 @@
          "n_eval": 14986,
          "train_base_rate": 0.120425,
          "eval_base_rate": 0.127853,
-         "seconds": 1.5,
+         "seconds": 6.0,
          "results": {
           "clock_only": {
            "auc_pooled": 0.5064094413731745,
            "auc_within_clock": 0.5,
+           "auc_within_clock_groups": 323,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.48924018968833893,
+           "auc_within_tenure_groups": 325,
+           "auc_within_tenure_thin": 0,
            "brier": 0.11934900629521049,
            "mean_pred": 0.18034723830206445,
            "top_decile_within_minute": {
@@ -74191,7 +74380,11 @@
           "tenure_only": {
            "auc_pooled": 0.5127939447618652,
            "auc_within_clock": 0.5057179722544554,
+           "auc_within_clock_groups": 323,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.5,
+           "auc_within_tenure_groups": 325,
+           "auc_within_tenure_thin": 0,
            "brier": 0.11867283221591036,
            "mean_pred": 0.17859644220329562,
            "top_decile_within_minute": {
@@ -74273,7 +74466,11 @@
           "state_only": {
            "auc_pooled": 0.6910175336592909,
            "auc_within_clock": 0.6997029737265973,
+           "auc_within_clock_groups": 323,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.7017721626020843,
+           "auc_within_tenure_groups": 325,
+           "auc_within_tenure_thin": 0,
            "brier": 0.10414559973223426,
            "mean_pred": 0.11503242054128035,
            "top_decile_within_minute": {
@@ -74373,7 +74570,11 @@
           "clock_plus_state": {
            "auc_pooled": 0.627080035556095,
            "auc_within_clock": 0.6732390585219695,
+           "auc_within_clock_groups": 323,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.6727108098395541,
+           "auc_within_tenure_groups": 325,
+           "auc_within_tenure_thin": 0,
            "brier": 0.11175041912736877,
            "mean_pred": 0.14370787455444486,
            "top_decile_within_minute": {
@@ -74481,7 +74682,11 @@
           "tenure_plus_state": {
            "auc_pooled": 0.6343330357014502,
            "auc_within_clock": 0.678592459169712,
+           "auc_within_clock_groups": 323,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.681432104680905,
+           "auc_within_tenure_groups": 325,
+           "auc_within_tenure_thin": 0,
            "brier": 0.1107979033865631,
            "mean_pred": 0.1414226438123389,
            "top_decile_within_minute": {
@@ -74582,7 +74787,11 @@
           "clock_plus_tenure_plus_state": {
            "auc_pooled": 0.6383338351545317,
            "auc_within_clock": 0.6826434472367031,
+           "auc_within_clock_groups": 323,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.6805449664240366,
+           "auc_within_tenure_groups": 325,
+           "auc_within_tenure_thin": 0,
            "brier": 0.1102373217188055,
            "mean_pred": 0.13520743782199884,
            "top_decile_within_minute": {
@@ -74743,12 +74952,16 @@
          "n_eval": 270803,
          "train_base_rate": 0.738377,
          "eval_base_rate": 0.721573,
-         "seconds": 4.2,
+         "seconds": 14.7,
          "results": {
           "clock_only": {
            "auc_pooled": 0.7207724110342274,
            "auc_within_clock": 0.5,
+           "auc_within_clock_groups": 359,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.5644156661228599,
+           "auc_within_tenure_groups": 359,
+           "auc_within_tenure_thin": 0,
            "brier": 0.17422867319234503,
            "mean_pred": 0.7370848974728924,
            "top_decile_within_minute": {
@@ -74837,7 +75050,11 @@
           "clock_plus_state": {
            "auc_pooled": 0.8742132119011637,
            "auc_within_clock": 0.8289083887718979,
+           "auc_within_clock_groups": 359,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.8295757443185651,
+           "auc_within_tenure_groups": 359,
+           "auc_within_tenure_thin": 0,
            "brier": 0.1290097455131527,
            "mean_pred": 0.7639162318836952,
            "top_decile_within_minute": {
@@ -74984,12 +75201,16 @@
          "n_eval": 576646,
          "train_base_rate": 0.721573,
          "eval_base_rate": 0.738377,
-         "seconds": 7.4,
+         "seconds": 24.9,
          "results": {
           "clock_only": {
            "auc_pooled": 0.7264241601626701,
            "auc_within_clock": 0.5,
+           "auc_within_clock_groups": 359,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.5508532967102902,
+           "auc_within_tenure_groups": 359,
+           "auc_within_tenure_thin": 0,
            "brier": 0.16772909746752604,
            "mean_pred": 0.7205947511769774,
            "top_decile_within_minute": {
@@ -75078,7 +75299,11 @@
           "clock_plus_state": {
            "auc_pooled": 0.8633053524346767,
            "auc_within_clock": 0.808786632448271,
+           "auc_within_clock_groups": 359,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.8099005410422819,
+           "auc_within_tenure_groups": 359,
+           "auc_within_tenure_thin": 0,
            "brier": 0.13047753449169233,
            "mean_pred": 0.6895376507555357,
            "top_decile_within_minute": {
@@ -75241,12 +75466,16 @@
          "n_eval": 277642,
          "train_base_rate": 0.026287,
          "eval_base_rate": 0.028421,
-         "seconds": 4.4,
+         "seconds": 13.5,
          "results": {
           "clock_only": {
            "auc_pooled": 0.7709436817995545,
            "auc_within_clock": 0.5,
+           "auc_within_clock_groups": 359,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.4947799717814049,
+           "auc_within_tenure_groups": 359,
+           "auc_within_tenure_thin": 0,
            "brier": 0.023376882373106124,
            "mean_pred": 0.02864601356524046,
            "top_decile_within_minute": {
@@ -75335,7 +75564,11 @@
           "clock_plus_state": {
            "auc_pooled": 0.9914592962077226,
            "auc_within_clock": 0.9755235329804249,
+           "auc_within_clock_groups": 359,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.9792280482592056,
+           "auc_within_tenure_groups": 359,
+           "auc_within_tenure_thin": 0,
            "brier": 0.010393769141296244,
            "mean_pred": 0.030500134315460507,
            "top_decile_within_minute": {
@@ -75482,12 +75715,16 @@
          "n_eval": 585276,
          "train_base_rate": 0.028421,
          "eval_base_rate": 0.026287,
-         "seconds": 11.8,
+         "seconds": 24.6,
          "results": {
           "clock_only": {
            "auc_pooled": 0.7752375868269724,
            "auc_within_clock": 0.5,
+           "auc_within_clock_groups": 359,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.5045464416135491,
+           "auc_within_tenure_groups": 359,
+           "auc_within_tenure_thin": 0,
            "brier": 0.02147719491985894,
            "mean_pred": 0.03334072866786531,
            "top_decile_within_minute": {
@@ -75576,7 +75813,11 @@
           "clock_plus_state": {
            "auc_pooled": 0.9889724516574464,
            "auc_within_clock": 0.9700821316067246,
+           "auc_within_clock_groups": 359,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.9764213909914833,
+           "auc_within_tenure_groups": 359,
+           "auc_within_tenure_thin": 0,
            "brier": 0.010755898699450329,
            "mean_pred": 0.03271055691858432,
            "top_decile_within_minute": {
@@ -77334,12 +77575,16 @@
          "n_eval": 5549,
          "train_base_rate": 0.123229,
          "eval_base_rate": 0.114615,
-         "seconds": 0.1,
+         "seconds": 0.4,
          "results": {
           "clock_only": {
            "auc_pooled": 0.4942437084515859,
            "auc_within_clock": 0.5,
+           "auc_within_clock_groups": 111,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.4773945516893739,
+           "auc_within_tenure_groups": 111,
+           "auc_within_tenure_thin": 0,
            "brier": 0.10369143173541723,
            "mean_pred": 0.14304194968046482,
            "top_decile_within_minute": {
@@ -77422,7 +77667,11 @@
           "tenure_only": {
            "auc_pooled": 0.5119571103234007,
            "auc_within_clock": 0.5155606308713264,
+           "auc_within_clock_groups": 111,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.5,
+           "auc_within_tenure_groups": 111,
+           "auc_within_tenure_thin": 0,
            "brier": 0.10299931998558504,
            "mean_pred": 0.14289497793969297,
            "top_decile_within_minute": {
@@ -77504,7 +77753,11 @@
           "state_only": {
            "auc_pooled": 0.6948935054860228,
            "auc_within_clock": 0.6948203050935103,
+           "auc_within_clock_groups": 111,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.7037046240353281,
+           "auc_within_tenure_groups": 111,
+           "auc_within_tenure_thin": 0,
            "brier": 0.09621327073847175,
            "mean_pred": 0.13426042900896024,
            "top_decile_within_minute": {
@@ -77604,7 +77857,11 @@
           "clock_plus_state": {
            "auc_pooled": 0.6640446281012895,
            "auc_within_clock": 0.691734896147548,
+           "auc_within_clock_groups": 111,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.6943010699249561,
+           "auc_within_tenure_groups": 111,
+           "auc_within_tenure_thin": 0,
            "brier": 0.10053457551684733,
            "mean_pred": 0.14836534843737081,
            "top_decile_within_minute": {
@@ -77712,7 +77969,11 @@
           "tenure_plus_state": {
            "auc_pooled": 0.6736947733327189,
            "auc_within_clock": 0.6930621391019564,
+           "auc_within_clock_groups": 111,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.7002470695983699,
+           "auc_within_tenure_groups": 111,
+           "auc_within_tenure_thin": 0,
            "brier": 0.09915774938512154,
            "mean_pred": 0.1485253131484696,
            "top_decile_within_minute": {
@@ -77813,7 +78074,11 @@
           "clock_plus_tenure_plus_state": {
            "auc_pooled": 0.6709195984981444,
            "auc_within_clock": 0.6949754373868827,
+           "auc_within_clock_groups": 111,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.6961469922116279,
+           "auc_within_tenure_groups": 111,
+           "auc_within_tenure_thin": 0,
            "brier": 0.09911473627101947,
            "mean_pred": 0.1424759484760857,
            "top_decile_within_minute": {
@@ -77926,12 +78191,16 @@
          "n_eval": 11150,
          "train_base_rate": 0.114615,
          "eval_base_rate": 0.123229,
-         "seconds": 0.1,
+         "seconds": 0.5,
          "results": {
           "clock_only": {
            "auc_pooled": 0.47881374670344984,
            "auc_within_clock": 0.5,
+           "auc_within_clock_groups": 120,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.48808696224331577,
+           "auc_within_tenure_groups": 115,
+           "auc_within_tenure_thin": 0,
            "brier": 0.11130967417891352,
            "mean_pred": 0.1488951615149174,
            "top_decile_within_minute": {
@@ -78020,7 +78289,11 @@
           "tenure_only": {
            "auc_pooled": 0.493248102473574,
            "auc_within_clock": 0.5057616483209888,
+           "auc_within_clock_groups": 120,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.5,
+           "auc_within_tenure_groups": 115,
+           "auc_within_tenure_thin": 0,
            "brier": 0.11147492719240981,
            "mean_pred": 0.1493765048598743,
            "top_decile_within_minute": {
@@ -78096,7 +78369,11 @@
           "state_only": {
            "auc_pooled": 0.7002677293052886,
            "auc_within_clock": 0.7001117761529,
+           "auc_within_clock_groups": 120,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.702465141294335,
+           "auc_within_tenure_groups": 115,
+           "auc_within_tenure_thin": 0,
            "brier": 0.10072377164278519,
            "mean_pred": 0.1074059468087386,
            "top_decile_within_minute": {
@@ -78196,7 +78473,11 @@
           "clock_plus_state": {
            "auc_pooled": 0.6364339963359753,
            "auc_within_clock": 0.67912874261479,
+           "auc_within_clock_groups": 120,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.6801366884658736,
+           "auc_within_tenure_groups": 115,
+           "auc_within_tenure_thin": 0,
            "brier": 0.10451464532855956,
            "mean_pred": 0.12023096442312776,
            "top_decile_within_minute": {
@@ -78304,7 +78585,11 @@
           "tenure_plus_state": {
            "auc_pooled": 0.644464535433596,
            "auc_within_clock": 0.67913576152549,
+           "auc_within_clock_groups": 120,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.6835810776017439,
+           "auc_within_tenure_groups": 115,
+           "auc_within_tenure_thin": 0,
            "brier": 0.10399013547381372,
            "mean_pred": 0.11923279316525766,
            "top_decile_within_minute": {
@@ -78405,7 +78690,11 @@
           "clock_plus_tenure_plus_state": {
            "auc_pooled": 0.6471151761614458,
            "auc_within_clock": 0.6856370275615076,
+           "auc_within_clock_groups": 120,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.684150374477191,
+           "auc_within_tenure_groups": 115,
+           "auc_within_tenure_thin": 0,
            "brier": 0.10391188088988476,
            "mean_pred": 0.11577135824115214,
            "top_decile_within_minute": {
@@ -78538,12 +78827,16 @@
          "n_eval": 95516,
          "train_base_rate": 0.560624,
          "eval_base_rate": 0.541532,
-         "seconds": 0.2,
+         "seconds": 0.5,
          "results": {
           "clock_only": {
            "auc_pooled": 0.6471514989490647,
            "auc_within_clock": 0.5,
+           "auc_within_clock_groups": 121,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.549605523160387,
+           "auc_within_tenure_groups": 121,
+           "auc_within_tenure_thin": 0,
            "brier": 0.23066235627917966,
            "mean_pred": 0.5617662608862601,
            "top_decile_within_minute": {
@@ -78632,7 +78925,11 @@
           "clock_plus_state": {
            "auc_pooled": 0.8211377954506631,
            "auc_within_clock": 0.7957763808145312,
+           "auc_within_clock_groups": 121,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.7973587089081171,
+           "auc_within_tenure_groups": 121,
+           "auc_within_tenure_thin": 0,
            "brier": 0.17594227005523758,
            "mean_pred": 0.6007482205255962,
            "top_decile_within_minute": {
@@ -78751,12 +79048,16 @@
          "n_eval": 202107,
          "train_base_rate": 0.541532,
          "eval_base_rate": 0.560624,
-         "seconds": 0.3,
+         "seconds": 0.6,
          "results": {
           "clock_only": {
            "auc_pooled": 0.6389674991616162,
            "auc_within_clock": 0.5,
+           "auc_within_clock_groups": 121,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.5349536634587269,
+           "auc_within_tenure_groups": 121,
+           "auc_within_tenure_thin": 0,
            "brier": 0.23069747486919157,
            "mean_pred": 0.5399336470003792,
            "top_decile_within_minute": {
@@ -78845,7 +79146,11 @@
           "clock_plus_state": {
            "auc_pooled": 0.7966206085697979,
            "auc_within_clock": 0.7701251336826488,
+           "auc_within_clock_groups": 121,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.7702571060317137,
+           "auc_within_tenure_groups": 121,
+           "auc_within_tenure_thin": 0,
            "brier": 0.18763506889213272,
            "mean_pred": 0.49638915838191144,
            "top_decile_within_minute": {
@@ -78980,12 +79285,16 @@
          "n_eval": 97888,
          "train_base_rate": 0.055841,
          "eval_base_rate": 0.059609,
-         "seconds": 0.2,
+         "seconds": 0.4,
          "results": {
           "clock_only": {
            "auc_pooled": 0.7627731578314423,
            "auc_within_clock": 0.5,
+           "auc_within_clock_groups": 120,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.49534827963853767,
+           "auc_within_tenure_groups": 120,
+           "auc_within_tenure_thin": 0,
            "brier": 0.045536250351270804,
            "mean_pred": 0.05717443456446795,
            "top_decile_within_minute": {
@@ -79074,7 +79383,11 @@
           "clock_plus_state": {
            "auc_pooled": 0.9892010220147104,
            "auc_within_clock": 0.9730313929935468,
+           "auc_within_clock_groups": 120,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.9776962861935751,
+           "auc_within_tenure_groups": 120,
+           "auc_within_tenure_thin": 0,
            "brier": 0.017575280746054172,
            "mean_pred": 0.06138152952801022,
            "top_decile_within_minute": {
@@ -79193,12 +79506,16 @@
          "n_eval": 205010,
          "train_base_rate": 0.059609,
          "eval_base_rate": 0.055841,
-         "seconds": 0.4,
+         "seconds": 0.7,
          "results": {
           "clock_only": {
            "auc_pooled": 0.7730263004695574,
            "auc_within_clock": 0.5,
+           "auc_within_clock_groups": 120,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.500727447323404,
+           "auc_within_tenure_groups": 120,
+           "auc_within_tenure_thin": 0,
            "brier": 0.04222117203138059,
            "mean_pred": 0.06391919637674266,
            "top_decile_within_minute": {
@@ -79287,7 +79604,11 @@
           "clock_plus_state": {
            "auc_pooled": 0.9870854015424582,
            "auc_within_clock": 0.9668112876612418,
+           "auc_within_clock_groups": 120,
+           "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.9747197292831803,
+           "auc_within_tenure_groups": 120,
+           "auc_within_tenure_thin": 0,
            "brier": 0.018143245278312778,
            "mean_pred": 0.06234046126089416,
            "top_decile_within_minute": {
@@ -100137,6 +100458,2526 @@
    }
   }
  },
+ "volatility_control": {
+  "question": "is the hazard finding a life/decay signal or a volatility restatement?",
+  "labels_are_label_side": "every target here is a future quantity; none is offered to a feature set, and the tape columns they are built from are not state families",
+  "modelled_scope": "fwd_range_30 and fwd_mabs_30 are the MODELLED dispersion targets; fwd_range_60 and fwd_mabs_60 are published as distributions only, so the scope is 30 bars, not 30 and 60",
+  "device_rule": "ONE median-split device for dispersion, always at the TRAIN-block median of the label (a threshold fitted on the training block). No dispersion AUC in this section uses the eval-block median",
+  "coordinate_convention": "every AUC that is compared ACROSS labels is within the EXACT clock minute; pooled AUCs are reported separately and are never used for a cross-label claim",
+  "window": "all_session",
+  "A_state_predicts_forward_dispersion": {
+   "A_pm": {
+    "distribution": {
+     "fwd_range_30": {
+      "n": 1010209,
+      "mean": 0.0907116697960952,
+      "median": 0.06640625,
+      "p25": 0.0363157894736843,
+      "p75": 0.11359026369168368,
+      "p90": 0.18318447758102976,
+      "min": 0.0,
+      "max": 3.356256229047748,
+      "sum": 91637.74523304353,
+      "top5_share_of_sum": 0.0001818446192009912,
+      "top5_share_of_abs_sum": 0.0001818446192009912
+     },
+     "fwd_range_60": {
+      "n": 1010209,
+      "mean": 0.12351970977366748,
+      "median": 0.09084297921338114,
+      "p25": 0.04938271604938271,
+      "p75": 0.154434250764526,
+      "p90": 0.24785123966942146,
+      "min": 0.0,
+      "max": 4.434782608695652,
+      "sum": 124780.72249074685,
+      "top5_share_of_sum": 0.00017676131208450786,
+      "top5_share_of_abs_sum": 0.00017676131208450786
+     },
+     "fwd_mabs_30": {
+      "n": 1010209,
+      "mean": 0.007867912036983019,
+      "median": 0.00660415174154974,
+      "p25": 0.00393569317546942,
+      "p75": 0.010218501001329532,
+      "p90": 0.015008050270489088,
+      "min": 0.0,
+      "max": 0.11940984524221666,
+      "sum": 7948.2355509685785,
+      "top5_share_of_sum": 7.098751043912723e-05,
+      "top5_share_of_abs_sum": 7.098751043912723e-05
+     },
+     "fwd_mabs_60": {
+      "n": 1010209,
+      "mean": 0.007588165710391255,
+      "median": 0.006602014183056992,
+      "p25": 0.004005391716493874,
+      "p75": 0.009889781101222746,
+      "p90": 0.014116171269032862,
+      "min": 0.0,
+      "max": 0.08134310751600939,
+      "sum": 7665.63329412864,
+      "top5_share_of_sum": 5.1200564974715263e-05,
+      "top5_share_of_abs_sum": 5.1200564974715263e-05
+     },
+     "fwd_range_60_note": "distribution only, not modelled"
+    },
+    "model": {
+     "fit_block1_report_block2": {
+      "n_train": 13844,
+      "n_eval": 5926,
+      "rows_identical_for_every_label_here": 1,
+      "hazard_barrier_label": {
+       "auc_pooled": 0.67695,
+       "auc_within_clock": 0.675778,
+       "auc_within_clock_groups": 229.0,
+       "auc_within_tenure": 0.677065,
+       "auc_within_tenure_groups": 217.0,
+       "auc_within_clock_clock_only": 0.5,
+       "base_rate": 0.154404
+      },
+      "fwd_range_30_dispersion": {
+       "train_median_split_cut_log1p": 0.137621,
+       "spearman_threshold_free": 0.570732,
+       "auc_within_clock_vs_train_median_split": 0.714154,
+       "auc_within_clock_groups": 344,
+       "auc_pooled_vs_train_median_split_REPORTED_SEPARATELY": 0.793733,
+       "r2_on_eval": 0.112971
+      },
+      "fwd_mabs_30_dispersion": {
+       "train_median_split_cut_log1p": 0.012725,
+       "spearman_threshold_free": 0.566138,
+       "auc_within_clock_vs_train_median_split": 0.699125,
+       "auc_within_clock_groups": 343,
+       "auc_pooled_vs_train_median_split_REPORTED_SEPARATELY": 0.797954,
+       "r2_on_eval": 0.124125
+      }
+     },
+     "fit_block2_report_block1": {
+      "n_train": 5926,
+      "n_eval": 13844,
+      "rows_identical_for_every_label_here": 1,
+      "hazard_barrier_label": {
+       "auc_pooled": 0.671733,
+       "auc_within_clock": 0.661329,
+       "auc_within_clock_groups": 318.0,
+       "auc_within_tenure": 0.663285,
+       "auc_within_tenure_groups": 321.0,
+       "auc_within_clock_clock_only": 0.5,
+       "base_rate": 0.149379
+      },
+      "fwd_range_30_dispersion": {
+       "train_median_split_cut_log1p": 0.183963,
+       "spearman_threshold_free": 0.559064,
+       "auc_within_clock_vs_train_median_split": 0.705088,
+       "auc_within_clock_groups": 367,
+       "auc_pooled_vs_train_median_split_REPORTED_SEPARATELY": 0.755275,
+       "r2_on_eval": 0.113988
+      },
+      "fwd_mabs_30_dispersion": {
+       "train_median_split_cut_log1p": 0.017432,
+       "spearman_threshold_free": 0.56124,
+       "auc_within_clock_vs_train_median_split": 0.694509,
+       "auc_within_clock_groups": 360,
+       "auc_pooled_vs_train_median_split_REPORTED_SEPARATELY": 0.759633,
+       "r2_on_eval": 0.143617
+      }
+     }
+    },
+    "comparison_note": "Hazard and dispersion are measured on IDENTICAL rows (one shared mask) and in the IDENTICAL coordinate (AUC within the exact clock minute); the only difference left is the estimator (logistic for the barrier label, ridge linear for the continuous dispersion label). The existing out_of_block_logistic hazard AUC uses the whole risk set without the dispersion finiteness filter, so it differs from the hazard_barrier_label number here by a handful of rows."
+   },
+   "B600": {
+    "distribution": {
+     "fwd_range_30": {
+      "n": 844604,
+      "mean": 0.09379533481301154,
+      "median": 0.06791873808730331,
+      "p25": 0.04006968641114983,
+      "p75": 0.11489361702127665,
+      "p90": 0.18587005678106627,
+      "min": 0.0,
+      "max": 3.577883472057075,
+      "sum": 79219.9149644088,
+      "top5_share_of_sum": 0.00019190417239222464,
+      "top5_share_of_abs_sum": 0.00019190417239222464
+     },
+     "fwd_range_60": {
+      "n": 844604,
+      "mean": 0.1277754866989676,
+      "median": 0.0927966101694917,
+      "p25": 0.05371900826446274,
+      "p75": 0.15618250165349262,
+      "p90": 0.25319598212115413,
+      "min": 0.0,
+      "max": 5.707317073170732,
+      "sum": 107919.68716789484,
+      "top5_share_of_sum": 0.0002079233639302034,
+      "top5_share_of_abs_sum": 0.0002079233639302034
+     },
+     "fwd_mabs_30": {
+      "n": 844604,
+      "mean": 0.008334382655301367,
+      "median": 0.006922739124457846,
+      "p25": 0.004360305515890324,
+      "p75": 0.010563328819241186,
+      "p90": 0.0153879019145579,
+      "min": 0.0,
+      "max": 0.1648191816875755,
+      "sum": 7039.252928198156,
+      "top5_share_of_sum": 9.120254725055116e-05,
+      "top5_share_of_abs_sum": 9.120254725055116e-05
+     },
+     "fwd_mabs_60": {
+      "n": 844604,
+      "mean": 0.00808232843088721,
+      "median": 0.006897024802522202,
+      "p25": 0.004419513695775597,
+      "p75": 0.01028641044742231,
+      "p90": 0.01459783924275323,
+      "min": 0.0,
+      "max": 0.1648191816875755,
+      "sum": 6826.366922041061,
+      "top5_share_of_sum": 9.404677555782743e-05,
+      "top5_share_of_abs_sum": 9.404677555782743e-05
+     },
+     "fwd_range_60_note": "distribution only, not modelled"
+    },
+    "model": {
+     "fit_block1_report_block2": {
+      "n_train": 14972,
+      "n_eval": 7419,
+      "rows_identical_for_every_label_here": 1,
+      "hazard_barrier_label": {
+       "auc_pooled": 0.688528,
+       "auc_within_clock": 0.698608,
+       "auc_within_clock_groups": 258.0,
+       "auc_within_tenure": 0.701403,
+       "auc_within_tenure_groups": 256.0,
+       "auc_within_clock_clock_only": 0.5,
+       "base_rate": 0.119154
+      },
+      "fwd_range_30_dispersion": {
+       "train_median_split_cut_log1p": 0.113581,
+       "spearman_threshold_free": 0.608077,
+       "auc_within_clock_vs_train_median_split": 0.735638,
+       "auc_within_clock_groups": 349,
+       "auc_pooled_vs_train_median_split_REPORTED_SEPARATELY": 0.810027,
+       "r2_on_eval": 0.109262
+      },
+      "fwd_mabs_30_dispersion": {
+       "train_median_split_cut_log1p": 0.010712,
+       "spearman_threshold_free": 0.59711,
+       "auc_within_clock_vs_train_median_split": 0.738797,
+       "auc_within_clock_groups": 351,
+       "auc_pooled_vs_train_median_split_REPORTED_SEPARATELY": 0.801306,
+       "r2_on_eval": 0.11939
+      }
+     },
+     "fit_block2_report_block1": {
+      "n_train": 7419,
+      "n_eval": 14972,
+      "rows_identical_for_every_label_here": 1,
+      "hazard_barrier_label": {
+       "auc_pooled": 0.675969,
+       "auc_within_clock": 0.701099,
+       "auc_within_clock_groups": 322.0,
+       "auc_within_tenure": 0.698323,
+       "auc_within_tenure_groups": 324.0,
+       "auc_within_clock_clock_only": 0.5,
+       "base_rate": 0.127571
+      },
+      "fwd_range_30_dispersion": {
+       "train_median_split_cut_log1p": 0.14702,
+       "spearman_threshold_free": 0.548075,
+       "auc_within_clock_vs_train_median_split": 0.710042,
+       "auc_within_clock_groups": 350,
+       "auc_pooled_vs_train_median_split_REPORTED_SEPARATELY": 0.766731,
+       "r2_on_eval": 0.119856
+      },
+      "fwd_mabs_30_dispersion": {
+       "train_median_split_cut_log1p": 0.013981,
+       "spearman_threshold_free": 0.536601,
+       "auc_within_clock_vs_train_median_split": 0.698177,
+       "auc_within_clock_groups": 351,
+       "auc_pooled_vs_train_median_split_REPORTED_SEPARATELY": 0.758132,
+       "r2_on_eval": 0.130628
+      }
+     }
+    },
+    "comparison_note": "Hazard and dispersion are measured on IDENTICAL rows (one shared mask) and in the IDENTICAL coordinate (AUC within the exact clock minute); the only difference left is the estimator (logistic for the barrier label, ridge linear for the continuous dispersion label). The existing out_of_block_logistic hazard AUC uses the whole risk set without the dispersion finiteness filter, so it differs from the hazard_barrier_label number here by a handful of rows."
+   }
+  },
+  "B_hazard_conditional_on_dispersion_decile": {
+   "A_pm": {
+    "fit_block1_report_block2": {
+     "deciles_from_TRAIN_block_quantiles": [
+      0.030329,
+      0.065671,
+      0.094999,
+      0.12105,
+      0.147541,
+      0.177474,
+      0.215116,
+      0.274873,
+      0.391872
+     ],
+     "train_median_dispersion": 0.147541,
+     "global_model_summary": {
+      "n_cells": 10,
+      "min": 0.474026,
+      "p25": 0.626968,
+      "median": 0.674792,
+      "p75": 0.725423,
+      "max": 0.770096,
+      "convention": "median = numpy median over the decile cells with a defined value (even counts average the two middle cells)"
+     },
+     "refit_model_summary": {
+      "n_cells": 10,
+      "min": 0.577154,
+      "p25": 0.630251,
+      "median": 0.685408,
+      "p75": 0.746182,
+      "max": 0.760936,
+      "convention": "median = numpy median over the decile cells with a defined value (even counts average the two middle cells)"
+     },
+     "refit_vs_global_median_difference": 0.010616,
+     "median_mediation_of_headline_features": {
+      "dist_from_running_high": {
+       "pooled_train": {
+        "coefficient": -0.575746,
+        "n_train": 13844,
+        "n_parameters": 393,
+        "rows_per_parameter": 35.226463
+       },
+       "calmest_train_decile": {
+        "coefficient": -0.470788,
+        "n_train": 1385,
+        "n_parameters": 393,
+        "rows_per_parameter": 3.524173
+       },
+       "wildest_train_decile": {
+        "coefficient": -0.763369,
+        "n_train": 1385,
+        "n_parameters": 393,
+        "rows_per_parameter": 3.524173
+       },
+       "attenuation_calmest_over_wildest": 0.616724
+      },
+      "mfe_surrendered_pos": {
+       "pooled_train": {
+        "coefficient": 0.473199,
+        "n_train": 13844,
+        "n_parameters": 394,
+        "rows_per_parameter": 35.137056
+       },
+       "calmest_train_decile": {
+        "coefficient": 0.321891,
+        "n_train": 1385,
+        "n_parameters": 394,
+        "rows_per_parameter": 3.515228
+       },
+       "wildest_train_decile": {
+        "coefficient": 0.397234,
+        "n_train": 1385,
+        "n_parameters": 393,
+        "rows_per_parameter": 3.524173
+       },
+       "attenuation_calmest_over_wildest": 0.810331
+      },
+      "up_close_streak": {
+       "pooled_train": {
+        "coefficient": -0.654983,
+        "n_train": 13844,
+        "n_parameters": 393,
+        "rows_per_parameter": 35.226463
+       },
+       "calmest_train_decile": {
+        "coefficient": -0.452916,
+        "n_train": 1385,
+        "n_parameters": 393,
+        "rows_per_parameter": 3.524173
+       },
+       "wildest_train_decile": {
+        "coefficient": -0.577701,
+        "n_train": 1385,
+        "n_parameters": 393,
+        "rows_per_parameter": 3.524173
+       },
+       "attenuation_calmest_over_wildest": 0.783997
+      },
+      "accel_1_5": {
+       "pooled_train": {
+        "coefficient": -0.367445,
+        "n_train": 13844,
+        "n_parameters": 394,
+        "rows_per_parameter": 35.137056
+       },
+       "calmest_train_decile": {
+        "coefficient": -0.15221,
+        "n_train": 1385,
+        "n_parameters": 394,
+        "rows_per_parameter": 3.515228
+       },
+       "wildest_train_decile": {
+        "coefficient": -0.631064,
+        "n_train": 1385,
+        "n_parameters": 394,
+        "rows_per_parameter": 3.515228
+       },
+       "attenuation_calmest_over_wildest": 0.241196
+      }
+     },
+     "mediation_reading": "a feature whose coefficient is much smaller in the wildest train decile than in the calmest is substantially mediated by forward dispersion: part of what it detects about the hazard is the tape getting wilder. READ THE ATTENUATION, NOT THE LEVELS: each profile is a single-feature model with one state parameter, but it still carries 391 exact clock levels estimated from that same decile, so rows_per_parameter is reported per cell and is small inside a decile (a handful of rows per clock level). The sign and the collapse across deciles are the finding; the coefficient magnitudes are not effect sizes.",
+     "cells": {
+      "decile_1": {
+       "n_eval": 329,
+       "dispersion_range": [
+        0.000944,
+        0.030254
+       ],
+       "hazard_base_rate": 0.161094,
+       "global_model_auc_within_clock": 0.474026,
+       "global_model_auc_within_clock_groups": 27,
+       "global_model_auc_within_clock_thin": 0,
+       "global_model_auc_within_tenure": 0.491124,
+       "n_positive_in_cell": 53,
+       "refit_model": {
+        "auc_within_clock": 0.61039,
+        "auc_within_clock_groups": 27,
+        "auc_within_clock_thin": 0,
+        "auc_within_tenure": 0.627219,
+        "n_train_in_decile": 1385,
+        "n_parameters": 411,
+        "rows_per_parameter": 3.36983,
+        "state_coefficients": {
+         "dist_from_running_high": -2.090122,
+         "bars_since_new_high": 0.0,
+         "new_high_count_5": 0.000531,
+         "new_high_count_15": 0.466606,
+         "new_high_count_30": -0.42467,
+         "volume_vs_own_median": 0.129992,
+         "volume_accel": 0.276497,
+         "ret_percentile_candidates": 0.017443,
+         "peer_new_high_5": -0.0541,
+         "up_close_streak": -0.28752,
+         "accel_1_5": -0.08252,
+         "bars_since_gap": 0.062648,
+         "mfe_surrendered_pos": 0.126761,
+         "bars_below_entry_episode": -0.12129
+        },
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+       }
+      },
+      "decile_2": {
+       "n_eval": 435,
+       "dispersion_range": [
+        0.030376,
+        0.065626
+       ],
+       "hazard_base_rate": 0.11954,
+       "global_model_auc_within_clock": 0.716667,
+       "global_model_auc_within_clock_groups": 32,
+       "global_model_auc_within_clock_thin": 0,
+       "global_model_auc_within_tenure": 0.733871,
+       "n_positive_in_cell": 52,
+       "refit_model": {
+        "auc_within_clock": 0.75,
+        "auc_within_clock_groups": 32,
+        "auc_within_clock_thin": 0,
+        "auc_within_tenure": 0.75,
+        "n_train_in_decile": 1384,
+        "n_parameters": 411,
+        "rows_per_parameter": 3.367397,
+        "state_coefficients": {
+         "dist_from_running_high": -0.542365,
+         "bars_since_new_high": 0.0,
+         "new_high_count_5": 0.35078,
+         "new_high_count_15": -0.098874,
+         "new_high_count_30": -0.139884,
+         "volume_vs_own_median": 0.177779,
+         "volume_accel": 0.114473,
+         "ret_percentile_candidates": 0.286043,
+         "peer_new_high_5": 0.148967,
+         "up_close_streak": -0.248313,
+         "accel_1_5": 0.111594,
+         "bars_since_gap": 0.051635,
+         "mfe_surrendered_pos": 0.395923,
+         "bars_below_entry_episode": -0.027536
+        },
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+       }
+      },
+      "decile_3": {
+       "n_eval": 406,
+       "dispersion_range": [
+        0.065749,
+        0.09498
+       ],
+       "hazard_base_rate": 0.172414,
+       "global_model_auc_within_clock": 0.623053,
+       "global_model_auc_within_clock_groups": 31,
+       "global_model_auc_within_clock_thin": 0,
+       "global_model_auc_within_tenure": 0.653959,
+       "n_positive_in_cell": 70,
+       "refit_model": {
+        "auc_within_clock": 0.676012,
+        "auc_within_clock_groups": 31,
+        "auc_within_clock_thin": 0,
+        "auc_within_tenure": 0.677419,
+        "n_train_in_decile": 1384,
+        "n_parameters": 411,
+        "rows_per_parameter": 3.367397,
+        "state_coefficients": {
+         "dist_from_running_high": -0.842216,
+         "bars_since_new_high": 0.0,
+         "new_high_count_5": 0.028828,
+         "new_high_count_15": 0.229237,
+         "new_high_count_30": -0.113699,
+         "volume_vs_own_median": 0.155764,
+         "volume_accel": -0.090618,
+         "ret_percentile_candidates": 0.069737,
+         "peer_new_high_5": -0.79831,
+         "up_close_streak": -0.138545,
+         "accel_1_5": -0.005875,
+         "bars_since_gap": -0.238954,
+         "mfe_surrendered_pos": 0.11714,
+         "bars_below_entry_episode": -0.013291
+        },
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+       }
+      },
+      "decile_4": {
+       "n_eval": 409,
+       "dispersion_range": [
+        0.095238,
+        0.120556
+       ],
+       "hazard_base_rate": 0.176039,
+       "global_model_auc_within_clock": 0.770096,
+       "global_model_auc_within_clock_groups": 30,
+       "global_model_auc_within_clock_thin": 0,
+       "global_model_auc_within_tenure": 0.770062,
+       "n_positive_in_cell": 72,
+       "refit_model": {
+        "auc_within_clock": 0.734727,
+        "auc_within_clock_groups": 30,
+        "auc_within_clock_thin": 0,
+        "auc_within_tenure": 0.733025,
+        "n_train_in_decile": 1385,
+        "n_parameters": 411,
+        "rows_per_parameter": 3.36983,
+        "state_coefficients": {
+         "dist_from_running_high": -0.511578,
+         "bars_since_new_high": 0.0,
+         "new_high_count_5": -0.030184,
+         "new_high_count_15": 0.049674,
+         "new_high_count_30": -0.060885,
+         "volume_vs_own_median": 0.0617,
+         "volume_accel": 0.073031,
+         "ret_percentile_candidates": 0.196555,
+         "peer_new_high_5": 0.204064,
+         "up_close_streak": -0.337634,
+         "accel_1_5": -0.309532,
+         "bars_since_gap": 0.201277,
+         "mfe_surrendered_pos": 0.234364,
+         "bars_below_entry_episode": 0.082195
+        },
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+       }
+      },
+      "decile_5": {
+       "n_eval": 493,
+       "dispersion_range": [
+        0.121094,
+        0.14741
+       ],
+       "hazard_base_rate": 0.141988,
+       "global_model_auc_within_clock": 0.69724,
+       "global_model_auc_within_clock_groups": 29,
+       "global_model_auc_within_clock_thin": 0,
+       "global_model_auc_within_tenure": 0.698891,
+       "n_positive_in_cell": 70,
+       "refit_model": {
+        "auc_within_clock": 0.694805,
+        "auc_within_clock_groups": 29,
+        "auc_within_clock_thin": 0,
+        "auc_within_tenure": 0.694136,
+        "n_train_in_decile": 1382,
+        "n_parameters": 411,
+        "rows_per_parameter": 3.36253,
+        "state_coefficients": {
+         "dist_from_running_high": -0.69625,
+         "bars_since_new_high": 0.0,
+         "new_high_count_5": -0.183961,
+         "new_high_count_15": -0.152216,
+         "new_high_count_30": -0.182014,
+         "volume_vs_own_median": 0.1003,
+         "volume_accel": -0.085413,
+         "ret_percentile_candidates": -0.025968,
+         "peer_new_high_5": -0.501476,
+         "up_close_streak": -0.095564,
+         "accel_1_5": -0.196964,
+         "bars_since_gap": -0.046273,
+         "mfe_surrendered_pos": 0.120303,
+         "bars_below_entry_episode": -0.16126
+        },
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+       }
+      },
+      "decile_6": {
+       "n_eval": 528,
+       "dispersion_range": [
+        0.147601,
+        0.177456
+       ],
+       "hazard_base_rate": 0.193182,
+       "global_model_auc_within_clock": 0.728341,
+       "global_model_auc_within_clock_groups": 36,
+       "global_model_auc_within_clock_thin": 0,
+       "global_model_auc_within_tenure": 0.723113,
+       "n_positive_in_cell": 102,
+       "refit_model": {
+        "auc_within_clock": 0.760646,
+        "auc_within_clock_groups": 36,
+        "auc_within_clock_thin": 0,
+        "auc_within_tenure": 0.751415,
+        "n_train_in_decile": 1383,
+        "n_parameters": 411,
+        "rows_per_parameter": 3.364964,
+        "state_coefficients": {
+         "dist_from_running_high": -0.578133,
+         "bars_since_new_high": 0.0,
+         "new_high_count_5": -0.111686,
+         "new_high_count_15": 0.619914,
+         "new_high_count_30": -0.331693,
+         "volume_vs_own_median": 0.098597,
+         "volume_accel": 0.13271,
+         "ret_percentile_candidates": -0.140961,
+         "peer_new_high_5": 0.472174,
+         "up_close_streak": -0.258905,
+         "accel_1_5": 0.067996,
+         "bars_since_gap": -0.006504,
+         "mfe_surrendered_pos": 0.005113,
+         "bars_below_entry_episode": -0.083846
+        },
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+       }
+      },
+      "decile_7": {
+       "n_eval": 533,
+       "dispersion_range": [
+        0.177522,
+        0.215054
+       ],
+       "hazard_base_rate": 0.183865,
+       "global_model_auc_within_clock": 0.759034,
+       "global_model_auc_within_clock_groups": 33,
+       "global_model_auc_within_clock_thin": 0,
+       "global_model_auc_within_tenure": 0.75792,
+       "n_positive_in_cell": 98,
+       "refit_model": {
+        "auc_within_clock": 0.760936,
+        "auc_within_clock_groups": 33,
+        "auc_within_clock_thin": 0,
+        "auc_within_tenure": 0.758293,
+        "n_train_in_decile": 1386,
+        "n_parameters": 411,
+        "rows_per_parameter": 3.372263,
+        "state_coefficients": {
+         "dist_from_running_high": -0.693076,
+         "bars_since_new_high": 0.0,
+         "new_high_count_5": 0.011883,
+         "new_high_count_15": 0.133056,
+         "new_high_count_30": -0.309541,
+         "volume_vs_own_median": 0.01926,
+         "volume_accel": -0.077404,
+         "ret_percentile_candidates": -0.015464,
+         "peer_new_high_5": -0.14608,
+         "up_close_streak": -0.048608,
+         "accel_1_5": -0.010539,
+         "bars_since_gap": 0.090753,
+         "mfe_surrendered_pos": 0.194458,
+         "bars_below_entry_episode": -0.087647
+        },
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+       }
+      },
+      "decile_8": {
+       "n_eval": 718,
+       "dispersion_range": [
+        0.215242,
+        0.274788
+       ],
+       "hazard_base_rate": 0.149025,
+       "global_model_auc_within_clock": 0.616854,
+       "global_model_auc_within_clock_groups": 46,
+       "global_model_auc_within_clock_thin": 0,
+       "global_model_auc_within_tenure": 0.621008,
+       "n_positive_in_cell": 107,
+       "refit_model": {
+        "auc_within_clock": 0.577154,
+        "auc_within_clock_groups": 46,
+        "auc_within_clock_thin": 0,
+        "auc_within_tenure": 0.580908,
+        "n_train_in_decile": 1386,
+        "n_parameters": 411,
+        "rows_per_parameter": 3.372263,
+        "state_coefficients": {
+         "dist_from_running_high": -0.67277,
+         "bars_since_new_high": 0.0,
+         "new_high_count_5": -0.158169,
+         "new_high_count_15": 0.269853,
+         "new_high_count_30": -0.144257,
+         "volume_vs_own_median": 0.092916,
+         "volume_accel": 0.076922,
+         "ret_percentile_candidates": 0.148903,
+         "peer_new_high_5": -0.078154,
+         "up_close_streak": 0.171707,
+         "accel_1_5": -0.026873,
+         "bars_since_gap": 0.100377,
+         "mfe_surrendered_pos": 0.102374,
+         "bars_below_entry_episode": -0.059212
+        },
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+       }
+      },
+      "decile_9": {
+       "n_eval": 1069,
+       "dispersion_range": [
+        0.275362,
+        0.391506
+       ],
+       "hazard_base_rate": 0.155285,
+       "global_model_auc_within_clock": 0.638711,
+       "global_model_auc_within_clock_groups": 55,
+       "global_model_auc_within_clock_thin": 0,
+       "global_model_auc_within_tenure": 0.643725,
+       "n_positive_in_cell": 166,
+       "refit_model": {
+        "auc_within_clock": 0.626552,
+        "auc_within_clock_groups": 55,
+        "auc_within_clock_thin": 0,
+        "auc_within_tenure": 0.630323,
+        "n_train_in_decile": 1384,
+        "n_parameters": 411,
+        "rows_per_parameter": 3.367397,
+        "state_coefficients": {
+         "dist_from_running_high": -0.694839,
+         "bars_since_new_high": 0.0,
+         "new_high_count_5": -0.076085,
+         "new_high_count_15": 0.006363,
+         "new_high_count_30": -0.010732,
+         "volume_vs_own_median": 0.150346,
+         "volume_accel": 0.187177,
+         "ret_percentile_candidates": -0.240803,
+         "peer_new_high_5": 0.02755,
+         "up_close_streak": -0.218763,
+         "accel_1_5": 0.030404,
+         "bars_since_gap": 0.001839,
+         "mfe_surrendered_pos": -0.245989,
+         "bars_below_entry_episode": -0.011912
+        },
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+       }
+      },
+      "decile_10": {
+       "n_eval": 1006,
+       "dispersion_range": [
+        0.392625,
+        2.679124
+       ],
+       "hazard_base_rate": 0.124254,
+       "global_model_auc_within_clock": 0.652344,
+       "global_model_auc_within_clock_groups": 46,
+       "global_model_auc_within_clock_thin": 0,
+       "global_model_auc_within_tenure": 0.664536,
+       "n_positive_in_cell": 125,
+       "refit_model": {
+        "auc_within_clock": 0.641348,
+        "auc_within_clock_groups": 46,
+        "auc_within_clock_thin": 0,
+        "auc_within_tenure": 0.656319,
+        "n_train_in_decile": 1385,
+        "n_parameters": 411,
+        "rows_per_parameter": 3.36983,
+        "state_coefficients": {
+         "dist_from_running_high": -0.455307,
+         "bars_since_new_high": 0.0,
+         "new_high_count_5": 0.456633,
+         "new_high_count_15": -0.392658,
+         "new_high_count_30": -0.075396,
+         "volume_vs_own_median": 0.047847,
+         "volume_accel": -0.169181,
+         "ret_percentile_candidates": -0.206071,
+         "peer_new_high_5": 0.434561,
+         "up_close_streak": -0.014065,
+         "accel_1_5": -0.058632,
+         "bars_since_gap": -0.525479,
+         "mfe_surrendered_pos": -0.105517,
+         "bars_below_entry_episode": -0.029058
+        },
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+       }
+      }
+     }
+    },
+    "fit_block2_report_block1": {
+     "deciles_from_TRAIN_block_quantiles": [
+      0.050987,
+      0.097222,
+      0.132839,
+      0.163864,
+      0.201972,
+      0.248344,
+      0.302,
+      0.366851,
+      0.483333
+     ],
+     "train_median_dispersion": 0.201972,
+     "global_model_summary": {
+      "n_cells": 10,
+      "min": 0.558018,
+      "p25": 0.653025,
+      "median": 0.692616,
+      "p75": 0.706067,
+      "max": 0.752126,
+      "convention": "median = numpy median over the decile cells with a defined value (even counts average the two middle cells)"
+     },
+     "refit_model_summary": {
+      "n_cells": 10,
+      "min": 0.529043,
+      "p25": 0.623957,
+      "median": 0.672759,
+      "p75": 0.693879,
+      "max": 0.719607,
+      "convention": "median = numpy median over the decile cells with a defined value (even counts average the two middle cells)"
+     },
+     "refit_vs_global_median_difference": -0.019857,
+     "median_mediation_of_headline_features": {
+      "dist_from_running_high": {
+       "pooled_train": {
+        "coefficient": -0.602169,
+        "n_train": 5926,
+        "n_parameters": 393,
+        "rows_per_parameter": 15.07888
+       },
+       "calmest_train_decile": {
+        "coefficient": -0.37968,
+        "n_train": 592,
+        "n_parameters": 393,
+        "rows_per_parameter": 1.506361
+       },
+       "wildest_train_decile": {
+        "coefficient": -0.860608,
+        "n_train": 597,
+        "n_parameters": 393,
+        "rows_per_parameter": 1.519084
+       },
+       "attenuation_calmest_over_wildest": 0.441176
+      },
+      "mfe_surrendered_pos": {
+       "pooled_train": {
+        "coefficient": 0.44762,
+        "n_train": 5926,
+        "n_parameters": 394,
+        "rows_per_parameter": 15.040609
+       },
+       "calmest_train_decile": {
+        "coefficient": 0.326817,
+        "n_train": 592,
+        "n_parameters": 393,
+        "rows_per_parameter": 1.506361
+       },
+       "wildest_train_decile": {
+        "coefficient": 0.429743,
+        "n_train": 597,
+        "n_parameters": 394,
+        "rows_per_parameter": 1.515228
+       },
+       "attenuation_calmest_over_wildest": 0.760494
+      },
+      "up_close_streak": {
+       "pooled_train": {
+        "coefficient": -0.573528,
+        "n_train": 5926,
+        "n_parameters": 393,
+        "rows_per_parameter": 15.07888
+       },
+       "calmest_train_decile": {
+        "coefficient": -0.476413,
+        "n_train": 592,
+        "n_parameters": 393,
+        "rows_per_parameter": 1.506361
+       },
+       "wildest_train_decile": {
+        "coefficient": -0.565718,
+        "n_train": 597,
+        "n_parameters": 393,
+        "rows_per_parameter": 1.519084
+       },
+       "attenuation_calmest_over_wildest": 0.842139
+      },
+      "accel_1_5": {
+       "pooled_train": {
+        "coefficient": -0.315849,
+        "n_train": 5926,
+        "n_parameters": 394,
+        "rows_per_parameter": 15.040609
+       },
+       "calmest_train_decile": {
+        "coefficient": -0.125677,
+        "n_train": 592,
+        "n_parameters": 394,
+        "rows_per_parameter": 1.502538
+       },
+       "wildest_train_decile": {
+        "coefficient": -0.443866,
+        "n_train": 597,
+        "n_parameters": 394,
+        "rows_per_parameter": 1.515228
+       },
+       "attenuation_calmest_over_wildest": 0.283142
+      }
+     },
+     "mediation_reading": "a feature whose coefficient is much smaller in the wildest train decile than in the calmest is substantially mediated by forward dispersion: part of what it detects about the hazard is the tape getting wilder. READ THE ATTENUATION, NOT THE LEVELS: each profile is a single-feature model with one state parameter, but it still carries 391 exact clock levels estimated from that same decile, so rows_per_parameter is reported per cell and is small inside a decile (a handful of rows per clock level). The sign and the collapse across deciles are the finding; the coefficient magnitudes are not effect sizes.",
+     "cells": {
+      "decile_1": {
+       "n_eval": 2203,
+       "dispersion_range": [
+        0.000525,
+        0.050847
+       ],
+       "hazard_base_rate": 0.13754,
+       "global_model_auc_within_clock": 0.558018,
+       "global_model_auc_within_clock_groups": 156,
+       "global_model_auc_within_clock_thin": 0,
+       "global_model_auc_within_tenure": 0.558898,
+       "n_positive_in_cell": 303,
+       "refit_model": {
+        "auc_within_clock": 0.529043,
+        "auc_within_clock_groups": 156,
+        "auc_within_clock_thin": 0,
+        "auc_within_tenure": 0.531204,
+        "n_train_in_decile": 592,
+        "n_parameters": 411,
+        "rows_per_parameter": 1.440389,
+        "state_coefficients": {
+         "dist_from_running_high": -1.015342,
+         "bars_since_new_high": 0.0,
+         "new_high_count_5": -0.205562,
+         "new_high_count_15": 0.250622,
+         "new_high_count_30": -0.116621,
+         "volume_vs_own_median": 0.246607,
+         "volume_accel": 0.262897,
+         "ret_percentile_candidates": -0.359268,
+         "peer_new_high_5": 0.190536,
+         "up_close_streak": -0.583922,
+         "accel_1_5": 0.159552,
+         "bars_since_gap": -0.234497,
+         "mfe_surrendered_pos": 0.19597,
+         "bars_below_entry_episode": 0.32119
+        },
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+       }
+      },
+      "decile_2": {
+       "n_eval": 2080,
+       "dispersion_range": [
+        0.051024,
+        0.097215
+       ],
+       "hazard_base_rate": 0.154808,
+       "global_model_auc_within_clock": 0.645984,
+       "global_model_auc_within_clock_groups": 143,
+       "global_model_auc_within_clock_thin": 0,
+       "global_model_auc_within_tenure": 0.644549,
+       "n_positive_in_cell": 322,
+       "refit_model": {
+        "auc_within_clock": 0.636559,
+        "auc_within_clock_groups": 143,
+        "auc_within_clock_thin": 0,
+        "auc_within_tenure": 0.634837,
+        "n_train_in_decile": 592,
+        "n_parameters": 411,
+        "rows_per_parameter": 1.440389,
+        "state_coefficients": {
+         "dist_from_running_high": -1.496673,
+         "bars_since_new_high": 0.0,
+         "new_high_count_5": 0.520017,
+         "new_high_count_15": -0.009802,
+         "new_high_count_30": -0.209792,
+         "volume_vs_own_median": 0.120575,
+         "volume_accel": 0.106685,
+         "ret_percentile_candidates": 0.18707,
+         "peer_new_high_5": 0.326099,
+         "up_close_streak": -0.21205,
+         "accel_1_5": 0.329664,
+         "bars_since_gap": 0.071482,
+         "mfe_surrendered_pos": 0.158565,
+         "bars_below_entry_episode": 0.010195
+        },
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+       }
+      },
+      "decile_3": {
+       "n_eval": 1880,
+       "dispersion_range": [
+        0.097246,
+        0.132812
+       ],
+       "hazard_base_rate": 0.173404,
+       "global_model_auc_within_clock": 0.609554,
+       "global_model_auc_within_clock_groups": 110,
+       "global_model_auc_within_clock_thin": 0,
+       "global_model_auc_within_tenure": 0.613442,
+       "n_positive_in_cell": 326,
+       "refit_model": {
+        "auc_within_clock": 0.619756,
+        "auc_within_clock_groups": 110,
+        "auc_within_clock_thin": 0,
+        "auc_within_tenure": 0.620595,
+        "n_train_in_decile": 594,
+        "n_parameters": 411,
+        "rows_per_parameter": 1.445255,
+        "state_coefficients": {
+         "dist_from_running_high": -0.783797,
+         "bars_since_new_high": 0.0,
+         "new_high_count_5": 0.129535,
+         "new_high_count_15": 0.723395,
+         "new_high_count_30": -0.166782,
+         "volume_vs_own_median": 0.060686,
+         "volume_accel": 0.085528,
+         "ret_percentile_candidates": 0.15154,
+         "peer_new_high_5": -0.410953,
+         "up_close_streak": -0.1078,
+         "accel_1_5": 0.294816,
+         "bars_since_gap": -0.10901,
+         "mfe_surrendered_pos": 0.392638,
+         "bars_below_entry_episode": 0.010741
+        },
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+       }
+      },
+      "decile_4": {
+       "n_eval": 1545,
+       "dispersion_range": [
+        0.132879,
+        0.163859
+       ],
+       "hazard_base_rate": 0.165049,
+       "global_model_auc_within_clock": 0.696302,
+       "global_model_auc_within_clock_groups": 89,
+       "global_model_auc_within_clock_thin": 0,
+       "global_model_auc_within_tenure": 0.694821,
+       "n_positive_in_cell": 255,
+       "refit_model": {
+        "auc_within_clock": 0.694141,
+        "auc_within_clock_groups": 89,
+        "auc_within_clock_thin": 0,
+        "auc_within_tenure": 0.692878,
+        "n_train_in_decile": 592,
+        "n_parameters": 411,
+        "rows_per_parameter": 1.440389,
+        "state_coefficients": {
+         "dist_from_running_high": -0.803741,
+         "bars_since_new_high": 0.0,
+         "new_high_count_5": 0.087482,
+         "new_high_count_15": -0.239916,
+         "new_high_count_30": 0.085271,
+         "volume_vs_own_median": 0.248143,
+         "volume_accel": -0.223593,
+         "ret_percentile_candidates": -0.075744,
+         "peer_new_high_5": 0.089232,
+         "up_close_streak": 0.150098,
+         "accel_1_5": 0.099403,
+         "bars_since_gap": -0.018188,
+         "mfe_surrendered_pos": 0.124233,
+         "bars_below_entry_episode": -0.145716
+        },
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+       }
+      },
+      "decile_5": {
+       "n_eval": 1524,
+       "dispersion_range": [
+        0.163925,
+        0.201923
+       ],
+       "hazard_base_rate": 0.166667,
+       "global_model_auc_within_clock": 0.752126,
+       "global_model_auc_within_clock_groups": 72,
+       "global_model_auc_within_clock_thin": 0,
+       "global_model_auc_within_tenure": 0.752745,
+       "n_positive_in_cell": 254,
+       "refit_model": {
+        "auc_within_clock": 0.719607,
+        "auc_within_clock_groups": 72,
+        "auc_within_clock_thin": 0,
+        "auc_within_tenure": 0.723081,
+        "n_train_in_decile": 593,
+        "n_parameters": 411,
+        "rows_per_parameter": 1.442822,
+        "state_coefficients": {
+         "dist_from_running_high": -0.811284,
+         "bars_since_new_high": 0.0,
+         "new_high_count_5": 0.838025,
+         "new_high_count_15": -0.535348,
+         "new_high_count_30": 0.156617,
+         "volume_vs_own_median": 0.023218,
+         "volume_accel": 0.194055,
+         "ret_percentile_candidates": 0.271086,
+         "peer_new_high_5": -0.352354,
+         "up_close_streak": -0.282923,
+         "accel_1_5": -0.081596,
+         "bars_since_gap": -0.077607,
+         "mfe_surrendered_pos": 0.152308,
+         "bars_below_entry_episode": 0.093862
+        },
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+       }
+      },
+      "decile_6": {
+       "n_eval": 1328,
+       "dispersion_range": [
+        0.202026,
+        0.248322
+       ],
+       "hazard_base_rate": 0.171687,
+       "global_model_auc_within_clock": 0.68893,
+       "global_model_auc_within_clock_groups": 60,
+       "global_model_auc_within_clock_thin": 0,
+       "global_model_auc_within_tenure": 0.691691,
+       "n_positive_in_cell": 228,
+       "refit_model": {
+        "auc_within_clock": 0.678689,
+        "auc_within_clock_groups": 60,
+        "auc_within_clock_thin": 0,
+        "auc_within_tenure": 0.680378,
+        "n_train_in_decile": 592,
+        "n_parameters": 411,
+        "rows_per_parameter": 1.440389,
+        "state_coefficients": {
+         "dist_from_running_high": -0.472878,
+         "bars_since_new_high": 0.0,
+         "new_high_count_5": 0.968219,
+         "new_high_count_15": -0.149493,
+         "new_high_count_30": 0.089334,
+         "volume_vs_own_median": 0.082938,
+         "volume_accel": -0.101728,
+         "ret_percentile_candidates": -0.229043,
+         "peer_new_high_5": -0.493031,
+         "up_close_streak": -0.011576,
+         "accel_1_5": -0.123441,
+         "bars_since_gap": -0.129766,
+         "mfe_surrendered_pos": 0.202226,
+         "bars_below_entry_episode": -0.128045
+        },
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+       }
+      },
+      "decile_7": {
+       "n_eval": 981,
+       "dispersion_range": [
+        0.248548,
+        0.301939
+       ],
+       "hazard_base_rate": 0.137615,
+       "global_model_auc_within_clock": 0.674146,
+       "global_model_auc_within_clock_groups": 49,
+       "global_model_auc_within_clock_thin": 0,
+       "global_model_auc_within_tenure": 0.677882,
+       "n_positive_in_cell": 135,
+       "refit_model": {
+        "auc_within_clock": 0.666829,
+        "auc_within_clock_groups": 49,
+        "auc_within_clock_thin": 0,
+        "auc_within_tenure": 0.67243,
+        "n_train_in_decile": 592,
+        "n_parameters": 411,
+        "rows_per_parameter": 1.440389,
+        "state_coefficients": {
+         "dist_from_running_high": -0.55054,
+         "bars_since_new_high": 0.0,
+         "new_high_count_5": 0.553139,
+         "new_high_count_15": -0.212494,
+         "new_high_count_30": 0.277089,
+         "volume_vs_own_median": 0.074671,
+         "volume_accel": 0.141574,
+         "ret_percentile_candidates": 0.014968,
+         "peer_new_high_5": -0.680952,
+         "up_close_streak": -0.362894,
+         "accel_1_5": -0.113833,
+         "bars_since_gap": -0.039399,
+         "mfe_surrendered_pos": 0.090019,
+         "bars_below_entry_episode": -0.122619
+        },
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+       }
+      },
+      "decile_8": {
+       "n_eval": 711,
+       "dispersion_range": [
+        0.302041,
+        0.366782
+       ],
+       "hazard_base_rate": 0.142053,
+       "global_model_auc_within_clock": 0.707122,
+       "global_model_auc_within_clock_groups": 42,
+       "global_model_auc_within_clock_thin": 0,
+       "global_model_auc_within_tenure": 0.709754,
+       "n_positive_in_cell": 101,
+       "refit_model": {
+        "auc_within_clock": 0.710756,
+        "auc_within_clock_groups": 42,
+        "auc_within_clock_thin": 0,
+        "auc_within_tenure": 0.710778,
+        "n_train_in_decile": 593,
+        "n_parameters": 411,
+        "rows_per_parameter": 1.442822,
+        "state_coefficients": {
+         "dist_from_running_high": -0.511463,
+         "bars_since_new_high": 0.0,
+         "new_high_count_5": -0.123742,
+         "new_high_count_15": 0.053333,
+         "new_high_count_30": -0.064954,
+         "volume_vs_own_median": -0.047484,
+         "volume_accel": 0.294455,
+         "ret_percentile_candidates": -0.156845,
+         "peer_new_high_5": -0.358655,
+         "up_close_streak": 0.008474,
+         "accel_1_5": 0.027014,
+         "bars_since_gap": 0.187402,
+         "mfe_surrendered_pos": 0.191244,
+         "bars_below_entry_episode": -0.402934
+        },
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+       }
+      },
+      "decile_9": {
+       "n_eval": 742,
+       "dispersion_range": [
+        0.367416,
+        0.482537
+       ],
+       "hazard_base_rate": 0.109164,
+       "global_model_auc_within_clock": 0.717711,
+       "global_model_auc_within_clock_groups": 30,
+       "global_model_auc_within_clock_thin": 0,
+       "global_model_auc_within_tenure": 0.727819,
+       "n_positive_in_cell": 81,
+       "refit_model": {
+        "auc_within_clock": 0.693095,
+        "auc_within_clock_groups": 30,
+        "auc_within_clock_thin": 0,
+        "auc_within_tenure": 0.691185,
+        "n_train_in_decile": 589,
+        "n_parameters": 411,
+        "rows_per_parameter": 1.43309,
+        "state_coefficients": {
+         "dist_from_running_high": -0.55387,
+         "bars_since_new_high": 0.0,
+         "new_high_count_5": 0.226126,
+         "new_high_count_15": -0.045312,
+         "new_high_count_30": -0.016362,
+         "volume_vs_own_median": 0.154096,
+         "volume_accel": -0.148077,
+         "ret_percentile_candidates": 0.05399,
+         "peer_new_high_5": -0.28952,
+         "up_close_streak": -0.308664,
+         "accel_1_5": 0.029419,
+         "bars_since_gap": 0.057375,
+         "mfe_surrendered_pos": -0.155525,
+         "bars_below_entry_episode": 0.151373
+        },
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+       }
+      },
+      "decile_10": {
+       "n_eval": 850,
+       "dispersion_range": [
+        0.484323,
+        3.356256
+       ],
+       "hazard_base_rate": 0.074118,
+       "global_model_auc_within_clock": 0.702901,
+       "global_model_auc_within_clock_groups": 26,
+       "global_model_auc_within_clock_thin": 0,
+       "global_model_auc_within_tenure": 0.700333,
+       "n_positive_in_cell": 63,
+       "refit_model": {
+        "auc_within_clock": 0.615064,
+        "auc_within_clock_groups": 26,
+        "auc_within_clock_thin": 0,
+        "auc_within_tenure": 0.642097,
+        "n_train_in_decile": 597,
+        "n_parameters": 411,
+        "rows_per_parameter": 1.452555,
+        "state_coefficients": {
+         "dist_from_running_high": -0.690816,
+         "bars_since_new_high": 0.0,
+         "new_high_count_5": 0.656784,
+         "new_high_count_15": 0.5472,
+         "new_high_count_30": -0.441564,
+         "volume_vs_own_median": 0.090551,
+         "volume_accel": -0.259013,
+         "ret_percentile_candidates": 0.238093,
+         "peer_new_high_5": -0.966967,
+         "up_close_streak": 0.073637,
+         "accel_1_5": 0.131767,
+         "bars_since_gap": -0.52152,
+         "mfe_surrendered_pos": 0.327737,
+         "bars_below_entry_episode": -0.879979
+        },
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+       }
+      }
+     }
+    }
+   },
+   "B600": {
+    "fit_block1_report_block2": {
+     "deciles_from_TRAIN_block_quantiles": [
+      0.038043,
+      0.055302,
+      0.075113,
+      0.096414,
+      0.120283,
+      0.147541,
+      0.181555,
+      0.229412,
+      0.32626
+     ],
+     "train_median_dispersion": 0.120283,
+     "global_model_summary": {
+      "n_cells": 10,
+      "min": 0.606307,
+      "p25": 0.655494,
+      "median": 0.671355,
+      "p75": 0.714956,
+      "max": 0.793103,
+      "convention": "median = numpy median over the decile cells with a defined value (even counts average the two middle cells)"
+     },
+     "refit_model_summary": {
+      "n_cells": 10,
+      "min": 0.618321,
+      "p25": 0.633275,
+      "median": 0.67026,
+      "p75": 0.697697,
+      "max": 0.764234,
+      "convention": "median = numpy median over the decile cells with a defined value (even counts average the two middle cells)"
+     },
+     "refit_vs_global_median_difference": -0.001096,
+     "median_mediation_of_headline_features": {
+      "dist_from_running_high": {
+       "pooled_train": {
+        "coefficient": -0.591694,
+        "n_train": 14972,
+        "n_parameters": 393,
+        "rows_per_parameter": 38.096692
+       },
+       "calmest_train_decile": {
+        "coefficient": -0.564088,
+        "n_train": 1496,
+        "n_parameters": 393,
+        "rows_per_parameter": 3.806616
+       },
+       "wildest_train_decile": {
+        "coefficient": -0.895736,
+        "n_train": 1500,
+        "n_parameters": 393,
+        "rows_per_parameter": 3.816794
+       },
+       "attenuation_calmest_over_wildest": 0.629748
+      },
+      "mfe_surrendered_pos": {
+       "pooled_train": {
+        "coefficient": 0.41434,
+        "n_train": 14972,
+        "n_parameters": 394,
+        "rows_per_parameter": 38.0
+       },
+       "calmest_train_decile": {
+        "coefficient": 0.243154,
+        "n_train": 1496,
+        "n_parameters": 394,
+        "rows_per_parameter": 3.796954
+       },
+       "wildest_train_decile": {
+        "coefficient": 0.593592,
+        "n_train": 1500,
+        "n_parameters": 394,
+        "rows_per_parameter": 3.807107
+       },
+       "attenuation_calmest_over_wildest": 0.409632
+      },
+      "up_close_streak": {
+       "pooled_train": {
+        "coefficient": -0.579857,
+        "n_train": 14972,
+        "n_parameters": 393,
+        "rows_per_parameter": 38.096692
+       },
+       "calmest_train_decile": {
+        "coefficient": -0.366417,
+        "n_train": 1496,
+        "n_parameters": 393,
+        "rows_per_parameter": 3.806616
+       },
+       "wildest_train_decile": {
+        "coefficient": -0.579947,
+        "n_train": 1500,
+        "n_parameters": 393,
+        "rows_per_parameter": 3.816794
+       },
+       "attenuation_calmest_over_wildest": 0.631811
+      },
+      "accel_1_5": {
+       "pooled_train": {
+        "coefficient": -0.372094,
+        "n_train": 14972,
+        "n_parameters": 393,
+        "rows_per_parameter": 38.096692
+       },
+       "calmest_train_decile": {
+        "coefficient": -0.133167,
+        "n_train": 1496,
+        "n_parameters": 393,
+        "rows_per_parameter": 3.806616
+       },
+       "wildest_train_decile": {
+        "coefficient": -0.676755,
+        "n_train": 1500,
+        "n_parameters": 393,
+        "rows_per_parameter": 3.816794
+       },
+       "attenuation_calmest_over_wildest": 0.196773
+      }
+     },
+     "mediation_reading": "a feature whose coefficient is much smaller in the wildest train decile than in the calmest is substantially mediated by forward dispersion: part of what it detects about the hazard is the tape getting wilder. READ THE ATTENUATION, NOT THE LEVELS: each profile is a single-feature model with one state parameter, but it still carries 391 exact clock levels estimated from that same decile, so rows_per_parameter is reported per cell and is small inside a decile (a handful of rows per clock level). The sign and the collapse across deciles are the finding; the coefficient magnitudes are not effect sizes.",
+     "cells": {
+      "decile_1": {
+       "n_eval": 575,
+       "dispersion_range": [
+        0.006341,
+        0.038038
+       ],
+       "hazard_base_rate": 0.113043,
+       "global_model_auc_within_clock": 0.650794,
+       "global_model_auc_within_clock_groups": 40,
+       "global_model_auc_within_clock_thin": 0,
+       "global_model_auc_within_tenure": 0.622047,
+       "n_positive_in_cell": 65,
+       "refit_model": {
+        "auc_within_clock": 0.666667,
+        "auc_within_clock_groups": 40,
+        "auc_within_clock_thin": 0,
+        "auc_within_tenure": 0.724409,
+        "n_train_in_decile": 1496,
+        "n_parameters": 410,
+        "rows_per_parameter": 3.64878,
+        "state_coefficients": {
+         "dist_from_running_high": -1.941382,
+         "bars_since_new_high": 0.0,
+         "new_high_count_5": -0.081498,
+         "new_high_count_15": 0.490462,
+         "new_high_count_30": -0.374916,
+         "volume_vs_own_median": 0.245867,
+         "volume_accel": 0.103712,
+         "ret_percentile_candidates": -0.209713,
+         "peer_new_high_5": -0.006448,
+         "up_close_streak": -0.283114,
+         "accel_1_5": 0.47854,
+         "bars_since_gap": 0.226643,
+         "mfe_surrendered_pos": -0.081414,
+         "bars_below_entry_episode": 0.002863
+        },
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+       }
+      },
+      "decile_2": {
+       "n_eval": 505,
+       "dispersion_range": [
+        0.038126,
+        0.055172
+       ],
+       "hazard_base_rate": 0.106931,
+       "global_model_auc_within_clock": 0.671756,
+       "global_model_auc_within_clock_groups": 30,
+       "global_model_auc_within_clock_thin": 0,
+       "global_model_auc_within_tenure": 0.597403,
+       "n_positive_in_cell": 54,
+       "refit_model": {
+        "auc_within_clock": 0.618321,
+        "auc_within_clock_groups": 30,
+        "auc_within_clock_thin": 0,
+        "auc_within_tenure": 0.616883,
+        "n_train_in_decile": 1495,
+        "n_parameters": 410,
+        "rows_per_parameter": 3.646341,
+        "state_coefficients": {
+         "dist_from_running_high": -1.255328,
+         "bars_since_new_high": 0.0,
+         "new_high_count_5": 0.152708,
+         "new_high_count_15": -0.044012,
+         "new_high_count_30": 0.026532,
+         "volume_vs_own_median": 0.101331,
+         "volume_accel": -0.005076,
+         "ret_percentile_candidates": -0.656062,
+         "peer_new_high_5": -0.353594,
+         "up_close_streak": 0.026836,
+         "accel_1_5": 0.32267,
+         "bars_since_gap": 0.258801,
+         "mfe_surrendered_pos": 0.026149,
+         "bars_below_entry_episode": 0.063604
+        },
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+       }
+      },
+      "decile_3": {
+       "n_eval": 672,
+       "dispersion_range": [
+        0.055319,
+        0.075085
+       ],
+       "hazard_base_rate": 0.107143,
+       "global_model_auc_within_clock": 0.630499,
+       "global_model_auc_within_clock_groups": 41,
+       "global_model_auc_within_clock_thin": 0,
+       "global_model_auc_within_tenure": 0.632653,
+       "n_positive_in_cell": 72,
+       "refit_model": {
+        "auc_within_clock": 0.678886,
+        "auc_within_clock_groups": 41,
+        "auc_within_clock_thin": 0,
+        "auc_within_tenure": 0.680272,
+        "n_train_in_decile": 1500,
+        "n_parameters": 410,
+        "rows_per_parameter": 3.658537,
+        "state_coefficients": {
+         "dist_from_running_high": -0.904525,
+         "bars_since_new_high": 0.0,
+         "new_high_count_5": 0.26083,
+         "new_high_count_15": -0.3957,
+         "new_high_count_30": 0.690578,
+         "volume_vs_own_median": 0.226829,
+         "volume_accel": -0.024591,
+         "ret_percentile_candidates": -0.290018,
+         "peer_new_high_5": -0.147101,
+         "up_close_streak": -0.094201,
+         "accel_1_5": 0.201775,
+         "bars_since_gap": 0.06045,
+         "mfe_surrendered_pos": 0.132487,
+         "bars_below_entry_episode": -0.167399
+        },
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+       }
+      },
+      "decile_4": {
+       "n_eval": 527,
+       "dispersion_range": [
+        0.07513,
+        0.09633
+       ],
+       "hazard_base_rate": 0.13852,
+       "global_model_auc_within_clock": 0.680556,
+       "global_model_auc_within_clock_groups": 39,
+       "global_model_auc_within_clock_thin": 0,
+       "global_model_auc_within_tenure": 0.700375,
+       "n_positive_in_cell": 73,
+       "refit_model": {
+        "auc_within_clock": 0.66821,
+        "auc_within_clock_groups": 39,
+        "auc_within_clock_thin": 0,
+        "auc_within_tenure": 0.691635,
+        "n_train_in_decile": 1498,
+        "n_parameters": 410,
+        "rows_per_parameter": 3.653659,
+        "state_coefficients": {
+         "dist_from_running_high": -0.522898,
+         "bars_since_new_high": 0.0,
+         "new_high_count_5": 0.042098,
+         "new_high_count_15": 0.054393,
+         "new_high_count_30": 0.188852,
+         "volume_vs_own_median": 0.060578,
+         "volume_accel": 0.121111,
+         "ret_percentile_candidates": -0.260552,
+         "peer_new_high_5": -0.046009,
+         "up_close_streak": -0.480114,
+         "accel_1_5": -0.077013,
+         "bars_since_gap": -0.061541,
+         "mfe_surrendered_pos": -0.058122,
+         "bars_below_entry_episode": 0.046393
+        },
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+       }
+      },
+      "decile_5": {
+       "n_eval": 596,
+       "dispersion_range": [
+        0.096491,
+        0.120263
+       ],
+       "hazard_base_rate": 0.097315,
+       "global_model_auc_within_clock": 0.606307,
+       "global_model_auc_within_clock_groups": 26,
+       "global_model_auc_within_clock_thin": 0,
+       "global_model_auc_within_tenure": 0.615536,
+       "n_positive_in_cell": 58,
+       "refit_model": {
+        "auc_within_clock": 0.620549,
+        "auc_within_clock_groups": 26,
+        "auc_within_clock_thin": 0,
+        "auc_within_tenure": 0.624385,
+        "n_train_in_decile": 1496,
+        "n_parameters": 410,
+        "rows_per_parameter": 3.64878,
+        "state_coefficients": {
+         "dist_from_running_high": -0.773366,
+         "bars_since_new_high": 0.0,
+         "new_high_count_5": -0.094284,
+         "new_high_count_15": -0.243264,
+         "new_high_count_30": 0.129982,
+         "volume_vs_own_median": 0.134781,
+         "volume_accel": -0.161088,
+         "ret_percentile_candidates": 0.003762,
+         "peer_new_high_5": 0.080414,
+         "up_close_streak": -0.227566,
+         "accel_1_5": -0.008302,
+         "bars_since_gap": -0.095598,
+         "mfe_surrendered_pos": 0.014249,
+         "bars_below_entry_episode": 0.091788
+        },
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+       }
+      },
+      "decile_6": {
+       "n_eval": 606,
+       "dispersion_range": [
+        0.120301,
+        0.147541
+       ],
+       "hazard_base_rate": 0.130363,
+       "global_model_auc_within_clock": 0.669596,
+       "global_model_auc_within_clock_groups": 34,
+       "global_model_auc_within_clock_thin": 0,
+       "global_model_auc_within_tenure": 0.675254,
+       "n_positive_in_cell": 79,
+       "refit_model": {
+        "auc_within_clock": 0.622144,
+        "auc_within_clock_groups": 34,
+        "auc_within_clock_thin": 0,
+        "auc_within_tenure": 0.633099,
+        "n_train_in_decile": 1496,
+        "n_parameters": 410,
+        "rows_per_parameter": 3.64878,
+        "state_coefficients": {
+         "dist_from_running_high": -0.711053,
+         "bars_since_new_high": 0.0,
+         "new_high_count_5": -0.471103,
+         "new_high_count_15": 0.531678,
+         "new_high_count_30": -0.461862,
+         "volume_vs_own_median": 0.239118,
+         "volume_accel": -0.211967,
+         "ret_percentile_candidates": -0.441369,
+         "peer_new_high_5": 0.111256,
+         "up_close_streak": -0.091734,
+         "accel_1_5": -0.046363,
+         "bars_since_gap": -0.067433,
+         "mfe_surrendered_pos": 0.028178,
+         "bars_below_entry_episode": -0.439421
+        },
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+       }
+      },
+      "decile_7": {
+       "n_eval": 683,
+       "dispersion_range": [
+        0.147651,
+        0.181513
+       ],
+       "hazard_base_rate": 0.114202,
+       "global_model_auc_within_clock": 0.793103,
+       "global_model_auc_within_clock_groups": 44,
+       "global_model_auc_within_clock_thin": 0,
+       "global_model_auc_within_tenure": 0.789547,
+       "n_positive_in_cell": 78,
+       "refit_model": {
+        "auc_within_clock": 0.764234,
+        "auc_within_clock_groups": 44,
+        "auc_within_clock_thin": 0,
+        "auc_within_tenure": 0.759582,
+        "n_train_in_decile": 1499,
+        "n_parameters": 410,
+        "rows_per_parameter": 3.656098,
+        "state_coefficients": {
+         "dist_from_running_high": -0.678951,
+         "bars_since_new_high": 0.0,
+         "new_high_count_5": 0.294904,
+         "new_high_count_15": -0.094188,
+         "new_high_count_30": -0.01734,
+         "volume_vs_own_median": -0.038187,
+         "volume_accel": 0.18445,
+         "ret_percentile_candidates": -0.029581,
+         "peer_new_high_5": -0.321461,
+         "up_close_streak": -0.039458,
+         "accel_1_5": 0.211772,
+         "bars_since_gap": -0.033042,
+         "mfe_surrendered_pos": 0.135722,
+         "bars_below_entry_episode": -0.169687
+        },
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+       }
+      },
+      "decile_8": {
+       "n_eval": 629,
+       "dispersion_range": [
+        0.181818,
+        0.229258
+       ],
+       "hazard_base_rate": 0.147854,
+       "global_model_auc_within_clock": 0.670955,
+       "global_model_auc_within_clock_groups": 46,
+       "global_model_auc_within_clock_thin": 0,
+       "global_model_auc_within_tenure": 0.679715,
+       "n_positive_in_cell": 93,
+       "refit_model": {
+        "auc_within_clock": 0.672309,
+        "auc_within_clock_groups": 46,
+        "auc_within_clock_thin": 0,
+        "auc_within_tenure": 0.688612,
+        "n_train_in_decile": 1496,
+        "n_parameters": 410,
+        "rows_per_parameter": 3.64878,
+        "state_coefficients": {
+         "dist_from_running_high": -0.697832,
+         "bars_since_new_high": 0.0,
+         "new_high_count_5": 0.196545,
+         "new_high_count_15": -0.122746,
+         "new_high_count_30": 0.05814,
+         "volume_vs_own_median": 0.051046,
+         "volume_accel": 0.027457,
+         "ret_percentile_candidates": 0.727641,
+         "peer_new_high_5": -0.045506,
+         "up_close_streak": 0.090228,
+         "accel_1_5": 0.027193,
+         "bars_since_gap": -0.074655,
+         "mfe_surrendered_pos": 0.036769,
+         "bars_below_entry_episode": 0.041736
+        },
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+       }
+      },
+      "decile_9": {
+       "n_eval": 1112,
+       "dispersion_range": [
+        0.229485,
+        0.32625
+       ],
+       "hazard_base_rate": 0.131295,
+       "global_model_auc_within_clock": 0.726422,
+       "global_model_auc_within_clock_groups": 67,
+       "global_model_auc_within_clock_thin": 0,
+       "global_model_auc_within_tenure": 0.716881,
+       "n_positive_in_cell": 146,
+       "refit_model": {
+        "auc_within_clock": 0.703967,
+        "auc_within_clock_groups": 67,
+        "auc_within_clock_thin": 0,
+        "auc_within_tenure": 0.702676,
+        "n_train_in_decile": 1496,
+        "n_parameters": 410,
+        "rows_per_parameter": 3.64878,
+        "state_coefficients": {
+         "dist_from_running_high": -0.680586,
+         "bars_since_new_high": 0.0,
+         "new_high_count_5": 0.273726,
+         "new_high_count_15": 0.045796,
+         "new_high_count_30": -0.191595,
+         "volume_vs_own_median": 0.157949,
+         "volume_accel": -0.188798,
+         "ret_percentile_candidates": 0.068731,
+         "peer_new_high_5": -0.315471,
+         "up_close_streak": 0.105213,
+         "accel_1_5": -0.030339,
+         "bars_since_gap": -0.021692,
+         "mfe_surrendered_pos": -0.078281,
+         "bars_below_entry_episode": 0.047155
+        },
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+       }
+      },
+      "decile_10": {
+       "n_eval": 1514,
+       "dispersion_range": [
+        0.326379,
+        3.577883
+       ],
+       "hazard_base_rate": 0.109643,
+       "global_model_auc_within_clock": 0.728261,
+       "global_model_auc_within_clock_groups": 66,
+       "global_model_auc_within_clock_thin": 0,
+       "global_model_auc_within_tenure": 0.731911,
+       "n_positive_in_cell": 166,
+       "refit_model": {
+        "auc_within_clock": 0.72142,
+        "auc_within_clock_groups": 66,
+        "auc_within_clock_thin": 0,
+        "auc_within_tenure": 0.727959,
+        "n_train_in_decile": 1500,
+        "n_parameters": 410,
+        "rows_per_parameter": 3.658537,
+        "state_coefficients": {
+         "dist_from_running_high": -0.572862,
+         "bars_since_new_high": 0.0,
+         "new_high_count_5": -0.203881,
+         "new_high_count_15": 0.020767,
+         "new_high_count_30": -0.028909,
+         "volume_vs_own_median": 0.094948,
+         "volume_accel": 0.045996,
+         "ret_percentile_candidates": -0.175271,
+         "peer_new_high_5": -0.220561,
+         "up_close_streak": 0.030875,
+         "accel_1_5": -0.053317,
+         "bars_since_gap": 0.121435,
+         "mfe_surrendered_pos": 0.202635,
+         "bars_below_entry_episode": -0.348717
+        },
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+       }
+      }
+     }
+    },
+    "fit_block2_report_block1": {
+     "deciles_from_TRAIN_block_quantiles": [
+      0.044084,
+      0.067155,
+      0.094337,
+      0.124551,
+      0.158377,
+      0.203556,
+      0.261202,
+      0.329104,
+      0.458065
+     ],
+     "train_median_dispersion": 0.158377,
+     "global_model_summary": {
+      "n_cells": 10,
+      "min": 0.633008,
+      "p25": 0.681607,
+      "median": 0.698719,
+      "p75": 0.770043,
+      "max": 0.853431,
+      "convention": "median = numpy median over the decile cells with a defined value (even counts average the two middle cells)"
+     },
+     "refit_model_summary": {
+      "n_cells": 10,
+      "min": 0.60613,
+      "p25": 0.639044,
+      "median": 0.674465,
+      "p75": 0.761543,
+      "max": 0.823451,
+      "convention": "median = numpy median over the decile cells with a defined value (even counts average the two middle cells)"
+     },
+     "refit_vs_global_median_difference": -0.024254,
+     "median_mediation_of_headline_features": {
+      "dist_from_running_high": {
+       "pooled_train": {
+        "coefficient": -0.582855,
+        "n_train": 7419,
+        "n_parameters": 393,
+        "rows_per_parameter": 18.877863
+       },
+       "calmest_train_decile": {
+        "coefficient": -0.386729,
+        "n_train": 740,
+        "n_parameters": 393,
+        "rows_per_parameter": 1.882952
+       },
+       "wildest_train_decile": {
+        "coefficient": -0.874709,
+        "n_train": 745,
+        "n_parameters": 393,
+        "rows_per_parameter": 1.895674
+       },
+       "attenuation_calmest_over_wildest": 0.442123
+      },
+      "mfe_surrendered_pos": {
+       "pooled_train": {
+        "coefficient": 0.431499,
+        "n_train": 7419,
+        "n_parameters": 394,
+        "rows_per_parameter": 18.829949
+       },
+       "calmest_train_decile": {
+        "coefficient": 0.200483,
+        "n_train": 740,
+        "n_parameters": 394,
+        "rows_per_parameter": 1.878173
+       },
+       "wildest_train_decile": {
+        "coefficient": 0.490427,
+        "n_train": 745,
+        "n_parameters": 394,
+        "rows_per_parameter": 1.890863
+       },
+       "attenuation_calmest_over_wildest": 0.408793
+      },
+      "up_close_streak": {
+       "pooled_train": {
+        "coefficient": -0.375223,
+        "n_train": 7419,
+        "n_parameters": 393,
+        "rows_per_parameter": 18.877863
+       },
+       "calmest_train_decile": {
+        "coefficient": 0.026729,
+        "n_train": 740,
+        "n_parameters": 393,
+        "rows_per_parameter": 1.882952
+       },
+       "wildest_train_decile": {
+        "coefficient": -0.523707,
+        "n_train": 745,
+        "n_parameters": 393,
+        "rows_per_parameter": 1.895674
+       },
+       "attenuation_calmest_over_wildest": -0.051038
+      },
+      "accel_1_5": {
+       "pooled_train": {
+        "coefficient": -0.373812,
+        "n_train": 7419,
+        "n_parameters": 393,
+        "rows_per_parameter": 18.877863
+       },
+       "calmest_train_decile": {
+        "coefficient": -0.158318,
+        "n_train": 740,
+        "n_parameters": 393,
+        "rows_per_parameter": 1.882952
+       },
+       "wildest_train_decile": {
+        "coefficient": -0.71357,
+        "n_train": 745,
+        "n_parameters": 393,
+        "rows_per_parameter": 1.895674
+       },
+       "attenuation_calmest_over_wildest": 0.221868
+      }
+     },
+     "mediation_reading": "a feature whose coefficient is much smaller in the wildest train decile than in the calmest is substantially mediated by forward dispersion: part of what it detects about the hazard is the tape getting wilder. READ THE ATTENUATION, NOT THE LEVELS: each profile is a single-feature model with one state parameter, but it still carries 391 exact clock levels estimated from that same decile, so rows_per_parameter is reported per cell and is small inside a decile (a handful of rows per clock level). The sign and the collapse across deciles are the finding; the coefficient magnitudes are not effect sizes.",
+     "cells": {
+      "decile_1": {
+       "n_eval": 2025,
+       "dispersion_range": [
+        0.002116,
+        0.044044
+       ],
+       "hazard_base_rate": 0.116049,
+       "global_model_auc_within_clock": 0.700075,
+       "global_model_auc_within_clock_groups": 140,
+       "global_model_auc_within_clock_thin": 0,
+       "global_model_auc_within_tenure": 0.68065,
+       "n_positive_in_cell": 235,
+       "refit_model": {
+        "auc_within_clock": 0.628109,
+        "auc_within_clock_groups": 140,
+        "auc_within_clock_thin": 0,
+        "auc_within_tenure": 0.662043,
+        "n_train_in_decile": 740,
+        "n_parameters": 410,
+        "rows_per_parameter": 1.804878,
+        "state_coefficients": {
+         "dist_from_running_high": -1.040337,
+         "bars_since_new_high": 0.0,
+         "new_high_count_5": -0.067831,
+         "new_high_count_15": -0.141985,
+         "new_high_count_30": 0.071913,
+         "volume_vs_own_median": 0.350217,
+         "volume_accel": -0.150308,
+         "ret_percentile_candidates": 0.140705,
+         "peer_new_high_5": -0.203798,
+         "up_close_streak": 0.1731,
+         "accel_1_5": -0.486272,
+         "bars_since_gap": -0.03058,
+         "mfe_surrendered_pos": 0.193982,
+         "bars_below_entry_episode": -0.404184
+        },
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+       }
+      },
+      "decile_2": {
+       "n_eval": 1912,
+       "dispersion_range": [
+        0.044118,
+        0.067146
+       ],
+       "hazard_base_rate": 0.11454,
+       "global_model_auc_within_clock": 0.684044,
+       "global_model_auc_within_clock_groups": 127,
+       "global_model_auc_within_clock_thin": 0,
+       "global_model_auc_within_tenure": 0.673289,
+       "n_positive_in_cell": 219,
+       "refit_model": {
+        "auc_within_clock": 0.617255,
+        "auc_within_clock_groups": 127,
+        "auc_within_clock_thin": 0,
+        "auc_within_tenure": 0.621339,
+        "n_train_in_decile": 744,
+        "n_parameters": 410,
+        "rows_per_parameter": 1.814634,
+        "state_coefficients": {
+         "dist_from_running_high": -2.10694,
+         "bars_since_new_high": 0.0,
+         "new_high_count_5": 0.561748,
+         "new_high_count_15": -0.106285,
+         "new_high_count_30": -0.667255,
+         "volume_vs_own_median": 0.120564,
+         "volume_accel": -0.220401,
+         "ret_percentile_candidates": -0.707533,
+         "peer_new_high_5": 0.273274,
+         "up_close_streak": -0.330108,
+         "accel_1_5": 0.585939,
+         "bars_since_gap": -0.085844,
+         "mfe_surrendered_pos": -0.416734,
+         "bars_below_entry_episode": 0.012173
+        },
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+       }
+      },
+      "decile_3": {
+       "n_eval": 1890,
+       "dispersion_range": [
+        0.067164,
+        0.094288
+       ],
+       "hazard_base_rate": 0.128571,
+       "global_model_auc_within_clock": 0.633008,
+       "global_model_auc_within_clock_groups": 114,
+       "global_model_auc_within_clock_thin": 0,
+       "global_model_auc_within_tenure": 0.634718,
+       "n_positive_in_cell": 243,
+       "refit_model": {
+        "auc_within_clock": 0.60613,
+        "auc_within_clock_groups": 114,
+        "auc_within_clock_thin": 0,
+        "auc_within_tenure": 0.5845,
+        "n_train_in_decile": 740,
+        "n_parameters": 410,
+        "rows_per_parameter": 1.804878,
+        "state_coefficients": {
+         "dist_from_running_high": -0.621271,
+         "bars_since_new_high": 0.0,
+         "new_high_count_5": 0.048605,
+         "new_high_count_15": 0.256871,
+         "new_high_count_30": -0.034463,
+         "volume_vs_own_median": 0.156353,
+         "volume_accel": -0.006321,
+         "ret_percentile_candidates": -0.118051,
+         "peer_new_high_5": -0.443558,
+         "up_close_streak": 0.061497,
+         "accel_1_5": -0.152395,
+         "bars_since_gap": 0.075831,
+         "mfe_surrendered_pos": 0.289,
+         "bars_below_entry_episode": -0.214276
+        },
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+       }
+      },
+      "decile_4": {
+       "n_eval": 1883,
+       "dispersion_range": [
+        0.09434,
+        0.124422
+       ],
+       "hazard_base_rate": 0.139671,
+       "global_model_auc_within_clock": 0.697362,
+       "global_model_auc_within_clock_groups": 120,
+       "global_model_auc_within_clock_thin": 0,
+       "global_model_auc_within_tenure": 0.693077,
+       "n_positive_in_cell": 263,
+       "refit_model": {
+        "auc_within_clock": 0.672548,
+        "auc_within_clock_groups": 120,
+        "auc_within_clock_thin": 0,
+        "auc_within_tenure": 0.657366,
+        "n_train_in_decile": 744,
+        "n_parameters": 410,
+        "rows_per_parameter": 1.814634,
+        "state_coefficients": {
+         "dist_from_running_high": -1.0395,
+         "bars_since_new_high": 0.0,
+         "new_high_count_5": 0.016485,
+         "new_high_count_15": 0.373623,
+         "new_high_count_30": -0.046189,
+         "volume_vs_own_median": -0.212195,
+         "volume_accel": 0.405495,
+         "ret_percentile_candidates": 0.235723,
+         "peer_new_high_5": 0.387582,
+         "up_close_streak": 0.257354,
+         "accel_1_5": -0.179482,
+         "bars_since_gap": -0.14919,
+         "mfe_surrendered_pos": -0.188082,
+         "bars_below_entry_episode": 0.244466
+        },
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+       }
+      },
+      "decile_5": {
+       "n_eval": 1743,
+       "dispersion_range": [
+        0.124564,
+        0.158324
+       ],
+       "hazard_base_rate": 0.152037,
+       "global_model_auc_within_clock": 0.675601,
+       "global_model_auc_within_clock_groups": 106,
+       "global_model_auc_within_clock_thin": 0,
+       "global_model_auc_within_tenure": 0.654908,
+       "n_positive_in_cell": 265,
+       "refit_model": {
+        "auc_within_clock": 0.676381,
+        "auc_within_clock_groups": 106,
+        "auc_within_clock_thin": 0,
+        "auc_within_tenure": 0.651431,
+        "n_train_in_decile": 740,
+        "n_parameters": 410,
+        "rows_per_parameter": 1.804878,
+        "state_coefficients": {
+         "dist_from_running_high": -0.715294,
+         "bars_since_new_high": 0.0,
+         "new_high_count_5": -0.192537,
+         "new_high_count_15": -0.232523,
+         "new_high_count_30": -0.00794,
+         "volume_vs_own_median": 0.067889,
+         "volume_accel": -0.238399,
+         "ret_percentile_candidates": 0.03668,
+         "peer_new_high_5": -0.012549,
+         "up_close_streak": -0.312047,
+         "accel_1_5": 0.157796,
+         "bars_since_gap": 0.100963,
+         "mfe_surrendered_pos": 0.107462,
+         "bars_below_entry_episode": -0.179732
+        },
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+       }
+      },
+      "decile_6": {
+       "n_eval": 1799,
+       "dispersion_range": [
+        0.1584,
+        0.203501
+       ],
+       "hazard_base_rate": 0.147304,
+       "global_model_auc_within_clock": 0.680795,
+       "global_model_auc_within_clock_groups": 91,
+       "global_model_auc_within_clock_thin": 0,
+       "global_model_auc_within_tenure": 0.691306,
+       "n_positive_in_cell": 265,
+       "refit_model": {
+        "auc_within_clock": 0.671849,
+        "auc_within_clock_groups": 91,
+        "auc_within_clock_thin": 0,
+        "auc_within_tenure": 0.66891,
+        "n_train_in_decile": 742,
+        "n_parameters": 410,
+        "rows_per_parameter": 1.809756,
+        "state_coefficients": {
+         "dist_from_running_high": -0.663785,
+         "bars_since_new_high": 0.0,
+         "new_high_count_5": -0.107614,
+         "new_high_count_15": 0.452744,
+         "new_high_count_30": -0.082912,
+         "volume_vs_own_median": 0.214237,
+         "volume_accel": -0.10295,
+         "ret_percentile_candidates": -0.337053,
+         "peer_new_high_5": -0.559684,
+         "up_close_streak": 0.127287,
+         "accel_1_5": 0.043432,
+         "bars_since_gap": -0.129361,
+         "mfe_surrendered_pos": 0.134963,
+         "bars_below_entry_episode": -0.089782
+        },
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+       }
+      },
+      "decile_7": {
+       "n_eval": 1357,
+       "dispersion_range": [
+        0.203571,
+        0.261013
+       ],
+       "hazard_base_rate": 0.141489,
+       "global_model_auc_within_clock": 0.706189,
+       "global_model_auc_within_clock_groups": 67,
+       "global_model_auc_within_clock_thin": 0,
+       "global_model_auc_within_tenure": 0.711006,
+       "n_positive_in_cell": 192,
+       "refit_model": {
+        "auc_within_clock": 0.702468,
+        "auc_within_clock_groups": 67,
+        "auc_within_clock_thin": 0,
+        "auc_within_tenure": 0.695122,
+        "n_train_in_decile": 743,
+        "n_parameters": 410,
+        "rows_per_parameter": 1.812195,
+        "state_coefficients": {
+         "dist_from_running_high": -0.672506,
+         "bars_since_new_high": 0.0,
+         "new_high_count_5": 0.070933,
+         "new_high_count_15": -0.163911,
+         "new_high_count_30": 0.292719,
+         "volume_vs_own_median": 0.022638,
+         "volume_accel": 0.20238,
+         "ret_percentile_candidates": 0.080473,
+         "peer_new_high_5": -0.039321,
+         "up_close_streak": -0.121563,
+         "accel_1_5": 0.079317,
+         "bars_since_gap": 0.072748,
+         "mfe_surrendered_pos": 0.110371,
+         "bars_below_entry_episode": -0.113747
+        },
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+       }
+      },
+      "decile_8": {
+       "n_eval": 885,
+       "dispersion_range": [
+        0.261261,
+        0.329004
+       ],
+       "hazard_base_rate": 0.118644,
+       "global_model_auc_within_clock": 0.811583,
+       "global_model_auc_within_clock_groups": 54,
+       "global_model_auc_within_clock_thin": 0,
+       "global_model_auc_within_tenure": 0.795073,
+       "n_positive_in_cell": 105,
+       "refit_model": {
+        "auc_within_clock": 0.781234,
+        "auc_within_clock_groups": 54,
+        "auc_within_clock_thin": 0,
+        "auc_within_tenure": 0.782145,
+        "n_train_in_decile": 742,
+        "n_parameters": 410,
+        "rows_per_parameter": 1.809756,
+        "state_coefficients": {
+         "dist_from_running_high": -0.432964,
+         "bars_since_new_high": 0.0,
+         "new_high_count_5": 0.208738,
+         "new_high_count_15": 0.550256,
+         "new_high_count_30": -0.173248,
+         "volume_vs_own_median": 0.058275,
+         "volume_accel": -0.036628,
+         "ret_percentile_candidates": 0.009783,
+         "peer_new_high_5": -0.050733,
+         "up_close_streak": -0.486335,
+         "accel_1_5": 0.015548,
+         "bars_since_gap": -0.214092,
+         "mfe_surrendered_pos": 0.077971,
+         "bars_below_entry_episode": 0.15762
+        },
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+       }
+      },
+      "decile_9": {
+       "n_eval": 789,
+       "dispersion_range": [
+        0.329114,
+        0.457944
+       ],
+       "hazard_base_rate": 0.089987,
+       "global_model_auc_within_clock": 0.853431,
+       "global_model_auc_within_clock_groups": 34,
+       "global_model_auc_within_clock_thin": 0,
+       "global_model_auc_within_tenure": 0.822595,
+       "n_positive_in_cell": 71,
+       "refit_model": {
+        "auc_within_clock": 0.823451,
+        "auc_within_clock_groups": 34,
+        "auc_within_clock_thin": 0,
+        "auc_within_tenure": 0.812715,
+        "n_train_in_decile": 739,
+        "n_parameters": 410,
+        "rows_per_parameter": 1.802439,
+        "state_coefficients": {
+         "dist_from_running_high": -0.449356,
+         "bars_since_new_high": 0.0,
+         "new_high_count_5": 0.208207,
+         "new_high_count_15": -0.071496,
+         "new_high_count_30": 0.046172,
+         "volume_vs_own_median": -0.136972,
+         "volume_accel": 0.00525,
+         "ret_percentile_candidates": 0.221187,
+         "peer_new_high_5": -0.197107,
+         "up_close_streak": 0.081717,
+         "accel_1_5": -0.128116,
+         "bars_since_gap": 0.018218,
+         "mfe_surrendered_pos": 0.00526,
+         "bars_below_entry_episode": -0.379281
+        },
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+       }
+      },
+      "decile_10": {
+       "n_eval": 689,
+       "dispersion_range": [
+        0.458796,
+        2.220257
+       ],
+       "hazard_base_rate": 0.075472,
+       "global_model_auc_within_clock": 0.791328,
+       "global_model_auc_within_clock_groups": 21,
+       "global_model_auc_within_clock_thin": 0,
+       "global_model_auc_within_tenure": 0.760979,
+       "n_positive_in_cell": 52,
+       "refit_model": {
+        "auc_within_clock": 0.804878,
+        "auc_within_clock_groups": 21,
+        "auc_within_clock_thin": 0,
+        "auc_within_tenure": 0.764579,
+        "n_train_in_decile": 745,
+        "n_parameters": 410,
+        "rows_per_parameter": 1.817073,
+        "state_coefficients": {
+         "dist_from_running_high": -0.567883,
+         "bars_since_new_high": 0.0,
+         "new_high_count_5": 0.303975,
+         "new_high_count_15": 0.259565,
+         "new_high_count_30": -0.405406,
+         "volume_vs_own_median": 0.266732,
+         "volume_accel": -0.178712,
+         "ret_percentile_candidates": -0.816962,
+         "peer_new_high_5": -0.364784,
+         "up_close_streak": -0.124249,
+         "accel_1_5": -0.031325,
+         "bars_since_gap": 0.197201,
+         "mfe_surrendered_pos": 0.005378,
+         "bars_below_entry_episode": -0.031688
+        },
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+       }
+      }
+     }
+    }
+   }
+  },
+  "C_three_label_comparison": {
+   "same_rows": "new-high bars in the primary window, both blocks, both directions, ONE shared mask (identical for all three labels here)",
+   "labels": {
+    "hazard_barrier_label": "final_high_flag(t): does the future MAX of the tape ever exceed the running high at t. It is a BARRIER / first-passage statement about a future maximum against a fixed level (not the magnitude of that maximum). For a fixed barrier more forward dispersion makes a crossing more likely, so P(last new high) is structurally DECREASING in dispersion - an overlap this section measures rather than assumes.",
+    "direction_sign_of_forward_forced_flat": "sign of the executable forward return to the forced flat measured from next_open(t): a NON-max, non-barrier label carrying the same horizon information",
+    "dispersion_train_median_split": "realized range over the next 30 bars above the TRAIN-block median (the section's single split rule); the threshold-free companion is the Spearman correlation of the same score"
+   },
+   "by_family": {
+    "A_pm": {
+     "fit_block1_report_block2": {
+      "split_cut_train_median": 0.147541,
+      "coordinates": "auc_within_clock for every label (identical rows, identical coordinate)",
+      "direction_label_exactly_flat_share_of_the_nonpositive_class": 0.004725,
+      "direction_label_class_0_definition": "sign label 0 = forward return to the forced flat <= 0; its exactly-flat share is reported because a flat forward value belongs to class 0",
+      "hazard_barrier_label": {
+       "n_train": 13844,
+       "n_eval": 5926,
+       "base_rate_eval": 0.154404,
+       "auc_within_clock_clock_only": 0.5,
+       "auc_within_clock_clock_plus_state": 0.675778,
+       "auc_within_clock_groups": 229,
+       "auc_within_clock_thin": 0,
+       "auc_within_tenure_clock_plus_state": 0.677065,
+       "delta_within_clock": 0.175778,
+       "auc_pooled_REPORTED_SEPARATELY": 0.67695
+      },
+      "direction_sign_of_forward_forced_flat": {
+       "n_train": 13844,
+       "n_eval": 5926,
+       "base_rate_eval": 0.356902,
+       "auc_within_clock_clock_only": 0.5,
+       "auc_within_clock_clock_plus_state": 0.565942,
+       "auc_within_clock_groups": 348,
+       "auc_within_clock_thin": 0,
+       "auc_within_tenure_clock_plus_state": 0.564985,
+       "delta_within_clock": 0.065942,
+       "auc_pooled_REPORTED_SEPARATELY": 0.547256
+      },
+      "dispersion_train_median_split": {
+       "n_train": 13844,
+       "n_eval": 5926,
+       "base_rate_eval": 0.650354,
+       "auc_within_clock_clock_only": 0.5,
+       "auc_within_clock_clock_plus_state": 0.724959,
+       "auc_within_clock_groups": 344,
+       "auc_within_clock_thin": 0,
+       "auc_within_tenure_clock_plus_state": 0.728632,
+       "delta_within_clock": 0.224959,
+       "auc_pooled_REPORTED_SEPARATELY": 0.811232,
+       "spearman_threshold_free_companion": 0.588279
+      }
+     },
+     "fit_block2_report_block1": {
+      "split_cut_train_median": 0.201972,
+      "coordinates": "auc_within_clock for every label (identical rows, identical coordinate)",
+      "direction_label_exactly_flat_share_of_the_nonpositive_class": 0.003251,
+      "direction_label_class_0_definition": "sign label 0 = forward return to the forced flat <= 0; its exactly-flat share is reported because a flat forward value belongs to class 0",
+      "hazard_barrier_label": {
+       "n_train": 5926,
+       "n_eval": 13844,
+       "base_rate_eval": 0.149379,
+       "auc_within_clock_clock_only": 0.5,
+       "auc_within_clock_clock_plus_state": 0.661329,
+       "auc_within_clock_groups": 318,
+       "auc_within_clock_thin": 0,
+       "auc_within_tenure_clock_plus_state": 0.663285,
+       "delta_within_clock": 0.161329,
+       "auc_pooled_REPORTED_SEPARATELY": 0.671733
+      },
+      "direction_sign_of_forward_forced_flat": {
+       "n_train": 5926,
+       "n_eval": 13844,
+       "base_rate_eval": 0.391361,
+       "auc_within_clock_clock_only": 0.5,
+       "auc_within_clock_clock_plus_state": 0.573231,
+       "auc_within_clock_groups": 386,
+       "auc_within_clock_thin": 0,
+       "auc_within_tenure_clock_plus_state": 0.571383,
+       "delta_within_clock": 0.073231,
+       "auc_pooled_REPORTED_SEPARATELY": 0.550267
+      },
+      "dispersion_train_median_split": {
+       "n_train": 5926,
+       "n_eval": 13844,
+       "base_rate_eval": 0.333141,
+       "auc_within_clock_clock_only": 0.5,
+       "auc_within_clock_clock_plus_state": 0.705197,
+       "auc_within_clock_groups": 367,
+       "auc_within_clock_thin": 0,
+       "auc_within_tenure_clock_plus_state": 0.708182,
+       "delta_within_clock": 0.205197,
+       "auc_pooled_REPORTED_SEPARATELY": 0.764175,
+       "spearman_threshold_free_companion": 0.587647
+      }
+     }
+    },
+    "B600": {
+     "fit_block1_report_block2": {
+      "split_cut_train_median": 0.120283,
+      "coordinates": "auc_within_clock for every label (identical rows, identical coordinate)",
+      "direction_label_exactly_flat_share_of_the_nonpositive_class": 0.002965,
+      "direction_label_class_0_definition": "sign label 0 = forward return to the forced flat <= 0; its exactly-flat share is reported because a flat forward value belongs to class 0",
+      "hazard_barrier_label": {
+       "n_train": 14972,
+       "n_eval": 7419,
+       "base_rate_eval": 0.119154,
+       "auc_within_clock_clock_only": 0.5,
+       "auc_within_clock_clock_plus_state": 0.698608,
+       "auc_within_clock_groups": 258,
+       "auc_within_clock_thin": 0,
+       "auc_within_tenure_clock_plus_state": 0.701403,
+       "delta_within_clock": 0.198608,
+       "auc_pooled_REPORTED_SEPARATELY": 0.688528
+      },
+      "direction_sign_of_forward_forced_flat": {
+       "n_train": 14972,
+       "n_eval": 7419,
+       "base_rate_eval": 0.383475,
+       "auc_within_clock_clock_only": 0.5,
+       "auc_within_clock_clock_plus_state": 0.565368,
+       "auc_within_clock_groups": 349,
+       "auc_within_clock_thin": 0,
+       "auc_within_tenure_clock_plus_state": 0.566766,
+       "delta_within_clock": 0.065368,
+       "auc_pooled_REPORTED_SEPARATELY": 0.539225
+      },
+      "dispersion_train_median_split": {
+       "n_train": 14972,
+       "n_eval": 7419,
+       "base_rate_eval": 0.612481,
+       "auc_within_clock_clock_only": 0.5,
+       "auc_within_clock_clock_plus_state": 0.750951,
+       "auc_within_clock_groups": 349,
+       "auc_within_clock_thin": 0,
+       "auc_within_tenure_clock_plus_state": 0.75624,
+       "delta_within_clock": 0.250951,
+       "auc_pooled_REPORTED_SEPARATELY": 0.823969,
+       "spearman_threshold_free_companion": 0.623062
+      }
+     },
+     "fit_block2_report_block1": {
+      "split_cut_train_median": 0.158377,
+      "coordinates": "auc_within_clock for every label (identical rows, identical coordinate)",
+      "direction_label_exactly_flat_share_of_the_nonpositive_class": 0.003674,
+      "direction_label_class_0_definition": "sign label 0 = forward return to the forced flat <= 0; its exactly-flat share is reported because a flat forward value belongs to class 0",
+      "hazard_barrier_label": {
+       "n_train": 7419,
+       "n_eval": 14972,
+       "base_rate_eval": 0.127571,
+       "auc_within_clock_clock_only": 0.5,
+       "auc_within_clock_clock_plus_state": 0.701099,
+       "auc_within_clock_groups": 322,
+       "auc_within_clock_thin": 0,
+       "auc_within_tenure_clock_plus_state": 0.698323,
+       "delta_within_clock": 0.201099,
+       "auc_pooled_REPORTED_SEPARATELY": 0.675969
+      },
+      "direction_sign_of_forward_forced_flat": {
+       "n_train": 7419,
+       "n_eval": 14972,
+       "base_rate_eval": 0.382848,
+       "auc_within_clock_clock_only": 0.5,
+       "auc_within_clock_clock_plus_state": 0.54263,
+       "auc_within_clock_groups": 357,
+       "auc_within_clock_thin": 0,
+       "auc_within_tenure_clock_plus_state": 0.543848,
+       "delta_within_clock": 0.04263,
+       "auc_pooled_REPORTED_SEPARATELY": 0.528596
+      },
+      "dispersion_train_median_split": {
+       "n_train": 7419,
+       "n_eval": 14972,
+       "base_rate_eval": 0.368621,
+       "auc_within_clock_clock_only": 0.5,
+       "auc_within_clock_clock_plus_state": 0.72598,
+       "auc_within_clock_groups": 350,
+       "auc_within_clock_thin": 0,
+       "auc_within_tenure_clock_plus_state": 0.731741,
+       "delta_within_clock": 0.22598,
+       "auc_pooled_REPORTED_SEPARATELY": 0.784558,
+       "spearman_threshold_free_companion": 0.587313
+      }
+     }
+    }
+   },
+   "delta_ratio": {
+    "A_pm": {
+     "fit_block1_report_block2": {
+      "delta_hazard": 0.175778,
+      "delta_dispersion": 0.224959,
+      "delta_direction": 0.065942,
+      "dispersion_share_of_hazard": 1.27979
+     },
+     "fit_block2_report_block1": {
+      "delta_hazard": 0.161329,
+      "delta_dispersion": 0.205197,
+      "delta_direction": 0.073231,
+      "dispersion_share_of_hazard": 1.271916
+     }
+    },
+    "B600": {
+     "fit_block1_report_block2": {
+      "delta_hazard": 0.198608,
+      "delta_dispersion": 0.250951,
+      "delta_direction": 0.065368,
+      "dispersion_share_of_hazard": 1.263549
+     },
+     "fit_block2_report_block1": {
+      "delta_hazard": 0.201099,
+      "delta_dispersion": 0.22598,
+      "delta_direction": 0.04263,
+      "dispersion_share_of_hazard": 1.123725
+     }
+    }
+   }
+  }
+ },
  "headline": {
   "peak_timing_hindsight_cohorted": {
    "A_pm": {
@@ -100277,74 +103118,74 @@
      },
      "auc_within_clock_by_variant": {
       "b1_to_b2": {
-       "tenure_only": 0.4994455396747166,
-       "state_only": 0.67674683005511,
        "clock_only": 0.5,
        "tenure_plus_state": 0.6719583090640261,
+       "state_only": 0.67674683005511,
+       "clock_plus_tenure_plus_state": 0.6734480711501412,
        "clock_plus_state": 0.673408866884717,
-       "clock_plus_tenure_plus_state": 0.6734480711501412
+       "tenure_only": 0.4994455396747166
       },
       "b2_to_b1": {
-       "tenure_only": 0.49814792491996135,
-       "state_only": 0.6645879771417363,
        "clock_only": 0.5,
        "tenure_plus_state": 0.6522312754494322,
+       "state_only": 0.6645879771417363,
+       "clock_plus_tenure_plus_state": 0.6536696216781659,
        "clock_plus_state": 0.6525142455526702,
-       "clock_plus_tenure_plus_state": 0.6536696216781659
+       "tenure_only": 0.49814792491996135
       }
      },
      "auc_within_tenure_by_variant": {
       "b1_to_b2": {
-       "tenure_only": 0.5,
-       "state_only": 0.6787713354080148,
        "clock_only": 0.5040918312073159,
        "tenure_plus_state": 0.6722605176790475,
+       "state_only": 0.6787713354080148,
+       "clock_plus_tenure_plus_state": 0.6752530509500696,
        "clock_plus_state": 0.6739838132361844,
-       "clock_plus_tenure_plus_state": 0.6752530509500696
+       "tenure_only": 0.5
       },
       "b2_to_b1": {
-       "tenure_only": 0.5,
-       "state_only": 0.6675503461296413,
        "clock_only": 0.5056619729389553,
        "tenure_plus_state": 0.655239144115796,
+       "state_only": 0.6675503461296413,
+       "clock_plus_tenure_plus_state": 0.6562642581812461,
        "clock_plus_state": 0.6552612688797986,
-       "clock_plus_tenure_plus_state": 0.6562642581812461
+       "tenure_only": 0.5
       }
      },
      "auc_pooled_by_variant": {
       "b1_to_b2": {
-       "tenure_only": 0.5294331687503558,
-       "state_only": 0.690314876310699,
        "clock_only": 0.5369160009682885,
        "tenure_plus_state": 0.654784705734589,
+       "state_only": 0.690314876310699,
+       "clock_plus_tenure_plus_state": 0.6595473772548672,
        "clock_plus_state": 0.6573895888120082,
-       "clock_plus_tenure_plus_state": 0.6595473772548672
+       "tenure_only": 0.5294331687503558
       },
       "b2_to_b1": {
-       "tenure_only": 0.4949179957135063,
-       "state_only": 0.6886977259836758,
        "clock_only": 0.5044433787553535,
        "tenure_plus_state": 0.6440406028902146,
+       "state_only": 0.6886977259836758,
+       "clock_plus_tenure_plus_state": 0.6472494822222261,
        "clock_plus_state": 0.6449421571140256,
-       "clock_plus_tenure_plus_state": 0.6472494822222261
+       "tenure_only": 0.4949179957135063
       }
      },
      "brier_by_variant": {
       "b1_to_b2": {
-       "tenure_only": 0.1332608795818532,
-       "state_only": 0.12303515288786912,
        "clock_only": 0.13360080384865497,
        "tenure_plus_state": 0.12897387718294268,
+       "state_only": 0.12303515288786912,
+       "clock_plus_tenure_plus_state": 0.1285676388939776,
        "clock_plus_state": 0.12982034731156636,
-       "clock_plus_tenure_plus_state": 0.1285676388939776
+       "tenure_only": 0.1332608795818532
       },
       "b2_to_b1": {
-       "tenure_only": 0.14105278123777004,
-       "state_only": 0.11857071762271151,
        "clock_only": 0.13989121855723108,
        "tenure_plus_state": 0.12515507804491088,
+       "state_only": 0.11857071762271151,
+       "clock_plus_tenure_plus_state": 0.12520955157828506,
        "clock_plus_state": 0.12546698443136378,
-       "clock_plus_tenure_plus_state": 0.12520955157828506
+       "tenure_only": 0.14105278123777004
       }
      },
      "top_decile_within_minute_lift": {
@@ -100405,74 +103246,74 @@
      },
      "auc_within_clock_by_variant": {
       "b1_to_b2": {
-       "tenure_only": 0.5159944248975915,
-       "state_only": 0.6980096204511074,
        "clock_only": 0.5,
        "tenure_plus_state": 0.6960039433651182,
+       "state_only": 0.6980096204511074,
+       "clock_plus_tenure_plus_state": 0.6964543708462938,
        "clock_plus_state": 0.6935223429027927,
-       "clock_plus_tenure_plus_state": 0.6964543708462938
+       "tenure_only": 0.5159944248975915
       },
       "b2_to_b1": {
-       "tenure_only": 0.5057179722544554,
-       "state_only": 0.6997029737265973,
        "clock_only": 0.5,
        "tenure_plus_state": 0.678592459169712,
+       "state_only": 0.6997029737265973,
+       "clock_plus_tenure_plus_state": 0.6826434472367031,
        "clock_plus_state": 0.6732390585219695,
-       "clock_plus_tenure_plus_state": 0.6826434472367031
+       "tenure_only": 0.5057179722544554
       }
      },
      "auc_within_tenure_by_variant": {
       "b1_to_b2": {
-       "tenure_only": 0.5,
-       "state_only": 0.7069608843299747,
        "clock_only": 0.4784786953058401,
        "tenure_plus_state": 0.7021814777030898,
+       "state_only": 0.7069608843299747,
+       "clock_plus_tenure_plus_state": 0.6974439956957391,
        "clock_plus_state": 0.6948237069748592,
-       "clock_plus_tenure_plus_state": 0.6974439956957391
+       "tenure_only": 0.5
       },
       "b2_to_b1": {
-       "tenure_only": 0.5,
-       "state_only": 0.7017721626020843,
        "clock_only": 0.48924018968833893,
        "tenure_plus_state": 0.681432104680905,
+       "state_only": 0.7017721626020843,
+       "clock_plus_tenure_plus_state": 0.6805449664240366,
        "clock_plus_state": 0.6727108098395541,
-       "clock_plus_tenure_plus_state": 0.6805449664240366
+       "tenure_only": 0.5
       }
      },
      "auc_pooled_by_variant": {
       "b1_to_b2": {
-       "tenure_only": 0.5337972161900928,
-       "state_only": 0.6941374539257839,
        "clock_only": 0.5265238782589523,
        "tenure_plus_state": 0.6756999050527167,
+       "state_only": 0.6941374539257839,
+       "clock_plus_tenure_plus_state": 0.6749842537921227,
        "clock_plus_state": 0.668013704542172,
-       "clock_plus_tenure_plus_state": 0.6749842537921227
+       "tenure_only": 0.5337972161900928
       },
       "b2_to_b1": {
-       "tenure_only": 0.5127939447618652,
-       "state_only": 0.6910175336592909,
        "clock_only": 0.5064094413731745,
        "tenure_plus_state": 0.6343330357014502,
+       "state_only": 0.6910175336592909,
+       "clock_plus_tenure_plus_state": 0.6383338351545317,
        "clock_plus_state": 0.627080035556095,
-       "clock_plus_tenure_plus_state": 0.6383338351545317
+       "tenure_only": 0.5127939447618652
       }
      },
      "brier_by_variant": {
       "b1_to_b2": {
-       "tenure_only": 0.10876852565609224,
-       "state_only": 0.09973359222317141,
        "clock_only": 0.1092018378232327,
        "tenure_plus_state": 0.10441040303850078,
+       "state_only": 0.09973359222317141,
+       "clock_plus_tenure_plus_state": 0.10389045208056544,
        "clock_plus_state": 0.10574988945690307,
-       "clock_plus_tenure_plus_state": 0.10389045208056544
+       "tenure_only": 0.10876852565609224
       },
       "b2_to_b1": {
-       "tenure_only": 0.11867283221591036,
-       "state_only": 0.10414559973223426,
        "clock_only": 0.11934900629521049,
        "tenure_plus_state": 0.1107979033865631,
+       "state_only": 0.10414559973223426,
+       "clock_plus_tenure_plus_state": 0.1102373217188055,
        "clock_plus_state": 0.11175041912736877,
-       "clock_plus_tenure_plus_state": 0.1102373217188055
+       "tenure_only": 0.11867283221591036
       }
      },
      "top_decile_within_minute_lift": {
@@ -102427,6 +105268,14 @@
      "features_constant_in_risk_set": []
     }
    }
+  },
+  "volatility_control": {
+   "dispersion_label_null_share": {
+    "value": 0.006483,
+    "denominator": "rows with fewer than two future bars inside the 30-bar window, over all 1,900,432 panel rows (2 * 6,160 member-last-rows = 12,320 is the floor from the tape end; the rest are window tails)"
+   },
+   "median_split_rule": "TRAIN-block median everywhere in this section",
+   "labels_never_features": "no fwd_* key appears in MODEL_FEATURES or in any design matrix; tape columns are not state families per the registry"
   }
  }
 }

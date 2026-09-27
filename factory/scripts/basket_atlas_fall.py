@@ -84,6 +84,10 @@ FAMILIES = ("A_pm", "B600")
 FAM = list(FAMILIES)
 BLOCKS = ("block1", "block2")
 
+# headline carriers whose coefficient attenuation across dispersion deciles is published
+VOL_MEDIATION_FEATURES = ("dist_from_running_high", "mfe_surrendered_pos", "up_close_streak",
+                          "accel_1_5")
+
 # time-control variants (clock and tenure are separate coordinates in every one of them)
 VARIANTS_NAMES = ("clock_only", "tenure_only", "state_only", "clock_plus_state",
                   "tenure_plus_state", "clock_plus_tenure_plus_state")
@@ -156,6 +160,7 @@ PAIRED_FEATURES = MODEL_FEATURES + ("range_expansion", "ret_1", "mfe_so_far")
 NONFIRING_FLAGS = tuple(f"giveback_condition_after_forced_flat_{g}" for g in (5, 10, 15, 20))
 PANEL_COLUMNS = KEYS + (
     "block", "et", "bar_index", "session_end", "entry_et", "entry_px", "session_peak_et",
+    "bar_high", "bar_low", "bar_close",
     "session_peak_ret_from_entry", "session_peak_bars_from_entry", "session_close_ret_from_entry",
     "final_high_flag", "bars_since_new_high", "mfe_so_far",
     # v2: censoring, executable terminal price, forced-flat continuation, non-firing diagnostics
@@ -189,13 +194,18 @@ def auc_score(y: np.ndarray, s: np.ndarray) -> float:
     return float((ranks[y > 0].sum() - n1 * (n1 + 1) / 2.0) / (n1 * n0))
 
 
-def auc_within_group(y: np.ndarray, s: np.ndarray, g: np.ndarray) -> tuple[float, int]:
-    """n_pos*n_neg-weighted mean of within-group AUCs, and the weight."""
+def auc_within_group(y: np.ndarray, s: np.ndarray, g: np.ndarray) -> dict:
+    """n_pos*n_neg-weighted mean of within-group AUCs, with its weight and group census.
+
+    `n_groups_contributing` counts the groups that actually enter the weighted mean (a group with
+    only one class contributes nothing), and `thin` flags cells whose mean rests on few groups.
+    """
     order = np.argsort(g, kind="mergesort")
     ys, ss, gs = y[order], s[order], g[order]
     bounds = np.flatnonzero(np.r_[True, gs[1:] != gs[:-1], True])
     num = 0.0
     den = 0
+    n_groups = 0
     for i in range(bounds.size - 1):
         a, b = bounds[i], bounds[i + 1]
         n1 = int(ys[a:b].sum())
@@ -205,7 +215,11 @@ def auc_within_group(y: np.ndarray, s: np.ndarray, g: np.ndarray) -> tuple[float
             continue
         num += w * auc_score(ys[a:b], ss[a:b])
         den += w
-    return ((num / den) if den else float("nan")), int(den)
+        n_groups += 1
+    return {"auc": (num / den) if den else float("nan"), "weight": int(den),
+            "n_groups_contributing": int(n_groups),
+            "n_groups_total": int(bounds.size - 1),
+            "thin": bool(n_groups < 20)}
 
 
 def auc_pooled_and_within(y: np.ndarray, s: np.ndarray, g: np.ndarray) -> dict:
@@ -214,16 +228,21 @@ def auc_pooled_and_within(y: np.ndarray, s: np.ndarray, g: np.ndarray) -> dict:
     The within-minute number is the honest one: any model that knows only the clock has exactly
     0.5 within a minute by construction.
     """
-    within, den = auc_within_group(y, s, g)
-    return {"auc_pooled": auc_score(y, s), "auc_within_minute": within,
-            "within_minute_weight": den}
+    w = auc_within_group(y, s, g)
+    return {"auc_pooled": auc_score(y, s), "auc_within_minute": w["auc"],
+            "within_minute_weight": w["weight"],
+            "within_minute_groups": w["n_groups_contributing"],
+            "within_minute_thin": w["thin"]}
 
 
 def auc_multi_group(y: np.ndarray, s: np.ndarray, groups: dict) -> dict:
     """Pooled AUC plus one within-group AUC per supplied time coordinate (never merged)."""
     out = {"auc_pooled": auc_score(y, s)}
     for name, g in groups.items():
-        out[f"auc_within_{name}"], _ = auc_within_group(y, s, g)
+        w = auc_within_group(y, s, g)
+        out[f"auc_within_{name}"] = w["auc"]
+        out[f"auc_within_{name}_groups"] = w["n_groups_contributing"]
+        out[f"auc_within_{name}_thin"] = w["thin"]
     return out
 
 
@@ -460,7 +479,8 @@ class Frame:
         self.future_last_et = df[FUTURE_LAST_ET].to_numpy().astype(np.float64)
 
         raw = {c: df[c].to_numpy().astype(np.float64) for c in FEATURE_EDGES if c in df.columns}
-        for c in RAW_EXTRA + ("mfe_so_far", "bars_since_new_high", "final_high_flag"):
+        for c in RAW_EXTRA + ("mfe_so_far", "bars_since_new_high", "final_high_flag",
+                              "bar_high", "bar_low", "bar_close"):
             raw[c] = df[c].to_numpy().astype(np.float64)
         raw["mfe_surrendered_pos"] = np.where(raw["mfe_so_far"] > 0.0,
                                               raw["mfe_surrendered"], np.nan)
@@ -1849,6 +1869,116 @@ def fit_logit_cluster_se(X: np.ndarray, y: np.ndarray, codes: np.ndarray, n_code
     return beta, np.sqrt(np.maximum(np.diag(V), 0.0))
 
 
+def forward_vol_labels(frame: Frame, ks: tuple = (30, 60)) -> dict:
+    """LABEL-SIDE forward dispersion from t, measured on the tape strictly after t.
+
+    For each k: the realized range max(high[t+1..t+k]) / min(low[t+1..t+k]) - 1 and the mean
+    absolute 1-minute return over the same window.  These are future quantities, so they are
+    targets only and are never offered to any feature set; the tape columns they come from are not
+    state_* families, so the registry guard rejects them as features as well.
+    Rows with fewer than two future bars inside the window carry null.
+    """
+    hi, lo, cl = frame.x["bar_high"], frame.x["bar_low"], frame.x["bar_close"]
+    out: dict = {}
+    for k in ks:
+        rng = np.full(frame.n, np.nan)
+        mabs = np.full(frame.n, np.nan)
+        for i in range(frame.n_members):
+            o, m = int(frame.off[i]), int(frame.sizes[i])
+            if m < 3:
+                continue
+            h, l, c = hi[o:o + m], lo[o:o + m], cl[o:o + m]
+            with np.errstate(invalid="ignore", divide="ignore"):
+                ret = np.abs(np.diff(c) / c[:-1])
+            if m > k:
+                wh = np.lib.stride_tricks.sliding_window_view(h, k + 1)[:, 1:]
+                wl = np.lib.stride_tricks.sliding_window_view(l, k + 1)[:, 1:]
+                wr = np.lib.stride_tricks.sliding_window_view(ret, k)
+                rng[o:o + m - k] = wh.max(axis=1) / wl.min(axis=1) - 1.0
+                mabs[o:o + m - k] = wr.mean(axis=1)
+            for t in range(max(m - k, 0), m - 1):  # tail: fewer than k future bars remain
+                j0, j1 = t + 1, m
+                if j1 - j0 < 2:
+                    break
+                rng[o + t] = h[j0:j1].max() / l[j0:j1].min() - 1.0
+                mabs[o + t] = ret[t:j1 - 1].mean()
+        out[f"fwd_range_{k}"] = rng
+        out[f"fwd_mabs_{k}"] = mabs
+    out["_note"] = ("forward-only, per bar, from the next bar's open-window tape; null when fewer "
+                    "than two future bars remain inside the window")
+    return out
+
+
+def multi_effect_ridge_linear(F: np.ndarray, y: np.ndarray, effects: tuple,
+                              l2_feature: float = 1.0,
+                              l2_effect: float = 1.0) -> np.ndarray:
+    """Ridge least squares with the same exact-effect block structure as the logistic fits.
+
+    One normal-equation assembly, no iteration: used for the continuous (threshold-free) version of
+    the forward-dispersion label.
+    """
+    n, k = F.shape
+    effects = tuple((np.asarray(c, dtype=np.int64), int(m)) for c, m in effects)
+    sizes = [m for _, m in effects]
+    offs = np.cumsum([0] + sizes)
+    P = k + sum(sizes)
+    pen = np.concatenate([[l2_feature] * k] + [[l2_effect] * m for m in sizes]) if sizes \
+        else np.full(k, l2_feature)
+    A = np.zeros((P, P))
+    b = np.zeros(P)
+    if k:
+        A[:k, :k] = F.T @ F
+        b[:k] = F.T @ y
+    for j, (codes, m) in enumerate(effects):
+        a = k + offs[j]
+        A[np.arange(a, a + m), np.arange(a, a + m)] = np.bincount(codes, minlength=m)
+        b[a:a + m] = np.bincount(codes, weights=y, minlength=m)
+        if k:
+            Fc = np.empty((k, m))
+            for jj in range(k):
+                Fc[jj] = np.bincount(codes, weights=F[:, jj], minlength=m)
+            A[:k, a:a + m] = Fc
+            A[a:a + m, :k] = Fc.T
+        for j2 in range(j + 1, len(effects)):
+            c2, m2 = effects[j2]
+            a2 = k + offs[j2]
+            blk = np.bincount(codes * m2 + c2, minlength=m * m2).reshape(m, m2)
+            A[a:a + m, a2:a2 + m2] = blk
+            A[a2:a2 + m2, a:a + m] = blk.T
+    A[np.diag_indices(P)] += pen + 1e-8
+    return np.linalg.solve(A, b)
+
+
+def median_split_auc(y_cont: np.ndarray, score: np.ndarray) -> float:
+    """AUC of a continuous score against the label's own median split.
+
+    A comparison device only, so that a dispersion target can be placed on the same 0.5-centred
+    scale as the binary targets.  It is not a rule and not a threshold in any model: the
+    threshold-free companion number is the Spearman correlation of the same score.
+    """
+    ok = np.isfinite(y_cont) & np.isfinite(score)
+    if ok.sum() < 50:
+        return float("nan")
+    med = float(np.median(y_cont[ok]))
+    return auc_score((y_cont[ok] > med).astype(np.float64), score[ok])
+
+
+def spearman_score(y: np.ndarray, s: np.ndarray) -> float:
+    ok = np.isfinite(y) & np.isfinite(s)
+    if ok.sum() < 50:
+        return float("nan")
+    return spearman_rank(y[ok], s[ok])
+
+
+def spearman_rank(a: np.ndarray, b: np.ndarray) -> float:
+    ra = np.argsort(np.argsort(a)).astype(np.float64)
+    rb = np.argsort(np.argsort(b)).astype(np.float64)
+    ra -= ra.mean()
+    rb -= rb.mean()
+    d = math.sqrt((ra @ ra) * (rb @ rb))
+    return float((ra @ rb) / d) if d > 0 else float("nan")
+
+
 def ruler_edge_families(x_train: np.ndarray, declared: tuple) -> list[tuple[str, tuple]]:
     """Edge families for the ruler-sensitivity view: the declared edges, train-block quintiles,
     and the declared edges halved towards the train median."""
@@ -2329,6 +2459,377 @@ def reverse_time_view(frame: Frame, checks: dict, models_by_family: dict | None 
     return out
 
 
+def volatility_control(frame: Frame, checks: dict, fwd: dict,
+                       logit: dict | None = None) -> dict:
+    """Is state->hazard just state->volatility?
+
+    A. how well does the same causal state predict forward DISPERSION, on the SAME rows and with
+       the SAME coordinate convention as the hazard (within the exact clock minute)?
+    B. conditional on a forward-dispersion decile, does the hazard discrimination survive, and how
+       much of the strongest carrier's coefficient is mediated by dispersion?
+    C. across three labels on the same rows -- hazard (barrier/max), direction (a non-max label
+       with the same horizon) and dispersion -- which one does the state actually predict?
+
+    Devices and conventions, all declared in the output: one median-split rule (TRAIN-block median,
+    never the eval median), every cross-label comparison within the exact clock minute, and
+    fwd_range_60 / fwd_mabs_60 published as distributions only.
+    """
+    k_main = 30
+    rng30, mabs30 = fwd[f"fwd_range_{k_main}"], fwd[f"fwd_mabs_{k_main}"]
+    out: dict = {
+        "question": "is the hazard finding a life/decay signal or a volatility restatement?",
+        "labels_are_label_side": "every target here is a future quantity; none is offered to a "
+                                 "feature set, and the tape columns they are built from are not "
+                                 "state families",
+        "modelled_scope": "fwd_range_30 and fwd_mabs_30 are the MODELLED dispersion targets; "
+                          "fwd_range_60 and fwd_mabs_60 are published as distributions only, so "
+                          "the scope is 30 bars, not 30 and 60",
+        "device_rule": "ONE median-split device for dispersion, always at the TRAIN-block median "
+                       "of the label (a threshold fitted on the training block). No dispersion AUC "
+                       "in this section uses the eval-block median",
+        "coordinate_convention": "every AUC that is compared ACROSS labels is within the EXACT "
+                                 "clock minute; pooled AUCs are reported separately and are never "
+                                 "used for a cross-label claim",
+        "window": WINDOWS[0],
+        "A_state_predicts_forward_dispersion": {},
+        "B_hazard_conditional_on_dispersion_decile": {},
+        "C_three_label_comparison": {},
+    }
+
+    def same_rows(fam: str, blk: str) -> np.ndarray:
+        """One row set for every label in this section: new-high bars in the primary window with a
+        defined forward-dispersion label. Using one mask everywhere makes 'same rows' literally
+        true rather than approximately true."""
+        m = target_risk(frame, fam, "hazard_last_new_high", WINDOWS[0]) \
+            & (frame.block == blk) & np.isfinite(rng30) & np.isfinite(mabs30) & frame.target_ok
+        return np.flatnonzero(m)
+
+    # ---- A: dispersion distribution + like-for-like state predictability --------------------
+    for fam in FAM:
+        fam_rec: dict = {"distribution": {}, "model": {}}
+        for lab_name, lab in (("fwd_range_30", rng30), ("fwd_range_60", fwd["fwd_range_60"]),
+                              ("fwd_mabs_30", mabs30), ("fwd_mabs_60", fwd["fwd_mabs_60"])):
+            v = lab[(frame.family == fam) & ~frame.censored & np.isfinite(lab)]
+            fam_rec["distribution"][lab_name] = summarise(v)
+        fam_rec["distribution"]["fwd_range_60_note"] = "distribution only, not modelled"
+        for train_blk, eval_blk in (("block1", "block2"), ("block2", "block1")):
+            itr, iev = same_rows(fam, train_blk), same_rows(fam, eval_blk)
+            if itr.size < 500 or iev.size < 500:
+                continue
+            y_h = frame.final_high
+            eff_tr = variant_effects(frame, itr, ("clock",), WINDOWS[0])
+            eff_ev = variant_effects(frame, iev, ("clock",), WINDOWS[0])
+            g_ev = {"clock": frame.et[iev], "tenure": frame.bar_index[iev]}
+            Xtr_e, meta_e = design_matrix(frame, itr, MODEL_FEATURES, None)
+            Xev_e, _ = design_matrix(frame, iev, MODEL_FEATURES, meta_e["transform"])
+            Xtr_i = np.column_stack([np.ones(Xtr_e.shape[0]), Xtr_e])
+            Xev_i = np.column_stack([np.ones(Xev_e.shape[0]), Xev_e])
+            # hazard on exactly these rows, for the like-for-like comparison
+            b_h0 = multi_effect_logit(np.zeros((itr.size, 0)), y_h[itr], eff_tr)[0]
+            p_h0 = predict_multi(np.zeros((iev.size, 0)), b_h0, eff_ev)
+            b_h = multi_effect_logit(Xtr_i, y_h[itr], eff_tr)[0]
+            p_h = predict_multi(Xev_i, b_h, eff_ev)
+            # dispersion on exactly these rows: continuous (ridge linear, log1p) and median split
+            res: dict = {
+                "n_train": int(itr.size), "n_eval": int(iev.size),
+                "rows_identical_for_every_label_here": True,
+                "hazard_barrier_label": {
+                    **{k: r6(v) for k, v in auc_multi_group(y_h[iev], p_h, g_ev).items()
+                       if not isinstance(v, bool)},
+                    "auc_within_clock_clock_only": r6(auc_multi_group(y_h[iev], p_h0, g_ev)[
+                        "auc_within_clock"]),
+                    "base_rate": r6(float(y_h[iev].mean()))},
+            }
+            for nm_lab, lab_tr_raw, lab_ev_raw in (("fwd_range_30", rng30[itr], rng30[iev]),
+                                                   ("fwd_mabs_30", mabs30[itr], mabs30[iev])):
+                lab_tr, lab_ev = np.log1p(lab_tr_raw), np.log1p(lab_ev_raw)
+                med_tr = float(np.median(lab_tr))   # the cut is per label, on the TRAIN block
+                Xtr_f, meta_f = design_matrix(frame, itr, MODEL_FEATURES, None)
+                Xev_f, _ = design_matrix(frame, iev, MODEL_FEATURES, meta_f["transform"])
+                beta = multi_effect_ridge_linear(Xtr_f, lab_tr, eff_tr)
+                pred = predict_multi(Xev_f, beta, eff_ev)
+                split = (np.log1p(lab_ev_raw) > med_tr).astype(np.float64)
+                res[f"{nm_lab}_dispersion"] = {
+                    "train_median_split_cut_log1p": r6(med_tr),
+                    "spearman_threshold_free": r6(spearman_score(lab_ev, pred)),
+                    "auc_within_clock_vs_train_median_split": r6(
+                        auc_multi_group(split, pred, g_ev)["auc_within_clock"]),
+                    "auc_within_clock_groups": auc_multi_group(split, pred, g_ev)[
+                        "auc_within_clock_groups"],
+                    "auc_pooled_vs_train_median_split_REPORTED_SEPARATELY": r6(
+                        auc_score(split, pred)),
+                    "r2_on_eval": r6(1.0 - float(np.var(lab_ev - pred))
+                                     / max(float(np.var(lab_ev)), 1e-18)),
+                }
+            fam_rec["model"][f"fit_{train_blk}_report_{eval_blk}"] = res
+        fam_rec["comparison_note"] = (
+            "Hazard and dispersion are measured on IDENTICAL rows (one shared mask) and in the "
+            "IDENTICAL coordinate (AUC within the exact clock minute); the only difference left is "
+            "the estimator (logistic for the barrier label, ridge linear for the continuous "
+            "dispersion label). The existing out_of_block_logistic hazard AUC uses the whole "
+            "risk set without the dispersion finiteness filter, so it differs from the "
+            "hazard_barrier_label number here by a handful of rows.")
+        out["A_state_predicts_forward_dispersion"][fam] = fam_rec
+
+    # ---- B: hazard inside dispersion deciles + mediation ------------------------------------
+    for fam in FAM:
+        fam_rec: dict = {}
+        for train_blk, eval_blk in (("block1", "block2"), ("block2", "block1")):
+            itr, iev = same_rows(fam, train_blk), same_rows(fam, eval_blk)
+            if itr.size < 500 or iev.size < 500:
+                continue
+            y_h = frame.final_high
+            edges = np.quantile(rng30[itr], np.linspace(0.1, 0.9, 9))  # TRAIN quantiles, one rule
+            dec_tr = np.searchsorted(edges, rng30[itr], side="right")
+            dec_ev = np.searchsorted(edges, rng30[iev], side="right")
+            Xtr_e, meta_e = design_matrix(frame, itr, MODEL_FEATURES, None)
+            Xev_e, _ = design_matrix(frame, iev, MODEL_FEATURES, meta_e["transform"])
+            Xtr_i = np.column_stack([np.ones(Xtr_e.shape[0]), Xtr_e])
+            Xev_i = np.column_stack([np.ones(Xev_e.shape[0]), Xev_e])
+            eff_tr = variant_effects(frame, itr, ("clock",), WINDOWS[0])
+            eff_ev = variant_effects(frame, iev, ("clock",), WINDOWS[0])
+            b_state = multi_effect_logit(Xtr_i, y_h[itr], eff_tr)[0]
+            p_ev = predict_multi(Xev_i, b_state, eff_ev)
+            n_params_full = Xtr_i.shape[1] + sum(m for _c, m in eff_tr)
+            cells: dict = {}
+            for d in range(10):
+                m_ev = dec_ev == d
+                if m_ev.sum() < 100:
+                    cells[f"decile_{d + 1}"] = {"n_eval": int(m_ev.sum()),
+                                                "skipped": "fewer than 100 eval rows"}
+                    continue
+                m_tr = dec_tr == d
+                yev_d = y_h[iev][m_ev]
+                if yev_d.min() == yev_d.max():
+                    cells[f"decile_{d + 1}"] = {"n_eval": int(m_ev.sum()),
+                                                "skipped": "one-class eval cell"}
+                    continue
+                g_full = auc_multi_group(yev_d, p_ev[m_ev],
+                                         {"clock": frame.et[iev][m_ev],
+                                          "tenure": frame.bar_index[iev][m_ev]})
+                cell: dict = {
+                    "n_eval": int(m_ev.sum()),
+                    "dispersion_range": [r6(float(rng30[iev][m_ev].min())),
+                                         r6(float(rng30[iev][m_ev].max()))],
+                    "hazard_base_rate": r6(float(yev_d.mean())),
+                    "global_model_auc_within_clock": r6(g_full["auc_within_clock"]),
+                    "global_model_auc_within_clock_groups": g_full["auc_within_clock_groups"],
+                    "global_model_auc_within_clock_thin": g_full["auc_within_clock_thin"],
+                    "global_model_auc_within_tenure": r6(g_full["auc_within_tenure"]),
+                    "n_positive_in_cell": int(yev_d.sum()),
+                }
+                if m_tr.sum() < 500 or y_h[itr][m_tr].min() == y_h[itr][m_tr].max():
+                    cell["refit_model"] = {
+                        "skipped": "train decile too small or one-class; the global model above is "
+                                   "the only estimate for this stratum",
+                        "n_train_in_decile": int(m_tr.sum()), "min_train_rows_required": 500}
+                else:
+                    eff_trd = variant_effects(frame, itr[m_tr], ("clock",), WINDOWS[0])
+                    eff_evd = variant_effects(frame, iev[m_ev], ("clock",), WINDOWS[0])
+                    bd = multi_effect_logit(Xtr_i[m_tr], y_h[itr][m_tr], eff_trd)[0]
+                    gd = auc_multi_group(yev_d, predict_multi(Xev_i[m_ev], bd, eff_evd),
+                                         {"clock": frame.et[iev][m_ev],
+                                          "tenure": frame.bar_index[iev][m_ev]})
+                    n_par_d = Xtr_i.shape[1] + sum(m for _c, m in eff_trd)
+                    cell["refit_model"] = {
+                        "auc_within_clock": r6(gd["auc_within_clock"]),
+                        "auc_within_clock_groups": gd["auc_within_clock_groups"],
+                        "auc_within_clock_thin": gd["auc_within_clock_thin"],
+                        "auc_within_tenure": r6(gd["auc_within_tenure"]),
+                        "n_train_in_decile": int(m_tr.sum()),
+                        "n_parameters": int(n_par_d),
+                        "rows_per_parameter": r6(float(m_tr.sum()) / max(n_par_d, 1)),
+                        "state_coefficients": {
+                            n: r6(c) for n, c in zip(meta_e["column_names"], bd[1:])
+                            if n in MODEL_FEATURES},
+                        "state_coefficients_caveat":
+                            "NOT effect sizes and NOT identified: this is a "
+                            "13-feature-plus-391-clock-level fit on a single decile, so the "
+                            "per-feature coefficients here are unstable. Read them only for the "
+                            "sign and crude magnitude; the identified per-feature mediation "
+                            "numbers are in median_mediation below.",
+                    }
+                cells[f"decile_{d + 1}"] = cell
+            # explicit summary with a stated convention, plus the mediation of the top carriers
+            def _summ(series: list) -> dict:
+                v = np.array([x for x in series if x is not None], dtype=np.float64)
+                if v.size == 0:
+                    return {"n_cells": 0}
+                return {"n_cells": int(v.size), "min": r6(float(v.min())),
+                        "p25": r6(float(np.percentile(v, 25))),
+                        "median": r6(float(np.median(v))),
+                        "p75": r6(float(np.percentile(v, 75))),
+                        "max": r6(float(v.max())),
+                        "convention": "median = numpy median over the decile cells with a defined "
+                                      "value (even counts average the two middle cells)"}
+
+            glob_series = [c.get("global_model_auc_within_clock") for c in cells.values()]
+            refit_series = [(c.get("refit_model") or {}).get("auc_within_clock")
+                            for c in cells.values()]
+            med_disp = {}
+            med_tr_median = float(np.median(rng30[itr]))
+            for feat in VOL_MEDIATION_FEATURES:
+                if feat not in MODEL_FEATURES:
+                    continue
+                prof = {}
+                for tag, sel in (("pooled_train", np.ones(itr.size, dtype=bool)),
+                                 ("calmest_train_decile", dec_tr == 0),
+                                 ("wildest_train_decile", dec_tr == 9)):
+                    if sel.sum() < 200:
+                        prof[tag] = {"skipped": "too few train rows",
+                                     "n_train": int(sel.sum())}
+                        continue
+                    Xf, metaf = design_matrix(frame, itr[sel], (feat,), None)
+                    eff = variant_effects(frame, itr[sel], ("clock",), WINDOWS[0])
+                    bf = multi_effect_logit(np.column_stack([np.ones(Xf.shape[0]), Xf]),
+                                            y_h[itr][sel], eff)[0]
+                    n_par = Xf.shape[1] + 1 + sum(m for _c, m in eff)
+                    prof[tag] = {"coefficient": r6(float(bf[1])), "n_train": int(sel.sum()),
+                                 "n_parameters": int(n_par),
+                                 "rows_per_parameter": r6(float(sel.sum()) / n_par)}
+                c0 = (prof.get("calmest_train_decile") or {}).get("coefficient")
+                c9 = (prof.get("wildest_train_decile") or {}).get("coefficient")
+                prof["attenuation_calmest_over_wildest"] = (
+                    r6(c0 / c9) if (c0 is not None and c9 not in (None, 0)) else None)
+                med_disp[feat] = prof
+            fam_rec[f"fit_{train_blk}_report_{eval_blk}"] = {
+                "deciles_from_TRAIN_block_quantiles": [r6(float(e)) for e in edges],
+                "train_median_dispersion": r6(med_tr_median),
+                "global_model_summary": _summ(glob_series),
+                "refit_model_summary": _summ(refit_series),
+                "refit_vs_global_median_difference": (
+                    r6(float(np.median([x for x in refit_series if x is not None]))
+                        - float(np.median([x for x in glob_series if x is not None])))
+                    if any(x is not None for x in refit_series) else None),
+                "median_mediation_of_headline_features": med_disp,
+                "mediation_reading": "a feature whose coefficient is much smaller in the wildest "
+                                     "train decile than in the calmest is substantially mediated "
+                                     "by forward dispersion: part of what it detects about the "
+                                     "hazard is the tape getting wilder. READ THE ATTENUATION, NOT "
+                                     "THE LEVELS: each profile is a single-feature model with one "
+                                     "state parameter, but it still carries 391 exact clock levels "
+                                     "estimated from that same decile, so rows_per_parameter is "
+                                     "reported per cell and is small inside a decile (a handful of "
+                                     "rows per clock level). The sign and the collapse across "
+                                     "deciles are the finding; the coefficient magnitudes are not "
+                                     "effect sizes.",
+                "cells": cells,
+            }
+        out["B_hazard_conditional_on_dispersion_decile"][fam] = fam_rec
+
+    # ---- C: three labels on the same rows, one split rule -----------------------------------
+    cmp_out: dict = {}
+    for fam in FAM:
+        fam_rec: dict = {}
+        for train_blk, eval_blk in (("block1", "block2"), ("block2", "block1")):
+            itr, iev = same_rows(fam, train_blk), same_rows(fam, eval_blk)
+            if itr.size < 500 or iev.size < 500:
+                continue
+            vff = frame.x["v_forced_flat"]
+            med_cut = float(np.median(rng30[itr]))          # the single split rule: TRAIN median
+            labels = {
+                "hazard_barrier_label": frame.final_high,
+                "direction_sign_of_forward_forced_flat": np.where(np.isfinite(vff),
+                                                                  (vff > 0).astype(np.float64),
+                                                                  np.nan),
+                "dispersion_train_median_split": np.where(np.isfinite(rng30),
+                                                          (rng30 > med_cut).astype(np.float64),
+                                                          np.nan),
+            }
+            res: dict = {"split_cut_train_median": r6(med_cut),
+                         "coordinates": "auc_within_clock for every label (identical rows, "
+                                        "identical coordinate)",
+                         "direction_label_exactly_flat_share_of_the_nonpositive_class": r6(
+                             float(np.sum(np.isfinite(vff[iev]) & (vff[iev] == 0.0))
+                                   / max(int(np.sum(np.isfinite(vff[iev]))), 1))),
+                         "direction_label_class_0_definition": "sign label 0 = forward return to the "
+                                                              "forced flat <= 0; its exactly-flat "
+                                                              "share is reported because a flat "
+                                                              "forward value belongs to class 0"}
+            for lab_name, lab in labels.items():
+                ytr, yev = lab[itr], lab[iev]
+                ok_tr, ok_ev = np.isfinite(ytr), np.isfinite(yev)
+                if ytr[ok_tr].min() == ytr[ok_tr].max() or yev[ok_ev].min() == yev[ok_ev].max():
+                    res[lab_name] = {"skipped": "degenerate"}
+                    continue
+                Xtr, meta = design_matrix(frame, itr[ok_tr], MODEL_FEATURES, None)
+                Xev, _ = design_matrix(frame, iev[ok_ev], MODEL_FEATURES, meta["transform"])
+                eff_tr = variant_effects(frame, itr[ok_tr], ("clock",), WINDOWS[0])
+                eff_ev = variant_effects(frame, iev[ok_ev], ("clock",), WINDOWS[0])
+                b_clk = multi_effect_logit(np.zeros((itr[ok_tr].size, 0)), ytr[ok_tr], eff_tr)[0]
+                p_clk = predict_multi(np.zeros((iev[ok_ev].size, 0)), b_clk, eff_ev)
+                b = multi_effect_logit(np.column_stack([np.ones(Xtr.shape[0]), Xtr]),
+                                       ytr[ok_tr], eff_tr)[0]
+                p = predict_multi(np.column_stack([np.ones(Xev.shape[0]), Xev]), b, eff_ev)
+                g_clk = auc_multi_group(yev[ok_ev], p_clk,
+                                        {"clock": frame.et[iev][ok_ev],
+                                         "tenure": frame.bar_index[iev][ok_ev]})
+                g_st = auc_multi_group(yev[ok_ev], p,
+                                       {"clock": frame.et[iev][ok_ev],
+                                        "tenure": frame.bar_index[iev][ok_ev]})
+                res[lab_name] = {
+                    "n_train": int(ok_tr.sum()), "n_eval": int(ok_ev.sum()),
+                    "base_rate_eval": r6(float(yev[ok_ev].mean())),
+                    "auc_within_clock_clock_only": r6(g_clk["auc_within_clock"]),
+                    "auc_within_clock_clock_plus_state": r6(g_st["auc_within_clock"]),
+                    "auc_within_clock_groups": g_st["auc_within_clock_groups"],
+                    "auc_within_clock_thin": g_st["auc_within_clock_thin"],
+                    "auc_within_tenure_clock_plus_state": r6(g_st["auc_within_tenure"]),
+                    "delta_within_clock": r6(g_st["auc_within_clock"] - g_clk["auc_within_clock"]),
+                    "auc_pooled_REPORTED_SEPARATELY": r6(g_st["auc_pooled"]),
+                }
+                if lab_name.startswith("dispersion"):
+                    res[lab_name]["spearman_threshold_free_companion"] = r6(
+                        spearman_score(rng30[iev][ok_ev], p))
+            fam_rec[f"fit_{train_blk}_report_{eval_blk}"] = res
+        cmp_out[fam] = fam_rec
+    ratios = {}
+    for fam in cmp_out:
+        for d, cells in cmp_out[fam].items():
+            h = (cells.get("hazard_barrier_label") or {}).get("delta_within_clock")
+            v = (cells.get("dispersion_train_median_split") or {}).get("delta_within_clock")
+            dr = (cells.get("direction_sign_of_forward_forced_flat") or {}).get(
+                "delta_within_clock")
+            ratios.setdefault(fam, {})[d] = {
+                "delta_hazard": h, "delta_dispersion": v, "delta_direction": dr,
+                "dispersion_share_of_hazard": (r6(v / h) if (h not in (None, 0) and v is not None)
+                                               else None)}
+    out["C_three_label_comparison"] = {
+        "same_rows": "new-high bars in the primary window, both blocks, both directions, ONE shared "
+                     "mask (identical for all three labels here)",
+        "labels": {
+            "hazard_barrier_label": "final_high_flag(t): does the future MAX of the tape ever "
+                                    "exceed the running high at t. It is a BARRIER / first-passage "
+                                    "statement about a future maximum against a fixed level (not "
+                                    "the magnitude of that maximum). For a fixed barrier more "
+                                    "forward dispersion makes a crossing more likely, so "
+                                    "P(last new high) is structurally DECREASING in dispersion - "
+                                    "an overlap this section measures rather than assumes.",
+            "direction_sign_of_forward_forced_flat": "sign of the executable forward return to the "
+                                                     "forced flat measured from next_open(t): a "
+                                                     "NON-max, non-barrier label carrying the same "
+                                                     "horizon information",
+            "dispersion_train_median_split": "realized range over the next 30 bars above the "
+                                             "TRAIN-block median (the section's single split "
+                                             "rule); the threshold-free companion is the Spearman "
+                                             "correlation of the same score",
+        },
+        "by_family": cmp_out,
+        "delta_ratio": ratios,
+    }
+    checks["volatility_control"] = {
+        "dispersion_label_null_share": {
+            "value": r6(float(np.mean(~np.isfinite(fwd["fwd_range_30"])))),
+            "denominator": "rows with fewer than two future bars inside the 30-bar window, over "
+                           "all 1,900,432 panel rows (2 * 6,160 member-last-rows = 12,320 is the "
+                           "floor from the tape end; the rest are window tails)"},
+        "median_split_rule": "TRAIN-block median everywhere in this section",
+        "labels_never_features": "no fwd_* key appears in MODEL_FEATURES or in any design matrix; "
+                                 "tape columns are not state families per the registry",
+    }
+    return out
+
+
 def _nanmed(x):
     v = x[np.isfinite(x)]
     return float(np.median(v)) if v.size else float("nan")
@@ -2565,6 +3066,9 @@ def main(argv: list[str] | None = None) -> int:
     oob = out_of_block_contrasts(frame, checks)
     say(f"causal: peak vs 30/60 minutes earlier [{time.time() - t0:.0f}s] ...")
     paired = paired_contrast(frame, checks)
+    say(f"volatility control (label-side dispersion) [{time.time() - t0:.0f}s] ...")
+    fwd = forward_vol_labels(frame)
+    vol = volatility_control(frame, checks, fwd, logit)
     say(f"causal: reverse-time late-peak view [{time.time() - t0:.0f}s] ...")
     rev = reverse_time_view(frame, checks,
                             {fam: models_by_family[fam]["all_session"]["no_further_new_high"]
@@ -2824,6 +3328,12 @@ def main(argv: list[str] | None = None) -> int:
                                  "are labelled as such and are evidence only where the same "
                                  "pattern survives out-of-block",
             "labels_never_used_as_features": list(LABEL_PREFIXES),
+            "volatility_control": "volatility_control is an ADDITIVE section: it asks whether the "
+                                  "hazard finding is a life/decay signal or a volatility "
+                                  "restatement, using label-side forward dispersion (realized "
+                                  "range and mean absolute 1-minute return over the next 30/60 "
+                                  "bars). No existing section is changed by it, and its labels are "
+                                  "future quantities that no feature set sees.",
         },
         "descriptive": {
             "uses_outcome_labels": True,
@@ -2852,6 +3362,7 @@ def main(argv: list[str] | None = None) -> int:
             "paired_anatomy_peak_vs_30min_earlier": paired,
             "reverse_time_late_peak_HINDSIGHT_ANATOMY_ONLY": rev,
         },
+        "volatility_control": vol,
         "headline": head,
         "checks": checks,
     }
