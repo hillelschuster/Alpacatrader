@@ -22,16 +22,25 @@ audit trail; where a number was refuted in audit, the corrected value is the one
 
 ## 2. What the tape's personality actually is
 
-**Shape (audited, `window_profile.json` / `fall.json`).**
+**Shape (audited, `window_profile.json` / `fall.json`).** Two alignments are reported because the families
+fill at different clocks (A_pm at ET 570, B600 at ET 600): comparing them by clock is a category error,
+so the like-for-like comparison is by **tenure** (bars since entry).
 
-| quantity | A_pm | B600 |
-|---|---|---|
-| P(climb already over) at the fill bar | 0.2206 | 0.1490 |
-| the same, one bar later / by 10:00 | 0.2681 / 0.6042 | 0.1993 / 0.5951 |
-| median peak | **09:46 (13 bars after entry)** | **10:32 (27 bars)** |
-| share of peaks after noon | 21% | 29% |
-| new-high arrival | 0.0388 /min | 0.0571 /min |
-| hazard a new high is the last | 15.5% | 12.0% |
+| bars since entry | 0 | 1 | 30 | 60 | 120 | 180 |
+|---|---|---|---|---|---|---|
+| A_pm P(climb already over) | 0.2199 | 0.2705 | 0.6194 | 0.7071 | 0.7834 | 0.8329 |
+| B600 P(climb already over) | 0.1490 | 0.1993 | 0.5149 | 0.6164 | 0.7249 | 0.7965 |
+
+Per-clock values, for the families where the clock is meaningful: A_pm 0.2206 at 09:30, **0.6042 at
+10:00**, 0.7363 at 11:00, 0.7939 at noon; B600 0.1451 at its own fill minute 10:00, **0.5951 at 11:00**,
+0.7022 at noon. (An earlier draft of this file reported "B600 0.1490 → 0.5951 by 10:00", which is
+impossible — B600's fill bar *is* 10:00; the 0.5951 is the 11:00 cell.)
+
+A structural fact this exposes: **at equal tenure the 10:00 cohort is less likely to have peaked at every
+horizon** (30 bars: 0.515 vs 0.619; 60: 0.616 vs 0.707). That is selection, not a clock effect — B600's
+names were still leaders at 10:00, so persistence is part of what selected them. The entry clock is
+therefore a *cohort-persistence* choice as much as a timing choice, and any management law must be
+evaluated per family.
 
 The peak-time distribution is produced by **arrival decaying ~30× through the session while the
 termination hazard stays flat** — "the tape goes quiet", not "termination rates rise". The arrival ×
@@ -52,7 +61,9 @@ Three consequences:
 2. **Exhaustion is a separate, independent signal.** Inside forward-dispersion deciles the hazard
    keeps full strength (within-decile medians 0.6748/0.6926 and 0.6714/0.6987 against 0.6734/0.6525
    and 0.6935/0.6732 unconditioned). The hazard is not a volatility restatement.
-3. **Direction is nearly unpredicted at minute resolution.** The honest two-sided test — matched
+3. **No directional separation was found with the current 1-minute state representation and tests.**
+   (This is a statement about the representation and the tests, not a proof that direction is absent from
+   the tape.) The honest two-sided test — matched
    middle-decile members, same day/minute/family/tenure, sides assigned blind — finds the largest
    absolute effect anywhere **0.054**, mostly *inverted*: the higher-range member is slightly *less*
    likely to hold the higher executable value later (0.446 A_pm / 0.453 B600). The earlier decile-split
