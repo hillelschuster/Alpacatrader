@@ -407,7 +407,24 @@ negative (Study B + EXIT-01). Files: `factory/scripts/lb18_exit.py`,
 
 ---
 
-## 16. Latest state (2026-09-13, market closed) — research lanes closed, forward paper is the live experiment
+## 16. Latest state (2026-09-13...) — superseded by §16.1 for research; forward paper unchanged
+### §16.1 UPDATE 2026-09-27 — BASKET Phase 1 (ATLAS measurement) CLOSED; Phase 2 = E1 execution test
+Worktree/branch: `basket-phase2-f1`. Entry docs: `researches/PLAN-ATLAS-01.md` (plan/foundations),
+`researches/ATLAS-PHASE1-SYNTHESIS.md` (readable conclusion), `researches/STATE.md` (current truth),
+`factory/artifacts/basket/phase2/ATLAS/` (numbers). Frozen and committed this cycle: panel v2 (SIP,
+1,066 dev days 2017/2021-2026 + 2022-04 stub; 25,788 runner-days; 1,900,432 state rows; 100%
+point-in-time SI 2017+; IDs zero; reserved 2026-06..08 untouched; 2024/2025-01 sealed), ledger v2
+(same-bar forward violation; primary next-bar PATH_RETURN on complete-path runner-days; hold /
+giveback:10 / peak_pct:0.03-0.05-0.10 / timestop; dual-block, top-5-day-removed, day-clustered),
+window v2 (09:30-11:30 sleeve + dedup; all in-sample selection tables are oracle-contaminated and
+are NEVER a bar), fall v2 (sha 19e98a19...), pairs v2 (sha ac85cb72...). Findings: state strongly
+predicts forward dispersion (within-clock AUC 0.67-0.74); the exhaustion barrier is a real but
+weaker, dispersion-independent score-level signal (like-for-like +0.038/+0.044/+0.037/+0.009 over
+hazard); per-decile coefficient allocation is UNIDENTIFIED (mediation withdrawn); no directional
+separator — the honest two-sided matched-pair test is adverse. Open: E1a cross-fitted exhaustion
+score -> release rule (builder running); F4 sub-minute microscope plan drafted (not approved).
+Build/run recipes live in the ATLAS artifacts' READMEs; producers `factory/scripts/basket_atlas_*.py`,
+frozen engine `factory/scripts/basket_sim.py` (contract `factory/BASKET-SIM-CONTRACT.md`).
 
 Where the whole project stands, for an agent reading this cold. **The chronicle lives in
 `factory/STATE.md` (read the tail); this section is the entry-point summary.**
