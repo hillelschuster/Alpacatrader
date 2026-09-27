@@ -112,6 +112,11 @@ DECISION_EVENT = "event"
 CONTROLS = ("hold_flat", "giveback:10")
 CONTROL_KEY = "giveback:10"                # the binding non-score control for the tail test
 GIANT_MFE_LEVELS = (1.0, 3.0)
+# ---- E1b: conditional (dispersion-niche) analysis ------------------------------------------
+DISPERSION_K = 30
+DISPERSION_TARGET = f"fwd_range_{DISPERSION_K}"   # the fall dispersion label (label-side)
+DISPERSION_TERCILE_CUTS = (1.0 / 3.0, 2.0 / 3.0)
+E1B_VERDICT_FRICTION = 100.0
 BOOT_REPS = 1000
 SEED = fall.SEED
 ATTRIBUTION_GIANT_CAP = 300
@@ -437,13 +442,8 @@ def delta_stats(rows: list, reps: int = BOOT_REPS, seed: int = SEED) -> dict:
     se_day = math.sqrt(max(fall.cluster_var(vals, codes, n_days), 0.0))
     boot = fall.cluster_bootstrap(vals, codes, n_days, stat=lambda v: float(v.mean()),
                                   reps=reps, seed=seed)
-    day_sum: dict = {}
-    for r in judged:
-        day_sum[r["sleeve_day"]] = day_sum.get(r["sleeve_day"], 0.0) + r["delta"]
-    order = sorted(day_sum, key=lambda d: (-abs(day_sum[d]), d))
-    dropped = order[:5]
-    dropped_set = set(dropped)
-    kept_vals = np.array([r["delta"] for r in judged if r["sleeve_day"] not in dropped_set],
+    dropped, dropped_sums, surviving = top5_drop(judged)
+    kept_vals = np.array([r["delta"] for r in judged if r["sleeve_day"] in surviving],
                          dtype=np.float64)
     return {
         "n_members": n,
@@ -458,12 +458,12 @@ def delta_stats(rows: list, reps: int = BOOT_REPS, seed: int = SEED) -> dict:
         "ci95_day_cluster_bootstrap_sum": [r6(x * n) for x in boot["ci95_percentile"]],
         "boot_sd_mean": r6(boot["boot_sd"]),
         "bootstrap": {"reps": int(boot["reps"]), "seed": int(seed), "cluster": "sleeve_day"},
-        "top5_days_by_abs_net": [{"day": d, "day_net": r6(day_sum[d])} for d in dropped],
-        "n_days_after_removal": int(len(uniq) - len(dropped_set)),
+        "top5_days_by_abs_net": [{"day": d, "day_net": r6(dropped_sums[d])} for d in dropped],
+        "n_days_after_removal": int(len(surviving)),
         "n_members_after_removal": int(kept_vals.size),
         "sum_after_top5_removal": r6(float(kept_vals.sum())) if kept_vals.size else None,
         "mean_after_top5_removal": r6(float(kept_vals.mean())) if kept_vals.size else None,
-        "surviving_days": sorted(set(days.tolist()) - dropped_set),
+        "surviving_days": sorted(surviving),
     }
 
 
@@ -661,6 +661,213 @@ def reconciliation(agg: dict) -> dict:
     out["reconciliation_clean"] = bool(all(out[k] == 0 for k in out
                                            if k.endswith("mismatch_n")))
     return out
+
+
+def dispersion_splitter(frame, masks: dict, label: np.ndarray, member_day: np.ndarray,
+                        letter: str, train_block: str, eval_block: str,
+                        member_keep: "np.ndarray | None" = None) -> dict:
+    """The causal forward-dispersion splitter, frozen before any outcome is read.
+
+    (a) TRAIN side — an inner day-level cross-fit inside the train block (the same split discipline
+        as the threshold banks): the dispersion model fitted on one day-half predicts the other
+        half, and the tercile cuts are the terciles of those honest train-side predictions.
+    (b) EVAL side — the model fitted on the whole train block predicts the evaluation block's
+        decision-population bars; the frozen cuts assign the tercile.
+    (c) The splitter is a function of causal state only (14 fall state features + exact clock);
+        the dispersion label (`fwd_range_30`, label-side) is never given to the model that scores
+        the evaluation block, and the eval-side label correlation is measured AFTER the cuts exist.
+    """
+    disp_pop = masks["state"] & np.isfinite(label)
+    n_min = fall.n_minute_codes(frame)
+    keep = (lambda sel: sel if member_keep is None else sel & member_keep[frame.mid])
+
+    def fit_predict(itr, ipr):
+        Xtr, meta = fall.design_matrix(frame, itr, fall.MODEL_FEATURES, None)
+        eff_tr = ((fall.minute_codes(frame, itr), n_min),)
+        beta = fall.multi_effect_ridge_linear(Xtr, np.log1p(label[itr]), eff_tr)
+        Xpr, _ = fall.design_matrix(frame, ipr, fall.MODEL_FEATURES, meta["transform"])
+        eff_pr = ((fall.minute_codes(frame, ipr), n_min),)
+        return fall.predict_multi(Xpr, beta, eff_pr)
+
+    itr_eval = np.flatnonzero(keep(disp_pop & (frame.block == train_block)))
+    iev = np.flatnonzero(keep(masks["state"] & (frame.block == eval_block)))
+    pred_eval = fit_predict(itr_eval, iev)
+
+    half_of_day = day_half_map(member_day[frame.m_block == train_block])
+    half = np.array([half_of_day.get(str(d), -1) for d in member_day], dtype=np.int64)[frame.mid]
+    pred_train = np.full(frame.n, np.nan, dtype=np.float64)
+    n_train_half = {}
+    for h in (0, 1):
+        itr = np.flatnonzero(keep(disp_pop & (frame.block == train_block) & (half == h)))
+        ipr = np.flatnonzero(keep(masks["state"] & (frame.block == train_block) & (half == 1 - h)))
+        pred_train[ipr] = fit_predict(itr, ipr)
+        n_train_half[f"half{h}"] = int(itr.size)
+    pool = pred_train[keep(masks["state"] & (frame.block == train_block))]
+    cuts = np.quantile(pool, list(DISPERSION_TERCILE_CUTS))
+    tercile = np.full(frame.n, -1, dtype=np.int64)
+    tercile[iev] = np.searchsorted(cuts, pred_eval, side="right")
+
+    label_eval = label[iev]
+    ok = np.isfinite(label_eval)
+    terraces = {
+        "letter": letter, "train_block": train_block, "eval_block": eval_block,
+        "target": DISPERSION_TARGET, "fit_on": f"log1p({DISPERSION_TARGET}), label-side",
+        "tercile_cuts_frozen_on": "inner day-split cross-fit predictions of the TRAIN block",
+        "cuts": [r6(x) for x in cuts],
+        "n_train_dispersion_rows": int(itr_eval.size), "n_train_halves": n_train_half,
+        "n_train_pool_rows": int(pool.size),
+        "n_eval_scored_rows": int(iev.size),
+        "eval_pred_vs_label_spearman_POST_FREEZE": r6(
+            fall.spearman_score(label_eval[ok], pred_eval[ok])) if ok.sum() > 2 else None,
+        "eval_pred_r2_log1p_POST_FREEZE": r6(
+            1.0 - float(np.var(np.log1p(label_eval[ok]) - pred_eval[ok]))
+            / max(float(np.var(np.log1p(label_eval[ok]))), 1e-18)) if ok.sum() > 2 else None,
+        "n_eval_rows_without_label": int((~ok).sum()),
+        "tercile_row_counts": [int((tercile == t).sum()) for t in (0, 1, 2)],
+        "no_outcome_used_for_freeze": True,
+    }
+    return {"tercile": tercile, "cuts": cuts, "eval_rows": iev, "pred_eval": pred_eval,
+            "diagnostics": terraces}
+
+
+def top5_drop(judged: list) -> tuple:
+    """The pre-registered top-5-|day net| removal: (dropped days, dropped sums, surviving day set)."""
+    day_sum: dict = {}
+    for r in judged:
+        day_sum[r["sleeve_day"]] = day_sum.get(r["sleeve_day"], 0.0) + r["delta"]
+    dropped = sorted(day_sum, key=lambda d: (-abs(day_sum[d]), d))[:5]
+    return dropped, {d: day_sum[d] for d in dropped}, set(day_sum) - set(dropped)
+
+
+def member_niche(frame, masks: dict, tercile: np.ndarray) -> np.ndarray:
+    """Each member's dispersion REGIME: the median tercile over its state bars (-1 when it has none).
+
+    A member's first state bar is systematically a high-predicted-dispersion moment (it is the first
+    new high past the fill), so a first-bar niche collapses ~97% of members into the top tercile and
+    carries no conditioning.  The median over the member's releasable bars is arm-independent,
+    causal, invariant to the monotone score transform, and spreads members across the terciles; the
+    tercile cuts themselves stay the frozen train-side ones.
+    """
+    sel = masks["state"] & (tercile >= 0)
+    idx = np.flatnonzero(sel)
+    niche = np.full(frame.n_members, -1, dtype=np.int64)
+    if idx.size == 0:
+        return niche
+    order = np.argsort(frame.mid[idx], kind="mergesort")
+    m_sorted, v_sorted = frame.mid[idx][order], tercile[idx][order]
+    bounds = np.flatnonzero(np.r_[True, m_sorted[1:] != m_sorted[:-1], True])
+    for a, b in zip(bounds[:-1], bounds[1:]):
+        niche[int(m_sorted[a])] = int(np.median(v_sorted[a:b]))
+    return niche
+
+
+def member_key(day: str, ticker: str, family: str, rank) -> str:
+    """The one member-key form used by the ledger rows and the niche map."""
+    return f"{day}|{ticker}|{family}|{int(rank)}"
+
+
+def niche_increments(arm_rows: list, control_rows: list, niche_by_key: dict, survivors) -> list:
+    """Per-tercile `arm - control` increments on identical surviving days (sleeve and dedup views).
+
+    The control is the same member set (the tercile is a member property), restricted to the arm's
+    own top-5-day-removed day set, so the terciles decompose the unconditional increment.
+    """
+    ctrl = {member_key(r["sleeve_day"], r["ticker"], r["family"], r["entry_rank"]): r
+            for r in judged_rows(control_rows)}
+    keep_days = set(survivors)
+    tables = []
+    for t in (0, 1, 2):
+        sel = []
+        for r in judged_rows(arm_rows):
+            if r["sleeve_day"] not in keep_days:
+                continue
+            key = member_key(r["sleeve_day"], r["ticker"], r["family"], r["entry_rank"])
+            if niche_by_key.get(key, -1) != t:
+                continue
+            c = ctrl.get(key)
+            if c is None:
+                continue
+            sel.append({
+                "sleeve_day": r["sleeve_day"], "ticker": r["ticker"], "family": r["family"],
+                "entry_rank": r["entry_rank"], "n": r.get("n"),
+                "delta": r["delta"], "inc": r["delta"] - c["delta"], "early_exit": r["early_exit"],
+                "avoided": r["avoided"], "destroyed": r["destroyed"],
+                "mfe": r.get("forward_mfe_from_exit"), "exit_px": r.get("exit_px"),
+                "close_px": r.get("close_px"),
+                "c_avoided": c["avoided"], "c_destroyed": c["destroyed"],
+                "c_mfe": c.get("forward_mfe_from_exit"), "c_exit_px": c.get("exit_px"),
+                "c_close_px": c.get("close_px"),
+            })
+        kept: dict = {}
+        for x in sel:
+            k = (x["sleeve_day"], x["ticker"])
+            if k not in kept or led._dedup_key(x, True) < led._dedup_key(kept[k], True):
+                kept[k] = x
+
+        def giant300(rows_):
+            return [x for x in rows_ if x["early_exit"] and x.get("mfe") is not None
+                    and x["mfe"] >= 3.0 and x.get("close_px") is not None
+                    and x.get("exit_px") is not None and float(x["close_px"]) > float(x["exit_px"])]
+
+        def c_giant300(rows_):
+            return [x for x in rows_ if x.get("c_mfe") is not None and x["c_mfe"] >= 3.0
+                    and x.get("c_close_px") is not None and x.get("c_exit_px") is not None
+                    and float(x["c_close_px"]) > float(x["c_exit_px"])]
+
+        arm_av = float(sum(x["avoided"] for x in sel))
+        ctrl_av = float(sum(x["c_avoided"] for x in sel))
+        arm_g = float(sum(x["destroyed"] for x in giant300(sel)))
+        ctrl_g = float(sum(x["c_destroyed"] for x in c_giant300(sel)))
+        tables.append({
+            "tercile": t,
+            "n_members": len(sel),
+            "n_releases": sum(1 for x in sel if x["early_exit"]),
+            "arm_net": r6(float(sum(x["delta"] for x in sel))),
+            "control_net": r6(float(sum(x["delta"] - x["inc"] for x in sel))),
+            "increment_sleeve": r6(float(sum(x["inc"] for x in sel))),
+            "increment_dedup": r6(float(sum(x["inc"] for x in kept.values()))),
+            "n_paths": len(kept),
+            "n_members_dropped_by_dedup": len(sel) - len(kept),
+            "arm": {"avoided_dollars": r6(arm_av), "destroyed_dollars": r6(
+                float(sum(x["destroyed"] for x in sel))),
+                "giant300_dollars": r6(arm_g), "n_giant300": len(giant300(sel))},
+            "control": {"avoided_dollars": r6(ctrl_av),
+                        "destroyed_dollars": r6(float(sum(x["c_destroyed"] for x in sel))),
+                        "giant300_dollars": r6(ctrl_g), "n_giant300": len(c_giant300(sel))},
+            "giant300_per_avoided_dollar_arm": r6(arm_g / arm_av) if arm_av > 0 else None,
+            "giant300_per_avoided_dollar_control": r6(ctrl_g / ctrl_av) if ctrl_av > 0 else None,
+        })
+    return tables
+
+
+def e1b_verdict(by_cell: dict, friction: float) -> dict:
+    """The pre-registered closure rule: no tercile positive (dedup) for any score arm in both folds."""
+    arms = sorted({v["arm"] for v in by_cell.values()})
+    pairs = []
+    per_arm = {}
+    for arm in arms:
+        cells = {v["fold"]: v for v in by_cell.values()
+                 if v["arm"] == arm and v["friction_bps"] == friction}
+        pos = {f: sorted({t["tercile"] for t in c["terciles"] if (t["increment_dedup"] or 0) > 0})
+               for f, c in cells.items()}
+        both = sorted(set(pos.get("A", [])) & set(pos.get("B", [])))
+        per_arm[arm] = {"positive_terciles_dedup": pos, "positive_in_both_folds": both}
+        for t in both:
+            pairs.append({"arm": arm, "tercile": t})
+    every_bar = [a for a in arms if not a.startswith("ablation_")]
+    return {
+        "friction_bps": friction,
+        "rule": ("E1 (score-based release) is economically closed unless some tercile shows a "
+                 "positive dedup increment for a score arm in BOTH folds"),
+        "per_arm": per_arm,
+        "terciles_positive_in_both_folds": pairs,
+        "arms_with_a_positive_tercile_in_both_folds": sorted({p["arm"] for p in pairs}),
+        "every_bar_arms_with_a_positive_tercile_in_both_folds":
+            sorted({p["arm"] for p in pairs if p["arm"] in every_bar}),
+        "every_bar_arms": every_bar,
+        "closed": bool(not pairs),
+        "closed_for_every_bar_arms": bool(not [p for p in pairs if p["arm"] in every_bar]),
+    }
 
 
 def build_cell(arm: str, role: str, variant: str, fold: str, bps: float, train_block: str,
@@ -1084,6 +1291,81 @@ def run_selftest() -> int:
          "event_member1": int(trig_event[1]), "event_member2": int(trig_event[2]),
          "scalar_threshold_member1": int(trig_scalar[1]), "no_crossing": int(trig_none[0])}))
 
+    # -- (10) E1b: the niche decomposition ------------------------------------------------
+    def lrow(day, ticker, family, rank, delta, mfe=None, exit_px=None, close_px=None,
+             early=True, avoided=None, destroyed=None):
+        return {"sleeve_day": day, "ticker": ticker, "family": family, "entry_rank": rank,
+                "delta": delta, "avoided": avoided if avoided is not None else max(delta, 0.0),
+                "destroyed": destroyed if destroyed is not None else max(-delta, 0.0),
+                "early_exit": early, "forward_mfe_from_exit": mfe, "exit_px": exit_px,
+                "close_px": close_px}
+    arm_rows = [
+        lrow("d1", "AAA", "A_pm", 1, 1.0, mfe=4.0, exit_px=10.0, close_px=20.0),   # niche 0
+        lrow("d1", "BBB", "A_pm", 2, 2.0, mfe=0.5, exit_px=10.0, close_px=9.0),    # niche 1
+        lrow("d2", "CCC", "B600", 1, -1.0, mfe=None, exit_px=None, close_px=None),  # niche 0
+        lrow("d3", "DDD", "A_pm", 1, 5.0, mfe=3.5, exit_px=10.0, close_px=12.0),   # dropped day
+        lrow("d4", "EEE", "A_pm", 1, 0.5, mfe=None, exit_px=None, close_px=None),  # niche 2
+    ]
+    ctrl_rows = [
+        lrow("d1", "AAA", "A_pm", 1, 0.5, early=False),
+        lrow("d1", "BBB", "A_pm", 2, 3.0, early=False),
+        lrow("d2", "CCC", "B600", 1, -2.0, early=False),
+        lrow("d3", "DDD", "A_pm", 1, 0.0, early=False),
+        lrow("d4", "EEE", "A_pm", 1, 0.25, early=False),
+    ]
+    # a duplicate path (same day, ticker, two sleeves) to exercise the dedup view
+    arm_rows.append(lrow("d5", "FFF", "B600", 1, 1.0, mfe=None, exit_px=None, close_px=None))
+    ctrl_rows.append(lrow("d5", "FFF", "B600", 1, -1.0, early=False))
+    arm_rows.append({"sleeve_day": "d5", "ticker": "FFF", "family": "A_pm", "entry_rank": 2,
+                     "delta": 3.0, "avoided": 3.0, "destroyed": 0.0, "early_exit": True,
+                     "forward_mfe_from_exit": None, "exit_px": None, "close_px": None})
+    ctrl_rows.append(lrow("d5", "FFF", "A_pm", 2, -1.0, early=False))
+    niche = {"d1|AAA|A_pm|1": 0, "d1|BBB|A_pm|2": 1, "d2|CCC|B600|1": 0, "d3|DDD|A_pm|1": 0,
+             "d4|EEE|A_pm|1": 2, "d5|FFF|A_pm|2": 1, "d5|FFF|B600|1": 1}
+    tabs = {t["tercile"]: t for t in niche_increments(arm_rows, ctrl_rows, niche, ["d1", "d2", "d4",
+                                                                                  "d5"])}
+    results.append(_case(
+        "e1b/niche_increments",
+        "per-tercile arm-minus-control increments on the arm's surviving days, sleeve and dedup "
+        "views, with the contract giant set",
+        {"t0_n": 2, "t0_sleeve": 1.5, "t0_control_net": -1.5, "t0_arm_net": 0.0,
+         "t1_n": 3, "t1_sleeve": 5.0, "t1_dedup": 3.0, "t1_dropped": 1,
+         "t2_n": 1, "t2_sleeve": 0.25,
+         "t0_giant300_arm_n": 1, "t0_giant300_arm_dollars": 0.0},
+        {"t0_n": tabs[0]["n_members"], "t0_sleeve": tabs[0]["increment_sleeve"],
+         "t0_control_net": tabs[0]["control_net"], "t0_arm_net": tabs[0]["arm_net"],
+         "t1_n": tabs[1]["n_members"], "t1_sleeve": tabs[1]["increment_sleeve"],
+         "t1_dedup": tabs[1]["increment_dedup"],
+         "t1_dropped": tabs[1]["n_members_dropped_by_dedup"], "t2_n": tabs[2]["n_members"],
+         "t2_sleeve": tabs[2]["increment_sleeve"],
+         "t0_giant300_arm_n": tabs[0]["arm"]["n_giant300"],
+         "t0_giant300_arm_dollars": tabs[0]["arm"]["giant300_dollars"]}))
+
+    # -- (11) E1b: the closure rule --------------------------------------------------------
+    def fake_cell(arm, fold, incs, bps=100.0):
+        return {"arm": arm, "fold": fold, "friction_bps": bps,
+                "terciles": [{"tercile": i, "increment_dedup": v} for i, v in enumerate(incs)]}
+    mixed = {"x|A|100": fake_cell("quantile_q70", "A", [1.0, -1.0, -1.0]),
+             "x|B|100": fake_cell("quantile_q70", "B", [0.5, -1.0, -1.0]),
+             "y|A|100": fake_cell("ablation_event_hazard_quantile_q70", "A", [-1.0, 2.0, -1.0]),
+             "y|B|100": fake_cell("ablation_event_hazard_quantile_q70", "B", [-1.0, -2.0, -1.0])}
+    closed = {"x|A|100": fake_cell("quantile_q70", "A", [1.0, -1.0, -1.0]),
+              "x|B|100": fake_cell("quantile_q70", "B", [-1.0, -1.0, -1.0])}
+    v_mixed, v_closed = e1b_verdict(mixed, 100.0), e1b_verdict(closed, 100.0)
+    results.append(_case(
+        "e1b/closure_rule",
+        "a tercile must be positive in BOTH folds for the arm; the closure statement covers all "
+        "score arms and is reported separately for the every-bar arms",
+        {"mixed_pairs": ["quantile_q70|0"], "mixed_closed": False,
+         "mixed_every_bar_closed": False, "closed_pairs": [], "closed": True,
+         "closed_every_bar": True},
+        {"mixed_pairs": [f"{p['arm']}|{p['tercile']}"
+                         for p in v_mixed["terciles_positive_in_both_folds"]],
+         "mixed_closed": v_mixed["closed"],
+         "mixed_every_bar_closed": v_mixed["closed_for_every_bar_arms"],
+         "closed_pairs": v_closed["terciles_positive_in_both_folds"], "closed": v_closed["closed"],
+         "closed_every_bar": v_closed["closed_for_every_bar_arms"]}))
+
     n_fail = sum(1 for r in results if not r["passed"])
     doc = {"producer": PRODUCER, "generated": time.strftime("%Y-%m-%dT%H:%M:%S"),
            "n_cases": len(results), "n_failed": n_fail,
@@ -1327,6 +1609,11 @@ def main(argv=None) -> int:
     attribution_by_arm: dict = {}
     grid_docs: dict = {}
     control_days: dict = {}
+    e1b_cells: dict = {}
+    e1b_splitter: dict = {}
+    disp_label = fall.forward_vol_labels(frame, ks=(DISPERSION_K,))[DISPERSION_TARGET]
+    print(f"[e1] dispersion label {DISPERSION_TARGET} ready "
+          f"({int(np.isfinite(disp_label).sum())} finite rows) ({time.time() - t0:.0f}s)", flush=True)
 
     for letter, train_block, eval_block in FOLDS:
         def block_frame(blk: str):
@@ -1345,8 +1632,29 @@ def main(argv=None) -> int:
         df_train = block_frame(train_block)
         df_eval = block_frame(eval_block)
 
+        # ---- E1b: the dispersion splitter, frozen before any outcome is read ---------------
+        split = dispersion_splitter(frame, masks, disp_label, member_day, letter, train_block,
+                                    eval_block, member_keep if args.smoke_frac < 1.0 else None)
+        niche = member_niche(frame, masks, split["tercile"])
+        niche_by_key = {member_key(*keys[i]): int(niche[i]) for i in range(frame.n_members)}
+        in_eval = frame.m_block == eval_block
+        e1b_splitter[letter] = {
+            **split["diagnostics"],
+            "eval_members": int(in_eval.sum()),
+            "eval_members_without_a_state_bar": int(((niche < 0) & in_eval).sum()),
+            "eval_members_per_tercile": [int(((niche == t) & in_eval).sum()) for t in (0, 1, 2)],
+            "train_members_are_never_niche_assigned": True,
+        }
+        print(f"[e1] fold {letter} dispersion splitter: cuts "
+              f"{[round(float(c), 4) for c in split['cuts']]} tercile rows "
+              f"{split['diagnostics']['tercile_row_counts']} eval members/tercile "
+              f"{e1b_splitter[letter]['eval_members_per_tercile']} "
+              f"({e1b_splitter[letter]['eval_members_without_a_state_bar']} without a state bar) "
+              f"({time.time() - t0:.0f}s)", flush=True)
+
         # controls first: their per-day sums are the same-basis reference
         control_cells: dict = {bps: {} for bps in args.bps}
+        control_rows: dict = {}
         for bps in args.bps:
             for name, rule in control_rule.items():
                 rows = replay_rows(df_eval, rule, bps)
@@ -1355,6 +1663,8 @@ def main(argv=None) -> int:
                     failures.append(f"control {name} {letter} {bps}: net identity violated")
                 cell = control_cell(name, letter, bps, train_block, eval_block, rows, agg)
                 control_cells[bps][name] = cell
+                if name == CONTROL_KEY:
+                    control_rows[bps] = rows
                 control_days[(letter, bps, name)] = day_sums(rows)
                 cid = cell_id(name.replace(":", "_"), letter, bps)
                 cells[cid] = cell
@@ -1382,11 +1692,17 @@ def main(argv=None) -> int:
                         control_cells[bps]["hold_flat"]["n_members_unresolved_censored"]:
                     failures.append(f"{arm} {letter} {bps}: censored census differs from hold")
                 cid = cell_id(arm, letter, bps)
-                cells[cid] = build_cell(
+                cell = build_cell(
                     arm, role, variant, letter, bps, train_block, eval_block, rows, agg,
                     {name: control_days[(letter, bps, name)] for name in CONTROLS},
                     control_cells[bps], extra)
+                cells[cid] = cell
                 cells_by_arm.setdefault(arm, []).append(cid)
+                e1b_cells[cid] = {
+                    "arm": arm, "role": role, "fold": letter, "friction_bps": bps,
+                    "terciles": niche_increments(rows, control_rows[bps], niche_by_key,
+                                                 top5_drop(judged_rows(rows))[2]),
+                }
                 first_cid = first_cid or cid
                 if bps == args.bps[0] and role in ("primary", "secondary_ruler"):
                     attribution_by_arm.setdefault(arm, {})[letter] = attribution(rows)
@@ -1506,6 +1822,14 @@ def main(argv=None) -> int:
                 },
                 "reconciliation_clean_every_cell": all(
                     cells[c]["ledger"]["reconciliation"]["reconciliation_clean"] for c in cells),
+                "e1b_dispersion_splitter_frozen_before_outcomes": {
+                    "cuts_by_fold": {letter: v["cuts"] for letter, v in e1b_splitter.items()},
+                    "inner_train_halves_only": True,
+                    "eval_prediction_source": "the train-block dispersion model",
+                    "note": ("the splitter's cuts come from the inner day-split cross-fit of the "
+                             "train block; the eval-side prediction-vs-label correlation is "
+                             "computed after the cuts exist and is reported as POST_FREEZE"),
+                },
                 "cells_complete": bool(len(cells) == expected_cells),
                 "ledger_net_identities_hold": all(
                     cells[c]["ledger"]["checks"]["net_identity"] for c in cells),
@@ -1691,6 +2015,42 @@ def main(argv=None) -> int:
             "threshold_banks": {f"{letter}|{tag}": v for (letter, tag), v in thr_bank.items()},
         },
         "grid_search": grid_docs,
+        "e1b_dispersion_niche": {
+            "question": ("does any every-bar score arm beat giveback:10 inside a niche defined by "
+                         "CAUSALLY PREDICTED forward dispersion, even though it loses "
+                         "unconditionally?"),
+            "splitter": {
+                "target": DISPERSION_TARGET,
+                "model": ("ridge least squares (fall.multi_effect_ridge_linear) on "
+                          f"log1p({DISPERSION_TARGET}) with the 14 fall state features + exact "
+                          "clock-minute fixed effects, fitted pooled over both families"),
+                "causal_inputs_only": ("the splitter is a function of state at t only; the "
+                                       "dispersion label is label-side and is never given to the "
+                                       "model that scores the evaluation block"),
+                "train_side": ("inner day-level cross-fit inside the train block (the B1 split "
+                               "discipline): each day half is scored by the model fitted on the "
+                               "other half, so the tercile cuts see no evaluation row"),
+                "eval_side": "predicted by the model fitted on the whole train block",
+                "niche_moment": ("a member's tercile at its FIRST state bar (the first completed "
+                                 "bar where a new high has already occurred) — arm-independent, so "
+                                 "the terciles partition the same judged members for every arm and "
+                                 "decompose the unconditional increment"),
+                "cuts_frozen_before_outcomes": True,
+                "by_fold": e1b_splitter,
+            },
+            "increment_definition": {
+                "sleeve": "sum over the arm's judged members in the tercile of (arm delta - giveback:10 delta)",
+                "dedup": ("the same increment after collapsing shared (day, ticker) paths with the "
+                          "ledger's declared duplicate rule (A_pm first, then the lower entry_rank)"),
+                "identical_surviving_days": ("the arm's own top-5-day-removed day set from the E1a "
+                                             "cell, applied to the control as well"),
+                "ratio": ("giant300 dollars (MFE from the release >= +300% and close > release) "
+                          "per avoided dollar for the arm and for the control on those days"),
+            },
+            "by_cell": e1b_cells,
+            "verdict": e1b_verdict(e1b_cells, E1B_VERDICT_FRICTION),
+            "verdict_150bps": e1b_verdict(e1b_cells, 150.0),
+        },
         "cells": cells,
         "arms": arms,
         "headline": {

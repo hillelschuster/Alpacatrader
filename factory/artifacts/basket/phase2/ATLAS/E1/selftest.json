@@ -1,7 +1,7 @@
 {
  "producer": "factory/scripts/basket_atlas_e1.py",
- "generated": "2026-09-28T01:30:22",
- "n_cases": 15,
+ "generated": "2026-09-28T02:15:14",
+ "n_cases": 17,
  "n_failed": 0,
  "status": "PASS",
  "cases": [
@@ -497,6 +497,114 @@
     "no_crossing": {
      "expected": -1,
      "actual": -1,
+     "ok": true
+    }
+   }
+  },
+  {
+   "name": "e1b/niche_increments",
+   "description": "per-tercile arm-minus-control increments on the arm's surviving days, sleeve and dedup views, with the contract giant set",
+   "passed": true,
+   "detail": {
+    "t0_n": {
+     "expected": 2,
+     "actual": 2,
+     "ok": true
+    },
+    "t0_sleeve": {
+     "expected": 1.5,
+     "actual": 1.5,
+     "ok": true
+    },
+    "t0_control_net": {
+     "expected": -1.5,
+     "actual": -1.5,
+     "ok": true
+    },
+    "t0_arm_net": {
+     "expected": 0.0,
+     "actual": 0.0,
+     "ok": true
+    },
+    "t1_n": {
+     "expected": 3,
+     "actual": 3,
+     "ok": true
+    },
+    "t1_sleeve": {
+     "expected": 5.0,
+     "actual": 5.0,
+     "ok": true
+    },
+    "t1_dedup": {
+     "expected": 3.0,
+     "actual": 3.0,
+     "ok": true
+    },
+    "t1_dropped": {
+     "expected": 1,
+     "actual": 1,
+     "ok": true
+    },
+    "t2_n": {
+     "expected": 1,
+     "actual": 1,
+     "ok": true
+    },
+    "t2_sleeve": {
+     "expected": 0.25,
+     "actual": 0.25,
+     "ok": true
+    },
+    "t0_giant300_arm_n": {
+     "expected": 1,
+     "actual": 1,
+     "ok": true
+    },
+    "t0_giant300_arm_dollars": {
+     "expected": 0.0,
+     "actual": 0.0,
+     "ok": true
+    }
+   }
+  },
+  {
+   "name": "e1b/closure_rule",
+   "description": "a tercile must be positive in BOTH folds for the arm; the closure statement covers all score arms and is reported separately for the every-bar arms",
+   "passed": true,
+   "detail": {
+    "mixed_pairs": {
+     "expected": [
+      "quantile_q70|0"
+     ],
+     "actual": [
+      "quantile_q70|0"
+     ],
+     "ok": true
+    },
+    "mixed_closed": {
+     "expected": false,
+     "actual": false,
+     "ok": true
+    },
+    "mixed_every_bar_closed": {
+     "expected": false,
+     "actual": false,
+     "ok": true
+    },
+    "closed_pairs": {
+     "expected": [],
+     "actual": [],
+     "ok": true
+    },
+    "closed": {
+     "expected": true,
+     "actual": true,
+     "ok": true
+    },
+    "closed_every_bar": {
+     "expected": true,
+     "actual": true,
      "ok": true
     }
    }
