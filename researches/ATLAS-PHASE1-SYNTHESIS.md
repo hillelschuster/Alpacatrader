@@ -61,22 +61,26 @@ Three consequences:
 2. **Exhaustion is a separate, independent signal.** Inside forward-dispersion deciles the hazard
    keeps full strength (within-decile medians 0.6748/0.6926 and 0.6714/0.6987 against 0.6734/0.6525
    and 0.6935/0.6732 unconditioned). The hazard is not a volatility restatement.
-3. **No directional separation was found with the current 1-minute state representation and tests.**
-   (This is a statement about the representation and the tests, not a proof that direction is absent from
-   the tape.) The honest two-sided test — matched
-   middle-decile members, same day/minute/family/tenure, sides assigned blind — finds the largest
-   absolute effect anywhere **0.054**, mostly *inverted*: the higher-range member is slightly *less*
-   likely to hold the higher executable value later (0.446 A_pm / 0.453 B600). The earlier decile-split
-   "separators" were an artifact of a label defined as a maximum over the future path (a max-order
-   statistic is monotone in forward volatility), and the artifact now carries that prohibition
-   explicitly: no policy, gate or directional rule may be derived from them.
+3. **No robust positive directional separator was found with the current 1-minute state
+   representation and tests.** (This is a statement about the representation and the tests, not a
+   proof that direction is absent from the tape.) The honest two-sided test — matched middle-decile
+   members, same day/minute/family/tenure, sides assigned blind — finds its largest effect in the
+   *adverse* direction: the higher-range member is less likely to hold the higher executable value
+   later (`bar_range_pct` difference −0.098 / −0.089, concordance 0.446 / 0.453 for A_pm / B600).
+   A_pm `ret_percentile_candidates` has a small positive difference (~+0.058) with a borderline CI,
+   but nothing provides a stable policy-ready directional rule across both families. The earlier
+   decile-split "separators" were an artifact of a label defined as a maximum over the future path
+   (a max-order statistic is monotone in forward volatility), and the artifact carries the
+   prohibition explicitly: no policy, gate or directional rule may be derived from them.
 
-Where the exhaustion content lives: `dist_from_running_high` and `mfe_surrendered_pos`, `up_close_streak`,
-`bars_below_entry_episode`, `accel_1_5` — peak-relative decay variables. Under identified single-feature
-models **15 of 16 carrier-cells are stronger in the wildest dispersion decile** (ratios 0.20–0.84), so
-exhaustion reading is most informative exactly when the tape is violent. (An audit's apparent
-attenuation was an artifact of unidentified 13-feature per-decile fits; the reconciliation is recorded
-in the artifact.)
+The hazard score is carried by peak-relative decay variables (`dist_from_running_high`,
+`mfe_surrendered_pos`, `up_close_streak`, `bars_below_entry_episode`, `accel_1_5`). The *global*
+hazard model keeps approximately full discrimination inside forward-dispersion deciles, which
+establishes that the hazard score is not merely a volatility restatement. **Feature-level
+dispersion × exhaustion mediation is not earned:** the per-decile coefficient tables contain
+roughly 393 parameters on as few as 592 rows, disagree in direction across model specifications,
+and cannot support calm-vs-wild effect claims. Whether exhaustion becomes economically more
+valuable in violent states remains an explicit E1b hypothesis, not a Phase-1 finding.
 
 **Recovery (audited, `matched_pairs.json`).** After a matched down-moment: **~51.6% / 51.4% never close
 back at the exit price** for the rest of the session (censoring-adjusted 49.6% / 50.5%; median 173 / 145
