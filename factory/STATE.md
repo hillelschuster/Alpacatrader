@@ -2574,3 +2574,13 @@ tests are judged against the in-sample estate table as an oracle-CONTAMINATED ru
 Open: E1a cross-fitted exhaustion-score release test (builder running); F4 microstructure plan
 drafted; SIP 2022-04-01..19 stub (19 days) + fold-2 vs post-2022 family split explained;
 blocks 0-3 = 2017/2021/2022-2026 (2022-03-25+ folded into block 2 by design).
+
+## 2026-09-27 (audit detail, fall v2) — independent delta audit of the fall rewrite
+Diff (d33e321 -> 3071b65): all pre-existing published numbers bit-identical except the intended
+fixes: 10 thin flags 0->1 (5 decile cells), 4 flat-share values, and the 16 deleted
+attenuation_calmest_over_wildest numbers. Two semantic notes worth keeping: (a) the key
+direction_label_exactly_flat_share_of_the_nonpositive_class previously held the ALL-finite-rows
+share; the rewrite moved those values verbatim to ..._of_all_finite_rows and published the true
+class-denominator value under the original name; (b) d33e321's committed artifact was c1ad6f04,
+not the final-run cc100d (which was still uncommitted when audited) - the committed final is
+19e98a19 (3071b65); the rewrite path's refuse-to-write guard plus this diff bound the change.
