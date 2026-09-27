@@ -1,8 +1,8 @@
 {
  "producer": "factory/scripts/basket_atlas_fall.py",
  "reproduce": "python factory/scripts/basket_atlas_fall.py",
- "generated": "2026-09-27T18:02:42Z",
- "runtime_s": 646.5,
+ "generated": "2026-09-27T19:29:06Z",
+ "runtime_s": 316.3,
  "panel": {
   "path": "factory/artifacts/basket/phase2/ATLAS/panel.parquet",
   "rows": 1900432,
@@ -46,6 +46,7 @@
    "peak_",
    "session_"
   ],
+  "volatility_control_scope": "volatility_control models the 30-bar dispersion targets (realized range and mean absolute 1-minute return); the 60-bar versions are published as DISTRIBUTIONS ONLY and are not modelled anywhere.",
   "volatility_control": "volatility_control is an ADDITIVE section: it asks whether the hazard finding is a life/decay signal or a volatility restatement, using label-side forward dispersion (realized range and mean absolute 1-minute return over the next 30/60 bars). No existing section is changed by it, and its labels are future quantities that no feature set sees."
  },
  "descriptive": {
@@ -67507,15 +67508,17 @@
          "n_eval": 5931,
          "train_base_rate": 0.150014,
          "eval_base_rate": 0.15478,
-         "seconds": 4.5,
+         "seconds": 1.3,
          "results": {
           "clock_only": {
            "auc_pooled": 0.5369160009682885,
            "auc_within_clock": 0.5,
            "auc_within_clock_groups": 230,
+           "auc_within_clock_positive": 918,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.5040918312073159,
            "auc_within_tenure_groups": 217,
+           "auc_within_tenure_positive": 918,
            "auc_within_tenure_thin": 0,
            "brier": 0.13360080384865497,
            "mean_pred": 0.18843089065633967,
@@ -67606,9 +67609,11 @@
            "auc_pooled": 0.5294331687503558,
            "auc_within_clock": 0.4994455396747166,
            "auc_within_clock_groups": 230,
+           "auc_within_clock_positive": 918,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.5,
            "auc_within_tenure_groups": 217,
+           "auc_within_tenure_positive": 918,
            "auc_within_tenure_thin": 0,
            "brier": 0.1332608795818532,
            "mean_pred": 0.18510486954016958,
@@ -67692,9 +67697,11 @@
            "auc_pooled": 0.690314876310699,
            "auc_within_clock": 0.67674683005511,
            "auc_within_clock_groups": 230,
+           "auc_within_clock_positive": 918,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.6787713354080148,
            "auc_within_tenure_groups": 217,
+           "auc_within_tenure_positive": 918,
            "auc_within_tenure_thin": 0,
            "brier": 0.12303515288786912,
            "mean_pred": 0.16013798058961226,
@@ -67797,9 +67804,11 @@
            "auc_pooled": 0.6573895888120082,
            "auc_within_clock": 0.673408866884717,
            "auc_within_clock_groups": 230,
+           "auc_within_clock_positive": 918,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.6739838132361844,
            "auc_within_tenure_groups": 217,
+           "auc_within_tenure_positive": 918,
            "auc_within_tenure_thin": 0,
            "brier": 0.12982034731156636,
            "mean_pred": 0.19102495077754178,
@@ -67910,9 +67919,11 @@
            "auc_pooled": 0.654784705734589,
            "auc_within_clock": 0.6719583090640261,
            "auc_within_clock_groups": 230,
+           "auc_within_clock_positive": 918,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.6722605176790475,
            "auc_within_tenure_groups": 217,
+           "auc_within_tenure_positive": 918,
            "auc_within_tenure_thin": 0,
            "brier": 0.12897387718294268,
            "mean_pred": 0.18723673108639374,
@@ -68016,9 +68027,11 @@
            "auc_pooled": 0.6595473772548672,
            "auc_within_clock": 0.6734480711501412,
            "auc_within_clock_groups": 230,
+           "auc_within_clock_positive": 918,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.6752530509500696,
            "auc_within_tenure_groups": 217,
+           "auc_within_tenure_positive": 918,
            "auc_within_tenure_thin": 0,
            "brier": 0.1285676388939776,
            "mean_pred": 0.18067768539111925,
@@ -68161,15 +68174,17 @@
          "n_eval": 13872,
          "train_base_rate": 0.15478,
          "eval_base_rate": 0.150014,
-         "seconds": 5.4,
+         "seconds": 1.7,
          "results": {
           "clock_only": {
            "auc_pooled": 0.5044433787553535,
            "auc_within_clock": 0.5,
            "auc_within_clock_groups": 319,
+           "auc_within_clock_positive": 2081,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.5056619729389553,
            "auc_within_tenure_groups": 323,
+           "auc_within_tenure_positive": 2081,
            "auc_within_tenure_thin": 0,
            "brier": 0.13989121855723108,
            "mean_pred": 0.2245687984100648,
@@ -68254,9 +68269,11 @@
            "auc_pooled": 0.4949179957135063,
            "auc_within_clock": 0.49814792491996135,
            "auc_within_clock_groups": 319,
+           "auc_within_clock_positive": 2081,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.5,
            "auc_within_tenure_groups": 323,
+           "auc_within_tenure_positive": 2081,
            "auc_within_tenure_thin": 0,
            "brier": 0.14105278123777004,
            "mean_pred": 0.22361516367181888,
@@ -68334,9 +68351,11 @@
            "auc_pooled": 0.6886977259836758,
            "auc_within_clock": 0.6645879771417363,
            "auc_within_clock_groups": 319,
+           "auc_within_clock_positive": 2081,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.6675503461296413,
            "auc_within_tenure_groups": 323,
+           "auc_within_tenure_positive": 2081,
            "auc_within_tenure_thin": 0,
            "brier": 0.11857071762271151,
            "mean_pred": 0.14796381670840097,
@@ -68439,9 +68458,11 @@
            "auc_pooled": 0.6449421571140256,
            "auc_within_clock": 0.6525142455526702,
            "auc_within_clock_groups": 319,
+           "auc_within_clock_positive": 2081,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.6552612688797986,
            "auc_within_tenure_groups": 323,
+           "auc_within_tenure_positive": 2081,
            "auc_within_tenure_thin": 0,
            "brier": 0.12546698443136378,
            "mean_pred": 0.16563241552864943,
@@ -68552,9 +68573,11 @@
            "auc_pooled": 0.6440406028902146,
            "auc_within_clock": 0.6522312754494322,
            "auc_within_clock_groups": 319,
+           "auc_within_clock_positive": 2081,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.655239144115796,
            "auc_within_tenure_groups": 323,
+           "auc_within_tenure_positive": 2081,
            "auc_within_tenure_thin": 0,
            "brier": 0.12515507804491088,
            "mean_pred": 0.16551939248920583,
@@ -68658,9 +68681,11 @@
            "auc_pooled": 0.6472494822222261,
            "auc_within_clock": 0.6536696216781659,
            "auc_within_clock_groups": 319,
+           "auc_within_clock_positive": 2081,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.6562642581812461,
            "auc_within_tenure_groups": 323,
+           "auc_within_tenure_positive": 2081,
            "auc_within_tenure_thin": 0,
            "brier": 0.12520955157828506,
            "mean_pred": 0.1623660545954475,
@@ -68823,15 +68848,17 @@
          "n_eval": 291992,
          "train_base_rate": 0.79604,
          "eval_base_rate": 0.796138,
-         "seconds": 16.2,
+         "seconds": 5.3,
          "results": {
           "clock_only": {
            "auc_pooled": 0.722683415751621,
            "auc_within_clock": 0.5,
            "auc_within_clock_groups": 389,
+           "auc_within_clock_positive": 232466,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.5382152971211845,
            "auc_within_tenure_groups": 389,
+           "auc_within_tenure_positive": 232466,
            "auc_within_tenure_thin": 0,
            "brier": 0.14342988411613608,
            "mean_pred": 0.7934177211961336,
@@ -68922,9 +68949,11 @@
            "auc_pooled": 0.8659213812002756,
            "auc_within_clock": 0.808980076344302,
            "auc_within_clock_groups": 389,
+           "auc_within_clock_positive": 232466,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.8054107875982379,
            "auc_within_tenure_groups": 389,
+           "auc_within_tenure_positive": 232466,
            "auc_within_tenure_thin": 0,
            "brier": 0.11272117433682005,
            "mean_pred": 0.8210796072820821,
@@ -69073,15 +69102,17 @@
          "n_eval": 721259,
          "train_base_rate": 0.796138,
          "eval_base_rate": 0.79604,
-         "seconds": 29.2,
+         "seconds": 10.1,
          "results": {
           "clock_only": {
            "auc_pooled": 0.7024303485464469,
            "auc_within_clock": 0.5,
            "auc_within_clock_groups": 389,
+           "auc_within_clock_positive": 574151,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.5286109932112074,
            "auc_within_tenure_groups": 389,
+           "auc_within_tenure_positive": 574151,
            "auc_within_tenure_thin": 0,
            "brier": 0.1467427222985178,
            "mean_pred": 0.7960024120254773,
@@ -69172,9 +69203,11 @@
            "auc_pooled": 0.8556344571156363,
            "auc_within_clock": 0.8058729926371034,
            "auc_within_clock_groups": 389,
+           "auc_within_clock_positive": 574151,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.804342501948211,
            "auc_within_tenure_groups": 389,
+           "auc_within_tenure_positive": 574151,
            "auc_within_tenure_thin": 0,
            "brier": 0.11517511369946637,
            "mean_pred": 0.7660395084952782,
@@ -69339,15 +69372,17 @@
          "n_eval": 303548,
          "train_base_rate": 0.019595,
          "eval_base_rate": 0.020811,
-         "seconds": 19.4,
+         "seconds": 7.5,
          "results": {
           "clock_only": {
            "auc_pooled": 0.7861779224085175,
            "auc_within_clock": 0.5,
            "auc_within_clock_groups": 389,
+           "auc_within_clock_positive": 6317,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.46824210615378686,
            "auc_within_tenure_groups": 378,
+           "auc_within_tenure_positive": 6317,
            "auc_within_tenure_thin": 0,
            "brier": 0.016293316785380107,
            "mean_pred": 0.022486344086526465,
@@ -69438,9 +69473,11 @@
            "auc_pooled": 0.9935976255178605,
            "auc_within_clock": 0.9811591359805459,
            "auc_within_clock_groups": 389,
+           "auc_within_clock_positive": 6317,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.9795326352216664,
            "auc_within_tenure_groups": 378,
+           "auc_within_tenure_positive": 6317,
            "auc_within_tenure_thin": 0,
            "brier": 0.007477124368688586,
            "mean_pred": 0.024993701454615463,
@@ -69589,15 +69626,17 @@
          "n_eval": 733966,
          "train_base_rate": 0.020811,
          "eval_base_rate": 0.019595,
-         "seconds": 29.2,
+         "seconds": 16.0,
          "results": {
           "clock_only": {
            "auc_pooled": 0.7830656176780383,
            "auc_within_clock": 0.5,
            "auc_within_clock_groups": 389,
+           "auc_within_clock_positive": 14382,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.482079091750482,
            "auc_within_tenure_groups": 389,
+           "auc_within_tenure_positive": 14382,
            "auc_within_tenure_thin": 0,
            "brier": 0.015482165677980992,
            "mean_pred": 0.025370330969417924,
@@ -69688,9 +69727,11 @@
            "auc_pooled": 0.9927625515674419,
            "auc_within_clock": 0.9800100349923152,
            "auc_within_clock_groups": 389,
+           "auc_within_clock_positive": 14382,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.9776849548887995,
            "auc_within_tenure_groups": 389,
+           "auc_within_tenure_positive": 14382,
            "auc_within_tenure_thin": 0,
            "brier": 0.00801502177987281,
            "mean_pred": 0.02335991017339205,
@@ -71450,15 +71491,17 @@
          "n_eval": 4618,
          "train_base_rate": 0.154002,
          "eval_base_rate": 0.157644,
-         "seconds": 0.5,
+         "seconds": 0.1,
          "results": {
           "clock_only": {
            "auc_pooled": 0.5477734187406423,
            "auc_within_clock": 0.5,
            "auc_within_clock_groups": 113,
+           "auc_within_clock_positive": 728,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.5040614104511133,
            "auc_within_tenure_groups": 108,
+           "auc_within_tenure_positive": 728,
            "auc_within_tenure_thin": 0,
            "brier": 0.1332364485797611,
            "mean_pred": 0.17617837145180293,
@@ -71543,9 +71586,11 @@
            "auc_pooled": 0.5366083787677618,
            "auc_within_clock": 0.4994203453166153,
            "auc_within_clock_groups": 113,
+           "auc_within_clock_positive": 728,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.5,
            "auc_within_tenure_groups": 108,
+           "auc_within_tenure_positive": 728,
            "auc_within_tenure_thin": 0,
            "brier": 0.13351701882133127,
            "mean_pred": 0.17592630551304952,
@@ -71623,9 +71668,11 @@
            "auc_pooled": 0.689453445012571,
            "auc_within_clock": 0.6719210769196137,
            "auc_within_clock_groups": 113,
+           "auc_within_clock_positive": 728,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.6741165964364398,
            "auc_within_tenure_groups": 108,
+           "auc_within_tenure_positive": 728,
            "auc_within_tenure_thin": 0,
            "brier": 0.12482653313212996,
            "mean_pred": 0.1645373814761669,
@@ -71728,9 +71775,11 @@
            "auc_pooled": 0.659173634848442,
            "auc_within_clock": 0.6664227990005177,
            "auc_within_clock_groups": 113,
+           "auc_within_clock_positive": 728,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.6673279715941905,
            "auc_within_tenure_groups": 108,
+           "auc_within_tenure_positive": 728,
            "auc_within_tenure_thin": 0,
            "brier": 0.12882454582053016,
            "mean_pred": 0.18075181568507337,
@@ -71841,9 +71890,11 @@
            "auc_pooled": 0.6581578928783299,
            "auc_within_clock": 0.6659894649168223,
            "auc_within_clock_groups": 113,
+           "auc_within_clock_positive": 728,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.6674910697097388,
            "auc_within_tenure_groups": 108,
+           "auc_within_tenure_positive": 728,
            "auc_within_tenure_thin": 0,
            "brier": 0.1290498818893021,
            "mean_pred": 0.17950109243505996,
@@ -71947,9 +71998,11 @@
            "auc_pooled": 0.660817042854318,
            "auc_within_clock": 0.6671375188528464,
            "auc_within_clock_groups": 113,
+           "auc_within_clock_positive": 728,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.6684295523090416,
            "auc_within_tenure_groups": 108,
+           "auc_within_tenure_positive": 728,
            "auc_within_tenure_thin": 0,
            "brier": 0.12868248634820434,
            "mean_pred": 0.17591302721132218,
@@ -72064,15 +72117,17 @@
          "n_eval": 10844,
          "train_base_rate": 0.157644,
          "eval_base_rate": 0.154002,
-         "seconds": 0.5,
+         "seconds": 0.2,
          "results": {
           "clock_only": {
            "auc_pooled": 0.51029301762727,
            "auc_within_clock": 0.5,
            "auc_within_clock_groups": 136,
+           "auc_within_clock_positive": 1670,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.505391563138042,
            "auc_within_tenure_groups": 135,
+           "auc_within_tenure_positive": 1670,
            "auc_within_tenure_thin": 0,
            "brier": 0.1353899557125919,
            "mean_pred": 0.19886103685904338,
@@ -72157,9 +72212,11 @@
            "auc_pooled": 0.49672496080435596,
            "auc_within_clock": 0.4983128130763144,
            "auc_within_clock_groups": 136,
+           "auc_within_clock_positive": 1670,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.5,
            "auc_within_tenure_groups": 135,
+           "auc_within_tenure_positive": 1670,
            "auc_within_tenure_thin": 0,
            "brier": 0.13613789699196768,
            "mean_pred": 0.1994050717295387,
@@ -72237,9 +72294,11 @@
            "auc_pooled": 0.6941781903818263,
            "auc_within_clock": 0.6617185086663321,
            "auc_within_clock_groups": 136,
+           "auc_within_clock_positive": 1670,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.6646616801546379,
            "auc_within_tenure_groups": 135,
+           "auc_within_tenure_positive": 1670,
            "auc_within_tenure_thin": 0,
            "brier": 0.12054822505100599,
            "mean_pred": 0.15196003202030747,
@@ -72343,9 +72402,11 @@
            "auc_pooled": 0.6630540423404336,
            "auc_within_clock": 0.6533184934775447,
            "auc_within_clock_groups": 136,
+           "auc_within_clock_positive": 1670,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.6559420404490827,
            "auc_within_tenure_groups": 135,
+           "auc_within_tenure_positive": 1670,
            "auc_within_tenure_thin": 0,
            "brier": 0.12455954318111807,
            "mean_pred": 0.15851048792836261,
@@ -72457,9 +72518,11 @@
            "auc_pooled": 0.6628739577744446,
            "auc_within_clock": 0.6535360625942244,
            "auc_within_clock_groups": 136,
+           "auc_within_clock_positive": 1670,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.6570286584371091,
            "auc_within_tenure_groups": 135,
+           "auc_within_tenure_positive": 1670,
            "auc_within_tenure_thin": 0,
            "brier": 0.1238798255434518,
            "mean_pred": 0.15890847322565746,
@@ -72564,9 +72627,11 @@
            "auc_pooled": 0.6630918999150163,
            "auc_within_clock": 0.6545561743960148,
            "auc_within_clock_groups": 136,
+           "auc_within_clock_positive": 1670,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.6573925123220898,
            "auc_within_tenure_groups": 135,
+           "auc_within_tenure_positive": 1670,
            "auc_within_tenure_thin": 0,
            "brier": 0.12444521911813157,
            "mean_pred": 0.15676660125914013,
@@ -72702,15 +72767,17 @@
          "n_eval": 117828,
          "train_base_rate": 0.678851,
          "eval_base_rate": 0.668712,
-         "seconds": 0.6,
+         "seconds": 0.3,
          "results": {
           "clock_only": {
            "auc_pooled": 0.6478182013813051,
            "auc_within_clock": 0.5,
            "auc_within_clock_groups": 151,
+           "auc_within_clock_positive": 78793,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.5208348278457521,
            "auc_within_tenure_groups": 151,
+           "auc_within_tenure_positive": 78793,
            "auc_within_tenure_thin": 0,
            "brier": 0.20551468610663495,
            "mean_pred": 0.6770883315089501,
@@ -72801,9 +72868,11 @@
            "auc_pooled": 0.80385653714371,
            "auc_within_clock": 0.7713373639944923,
            "auc_within_clock_groups": 151,
+           "auc_within_clock_positive": 78793,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.7680846650801443,
            "auc_within_tenure_groups": 151,
+           "auc_within_tenure_positive": 78793,
            "auc_within_tenure_thin": 0,
            "brier": 0.16849276103785332,
            "mean_pred": 0.7141108589745166,
@@ -72924,15 +72993,17 @@
          "n_eval": 286615,
          "train_base_rate": 0.668712,
          "eval_base_rate": 0.678851,
-         "seconds": 1.2,
+         "seconds": 1.1,
          "results": {
           "clock_only": {
            "auc_pooled": 0.6336335032365741,
            "auc_within_clock": 0.5,
            "auc_within_clock_groups": 151,
+           "auc_within_clock_positive": 194569,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.5104532043710034,
            "auc_within_tenure_groups": 151,
+           "auc_within_tenure_positive": 194569,
            "auc_within_tenure_thin": 0,
            "brier": 0.204894248823164,
            "mean_pred": 0.6692387640294056,
@@ -73023,9 +73094,11 @@
            "auc_pooled": 0.7999230657345355,
            "auc_within_clock": 0.7708394392905489,
            "auc_within_clock_groups": 151,
+           "auc_within_clock_positive": 194569,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.7683078338125152,
            "auc_within_tenure_groups": 151,
+           "auc_within_tenure_positive": 194569,
            "auc_within_tenure_thin": 0,
            "brier": 0.16746600353661756,
            "mean_pred": 0.6262207784033147,
@@ -73162,15 +73235,17 @@
          "n_eval": 123095,
          "train_base_rate": 0.038317,
          "eval_base_rate": 0.040018,
-         "seconds": 0.7,
+         "seconds": 0.4,
          "results": {
           "clock_only": {
            "auc_pooled": 0.8096792673397044,
            "auc_within_clock": 0.5,
            "auc_within_clock_groups": 150,
+           "auc_within_clock_positive": 4926,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.47278184412054813,
            "auc_within_tenure_groups": 150,
+           "auc_within_tenure_positive": 4926,
            "auc_within_tenure_thin": 0,
            "brier": 0.028955130522225897,
            "mean_pred": 0.04113924259253743,
@@ -73261,9 +73336,11 @@
            "auc_pooled": 0.991927636123944,
            "auc_within_clock": 0.9787343611512412,
            "auc_within_clock_groups": 150,
+           "auc_within_clock_positive": 4926,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.9768065256082833,
            "auc_within_tenure_groups": 150,
+           "auc_within_tenure_positive": 4926,
            "auc_within_tenure_thin": 0,
            "brier": 0.012066936553736767,
            "mean_pred": 0.04473786224607377,
@@ -73384,15 +73461,17 @@
          "n_eval": 291799,
          "train_base_rate": 0.040018,
          "eval_base_rate": 0.038317,
-         "seconds": 1.8,
+         "seconds": 1.1,
          "results": {
           "clock_only": {
            "auc_pooled": 0.8097974917026265,
            "auc_within_clock": 0.5,
            "auc_within_clock_groups": 150,
+           "auc_within_clock_positive": 11181,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.48210598590939596,
            "auc_within_tenure_groups": 150,
+           "auc_within_tenure_positive": 11181,
            "auc_within_tenure_thin": 0,
            "brier": 0.027980936026364853,
            "mean_pred": 0.04347456952191207,
@@ -73483,9 +73562,11 @@
            "auc_pooled": 0.9915813607911018,
            "auc_within_clock": 0.9791279564086226,
            "auc_within_clock_groups": 150,
+           "auc_within_clock_positive": 11181,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.9766768592731222,
            "auc_within_tenure_groups": 150,
+           "auc_within_tenure_positive": 11181,
            "auc_within_tenure_thin": 0,
            "brier": 0.012578024640853147,
            "mean_pred": 0.041591855335243906,
@@ -73638,15 +73719,17 @@
          "n_eval": 7432,
          "train_base_rate": 0.127853,
          "eval_base_rate": 0.120425,
-         "seconds": 5.1,
+         "seconds": 1.5,
          "results": {
           "clock_only": {
            "auc_pooled": 0.5265238782589523,
            "auc_within_clock": 0.5,
            "auc_within_clock_groups": 259,
+           "auc_within_clock_positive": 895,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.4784786953058401,
            "auc_within_tenure_groups": 259,
+           "auc_within_tenure_positive": 895,
            "auc_within_tenure_thin": 0,
            "brier": 0.1092018378232327,
            "mean_pred": 0.16436845913768033,
@@ -73737,9 +73820,11 @@
            "auc_pooled": 0.5337972161900928,
            "auc_within_clock": 0.5159944248975915,
            "auc_within_clock_groups": 259,
+           "auc_within_clock_positive": 895,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.5,
            "auc_within_tenure_groups": 259,
+           "auc_within_tenure_positive": 895,
            "auc_within_tenure_thin": 0,
            "brier": 0.10876852565609224,
            "mean_pred": 0.16307759372212616,
@@ -73823,9 +73908,11 @@
            "auc_pooled": 0.6941374539257839,
            "auc_within_clock": 0.6980096204511074,
            "auc_within_clock_groups": 259,
+           "auc_within_clock_positive": 895,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.7069608843299747,
            "auc_within_tenure_groups": 259,
+           "auc_within_tenure_positive": 895,
            "auc_within_tenure_thin": 0,
            "brier": 0.09973359222317141,
            "mean_pred": 0.1359062214690387,
@@ -73927,9 +74014,11 @@
            "auc_pooled": 0.668013704542172,
            "auc_within_clock": 0.6935223429027927,
            "auc_within_clock_groups": 259,
+           "auc_within_clock_positive": 895,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.6948237069748592,
            "auc_within_tenure_groups": 259,
+           "auc_within_tenure_positive": 895,
            "auc_within_tenure_thin": 0,
            "brier": 0.10574988945690307,
            "mean_pred": 0.16390466767404477,
@@ -74039,9 +74128,11 @@
            "auc_pooled": 0.6756999050527167,
            "auc_within_clock": 0.6960039433651182,
            "auc_within_clock_groups": 259,
+           "auc_within_clock_positive": 895,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.7021814777030898,
            "auc_within_tenure_groups": 259,
+           "auc_within_tenure_positive": 895,
            "auc_within_tenure_thin": 0,
            "brier": 0.10441040303850078,
            "mean_pred": 0.16284873268109273,
@@ -74144,9 +74235,11 @@
            "auc_pooled": 0.6749842537921227,
            "auc_within_clock": 0.6964543708462938,
            "auc_within_clock_groups": 259,
+           "auc_within_clock_positive": 895,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.6974439956957391,
            "auc_within_tenure_groups": 259,
+           "auc_within_tenure_positive": 895,
            "auc_within_tenure_thin": 0,
            "brier": 0.10389045208056544,
            "mean_pred": 0.1554399739714696,
@@ -74288,15 +74381,17 @@
          "n_eval": 14986,
          "train_base_rate": 0.120425,
          "eval_base_rate": 0.127853,
-         "seconds": 6.0,
+         "seconds": 1.7,
          "results": {
           "clock_only": {
            "auc_pooled": 0.5064094413731745,
            "auc_within_clock": 0.5,
            "auc_within_clock_groups": 323,
+           "auc_within_clock_positive": 1916,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.48924018968833893,
            "auc_within_tenure_groups": 325,
+           "auc_within_tenure_positive": 1916,
            "auc_within_tenure_thin": 0,
            "brier": 0.11934900629521049,
            "mean_pred": 0.18034723830206445,
@@ -74381,9 +74476,11 @@
            "auc_pooled": 0.5127939447618652,
            "auc_within_clock": 0.5057179722544554,
            "auc_within_clock_groups": 323,
+           "auc_within_clock_positive": 1916,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.5,
            "auc_within_tenure_groups": 325,
+           "auc_within_tenure_positive": 1916,
            "auc_within_tenure_thin": 0,
            "brier": 0.11867283221591036,
            "mean_pred": 0.17859644220329562,
@@ -74467,9 +74564,11 @@
            "auc_pooled": 0.6910175336592909,
            "auc_within_clock": 0.6997029737265973,
            "auc_within_clock_groups": 323,
+           "auc_within_clock_positive": 1916,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.7017721626020843,
            "auc_within_tenure_groups": 325,
+           "auc_within_tenure_positive": 1916,
            "auc_within_tenure_thin": 0,
            "brier": 0.10414559973223426,
            "mean_pred": 0.11503242054128035,
@@ -74571,9 +74670,11 @@
            "auc_pooled": 0.627080035556095,
            "auc_within_clock": 0.6732390585219695,
            "auc_within_clock_groups": 323,
+           "auc_within_clock_positive": 1916,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.6727108098395541,
            "auc_within_tenure_groups": 325,
+           "auc_within_tenure_positive": 1916,
            "auc_within_tenure_thin": 0,
            "brier": 0.11175041912736877,
            "mean_pred": 0.14370787455444486,
@@ -74683,9 +74784,11 @@
            "auc_pooled": 0.6343330357014502,
            "auc_within_clock": 0.678592459169712,
            "auc_within_clock_groups": 323,
+           "auc_within_clock_positive": 1916,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.681432104680905,
            "auc_within_tenure_groups": 325,
+           "auc_within_tenure_positive": 1916,
            "auc_within_tenure_thin": 0,
            "brier": 0.1107979033865631,
            "mean_pred": 0.1414226438123389,
@@ -74788,9 +74891,11 @@
            "auc_pooled": 0.6383338351545317,
            "auc_within_clock": 0.6826434472367031,
            "auc_within_clock_groups": 323,
+           "auc_within_clock_positive": 1916,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.6805449664240366,
            "auc_within_tenure_groups": 325,
+           "auc_within_tenure_positive": 1916,
            "auc_within_tenure_thin": 0,
            "brier": 0.1102373217188055,
            "mean_pred": 0.13520743782199884,
@@ -74952,15 +75057,17 @@
          "n_eval": 270803,
          "train_base_rate": 0.738377,
          "eval_base_rate": 0.721573,
-         "seconds": 14.7,
+         "seconds": 5.1,
          "results": {
           "clock_only": {
            "auc_pooled": 0.7207724110342274,
            "auc_within_clock": 0.5,
            "auc_within_clock_groups": 359,
+           "auc_within_clock_positive": 195404,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.5644156661228599,
            "auc_within_tenure_groups": 359,
+           "auc_within_tenure_positive": 195404,
            "auc_within_tenure_thin": 0,
            "brier": 0.17422867319234503,
            "mean_pred": 0.7370848974728924,
@@ -75051,9 +75158,11 @@
            "auc_pooled": 0.8742132119011637,
            "auc_within_clock": 0.8289083887718979,
            "auc_within_clock_groups": 359,
+           "auc_within_clock_positive": 195404,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.8295757443185651,
            "auc_within_tenure_groups": 359,
+           "auc_within_tenure_positive": 195404,
            "auc_within_tenure_thin": 0,
            "brier": 0.1290097455131527,
            "mean_pred": 0.7639162318836952,
@@ -75201,15 +75310,17 @@
          "n_eval": 576646,
          "train_base_rate": 0.721573,
          "eval_base_rate": 0.738377,
-         "seconds": 24.9,
+         "seconds": 8.8,
          "results": {
           "clock_only": {
            "auc_pooled": 0.7264241601626701,
            "auc_within_clock": 0.5,
            "auc_within_clock_groups": 359,
+           "auc_within_clock_positive": 425782,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.5508532967102902,
            "auc_within_tenure_groups": 359,
+           "auc_within_tenure_positive": 425782,
            "auc_within_tenure_thin": 0,
            "brier": 0.16772909746752604,
            "mean_pred": 0.7205947511769774,
@@ -75300,9 +75411,11 @@
            "auc_pooled": 0.8633053524346767,
            "auc_within_clock": 0.808786632448271,
            "auc_within_clock_groups": 359,
+           "auc_within_clock_positive": 425782,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.8099005410422819,
            "auc_within_tenure_groups": 359,
+           "auc_within_tenure_positive": 425782,
            "auc_within_tenure_thin": 0,
            "brier": 0.13047753449169233,
            "mean_pred": 0.6895376507555357,
@@ -75466,15 +75579,17 @@
          "n_eval": 277642,
          "train_base_rate": 0.026287,
          "eval_base_rate": 0.028421,
-         "seconds": 13.5,
+         "seconds": 7.9,
          "results": {
           "clock_only": {
            "auc_pooled": 0.7709436817995545,
            "auc_within_clock": 0.5,
            "auc_within_clock_groups": 359,
+           "auc_within_clock_positive": 7891,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.4947799717814049,
            "auc_within_tenure_groups": 359,
+           "auc_within_tenure_positive": 7891,
            "auc_within_tenure_thin": 0,
            "brier": 0.023376882373106124,
            "mean_pred": 0.02864601356524046,
@@ -75565,9 +75680,11 @@
            "auc_pooled": 0.9914592962077226,
            "auc_within_clock": 0.9755235329804249,
            "auc_within_clock_groups": 359,
+           "auc_within_clock_positive": 7891,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.9792280482592056,
            "auc_within_tenure_groups": 359,
+           "auc_within_tenure_positive": 7891,
            "auc_within_tenure_thin": 0,
            "brier": 0.010393769141296244,
            "mean_pred": 0.030500134315460507,
@@ -75715,15 +75832,17 @@
          "n_eval": 585276,
          "train_base_rate": 0.028421,
          "eval_base_rate": 0.026287,
-         "seconds": 24.6,
+         "seconds": 9.1,
          "results": {
           "clock_only": {
            "auc_pooled": 0.7752375868269724,
            "auc_within_clock": 0.5,
            "auc_within_clock_groups": 359,
+           "auc_within_clock_positive": 15385,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.5045464416135491,
            "auc_within_tenure_groups": 359,
+           "auc_within_tenure_positive": 15385,
            "auc_within_tenure_thin": 0,
            "brier": 0.02147719491985894,
            "mean_pred": 0.03334072866786531,
@@ -75814,9 +75933,11 @@
            "auc_pooled": 0.9889724516574464,
            "auc_within_clock": 0.9700821316067246,
            "auc_within_clock_groups": 359,
+           "auc_within_clock_positive": 15385,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.9764213909914833,
            "auc_within_tenure_groups": 359,
+           "auc_within_tenure_positive": 15385,
            "auc_within_tenure_thin": 0,
            "brier": 0.010755898699450329,
            "mean_pred": 0.03271055691858432,
@@ -77575,15 +77696,17 @@
          "n_eval": 5549,
          "train_base_rate": 0.123229,
          "eval_base_rate": 0.114615,
-         "seconds": 0.4,
+         "seconds": 0.1,
          "results": {
           "clock_only": {
            "auc_pooled": 0.4942437084515859,
            "auc_within_clock": 0.5,
            "auc_within_clock_groups": 111,
+           "auc_within_clock_positive": 636,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.4773945516893739,
            "auc_within_tenure_groups": 111,
+           "auc_within_tenure_positive": 636,
            "auc_within_tenure_thin": 0,
            "brier": 0.10369143173541723,
            "mean_pred": 0.14304194968046482,
@@ -77668,9 +77791,11 @@
            "auc_pooled": 0.5119571103234007,
            "auc_within_clock": 0.5155606308713264,
            "auc_within_clock_groups": 111,
+           "auc_within_clock_positive": 636,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.5,
            "auc_within_tenure_groups": 111,
+           "auc_within_tenure_positive": 636,
            "auc_within_tenure_thin": 0,
            "brier": 0.10299931998558504,
            "mean_pred": 0.14289497793969297,
@@ -77754,9 +77879,11 @@
            "auc_pooled": 0.6948935054860228,
            "auc_within_clock": 0.6948203050935103,
            "auc_within_clock_groups": 111,
+           "auc_within_clock_positive": 636,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.7037046240353281,
            "auc_within_tenure_groups": 111,
+           "auc_within_tenure_positive": 636,
            "auc_within_tenure_thin": 0,
            "brier": 0.09621327073847175,
            "mean_pred": 0.13426042900896024,
@@ -77858,9 +77985,11 @@
            "auc_pooled": 0.6640446281012895,
            "auc_within_clock": 0.691734896147548,
            "auc_within_clock_groups": 111,
+           "auc_within_clock_positive": 636,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.6943010699249561,
            "auc_within_tenure_groups": 111,
+           "auc_within_tenure_positive": 636,
            "auc_within_tenure_thin": 0,
            "brier": 0.10053457551684733,
            "mean_pred": 0.14836534843737081,
@@ -77970,9 +78099,11 @@
            "auc_pooled": 0.6736947733327189,
            "auc_within_clock": 0.6930621391019564,
            "auc_within_clock_groups": 111,
+           "auc_within_clock_positive": 636,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.7002470695983699,
            "auc_within_tenure_groups": 111,
+           "auc_within_tenure_positive": 636,
            "auc_within_tenure_thin": 0,
            "brier": 0.09915774938512154,
            "mean_pred": 0.1485253131484696,
@@ -78075,9 +78206,11 @@
            "auc_pooled": 0.6709195984981444,
            "auc_within_clock": 0.6949754373868827,
            "auc_within_clock_groups": 111,
+           "auc_within_clock_positive": 636,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.6961469922116279,
            "auc_within_tenure_groups": 111,
+           "auc_within_tenure_positive": 636,
            "auc_within_tenure_thin": 0,
            "brier": 0.09911473627101947,
            "mean_pred": 0.1424759484760857,
@@ -78191,15 +78324,17 @@
          "n_eval": 11150,
          "train_base_rate": 0.114615,
          "eval_base_rate": 0.123229,
-         "seconds": 0.5,
+         "seconds": 0.2,
          "results": {
           "clock_only": {
            "auc_pooled": 0.47881374670344984,
            "auc_within_clock": 0.5,
            "auc_within_clock_groups": 120,
+           "auc_within_clock_positive": 1374,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.48808696224331577,
            "auc_within_tenure_groups": 115,
+           "auc_within_tenure_positive": 1374,
            "auc_within_tenure_thin": 0,
            "brier": 0.11130967417891352,
            "mean_pred": 0.1488951615149174,
@@ -78290,9 +78425,11 @@
            "auc_pooled": 0.493248102473574,
            "auc_within_clock": 0.5057616483209888,
            "auc_within_clock_groups": 120,
+           "auc_within_clock_positive": 1374,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.5,
            "auc_within_tenure_groups": 115,
+           "auc_within_tenure_positive": 1374,
            "auc_within_tenure_thin": 0,
            "brier": 0.11147492719240981,
            "mean_pred": 0.1493765048598743,
@@ -78370,9 +78507,11 @@
            "auc_pooled": 0.7002677293052886,
            "auc_within_clock": 0.7001117761529,
            "auc_within_clock_groups": 120,
+           "auc_within_clock_positive": 1374,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.702465141294335,
            "auc_within_tenure_groups": 115,
+           "auc_within_tenure_positive": 1374,
            "auc_within_tenure_thin": 0,
            "brier": 0.10072377164278519,
            "mean_pred": 0.1074059468087386,
@@ -78474,9 +78613,11 @@
            "auc_pooled": 0.6364339963359753,
            "auc_within_clock": 0.67912874261479,
            "auc_within_clock_groups": 120,
+           "auc_within_clock_positive": 1374,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.6801366884658736,
            "auc_within_tenure_groups": 115,
+           "auc_within_tenure_positive": 1374,
            "auc_within_tenure_thin": 0,
            "brier": 0.10451464532855956,
            "mean_pred": 0.12023096442312776,
@@ -78586,9 +78727,11 @@
            "auc_pooled": 0.644464535433596,
            "auc_within_clock": 0.67913576152549,
            "auc_within_clock_groups": 120,
+           "auc_within_clock_positive": 1374,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.6835810776017439,
            "auc_within_tenure_groups": 115,
+           "auc_within_tenure_positive": 1374,
            "auc_within_tenure_thin": 0,
            "brier": 0.10399013547381372,
            "mean_pred": 0.11923279316525766,
@@ -78691,9 +78834,11 @@
            "auc_pooled": 0.6471151761614458,
            "auc_within_clock": 0.6856370275615076,
            "auc_within_clock_groups": 120,
+           "auc_within_clock_positive": 1374,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.684150374477191,
            "auc_within_tenure_groups": 115,
+           "auc_within_tenure_positive": 1374,
            "auc_within_tenure_thin": 0,
            "brier": 0.10391188088988476,
            "mean_pred": 0.11577135824115214,
@@ -78827,15 +78972,17 @@
          "n_eval": 95516,
          "train_base_rate": 0.560624,
          "eval_base_rate": 0.541532,
-         "seconds": 0.5,
+         "seconds": 0.2,
          "results": {
           "clock_only": {
            "auc_pooled": 0.6471514989490647,
            "auc_within_clock": 0.5,
            "auc_within_clock_groups": 121,
+           "auc_within_clock_positive": 51725,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.549605523160387,
            "auc_within_tenure_groups": 121,
+           "auc_within_tenure_positive": 51725,
            "auc_within_tenure_thin": 0,
            "brier": 0.23066235627917966,
            "mean_pred": 0.5617662608862601,
@@ -78926,9 +79073,11 @@
            "auc_pooled": 0.8211377954506631,
            "auc_within_clock": 0.7957763808145312,
            "auc_within_clock_groups": 121,
+           "auc_within_clock_positive": 51725,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.7973587089081171,
            "auc_within_tenure_groups": 121,
+           "auc_within_tenure_positive": 51725,
            "auc_within_tenure_thin": 0,
            "brier": 0.17594227005523758,
            "mean_pred": 0.6007482205255962,
@@ -79048,15 +79197,17 @@
          "n_eval": 202107,
          "train_base_rate": 0.541532,
          "eval_base_rate": 0.560624,
-         "seconds": 0.6,
+         "seconds": 0.4,
          "results": {
           "clock_only": {
            "auc_pooled": 0.6389674991616162,
            "auc_within_clock": 0.5,
            "auc_within_clock_groups": 121,
+           "auc_within_clock_positive": 113306,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.5349536634587269,
            "auc_within_tenure_groups": 121,
+           "auc_within_tenure_positive": 113306,
            "auc_within_tenure_thin": 0,
            "brier": 0.23069747486919157,
            "mean_pred": 0.5399336470003792,
@@ -79147,9 +79298,11 @@
            "auc_pooled": 0.7966206085697979,
            "auc_within_clock": 0.7701251336826488,
            "auc_within_clock_groups": 121,
+           "auc_within_clock_positive": 113306,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.7702571060317137,
            "auc_within_tenure_groups": 121,
+           "auc_within_tenure_positive": 113306,
            "auc_within_tenure_thin": 0,
            "brier": 0.18763506889213272,
            "mean_pred": 0.49638915838191144,
@@ -79285,15 +79438,17 @@
          "n_eval": 97888,
          "train_base_rate": 0.055841,
          "eval_base_rate": 0.059609,
-         "seconds": 0.4,
+         "seconds": 0.2,
          "results": {
           "clock_only": {
            "auc_pooled": 0.7627731578314423,
            "auc_within_clock": 0.5,
            "auc_within_clock_groups": 120,
+           "auc_within_clock_positive": 5835,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.49534827963853767,
            "auc_within_tenure_groups": 120,
+           "auc_within_tenure_positive": 5835,
            "auc_within_tenure_thin": 0,
            "brier": 0.045536250351270804,
            "mean_pred": 0.05717443456446795,
@@ -79384,9 +79539,11 @@
            "auc_pooled": 0.9892010220147104,
            "auc_within_clock": 0.9730313929935468,
            "auc_within_clock_groups": 120,
+           "auc_within_clock_positive": 5835,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.9776962861935751,
            "auc_within_tenure_groups": 120,
+           "auc_within_tenure_positive": 5835,
            "auc_within_tenure_thin": 0,
            "brier": 0.017575280746054172,
            "mean_pred": 0.06138152952801022,
@@ -79506,15 +79663,17 @@
          "n_eval": 205010,
          "train_base_rate": 0.059609,
          "eval_base_rate": 0.055841,
-         "seconds": 0.7,
+         "seconds": 0.4,
          "results": {
           "clock_only": {
            "auc_pooled": 0.7730263004695574,
            "auc_within_clock": 0.5,
            "auc_within_clock_groups": 120,
+           "auc_within_clock_positive": 11448,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.500727447323404,
            "auc_within_tenure_groups": 120,
+           "auc_within_tenure_positive": 11448,
            "auc_within_tenure_thin": 0,
            "brier": 0.04222117203138059,
            "mean_pred": 0.06391919637674266,
@@ -79605,9 +79764,11 @@
            "auc_pooled": 0.9870854015424582,
            "auc_within_clock": 0.9668112876612418,
            "auc_within_clock_groups": 120,
+           "auc_within_clock_positive": 11448,
            "auc_within_clock_thin": 0,
            "auc_within_tenure": 0.9747197292831803,
            "auc_within_tenure_groups": 120,
+           "auc_within_tenure_positive": 11448,
            "auc_within_tenure_thin": 0,
            "brier": 0.018143245278312778,
            "mean_pred": 0.06234046126089416,
@@ -100531,8 +100692,12 @@
        "auc_pooled": 0.67695,
        "auc_within_clock": 0.675778,
        "auc_within_clock_groups": 229.0,
+       "auc_within_clock_positive": 915.0,
+       "auc_within_clock_thin": 0,
        "auc_within_tenure": 0.677065,
        "auc_within_tenure_groups": 217.0,
+       "auc_within_tenure_positive": 915.0,
+       "auc_within_tenure_thin": 0,
        "auc_within_clock_clock_only": 0.5,
        "base_rate": 0.154404
       },
@@ -100541,6 +100706,9 @@
        "spearman_threshold_free": 0.570732,
        "auc_within_clock_vs_train_median_split": 0.714154,
        "auc_within_clock_groups": 344,
+       "auc_within_clock_positive": 3854,
+       "auc_within_clock_thin": 0,
+       "dispersion_minus_hazard_within_clock": 0.038376,
        "auc_pooled_vs_train_median_split_REPORTED_SEPARATELY": 0.793733,
        "r2_on_eval": 0.112971
       },
@@ -100549,6 +100717,9 @@
        "spearman_threshold_free": 0.566138,
        "auc_within_clock_vs_train_median_split": 0.699125,
        "auc_within_clock_groups": 343,
+       "auc_within_clock_positive": 4135,
+       "auc_within_clock_thin": 0,
+       "dispersion_minus_hazard_within_clock": 0.023347,
        "auc_pooled_vs_train_median_split_REPORTED_SEPARATELY": 0.797954,
        "r2_on_eval": 0.124125
       }
@@ -100561,8 +100732,12 @@
        "auc_pooled": 0.671733,
        "auc_within_clock": 0.661329,
        "auc_within_clock_groups": 318.0,
+       "auc_within_clock_positive": 2068.0,
+       "auc_within_clock_thin": 0,
        "auc_within_tenure": 0.663285,
        "auc_within_tenure_groups": 321.0,
+       "auc_within_tenure_positive": 2068.0,
+       "auc_within_tenure_thin": 0,
        "auc_within_clock_clock_only": 0.5,
        "base_rate": 0.149379
       },
@@ -100571,6 +100746,9 @@
        "spearman_threshold_free": 0.559064,
        "auc_within_clock_vs_train_median_split": 0.705088,
        "auc_within_clock_groups": 367,
+       "auc_within_clock_positive": 4612,
+       "auc_within_clock_thin": 0,
+       "dispersion_minus_hazard_within_clock": 0.043758,
        "auc_pooled_vs_train_median_split_REPORTED_SEPARATELY": 0.755275,
        "r2_on_eval": 0.113988
       },
@@ -100579,12 +100757,15 @@
        "spearman_threshold_free": 0.56124,
        "auc_within_clock_vs_train_median_split": 0.694509,
        "auc_within_clock_groups": 360,
+       "auc_within_clock_positive": 4087,
+       "auc_within_clock_thin": 0,
+       "dispersion_minus_hazard_within_clock": 0.03318,
        "auc_pooled_vs_train_median_split_REPORTED_SEPARATELY": 0.759633,
        "r2_on_eval": 0.143617
       }
      }
     },
-    "comparison_note": "Hazard and dispersion are measured on IDENTICAL rows (one shared mask) and in the IDENTICAL coordinate (AUC within the exact clock minute); the only difference left is the estimator (logistic for the barrier label, ridge linear for the continuous dispersion label). The existing out_of_block_logistic hazard AUC uses the whole risk set without the dispersion finiteness filter, so it differs from the hazard_barrier_label number here by a handful of rows."
+    "comparison_note": "Hazard and dispersion are measured on IDENTICAL rows (one shared mask) and in the IDENTICAL coordinate (AUC within the exact clock minute); the only modelling difference left is the estimator (logistic for the barrier label, ridge linear for the continuous dispersion label). The section-level hazard AUC in out_of_block_logistic is NOT the same number: that fit uses the whole risk set, and the dispersion finiteness mask removes up to 28 training rows, which moves the hazard AUC by up to +0.0088. The difference is a changed training sample, not a handful of rows"
    },
    "B600": {
     "distribution": {
@@ -100651,8 +100832,12 @@
        "auc_pooled": 0.688528,
        "auc_within_clock": 0.698608,
        "auc_within_clock_groups": 258.0,
+       "auc_within_clock_positive": 884.0,
+       "auc_within_clock_thin": 0,
        "auc_within_tenure": 0.701403,
        "auc_within_tenure_groups": 256.0,
+       "auc_within_tenure_positive": 884.0,
+       "auc_within_tenure_thin": 0,
        "auc_within_clock_clock_only": 0.5,
        "base_rate": 0.119154
       },
@@ -100661,6 +100846,9 @@
        "spearman_threshold_free": 0.608077,
        "auc_within_clock_vs_train_median_split": 0.735638,
        "auc_within_clock_groups": 349,
+       "auc_within_clock_positive": 4544,
+       "auc_within_clock_thin": 0,
+       "dispersion_minus_hazard_within_clock": 0.037031,
        "auc_pooled_vs_train_median_split_REPORTED_SEPARATELY": 0.810027,
        "r2_on_eval": 0.109262
       },
@@ -100669,6 +100857,9 @@
        "spearman_threshold_free": 0.59711,
        "auc_within_clock_vs_train_median_split": 0.738797,
        "auc_within_clock_groups": 351,
+       "auc_within_clock_positive": 4753,
+       "auc_within_clock_thin": 0,
+       "dispersion_minus_hazard_within_clock": 0.04019,
        "auc_pooled_vs_train_median_split_REPORTED_SEPARATELY": 0.801306,
        "r2_on_eval": 0.11939
       }
@@ -100681,8 +100872,12 @@
        "auc_pooled": 0.675969,
        "auc_within_clock": 0.701099,
        "auc_within_clock_groups": 322.0,
+       "auc_within_clock_positive": 1910.0,
+       "auc_within_clock_thin": 0,
        "auc_within_tenure": 0.698323,
        "auc_within_tenure_groups": 324.0,
+       "auc_within_tenure_positive": 1910.0,
+       "auc_within_tenure_thin": 0,
        "auc_within_clock_clock_only": 0.5,
        "base_rate": 0.127571
       },
@@ -100691,6 +100886,9 @@
        "spearman_threshold_free": 0.548075,
        "auc_within_clock_vs_train_median_split": 0.710042,
        "auc_within_clock_groups": 350,
+       "auc_within_clock_positive": 5519,
+       "auc_within_clock_thin": 0,
+       "dispersion_minus_hazard_within_clock": 0.008943,
        "auc_pooled_vs_train_median_split_REPORTED_SEPARATELY": 0.766731,
        "r2_on_eval": 0.119856
       },
@@ -100699,12 +100897,15 @@
        "spearman_threshold_free": 0.536601,
        "auc_within_clock_vs_train_median_split": 0.698177,
        "auc_within_clock_groups": 351,
+       "auc_within_clock_positive": 4975,
+       "auc_within_clock_thin": 0,
+       "dispersion_minus_hazard_within_clock": -0.002921,
        "auc_pooled_vs_train_median_split_REPORTED_SEPARATELY": 0.758132,
        "r2_on_eval": 0.130628
       }
      }
     },
-    "comparison_note": "Hazard and dispersion are measured on IDENTICAL rows (one shared mask) and in the IDENTICAL coordinate (AUC within the exact clock minute); the only difference left is the estimator (logistic for the barrier label, ridge linear for the continuous dispersion label). The existing out_of_block_logistic hazard AUC uses the whole risk set without the dispersion finiteness filter, so it differs from the hazard_barrier_label number here by a handful of rows."
+    "comparison_note": "Hazard and dispersion are measured on IDENTICAL rows (one shared mask) and in the IDENTICAL coordinate (AUC within the exact clock minute); the only modelling difference left is the estimator (logistic for the barrier label, ridge linear for the continuous dispersion label). The section-level hazard AUC in out_of_block_logistic is NOT the same number: that fit uses the whole risk set, and the dispersion finiteness mask removes up to 14 training rows, which moves the hazard AUC by up to +0.0279. The difference is a changed training sample, not a handful of rows"
    }
   },
   "B_hazard_conditional_on_dispersion_decile": {
@@ -100741,93 +100942,110 @@
       "convention": "median = numpy median over the decile cells with a defined value (even counts average the two middle cells)"
      },
      "refit_vs_global_median_difference": 0.010616,
-     "median_mediation_of_headline_features": {
-      "dist_from_running_high": {
-       "pooled_train": {
-        "coefficient": -0.575746,
-        "n_train": 13844,
-        "n_parameters": 393,
-        "rows_per_parameter": 35.226463
+     "coefficient_allocation_by_decile_UNIDENTIFIED": {
+      "LABEL": "UNIDENTIFIED - descriptive coefficient allocation, NOT mediation, NOT effect sizes",
+      "why_unidentified": "the SINGLE-FEATURE profiles carry 393 parameters each (one feature, the intercept and 391 exact clock levels), or 394 where the feature needs a missingness dummy; on a single decile that is as few as 592 rows, about 1.5 rows per parameter. The per-decile MULTI-FEATURE refits are a different, wider design: 411 state columns (14 features plus missingness dummies plus intercept) with the same 391 clock levels. Neither width identifies a decile-level coefficient, and the two tables disagree in direction",
+      "tables_disagree": "the per-decile refits (a 20-column state design with 391 clock levels) and these single-feature profiles even disagree in DIRECTION, which is exactly what non-identification looks like. Neither table is a mediator analysis",
+      "by_feature": {
+       "dist_from_running_high": {
+        "pooled_train": {
+         "coefficient": -0.575746,
+         "n_train": 13844,
+         "n_parameters": 393,
+         "rows_per_parameter": 35.226463
+        },
+        "calmest_train_decile": {
+         "coefficient": -0.470788,
+         "n_train": 1385,
+         "n_parameters": 393,
+         "rows_per_parameter": 3.524173
+        },
+        "wildest_train_decile": {
+         "coefficient": -0.763369,
+         "n_train": 1385,
+         "n_parameters": 393,
+         "rows_per_parameter": 3.524173
+        }
        },
-       "calmest_train_decile": {
-        "coefficient": -0.470788,
-        "n_train": 1385,
-        "n_parameters": 393,
-        "rows_per_parameter": 3.524173
+       "mfe_surrendered_pos": {
+        "pooled_train": {
+         "coefficient": 0.473199,
+         "n_train": 13844,
+         "n_parameters": 394,
+         "rows_per_parameter": 35.137056
+        },
+        "calmest_train_decile": {
+         "coefficient": 0.321891,
+         "n_train": 1385,
+         "n_parameters": 394,
+         "rows_per_parameter": 3.515228
+        },
+        "wildest_train_decile": {
+         "coefficient": 0.397234,
+         "n_train": 1385,
+         "n_parameters": 393,
+         "rows_per_parameter": 3.524173
+        }
        },
-       "wildest_train_decile": {
-        "coefficient": -0.763369,
-        "n_train": 1385,
-        "n_parameters": 393,
-        "rows_per_parameter": 3.524173
+       "up_close_streak": {
+        "pooled_train": {
+         "coefficient": -0.654983,
+         "n_train": 13844,
+         "n_parameters": 393,
+         "rows_per_parameter": 35.226463
+        },
+        "calmest_train_decile": {
+         "coefficient": -0.452916,
+         "n_train": 1385,
+         "n_parameters": 393,
+         "rows_per_parameter": 3.524173
+        },
+        "wildest_train_decile": {
+         "coefficient": -0.577701,
+         "n_train": 1385,
+         "n_parameters": 393,
+         "rows_per_parameter": 3.524173
+        }
        },
-       "attenuation_calmest_over_wildest": 0.616724
-      },
-      "mfe_surrendered_pos": {
-       "pooled_train": {
-        "coefficient": 0.473199,
-        "n_train": 13844,
-        "n_parameters": 394,
-        "rows_per_parameter": 35.137056
-       },
-       "calmest_train_decile": {
-        "coefficient": 0.321891,
-        "n_train": 1385,
-        "n_parameters": 394,
-        "rows_per_parameter": 3.515228
-       },
-       "wildest_train_decile": {
-        "coefficient": 0.397234,
-        "n_train": 1385,
-        "n_parameters": 393,
-        "rows_per_parameter": 3.524173
-       },
-       "attenuation_calmest_over_wildest": 0.810331
-      },
-      "up_close_streak": {
-       "pooled_train": {
-        "coefficient": -0.654983,
-        "n_train": 13844,
-        "n_parameters": 393,
-        "rows_per_parameter": 35.226463
-       },
-       "calmest_train_decile": {
-        "coefficient": -0.452916,
-        "n_train": 1385,
-        "n_parameters": 393,
-        "rows_per_parameter": 3.524173
-       },
-       "wildest_train_decile": {
-        "coefficient": -0.577701,
-        "n_train": 1385,
-        "n_parameters": 393,
-        "rows_per_parameter": 3.524173
-       },
-       "attenuation_calmest_over_wildest": 0.783997
-      },
-      "accel_1_5": {
-       "pooled_train": {
-        "coefficient": -0.367445,
-        "n_train": 13844,
-        "n_parameters": 394,
-        "rows_per_parameter": 35.137056
-       },
-       "calmest_train_decile": {
-        "coefficient": -0.15221,
-        "n_train": 1385,
-        "n_parameters": 394,
-        "rows_per_parameter": 3.515228
-       },
-       "wildest_train_decile": {
-        "coefficient": -0.631064,
-        "n_train": 1385,
-        "n_parameters": 394,
-        "rows_per_parameter": 3.515228
-       },
-       "attenuation_calmest_over_wildest": 0.241196
+       "accel_1_5": {
+        "pooled_train": {
+         "coefficient": -0.367445,
+         "n_train": 13844,
+         "n_parameters": 394,
+         "rows_per_parameter": 35.137056
+        },
+        "calmest_train_decile": {
+         "coefficient": -0.15221,
+         "n_train": 1385,
+         "n_parameters": 394,
+         "rows_per_parameter": 3.515228
+        },
+        "wildest_train_decile": {
+         "coefficient": -0.631064,
+         "n_train": 1385,
+         "n_parameters": 394,
+         "rows_per_parameter": 3.515228
+        }
+       }
       }
      },
-     "mediation_reading": "a feature whose coefficient is much smaller in the wildest train decile than in the calmest is substantially mediated by forward dispersion: part of what it detects about the hazard is the tape getting wilder. READ THE ATTENUATION, NOT THE LEVELS: each profile is a single-feature model with one state parameter, but it still carries 391 exact clock levels estimated from that same decile, so rows_per_parameter is reported per cell and is small inside a decile (a handful of rows per clock level). The sign and the collapse across deciles are the finding; the coefficient magnitudes are not effect sizes.",
+     "supported_result": {
+      "statement": "the GLOBAL hazard model keeps its within-decile discrimination (about 0.67-0.70 across strata), so the hazard finding is independent of forward dispersion AT THE SCORE LEVEL. 5 of the section's 40 decile cells are flagged thin under the declared rule (fewer than 30 contributing clock minutes or fewer than 30 minority-class observations): A_pm b1->b2 decile_1 (0.474 on 27 min), A_pm b1->b2 decile_5 (0.697 on 29 min), A_pm b2->b1 decile_10 (0.703 on 26 min), B600 b1->b2 decile_5 (0.606 on 26 min), B600 b2->b1 decile_10 (0.791 on 21 min); the thinnest AUC in the section is 0.474. Of this direction's 10 cells 2 are flagged (decile_1 0.474 on 27 min, decile_5 0.697 on 29 min). Those cells are why decile-level estimates are published with their group counts rather than as a smooth curve. No feature-level mediation is measured or implied and nothing here shows exhaustion is stronger in wild tapes",
+      "not_established": "no feature-level mediation is measured or implied, and nothing here shows that exhaustion is stronger in wild tapes; a dispersion x exhaustion interaction remains an untested economic hypothesis for E1b",
+      "measured_hazard_base_rate_by_dispersion_decile": {
+       "decile_1": 0.161094,
+       "decile_2": 0.11954,
+       "decile_3": 0.172414,
+       "decile_4": 0.176039,
+       "decile_5": 0.141988,
+       "decile_6": 0.193182,
+       "decile_7": 0.183865,
+       "decile_8": 0.149025,
+       "decile_9": 0.155285,
+       "decile_10": 0.124254
+      },
+      "base_rate_pattern": "measured, not asserted: the hazard base rate across dispersion deciles is NOT monotone (see the list above and the per-cell values in cells), which is why no structural relation to dispersion is claimed"
+     },
      "cells": {
       "decile_1": {
        "n_eval": 329,
@@ -100838,13 +101056,13 @@
        "hazard_base_rate": 0.161094,
        "global_model_auc_within_clock": 0.474026,
        "global_model_auc_within_clock_groups": 27,
-       "global_model_auc_within_clock_thin": 0,
+       "global_model_auc_within_clock_thin": 1,
        "global_model_auc_within_tenure": 0.491124,
        "n_positive_in_cell": 53,
        "refit_model": {
         "auc_within_clock": 0.61039,
         "auc_within_clock_groups": 27,
-        "auc_within_clock_thin": 0,
+        "auc_within_clock_thin": 1,
         "auc_within_tenure": 0.627219,
         "n_train_in_decile": 1385,
         "n_parameters": 411,
@@ -100865,7 +101083,7 @@
          "mfe_surrendered_pos": 0.126761,
          "bars_below_entry_episode": -0.12129
         },
-        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 20-column state design (14 features plus missingness dummies plus intercept) with 391 exact clock levels fitted on a single decile, so the per-feature coefficients here are unstable. Read them for nothing at all: the section's own descriptive allocation table carries the same caveat, and no mediator analysis is available at feature level."
        }
       },
       "decile_2": {
@@ -100904,7 +101122,7 @@
          "mfe_surrendered_pos": 0.395923,
          "bars_below_entry_episode": -0.027536
         },
-        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 20-column state design (14 features plus missingness dummies plus intercept) with 391 exact clock levels fitted on a single decile, so the per-feature coefficients here are unstable. Read them for nothing at all: the section's own descriptive allocation table carries the same caveat, and no mediator analysis is available at feature level."
        }
       },
       "decile_3": {
@@ -100943,7 +101161,7 @@
          "mfe_surrendered_pos": 0.11714,
          "bars_below_entry_episode": -0.013291
         },
-        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 20-column state design (14 features plus missingness dummies plus intercept) with 391 exact clock levels fitted on a single decile, so the per-feature coefficients here are unstable. Read them for nothing at all: the section's own descriptive allocation table carries the same caveat, and no mediator analysis is available at feature level."
        }
       },
       "decile_4": {
@@ -100982,7 +101200,7 @@
          "mfe_surrendered_pos": 0.234364,
          "bars_below_entry_episode": 0.082195
         },
-        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 20-column state design (14 features plus missingness dummies plus intercept) with 391 exact clock levels fitted on a single decile, so the per-feature coefficients here are unstable. Read them for nothing at all: the section's own descriptive allocation table carries the same caveat, and no mediator analysis is available at feature level."
        }
       },
       "decile_5": {
@@ -100994,13 +101212,13 @@
        "hazard_base_rate": 0.141988,
        "global_model_auc_within_clock": 0.69724,
        "global_model_auc_within_clock_groups": 29,
-       "global_model_auc_within_clock_thin": 0,
+       "global_model_auc_within_clock_thin": 1,
        "global_model_auc_within_tenure": 0.698891,
        "n_positive_in_cell": 70,
        "refit_model": {
         "auc_within_clock": 0.694805,
         "auc_within_clock_groups": 29,
-        "auc_within_clock_thin": 0,
+        "auc_within_clock_thin": 1,
         "auc_within_tenure": 0.694136,
         "n_train_in_decile": 1382,
         "n_parameters": 411,
@@ -101021,7 +101239,7 @@
          "mfe_surrendered_pos": 0.120303,
          "bars_below_entry_episode": -0.16126
         },
-        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 20-column state design (14 features plus missingness dummies plus intercept) with 391 exact clock levels fitted on a single decile, so the per-feature coefficients here are unstable. Read them for nothing at all: the section's own descriptive allocation table carries the same caveat, and no mediator analysis is available at feature level."
        }
       },
       "decile_6": {
@@ -101060,7 +101278,7 @@
          "mfe_surrendered_pos": 0.005113,
          "bars_below_entry_episode": -0.083846
         },
-        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 20-column state design (14 features plus missingness dummies plus intercept) with 391 exact clock levels fitted on a single decile, so the per-feature coefficients here are unstable. Read them for nothing at all: the section's own descriptive allocation table carries the same caveat, and no mediator analysis is available at feature level."
        }
       },
       "decile_7": {
@@ -101099,7 +101317,7 @@
          "mfe_surrendered_pos": 0.194458,
          "bars_below_entry_episode": -0.087647
         },
-        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 20-column state design (14 features plus missingness dummies plus intercept) with 391 exact clock levels fitted on a single decile, so the per-feature coefficients here are unstable. Read them for nothing at all: the section's own descriptive allocation table carries the same caveat, and no mediator analysis is available at feature level."
        }
       },
       "decile_8": {
@@ -101138,7 +101356,7 @@
          "mfe_surrendered_pos": 0.102374,
          "bars_below_entry_episode": -0.059212
         },
-        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 20-column state design (14 features plus missingness dummies plus intercept) with 391 exact clock levels fitted on a single decile, so the per-feature coefficients here are unstable. Read them for nothing at all: the section's own descriptive allocation table carries the same caveat, and no mediator analysis is available at feature level."
        }
       },
       "decile_9": {
@@ -101177,7 +101395,7 @@
          "mfe_surrendered_pos": -0.245989,
          "bars_below_entry_episode": -0.011912
         },
-        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 20-column state design (14 features plus missingness dummies plus intercept) with 391 exact clock levels fitted on a single decile, so the per-feature coefficients here are unstable. Read them for nothing at all: the section's own descriptive allocation table carries the same caveat, and no mediator analysis is available at feature level."
        }
       },
       "decile_10": {
@@ -101216,7 +101434,7 @@
          "mfe_surrendered_pos": -0.105517,
          "bars_below_entry_episode": -0.029058
         },
-        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 20-column state design (14 features plus missingness dummies plus intercept) with 391 exact clock levels fitted on a single decile, so the per-feature coefficients here are unstable. Read them for nothing at all: the section's own descriptive allocation table carries the same caveat, and no mediator analysis is available at feature level."
        }
       }
      }
@@ -101253,93 +101471,110 @@
       "convention": "median = numpy median over the decile cells with a defined value (even counts average the two middle cells)"
      },
      "refit_vs_global_median_difference": -0.019857,
-     "median_mediation_of_headline_features": {
-      "dist_from_running_high": {
-       "pooled_train": {
-        "coefficient": -0.602169,
-        "n_train": 5926,
-        "n_parameters": 393,
-        "rows_per_parameter": 15.07888
+     "coefficient_allocation_by_decile_UNIDENTIFIED": {
+      "LABEL": "UNIDENTIFIED - descriptive coefficient allocation, NOT mediation, NOT effect sizes",
+      "why_unidentified": "the SINGLE-FEATURE profiles carry 393 parameters each (one feature, the intercept and 391 exact clock levels), or 394 where the feature needs a missingness dummy; on a single decile that is as few as 592 rows, about 1.5 rows per parameter. The per-decile MULTI-FEATURE refits are a different, wider design: 411 state columns (14 features plus missingness dummies plus intercept) with the same 391 clock levels. Neither width identifies a decile-level coefficient, and the two tables disagree in direction",
+      "tables_disagree": "the per-decile refits (a 20-column state design with 391 clock levels) and these single-feature profiles even disagree in DIRECTION, which is exactly what non-identification looks like. Neither table is a mediator analysis",
+      "by_feature": {
+       "dist_from_running_high": {
+        "pooled_train": {
+         "coefficient": -0.602169,
+         "n_train": 5926,
+         "n_parameters": 393,
+         "rows_per_parameter": 15.07888
+        },
+        "calmest_train_decile": {
+         "coefficient": -0.37968,
+         "n_train": 592,
+         "n_parameters": 393,
+         "rows_per_parameter": 1.506361
+        },
+        "wildest_train_decile": {
+         "coefficient": -0.860608,
+         "n_train": 597,
+         "n_parameters": 393,
+         "rows_per_parameter": 1.519084
+        }
        },
-       "calmest_train_decile": {
-        "coefficient": -0.37968,
-        "n_train": 592,
-        "n_parameters": 393,
-        "rows_per_parameter": 1.506361
+       "mfe_surrendered_pos": {
+        "pooled_train": {
+         "coefficient": 0.44762,
+         "n_train": 5926,
+         "n_parameters": 394,
+         "rows_per_parameter": 15.040609
+        },
+        "calmest_train_decile": {
+         "coefficient": 0.326817,
+         "n_train": 592,
+         "n_parameters": 393,
+         "rows_per_parameter": 1.506361
+        },
+        "wildest_train_decile": {
+         "coefficient": 0.429743,
+         "n_train": 597,
+         "n_parameters": 394,
+         "rows_per_parameter": 1.515228
+        }
        },
-       "wildest_train_decile": {
-        "coefficient": -0.860608,
-        "n_train": 597,
-        "n_parameters": 393,
-        "rows_per_parameter": 1.519084
+       "up_close_streak": {
+        "pooled_train": {
+         "coefficient": -0.573528,
+         "n_train": 5926,
+         "n_parameters": 393,
+         "rows_per_parameter": 15.07888
+        },
+        "calmest_train_decile": {
+         "coefficient": -0.476413,
+         "n_train": 592,
+         "n_parameters": 393,
+         "rows_per_parameter": 1.506361
+        },
+        "wildest_train_decile": {
+         "coefficient": -0.565718,
+         "n_train": 597,
+         "n_parameters": 393,
+         "rows_per_parameter": 1.519084
+        }
        },
-       "attenuation_calmest_over_wildest": 0.441176
-      },
-      "mfe_surrendered_pos": {
-       "pooled_train": {
-        "coefficient": 0.44762,
-        "n_train": 5926,
-        "n_parameters": 394,
-        "rows_per_parameter": 15.040609
-       },
-       "calmest_train_decile": {
-        "coefficient": 0.326817,
-        "n_train": 592,
-        "n_parameters": 393,
-        "rows_per_parameter": 1.506361
-       },
-       "wildest_train_decile": {
-        "coefficient": 0.429743,
-        "n_train": 597,
-        "n_parameters": 394,
-        "rows_per_parameter": 1.515228
-       },
-       "attenuation_calmest_over_wildest": 0.760494
-      },
-      "up_close_streak": {
-       "pooled_train": {
-        "coefficient": -0.573528,
-        "n_train": 5926,
-        "n_parameters": 393,
-        "rows_per_parameter": 15.07888
-       },
-       "calmest_train_decile": {
-        "coefficient": -0.476413,
-        "n_train": 592,
-        "n_parameters": 393,
-        "rows_per_parameter": 1.506361
-       },
-       "wildest_train_decile": {
-        "coefficient": -0.565718,
-        "n_train": 597,
-        "n_parameters": 393,
-        "rows_per_parameter": 1.519084
-       },
-       "attenuation_calmest_over_wildest": 0.842139
-      },
-      "accel_1_5": {
-       "pooled_train": {
-        "coefficient": -0.315849,
-        "n_train": 5926,
-        "n_parameters": 394,
-        "rows_per_parameter": 15.040609
-       },
-       "calmest_train_decile": {
-        "coefficient": -0.125677,
-        "n_train": 592,
-        "n_parameters": 394,
-        "rows_per_parameter": 1.502538
-       },
-       "wildest_train_decile": {
-        "coefficient": -0.443866,
-        "n_train": 597,
-        "n_parameters": 394,
-        "rows_per_parameter": 1.515228
-       },
-       "attenuation_calmest_over_wildest": 0.283142
+       "accel_1_5": {
+        "pooled_train": {
+         "coefficient": -0.315849,
+         "n_train": 5926,
+         "n_parameters": 394,
+         "rows_per_parameter": 15.040609
+        },
+        "calmest_train_decile": {
+         "coefficient": -0.125677,
+         "n_train": 592,
+         "n_parameters": 394,
+         "rows_per_parameter": 1.502538
+        },
+        "wildest_train_decile": {
+         "coefficient": -0.443866,
+         "n_train": 597,
+         "n_parameters": 394,
+         "rows_per_parameter": 1.515228
+        }
+       }
       }
      },
-     "mediation_reading": "a feature whose coefficient is much smaller in the wildest train decile than in the calmest is substantially mediated by forward dispersion: part of what it detects about the hazard is the tape getting wilder. READ THE ATTENUATION, NOT THE LEVELS: each profile is a single-feature model with one state parameter, but it still carries 391 exact clock levels estimated from that same decile, so rows_per_parameter is reported per cell and is small inside a decile (a handful of rows per clock level). The sign and the collapse across deciles are the finding; the coefficient magnitudes are not effect sizes.",
+     "supported_result": {
+      "statement": "the GLOBAL hazard model keeps its within-decile discrimination (about 0.67-0.70 across strata), so the hazard finding is independent of forward dispersion AT THE SCORE LEVEL. 5 of the section's 40 decile cells are flagged thin under the declared rule (fewer than 30 contributing clock minutes or fewer than 30 minority-class observations): A_pm b1->b2 decile_1 (0.474 on 27 min), A_pm b1->b2 decile_5 (0.697 on 29 min), A_pm b2->b1 decile_10 (0.703 on 26 min), B600 b1->b2 decile_5 (0.606 on 26 min), B600 b2->b1 decile_10 (0.791 on 21 min); the thinnest AUC in the section is 0.558. Of this direction's 10 cells 1 are flagged (decile_10 0.703 on 26 min). Those cells are why decile-level estimates are published with their group counts rather than as a smooth curve. No feature-level mediation is measured or implied and nothing here shows exhaustion is stronger in wild tapes",
+      "not_established": "no feature-level mediation is measured or implied, and nothing here shows that exhaustion is stronger in wild tapes; a dispersion x exhaustion interaction remains an untested economic hypothesis for E1b",
+      "measured_hazard_base_rate_by_dispersion_decile": {
+       "decile_1": 0.13754,
+       "decile_2": 0.154808,
+       "decile_3": 0.173404,
+       "decile_4": 0.165049,
+       "decile_5": 0.166667,
+       "decile_6": 0.171687,
+       "decile_7": 0.137615,
+       "decile_8": 0.142053,
+       "decile_9": 0.109164,
+       "decile_10": 0.074118
+      },
+      "base_rate_pattern": "measured, not asserted: the hazard base rate across dispersion deciles is NOT monotone (see the list above and the per-cell values in cells), which is why no structural relation to dispersion is claimed"
+     },
      "cells": {
       "decile_1": {
        "n_eval": 2203,
@@ -101377,7 +101612,7 @@
          "mfe_surrendered_pos": 0.19597,
          "bars_below_entry_episode": 0.32119
         },
-        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 20-column state design (14 features plus missingness dummies plus intercept) with 391 exact clock levels fitted on a single decile, so the per-feature coefficients here are unstable. Read them for nothing at all: the section's own descriptive allocation table carries the same caveat, and no mediator analysis is available at feature level."
        }
       },
       "decile_2": {
@@ -101416,7 +101651,7 @@
          "mfe_surrendered_pos": 0.158565,
          "bars_below_entry_episode": 0.010195
         },
-        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 20-column state design (14 features plus missingness dummies plus intercept) with 391 exact clock levels fitted on a single decile, so the per-feature coefficients here are unstable. Read them for nothing at all: the section's own descriptive allocation table carries the same caveat, and no mediator analysis is available at feature level."
        }
       },
       "decile_3": {
@@ -101455,7 +101690,7 @@
          "mfe_surrendered_pos": 0.392638,
          "bars_below_entry_episode": 0.010741
         },
-        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 20-column state design (14 features plus missingness dummies plus intercept) with 391 exact clock levels fitted on a single decile, so the per-feature coefficients here are unstable. Read them for nothing at all: the section's own descriptive allocation table carries the same caveat, and no mediator analysis is available at feature level."
        }
       },
       "decile_4": {
@@ -101494,7 +101729,7 @@
          "mfe_surrendered_pos": 0.124233,
          "bars_below_entry_episode": -0.145716
         },
-        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 20-column state design (14 features plus missingness dummies plus intercept) with 391 exact clock levels fitted on a single decile, so the per-feature coefficients here are unstable. Read them for nothing at all: the section's own descriptive allocation table carries the same caveat, and no mediator analysis is available at feature level."
        }
       },
       "decile_5": {
@@ -101533,7 +101768,7 @@
          "mfe_surrendered_pos": 0.152308,
          "bars_below_entry_episode": 0.093862
         },
-        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 20-column state design (14 features plus missingness dummies plus intercept) with 391 exact clock levels fitted on a single decile, so the per-feature coefficients here are unstable. Read them for nothing at all: the section's own descriptive allocation table carries the same caveat, and no mediator analysis is available at feature level."
        }
       },
       "decile_6": {
@@ -101572,7 +101807,7 @@
          "mfe_surrendered_pos": 0.202226,
          "bars_below_entry_episode": -0.128045
         },
-        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 20-column state design (14 features plus missingness dummies plus intercept) with 391 exact clock levels fitted on a single decile, so the per-feature coefficients here are unstable. Read them for nothing at all: the section's own descriptive allocation table carries the same caveat, and no mediator analysis is available at feature level."
        }
       },
       "decile_7": {
@@ -101611,7 +101846,7 @@
          "mfe_surrendered_pos": 0.090019,
          "bars_below_entry_episode": -0.122619
         },
-        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 20-column state design (14 features plus missingness dummies plus intercept) with 391 exact clock levels fitted on a single decile, so the per-feature coefficients here are unstable. Read them for nothing at all: the section's own descriptive allocation table carries the same caveat, and no mediator analysis is available at feature level."
        }
       },
       "decile_8": {
@@ -101650,7 +101885,7 @@
          "mfe_surrendered_pos": 0.191244,
          "bars_below_entry_episode": -0.402934
         },
-        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 20-column state design (14 features plus missingness dummies plus intercept) with 391 exact clock levels fitted on a single decile, so the per-feature coefficients here are unstable. Read them for nothing at all: the section's own descriptive allocation table carries the same caveat, and no mediator analysis is available at feature level."
        }
       },
       "decile_9": {
@@ -101689,7 +101924,7 @@
          "mfe_surrendered_pos": -0.155525,
          "bars_below_entry_episode": 0.151373
         },
-        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 20-column state design (14 features plus missingness dummies plus intercept) with 391 exact clock levels fitted on a single decile, so the per-feature coefficients here are unstable. Read them for nothing at all: the section's own descriptive allocation table carries the same caveat, and no mediator analysis is available at feature level."
        }
       },
       "decile_10": {
@@ -101701,13 +101936,13 @@
        "hazard_base_rate": 0.074118,
        "global_model_auc_within_clock": 0.702901,
        "global_model_auc_within_clock_groups": 26,
-       "global_model_auc_within_clock_thin": 0,
+       "global_model_auc_within_clock_thin": 1,
        "global_model_auc_within_tenure": 0.700333,
        "n_positive_in_cell": 63,
        "refit_model": {
         "auc_within_clock": 0.615064,
         "auc_within_clock_groups": 26,
-        "auc_within_clock_thin": 0,
+        "auc_within_clock_thin": 1,
         "auc_within_tenure": 0.642097,
         "n_train_in_decile": 597,
         "n_parameters": 411,
@@ -101728,7 +101963,7 @@
          "mfe_surrendered_pos": 0.327737,
          "bars_below_entry_episode": -0.879979
         },
-        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 20-column state design (14 features plus missingness dummies plus intercept) with 391 exact clock levels fitted on a single decile, so the per-feature coefficients here are unstable. Read them for nothing at all: the section's own descriptive allocation table carries the same caveat, and no mediator analysis is available at feature level."
        }
       }
      }
@@ -101767,93 +102002,110 @@
       "convention": "median = numpy median over the decile cells with a defined value (even counts average the two middle cells)"
      },
      "refit_vs_global_median_difference": -0.001096,
-     "median_mediation_of_headline_features": {
-      "dist_from_running_high": {
-       "pooled_train": {
-        "coefficient": -0.591694,
-        "n_train": 14972,
-        "n_parameters": 393,
-        "rows_per_parameter": 38.096692
+     "coefficient_allocation_by_decile_UNIDENTIFIED": {
+      "LABEL": "UNIDENTIFIED - descriptive coefficient allocation, NOT mediation, NOT effect sizes",
+      "why_unidentified": "the SINGLE-FEATURE profiles carry 393 parameters each (one feature, the intercept and 391 exact clock levels), or 394 where the feature needs a missingness dummy; on a single decile that is as few as 592 rows, about 1.5 rows per parameter. The per-decile MULTI-FEATURE refits are a different, wider design: 410 state columns (14 features plus missingness dummies plus intercept) with the same 391 clock levels. Neither width identifies a decile-level coefficient, and the two tables disagree in direction",
+      "tables_disagree": "the per-decile refits (a 19-column state design with 391 clock levels) and these single-feature profiles even disagree in DIRECTION, which is exactly what non-identification looks like. Neither table is a mediator analysis",
+      "by_feature": {
+       "dist_from_running_high": {
+        "pooled_train": {
+         "coefficient": -0.591694,
+         "n_train": 14972,
+         "n_parameters": 393,
+         "rows_per_parameter": 38.096692
+        },
+        "calmest_train_decile": {
+         "coefficient": -0.564088,
+         "n_train": 1496,
+         "n_parameters": 393,
+         "rows_per_parameter": 3.806616
+        },
+        "wildest_train_decile": {
+         "coefficient": -0.895736,
+         "n_train": 1500,
+         "n_parameters": 393,
+         "rows_per_parameter": 3.816794
+        }
        },
-       "calmest_train_decile": {
-        "coefficient": -0.564088,
-        "n_train": 1496,
-        "n_parameters": 393,
-        "rows_per_parameter": 3.806616
+       "mfe_surrendered_pos": {
+        "pooled_train": {
+         "coefficient": 0.41434,
+         "n_train": 14972,
+         "n_parameters": 394,
+         "rows_per_parameter": 38.0
+        },
+        "calmest_train_decile": {
+         "coefficient": 0.243154,
+         "n_train": 1496,
+         "n_parameters": 394,
+         "rows_per_parameter": 3.796954
+        },
+        "wildest_train_decile": {
+         "coefficient": 0.593592,
+         "n_train": 1500,
+         "n_parameters": 394,
+         "rows_per_parameter": 3.807107
+        }
        },
-       "wildest_train_decile": {
-        "coefficient": -0.895736,
-        "n_train": 1500,
-        "n_parameters": 393,
-        "rows_per_parameter": 3.816794
+       "up_close_streak": {
+        "pooled_train": {
+         "coefficient": -0.579857,
+         "n_train": 14972,
+         "n_parameters": 393,
+         "rows_per_parameter": 38.096692
+        },
+        "calmest_train_decile": {
+         "coefficient": -0.366417,
+         "n_train": 1496,
+         "n_parameters": 393,
+         "rows_per_parameter": 3.806616
+        },
+        "wildest_train_decile": {
+         "coefficient": -0.579947,
+         "n_train": 1500,
+         "n_parameters": 393,
+         "rows_per_parameter": 3.816794
+        }
        },
-       "attenuation_calmest_over_wildest": 0.629748
-      },
-      "mfe_surrendered_pos": {
-       "pooled_train": {
-        "coefficient": 0.41434,
-        "n_train": 14972,
-        "n_parameters": 394,
-        "rows_per_parameter": 38.0
-       },
-       "calmest_train_decile": {
-        "coefficient": 0.243154,
-        "n_train": 1496,
-        "n_parameters": 394,
-        "rows_per_parameter": 3.796954
-       },
-       "wildest_train_decile": {
-        "coefficient": 0.593592,
-        "n_train": 1500,
-        "n_parameters": 394,
-        "rows_per_parameter": 3.807107
-       },
-       "attenuation_calmest_over_wildest": 0.409632
-      },
-      "up_close_streak": {
-       "pooled_train": {
-        "coefficient": -0.579857,
-        "n_train": 14972,
-        "n_parameters": 393,
-        "rows_per_parameter": 38.096692
-       },
-       "calmest_train_decile": {
-        "coefficient": -0.366417,
-        "n_train": 1496,
-        "n_parameters": 393,
-        "rows_per_parameter": 3.806616
-       },
-       "wildest_train_decile": {
-        "coefficient": -0.579947,
-        "n_train": 1500,
-        "n_parameters": 393,
-        "rows_per_parameter": 3.816794
-       },
-       "attenuation_calmest_over_wildest": 0.631811
-      },
-      "accel_1_5": {
-       "pooled_train": {
-        "coefficient": -0.372094,
-        "n_train": 14972,
-        "n_parameters": 393,
-        "rows_per_parameter": 38.096692
-       },
-       "calmest_train_decile": {
-        "coefficient": -0.133167,
-        "n_train": 1496,
-        "n_parameters": 393,
-        "rows_per_parameter": 3.806616
-       },
-       "wildest_train_decile": {
-        "coefficient": -0.676755,
-        "n_train": 1500,
-        "n_parameters": 393,
-        "rows_per_parameter": 3.816794
-       },
-       "attenuation_calmest_over_wildest": 0.196773
+       "accel_1_5": {
+        "pooled_train": {
+         "coefficient": -0.372094,
+         "n_train": 14972,
+         "n_parameters": 393,
+         "rows_per_parameter": 38.096692
+        },
+        "calmest_train_decile": {
+         "coefficient": -0.133167,
+         "n_train": 1496,
+         "n_parameters": 393,
+         "rows_per_parameter": 3.806616
+        },
+        "wildest_train_decile": {
+         "coefficient": -0.676755,
+         "n_train": 1500,
+         "n_parameters": 393,
+         "rows_per_parameter": 3.816794
+        }
+       }
       }
      },
-     "mediation_reading": "a feature whose coefficient is much smaller in the wildest train decile than in the calmest is substantially mediated by forward dispersion: part of what it detects about the hazard is the tape getting wilder. READ THE ATTENUATION, NOT THE LEVELS: each profile is a single-feature model with one state parameter, but it still carries 391 exact clock levels estimated from that same decile, so rows_per_parameter is reported per cell and is small inside a decile (a handful of rows per clock level). The sign and the collapse across deciles are the finding; the coefficient magnitudes are not effect sizes.",
+     "supported_result": {
+      "statement": "the GLOBAL hazard model keeps its within-decile discrimination (about 0.67-0.70 across strata), so the hazard finding is independent of forward dispersion AT THE SCORE LEVEL. 5 of the section's 40 decile cells are flagged thin under the declared rule (fewer than 30 contributing clock minutes or fewer than 30 minority-class observations): A_pm b1->b2 decile_1 (0.474 on 27 min), A_pm b1->b2 decile_5 (0.697 on 29 min), A_pm b2->b1 decile_10 (0.703 on 26 min), B600 b1->b2 decile_5 (0.606 on 26 min), B600 b2->b1 decile_10 (0.791 on 21 min); the thinnest AUC in the section is 0.606. Of this direction's 10 cells 1 are flagged (decile_5 0.606 on 26 min). Those cells are why decile-level estimates are published with their group counts rather than as a smooth curve. No feature-level mediation is measured or implied and nothing here shows exhaustion is stronger in wild tapes",
+      "not_established": "no feature-level mediation is measured or implied, and nothing here shows that exhaustion is stronger in wild tapes; a dispersion x exhaustion interaction remains an untested economic hypothesis for E1b",
+      "measured_hazard_base_rate_by_dispersion_decile": {
+       "decile_1": 0.113043,
+       "decile_2": 0.106931,
+       "decile_3": 0.107143,
+       "decile_4": 0.13852,
+       "decile_5": 0.097315,
+       "decile_6": 0.130363,
+       "decile_7": 0.114202,
+       "decile_8": 0.147854,
+       "decile_9": 0.131295,
+       "decile_10": 0.109643
+      },
+      "base_rate_pattern": "measured, not asserted: the hazard base rate across dispersion deciles is NOT monotone (see the list above and the per-cell values in cells), which is why no structural relation to dispersion is claimed"
+     },
      "cells": {
       "decile_1": {
        "n_eval": 575,
@@ -101891,7 +102143,7 @@
          "mfe_surrendered_pos": -0.081414,
          "bars_below_entry_episode": 0.002863
         },
-        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 19-column state design (14 features plus missingness dummies plus intercept) with 391 exact clock levels fitted on a single decile, so the per-feature coefficients here are unstable. Read them for nothing at all: the section's own descriptive allocation table carries the same caveat, and no mediator analysis is available at feature level."
        }
       },
       "decile_2": {
@@ -101930,7 +102182,7 @@
          "mfe_surrendered_pos": 0.026149,
          "bars_below_entry_episode": 0.063604
         },
-        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 19-column state design (14 features plus missingness dummies plus intercept) with 391 exact clock levels fitted on a single decile, so the per-feature coefficients here are unstable. Read them for nothing at all: the section's own descriptive allocation table carries the same caveat, and no mediator analysis is available at feature level."
        }
       },
       "decile_3": {
@@ -101969,7 +102221,7 @@
          "mfe_surrendered_pos": 0.132487,
          "bars_below_entry_episode": -0.167399
         },
-        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 19-column state design (14 features plus missingness dummies plus intercept) with 391 exact clock levels fitted on a single decile, so the per-feature coefficients here are unstable. Read them for nothing at all: the section's own descriptive allocation table carries the same caveat, and no mediator analysis is available at feature level."
        }
       },
       "decile_4": {
@@ -102008,7 +102260,7 @@
          "mfe_surrendered_pos": -0.058122,
          "bars_below_entry_episode": 0.046393
         },
-        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 19-column state design (14 features plus missingness dummies plus intercept) with 391 exact clock levels fitted on a single decile, so the per-feature coefficients here are unstable. Read them for nothing at all: the section's own descriptive allocation table carries the same caveat, and no mediator analysis is available at feature level."
        }
       },
       "decile_5": {
@@ -102020,13 +102272,13 @@
        "hazard_base_rate": 0.097315,
        "global_model_auc_within_clock": 0.606307,
        "global_model_auc_within_clock_groups": 26,
-       "global_model_auc_within_clock_thin": 0,
+       "global_model_auc_within_clock_thin": 1,
        "global_model_auc_within_tenure": 0.615536,
        "n_positive_in_cell": 58,
        "refit_model": {
         "auc_within_clock": 0.620549,
         "auc_within_clock_groups": 26,
-        "auc_within_clock_thin": 0,
+        "auc_within_clock_thin": 1,
         "auc_within_tenure": 0.624385,
         "n_train_in_decile": 1496,
         "n_parameters": 410,
@@ -102047,7 +102299,7 @@
          "mfe_surrendered_pos": 0.014249,
          "bars_below_entry_episode": 0.091788
         },
-        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 19-column state design (14 features plus missingness dummies plus intercept) with 391 exact clock levels fitted on a single decile, so the per-feature coefficients here are unstable. Read them for nothing at all: the section's own descriptive allocation table carries the same caveat, and no mediator analysis is available at feature level."
        }
       },
       "decile_6": {
@@ -102086,7 +102338,7 @@
          "mfe_surrendered_pos": 0.028178,
          "bars_below_entry_episode": -0.439421
         },
-        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 19-column state design (14 features plus missingness dummies plus intercept) with 391 exact clock levels fitted on a single decile, so the per-feature coefficients here are unstable. Read them for nothing at all: the section's own descriptive allocation table carries the same caveat, and no mediator analysis is available at feature level."
        }
       },
       "decile_7": {
@@ -102125,7 +102377,7 @@
          "mfe_surrendered_pos": 0.135722,
          "bars_below_entry_episode": -0.169687
         },
-        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 19-column state design (14 features plus missingness dummies plus intercept) with 391 exact clock levels fitted on a single decile, so the per-feature coefficients here are unstable. Read them for nothing at all: the section's own descriptive allocation table carries the same caveat, and no mediator analysis is available at feature level."
        }
       },
       "decile_8": {
@@ -102164,7 +102416,7 @@
          "mfe_surrendered_pos": 0.036769,
          "bars_below_entry_episode": 0.041736
         },
-        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 19-column state design (14 features plus missingness dummies plus intercept) with 391 exact clock levels fitted on a single decile, so the per-feature coefficients here are unstable. Read them for nothing at all: the section's own descriptive allocation table carries the same caveat, and no mediator analysis is available at feature level."
        }
       },
       "decile_9": {
@@ -102203,7 +102455,7 @@
          "mfe_surrendered_pos": -0.078281,
          "bars_below_entry_episode": 0.047155
         },
-        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 19-column state design (14 features plus missingness dummies plus intercept) with 391 exact clock levels fitted on a single decile, so the per-feature coefficients here are unstable. Read them for nothing at all: the section's own descriptive allocation table carries the same caveat, and no mediator analysis is available at feature level."
        }
       },
       "decile_10": {
@@ -102242,7 +102494,7 @@
          "mfe_surrendered_pos": 0.202635,
          "bars_below_entry_episode": -0.348717
         },
-        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 19-column state design (14 features plus missingness dummies plus intercept) with 391 exact clock levels fitted on a single decile, so the per-feature coefficients here are unstable. Read them for nothing at all: the section's own descriptive allocation table carries the same caveat, and no mediator analysis is available at feature level."
        }
       }
      }
@@ -102279,93 +102531,110 @@
       "convention": "median = numpy median over the decile cells with a defined value (even counts average the two middle cells)"
      },
      "refit_vs_global_median_difference": -0.024254,
-     "median_mediation_of_headline_features": {
-      "dist_from_running_high": {
-       "pooled_train": {
-        "coefficient": -0.582855,
-        "n_train": 7419,
-        "n_parameters": 393,
-        "rows_per_parameter": 18.877863
+     "coefficient_allocation_by_decile_UNIDENTIFIED": {
+      "LABEL": "UNIDENTIFIED - descriptive coefficient allocation, NOT mediation, NOT effect sizes",
+      "why_unidentified": "the SINGLE-FEATURE profiles carry 393 parameters each (one feature, the intercept and 391 exact clock levels), or 394 where the feature needs a missingness dummy; on a single decile that is as few as 592 rows, about 1.5 rows per parameter. The per-decile MULTI-FEATURE refits are a different, wider design: 410 state columns (14 features plus missingness dummies plus intercept) with the same 391 clock levels. Neither width identifies a decile-level coefficient, and the two tables disagree in direction",
+      "tables_disagree": "the per-decile refits (a 19-column state design with 391 clock levels) and these single-feature profiles even disagree in DIRECTION, which is exactly what non-identification looks like. Neither table is a mediator analysis",
+      "by_feature": {
+       "dist_from_running_high": {
+        "pooled_train": {
+         "coefficient": -0.582855,
+         "n_train": 7419,
+         "n_parameters": 393,
+         "rows_per_parameter": 18.877863
+        },
+        "calmest_train_decile": {
+         "coefficient": -0.386729,
+         "n_train": 740,
+         "n_parameters": 393,
+         "rows_per_parameter": 1.882952
+        },
+        "wildest_train_decile": {
+         "coefficient": -0.874709,
+         "n_train": 745,
+         "n_parameters": 393,
+         "rows_per_parameter": 1.895674
+        }
        },
-       "calmest_train_decile": {
-        "coefficient": -0.386729,
-        "n_train": 740,
-        "n_parameters": 393,
-        "rows_per_parameter": 1.882952
+       "mfe_surrendered_pos": {
+        "pooled_train": {
+         "coefficient": 0.431499,
+         "n_train": 7419,
+         "n_parameters": 394,
+         "rows_per_parameter": 18.829949
+        },
+        "calmest_train_decile": {
+         "coefficient": 0.200483,
+         "n_train": 740,
+         "n_parameters": 394,
+         "rows_per_parameter": 1.878173
+        },
+        "wildest_train_decile": {
+         "coefficient": 0.490427,
+         "n_train": 745,
+         "n_parameters": 394,
+         "rows_per_parameter": 1.890863
+        }
        },
-       "wildest_train_decile": {
-        "coefficient": -0.874709,
-        "n_train": 745,
-        "n_parameters": 393,
-        "rows_per_parameter": 1.895674
+       "up_close_streak": {
+        "pooled_train": {
+         "coefficient": -0.375223,
+         "n_train": 7419,
+         "n_parameters": 393,
+         "rows_per_parameter": 18.877863
+        },
+        "calmest_train_decile": {
+         "coefficient": 0.026729,
+         "n_train": 740,
+         "n_parameters": 393,
+         "rows_per_parameter": 1.882952
+        },
+        "wildest_train_decile": {
+         "coefficient": -0.523707,
+         "n_train": 745,
+         "n_parameters": 393,
+         "rows_per_parameter": 1.895674
+        }
        },
-       "attenuation_calmest_over_wildest": 0.442123
-      },
-      "mfe_surrendered_pos": {
-       "pooled_train": {
-        "coefficient": 0.431499,
-        "n_train": 7419,
-        "n_parameters": 394,
-        "rows_per_parameter": 18.829949
-       },
-       "calmest_train_decile": {
-        "coefficient": 0.200483,
-        "n_train": 740,
-        "n_parameters": 394,
-        "rows_per_parameter": 1.878173
-       },
-       "wildest_train_decile": {
-        "coefficient": 0.490427,
-        "n_train": 745,
-        "n_parameters": 394,
-        "rows_per_parameter": 1.890863
-       },
-       "attenuation_calmest_over_wildest": 0.408793
-      },
-      "up_close_streak": {
-       "pooled_train": {
-        "coefficient": -0.375223,
-        "n_train": 7419,
-        "n_parameters": 393,
-        "rows_per_parameter": 18.877863
-       },
-       "calmest_train_decile": {
-        "coefficient": 0.026729,
-        "n_train": 740,
-        "n_parameters": 393,
-        "rows_per_parameter": 1.882952
-       },
-       "wildest_train_decile": {
-        "coefficient": -0.523707,
-        "n_train": 745,
-        "n_parameters": 393,
-        "rows_per_parameter": 1.895674
-       },
-       "attenuation_calmest_over_wildest": -0.051038
-      },
-      "accel_1_5": {
-       "pooled_train": {
-        "coefficient": -0.373812,
-        "n_train": 7419,
-        "n_parameters": 393,
-        "rows_per_parameter": 18.877863
-       },
-       "calmest_train_decile": {
-        "coefficient": -0.158318,
-        "n_train": 740,
-        "n_parameters": 393,
-        "rows_per_parameter": 1.882952
-       },
-       "wildest_train_decile": {
-        "coefficient": -0.71357,
-        "n_train": 745,
-        "n_parameters": 393,
-        "rows_per_parameter": 1.895674
-       },
-       "attenuation_calmest_over_wildest": 0.221868
+       "accel_1_5": {
+        "pooled_train": {
+         "coefficient": -0.373812,
+         "n_train": 7419,
+         "n_parameters": 393,
+         "rows_per_parameter": 18.877863
+        },
+        "calmest_train_decile": {
+         "coefficient": -0.158318,
+         "n_train": 740,
+         "n_parameters": 393,
+         "rows_per_parameter": 1.882952
+        },
+        "wildest_train_decile": {
+         "coefficient": -0.71357,
+         "n_train": 745,
+         "n_parameters": 393,
+         "rows_per_parameter": 1.895674
+        }
+       }
       }
      },
-     "mediation_reading": "a feature whose coefficient is much smaller in the wildest train decile than in the calmest is substantially mediated by forward dispersion: part of what it detects about the hazard is the tape getting wilder. READ THE ATTENUATION, NOT THE LEVELS: each profile is a single-feature model with one state parameter, but it still carries 391 exact clock levels estimated from that same decile, so rows_per_parameter is reported per cell and is small inside a decile (a handful of rows per clock level). The sign and the collapse across deciles are the finding; the coefficient magnitudes are not effect sizes.",
+     "supported_result": {
+      "statement": "the GLOBAL hazard model keeps its within-decile discrimination (about 0.67-0.70 across strata), so the hazard finding is independent of forward dispersion AT THE SCORE LEVEL. 5 of the section's 40 decile cells are flagged thin under the declared rule (fewer than 30 contributing clock minutes or fewer than 30 minority-class observations): A_pm b1->b2 decile_1 (0.474 on 27 min), A_pm b1->b2 decile_5 (0.697 on 29 min), A_pm b2->b1 decile_10 (0.703 on 26 min), B600 b1->b2 decile_5 (0.606 on 26 min), B600 b2->b1 decile_10 (0.791 on 21 min); the thinnest AUC in the section is 0.633. Of this direction's 10 cells 1 are flagged (decile_10 0.791 on 21 min). Those cells are why decile-level estimates are published with their group counts rather than as a smooth curve. No feature-level mediation is measured or implied and nothing here shows exhaustion is stronger in wild tapes",
+      "not_established": "no feature-level mediation is measured or implied, and nothing here shows that exhaustion is stronger in wild tapes; a dispersion x exhaustion interaction remains an untested economic hypothesis for E1b",
+      "measured_hazard_base_rate_by_dispersion_decile": {
+       "decile_1": 0.116049,
+       "decile_2": 0.11454,
+       "decile_3": 0.128571,
+       "decile_4": 0.139671,
+       "decile_5": 0.152037,
+       "decile_6": 0.147304,
+       "decile_7": 0.141489,
+       "decile_8": 0.118644,
+       "decile_9": 0.089987,
+       "decile_10": 0.075472
+      },
+      "base_rate_pattern": "measured, not asserted: the hazard base rate across dispersion deciles is NOT monotone (see the list above and the per-cell values in cells), which is why no structural relation to dispersion is claimed"
+     },
      "cells": {
       "decile_1": {
        "n_eval": 2025,
@@ -102403,7 +102672,7 @@
          "mfe_surrendered_pos": 0.193982,
          "bars_below_entry_episode": -0.404184
         },
-        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 19-column state design (14 features plus missingness dummies plus intercept) with 391 exact clock levels fitted on a single decile, so the per-feature coefficients here are unstable. Read them for nothing at all: the section's own descriptive allocation table carries the same caveat, and no mediator analysis is available at feature level."
        }
       },
       "decile_2": {
@@ -102442,7 +102711,7 @@
          "mfe_surrendered_pos": -0.416734,
          "bars_below_entry_episode": 0.012173
         },
-        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 19-column state design (14 features plus missingness dummies plus intercept) with 391 exact clock levels fitted on a single decile, so the per-feature coefficients here are unstable. Read them for nothing at all: the section's own descriptive allocation table carries the same caveat, and no mediator analysis is available at feature level."
        }
       },
       "decile_3": {
@@ -102481,7 +102750,7 @@
          "mfe_surrendered_pos": 0.289,
          "bars_below_entry_episode": -0.214276
         },
-        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 19-column state design (14 features plus missingness dummies plus intercept) with 391 exact clock levels fitted on a single decile, so the per-feature coefficients here are unstable. Read them for nothing at all: the section's own descriptive allocation table carries the same caveat, and no mediator analysis is available at feature level."
        }
       },
       "decile_4": {
@@ -102520,7 +102789,7 @@
          "mfe_surrendered_pos": -0.188082,
          "bars_below_entry_episode": 0.244466
         },
-        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 19-column state design (14 features plus missingness dummies plus intercept) with 391 exact clock levels fitted on a single decile, so the per-feature coefficients here are unstable. Read them for nothing at all: the section's own descriptive allocation table carries the same caveat, and no mediator analysis is available at feature level."
        }
       },
       "decile_5": {
@@ -102559,7 +102828,7 @@
          "mfe_surrendered_pos": 0.107462,
          "bars_below_entry_episode": -0.179732
         },
-        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 19-column state design (14 features plus missingness dummies plus intercept) with 391 exact clock levels fitted on a single decile, so the per-feature coefficients here are unstable. Read them for nothing at all: the section's own descriptive allocation table carries the same caveat, and no mediator analysis is available at feature level."
        }
       },
       "decile_6": {
@@ -102598,7 +102867,7 @@
          "mfe_surrendered_pos": 0.134963,
          "bars_below_entry_episode": -0.089782
         },
-        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 19-column state design (14 features plus missingness dummies plus intercept) with 391 exact clock levels fitted on a single decile, so the per-feature coefficients here are unstable. Read them for nothing at all: the section's own descriptive allocation table carries the same caveat, and no mediator analysis is available at feature level."
        }
       },
       "decile_7": {
@@ -102637,7 +102906,7 @@
          "mfe_surrendered_pos": 0.110371,
          "bars_below_entry_episode": -0.113747
         },
-        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 19-column state design (14 features plus missingness dummies plus intercept) with 391 exact clock levels fitted on a single decile, so the per-feature coefficients here are unstable. Read them for nothing at all: the section's own descriptive allocation table carries the same caveat, and no mediator analysis is available at feature level."
        }
       },
       "decile_8": {
@@ -102676,7 +102945,7 @@
          "mfe_surrendered_pos": 0.077971,
          "bars_below_entry_episode": 0.15762
         },
-        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 19-column state design (14 features plus missingness dummies plus intercept) with 391 exact clock levels fitted on a single decile, so the per-feature coefficients here are unstable. Read them for nothing at all: the section's own descriptive allocation table carries the same caveat, and no mediator analysis is available at feature level."
        }
       },
       "decile_9": {
@@ -102715,7 +102984,7 @@
          "mfe_surrendered_pos": 0.00526,
          "bars_below_entry_episode": -0.379281
         },
-        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 19-column state design (14 features plus missingness dummies plus intercept) with 391 exact clock levels fitted on a single decile, so the per-feature coefficients here are unstable. Read them for nothing at all: the section's own descriptive allocation table carries the same caveat, and no mediator analysis is available at feature level."
        }
       },
       "decile_10": {
@@ -102727,13 +102996,13 @@
        "hazard_base_rate": 0.075472,
        "global_model_auc_within_clock": 0.791328,
        "global_model_auc_within_clock_groups": 21,
-       "global_model_auc_within_clock_thin": 0,
+       "global_model_auc_within_clock_thin": 1,
        "global_model_auc_within_tenure": 0.760979,
        "n_positive_in_cell": 52,
        "refit_model": {
         "auc_within_clock": 0.804878,
         "auc_within_clock_groups": 21,
-        "auc_within_clock_thin": 0,
+        "auc_within_clock_thin": 1,
         "auc_within_tenure": 0.764579,
         "n_train_in_decile": 745,
         "n_parameters": 410,
@@ -102754,7 +103023,7 @@
          "mfe_surrendered_pos": 0.005378,
          "bars_below_entry_episode": -0.031688
         },
-        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 13-feature-plus-391-clock-level fit on a single decile, so the per-feature coefficients here are unstable. Read them only for the sign and crude magnitude; the identified per-feature mediation numbers are in median_mediation below."
+        "state_coefficients_caveat": "NOT effect sizes and NOT identified: this is a 19-column state design (14 features plus missingness dummies plus intercept) with 391 exact clock levels fitted on a single decile, so the per-feature coefficients here are unstable. Read them for nothing at all: the section's own descriptive allocation table carries the same caveat, and no mediator analysis is available at feature level."
        }
       }
      }
@@ -102764,7 +103033,7 @@
   "C_three_label_comparison": {
    "same_rows": "new-high bars in the primary window, both blocks, both directions, ONE shared mask (identical for all three labels here)",
    "labels": {
-    "hazard_barrier_label": "final_high_flag(t): does the future MAX of the tape ever exceed the running high at t. It is a BARRIER / first-passage statement about a future maximum against a fixed level (not the magnitude of that maximum). For a fixed barrier more forward dispersion makes a crossing more likely, so P(last new high) is structurally DECREASING in dispersion - an overlap this section measures rather than assumes.",
+    "hazard_barrier_label": "final_high_flag(t): does the future MAX of the tape ever exceed the running high at t. It is a BARRIER / first-passage statement about a future maximum against a fixed level, not the magnitude of that maximum. A two-sided range is NOT mechanically monotone with an upward crossing, so no structural relation to dispersion is claimed: the measured hazard base rates per dispersion decile are published in B_hazard_conditional_on_dispersion_decile and they are not monotone.",
     "direction_sign_of_forward_forced_flat": "sign of the executable forward return to the forced flat measured from next_open(t): a NON-max, non-barrier label carrying the same horizon information",
     "dispersion_train_median_split": "realized range over the next 30 bars above the TRAIN-block median (the section's single split rule); the threshold-free companion is the Spearman correlation of the same score"
    },
@@ -102773,8 +103042,9 @@
      "fit_block1_report_block2": {
       "split_cut_train_median": 0.147541,
       "coordinates": "auc_within_clock for every label (identical rows, identical coordinate)",
-      "direction_label_exactly_flat_share_of_the_nonpositive_class": 0.004725,
-      "direction_label_class_0_definition": "sign label 0 = forward return to the forced flat <= 0; its exactly-flat share is reported because a flat forward value belongs to class 0",
+      "direction_label_exactly_flat_share_of_all_finite_rows": 0.004725,
+      "direction_label_exactly_flat_share_of_the_nonpositive_class": 0.007347,
+      "direction_label_class_0_definition": "sign label 0 = forward return to the forced flat <= 0; the exactly-flat share is reported against BOTH denominators above because a flat forward value belongs to class 0",
       "hazard_barrier_label": {
        "n_train": 13844,
        "n_eval": 5926,
@@ -102816,8 +103086,9 @@
      "fit_block2_report_block1": {
       "split_cut_train_median": 0.201972,
       "coordinates": "auc_within_clock for every label (identical rows, identical coordinate)",
-      "direction_label_exactly_flat_share_of_the_nonpositive_class": 0.003251,
-      "direction_label_class_0_definition": "sign label 0 = forward return to the forced flat <= 0; its exactly-flat share is reported because a flat forward value belongs to class 0",
+      "direction_label_exactly_flat_share_of_all_finite_rows": 0.003251,
+      "direction_label_exactly_flat_share_of_the_nonpositive_class": 0.005341,
+      "direction_label_class_0_definition": "sign label 0 = forward return to the forced flat <= 0; the exactly-flat share is reported against BOTH denominators above because a flat forward value belongs to class 0",
       "hazard_barrier_label": {
        "n_train": 5926,
        "n_eval": 13844,
@@ -102861,8 +103132,9 @@
      "fit_block1_report_block2": {
       "split_cut_train_median": 0.120283,
       "coordinates": "auc_within_clock for every label (identical rows, identical coordinate)",
-      "direction_label_exactly_flat_share_of_the_nonpositive_class": 0.002965,
-      "direction_label_class_0_definition": "sign label 0 = forward return to the forced flat <= 0; its exactly-flat share is reported because a flat forward value belongs to class 0",
+      "direction_label_exactly_flat_share_of_all_finite_rows": 0.002965,
+      "direction_label_exactly_flat_share_of_the_nonpositive_class": 0.00481,
+      "direction_label_class_0_definition": "sign label 0 = forward return to the forced flat <= 0; the exactly-flat share is reported against BOTH denominators above because a flat forward value belongs to class 0",
       "hazard_barrier_label": {
        "n_train": 14972,
        "n_eval": 7419,
@@ -102904,8 +103176,9 @@
      "fit_block2_report_block1": {
       "split_cut_train_median": 0.158377,
       "coordinates": "auc_within_clock for every label (identical rows, identical coordinate)",
-      "direction_label_exactly_flat_share_of_the_nonpositive_class": 0.003674,
-      "direction_label_class_0_definition": "sign label 0 = forward return to the forced flat <= 0; its exactly-flat share is reported because a flat forward value belongs to class 0",
+      "direction_label_exactly_flat_share_of_all_finite_rows": 0.003674,
+      "direction_label_exactly_flat_share_of_the_nonpositive_class": 0.005952,
+      "direction_label_class_0_definition": "sign label 0 = forward return to the forced flat <= 0; the exactly-flat share is reported against BOTH denominators above because a flat forward value belongs to class 0",
       "hazard_barrier_label": {
        "n_train": 7419,
        "n_eval": 14972,
@@ -103119,16 +103392,16 @@
      "auc_within_clock_by_variant": {
       "b1_to_b2": {
        "clock_only": 0.5,
-       "tenure_plus_state": 0.6719583090640261,
        "state_only": 0.67674683005511,
+       "tenure_plus_state": 0.6719583090640261,
        "clock_plus_tenure_plus_state": 0.6734480711501412,
        "clock_plus_state": 0.673408866884717,
        "tenure_only": 0.4994455396747166
       },
       "b2_to_b1": {
        "clock_only": 0.5,
-       "tenure_plus_state": 0.6522312754494322,
        "state_only": 0.6645879771417363,
+       "tenure_plus_state": 0.6522312754494322,
        "clock_plus_tenure_plus_state": 0.6536696216781659,
        "clock_plus_state": 0.6525142455526702,
        "tenure_only": 0.49814792491996135
@@ -103137,16 +103410,16 @@
      "auc_within_tenure_by_variant": {
       "b1_to_b2": {
        "clock_only": 0.5040918312073159,
-       "tenure_plus_state": 0.6722605176790475,
        "state_only": 0.6787713354080148,
+       "tenure_plus_state": 0.6722605176790475,
        "clock_plus_tenure_plus_state": 0.6752530509500696,
        "clock_plus_state": 0.6739838132361844,
        "tenure_only": 0.5
       },
       "b2_to_b1": {
        "clock_only": 0.5056619729389553,
-       "tenure_plus_state": 0.655239144115796,
        "state_only": 0.6675503461296413,
+       "tenure_plus_state": 0.655239144115796,
        "clock_plus_tenure_plus_state": 0.6562642581812461,
        "clock_plus_state": 0.6552612688797986,
        "tenure_only": 0.5
@@ -103155,16 +103428,16 @@
      "auc_pooled_by_variant": {
       "b1_to_b2": {
        "clock_only": 0.5369160009682885,
-       "tenure_plus_state": 0.654784705734589,
        "state_only": 0.690314876310699,
+       "tenure_plus_state": 0.654784705734589,
        "clock_plus_tenure_plus_state": 0.6595473772548672,
        "clock_plus_state": 0.6573895888120082,
        "tenure_only": 0.5294331687503558
       },
       "b2_to_b1": {
        "clock_only": 0.5044433787553535,
-       "tenure_plus_state": 0.6440406028902146,
        "state_only": 0.6886977259836758,
+       "tenure_plus_state": 0.6440406028902146,
        "clock_plus_tenure_plus_state": 0.6472494822222261,
        "clock_plus_state": 0.6449421571140256,
        "tenure_only": 0.4949179957135063
@@ -103173,16 +103446,16 @@
      "brier_by_variant": {
       "b1_to_b2": {
        "clock_only": 0.13360080384865497,
-       "tenure_plus_state": 0.12897387718294268,
        "state_only": 0.12303515288786912,
+       "tenure_plus_state": 0.12897387718294268,
        "clock_plus_tenure_plus_state": 0.1285676388939776,
        "clock_plus_state": 0.12982034731156636,
        "tenure_only": 0.1332608795818532
       },
       "b2_to_b1": {
        "clock_only": 0.13989121855723108,
-       "tenure_plus_state": 0.12515507804491088,
        "state_only": 0.11857071762271151,
+       "tenure_plus_state": 0.12515507804491088,
        "clock_plus_tenure_plus_state": 0.12520955157828506,
        "clock_plus_state": 0.12546698443136378,
        "tenure_only": 0.14105278123777004
@@ -103247,16 +103520,16 @@
      "auc_within_clock_by_variant": {
       "b1_to_b2": {
        "clock_only": 0.5,
-       "tenure_plus_state": 0.6960039433651182,
        "state_only": 0.6980096204511074,
+       "tenure_plus_state": 0.6960039433651182,
        "clock_plus_tenure_plus_state": 0.6964543708462938,
        "clock_plus_state": 0.6935223429027927,
        "tenure_only": 0.5159944248975915
       },
       "b2_to_b1": {
        "clock_only": 0.5,
-       "tenure_plus_state": 0.678592459169712,
        "state_only": 0.6997029737265973,
+       "tenure_plus_state": 0.678592459169712,
        "clock_plus_tenure_plus_state": 0.6826434472367031,
        "clock_plus_state": 0.6732390585219695,
        "tenure_only": 0.5057179722544554
@@ -103265,16 +103538,16 @@
      "auc_within_tenure_by_variant": {
       "b1_to_b2": {
        "clock_only": 0.4784786953058401,
-       "tenure_plus_state": 0.7021814777030898,
        "state_only": 0.7069608843299747,
+       "tenure_plus_state": 0.7021814777030898,
        "clock_plus_tenure_plus_state": 0.6974439956957391,
        "clock_plus_state": 0.6948237069748592,
        "tenure_only": 0.5
       },
       "b2_to_b1": {
        "clock_only": 0.48924018968833893,
-       "tenure_plus_state": 0.681432104680905,
        "state_only": 0.7017721626020843,
+       "tenure_plus_state": 0.681432104680905,
        "clock_plus_tenure_plus_state": 0.6805449664240366,
        "clock_plus_state": 0.6727108098395541,
        "tenure_only": 0.5
@@ -103283,16 +103556,16 @@
      "auc_pooled_by_variant": {
       "b1_to_b2": {
        "clock_only": 0.5265238782589523,
-       "tenure_plus_state": 0.6756999050527167,
        "state_only": 0.6941374539257839,
+       "tenure_plus_state": 0.6756999050527167,
        "clock_plus_tenure_plus_state": 0.6749842537921227,
        "clock_plus_state": 0.668013704542172,
        "tenure_only": 0.5337972161900928
       },
       "b2_to_b1": {
        "clock_only": 0.5064094413731745,
-       "tenure_plus_state": 0.6343330357014502,
        "state_only": 0.6910175336592909,
+       "tenure_plus_state": 0.6343330357014502,
        "clock_plus_tenure_plus_state": 0.6383338351545317,
        "clock_plus_state": 0.627080035556095,
        "tenure_only": 0.5127939447618652
@@ -103301,16 +103574,16 @@
      "brier_by_variant": {
       "b1_to_b2": {
        "clock_only": 0.1092018378232327,
-       "tenure_plus_state": 0.10441040303850078,
        "state_only": 0.09973359222317141,
+       "tenure_plus_state": 0.10441040303850078,
        "clock_plus_tenure_plus_state": 0.10389045208056544,
        "clock_plus_state": 0.10574988945690307,
        "tenure_only": 0.10876852565609224
       },
       "b2_to_b1": {
        "clock_only": 0.11934900629521049,
-       "tenure_plus_state": 0.1107979033865631,
        "state_only": 0.10414559973223426,
+       "tenure_plus_state": 0.1107979033865631,
        "clock_plus_tenure_plus_state": 0.1102373217188055,
        "clock_plus_state": 0.11175041912736877,
        "tenure_only": 0.11867283221591036
@@ -105270,11 +105543,20 @@
    }
   },
   "volatility_control": {
-   "dispersion_label_null_share": {
+   "dispersion_label_null_share_range_30": {
+    "n_null": 12320,
+    "n_rows": 1900432,
     "value": 0.006483,
-    "denominator": "rows with fewer than two future bars inside the 30-bar window, over all 1,900,432 panel rows (2 * 6,160 member-last-rows = 12,320 is the floor from the tape end; the rest are window tails)"
+    "denominator": "ALL 1,900,432 panel rows. The nulls are exactly the last two completed bars of each of the 6,160 member-days (a window needs two future bars), i.e. 2 * 6,160 = 12,320 rows = 0.006483"
+   },
+   "dispersion_label_null_share_mabs_30": {
+    "n_null": 12320,
+    "n_rows": 1900432,
+    "value": 0.006483,
+    "denominator": "same rule and same denominator as the range label (last two bars of each member-day)"
    },
    "median_split_rule": "TRAIN-block median everywhere in this section",
+   "thin_rule": "a within-clock AUC is flagged thin when it rests on fewer than 30 contributing clock minutes OR fewer than 30 minority-class observations",
    "labels_never_features": "no fwd_* key appears in MODEL_FEATURES or in any design matrix; tape columns are not state families per the registry"
   }
  }

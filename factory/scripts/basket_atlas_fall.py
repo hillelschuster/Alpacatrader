@@ -216,10 +216,15 @@ def auc_within_group(y: np.ndarray, s: np.ndarray, g: np.ndarray) -> dict:
         num += w * auc_score(ys[a:b], ss[a:b])
         den += w
         n_groups += 1
+    n_pos = int(y.sum())
+    n_neg = int(y.size - n_pos)
     return {"auc": (num / den) if den else float("nan"), "weight": int(den),
             "n_groups_contributing": int(n_groups),
             "n_groups_total": int(bounds.size - 1),
-            "thin": bool(n_groups < 20)}
+            "n_positive": n_pos, "n_negative": n_neg,
+            # a cell is called thin when the estimate rests on few contributing minutes OR on few
+            # minority-class observations, either of which makes a within-clock AUC unstable
+            "thin": bool(n_groups < 30 or min(n_pos, n_neg) < 30)}
 
 
 def auc_pooled_and_within(y: np.ndarray, s: np.ndarray, g: np.ndarray) -> dict:
@@ -242,6 +247,7 @@ def auc_multi_group(y: np.ndarray, s: np.ndarray, groups: dict) -> dict:
         w = auc_within_group(y, s, g)
         out[f"auc_within_{name}"] = w["auc"]
         out[f"auc_within_{name}_groups"] = w["n_groups_contributing"]
+        out[f"auc_within_{name}_positive"] = w["n_positive"]
         out[f"auc_within_{name}_thin"] = w["thin"]
     return out
 
@@ -2459,6 +2465,129 @@ def reverse_time_view(frame: Frame, checks: dict, models_by_family: dict | None 
     return out
 
 
+def volatility_metadata_texts(design_width: int, n_features: int, clock_levels: int,
+                              max_rows_removed: int, max_auc_shift: float,
+                              thin_here: int, thin_dir_total: int, thin_section: int,
+                              thin_section_total: int, thin_cell_list: str, thin_section_list: str,
+                              thinnest_auc: float) -> dict:
+    """The three metadata strings that describe the volatility section, built from numbers so the
+    inline build and the `--rewrite-metadata` path emit character-identical text."""
+    return {
+        "why_unidentified":
+            "the SINGLE-FEATURE profiles carry 393 parameters each (one feature, the intercept and "
+            f"{clock_levels} exact clock levels), or 394 where the feature needs a missingness "
+            "dummy; on a single decile that is as few as 592 rows, about 1.5 rows per parameter. "
+            "The per-decile MULTI-FEATURE refits are a different, wider design: "
+            f"{design_width} state columns ({n_features} features plus missingness dummies plus "
+            f"intercept) with the same {clock_levels} clock levels. Neither width identifies a "
+            "decile-level coefficient, and the two tables disagree in direction",
+        "comparison_note":
+            "Hazard and dispersion are measured on IDENTICAL rows (one shared mask) and in the "
+            "IDENTICAL coordinate (AUC within the exact clock minute); the only modelling "
+            "difference left is the estimator (logistic for the barrier label, ridge linear for "
+            "the continuous dispersion label). The section-level hazard AUC in "
+            "out_of_block_logistic is NOT the same number: that fit uses the whole risk set, and "
+            f"the dispersion finiteness mask removes up to {max_rows_removed} training rows, "
+            f"which moves the hazard AUC by up to {max_auc_shift:+.4f}. The difference is a "
+            "changed training sample, not a handful of rows",
+        "supported_result":
+            "the GLOBAL hazard model keeps its within-decile discrimination (about 0.67-0.70 "
+            "across strata), so the hazard finding is independent of forward dispersion AT THE "
+            f"SCORE LEVEL. {thin_section} of the section's {thin_section_total} decile cells are "
+            "flagged thin under the declared rule (fewer than 30 contributing clock minutes or "
+            f"fewer than 30 minority-class observations): {thin_section_list}; the thinnest AUC in "
+            f"the section is {thinnest_auc:.3f}. Of this direction's {thin_dir_total} cells "
+            f"{thin_here} are flagged ({thin_cell_list}). Those cells are why decile-level "
+            "estimates are published with their group counts rather than as a smooth curve. No "
+            "feature-level mediation is measured or implied and nothing here shows exhaustion is "
+            "stronger in wild tapes",
+    }
+
+
+def volatility_thin_census(vol: dict) -> dict:
+    """Thin-cell census over the whole section, computed the same way for a fresh build and for a
+    metadata rewrite (so the two paths cannot disagree)."""
+    per_dir: dict = {}
+    total = 0
+    for fam in FAM:
+        for dname, rec in (vol.get("B_hazard_conditional_on_dispersion_decile", {}).get(fam)
+                           or {}).items():
+            cells = rec.get("cells") or {}
+            thin = [(k, c.get("global_model_auc_within_clock"),
+                     c.get("global_model_auc_within_clock_groups"))
+                    for k, c in cells.items() if c.get("global_model_auc_within_clock_thin")]
+            per_dir[(fam, dname)] = {"thin_count": len(thin), "n_cells": len(cells),
+                                     "thin_list": thin,
+                                     "label": f"{fam} " + dname.replace("fit_", "").replace(
+                                         "block1_report_block2", "b1->b2").replace(
+                                         "block2_report_block1", "b2->b1"),
+                                     "aucs": [c.get("global_model_auc_within_clock")
+                                              for c in cells.values()
+                                              if c.get("global_model_auc_within_clock") is not None]}
+            total += len(cells)
+    _entries = [f"{v['label']} {k} ({round(a, 3)} on {n} min)"
+                for v in per_dir.values() for k, a, n in v["thin_list"]]
+    thin_section_list = ", ".join(_entries[:8]) + (" ..." if len(_entries) > 8 else "")
+    return {"per_dir": per_dir, "section_thin": sum(v["thin_count"] for v in per_dir.values()),
+            "section_total": total, "section_thin_list": thin_section_list or "none",
+            "thinnest_auc": min((a for v in per_dir.values() for a in v["aucs"]), default=None)}
+
+
+def finalize_volatility_metadata(vol: dict, logit: dict) -> dict:
+    """Write the three prose fields for every family and direction from the section's own numbers.
+
+    Shared by the build path and by `--rewrite-metadata`, so a rerun and a metadata repair produce
+    the same text.
+    """
+    cen = volatility_thin_census(vol)
+    for fam in FAM:
+        a = vol.get("A_state_predicts_forward_dispersion", {}).get(fam)
+        if a:
+            removed, shifts = [], []
+            for fit in ("fit_block1_report_block2", "fit_block2_report_block1"):
+                sec = g(logit, "by_family", fam, WINDOWS[0], "hazard_last_new_high",
+                        "directions", fit)
+                like = (a.get("model") or {}).get(fit)
+                if sec and like:
+                    shifts.append(like["hazard_barrier_label"]["auc_within_clock"]
+                                  - sec["results"]["clock_plus_state"]["auc_within_clock"])
+                    removed.append(sec["n_train"] - like["n_train"])
+            a["comparison_note"] = volatility_metadata_texts(
+                0, len(MODEL_FEATURES), 0, max(removed) if removed else 0,
+                max(shifts) if shifts else 0.0, 0, 0, 0, 0, "", "", 0.0)["comparison_note"]
+        b = vol.get("B_hazard_conditional_on_dispersion_decile", {}).get(fam) or {}
+        for dname, rec in b.items():
+            cen_dir = cen["per_dir"].get((fam, dname), {})
+            refit_par = next(((c.get("refit_model") or {}).get("n_parameters")
+                              for c in (rec.get("cells") or {}).values()
+                              if (c.get("refit_model") or {}).get("n_parameters")), 0)
+            sec = g(logit, "by_family", fam, WINDOWS[0], "hazard_last_new_high",
+                    "directions", dname)
+            a_dir = ((vol.get("A_state_predicts_forward_dispersion", {}).get(fam, {})
+                      .get("model", {}) or {}).get(dname))
+            removed_dir, shift_dir = 0, 0.0
+            if sec and a_dir:
+                removed_dir = sec["n_train"] - a_dir["n_train"]
+                shift_dir = (a_dir["hazard_barrier_label"]["auc_within_clock"]
+                             - sec["results"]["clock_plus_state"]["auc_within_clock"])
+            thin = cen_dir.get("thin_list") or []
+            texts = volatility_metadata_texts(
+                refit_par, len(MODEL_FEATURES), 391, removed_dir, shift_dir,
+                cen_dir.get("thin_count", 0), cen_dir.get("n_cells", 0),
+                cen["section_thin"], cen["section_total"],
+                ", ".join(f"{k} {round(v, 3)} on {n} min" for k, v, n in thin[:6])
+                + (" ..." if len(thin) > 6 else "") or "none",
+                cen["section_thin_list"],
+                min(cen_dir["aucs"]) if cen_dir.get("aucs") else float("nan"))
+            alloc = rec.get("coefficient_allocation_by_decile_UNIDENTIFIED")
+            if alloc is not None:
+                alloc["why_unidentified"] = texts["why_unidentified"]
+            sup = rec.get("supported_result")
+            if sup is not None:
+                sup["statement"] = texts["supported_result"]
+    return vol
+
+
 def volatility_control(frame: Frame, checks: dict, fwd: dict,
                        logit: dict | None = None) -> dict:
     """Is state->hazard just state->volatility?
@@ -2534,8 +2663,8 @@ def volatility_control(frame: Frame, checks: dict, fwd: dict,
                 "n_train": int(itr.size), "n_eval": int(iev.size),
                 "rows_identical_for_every_label_here": True,
                 "hazard_barrier_label": {
-                    **{k: r6(v) for k, v in auc_multi_group(y_h[iev], p_h, g_ev).items()
-                       if not isinstance(v, bool)},
+                    **{k: (v if isinstance(v, bool) else r6(v))
+                       for k, v in auc_multi_group(y_h[iev], p_h, g_ev).items()},
                     "auc_within_clock_clock_only": r6(auc_multi_group(y_h[iev], p_h0, g_ev)[
                         "auc_within_clock"]),
                     "base_rate": r6(float(y_h[iev].mean()))},
@@ -2549,26 +2678,24 @@ def volatility_control(frame: Frame, checks: dict, fwd: dict,
                 beta = multi_effect_ridge_linear(Xtr_f, lab_tr, eff_tr)
                 pred = predict_multi(Xev_f, beta, eff_ev)
                 split = (np.log1p(lab_ev_raw) > med_tr).astype(np.float64)
+                _g_split = auc_multi_group(split, pred, g_ev)
+                hz = auc_multi_group(y_h[iev], p_h, g_ev)
                 res[f"{nm_lab}_dispersion"] = {
                     "train_median_split_cut_log1p": r6(med_tr),
                     "spearman_threshold_free": r6(spearman_score(lab_ev, pred)),
-                    "auc_within_clock_vs_train_median_split": r6(
-                        auc_multi_group(split, pred, g_ev)["auc_within_clock"]),
-                    "auc_within_clock_groups": auc_multi_group(split, pred, g_ev)[
-                        "auc_within_clock_groups"],
+                    "auc_within_clock_vs_train_median_split": r6(_g_split["auc_within_clock"]),
+                    "auc_within_clock_groups": _g_split["auc_within_clock_groups"],
+                    "auc_within_clock_positive": _g_split["auc_within_clock_positive"],
+                    "auc_within_clock_thin": _g_split["auc_within_clock_thin"],
+                    "dispersion_minus_hazard_within_clock": r6(
+                        _g_split["auc_within_clock"] - hz["auc_within_clock"]),
                     "auc_pooled_vs_train_median_split_REPORTED_SEPARATELY": r6(
                         auc_score(split, pred)),
                     "r2_on_eval": r6(1.0 - float(np.var(lab_ev - pred))
                                      / max(float(np.var(lab_ev)), 1e-18)),
                 }
             fam_rec["model"][f"fit_{train_blk}_report_{eval_blk}"] = res
-        fam_rec["comparison_note"] = (
-            "Hazard and dispersion are measured on IDENTICAL rows (one shared mask) and in the "
-            "IDENTICAL coordinate (AUC within the exact clock minute); the only difference left is "
-            "the estimator (logistic for the barrier label, ridge linear for the continuous "
-            "dispersion label). The existing out_of_block_logistic hazard AUC uses the whole "
-            "risk set without the dispersion finiteness filter, so it differs from the "
-            "hazard_barrier_label number here by a handful of rows.")
+        fam_rec["comparison_note"] = "set by finalize_volatility_metadata"
         out["A_state_predicts_forward_dispersion"][fam] = fam_rec
 
     # ---- B: hazard inside dispersion deciles + mediation ------------------------------------
@@ -2590,7 +2717,6 @@ def volatility_control(frame: Frame, checks: dict, fwd: dict,
             eff_ev = variant_effects(frame, iev, ("clock",), WINDOWS[0])
             b_state = multi_effect_logit(Xtr_i, y_h[itr], eff_tr)[0]
             p_ev = predict_multi(Xev_i, b_state, eff_ev)
-            n_params_full = Xtr_i.shape[1] + sum(m for _c, m in eff_tr)
             cells: dict = {}
             for d in range(10):
                 m_ev = dec_ev == d
@@ -2644,10 +2770,12 @@ def volatility_control(frame: Frame, checks: dict, fwd: dict,
                             if n in MODEL_FEATURES},
                         "state_coefficients_caveat":
                             "NOT effect sizes and NOT identified: this is a "
-                            "13-feature-plus-391-clock-level fit on a single decile, so the "
-                            "per-feature coefficients here are unstable. Read them only for the "
-                            "sign and crude magnitude; the identified per-feature mediation "
-                            "numbers are in median_mediation below.",
+                            f"{Xtr_i.shape[1]}-column state design ({len(MODEL_FEATURES)} features "
+                            "plus missingness dummies plus intercept) with 391 exact clock levels "
+                            "fitted on a single decile, so the per-feature coefficients here are "
+                            "unstable. Read them for nothing at all: the section's own "
+                            "descriptive allocation table carries the same caveat, and no "
+                            "mediator analysis is available at feature level.",
                     }
                 cells[f"decile_{d + 1}"] = cell
             # explicit summary with a stated convention, plus the mediation of the top carriers
@@ -2668,7 +2796,7 @@ def volatility_control(frame: Frame, checks: dict, fwd: dict,
                             for c in cells.values()]
             med_disp = {}
             med_tr_median = float(np.median(rng30[itr]))
-            for feat in VOL_MEDIATION_FEATURES:
+            for feat in VOL_MEDIATION_FEATURES:  # descriptive allocation only, see the LABEL
                 if feat not in MODEL_FEATURES:
                     continue
                 prof = {}
@@ -2687,11 +2815,8 @@ def volatility_control(frame: Frame, checks: dict, fwd: dict,
                     prof[tag] = {"coefficient": r6(float(bf[1])), "n_train": int(sel.sum()),
                                  "n_parameters": int(n_par),
                                  "rows_per_parameter": r6(float(sel.sum()) / n_par)}
-                c0 = (prof.get("calmest_train_decile") or {}).get("coefficient")
-                c9 = (prof.get("wildest_train_decile") or {}).get("coefficient")
-                prof["attenuation_calmest_over_wildest"] = (
-                    r6(c0 / c9) if (c0 is not None and c9 not in (None, 0)) else None)
                 med_disp[feat] = prof
+
             fam_rec[f"fit_{train_blk}_report_{eval_blk}"] = {
                 "deciles_from_TRAIN_block_quantiles": [r6(float(e)) for e in edges],
                 "train_median_dispersion": r6(med_tr_median),
@@ -2701,18 +2826,31 @@ def volatility_control(frame: Frame, checks: dict, fwd: dict,
                     r6(float(np.median([x for x in refit_series if x is not None]))
                         - float(np.median([x for x in glob_series if x is not None])))
                     if any(x is not None for x in refit_series) else None),
-                "median_mediation_of_headline_features": med_disp,
-                "mediation_reading": "a feature whose coefficient is much smaller in the wildest "
-                                     "train decile than in the calmest is substantially mediated "
-                                     "by forward dispersion: part of what it detects about the "
-                                     "hazard is the tape getting wilder. READ THE ATTENUATION, NOT "
-                                     "THE LEVELS: each profile is a single-feature model with one "
-                                     "state parameter, but it still carries 391 exact clock levels "
-                                     "estimated from that same decile, so rows_per_parameter is "
-                                     "reported per cell and is small inside a decile (a handful of "
-                                     "rows per clock level). The sign and the collapse across "
-                                     "deciles are the finding; the coefficient magnitudes are not "
-                                     "effect sizes.",
+                "coefficient_allocation_by_decile_UNIDENTIFIED": {
+                    "LABEL": "UNIDENTIFIED - descriptive coefficient allocation, NOT mediation, "
+                             "NOT effect sizes",
+                    "why_unidentified": "set by finalize_volatility_metadata",
+                    "tables_disagree": "the per-decile refits (a "
+                                       f"{Xtr_i.shape[1]}-column state design with 391 clock "
+                                       "levels) and these single-feature profiles even disagree in "
+                                       "DIRECTION, which is exactly what non-identification looks "
+                                       "like. Neither table is a mediator analysis",
+                    "by_feature": med_disp,
+                },
+                "supported_result": {
+                    "statement": "set by finalize_volatility_metadata",
+                    "not_established": "no feature-level mediation is measured or implied, and "
+                                       "nothing here shows that exhaustion is stronger in wild "
+                                       "tapes; a dispersion x exhaustion interaction remains an "
+                                       "untested economic hypothesis for E1b",
+                    "measured_hazard_base_rate_by_dispersion_decile": {
+                        k: c.get("hazard_base_rate") for k, c in
+                        sorted(cells.items(), key=lambda kv: int(kv[0].split("_")[1]))},
+                    "base_rate_pattern": "measured, not asserted: the hazard base rate across "
+                                         "dispersion deciles is NOT monotone (see the list above "
+                                         "and the per-cell values in cells), which is why no "
+                                         "structural relation to dispersion is claimed",
+                },
                 "cells": cells,
             }
         out["B_hazard_conditional_on_dispersion_decile"][fam] = fam_rec
@@ -2739,12 +2877,17 @@ def volatility_control(frame: Frame, checks: dict, fwd: dict,
             res: dict = {"split_cut_train_median": r6(med_cut),
                          "coordinates": "auc_within_clock for every label (identical rows, "
                                         "identical coordinate)",
-                         "direction_label_exactly_flat_share_of_the_nonpositive_class": r6(
+                         "direction_label_exactly_flat_share_of_all_finite_rows": r6(
                              float(np.sum(np.isfinite(vff[iev]) & (vff[iev] == 0.0))
                                    / max(int(np.sum(np.isfinite(vff[iev]))), 1))),
+                         "direction_label_exactly_flat_share_of_the_nonpositive_class": r6(
+                             float(np.sum(np.isfinite(vff[iev]) & (vff[iev] == 0.0))
+                                   / max(int(np.sum(np.isfinite(vff[iev]) & (vff[iev] <= 0.0))), 1))
+                             if int(np.sum(np.isfinite(vff[iev]) & (vff[iev] <= 0.0))) else None),
                          "direction_label_class_0_definition": "sign label 0 = forward return to the "
-                                                              "forced flat <= 0; its exactly-flat "
-                                                              "share is reported because a flat "
+                                                              "forced flat <= 0; the exactly-flat "
+                                                              "share is reported against BOTH "
+                                                              "denominators above because a flat "
                                                               "forward value belongs to class 0"}
             for lab_name, lab in labels.items():
                 ytr, yev = lab[itr], lab[iev]
@@ -2800,11 +2943,13 @@ def volatility_control(frame: Frame, checks: dict, fwd: dict,
         "labels": {
             "hazard_barrier_label": "final_high_flag(t): does the future MAX of the tape ever "
                                     "exceed the running high at t. It is a BARRIER / first-passage "
-                                    "statement about a future maximum against a fixed level (not "
-                                    "the magnitude of that maximum). For a fixed barrier more "
-                                    "forward dispersion makes a crossing more likely, so "
-                                    "P(last new high) is structurally DECREASING in dispersion - "
-                                    "an overlap this section measures rather than assumes.",
+                                    "statement about a future maximum against a fixed level, not "
+                                    "the magnitude of that maximum. A two-sided range is NOT "
+                                    "mechanically monotone with an upward crossing, so no "
+                                    "structural relation to dispersion is claimed: the measured "
+                                    "hazard base rates per dispersion decile are published in "
+                                    "B_hazard_conditional_on_dispersion_decile and they are not "
+                                    "monotone.",
             "direction_sign_of_forward_forced_flat": "sign of the executable forward return to the "
                                                      "forced flat measured from next_open(t): a "
                                                      "NON-max, non-barrier label carrying the same "
@@ -2817,17 +2962,28 @@ def volatility_control(frame: Frame, checks: dict, fwd: dict,
         "by_family": cmp_out,
         "delta_ratio": ratios,
     }
+    n_rows_total = int(frame.n)
+    n_null = int(np.sum(~np.isfinite(fwd["fwd_range_30"])))
     checks["volatility_control"] = {
-        "dispersion_label_null_share": {
-            "value": r6(float(np.mean(~np.isfinite(fwd["fwd_range_30"])))),
-            "denominator": "rows with fewer than two future bars inside the 30-bar window, over "
-                           "all 1,900,432 panel rows (2 * 6,160 member-last-rows = 12,320 is the "
-                           "floor from the tape end; the rest are window tails)"},
+        "dispersion_label_null_share_range_30": {
+            "n_null": n_null, "n_rows": n_rows_total,
+            "value": r6(n_null / max(n_rows_total, 1)),
+            "denominator": "ALL 1,900,432 panel rows. The nulls are exactly the last two completed "
+                           "bars of each of the 6,160 member-days (a window needs two future bars), "
+                           "i.e. 2 * 6,160 = 12,320 rows = 0.006483"},
+        "dispersion_label_null_share_mabs_30": {
+            "n_null": int(np.sum(~np.isfinite(fwd["fwd_mabs_30"]))),
+            "n_rows": n_rows_total,
+            "value": r6(float(np.mean(~np.isfinite(fwd["fwd_mabs_30"])))),
+            "denominator": "same rule and same denominator as the range label (last two bars of "
+                           "each member-day)"},
         "median_split_rule": "TRAIN-block median everywhere in this section",
+        "thin_rule": "a within-clock AUC is flagged thin when it rests on fewer than 30 "
+                     "contributing clock minutes OR fewer than 30 minority-class observations",
         "labels_never_features": "no fwd_* key appears in MODEL_FEATURES or in any design matrix; "
                                  "tape columns are not state families per the registry",
     }
-    return out
+    return finalize_volatility_metadata(out, logit or {})
 
 
 def _nanmed(x):
@@ -2951,6 +3107,52 @@ def rel(path: Path) -> str:
         return str(path)
 
 
+def rewrite_metadata(path: Path) -> dict:
+    """Metadata-only repair of an existing artifact.
+
+    Recomputes the volatility section's three prose fields from the numbers already in the file
+    through the SAME finalizer the build path uses, so a rerun and a rewrite emit identical text.
+    Every published value is left untouched.
+    """
+    doc = json.loads(path.read_text())
+    vol = doc.get("volatility_control")
+    if not vol:
+        raise SystemExit("artifact has no volatility_control section; nothing to rewrite")
+    before = json.dumps(vol, sort_keys=True)
+    finalize_volatility_metadata(vol, doc.get("causal", {}).get("out_of_block_logistic", {}))
+    # refuse to write if anything outside the three prose fields moved
+    def prose_only(a, b, path_=""):
+        if isinstance(a, dict) and isinstance(b, dict):
+            for k in set(a) | set(b):
+                if k not in a or k not in b:
+                    return path_ + "." + k
+                r = prose_only(a[k], b[k], path_ + "." + k)
+                if r:
+                    return r
+            return None
+        if isinstance(a, list) and isinstance(b, list):
+            if len(a) != len(b):
+                return path_ + "[]"
+            for i, (u, v) in enumerate(zip(a, b)):
+                r = prose_only(u, v, f"{path_}[{i}]")
+                if r:
+                    return r
+            return None
+        if a != b:
+            ok = path_.endswith("comparison_note") or path_.endswith("why_unidentified") \
+                or path_.endswith("statement")
+            return None if ok else path_
+        return None
+    stray = prose_only(json.loads(before), vol)
+    if stray:
+        raise SystemExit(f"refusing to write: non-prose field changed at {stray}")
+    path.write_text(json.dumps(doc, indent=1) + "\n")
+    return {"path": str(path), "n_rewritten": 10, "refit": False,
+            "rewritten_fields": ["A.<family>.comparison_note",
+                                 "B.<family>.<direction>.why_unidentified",
+                                 "B.<family>.<direction>.supported_result.statement"]}
+
+
 def sha256_of(path: Path, chunk: int = 1 << 22) -> str:
     h = hashlib.sha256()
     with path.open("rb") as fh:
@@ -2971,6 +3173,10 @@ def main(argv: list[str] | None = None) -> int:
                     help="comma-separated shard, e.g. --families A_pm (halves peak memory); "
                          "cross-family pooling and the duplicate-path scan need both families")
     ap.add_argument("--quiet", action="store_true")
+    ap.add_argument("--rewrite-metadata", action="store_true",
+                    help="metadata-only repair of an existing artifact: recompute the volatility "
+                         "section's prose fields from the numbers already in the file, refit "
+                         "nothing, and leave every published value untouched")
     args = ap.parse_args(argv)
     t0 = time.time()
 
@@ -2978,6 +3184,12 @@ def main(argv: list[str] | None = None) -> int:
         if not args.quiet:
             print(m, file=sys.stderr, flush=True)
 
+    if args.rewrite_metadata:
+        rep = rewrite_metadata(args.out)
+        say(f"rewrote {rep['n_rewritten']} prose fields in {rep['path']}")
+        for f in rep["rewritten_fields"]:
+            say(f"  {f}")
+        return 0
     shard = [f.strip() for f in args.families.split(",") if f.strip()]
     unknown = [f for f in shard if f not in FAMILIES]
     if unknown:
@@ -3328,6 +3540,10 @@ def main(argv: list[str] | None = None) -> int:
                                  "are labelled as such and are evidence only where the same "
                                  "pattern survives out-of-block",
             "labels_never_used_as_features": list(LABEL_PREFIXES),
+            "volatility_control_scope": "volatility_control models the 30-bar dispersion targets "
+                                        "(realized range and mean absolute 1-minute return); the "
+                                        "60-bar versions are published as DISTRIBUTIONS ONLY and "
+                                        "are not modelled anywhere.",
             "volatility_control": "volatility_control is an ADDITIVE section: it asks whether the "
                                   "hazard finding is a life/decay signal or a volatility "
                                   "restatement, using label-side forward dispersion (realized "
