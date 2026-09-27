@@ -107,6 +107,15 @@ it as "the EV is before 11:00" converts a hypothesis into a finding that the ana
 construction. This is the drift mechanism to watch: an absorbed correction gets over-learned into a
 law. State priors with their definitions, and require the analysis to test them.
 
+**Beware max-order labels.** A label defined as a maximum (or minimum) over the future path is
+monotone in forward volatility, so any volatility proxy will "separate" its tails by construction,
+with no directional information. Test direction against realized post-decision *path outcomes* (did a
+new high actually follow; did executable continuation value actually continue) — never against decile
+tails of a max/min statistic. Corollary: a "separator" whose effect does not weaken in the stratum
+where the future failed is tracking the label, not the direction. Learned the hard way (2026-09-27):
+a one-bar range variable looked like the strongest separator of matched divergent minutes until the
+label's functional form was audited.
+
 **Interpretation hygiene.** Separate (a) verified evidence, (b) interpretations built on it, and
 (c) rulers/thresholds used to measure. Record which is which; re-test interpretations when new
 evidence arrives; never cite a ruler as a conclusion; preserve disagreement between
