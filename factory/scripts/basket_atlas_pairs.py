@@ -218,6 +218,143 @@ def _write_json(path: Path, payload: dict) -> None:
     tmp.replace(path)
 
 
+RETIRED_PAIR_KEY = "executable_continuation"   # retired decile-pair axis; must never be emitted
+
+
+def _prune_key(obj, key: str) -> int:
+    """Delete every dict entry named `key` at any depth; returns how many were removed."""
+    removed = 0
+    if isinstance(obj, dict):
+        if key in obj:
+            del obj[key]
+            removed += 1
+        for v in obj.values():
+            removed += _prune_key(v, key)
+    elif isinstance(obj, list):
+        for v in obj:
+            removed += _prune_key(v, key)
+    return removed
+
+
+def _count_key(obj, key: str) -> int:
+    n = 0
+    if isinstance(obj, dict):
+        for k, v in obj.items():
+            n += (k == key) + _count_key(v, key)
+    elif isinstance(obj, list):
+        for v in obj:
+            n += _count_key(v, key)
+    return n
+
+
+def _count_str(obj, needle: str) -> int:
+    n = 0
+    if isinstance(obj, dict):
+        for k, v in obj.items():
+            n += (needle in k) + _count_str(v, needle)
+    elif isinstance(obj, list):
+        for v in obj:
+            n += _count_str(v, needle)
+    elif isinstance(obj, str):
+        n += (needle in obj)
+    return n
+
+
+def finalize_artifact(payload: dict) -> dict:
+    """Deterministic metadata finalizer, used by the normal build and by --rewrite-metadata.
+    It (a) prunes retired keys, (b) DERIVES `auditor_conclusion` from the payload's own sections
+    (no hardcoded stale prose), (c) records stale-key counts and recomputes the core hash. It never
+    recomputes a statistical section."""
+    removed = _prune_key(payload, RETIRED_PAIR_KEY)
+    fams = payload.get("families") or {}
+    support = {}
+    realized_quote_parts = []
+    max_mid = None
+    for fam in sorted(fams):
+        res = fams[fam] or {}
+        nh = ((((res.get("realized_outcomes_primary") or {}).get("up_side_new_high") or {})
+               .get("per_discriminator") or {}).get("bar_range_pct") or {})
+        mid = res.get("middle_decile_executable_axis") or {}
+        mbr = (mid.get("per_discriminator") or {}).get("bar_range_pct") or {}
+        cond = ((res.get("conditioning_primary") or {}).get("subsets") or {})
+
+        def _hit(sub: str):
+            return (((cond.get(sub) or {}).get("per_discriminator") or {})
+                    .get("bar_range_pct") or {}).get("share_up_higher")
+
+        support[fam] = {
+            "realized_bar_range_pct_up_side_new_high": {
+                "difference_true_minus_false": nh.get("difference_true_minus_false"),
+                "ci95_day_clustered": nh.get("difference_ci95_day_clustered")},
+            "middle_axis_bar_range_pct_difference": {
+                "difference_true_minus_false": mbr.get("difference_true_minus_false"),
+                "ci95_day_clustered": mbr.get("difference_ci95_day_clustered"),
+                "concordance_hit_rate": mbr.get("concordance_hit_rate")},
+            "middle_axis_n_pairs": mid.get("n_pairs"),
+            "middle_axis_share_A_wins": mid.get("share_A_wins"),
+            "decile_hit_bar_range_pct": {"all": _hit("all_primary_pairs"),
+                                         "no_fresh_high": _hit("both_no_new_high_5"),
+                                         "same_close_location": _hit("same_close_location_bucket")},
+        }
+        d = nh.get("difference_true_minus_false")
+        ci = nh.get("difference_ci95_day_clustered") or [None, None]
+        if d is not None:
+            realized_quote_parts.append(f"{fam} {d:+.3f}" + (
+                f", CI [{ci[0]:+.3f},{ci[1]:+.3f}]" if ci[0] is not None else ""))
+        me = mbr.get("difference_true_minus_false")
+        if me is not None and (max_mid is None or abs(me) > abs(max_mid[1])):
+            max_mid = (fam, me, mbr.get("difference_ci95_day_clustered") or [None, None])
+    excl = []
+    for fam in sorted(support):
+        ci = support[fam]["realized_bar_range_pct_up_side_new_high"]["ci95_day_clustered"] or [None, None]
+        if ci[0] is not None and (ci[0] > 0 or ci[1] < 0):
+            excl.append(fam)
+    generalize = ("one family only, does not generalize" if len(excl) <= 1
+                  else "holds in both families")
+    cl = None
+    for fam in sorted(support):
+        h = support[fam]["decile_hit_bar_range_pct"]
+        if h.get("all") is not None and h.get("same_close_location") is not None:
+            cl = h
+            break
+    adverse = (max_mid is not None and max_mid[1] < 0)
+    if adverse:
+        adverse_txt = (f"on the clean middle-decile axis the largest effect is ADVERSE-signed "
+                       f"({max_mid[0]} {max_mid[1]:+.4f}, CI "
+                       f"[{max_mid[2][0]:+.4f},{max_mid[2][1]:+.4f}]): the higher-volatility member "
+                       f"is LESS likely to hold the higher executable value, which is not a "
+                       f"continuation signal")
+    else:
+        adverse_txt = ("on the clean middle-decile axis no adverse-signed large effect was found")
+    close_txt = ("the close-location hypothesis is empirically dead"
+                 + (f" (decile separation {cl['all']:.3f} -> {cl['no_fresh_high']:.3f} under "
+                    f"new-high conditioning and {cl['same_close_location']:.3f} under "
+                    f"same-close-location)" if cl else ""))
+    payload["auditor_conclusion"] = {
+        "verdict": ("AUDITOR CONCLUSION, derived from this artifact's own sections: "
+                    "volatility-selected realized axes are NOT directional evidence; "
+                    + adverse_txt + "; " + close_txt + "; and no policy, gate or directional rule "
+                    "may be derived from any section of this artifact."),
+        "realized_bar_range_pct_quote": ("; ".join(realized_quote_parts) + f" - {generalize}"),
+        "supporting_numbers": support,
+        "reading_rules": [
+            "survivor lists are decile-split statistics (volatility-selected), not directional ones",
+            "realized-outcome concordances are descriptive and multiplicity-uncontrolled",
+            "conditioning results do not repair the label-construction coupling",
+            "no policy, gate or directional rule may be derived from these sections",
+        ],
+    }
+    checks = payload.setdefault("checks", {})
+    checks.pop("stale_keys", None)   # superseded metadata block from an earlier rewrite
+    # neutral metadata keys: the retired name itself is never emitted anywhere in the artifact
+    checks["retired_pair_key"] = {
+        "key_occurrences": _count_key(payload, RETIRED_PAIR_KEY),
+        "string_occurrences": _count_str(payload, RETIRED_PAIR_KEY),
+        "rule": "the retired decile-pair axis key must have zero recursive occurrences"}
+    payload["deterministic_core_sha256"] = core_hash(payload)
+    return payload
+
+
 def core_hash(payload: dict) -> str:
     core = {k: v for k, v in payload.items()
             if k not in ("generated_utc", "runtime_seconds", "deterministic_core_sha256")}
@@ -1256,17 +1393,15 @@ def add_pair_outcomes(pairs: pl.DataFrame) -> pl.DataFrame:
       outcome_up_new_high       the up-side member made a new high after the match minute
       outcome_down_failure_path the down-side member made no new high after t AND its best later
                                 CLOSE never regained its next_open (the executable exit price)
-      outcome_exec_continuation the up-side member's executable hold-to-flat value (engine
-                                forced-flat price, future) exceeds the down-side member's
-    plus the close-location-within-bar of both sides for conditioning."""
+    plus the close-location-within-bar of both sides for conditioning. The retired
+    `executable_continuation` decile-pair axis is deliberately absent: it was label-implied and is
+    replaced by the middle-decile winner/loser axis."""
     rng_u = pl.col("bar_high_u") - pl.col("bar_low_u")
     rng_d = pl.col("bar_high_d") - pl.col("bar_low_d")
     return pairs.with_columns([
         (pl.col("final_high_flag_u") == False).alias("outcome_up_new_high"),          # noqa: E712
         ((pl.col("final_high_flag_d") == True)                                       # noqa: E712
          & (pl.col("oc_close_d") < 0)).alias("outcome_down_failure_path"),
-        (pl.col("v_forced_flat_u") > pl.col("v_forced_flat_d"))
-        .alias("outcome_exec_continuation"),
         (pl.when(rng_u > 0).then((pl.col("bar_close_u") - pl.col("bar_low_u")) / rng_u)
            .otherwise(None)).alias("clv_u"),
         (pl.when(rng_d > 0).then((pl.col("bar_close_d") - pl.col("bar_low_d")) / rng_d)
@@ -1524,9 +1659,7 @@ def family_analysis(df: pl.DataFrame, labeled: pl.DataFrame, cfg: dict,
                 "realized": {name: {disc: realized_outcome_stats(sub, disc, days, col,
                                                                  cfg["bootstrap"], rng)
                                     for disc in DISCRIMINATORS}
-                             for name, col in (("up_side_new_high", "outcome_up_new_high"),
-                                               ("executable_continuation",
-                                                "outcome_exec_continuation"))}}
+                             for name, col in (("up_side_new_high", "outcome_up_new_high"),)}}
         out["outcome_cells_primary"] = {
             "definition": ("DISJOINT partition of the primary pairs (mutually exclusive cells): "
                            "continuation = up-side new high after t; failure = down-side no new "
@@ -1858,47 +1991,6 @@ def analyse(df: pl.DataFrame, cfg: dict, log=print) -> dict:
                              "pair_share_up_higher": res["tiers"]["same_day_minute"]
                              ["discriminators"][disc]["pairs"].get("share_up_higher")}
                       for disc in DISCRIMINATORS} for fam, res in families.items()}
-    auditor_support = {}
-    for fam, res in families.items():
-        rl = res.get("realized_outcomes_primary", {})
-        br = rl.get("up_side_new_high", {}).get("per_discriminator", {}).get("bar_range_pct", {})
-        cond = res.get("conditioning_primary", {}).get("subsets", {})
-        auditor_support[fam] = {
-            "bar_range_pct_realized_up_side_new_high": {
-                "difference_true_minus_false": br.get("difference_true_minus_false"),
-                "ci95_day_clustered": br.get("difference_ci95_day_clustered"),
-                "concordance_hit_rate": br.get("concordance_hit_rate")},
-            "bar_range_pct_decile_hit_all": cond.get("all_primary_pairs", {})
-            .get("per_discriminator", {}).get("bar_range_pct", {}).get("share_up_higher"),
-            "bar_range_pct_decile_hit_no_fresh_high": cond.get("both_no_new_high_5", {})
-            .get("per_discriminator", {}).get("bar_range_pct", {}).get("share_up_higher"),
-            "bar_range_pct_decile_hit_same_close_location": cond.get("same_close_location_bucket", {})
-            .get("per_discriminator", {}).get("bar_range_pct", {}).get("share_up_higher"),
-            "middle_decile_executable_axis": {
-                "n_pairs": res.get("middle_decile_executable_axis", {}).get("n_pairs"),
-                "share_A_wins": res.get("middle_decile_executable_axis", {}).get("share_A_wins")},
-        }
-    auditor_conclusion = {
-        "verdict": ("AUDITOR CONCLUSION, recorded prominently: the realized-outcome axes are "
-                    "volatility-selected (max-threshold crossings), NO realized separator here is "
-                    "trustworthy, bar_range_pct shows no realized separation on up_side_new_high, "
-                    "and the close-location hypothesis is empirically dead. No section of this "
-                    "artifact may be read as a directional claim about state at the match minute; "
-                    "the decile split and everything derived from it is a volatility/attention "
-                    "axis, not a continuation-versus-decay signal."),
-        "supporting_numbers": auditor_support,
-        "auditor_quotes": {
-            "bar_range_pct_up_side_new_high": "+0.101, CI [-0.064, +0.217] (no realized separation)",
-            "close_location_hypothesis": "decile separation 0.708 -> 0.711 / 0.710 under new-high "
-                                         "conditioning and 0.693 under same-close-location: dead",
-        },
-        "reading_rules": [
-            "survivor lists are decile-split statistics (volatility-selected), not directional ones",
-            "realized-outcome concordances are descriptive and multiplicity-uncontrolled",
-            "conditioning results do not repair the label-construction coupling",
-            "no policy, gate or directional rule may be derived from these sections",
-        ],
-    }
     ci_violations = []
     for fam, res in families.items():
         grouped = [("realized_outcomes_primary." + n, r["per_discriminator"])
@@ -1919,7 +2011,6 @@ def analyse(df: pl.DataFrame, cfg: dict, log=print) -> dict:
     checks["ci_containment"]["rule"] = ("the reported point must be the same estimator as the "
                                         "day-clustered bootstrap and must lie inside its own CI")
     payload = {
-        "auditor_conclusion": auditor_conclusion,
         "artifact": str(DEFAULT_OUT.relative_to(ROOT)),
         "tool": "factory/scripts/basket_atlas_pairs.py",
         "generated_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
@@ -2029,8 +2120,7 @@ def analyse(df: pl.DataFrame, cfg: dict, log=print) -> dict:
     for fam, res in families.items():
         res["headline_note"] = ("headline verdicts are decile-split statistics; DISCOVERY-ONLY and "
                                 "volatility-selected - see auditor_conclusion")
-    payload["deterministic_core_sha256"] = core_hash(payload)
-    return payload
+    return finalize_artifact(payload)
 
 
 # --------------------------------------------------------------------------- #
@@ -2293,10 +2383,40 @@ def main(argv=None) -> int:
     ap.add_argument("--allow-panel-drift", action="store_true")
     ap.add_argument("--self-test", action="store_true")
     ap.add_argument("--verify", action="store_true")
+    ap.add_argument("--rewrite-metadata", action="store_true",
+                    help="rewrite only the derived metadata (pruned retired keys, auditor "
+                         "conclusion, stale-key counts, core hash) of an existing artifact; "
+                         "no panel read, no statistical recomputation")
     args = ap.parse_args(argv)
     if args.self_test:
         print(json.dumps(self_test(), indent=2))
         return 0
+    if args.rewrite_metadata:
+        out = Path(args.out)
+        if not out.exists():
+            print(f"artifact missing: {out}", file=sys.stderr)
+            return 2
+        payload = json.loads(out.read_text())
+        heavy = ("families", "labels", "config", "cells", "panel", "headline",
+                 "family_interaction", "sample_pairs")
+        before = {k: json.dumps(_sanitize(payload.get(k)), sort_keys=True) for k in heavy}
+        probe = json.loads(json.dumps(payload))
+        pruned_n = _prune_key(probe, RETIRED_PAIR_KEY)
+        pruned = {k: json.dumps(_sanitize(probe.get(k)), sort_keys=True) for k in heavy}
+        payload = finalize_artifact(payload)
+        after = {k: json.dumps(_sanitize(payload.get(k)), sort_keys=True) for k in heavy}
+        changed = [k for k in heavy if after[k] != pruned[k]]
+        _write_json(out, payload)
+        written = json.loads(out.read_text())
+        ok = written.get("deterministic_core_sha256") == core_hash(written)
+        rk = written["checks"]["retired_pair_key"]
+        print(f"rewrite-metadata: pruned={pruned_n} retired_key_occurrences="
+              f"{rk['key_occurrences']} retired_string_occurrences={rk['string_occurrences']}")
+        print(f"heavy sections unchanged apart from the pruned key: {not changed}"
+              + (f" (changed: {changed})" if changed else ""))
+        print(f"core sha256 {written['deterministic_core_sha256'][:12]}… self-consistent={ok}")
+        print(f"artifact {out} bytes={out.stat().st_size}")
+        return 0 if (ok and not changed) else 1
     panel = Path(args.panel)
     if not panel.exists():
         print(f"panel not found: {panel}", file=sys.stderr)
