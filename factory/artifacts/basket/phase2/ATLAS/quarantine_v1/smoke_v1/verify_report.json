@@ -1,0 +1,240 @@
+{
+ "panel": "/home/hillel/.config/opencode/worktrees/Alpacatrader/basket-phase2-f1/factory/artifacts/basket/phase2/ATLAS/smoke/panel.parquet",
+ "panel_sha256": "c3f638d60c0504bca71034b0cfbbd6ce41b65f5acbc86db4f744df949b109629",
+ "verifier_sha256": "90ce9309d654c344451ce8709e57424ff3e61f1d5a62fa18bee73e1facfd05c2",
+ "seed": 20260925,
+ "rows_checked": 16,
+ "comparisons": 1072,
+ "mismatches": 0,
+ "columns_checked": [
+  "ret_from_fill",
+  "ret_from_prevclose",
+  "ret_from_open0930",
+  "mfe_so_far",
+  "mae_so_far",
+  "running_high",
+  "dist_from_running_high",
+  "mfe_surrendered",
+  "bars_below_entry_episode",
+  "episode_low",
+  "bars_since_episode_low",
+  "reclaim_count",
+  "failed_reclaim_count",
+  "bars_since_new_high",
+  "new_high_count_5",
+  "new_high_count_15",
+  "new_high_count_30",
+  "ret_1",
+  "ret_3",
+  "ret_5",
+  "accel_1_5",
+  "up_close_streak",
+  "range_expansion",
+  "bar_range_pct",
+  "volume_vs_own_median",
+  "volume_accel",
+  "gap_count_so_far",
+  "bars_since_gap",
+  "candidate_count_t",
+  "ret_percentile_candidates",
+  "peer_ret_median",
+  "peer_new_high_5",
+  "next_open",
+  "next_et",
+  "level_ret",
+  "v_sell",
+  "v_hold_flat",
+  "v_forced_flat",
+  "remaining_run",
+  "cost_of_waiting",
+  "final_high_flag",
+  "tail_class_50",
+  "tail_class_100",
+  "tail_class_300",
+  "bars_to_next_high",
+  "dd_before_next_high",
+  "bars_to_peak",
+  "peak_et_after_t",
+  "v_giveback_5",
+  "v_giveback_10",
+  "v_giveback_15",
+  "v_giveback_20",
+  "giveback_fired_5",
+  "giveback_fired_10",
+  "giveback_fired_15",
+  "giveback_fired_20",
+  "giveback_triggered_unexecutable_5",
+  "giveback_triggered_unexecutable_10",
+  "giveback_triggered_unexecutable_15",
+  "giveback_triggered_unexecutable_20",
+  "session_peak_et",
+  "session_peak_ret_from_entry",
+  "session_peak_bars_from_entry",
+  "session_close_ret_from_entry",
+  "future_forced_flat_px",
+  "path_complete_to_session_end",
+  "terminal_censored"
+ ],
+ "strata": {
+  "ordinary": 2,
+  "incomplete_tape": 2,
+  "last_bar": 2,
+  "first_trigger_on_final_bar": 2,
+  "high_tie_at_threshold": 2,
+  "missing_reference": 0,
+  "early_close": 0,
+  "duplicate_family_path": 2,
+  "at_entry_bar": 2,
+  "extreme_move": 0,
+  "blocked_fill_day": 2
+ },
+ "per_stratum": {
+  "ordinary": {
+   "rows": 2,
+   "comparisons": 134,
+   "mismatches": 0
+  },
+  "incomplete_tape": {
+   "rows": 2,
+   "comparisons": 134,
+   "mismatches": 0
+  },
+  "last_bar": {
+   "rows": 2,
+   "comparisons": 134,
+   "mismatches": 0
+  },
+  "first_trigger_on_final_bar": {
+   "rows": 2,
+   "comparisons": 134,
+   "mismatches": 0
+  },
+  "high_tie_at_threshold": {
+   "rows": 2,
+   "comparisons": 134,
+   "mismatches": 0
+  },
+  "duplicate_family_path": {
+   "rows": 2,
+   "comparisons": 134,
+   "mismatches": 0
+  },
+  "at_entry_bar": {
+   "rows": 2,
+   "comparisons": 134,
+   "mismatches": 0
+  },
+  "blocked_fill_day": {
+   "rows": 2,
+   "comparisons": 134,
+   "mismatches": 0
+  }
+ },
+ "structural_failures": [],
+ "prefix_invariance": {
+  "rows": 6,
+  "comparisons": 204,
+  "violations": [],
+  "n_violations": 0
+ },
+ "mismatch_details": [],
+ "sampled_keys": [
+  [
+   "2022-05-17",
+   "A_pm",
+   "PTE",
+   743
+  ],
+  [
+   "2025-05-20",
+   "A_pm",
+   "NRXS",
+   669
+  ],
+  [
+   "2023-12-29",
+   "A_pm",
+   "AVTX",
+   591
+  ],
+  [
+   "2025-02-03",
+   "A_pm",
+   "EYEN",
+   617
+  ],
+  [
+   "2021-09-23",
+   "B600",
+   "RNAZ",
+   959
+  ],
+  [
+   "2023-12-29",
+   "A_pm",
+   "VS",
+   959
+  ],
+  [
+   "2022-05-17",
+   "B600",
+   "AUVI",
+   922
+  ],
+  [
+   "2026-02-11",
+   "B600",
+   "SUNE",
+   958
+  ],
+  [
+   "2023-09-05",
+   "A_pm",
+   "WE",
+   906
+  ],
+  [
+   "2023-09-05",
+   "A_pm",
+   "WE",
+   918
+  ],
+  [
+   "2021-09-23",
+   "A_pm",
+   "RNAZ",
+   913
+  ],
+  [
+   "2023-09-05",
+   "A_pm",
+   "VERB",
+   809
+  ],
+  [
+   "2022-09-13",
+   "B600",
+   "NRBO",
+   600
+  ],
+  [
+   "2025-03-27",
+   "A_pm",
+   "WHLR",
+   570
+  ],
+  [
+   "2026-04-07",
+   "A_pm",
+   "MOBX",
+   587
+  ],
+  [
+   "2026-04-07",
+   "A_pm",
+   "CETX",
+   762
+  ]
+ ],
+ "ok": true
+}

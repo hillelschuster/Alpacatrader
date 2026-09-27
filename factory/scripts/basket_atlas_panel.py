@@ -41,6 +41,8 @@ import argparse
 import bisect
 import hashlib
 import json
+import random
+import re
 import shutil
 import sys
 import tempfile
@@ -63,7 +65,7 @@ SMOKE_DIR = ATLAS / "smoke"
 PANEL = ATLAS / "panel.parquet"
 COVERAGE = ATLAS / "coverage.json"
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 GIVEBACK_LEVELS = (5, 10, 15, 20)
 TAIL_LEVELS = (50, 100, 300)
 FIRST_ET = 570
@@ -150,6 +152,7 @@ COLUMNS: list[tuple[str, object, str]] = [
     ("next_open", pl.Float64, "outcome_level"),
     ("next_et", pl.Int32, "outcome_level"),
     ("v_hold_flat", pl.Float64, "outcome_continuation"),
+    ("v_forced_flat", pl.Float64, "outcome_continuation"),
     ("v_giveback_5", pl.Float64, "outcome_continuation"),
     ("v_giveback_10", pl.Float64, "outcome_continuation"),
     ("v_giveback_15", pl.Float64, "outcome_continuation"),
@@ -158,6 +161,10 @@ COLUMNS: list[tuple[str, object, str]] = [
     ("giveback_fired_10", pl.Boolean, "outcome_continuation"),
     ("giveback_fired_15", pl.Boolean, "outcome_continuation"),
     ("giveback_fired_20", pl.Boolean, "outcome_continuation"),
+    ("giveback_condition_after_forced_flat_5", pl.Boolean, "outcome_continuation"),
+    ("giveback_condition_after_forced_flat_10", pl.Boolean, "outcome_continuation"),
+    ("giveback_condition_after_forced_flat_15", pl.Boolean, "outcome_continuation"),
+    ("giveback_condition_after_forced_flat_20", pl.Boolean, "outcome_continuation"),
     ("v_sell", pl.Float64, "outcome_continuation"),
     ("level_ret", pl.Float64, "outcome_continuation"),
     ("final_high_flag", pl.Boolean, "outcome_path"),
@@ -176,8 +183,64 @@ COLUMNS: list[tuple[str, object, str]] = [
     ("session_peak_bars_from_entry", pl.Int32, "ticket_constant"),
     ("session_close_ret_from_entry", pl.Float64, "ticket_constant"),
     # producer additions that make the tape end explicit
-    ("member_last_et", pl.Int32, "key"),
+    ("path_complete_to_session_end", pl.Boolean, "censor"),
+    ("terminal_censored", pl.Boolean, "censor"),
+    ("future_member_last_et", pl.Int32, "future_meta"),
+    ("future_forced_flat_px", pl.Float64, "future_meta"),
 ]
+
+# Outcome columns that assume the member's tape runs to the session close (or an
+# executable terminal liquidation).  For a member without a session-end print
+# (`terminal_censored`) every one of them is null: the tape cannot establish the
+# remaining session or a terminal price.
+CENSORED_OUTCOME_COLUMNS = (
+    "v_hold_flat", "v_forced_flat",
+    "v_giveback_5", "v_giveback_10", "v_giveback_15", "v_giveback_20",
+    "giveback_fired_5", "giveback_fired_10", "giveback_fired_15", "giveback_fired_20",
+    "giveback_condition_after_forced_flat_5", "giveback_condition_after_forced_flat_10",
+    "giveback_condition_after_forced_flat_15", "giveback_condition_after_forced_flat_20",
+    "final_high_flag", "remaining_run", "cost_of_waiting",
+    "bars_to_peak", "peak_et_after_t",
+    "tail_class_50", "tail_class_100", "tail_class_300",
+    "session_peak_et", "session_peak_ret_from_entry", "session_peak_bars_from_entry",
+    "session_close_ret_from_entry",
+)
+
+# Columns that carry information from after t and must never be used as causal
+# state.  `future_` is the naming prefix for such columns; the four session-wide
+# ticket constants keep their SCHEMA.md names (frozen interface) and are listed
+# here so the ledger guard can exclude them by registry rather than by prefix.
+# The two censor flags are future-derived as well: whether a tape reaches the
+# session close is only known after the session, so a row at t < last bar that
+# could read them would see its own future halt.
+FUTURE_ONLY_PREFIXES = ("future_",)
+FUTURE_ONLY_COLUMNS = (
+    "session_peak_et", "session_peak_ret_from_entry",
+    "session_peak_bars_from_entry", "session_close_ret_from_entry",
+    "future_member_last_et", "future_forced_flat_px",
+    "path_complete_to_session_end", "terminal_censored",
+)
+CAUSAL_EXCLUDED_FAMILIES = ("outcome_level", "outcome_continuation", "outcome_path",
+                            "ticket_constant", "future_meta", "censor")
+# Columns read from *other* artifacts (the C1 engine's tickets) rather than from
+# the panel; the source-level audit below allows these explicitly.
+EXTERNAL_COLUMN_REFS = ("exit_day", "exit_et", "exit_px", "exit_reason", "n_entries")
+CAUSAL_SAFETY_RULE = (
+    "no market-state feature may be drawn from a column whose family is in "
+    "causal_excluded_families (outcome_level, outcome_continuation, outcome_path, "
+    "ticket_constant, future_meta, censor) nor from any column named in "
+    "future_only_columns / prefixed `future_`.  Censoring flags are cohort labels, "
+    "not state: they describe the tape's future completeness."
+)
+
+
+def causal_feature_columns(columns) -> list[str]:
+    """Columns a generic causal feature selector is allowed to admit."""
+    return [c for c in columns
+            if c in COLUMN_FAMILIES
+            and COLUMN_FAMILIES[c] not in CAUSAL_EXCLUDED_FAMILIES
+            and not c.startswith(FUTURE_ONLY_PREFIXES)
+            and c not in FUTURE_ONLY_COLUMNS]
 
 # outcome columns that SCHEMA.md places under "Outcome columns (strictly after t)"
 OUTCOME_COLUMNS = tuple(
@@ -185,7 +248,8 @@ OUTCOME_COLUMNS = tuple(
     if fam in ("outcome_level", "outcome_continuation", "outcome_path")
 )
 # SCHEMA.md declares these two "null if none" (no later high at all), so they may
-# be null while next_open exists; every other outcome column may not.
+# be null while next_open exists; every other outcome column of a complete tape
+# is populated whenever next_open exists.
 NO_EVENT_NULL_OUTCOMES = ("bars_to_next_high", "dd_before_next_high")
 COLUMN_FAMILIES = {name: fam for name, _d, fam in COLUMNS}
 COLUMN_DTYPES = {name: dt for name, dt, _f in COLUMNS}
@@ -207,19 +271,48 @@ PRODUCER_ADDITIONS = {
     "bar_close": "raw tape: close of the completed bar t (= the panel's mark price)",
     "prev_close": "anatomy day constant, used by ret_from_prevclose (repeated per row)",
     "open0930": "anatomy day constant, used by ret_from_open0930 (repeated per row)",
-    "member_last_et": ("ET of the last bar of this member's tracked window; equals "
-                       "session_end when the member traded into the close"),
+    "path_complete_to_session_end": ("member-level: the member printed at the session's last "
+                                     "minute, so its tape carries the whole session"),
+    "terminal_censored": ("member-level flag = not path_complete_to_session_end; every "
+                          "terminal-dependent outcome is null for that member"),
+    "future_member_last_et": ("FUTURE-ONLY: ET of the member's last print. Known only after "
+                              "the session; never an eligible causal input."),
+    "giveback_condition_after_forced_flat": ("the close condition of the give-back rule appeared "
+                                             "only on the session_end bar's close, after the engine "
+                                             "had already gone flat — diagnostic, never a firing"),
+    "future_forced_flat_px": ("FUTURE-ONLY: the engine's executable terminal price — the open of "
+                              "the session_end bar (basket_sim schedules FORCED_FLAT at "
+                              "session_end-1 and executes it at the next bar's open). Null when "
+                              "the member has no print at session_end (the engine carries it)."),
 }
 
 CONVENTIONS = {
     "causality": "state uses only bars with et <= t plus the fill; no session aggregate after t",
     "execution": "a decision at completed bar t executes at the open of bar t+1",
     "last_bar": "at the member's last tracked bar, next_open/next_et and every outcome column are null",
+    "terminal_execution": ("the engine schedules FORCED_FLAT on the completed bar at "
+                           "session_end-1 and executes it at the session_end bar's OPEN; "
+                           "future_forced_flat_px is that price and v_forced_flat is the "
+                           "hold-to-flat continuation measured from it. v_hold_flat is the "
+                           "labelled CLOSE baseline (close of the session_end bar), kept only "
+                           "for comparability — it is not the engine's execution price."),
     "friction": "none in the panel; analyses apply bps_total/2 per side on the executed action",
     "no_fabrication": "a missing input yields null, never a filled or carried value",
-    "fill_bar": "first bar of the member with et >= the anatomy fill et",
+    "fill_bar": "first bar of the member with et >= the anatomy fill et (anatomy is authoritative)",
     "session_end": "day-level session end (959, or 779 on the 7 half-days), repeated per row",
-    "member_window": "fill bar .. last member bar with et <= session_end (see member_last_et)",
+    "member_window": "fill bar .. last member bar with et <= session_end",
+    "terminal_censoring": ("a member whose tape stops before the session close has every "
+                           "terminal-dependent outcome null (path_complete_to_session_end = "
+                           "false); state columns are unaffected"),
+    "giveback_execution": ("the trigger bar's next bar must exist for the exit to execute. The "
+                           "engine's forced flat goes flat at the session_end bar's OPEN, so a "
+                           "give-back close condition first seen on that bar's CLOSE cannot "
+                           "preempt it: v_giveback_g = v_forced_flat, giveback_fired_g = false, "
+                           "recorded in giveback_condition_after_forced_flat_g (diagnostic only). "
+                           "Only terminal-censored tapes have null give-back values."),
+    "future_columns": ("future_member_last_et and the four session_peak_*/session_close_ret_* "
+                       "constants carry post-t information and must never be used as causal "
+                       "state (registry: coverage.json.future_only_columns)"),
     "block1": "days <= 2023-12-31; block2: days >= 2025-02-01",
     "sort": "rows sorted by (sleeve_day, family, entry_rank, et)",
 }
@@ -227,20 +320,63 @@ CONVENTIONS = {
 AMBIGUITIES = [
     {
         "schema": "`family` | `A_pm` (fill at ET 571) or `B600` (fill at ET 601)",
-        "issue": "the anatomy fill et is not always 571/601 (A_pm fills at 570 on most days, "
+        "issue": "the anatomy fill et is not 571/601 (A_pm actually fills at 570 on most days, "
                  "B600 at 600, and a name can fill later inside a gapped tape)",
-        "resolution": "entry_et/entry_px are taken verbatim from the anatomy fill (the engine's "
-                      "own source); the ET in the schema text is read as nominal. The realised "
-                      "entry_et distribution is reported under tape_shape.entry_et_histogram.",
+        "resolution": "the schema's 571/601 is NOMINAL; the anatomy fill is authoritative and is "
+                      "what the C1 engine reads (entry_et/entry_px are the anatomy fill, asserted "
+                      "equal to the C1 tickets). Realised entry_et distribution: "
+                      "coverage.tape_shape.entry_et_histogram. SCHEMA.md carries an amendment "
+                      "saying exactly this.",
+    },
+    {
+        "schema": "tapes that stop before the session close",
+        "issue": "SCHEMA.md assumes the tape runs to the session end. For 273 members the last "
+                 "print is earlier (halts/no-print), so close(session_end) and the remaining "
+                 "session are unobservable and a terminal liquidation there is not executable.",
+        "resolution": "member-level `path_complete_to_session_end` / `terminal_censored` flags; "
+                      "for a censored member every terminal-dependent outcome is null "
+                      "(v_hold_flat, v_giveback_*, giveback_fired_*, "
+                      "giveback_condition_after_forced_flat_*, final_high_flag, remaining_run, "
+                      "cost_of_waiting, bars_to_peak, peak_et_after_t, tail_class_*, and the four "
+                      "session_peak_*/session_close_* constants). State columns are unaffected, "
+                      "and single-step quantities that a real bar supports (next_open, next_et, "
+                      "level_ret, v_sell, bars_to_next_high/dd_before_next_high when the event "
+                      "exists inside the tape) stay. Censored members and nulled cells: "
+                      "coverage.censor_census.",
+    },
+    {
+        "schema": "`v_giveback_*` execution and the terminal action",
+        "issue": "a trigger on the member's final bar has no next bar to execute in, and the "
+                 "engine's forced flat is decided on the completed bar session_end-1 and executed "
+                 "at the session_end bar's OPEN — so the terminal action precedes any condition "
+                 "observed on that bar's close.",
+        "resolution": "a give-back exit is the open of the bar AFTER the trigger bar. basket_sim "
+                      "runs its forced-flat branch at `t == session_end - 1` BEFORE release "
+                      "evaluation and skips the ticket, so no release rule is evaluated on a bar "
+                      "with `et >= session_end - 1`: a first condition there is non-firing "
+                      "(`giveback_fired_g` false, `v_giveback_g` = `v_forced_flat`, diagnostic "
+                      "`giveback_condition_after_forced_flat_g`). A first condition at "
+                      "`et <= session_end - 2` IS executable, and its exit is the open of the next "
+                      "printed bar (which may be the session_end bar itself when the tape gaps). "
+                      "Values are null only for terminal-censored tapes and on the member's own "
+                      "last tracked row.",
+    },
+    {
+        "schema": "`member_last_et` (producer addition)",
+        "issue": "it reveals in advance whether/when the member stops printing — future "
+                 "metadata, previously registered as a `key`.",
+        "resolution": "renamed `future_member_last_et`, family `future_meta`, listed in "
+                      "coverage.future_only_columns and covered by the `future_` leakage prefix; "
+                      "check (h) asserts no future-only column is classified as causal state.",
     },
     {
         "schema": "`session_end` | ET of the last bar used for this day",
         "issue": "ambiguous between the day-level close (959/779) and the member's own last bar "
                  "(a halted name may stop printing before the close)",
         "resolution": "session_end is the day-level close from phase2_session_calendar.json, "
-                      "repeated on every row; the member's actual tape end is exposed as the "
-                      "producer addition member_last_et. Members whose tape ends before the close "
-                      "are counted under tape_shape.members_without_final_bar.",
+                      "repeated on every row; the member's actual tape end is the future-only "
+                      "producer addition future_member_last_et, and terminal_censored marks the "
+                      "members whose tape stops early (enumerated in coverage.censor_census).",
     },
     {
         "schema": "`ret_from_prevclose`, `ret_from_open0930`",
@@ -261,9 +397,10 @@ AMBIGUITIES = [
         "issue": "whether the re-evaluated running high starts at t or from the fill",
         "resolution": "the running high is the same object as the state column: max high from the "
                       "fill through the bar being tested. Exit is the open of the bar after the "
-                      "first close <= running_high * (1 - g/100); when the trigger is the last bar, "
-                      "or when it never triggers, the exit is the forced flat close of the member's "
-                      "last bar (giveback_fired_* records whether it fired).",
+                      "first close <= running_high * (1 - g/100). When no condition appears before "
+                      "the engine's terminal decision, the continuation is the engine's forced flat: "
+                      "`future_forced_flat_px / next_open - 1` (the session_end bar's open), and "
+                      "`giveback_fired_g` records whether a give-back exit actually fired.",
     },
     {
         "schema": "`v_giveback_*` trigger equality",
@@ -742,11 +879,24 @@ def member_columns(mb: dict, bars, ctx: dict) -> dict[str, np.ndarray]:
         delta = pnh[:, cols_et + 1] - pnh[:, lo_prefix_idx]
         peer_new_high_5 = (delta > 0).sum(axis=0).astype(np.int64)
 
+    # --- censoring: a tape that stops before the session close ------------ #
+    # The member has no print at the session's last minute, so nothing that
+    # needs the remaining session (or an executable terminal liquidation) can be
+    # valued.  State columns stay; every terminal-dependent outcome is null.
+    complete = bool(int(et[-1]) == int(mb["session_end"]))
+    last_et = int(et[-1])
+    # The engine's forced flat is decided on the completed bar session_end-1 and
+    # executes at the open of the session_end bar (basket_sim: `t == session_end
+    # - 1` schedules, the pending executes on the next bar at its open).  That
+    # price only exists when the member has a session_end print.
+    forced_flat_px = float(op_w[-1]) if complete else None
+
     # --- outcomes -------------------------------------------------------- #
     nan1 = np.full(m, np.nan)
     next_open = nan1.copy()
     next_et = nan1.copy()
     v_hold_flat = nan1.copy()
+    v_forced_flat = nan1.copy()
     level_ret = nan1.copy()
     final_high_flag = nan1.copy()
     remaining_run = nan1.copy()
@@ -757,6 +907,7 @@ def member_columns(mb: dict, bars, ctx: dict) -> dict[str, np.ndarray]:
     peak_et_after_t = nan1.copy()
     tail_class = {lv: nan1.copy() for lv in TAIL_LEVELS}
     fired = {lv: nan1.copy() for lv in GIVEBACK_LEVELS}
+    unexecutable = {lv: nan1.copy() for lv in GIVEBACK_LEVELS}
     v_giveback = {lv: nan1.copy() for lv in GIVEBACK_LEVELS}
 
     if m > 1:
@@ -765,7 +916,12 @@ def member_columns(mb: dict, bars, ctx: dict) -> dict[str, np.ndarray]:
         next_et[:-1] = et[1:]
         level_ret[:-1] = nxt / entry_px - 1.0
         close_end = cl_w[-1]
+        # v_hold_flat is the labelled CLOSE baseline (not an execution price).
         v_hold_flat[:-1] = close_end / nxt - 1.0
+        # v_forced_flat is the engine's executable terminal continuation: exit at
+        # the forced-flat execution price (session_end bar open).
+        if forced_flat_px is not None:
+            v_forced_flat[:-1] = forced_flat_px / nxt - 1.0
         suf_hi = np.maximum.accumulate(hi_w[::-1])[::-1]
         suf_lo = np.minimum.accumulate(lo_w[::-1])[::-1]
         fut_max = suf_hi[1:]
@@ -793,9 +949,11 @@ def member_columns(mb: dict, bars, ctx: dict) -> dict[str, np.ndarray]:
                 bars_to_next_high[j] = i_hit - j
                 dd_before_next_high[j] = lo_w[j + 1:i_hit + 1].min() / op_w[j + 1] - 1.0
             for lv in GIVEBACK_LEVELS:
-                px, did = _giveback_exit(cl_w, hi_w, running_high, op_w, j, lv)
+                px, did, after_flat = _giveback_exit(cl_w, hi_w, running_high, op_w, et, j, lv,
+                                                     forced_flat_px, mb["session_end"])
                 fired[lv][j] = 1.0 if did else 0.0
-                v_giveback[lv][j] = px / op_w[j + 1] - 1.0
+                unexecutable[lv][j] = 1.0 if after_flat else 0.0
+                v_giveback[lv][j] = (px / op_w[j + 1] - 1.0) if px is not None else np.nan
     v_sell = np.where(np.isnan(next_open), np.nan, 0.0)
 
     # --- ticket constants (whole member window, deliberately look-ahead) -- #
@@ -861,10 +1019,15 @@ def member_columns(mb: dict, bars, ctx: dict) -> dict[str, np.ndarray]:
         "next_open": next_open,
         "next_et": next_et,
         "v_hold_flat": v_hold_flat,
+        "v_forced_flat": v_forced_flat,
         "giveback_fired_5": fired[5],
         "giveback_fired_10": fired[10],
         "giveback_fired_15": fired[15],
         "giveback_fired_20": fired[20],
+        "giveback_condition_after_forced_flat_5": unexecutable[5],
+        "giveback_condition_after_forced_flat_10": unexecutable[10],
+        "giveback_condition_after_forced_flat_15": unexecutable[15],
+        "giveback_condition_after_forced_flat_20": unexecutable[20],
         "v_giveback_5": v_giveback[5],
         "v_giveback_10": v_giveback[10],
         "v_giveback_15": v_giveback[15],
@@ -885,27 +1048,62 @@ def member_columns(mb: dict, bars, ctx: dict) -> dict[str, np.ndarray]:
         "session_peak_ret_from_entry": session_peak_ret_from_entry,
         "session_peak_bars_from_entry": session_peak_bars_from_entry,
         "session_close_ret_from_entry": session_close_ret_from_entry,
-        "member_last_et": np.full(m, int(et[-1]), dtype=np.int64),
+        "path_complete_to_session_end": np.full(m, 1.0 if complete else 0.0),
+        "terminal_censored": np.full(m, 0.0 if complete else 1.0),
+        "future_member_last_et": np.full(m, float(last_et)),
+        "future_forced_flat_px": np.full(m, forced_flat_px if forced_flat_px is not None
+                                         else np.nan),
     }
+    if not complete:
+        for name in CENSORED_OUTCOME_COLUMNS:
+            arr = cols[name]
+            arr[:] = np.nan
     return cols
 
 
 def _giveback_exit(cl_w: np.ndarray, hi_w: np.ndarray, rh_w: np.ndarray,
-                   op_w: np.ndarray, j: int, level: int) -> tuple[float, bool]:
-    """Exit price of "leave at the open after the first close g% below the
-    running high as of that bar"; the forced flat close when it never triggers
-    (or when it triggers on the session's last bar)."""
+                   op_w: np.ndarray, et_w: np.ndarray, j: int, level: int,
+                   forced_flat_px: float | None,
+                   session_end: int) -> tuple[float | None, bool, bool]:
+    """Exit of the give-back continuation from row ``j``.
+
+    The first completed bar whose close is ``g%`` below the running high
+    *as of that bar* triggers the exit at the **open of the next bar**; a close
+    exactly ``g%`` below is a hit (1e-9 relative tolerance, see AMBIGUITIES).
+
+    Precedence is by **clock ET**, mirroring ``basket_sim``: the engine's loop
+    runs the forced-flat branch (`if t == session_end - 1`) *before* release
+    evaluation and skips the ticket, so no release rule is ever evaluated on a
+    bar with ``et >= session_end - 1``.
+
+    Returns ``(px, fired, condition_after_forced_flat)``:
+      * first trigger on a bar with ``et <= session_end - 2`` -> (open of the
+        next printed bar, True, False) — that bar may be the ``session_end`` bar
+        itself when the tape gaps, which is still a genuine firing;
+      * no trigger at all -> (the engine's forced-flat execution price — the open
+        of the session_end bar — or None when the member has no session_end
+        print, False, False);
+      * first trigger on a bar with ``et >= session_end - 1`` -> (forced-flat
+        price, False, True): the engine had already gone flat, so the rule cannot
+        preempt it and the close condition is only the
+        `giveback_condition_after_forced_flat_g` diagnostic.
+    """
     g = level / 100.0
     c = cl_w[j + 1:]
     h = np.maximum.accumulate(hi_w[j + 1:])
     run = np.maximum(h, rh_w[j])
     hit = np.flatnonzero(c <= run * (1.0 - g) + GIVEBACK_TOL_REL * run)
     if hit.size == 0:
-        return float(cl_w[-1]), False
+        return forced_flat_px, False, False
     gi = j + 1 + int(hit[0])
+    if int(et_w[gi]) >= int(session_end) - 1:
+        # the forced-flat decision on that bar precedes release evaluation
+        return forced_flat_px, False, True
     if gi < cl_w.size - 1:
-        return float(op_w[gi + 1]), True
-    return float(cl_w[-1]), True
+        return float(op_w[gi + 1]), True, False
+    # unreachable for a complete tape: a bar with et <= session_end-2 has a
+    # later printed bar because the tape ends at session_end
+    return forced_flat_px, False, True
 
 
 # --------------------------------------------------------------------------- #
@@ -1033,6 +1231,20 @@ def build_parts(days: list[str], out: Path, force: bool = False,
     return progress
 
 
+def write_column_registry(out: Path) -> Path:
+    """Physical contract of the panel: column -> dtype + family, for verifiers."""
+    path = out / "column_registry.json"
+    atomic_write_json(path, {
+        "schema_version": SCHEMA_VERSION,
+        "schema": "factory/artifacts/basket/phase2/ATLAS/SCHEMA.md",
+        "columns": {name: str(dtype) for name, dtype, _fam in COLUMNS},
+        "column_order": [name for name, _d, _f in COLUMNS],
+        "families": {name: fam for name, _d, fam in COLUMNS},
+        "sort_key": ["sleeve_day", "family", "entry_rank", "et"],
+    })
+    return path
+
+
 def merge_parts(out: Path) -> Path:
     files = sorted(parts_dir(out).glob("month=*.parquet"))
     if not files:
@@ -1043,6 +1255,7 @@ def merge_parts(out: Path) -> Path:
     tmp = target.with_suffix(".parquet.tmp")
     df.write_parquet(tmp, compression="zstd")
     tmp.replace(target)
+    write_column_registry(out)
     return target
 
 
@@ -1064,10 +1277,69 @@ def _census_counts(census: dict[str, list]) -> dict[str, int]:
     return {k: len(v) for k, v in census.items()}
 
 
+VERIFIER_SCRIPT = ROOT / "factory/scripts/basket_atlas_verify.py"
+
+
+def verification_registry() -> dict:
+    """Commands and content hashes of the checks that certify this panel."""
+    return {
+        "producer": {
+            "path": "factory/scripts/basket_atlas_panel.py",
+            "sha256": sha256_file(ROOT / "factory/scripts/basket_atlas_panel.py"),
+            "selftest_command": ("python factory/scripts/basket_atlas_panel.py selftest "
+                                 "--panel factory/artifacts/basket/phase2/ATLAS/panel.parquet"),
+            "corruption_command": ("python factory/scripts/basket_atlas_panel.py corruption "
+                                   "--panel factory/artifacts/basket/phase2/ATLAS/panel.parquet"),
+        },
+        "independent_verifier": {
+            "path": "factory/scripts/basket_atlas_verify.py",
+            "sha256": sha256_file(VERIFIER_SCRIPT) if VERIFIER_SCRIPT.exists() else None,
+            "command": ("python factory/scripts/basket_atlas_verify.py "
+                        "--panel factory/artifacts/basket/phase2/ATLAS/panel.parquet "
+                        "--report factory/artifacts/basket/phase2/ATLAS/verify_report.json"),
+        },
+    }
+
+
+def censor_census(df: pl.DataFrame) -> dict:
+    """Enumerate the censored members and quantify the censored cells."""
+    members_all = df.group_by(["sleeve_day", "family", "ticker"]).agg([
+        pl.col("terminal_censored").first().alias("terminal_censored"),
+        pl.col("path_complete_to_session_end").first().alias("path_complete_to_session_end"),
+        pl.col("future_member_last_et").first().alias("derived_last_et"),
+        pl.col("session_end").first().alias("session_end"),
+        pl.col("entry_et").first().alias("entry_et"),
+        pl.col("entry_px").first().alias("entry_px"),
+        pl.len().alias("derived_rows"),
+    ])
+    censored = members_all.filter(pl.col("terminal_censored")).sort(
+        ["sleeve_day", "family", "ticker"])
+    censored_rows = int(censored["derived_rows"].sum()) if censored.height else 0
+    censored_cells = censored_rows * len(CENSORED_OUTCOME_COLUMNS)
+    blocked_without_print = censored.filter(pl.col("derived_last_et") < pl.col("entry_et"))
+    unexec = {}
+    for lv in GIVEBACK_LEVELS:
+        unexec[f"giveback_condition_after_forced_flat_{lv}"] = int(
+            df.filter(pl.col(f"giveback_condition_after_forced_flat_{lv}") == True).height)  # noqa: E712
+    return {
+        "censored_members": int(censored.height),
+        "censored_rows": censored_rows,
+        "censored_rows_share": censored_rows / df.height if df.height else None,
+        "censored_cells_nulled": censored_cells,
+        "censored_columns": list(CENSORED_OUTCOME_COLUMNS),
+        "censored_stopped_before_entry": int(blocked_without_print.height),
+        "censored_member_list": censored.select(
+            ["sleeve_day", "family", "ticker", "entry_et", "derived_last_et", "session_end",
+             "derived_rows"]
+        ).to_dicts(),
+        "condition_after_forced_flat_rows": unexec,
+    }
+
+
 def tape_shape(df: pl.DataFrame) -> dict:
     """Descriptive shape of the tracked tape (coverage diagnostics)."""
     members = df.group_by(["sleeve_day", "family", "ticker"]).agg([
-        pl.col("member_last_et").first().alias("last_et"),
+        pl.col("future_member_last_et").first().alias("derived_last_et"),
         pl.col("session_end").first().alias("session_end"),
         pl.col("entry_et").first().alias("entry_et"),
         pl.col("entry_px").first().alias("entry_px"),
@@ -1077,7 +1349,7 @@ def tape_shape(df: pl.DataFrame) -> dict:
         pl.col("session_peak_ret_from_entry").first().alias("peak_ret"),
         pl.col("session_close_ret_from_entry").first().alias("close_ret"),
     ])
-    short = members.filter(pl.col("last_et") < pl.col("session_end"))
+    short = members.filter(pl.col("derived_last_et") < pl.col("session_end"))
     entry_hist = (df.filter(pl.col("bar_index") == 0)
                   .group_by(["family", "entry_et"]).len()
                   .sort(["family", "entry_et"])
@@ -1107,7 +1379,8 @@ def tape_shape(df: pl.DataFrame) -> dict:
         },
         "members_without_final_bar": int(short.height),
         "members_without_final_bar_examples": short.select(
-            ["sleeve_day", "family", "ticker", "last_et", "session_end"]).head(20).to_dicts(),
+            ["sleeve_day", "family", "ticker", "derived_last_et", "session_end"]
+        ).head(20).to_dicts(),
         "members_missing_anatomy_constants": {
             "open0930": int(members.filter(pl.col("open0930").is_null()).height),
             "prev_close": int(df.filter(pl.col("prev_close").is_null())
@@ -1125,7 +1398,8 @@ def tape_shape(df: pl.DataFrame) -> dict:
 
 
 def coverage_report(panel_path: Path, out: Path, anchors: dict | None = None,
-                    c1_check: dict | None = None, progress: dict | None = None) -> dict:
+                    c1_check: dict | None = None, progress: dict | None = None,
+                    verification: dict | None = None) -> dict:
     df = pl.read_parquet(panel_path)
     anchors = anchors or ANCHORS
     per_family = {}
@@ -1191,6 +1465,19 @@ def coverage_report(panel_path: Path, out: Path, anchors: dict | None = None,
         "conventions": CONVENTIONS,
         "ambiguities": AMBIGUITIES,
         "producer_additions": PRODUCER_ADDITIONS,
+        "future_only_columns": list(FUTURE_ONLY_COLUMNS),
+        "future_only_prefixes": list(FUTURE_ONLY_PREFIXES),
+        "causal_excluded_families": list(CAUSAL_EXCLUDED_FAMILIES),
+        "causal_safety_rule": ("no market-state feature may be drawn from any column whose "
+                              "family is in causal_excluded_families, nor from any column named "
+                              "in future_only_columns / prefixed future_"),
+        "censor_census": censor_census(df) if df.height else {},
+        "verification": {**verification_registry(),
+                         "last_run": verification or {},
+                         "corruption_command": ("python factory/scripts/basket_atlas_panel.py "
+                                                "corruption --panel "
+                                                "factory/artifacts/basket/phase2/ATLAS/"
+                                                "panel.parquet")},
         "tape_shape": tape_shape(df) if df.height else {},
     }
     if progress is not None:
@@ -1243,16 +1530,39 @@ def selftest(panel_path: Path, anchors: dict | None = ANCHORS, verbose: bool = T
             results.append({"check": f"(a) {fam} members = {counts[fam]} "
                                      f"(anchor check only on the full panel)", "ok": True})
 
-    # (a2) member set == the C1 engine's entries, on the days the panel covers
-    for fam, rec in compare_c1(panel_path).items():
-        if not rec.get("available"):
-            results.append({"check": f"(a2) {fam}: C1 tickets unavailable", "ok": True})
-            continue
-        _check(rec["n_only_in_panel"] == 0 and rec["n_only_in_c1"] == 0
-               and rec["n_entries_metrics"] == rec["expected_n_entries"],
-               f"(a2) {fam} member set == C1 {rec['cell']} tickets "
-               f"(panel-only {rec['n_only_in_panel']}, c1-only {rec['n_only_in_c1']}, "
-               f"n_entries {rec['n_entries_metrics']})", results)
+    # (a2) member set, entry_px, entry_et and entry_rank == the C1 engine, on the
+    # days the panel covers.  A missing reference is a failure, not a skip.
+    c1 = compare_c1(panel_path)
+    c1_bad = c1_failures(c1)
+    _check(not c1_bad,
+           f"(a2) exact C1 equality on keys/entry_px/entry_et/entry_rank/forced-flat execution "
+           f"({'; '.join(c1_bad) if c1_bad else 'all fields exact'}; "
+           f"ranks checked: {sum(int(r.get('entry_rank_members_checked', 0)) for r in c1.values())}, "
+           f"engine exits reconciled: "
+           f"{sum(int(r.get('forced_flat_checked', 0)) for r in c1.values())})",
+           results)
+
+    # (a3) engine precedence reconciliation, fired and non-firing rows ------- #
+    unit = giveback_unit_tests()
+    unit_bad = [u["case"] for u in unit if not u["ok"]]
+    _check(not unit_bad,
+           f"(a3) synthetic boundary cases of the give-back rule "
+           f"(session_end-2 executable / session_end-1 preempted / session_end condition "
+           f"preempted / gap session_end-2->session_end pending / no trigger): "
+           f"{[u['case'] for u in unit if u['ok']]} all pass", results)
+    recon = reconcile_engine_precedence(df)
+    recon_bad = [f"{fam}: {rec['n_mismatches']} continuation mismatches"
+                 for fam, rec in recon.items()
+                 if rec.get("available") and rec.get("n_mismatches")]
+    stats_all: dict[str, int] = {}
+    for rec in recon.values():
+        for k, v in (rec.get("stats") or {}).items():
+            stats_all[k] = stats_all.get(k, 0) + int(v)
+    _check(not recon_bad,
+           f"(a3) engine precedence reconciliation over every fill row, fired rows included "
+           f"({'; '.join(recon_bad) if recon_bad else 'exact'}; cases checked: "
+           f"{sum(int(r.get('checked', 0)) for r in recon.values())}; breakdown {stats_all})",
+           results)
 
     # (b) rows per member == bars from fill bar to session end ------------- #
     bad_rows = []
@@ -1281,21 +1591,36 @@ def selftest(panel_path: Path, anchors: dict | None = ANCHORS, verbose: bool = T
     # (c) bar_index monotone increasing per member ------------------------ #
     chk = (df.sort(["sleeve_day", "family", "entry_rank", "bar_index"])
              .group_by(["sleeve_day", "family", "ticker"], maintain_order=True)
-             .agg([pl.col("bar_index").diff().drop_nulls().min().alias("dmin"),
-                   pl.col("bar_index").first().alias("first"),
-                   pl.col("et").diff().drop_nulls().min().alias("et_min_diff"),
+             .agg([pl.col("bar_index").diff().drop_nulls().min().alias("derived_dmin"),
+                   pl.col("bar_index").first().alias("derived_first"),
+                   pl.col("et").diff().drop_nulls().min().alias("derived_et_min_diff"),
                    pl.len().alias("n")]))
-    bad_mono = chk.filter((pl.col("dmin") != 1) | (pl.col("first") != 0) | (pl.col("et_min_diff") <= 0))
+    bad_mono = chk.filter((pl.col("derived_dmin") != 1) | (pl.col("derived_first") != 0) | (pl.col("derived_et_min_diff") <= 0))
     _check(bad_mono.height == 0,
            f"(c) bar_index is 0..n-1 and et strictly increasing ({bad_mono.height} offenders)", results)
 
-    # (d) five pseudo-random rows recomputed from the raw bars ------------- #
-    import random
+    # (d) sampled rows recomputed from the raw bars, incl. target strata ---- #
+    picks = []
     rng = random.Random(20260925)
-    pick = df.sample(n=min(5, df.height), seed=20260925)
+    picks.extend(df.sample(n=4, seed=20260925).iter_rows(named=True))
+    strata = {
+        "terminal_censored": df.filter(pl.col("terminal_censored")),
+        "last_bar": df.filter(pl.col("bar_index") == pl.col("bar_index").max().over(
+            ["sleeve_day", "family", "ticker"])),
+        "condition_after_forced_flat": df.filter(
+            pl.col("giveback_condition_after_forced_flat_10") == True),  # noqa: E712
+        "early_close": df.filter(pl.col("session_end") == sim.SESSION_END_EARLY),
+        "missing_reference": df.filter(pl.col("open0930").is_null() | pl.col("prev_close").is_null()),
+        "threshold_tie": df.filter(
+            (pl.col("bar_close") - pl.col("running_high") * 0.9).abs()
+            <= 1e-9 * pl.col("running_high")),
+    }
+    for name, sub in strata.items():
+        if sub.height:
+            picks.append(sub.row(int(rng.randrange(sub.height)), named=True))
     recomputed = []
     mismatches = []
-    for row in pick.iter_rows(named=True):
+    for row in picks:
         got = recompute_row(row, sem)
         recomputed.append({"key": [row["sleeve_day"], row["family"], row["ticker"], row["et"]],
                            "panel": {k: row[k] for k in got},
@@ -1312,13 +1637,18 @@ def selftest(panel_path: Path, anchors: dict | None = ANCHORS, verbose: bool = T
                                    "panel": pv, "recomputed": v,
                                    "abs_diff": abs(float(pv) - float(v))})
     _check(not mismatches,
-           f"(d) 5 sampled rows recompute exactly from raw bars ({len(mismatches)} mismatches)", results)
+           f"(d) {len(picks)} sampled rows (random + censored/last-bar/unexecutable/early-close/"
+           f"missing-reference strata) recompute exactly from raw bars "
+           f"({len(mismatches)} mismatches)", results)
 
     # (e) outcome columns null exactly when next_open is null -------------- #
-    # Two directions.  `next_open is null` => null is absolute (no exception).
-    # The converse has exactly one documented exception: SCHEMA.md defines
-    # `bars_to_next_high` / `dd_before_next_high` as "null if none" — they are
-    # null when the member never sets another high, which is not a missing input.
+    # Three groups now.
+    #  1. `next_open is null` => null: absolute, no exception.
+    #  2. `next_open` exists and the member's tape reaches the session close:
+    #     every event-defined outcome column is populated.  The only exceptions
+    #     are the schema-declared "null if none" pair.
+    #  3. terminal-censored members: every terminal-dependent outcome is null by
+    #     construction (check f), so they are excluded from group 2 only.
     offenders_forward = {}
     offenders_backward = {}
     for col in OUTCOME_COLUMNS:
@@ -1327,21 +1657,107 @@ def selftest(panel_path: Path, anchors: dict | None = ANCHORS, verbose: bool = T
             offenders_forward[col] = int(bad_fwd.height)
         if col in NO_EVENT_NULL_OUTCOMES:
             continue
-        bad_bwd = df.filter(pl.col("next_open").is_not_null() & pl.col(col).is_null())
-        if bad_bwd.height:
-            offenders_backward[col] = int(bad_bwd.height)
+        sub = df.filter(pl.col("next_open").is_not_null()
+                        & pl.col("path_complete_to_session_end") & pl.col(col).is_null())
+        if sub.height:
+            offenders_backward[col] = int(sub.height)
     _check(not offenders_forward,
            f"(e) no outcome column is populated when next_open is null ({offenders_forward})",
            results)
     _check(not offenders_backward,
-           f"(e) every event-defined outcome column is populated when next_open exists "
-           f"({offenders_backward}; no-event-null exceptions: {list(NO_EVENT_NULL_OUTCOMES)})",
-           results)
-    no_next_high = df.filter(pl.col("next_open").is_not_null()
-                             & pl.col("bars_to_next_high").is_null()).height
-    results.append({"check": f"(e) bars_to_next_high null without a next high: {no_next_high} rows "
-                             f"(documented no-event-null; {100.0 * no_next_high / max(df.height, 1):.1f}%)",
+           f"(e) on complete tapes every event-defined outcome column is populated when "
+           f"next_open exists ({offenders_backward}; no-event-null exceptions: "
+           f"{list(NO_EVENT_NULL_OUTCOMES)})", results)
+
+    # (f) terminal censoring ------------------------------------------------ #
+    censored = df.filter(pl.col("terminal_censored"))
+    complete = df.filter(~pl.col("terminal_censored"))
+    _check(df["terminal_censored"].null_count() == 0
+           and df["path_complete_to_session_end"].null_count() == 0,
+           "(f) censor flags are never null", results)
+    inconsistent = df.filter(pl.col("terminal_censored") == pl.col("path_complete_to_session_end"))
+    _check(inconsistent.height == 0,
+           f"(f) terminal_censored and path_complete_to_session_end are complementary "
+           f"({inconsistent.height} rows violate)", results)
+    flag_bad = df.filter(pl.col("terminal_censored")
+                         != (pl.col("future_member_last_et") < pl.col("session_end")))
+    _check(flag_bad.height == 0,
+           f"(f) terminal_censored == (future_member_last_et < session_end) "
+           f"({flag_bad.height} rows violate)", results)
+    leaked = {}
+    if censored.height:
+        for col in CENSORED_OUTCOME_COLUMNS:
+            n = censored.filter(pl.col(col).is_not_null()).height
+            if n:
+                leaked[col] = int(n)
+    _check(not leaked,
+           f"(f) every terminal-dependent outcome is null on censored tapes ({leaked})", results)
+    censored_members = int(censored.select(["sleeve_day", "family", "ticker"]).unique().height)
+    results.append({
+        "check": f"(f) censored: {censored_members} members / {censored.height} rows "
+                 f"({100.0 * censored.height / max(df.height, 1):.2f}% of rows); "
+                 f"complete: {complete.height} rows",
+        "ok": True})
+
+    # (g) forced-flat precedence over the give-back rule -------------------- #
+    # The engine goes flat at the session_end bar's OPEN; a give-back close
+    # condition first seen on that bar's close cannot preempt it.  Such rows must
+    # carry the forced-flat continuation, fired = false, and the diagnostic flag.
+    bad_g: dict[str, int] = {}
+    diag_counts = {}
+    for lv in GIVEBACK_LEVELS:
+        col_d = f"giveback_condition_after_forced_flat_{lv}"
+        col_v = f"v_giveback_{lv}"
+        col_f = f"giveback_fired_{lv}"
+        diag_counts[col_d] = int(df.filter(pl.col(col_d) == True).height)  # noqa: E712
+        bad = df.filter((pl.col(col_d) == True)  # noqa: E712
+                        & ((pl.col(col_f) == True)  # noqa: E712
+                           | pl.col(col_v).is_null()
+                           | ((pl.col(col_v) - pl.col("v_forced_flat")).abs() > 1e-12)))
+        if bad.height:
+            bad_g[col_d] = int(bad.height)
+        # a firing rule always has an execution bar and equals the next open
+        fired_no_next = df.filter((pl.col(col_f) == True)  # noqa: E712
+                                  & pl.col("next_open").is_null())
+        if fired_no_next.height:
+            bad_g[f"{col_f}_without_next_bar"] = int(fired_no_next.height)
+    _check(not bad_g,
+           f"(g) a session_end-close give-back condition cannot preempt the forced flat: "
+           f"value == v_forced_flat, fired = false ({bad_g})", results)
+    results.append({"check": f"(g) condition-after-forced-flat rows per threshold: {diag_counts}",
                     "ok": True})
+
+    # (h) causal safety of the future-only registry ------------------------- #
+    future_cols = [c for c in df.columns if c.startswith(FUTURE_ONLY_PREFIXES)]
+    unregistered = [c for c in future_cols if c not in FUTURE_ONLY_COLUMNS]
+    _check(not unregistered,
+           f"(h) every future_* column is in the leakage registry ({unregistered})", results)
+    registry_bad = [c for c in FUTURE_ONLY_COLUMNS
+                    if c in COLUMN_DTYPES and COLUMN_FAMILIES[c] not in CAUSAL_EXCLUDED_FAMILIES]
+    _check(not registry_bad,
+           f"(h) every registered future-only column is non-causal by family ({registry_bad})",
+           results)
+    state_prefixed = [c for c in df.columns
+                      if c in FUTURE_ONLY_COLUMNS and COLUMN_FAMILIES[c].startswith("state")]
+    _check(not state_prefixed,
+           f"(h) no future-only column is classified as causal state ({state_prefixed})", results)
+
+    # (i) source-level column registry ------------------------------------- #
+    stale = audit_column_references()
+    _check(not stale,
+           f"(i) every column referenced by this producer exists in the registry "
+           f"({stale})", results)
+    selector = causal_feature_columns(df.columns)
+    defi = [c for c in ("terminal_censored", "path_complete_to_session_end",
+                        "future_member_last_et", "future_forced_flat_px",
+                        "session_peak_et", "session_close_ret_from_entry",
+                        "v_hold_flat", "final_high_flag", "tail_class_100") if c in selector]
+    _check(not defi,
+           f"(i) a generic causal selector admits no future-only/outcome column ({defi})", results)
+    expected_state = [c for c in ("ret_from_fill", "running_high", "bars_since_new_high",
+                                  "peer_ret_median", "volume_accel") if c not in selector]
+    _check(not expected_state,
+           f"(i) the causal selector still admits the state columns ({expected_state})", results)
 
     rep = {
         "panel": str(panel_path),
@@ -1351,6 +1767,8 @@ def selftest(panel_path: Path, anchors: dict | None = ANCHORS, verbose: bool = T
         "family_member_counts": counts,
         "checks": results,
         "sampled_rows": recomputed,
+        "forced_flat_precedence": recon,
+        "giveback_unit_tests": unit,
         "all_ok": True,
     }
     if verbose:
@@ -1360,10 +1778,12 @@ def selftest(panel_path: Path, anchors: dict | None = ANCHORS, verbose: bool = T
 
 
 def recompute_row(row: dict, sem: dict[str, int]) -> dict:
-    """Independent, literal recomputation of seven path statistics from raw bars.
+    """Independent, literal recomputation of the sampled path statistics.
 
     Deliberately naive: reads the day's parquet directly (no producer geometry)
-    and walks the tape with plain Python loops.
+    and walks the tape with plain Python loops.  Mirrors the panel's censoring
+    contract: a tape that stops before the session close has no terminal value,
+    so every terminal-dependent statistic is None (never a same-close value).
     """
     day = row["sleeve_day"]
     bars_df = pl.read_parquet(sim.BARS_DIR / f"{day}.parquet")
@@ -1393,7 +1813,9 @@ def recompute_row(row: dict, sem: dict[str, int]) -> dict:
         "mfe_so_far": run_high / entry_px - 1.0,
         "dist_from_running_high": closes[j] / run_high - 1.0,
     }
-    if j + 1 >= len(ets):
+    complete = ets[-1] == session_end
+    if j + 1 >= len(ets) or not complete:
+        # last bar, or a member whose tape does not reach the session close
         out.update({"final_high_flag": None, "remaining_run": None,
                     "cost_of_waiting": None, "v_hold_flat": None})
         return out
@@ -1409,32 +1831,102 @@ def recompute_row(row: dict, sem: dict[str, int]) -> dict:
     return out
 
 
-def compare_c1(panel_path: Path) -> dict:
-    """Cross-check the panel's member set against the C1 engine's tickets.
+def _c1_rank_map(days: list[str], family: str) -> dict[tuple[str, str], int]:
+    """Canonical snapshot rank per (day, ticker) — the source ``basket_sim``
+    reads for ``entry_rank`` (``nm["rank"]``)."""
+    pop, T = ("A_pm", 570) if family == "A_pm" else ("B", 600)
+    out: dict[tuple[str, str], int] = {}
+    for day in days:
+        snap = sim.snapshot_of(sim.load_anatomy(day), pop, T)
+        if not snap:
+            continue
+        for nm in snap["names"]:
+            out[(day, nm["ticker"])] = int(nm.get("rank", 0))
+    return out
+
+
+def compare_c1_frame(df: pl.DataFrame, rank_check: bool = True) -> dict:
+    """Exact comparison of the panel against the C1 engine's own tickets.
+
+    Compares, per family: the member key set (both directions) and, on the
+    intersection, ``entry_px``, ``entry_et`` and ``entry_rank``.  ``entry_rank``
+    is checked against the anatomy snapshot ranks that the engine copies into
+    the ticket (``tickets.parquet`` carries no rank column).
 
     The comparison is restricted to the days the panel covers, so it is valid
     for the smoke subset as well as for the full 1,066-day panel.
     """
-    df = pl.read_parquet(panel_path)
-    days_in_panel = set(df["sleeve_day"].unique().to_list())
+    days_in_panel = sorted(df["sleeve_day"].unique().to_list())
     out = {}
     for fam, (cell, expected) in C1_CELLS.items():
         cell_dir = ROOT / "factory/artifacts/basket/phase2/F1_C1/F1" / cell
         tickets = cell_dir / "tickets.parquet"
-        if not tickets.exists():
-            out[fam] = {"cell": cell, "available": False, "expected_n_entries": expected}
+        if not (tickets.exists() and (cell_dir / "metrics.json").exists()):
+            out[fam] = {"cell": cell, "available": False, "expected_n_entries": expected,
+                        "panel_members": int(df.filter(pl.col("family") == fam)
+                                             .select(["sleeve_day", "ticker"]).unique().height)}
             continue
-        tk = pl.read_parquet(tickets).filter(pl.col("sleeve_day").is_in(list(days_in_panel)))
+        tk = pl.read_parquet(tickets).filter(pl.col("sleeve_day").is_in(days_in_panel))
         metrics = json.loads((cell_dir / "metrics.json").read_text())
-        panel_keys = set(map(tuple, df.filter(pl.col("family") == fam)
-                             .select(["sleeve_day", "ticker"]).unique().rows()))
+        pf = df.filter(pl.col("family") == fam).select(
+            ["sleeve_day", "ticker", "entry_px", "entry_et", "entry_rank"]).unique()
+        panel_keys = set(map(tuple, pf.select(["sleeve_day", "ticker"]).rows()))
         c1_keys = set(map(tuple, tk.select(["sleeve_day", "ticker"]).unique().rows()))
-        px_panel = {(r["sleeve_day"], r["ticker"]): round(float(r["entry_px"]), 10)
-                    for r in df.filter(pl.col("family") == fam)
-                    .select(["sleeve_day", "ticker", "entry_px"]).unique().iter_rows(named=True)}
-        px_c1 = {(r["sleeve_day"], r["ticker"]): round(float(r["entry_px"]), 10)
+        common = panel_keys & c1_keys
+        px_panel = {(r["sleeve_day"], r["ticker"]): float(r["entry_px"])
+                    for r in pf.select(["sleeve_day", "ticker", "entry_px"]).unique().iter_rows(named=True)}
+        px_c1 = {(r["sleeve_day"], r["ticker"]): float(r["entry_px"])
                  for r in tk.select(["sleeve_day", "ticker", "entry_px"]).unique().iter_rows(named=True)}
-        px_bad = [k for k in (panel_keys & c1_keys) if px_panel.get(k) != px_c1.get(k)]
+        et_panel = {(r["sleeve_day"], r["ticker"]): int(r["entry_et"])
+                    for r in pf.select(["sleeve_day", "ticker", "entry_et"]).unique().iter_rows(named=True)}
+        et_c1 = {(r["sleeve_day"], r["ticker"]): int(r["entry_et"])
+                 for r in tk.select(["sleeve_day", "ticker", "entry_et"]).unique().iter_rows(named=True)}
+        px_bad = sorted(k for k in common
+                        if abs(px_panel.get(k, float("nan")) - px_c1.get(k, float("nan"))) > 1e-9)
+        et_bad = sorted(k for k in common if et_panel.get(k) != et_c1.get(k))
+        rank_bad: list = []
+        ranks_checked = 0
+        if rank_check:
+            ranks = _c1_rank_map(days_in_panel, fam)
+            rk_panel = {(r["sleeve_day"], r["ticker"]): int(r["entry_rank"])
+                        for r in pf.select(["sleeve_day", "ticker", "entry_rank"]).unique().iter_rows(named=True)}
+            for k in sorted(common):
+                if k in ranks:
+                    ranks_checked += 1
+                    if rk_panel.get(k) != ranks[k]:
+                        rank_bad.append(k)
+        ff_bad: list = []
+        ff_checked = 0
+        if "future_forced_flat_px" in df.columns:
+            ff = {(r["sleeve_day"], r["ticker"]): r["future_forced_flat_px"]
+                  for r in df.filter(pl.col("family") == fam)
+                  .select(["sleeve_day", "ticker", "future_forced_flat_px", "session_end"])
+                  .unique().iter_rows(named=True)}
+            ses = {(r["sleeve_day"], r["ticker"]): int(r["session_end"])
+                   for r in df.filter(pl.col("family") == fam)
+                   .select(["sleeve_day", "ticker", "session_end"]).unique().iter_rows(named=True)}
+            tickets = tk.select(["sleeve_day", "ticker", "exit_day", "exit_et", "exit_px",
+                                 "exit_reason"]).unique()
+            for r in tickets.iter_rows(named=True):
+                key = (r["sleeve_day"], r["ticker"])
+                if key not in ff:
+                    continue
+                ff_checked += 1
+                in_session = (r["exit_day"] == r["sleeve_day"]
+                              and r["exit_reason"] == "FORCED_FLAT")
+                px = ff[key]
+                if in_session:
+                    if px is None or abs(float(px) - float(r["exit_px"])) > 1e-9:
+                        ff_bad.append({"key": list(key), "panel_forced_flat_px": px,
+                                       "engine_exit_px": float(r["exit_px"]),
+                                       "engine_exit_et": int(r["exit_et"])})
+                    elif ses.get(key) != int(r["exit_et"]):
+                        ff_bad.append({"key": list(key), "panel_session_end": ses.get(key),
+                                       "engine_exit_et": int(r["exit_et"])})
+                else:
+                    if px is not None:
+                        ff_bad.append({"key": list(key), "panel_forced_flat_px": px,
+                                       "engine_exit": "carried (no session_end print)"})
         out[fam] = {
             "cell": cell,
             "available": True,
@@ -1442,18 +1934,309 @@ def compare_c1(panel_path: Path) -> dict:
             "expected_n_entries": expected,
             "panel_members": len(panel_keys),
             "c1_members": len(c1_keys),
+            "common_members": len(common),
             "only_in_panel": sorted(panel_keys - c1_keys)[:50],
             "only_in_c1": sorted(c1_keys - panel_keys)[:50],
             "n_only_in_panel": len(panel_keys - c1_keys),
             "n_only_in_c1": len(c1_keys - panel_keys),
-            "entry_px_mismatches": sorted(px_bad)[:20],
+            "entry_px_mismatches": px_bad[:20],
+            "n_entry_px_mismatches": len(px_bad),
+            "entry_et_mismatches": et_bad[:20],
+            "n_entry_et_mismatches": len(et_bad),
+            "entry_rank_mismatches": rank_bad[:20],
+            "n_entry_rank_mismatches": len(rank_bad),
+            "entry_rank_members_checked": ranks_checked,
+            "forced_flat_checked": ff_checked,
+            "n_forced_flat_mismatches": len(ff_bad),
+            "forced_flat_mismatches": ff_bad[:20],
         }
     return out
+
+
+def giveback_unit_tests() -> list[dict]:
+    """Synthetic boundary tests of the give-back/precedence rule.
+
+    session_end = 959 throughout.  Five cases named by the reviewer:
+      A trigger at session_end-2            -> executable, fired
+      B trigger at session_end-1            -> preempted, forced flat, diagnostic
+      C condition first at session_end      -> preempted, forced flat, diagnostic
+      D gap session_end-2 -> session_end    -> the pending executes at 959 open
+      E no trigger                          -> forced flat, no diagnostic
+    """
+    end = sim.SESSION_END_NORMAL                     # 959
+    cases: list[dict] = []
+
+    def build(trigger_et: int | None, skip_ets: tuple[int, ...] = ()) -> tuple:
+        """Bars 950..end minus ``skip_ets``, with a 10% drop from trigger_et on."""
+        ets, op, hi, lo, cl = [], [], [], [], []
+        price = 100.0
+        for e in range(950, end + 1):
+            if e in skip_ets:
+                continue
+            drop = trigger_et is not None and e >= trigger_et
+            c = 88.5 if drop else price                      # ~11.5% below the 100 high
+            ets.append(e)
+            op.append(price)
+            hi.append(price)
+            lo.append(c)
+            cl.append(c)
+        return (np.array(ets), np.array(op), np.array(hi), np.array(lo), np.array(cl))
+
+    def run(trigger_et, skip_ets, expect_fired, expect_px, expect_diag):
+        ets, op, hi, lo, cl = build(trigger_et, skip_ets)
+        forced = float(op[-1]) if ets[-1] == end else None
+        px, fired, diag = _giveback_exit(cl, hi, np.maximum.accumulate(hi), op, ets, 0, 10,
+                                         forced, end)
+        ok = (fired == expect_fired and diag == expect_diag
+              and ((px is None and expect_px is None)
+                   or (px is not None and expect_px is not None and abs(px - expect_px) < 1e-9)))
+        return {"case": cases[-1]["case"] if False else None, "ok": ok, "fired": fired,
+                "diagnostic": diag, "px": px, "expected_px": expect_px,
+                "expected_fired": expect_fired, "expected_diagnostic": expect_diag,
+                "trigger_et": trigger_et, "skipped_ets": list(skip_ets)}
+
+    def add(name, *args, **kw):
+        rec = run(*args, **kw)
+        rec["case"] = name
+        cases.append(rec)
+
+    flat_px = float(build(None)[1][-1])          # open of the session_end bar
+    # A: first trigger at session_end-2 -> executable, exit at the next bar's open
+    add("A_trigger_at_session_end_minus_2", end - 2, (), True, flat_px, False)
+    # B: first trigger at session_end-1 -> preempted by the forced-flat decision
+    add("B_trigger_at_session_end_minus_1", end - 1, (), False, flat_px, True)
+    # C: condition first appears at session_end -> preempted as well
+    add("C_condition_at_session_end", end, (), False, flat_px, True)
+    # D: trigger at session_end-2 but the tape gaps straight to session_end:
+    #    still a firing, and its pending executes at the session_end open
+    ets_d, op_d, hi_d, lo_d, cl_d = build(end - 2, (end - 1,))
+    assert ets_d[-1] == end and ets_d[-2] == end - 2, ets_d[-5:]
+    add("D_gap_session_end_minus_2_to_session_end", end - 2, (end - 1,), True,
+        float(op_d[-1]), False)
+    # E: no trigger at all -> forced flat, no diagnostic
+    add("E_no_trigger", None, (), False, flat_px, False)
+    return cases
+
+
+def reconcile_engine_precedence(df: pl.DataFrame) -> dict:
+    """Reconcile every fill-row give-back continuation with the engine's actions.
+
+    Fired rows are reconciled too (not skipped): the naive forward walk over the
+    raw tape re-derives the first trigger bar by clock ET, applies the engine's
+    precedence (a trigger at ``et >= session_end-1`` never fires), and compares
+    the resulting continuation with the panel's value and with the C1 engine's
+    realized exit for the non-firing rows.
+    """
+    out: dict[str, dict] = {}
+    days_in_panel = sorted(df["sleeve_day"].unique().to_list())
+    for fam, (cell, _expected) in C1_CELLS.items():
+        cell_dir = ROOT / "factory/artifacts/basket/phase2/F1_C1/F1" / cell
+        tickets_path = cell_dir / "tickets.parquet"
+        if not tickets_path.exists():
+            out[fam] = {"available": False, "cell": cell}
+            continue
+        tk = pl.read_parquet(tickets_path).filter(pl.col("sleeve_day").is_in(days_in_panel))
+        engine = {(r["sleeve_day"], r["ticker"]): (r["exit_day"], float(r["exit_px"]))
+                  for r in tk.select(["sleeve_day", "ticker", "exit_day", "exit_px"])
+                  .unique().iter_rows(named=True)}
+        fill = df.filter((pl.col("family") == fam) & (pl.col("bar_index") == 0)
+                         & (~pl.col("terminal_censored")))
+        stats = {"non_firing": 0, "preempted_at_session_end_minus_1": 0,
+                 "preempted_at_session_end": 0, "fired": 0}
+        mismatches: list[dict] = []
+        bars_cache: dict[str, object] = {}
+        for row in fill.iter_rows(named=True):
+            key = (row["sleeve_day"], row["ticker"])
+            if key not in engine:
+                continue
+            exit_day, exit_px = engine[key]
+            if exit_day != row["sleeve_day"] or row["next_open"] is None:
+                continue
+            if row["sleeve_day"] not in bars_cache:
+                bars_cache[row["sleeve_day"]] = sim.load_bars(row["sleeve_day"],
+                                                              row["session_end"])
+            bars = bars_cache[row["sleeve_day"]]
+            tkb = bars.ticker(row["ticker"])
+            ets = [int(e) for e in tkb["et"]]
+            op = [float(v) for v in tkb["open"]]
+            hi = [float(v) for v in tkb["high"]]
+            cl = [float(v) for v in tkb["close"]]
+            fi = next(i for i, e in enumerate(ets) if e >= int(row["entry_et"]))
+            session_end = int(row["session_end"])
+            forced = op[ets.index(session_end)] if session_end in ets else None
+            nxt = float(row["next_open"])
+            for lv in GIVEBACK_LEVELS:
+                run_high = max(hi[fi:fi + 1])
+                trig = None
+                for i in range(fi + 1, len(ets)):
+                    run_high = max(run_high, hi[i])
+                    if cl[i] <= run_high * (1 - lv / 100.0) + 1e-9 * run_high:
+                        trig = i
+                        break
+                if trig is None:
+                    stats["non_firing"] += 1
+                    expected = exit_px / nxt - 1.0
+                    exp_fired, exp_diag = False, False
+                elif ets[trig] >= session_end - 1:
+                    stats["preempted_at_session_end_minus_1" if ets[trig] == session_end - 1
+                          else "preempted_at_session_end"] += 1
+                    expected = exit_px / nxt - 1.0 if forced is not None else None
+                    exp_fired, exp_diag = False, True
+                else:
+                    stats["fired"] += 1
+                    nxt_bar = next((j for j in range(trig + 1, len(ets))), None)
+                    if nxt_bar is None:
+                        expected = None
+                    else:
+                        expected = op[nxt_bar] / nxt - 1.0
+                    exp_fired, exp_diag = True, False
+                got = row[f"v_giveback_{lv}"]
+                got_fired = row[f"giveback_fired_{lv}"]
+                got_diag = row[f"giveback_condition_after_forced_flat_{lv}"]
+                ok = ((got is None and expected is None)
+                      or (got is not None and expected is not None
+                          and abs(float(got) - expected) <= 1e-9)
+                      ) and bool(got_fired) == exp_fired and bool(got_diag) == exp_diag
+                if not ok:
+                    mismatches.append({"name": [row["sleeve_day"], fam, row["ticker"], lv],
+                                       "panel": got, "expected": expected,
+                                       "fired": got_fired, "expected_fired": exp_fired,
+                                       "diagnostic": got_diag, "expected_diagnostic": exp_diag,
+                                       "trigger_et": None if trig is None else ets[trig]})
+        out[fam] = {"available": True, "cell": cell, "stats": stats,
+                    "checked": sum(stats.values()),
+                    "n_mismatches": len(mismatches), "mismatches": mismatches[:20]}
+    return out
+
+
+def compare_c1(panel_path: Path) -> dict:
+    return compare_c1_frame(pl.read_parquet(panel_path))
+
+
+def c1_failures(c1: dict) -> list[str]:
+    """Every way the C1 acceptance comparison can fail — empty means exact."""
+    bad: list[str] = []
+    for fam, rec in c1.items():
+        if not rec.get("available"):
+            bad.append(f"{fam}: C1 reference missing ({rec.get('cell')})")
+            continue
+        for key, label in (("n_only_in_panel", "members only in the panel"),
+                           ("n_only_in_c1", "members only in C1"),
+                           ("n_entry_px_mismatches", "entry_px mismatches"),
+                           ("n_entry_et_mismatches", "entry_et mismatches"),
+                           ("n_entry_rank_mismatches", "entry_rank mismatches"),
+                           ("n_forced_flat_mismatches",
+                            "forced-flat execution price mismatches vs the engine's exits")):
+            val = int(rec.get(key, 0))
+            if val:
+                bad.append(f"{fam}: {val} {label}")
+        if rec.get("n_entries_metrics") != rec.get("expected_n_entries"):
+            bad.append(f"{fam}: n_entries {rec.get('n_entries_metrics')} != anchor "
+                       f"{rec.get('expected_n_entries')}")
+        if rec.get("panel_members") != rec.get("c1_members"):
+            bad.append(f"{fam}: panel members {rec.get('panel_members')} != C1 members "
+                       f"{rec.get('c1_members')}")
+    return bad
+
+
+def audit_column_references() -> list[str]:
+    """Source-level check that every column name this file references exists.
+
+    Two passes: ``pl.col(<name>)`` expressions, and quoted names inside the
+    list arguments of ``select`` / ``group_by`` / ``sort`` (where a stale rename
+    would otherwise only surface after the expensive rebuild).  Derived aliases
+    (`derived_*`) and the C1 ticket columns in ``EXTERNAL_COLUMN_REFS`` are
+    allowed explicitly.
+    """
+    src = Path(__file__).read_text()
+    refs = set(re.findall(r'pl\.col\("([a-zA-Z0-9_]+)"\)', src))
+    for call in re.finditer(r'\.(?:select|group_by|sort)\(\s*\[([^\]]*)\]', src):
+        refs.update(re.findall(r'"([a-zA-Z0-9_]+)"', call.group(1)))
+    return sorted(r for r in refs
+                  if r not in COLUMN_DTYPES and r not in EXTERNAL_COLUMN_REFS
+                  and not r.startswith("derived_"))
+
+
+def cmd_corruption(args) -> int:
+    """Prove the C1 acceptance assertion fails on each corrupted field.
+
+    Loads the panel once, corrupts one member's key / entry_px / entry_et /
+    entry_rank in memory, and requires :func:`c1_failures` to report it.
+    """
+    panel = Path(args.panel) if args.panel else PANEL
+    df = pl.read_parquet(panel, columns=["sleeve_day", "family", "ticker", "entry_px",
+                                         "entry_et", "entry_rank", "session_end",
+                                         "future_forced_flat_px"])
+    keys = df.select(["sleeve_day", "family", "ticker"]).unique().sort(
+        ["sleeve_day", "family", "ticker"])
+    victim = keys.row(0, named=True)
+    mask = ((pl.col("sleeve_day") == victim["sleeve_day"])
+            & (pl.col("family") == victim["family"])
+            & (pl.col("ticker") == victim["ticker"]))
+    print(f"corruption victim: {victim}", flush=True)
+    cases = {
+        "member_key": df.with_columns(
+            pl.when(mask).then(pl.col("ticker") + "X").otherwise(pl.col("ticker")).alias("ticker")),
+        "entry_px": df.with_columns(
+            pl.when(mask).then(pl.col("entry_px") * 1.0001).otherwise(pl.col("entry_px")).alias("entry_px")),
+        "entry_et": df.with_columns(
+            pl.when(mask).then(pl.col("entry_et") + 1).otherwise(pl.col("entry_et")).alias("entry_et")),
+        "entry_rank": df.with_columns(
+            pl.when(mask).then(pl.col("entry_rank") + 1).otherwise(pl.col("entry_rank")).alias("entry_rank")),
+        "forced_flat_px": df.with_columns(
+            pl.when(mask).then(pl.col("future_forced_flat_px") * 1.0001)
+            .otherwise(pl.col("future_forced_flat_px")).alias("future_forced_flat_px")),
+    }
+    baseline = c1_failures(compare_c1_frame(df))
+    out = {"baseline_failures": baseline, "cases": {}}
+    ok = not baseline
+    if baseline:
+        print(f"  [FAIL] clean panel already fails C1: {baseline}", flush=True)
+    for name, corrupted in cases.items():
+        bad = c1_failures(compare_c1_frame(corrupted))
+        expected = {"member_key": "members only in", "forced_flat_px": "forced-flat"}.get(name, name)
+        caught = any(expected in b for b in bad)
+        out["cases"][name] = {"caught": caught, "failures": bad[:5]}
+        print(f"  [{'ok' if caught else 'FAIL'}] corruption '{name}' -> "
+              f"{bad[:3] if bad else 'NOT CAUGHT'}", flush=True)
+        ok = ok and caught
+    out["all_caught"] = ok
+    target = panel.parent / "corruption_check.json"
+    atomic_write_json(target, out)
+    print(f"corruption report: {target}", flush=True)
+    if not ok:
+        raise SelftestFailure("corruption test failed: a corrupted field passed the C1 assertion")
+    return 0
 
 
 # --------------------------------------------------------------------------- #
 # commands
 # --------------------------------------------------------------------------- #
+
+
+def run_verifier(panel: Path, report: Path, extra_args: list[str] | None = None) -> dict:
+    """Run the independent verifier script in a subprocess and return its report."""
+    if not VERIFIER_SCRIPT.exists():
+        raise SelftestFailure(f"independent verifier missing: {VERIFIER_SCRIPT}")
+    cmd = [sys.executable, str(VERIFIER_SCRIPT), "--panel", str(panel), "--report", str(report)]
+    cmd.extend(extra_args or [])
+    import subprocess
+    proc = subprocess.run(cmd, capture_output=True, text=True)
+    tail = (proc.stdout or "").strip().splitlines()[-8:]
+    print("  [verifier] " + " | ".join(tail[-3:]), flush=True)
+    rep = json.loads(report.read_text()) if report.exists() else {"ok": False,
+                                                                  "error": "no report"}
+    if proc.returncode != 0 or not rep.get("ok"):
+        raise SelftestFailure(
+            f"independent verifier failed (exit {proc.returncode}): "
+            f"{rep.get('failures') or rep.get('error') or (proc.stderr or '')[-400:]}")
+    return {"command": " ".join(cmd), "report": str(report),
+            "verifier_sha256": sha256_file(VERIFIER_SCRIPT),
+            "mismatches": rep.get("mismatches", 0),
+            "comparisons": rep.get("comparisons", 0),
+            "rows_checked": rep.get("rows_checked", 0),
+            "strata": rep.get("strata", {}),
+            "all_ok": bool(rep.get("ok"))}
 
 
 def cmd_smoke(args) -> int:
@@ -1468,12 +2251,11 @@ def cmd_smoke(args) -> int:
     panel = merge_parts(out)
     print(f"smoke panel: {panel}", flush=True)
     rep = selftest(panel, anchors=None, verbose=True)
-    c1 = compare_c1(panel)
-    for fam, rec in c1.items():
-        if rec.get("available"):
-            print(f"  [c1] {fam}: panel={rec['panel_members']} c1_subset={rec['c1_members']} "
-                  f"only_in_panel={rec['n_only_in_panel']} only_in_c1={rec['n_only_in_c1']}",
-                  flush=True)
+    coverage_report(panel, out / "coverage.json", anchors=None)   # exercise the report path
+    verification = run_verifier(panel, out / "verify_report.json")
+    print(f"  [ok] verifier: {verification['rows_checked']} rows, "
+          f"{verification['comparisons']} comparisons, {verification['mismatches']} mismatches",
+          flush=True)
     determinism = None
     if args.determinism:
         tmpdir = Path(tempfile.mkdtemp(prefix="atlas_smoke_det_"))
@@ -1488,7 +2270,10 @@ def cmd_smoke(args) -> int:
                 raise SelftestFailure("(f) smoke runs are not byte-identical")
         finally:
             shutil.rmtree(tmpdir, ignore_errors=True)
-    atomic_write_json(out / "selftest.json", {**rep, "determinism": determinism, "c1_check": c1})
+    rep["verification"] = verification
+    rep["determinism"] = determinism
+    rep["c1_check"] = compare_c1(panel)
+    atomic_write_json(out / "selftest.json", rep)
     return 0
 
 
@@ -1531,7 +2316,11 @@ def cmd_coverage(args) -> int:
     if ppath.exists():
         progress = load_progress(ppath)
     c1 = None if args.no_c1 else compare_c1(panel)
-    doc = coverage_report(panel, out, c1_check=c1, progress=progress)
+    verification = None
+    spath = panel.parent / "selftest.json"
+    if spath.exists():
+        verification = load_progress(spath).get("verification")
+    doc = coverage_report(panel, out, c1_check=c1, progress=progress, verification=verification)
     print(f"coverage: {out}", flush=True)
     print(json.dumps({"rows": doc["rows"], "members": doc["members"],
                       "per_family": {k: v["members"] for k, v in doc["per_family"].items()}},
@@ -1542,8 +2331,9 @@ def cmd_coverage(args) -> int:
 def cmd_selftest(args) -> int:
     panel = Path(args.panel) if args.panel else PANEL
     rep = selftest(panel, verbose=True)
-    c1 = compare_c1(panel)
-    rep["c1_check"] = c1
+    rep["c1_check"] = compare_c1(panel)
+    if not args.no_verifier:
+        rep["verification"] = run_verifier(panel, panel.parent / "verify_report.json")
     out = panel.parent / "selftest.json"
     atomic_write_json(out, rep)
     print(f"selftest report: {out}", flush=True)
@@ -1554,10 +2344,11 @@ def cmd_all(args) -> int:
     """Full deliverable: smoke + self-tests + determinism, full build, merge, coverage."""
     days = sim.dev_days()
     smoke = smoke_days(days)
-    print(f"[1/4] smoke panel ({len(smoke)} days)", flush=True)
+    print(f"[1/5] smoke panel ({len(smoke)} days)", flush=True)
     build_parts(smoke, SMOKE_DIR, force=True)
     smoke_panel = merge_parts(SMOKE_DIR)
     rep = selftest(smoke_panel, anchors=None, verbose=True)
+    rep["verification"] = run_verifier(smoke_panel, SMOKE_DIR / "verify_report.json")
     tmpdir = Path(tempfile.mkdtemp(prefix="atlas_smoke_det_"))
     try:
         build_parts(smoke, tmpdir, force=True, verbose=False)
@@ -1572,24 +2363,35 @@ def cmd_all(args) -> int:
     rep["c1_check"] = compare_c1(smoke_panel)
     atomic_write_json(SMOKE_DIR / "selftest.json", rep)
 
-    print(f"[2/4] full build: {len(days)} days", flush=True)
+    print(f"[2/5] full build: {len(days)} days", flush=True)
     progress = build_parts(days, ATLAS, force=args.force)
     progress["census_detail"] = progress_census(progress)
     atomic_write_json(ATLAS / "_progress.json", progress)
 
-    print("[3/4] merge", flush=True)
+    print("[3/5] merge", flush=True)
     panel = merge_parts(ATLAS)
     print(f"  panel: {panel} ({sha256_file(panel)[:16]})", flush=True)
 
-    print("[4/4] full-panel self-tests + coverage", flush=True)
+    print("[4/5] full-panel self-tests + independent verification", flush=True)
     full = selftest(panel, verbose=True)
+    full["verification"] = run_verifier(panel, ATLAS / "verify_report.json")
     full["c1_check"] = compare_c1(panel)
     atomic_write_json(ATLAS / "selftest.json", full)
-    doc = coverage_report(panel, COVERAGE, c1_check=full["c1_check"], progress=progress)
+
+    print("[5/5] C1 corruption tests + coverage", flush=True)
+    corruption_rc = cmd_corruption(argparse.Namespace(panel=str(panel)))
+    if corruption_rc != 0:
+        raise SelftestFailure("corruption tests failed")
+    doc = coverage_report(panel, COVERAGE, c1_check=full["c1_check"], progress=progress,
+                          verification=full["verification"])
     print(json.dumps({"rows": doc["rows"], "members": doc["members"],
                       "per_family": {k: {"members": v["members"], "rows": v["rows"],
                                          "anchor_match": v["anchor_match"]}
                                      for k, v in doc["per_family"].items()},
+                      "censored": doc["censor_census"]["censored_members"],
+                      "censored_rows": doc["censor_census"]["censored_rows"],
+                      "condition_after_forced_flat_rows":
+                          doc["censor_census"]["condition_after_forced_flat_rows"],
                       "census_totals": doc.get("census_totals")}, indent=1), flush=True)
     return 0
 
@@ -1623,7 +2425,13 @@ def main(argv: list[str] | None = None) -> int:
 
     p = sub.add_parser("selftest", help="run acceptance checks on a built panel")
     p.add_argument("--panel", default=None)
+    p.add_argument("--no-verifier", action="store_true",
+                   help="skip the independent verifier subprocess")
     p.set_defaults(func=cmd_selftest)
+
+    p = sub.add_parser("corruption", help="prove the C1 assertion fails on corrupted fields")
+    p.add_argument("--panel", default=None)
+    p.set_defaults(func=cmd_corruption)
 
     p = sub.add_parser("all", help="smoke + self-tests + full build + merge + coverage")
     p.add_argument("--force", action="store_true")

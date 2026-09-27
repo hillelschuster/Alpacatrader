@@ -1,0 +1,213 @@
+{
+ "all_ok": true,
+ "c1_check": {
+  "A_pm": {
+   "available": true,
+   "c1_members": 3188,
+   "cell": "A_pm_N3_R0_bps100",
+   "entry_px_mismatches": [],
+   "expected_n_entries": 3188,
+   "n_entries_metrics": 3188,
+   "n_only_in_c1": 0,
+   "n_only_in_panel": 0,
+   "only_in_c1": [],
+   "only_in_panel": [],
+   "panel_members": 3188
+  },
+  "B600": {
+   "available": true,
+   "c1_members": 2972,
+   "cell": "B600_N3_R0_bps100",
+   "entry_px_mismatches": [],
+   "expected_n_entries": 2972,
+   "n_entries_metrics": 2972,
+   "n_only_in_c1": 0,
+   "n_only_in_panel": 0,
+   "only_in_c1": [],
+   "only_in_panel": [],
+   "panel_members": 2972
+  }
+ },
+ "checks": [
+  {
+   "check": "(a) A_pm members 3188 == anchor 3188",
+   "ok": true
+  },
+  {
+   "check": "(a) B600 members 2972 == anchor 2972",
+   "ok": true
+  },
+  {
+   "check": "(a2) A_pm member set == C1 A_pm_N3_R0_bps100 tickets (panel-only 0, c1-only 0, n_entries 3188)",
+   "ok": true
+  },
+  {
+   "check": "(a2) B600 member set == C1 B600_N3_R0_bps100 tickets (panel-only 0, c1-only 0, n_entries 2972)",
+   "ok": true
+  },
+  {
+   "check": "(b) rows per member == bars from fill et to session end (0 mismatches)",
+   "ok": true
+  },
+  {
+   "check": "(c) bar_index is 0..n-1 and et strictly increasing (0 offenders)",
+   "ok": true
+  },
+  {
+   "check": "(d) 5 sampled rows recompute exactly from raw bars (0 mismatches)",
+   "ok": true
+  },
+  {
+   "check": "(e) no outcome column is populated when next_open is null ({})",
+   "ok": true
+  },
+  {
+   "check": "(e) every event-defined outcome column is populated when next_open exists ({}; no-event-null exceptions: ['bars_to_next_high', 'dd_before_next_high'])",
+   "ok": true
+  },
+  {
+   "check": "(e) bars_to_next_high null without a next high: 1448674 rows (documented no-event-null; 76.2%)",
+   "ok": true
+  }
+ ],
+ "family_member_counts": {
+  "A_pm": 3188,
+  "B600": 2972
+ },
+ "members": 6160,
+ "panel": "factory/artifacts/basket/phase2/ATLAS/panel.parquet",
+ "panel_sha256": "8ce4615946e2f5eed41e32858bb4020246a448720e81d74cebf8db2d1b7d990c",
+ "rows": 1900432,
+ "sampled_rows": [
+  {
+   "key": [
+    "2025-05-29",
+    "A_pm",
+    "WETO",
+    720
+   ],
+   "panel": {
+    "cost_of_waiting": -0.06714539780544293,
+    "dist_from_running_high": -0.2986352941176471,
+    "final_high_flag": true,
+    "mfe_so_far": 0.10103626943005195,
+    "remaining_run": 0.2516358511459347,
+    "ret_from_fill": -0.2277720207253886,
+    "v_hold_flat": 0.10734539109425856
+   },
+   "recomputed": {
+    "cost_of_waiting": -0.06714539780544293,
+    "dist_from_running_high": -0.2986352941176471,
+    "final_high_flag": true,
+    "mfe_so_far": 0.10103626943005195,
+    "remaining_run": 0.2516358511459347,
+    "ret_from_fill": -0.2277720207253886,
+    "v_hold_flat": 0.10734539109425856
+   }
+  },
+  {
+   "key": [
+    "2023-06-21",
+    "B600",
+    "NKLA",
+    729
+   ],
+   "panel": {
+    "cost_of_waiting": -0.04529616724738672,
+    "dist_from_running_high": -0.09433962264150952,
+    "final_high_flag": true,
+    "mfe_so_far": 0.06711409395973167,
+    "remaining_run": 0.017421602787456303,
+    "ret_from_fill": -0.033557046979865834,
+    "v_hold_flat": -0.006968641114982632
+   },
+   "recomputed": {
+    "cost_of_waiting": -0.04529616724738672,
+    "dist_from_running_high": -0.09433962264150952,
+    "final_high_flag": true,
+    "mfe_so_far": 0.06711409395973167,
+    "remaining_run": 0.017421602787456303,
+    "ret_from_fill": -0.033557046979865834,
+    "v_hold_flat": -0.006968641114982632
+   }
+  },
+  {
+   "key": [
+    "2025-08-04",
+    "B600",
+    "CASI",
+    768
+   ],
+   "panel": {
+    "cost_of_waiting": -0.08570280317492207,
+    "dist_from_running_high": -0.22568093385214005,
+    "final_high_flag": true,
+    "mfe_so_far": 0.23066609203658484,
+    "remaining_run": 0.08509996985833435,
+    "ret_from_fill": -0.04707178087439534,
+    "v_hold_flat": -0.015372249572993102
+   },
+   "recomputed": {
+    "cost_of_waiting": -0.08570280317492207,
+    "dist_from_running_high": -0.22568093385214005,
+    "final_high_flag": true,
+    "mfe_so_far": 0.23066609203658484,
+    "remaining_run": 0.08509996985833435,
+    "ret_from_fill": -0.04707178087439534,
+    "v_hold_flat": -0.015372249572993102
+   }
+  },
+  {
+   "key": [
+    "2022-05-17",
+    "B600",
+    "GLBE",
+    859
+   ],
+   "panel": {
+    "cost_of_waiting": -0.011252345215759796,
+    "dist_from_running_high": -0.026903784769721883,
+    "final_high_flag": false,
+    "mfe_so_far": 0.1854054054054053,
+    "remaining_run": 0.1022514071294558,
+    "ret_from_fill": 0.1535135135135135,
+    "v_hold_flat": 0.05792682926829262
+   },
+   "recomputed": {
+    "cost_of_waiting": -0.011252345215759796,
+    "dist_from_running_high": -0.026903784769721883,
+    "final_high_flag": false,
+    "mfe_so_far": 0.1854054054054053,
+    "remaining_run": 0.1022514071294558,
+    "ret_from_fill": 0.1535135135135135,
+    "v_hold_flat": 0.05792682926829262
+   }
+  },
+  {
+   "key": [
+    "2022-01-19",
+    "B600",
+    "GMDA",
+    718
+   ],
+   "panel": {
+    "cost_of_waiting": -0.026119402985074758,
+    "dist_from_running_high": -0.05388692579505294,
+    "final_high_flag": false,
+    "mfe_so_far": 0.04428044280442811,
+    "remaining_run": 0.07089552238805963,
+    "ret_from_fill": -0.011992619926199155,
+    "v_hold_flat": 0.00746268656716409
+   },
+   "recomputed": {
+    "cost_of_waiting": -0.026119402985074758,
+    "dist_from_running_high": -0.05388692579505294,
+    "final_high_flag": false,
+    "mfe_so_far": 0.04428044280442811,
+    "remaining_run": 0.07089552238805963,
+    "ret_from_fill": -0.011992619926199155,
+    "v_hold_flat": 0.00746268656716409
+   }
+  }
+ ]
+}

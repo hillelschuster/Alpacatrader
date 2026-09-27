@@ -1,14 +1,20 @@
-# ATLAS — minute panel of the held members
+# ATLAS — minute panel of the held members (v2)
 
-`panel.parquet` is the causal minute tape of every A_pm top-3 and B600 top-3 filled member of
-every development day, from the fill bar to the session's last bar. It exists so that the window
-profile, the fall structure, matched pairs and the dollar ledger can all be computed from one
-frozen file instead of re-deriving the tape per analysis.
+`panel.parquet` is the causal minute tape of every A_pm top-3 and B600 top-3 filled member of every
+development day, from the fill bar to the session's last bar. It exists so that the window profile,
+the fall structure, matched pairs and the dollar ledger all compute from one frozen file instead of
+re-deriving the tape per analysis.
 
 - Producer: `factory/scripts/basket_atlas_panel.py`
-- Contract: `SCHEMA.md` (frozen 2026-09-25) — column names and conventions are not redefined here
-- Coverage / census / null rates / ambiguities: `coverage.json`
+- Contract: `SCHEMA.md` — **frozen 2026-09-25, amended 2026-09-25 (v2)**; read the amendment log first
+- Independent verifier: `factory/scripts/basket_atlas_verify.py` → `verify_report.json`
+- Coverage / census / null rates / ambiguities / registries: `coverage.json`
 - Plan: `researches/PLAN-ATLAS-01.md`; doctrine: `researches/INTENT.md` §"THE WINDOW"
+
+> **v1 is invalid and quarantined.** The v1 panel mis-valued terminal outcomes for halt-ended tapes,
+> executed a last-bar give-back trigger at the same close, and used a close instead of the engine's
+> forced-flat price. Nothing of it is used; the small v1 sidecars and the defect list are in
+> `quarantine_v1/INVALID.md`.
 
 ## Scope
 
@@ -18,74 +24,94 @@ frozen file instead of re-deriving the tape per analysis.
 | grain | one row per (member, completed bar) |
 | window | fill bar → last member bar with `et <= session_end` |
 | days | 1,066 development days (block1 2021-02…2023-12: 734, block2 2025-02…2026-05: 332) |
-| build | **1,900,432 rows**, **6,160 members** (A_pm 3,188 + B600 2,972), 51 months |
-| smoke | 20 days (10 per block), 119 members, 35,103 rows |
+| build | **1,900,432 rows / 6,160 members** (A_pm 3,188 + B600 2,972, both equal to the C1 anchors), 88 columns |
+| censored | 273 members / 33,845 rows (1.78%) have state but no terminal outcomes (`coverage.censor_census`) |
+| condition-after-forced-flat | rows whose first give-back condition appears at `et >= session_end - 1`: valued at `v_forced_flat`, `fired = false`, never null (counts in `coverage.censor_census.condition_after_forced_flat_rows`) |
+| smoke | 20 days (10 per block), 119 members — built and verified before every full build |
 
-The panel deliberately tracks every member to the close — the fall must be observable — while
-defining *no* outcome as "the close". `v_hold_flat` is the labelled EOD-anchored baseline kept for
-comparability; the declared continuations (`v_giveback_*`) and the path statistics
-(`final_high_flag`, `remaining_run`, `cost_of_waiting`, `bars_to_*`, `tail_class_*`) are what the
-window and the fall are read from. Nothing here is chosen, fitted or gated: the panel is the tape.
+The panel tracks every member to the close — the fall must be observable — while defining *no*
+outcome as "the close". `v_hold_flat` is a labelled close baseline kept for comparability;
+`v_forced_flat` is the executable hold-to-flat continuation; `v_giveback_*` are the declared
+continuations; the path statistics (`final_high_flag`, `remaining_run`, `cost_of_waiting`,
+`bars_to_*`, `tail_class_*`) explain them. Nothing here is chosen, fitted or gated.
 
-## Conventions (see `SCHEMA.md`; the full list is in `coverage.json.conventions`)
+## Conventions (full list in `coverage.json.conventions`)
 
 - **Causality.** State uses only bars with `et <= t` plus the fill. No future bar, no session
   aggregate that includes bars after `t`.
 - **Execution.** A decision at completed bar `t` executes at the **open of bar `t+1`**. On the
   member's last tracked bar `next_open`, `next_et` and every outcome column are `null`.
-- **Friction.** The panel is friction-free. Analyses apply `friction_bps` per side
-  (`bps_total/2`), matching `basket_sim.py`.
-- **No fabrication.** A missing input yields `null` — never a carried, filled or zero value.
-  The two exceptions are schema-declared event-null columns (`bars_to_next_high`,
-  `dd_before_next_high`: null when the member never sets another high).
-- **Give-back ties.** A close exactly `g%` below the running high counts as a hit; the trigger
-  carries a `1e-9` relative tolerance so a binary-rounding artifact cannot decide the exit.
+- **Terminal censoring.** A member with no print at the session close cannot be valued there:
+  `terminal_censored = true`, and every terminal-dependent outcome is `null` on all its rows —
+  `v_hold_flat`, `v_forced_flat`, `v_giveback_*`, `giveback_fired_*`,
+  `giveback_condition_after_forced_flat_*`, `final_high_flag`, `remaining_run`, `cost_of_waiting`,
+  `bars_to_peak`, `peak_et_after_t`, `tail_class_*`, the four session constants and
+  `future_forced_flat_px`. State columns are unaffected.
+- **No same-bar execution; the forced flat has precedence by clock ET.** A give-back exit is the
+  open of the bar *after* the trigger bar. The engine's forced-flat branch runs at
+  `t == session_end - 1` **before** release evaluation and skips the ticket, so no release rule is
+  evaluated on a bar with `et >= session_end - 1`: a first condition there is non-firing
+  (`giveback_fired_g = false`, `v_giveback_g = v_forced_flat`, diagnostic
+  `giveback_condition_after_forced_flat_g = true`). A first condition at `et <= session_end - 2` is
+  executable; its exit is the open of the next printed bar (which may be the `session_end` bar when
+  the tape gaps — still a genuine firing). Give-back values are `null` only for censored tapes and on
+  the member's own last tracked row.
+- **Terminal price.** The engine schedules `FORCED_FLAT` on the completed bar `session_end-1` and
+  executes it at the **open of the `session_end` bar**; `future_forced_flat_px` is that price and
+  `v_forced_flat = future_forced_flat_px / next_open - 1`. `v_hold_flat` is the *close* baseline and
+  is **not** an execution price. With no give-back trigger the continuation runs to the forced flat.
+- **Fill clock.** `entry_et`/`entry_px`/`entry_rank` are the anatomy fill and rank — A_pm commonly
+  ET570, B600 commonly ET600 — asserted equal to the C1 engine's tickets; the 571/601 in the schema
+  text is nominal (amendment v2.1).
+- **No fabrication.** A missing input yields `null`. Documented null groups are: event-defined
+  fields such as `bars_to_next_high` / `dd_before_next_high` when the event never occurs; every
+  outcome on a member's own last tracked row, where `next_open` is unavailable; and every
+  terminal-dependent outcome of a terminal-censored tape. On complete tapes, a give-back condition
+  first seen at `et >= session_end - 1` is preempted by forced-flat logic and the continuation is
+  `v_forced_flat`, not `null`.
+- **Future-only columns** (`coverage.json.future_only_columns`): the `future_` family
+  (`future_member_last_et`, `future_forced_flat_px`), the four session-wide constants, and the two
+  censor flags. No causal feature may use any of them; `causal_feature_columns()` in the producer is
+  the selector that enforces it, and check (i) proves a generic selector admits none of them.
 - **Determinism.** Rows sorted by `(sleeve_day, family, entry_rank, et)`; identical inputs give a
   byte-identical file.
-- **Fill bar.** The first bar with `et >= entry_et` (the anatomy fill); `entry_px` is the anatomy
-  fill price, which the engine asserts equals that bar's open.
 
 ### Producer additions (not part of the frozen column list)
 
-`bar_open`, `bar_high`, `bar_low`, `bar_close`, `prev_close`, `open0930`, `member_last_et`.
-These expose the raw tape at `t`, the two anatomy day constants behind
-`ret_from_prevclose`/`ret_from_open0930`, and the member's own tape end (`session_end` is the
-day-level close, `member_last_et` the last bar the member actually printed).
+`bar_open`, `bar_high`, `bar_low`, `bar_close`, `prev_close`, `open0930`,
+`path_complete_to_session_end`, `terminal_censored`, `future_member_last_et`,
+`future_forced_flat_px`. Types and families: `column_registry.json` (the verifier validates the
+physical parquet against it).
 
-### Ticket-level constants are look-ahead
+## Self-tests and verification
 
-`session_peak_et`, `session_peak_ret_from_entry`, `session_peak_bars_from_entry` and
-`session_close_ret_from_entry` describe the whole ticket and are repeated on every row. They exist
-to group the fall analysis ("which giants died"); they are **not** state and must not be used as
-causal features at a row with `et < session_peak_et`.
-
-## Self-tests
-
-`python factory/scripts/basket_atlas_panel.py selftest --panel <panel.parquet>` runs:
+```bash
+python factory/scripts/basket_atlas_panel.py selftest --panel factory/artifacts/basket/phase2/ATLAS/panel.parquet
+python factory/scripts/basket_atlas_panel.py corruption --panel factory/artifacts/basket/phase2/ATLAS/panel.parquet
+python factory/scripts/basket_atlas_verify.py --panel factory/artifacts/basket/phase2/ATLAS/panel.parquet \
+        --report factory/artifacts/basket/phase2/ATLAS/verify_report.json
+```
 
 | check | meaning |
 |---|---|
-| (a) | member counts per family equal the C1 anchors (`A_pm_N3_R0_bps100` `n_entries`, `B600_N3_R0_bps100` `n_entries`) |
-| (a2) | the member set is *identical* to the C1 engine's `tickets.parquet` on the panel's days (both directions, `entry_px` too) |
+| (a) | member counts per family equal the C1 anchors (`n_entries` of the N3/R0 cells) |
+| (a2) | **exact** equality with the C1 engine: member keys both directions, and `entry_px`, `entry_et`, `entry_rank` and the engine's forced-flat exit price (`exit_px`/`exit_et` of every in-session `FORCED_FLAT` ticket); a missing reference fails |
+| (a3) | synthetic boundary cases (trigger at `session_end-2` executable, at `session_end-1` preempted, condition at `session_end` preempted, gap `session_end-2 → session_end` executable, no trigger) + reconciliation of **every** fill row, fired rows included, against the engine's realized exit and the tape-derived exit price |
 | (b) | rows per member equal the number of bars from the fill et to the session end |
 | (c) | `bar_index` is `0..n-1` and `et` strictly increasing per member |
-| (d) | five pseudo-random rows recompute `ret_from_fill`, `mfe_so_far`, `dist_from_running_high`, `final_high_flag`, `remaining_run`, `cost_of_waiting`, `v_hold_flat` exactly from the raw bars, by an independent naive implementation |
-| (e) | no outcome column is populated when `next_open` is null (and the converse for every event-defined outcome column) |
-| (f) | the smoke panel built twice is byte-identical (`sha256`) |
+| (d) | sampled rows (random + censored/last-bar/unexecutable/early-close/missing-reference/threshold-tie strata) recompute exactly from raw bars by an independent naive implementation |
+| (e) | no outcome column is populated when `next_open` is null; on complete tapes every event-defined outcome is populated (exceptions listed) |
+| (f) | censoring: flags never null, complementary, equal to `future_member_last_et < session_end`, and every terminal-dependent outcome is null on censored tapes |
+| (g) | forced-flat precedence: any give-back condition first seen at `et >= session_end - 1` yields `fired = false` and `v_giveback_g == v_forced_flat` exactly (per-threshold counts reported) |
+| (h) | every `future_*` column is registered future-only, and no future-only column is causal state |
+| (i) | source-level registry audit: every column the producer's reports reference exists in the column registry; a generic causal selector admits no future-only/outcome column and still admits the state columns |
+| verifier | independent recomputation (state + outcomes + censoring + forced flat) over deterministic boundary strata, plus physical parquet schema/type/sort/key-uniqueness checks and a prefix-invariance test (state must not change when bars after `t` are replaced by garbage) |
+| corruption | deliberately corrupting a member key, `entry_px`, `entry_et`, `entry_rank` or `future_forced_flat_px` must each fail the C1 assertion (`corruption_check.json`) |
+| verifier negative checks | the verifier proves its own checks can fail: permuted column order, missing column, reversed rows, duplicate key, corrupted value (all reported in `verify_report.json.negative_checks`) |
+| (f) determinism | the smoke panel built twice is byte-identical (`sha256`) |
 
-## What the tape looks like (measured, `coverage.json.tape_shape`)
-
-| | A_pm | B600 |
-|---|---|---|
-| members | 3,188 | 2,972 |
-| rows / member (median) | 384 | 344 |
-| session peak ET (median) | 587 (q25 571, q75 679) | 631 (q25 604, q75 754) |
-| peak return from entry (median) | +10.0% (mean +21.3%) | +9.3% (mean +19.6%) |
-| close return from entry (median) | −5.3% (mean −2.5%) | −4.4% (mean −2.3%) |
-
-The median peak lands in the first half hour and the median close is below entry — the morning
-climax and the afternoon give-back the panel exists to measure. 273 members' tapes end before the
-session close (halts); `member_last_et` records where.
+The verification commands and the sha256 of the producer and verifier are recorded in
+`coverage.json.verification` and in `selftest.json.verification`.
 
 ## Reproduce
 
@@ -94,86 +120,43 @@ cd /home/hillel/.config/opencode/worktrees/Alpacatrader/basket-phase2-f1
 python factory/scripts/basket_atlas_panel.py all
 ```
 
-`all` = 20-day smoke panel → self-tests (a)-(e) + determinism (f) → the full development-day build
-(month parts, resumable) → merge into `panel.parquet` → self-tests on the full panel → `coverage.json`.
-Individual steps: `smoke`, `build --all`, `merge`, `coverage`, `selftest --panel <path>`.
-Long builds write one parquet part per month under `parts/` and record each finished month in
-`_progress.json`; re-running resumes instead of restarting (delete `parts/` and `_progress.json`
-for a cold rebuild).
+`all` = smoke panel + self-tests (a)-(i) + verifier + determinism → full development-day build
+(month parts, resumable) → merge → full-panel self-tests + verifier → C1 corruption tests →
+`coverage.json`. Individual steps: `smoke`, `build --all`, `merge`, `coverage`, `selftest`,
+`corruption`. Long builds write one parquet part per month under `parts/` and record each finished
+month in `_progress.json`; re-running resumes (delete `parts/` and `_progress.json` for a cold
+rebuild).
 
-Artifacts of a run: `panel.parquet`, `coverage.json`, `_progress.json` (per-month hashes + census),
-`selftest.json` (the last self-test report), `parts/month=YYYY-MM.parquet`, `smoke/` (smoke panel
-and its report), `differential_check.json` (the differential verification summary below).
-
-## Differential verification
-
-Beyond the in-script checks, every non-trivial column was recomputed for a pseudo-random row sample
-by a *separate*, deliberately naive implementation (plain Python loops over the raw bars parquet and
-the anatomy JSON, no producer code path): 902 rows of the full panel → 49,604 column comparisons,
-0 mismatches (plus 402 rows of the smoke panel → 22,110 comparisons, 0 mismatches). Summary and the
-list of bugs it caught during development: `differential_check.json`.
+Artifacts of a run: `panel.parquet`, `column_registry.json`, `coverage.json`, `selftest.json`,
+`verify_report.json`, `corruption_check.json`, `_progress.json`, `parts/month=YYYY-MM.parquet`,
+`smoke/` (smoke panel + its reports), `quarantine_v1/` (invalid v1 record).
 
 ## Known limitations
 
 - **Top-3 only.** N2/N4/A_open/A_pm31 sleeves are not in this panel; the producer is parameterised by
   `FAMILIES` when they are needed.
-- **A halt-free tape is not assumed.** Bars are sparse and gapped; `gap_count_so_far`,
-  `bars_since_gap` and the bar-vs-clock conventions make the sparsity visible, but a halted minute
-  simply does not exist as a row. 273 members' tapes stop before the close.
-- **`v_giveback_*` uses bars.** The trigger is a completed-bar close, the exit is the next bar's
-  open, so intra-bar paths inside a gap are not modelled.
+- **Censored members carry state but no outcomes.** 273 members stop printing before the close
+  (`coverage.censor_census` lists every one, the hour of their last print, and the nulled cell
+  count); their rows are usable as state, never as an outcome.
+- **Bars, not ticks.** The give-back trigger is a completed-bar close and the exit is the next bar's
+  open, so intra-bar and intra-gap paths are not modelled.
 - **Cross-section is the A_pm snapshot for both families** — the literal schema text (see
-  `coverage.json.ambiguities`), not the B snapshot.
-- **The universe has 10 names.** `candidate_count_t` / `ret_percentile_candidates` are therefore
-  statistics of the day's candidate snapshot, not of the whole market.
+  `coverage.json.ambiguities`), not the B snapshot; the universe is 10 names.
 - **Anatomy day constants can be missing** (21 members lack `open0930`, 37 lack `prev_close`):
   `ret_from_open0930`, `ret_percentile_candidates` and `ret_from_prevclose` are then `null`, never 0.
 - **Dollar volume is `close * volume`** (bars carry no VWAP).
-- **The panel ends at the close.** Everything about the fall is inside the session; overnight and
-  next-day behaviour is out of scope.
-- **Fill ETs are anatomy values**, not the nominal 571/601 of the schema text: A_pm fills at 570 on
-  3,167 of 3,188 members, B600 at 600 on 2,581 of 2,972 (see `tape_shape.entry_et_histogram`).
+- **Ticket constants are look-ahead.** `session_peak_*` / `session_close_ret_from_entry`,
+  `future_member_last_et` and `future_forced_flat_px` describe the whole ticket; they are cohort
+  labels, not state.
+- **The panel ends at the close.** Overnight and next-day behaviour is out of scope.
 
-## Interpretation discipline and corrections (parent, 2026-09-25)
+## Required consumer migration (from v1)
 
-Rules that apply to every ATLAS reading, learned the hard way in this cycle:
-
-1. **Briefs carry labelled priors and measurement design — never conclusions.** The coarse prior in
-   `DIAGNOSTICS_20260925/clock_cohort.json` splits members by their *eventual* session peak, i.e. a
-   hindsight cohort. Its timing statements ("the broad continuation closes around 11:00-12:00") are a
-   PRIOR, not a law, and must never be restated to an analysis as an instruction. Doing so once
-   already produced an over-learned task brief.
-2. **Dependence.** The 1.9M panel rows are repeated minutes from 6,160 tickets: the effective sample
-   is ~1,066 days, not 1.9M rows. All uncertainty must be clustered at the day level (conservative),
-   ticket-clustered as a secondary. Minute rows are never independent observations.
-3. **Clock is not tenure.** At et=600, A_pm members have a median 30 bars of ownership while B600
-   members have 0; at 30 bars of ownership A_pm sits at et~600 and B600 at et~630. Never pool the two
-   families in a minute profile; report `et` and `bars_since_entry` as separate coordinates.
-4. **Duplicate paths.** 255 (sleeve_day, ticker) pairs appear in both families — 510 of 6,160 members
-   (8.3%) are the same market path held twice. Exclude or explicitly flag them in any pooled statistic.
-5. **Print gaps are not halts.** The sub-minute probe measured >=5-minute no-print intervals
-   (804 of 1,066 days have at least one); illiquidity produces them too and no halt status is joined.
-   Call them print gaps / halt-like gaps.
-
-### Ledger reading (corrected)
-
-`giveback:10` (exit when 10% below the running high), friction on both legs, per-member attribution:
-
-| | block1 | block2 |
-|---|---|---|
-| avoided − non-giant destroyed = **gross benefit** | +156.8 | +99.2 |
-| − giant dollars destroyed (>=+100% forward from exit) | −78.7 | −66.3 |
-| = net dollar ledger | **+78.2** | **+32.9** |
-| giants' share of the gross benefit | **50%** | **67%** |
-| non-giant exits that later traded >=+10% above the exit price | **41.6%** | **51.2%** |
-
-The giants' destroyed dollars are already *inside* `dollars_destroyed`; they must not be subtracted a
-second time from the net. The correct reading: the rule earns a genuine gross benefit on ordinary
-failures, and the tail it cuts consumes half to two-thirds of it. The open question is whether causal
-state can keep the gross benefit while sacrificing less future upside.
-
-The "70/70 cut giants were re-admissible" figure is tautological (a member with >=+100% forward MFE
-from the exit necessarily traded >=+10% above it) and must not be cited. Likewise, "the rule is not
-detecting death" overclaims: what is measured is that it frequently exits *before* subsequent
-recovery. Whether that recovery is timely, executable and worth re-entering is an open question, and
-it is now a required analysis in the matched-pair work.
+| v1 usage | v2 replacement |
+|---|---|
+| `member_last_et` | `future_member_last_et` (future-only; not a causal key) |
+| `v_hold_flat` read as the executable hold-to-flat | `v_forced_flat` (executable); `v_hold_flat` is the close baseline only |
+| `v_giveback_*` read on members with no session-end print | now `null`: use `terminal_censored` to separate cohorts |
+| `v_giveback_*` read as "null when the rule could not execute" | no longer true for complete tickets: the forced flat takes precedence and the value is `v_forced_flat` |
+| `giveback_fired_*` "true means an executed exit" | still true; a condition first seen on a bar with `et >= session_end - 1` is not an exit — `giveback_condition_after_forced_flat_*` flags it and `v_giveback_*` equals `v_forced_flat` |
+| any panel row as a causal feature | use `causal_feature_columns()` / `coverage.json.causal_excluded_families` — outcome, ticket-constant, `future_*` and censor columns are excluded |

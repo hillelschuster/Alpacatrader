@@ -71,6 +71,20 @@ and recovery as STATE COORDINATES before they become triggers. The final strateg
 extremely simple, but its boundaries must emerge from the phenomenon, not from inherited
 constants.
 
+**Discovery, not prosecution.** The top-gainer inefficiency is already measured; the open question
+is how much of its explosiveness can be harvested causally and executably. Do not frame research as
+a hunt for reasons the thesis must fail, and do not make "falsification" the emotional or procedural
+center. A null or negative result is recorded honestly, but it is not the desired shape of the
+answer. Begin with: *what structure exists in this tape, what economic personality does it reveal,
+and how much EV can be captured?* Falsifiers protect a candidate mechanism from self-deception only
+after the mechanism emerges; they never replace discovery.
+
+**No comfort-zone substitution.** Familiar clocks, thresholds, horizons, labels, models, strategy
+templates and implementation constraints are attractive precisely because training data makes them
+easy to reach for. Never substitute them for the phenomenon. If the move requires minute-by-minute
+state, interaction models, trade-print anatomy, catalyst context, dynamic cash or re-entry, build
+what the economics require. A sophisticated answer to a familiar but wrong question is failure.
+
 **Precision where precision matters (non-negotiable).** Causal timing; only what was observable
 at the decision moment; executable prices; SIP/carry integrity; independent sleeve accounting;
 friction; cash and deployment constraints; exact action ordering; no future leakage; a metric

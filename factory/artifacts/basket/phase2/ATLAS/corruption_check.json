@@ -1,0 +1,37 @@
+{
+ "all_caught": true,
+ "baseline_failures": [],
+ "cases": {
+  "entry_et": {
+   "caught": true,
+   "failures": [
+    "A_pm: 1 entry_et mismatches"
+   ]
+  },
+  "entry_px": {
+   "caught": true,
+   "failures": [
+    "A_pm: 1 entry_px mismatches"
+   ]
+  },
+  "entry_rank": {
+   "caught": true,
+   "failures": [
+    "A_pm: 1 entry_rank mismatches"
+   ]
+  },
+  "forced_flat_px": {
+   "caught": true,
+   "failures": [
+    "A_pm: 1 forced-flat execution price mismatches vs the engine's exits"
+   ]
+  },
+  "member_key": {
+   "caught": true,
+   "failures": [
+    "A_pm: 1 members only in the panel",
+    "A_pm: 1 members only in C1"
+   ]
+  }
+ }
+}

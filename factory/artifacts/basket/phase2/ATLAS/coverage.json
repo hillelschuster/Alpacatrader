@@ -1,13 +1,28 @@
 {
  "ambiguities": [
   {
-   "issue": "the anatomy fill et is not always 571/601 (A_pm fills at 570 on most days, B600 at 600, and a name can fill later inside a gapped tape)",
-   "resolution": "entry_et/entry_px are taken verbatim from the anatomy fill (the engine's own source); the ET in the schema text is read as nominal. The realised entry_et distribution is reported under tape_shape.entry_et_histogram.",
+   "issue": "the anatomy fill et is not 571/601 (A_pm actually fills at 570 on most days, B600 at 600, and a name can fill later inside a gapped tape)",
+   "resolution": "the schema's 571/601 is NOMINAL; the anatomy fill is authoritative and is what the C1 engine reads (entry_et/entry_px are the anatomy fill, asserted equal to the C1 tickets). Realised entry_et distribution: coverage.tape_shape.entry_et_histogram. SCHEMA.md carries an amendment saying exactly this.",
    "schema": "`family` | `A_pm` (fill at ET 571) or `B600` (fill at ET 601)"
   },
   {
+   "issue": "SCHEMA.md assumes the tape runs to the session end. For 273 members the last print is earlier (halts/no-print), so close(session_end) and the remaining session are unobservable and a terminal liquidation there is not executable.",
+   "resolution": "member-level `path_complete_to_session_end` / `terminal_censored` flags; for a censored member every terminal-dependent outcome is null (v_hold_flat, v_giveback_*, giveback_fired_*, giveback_condition_after_forced_flat_*, final_high_flag, remaining_run, cost_of_waiting, bars_to_peak, peak_et_after_t, tail_class_*, and the four session_peak_*/session_close_* constants). State columns are unaffected, and single-step quantities that a real bar supports (next_open, next_et, level_ret, v_sell, bars_to_next_high/dd_before_next_high when the event exists inside the tape) stay. Censored members and nulled cells: coverage.censor_census.",
+   "schema": "tapes that stop before the session close"
+  },
+  {
+   "issue": "a trigger on the member's final bar has no next bar to execute in, and the engine's forced flat is decided on the completed bar session_end-1 and executed at the session_end bar's OPEN \u2014 so the terminal action precedes any condition observed on that bar's close.",
+   "resolution": "a give-back exit is the open of the bar AFTER the trigger bar. basket_sim runs its forced-flat branch at `t == session_end - 1` BEFORE release evaluation and skips the ticket, so no release rule is evaluated on a bar with `et >= session_end - 1`: a first condition there is non-firing (`giveback_fired_g` false, `v_giveback_g` = `v_forced_flat`, diagnostic `giveback_condition_after_forced_flat_g`). A first condition at `et <= session_end - 2` IS executable, and its exit is the open of the next printed bar (which may be the session_end bar itself when the tape gaps). Values are null only for terminal-censored tapes and on the member's own last tracked row.",
+   "schema": "`v_giveback_*` execution and the terminal action"
+  },
+  {
+   "issue": "it reveals in advance whether/when the member stops printing \u2014 future metadata, previously registered as a `key`.",
+   "resolution": "renamed `future_member_last_et`, family `future_meta`, listed in coverage.future_only_columns and covered by the `future_` leakage prefix; check (h) asserts no future-only column is classified as causal state.",
+   "schema": "`member_last_et` (producer addition)"
+  },
+  {
    "issue": "ambiguous between the day-level close (959/779) and the member's own last bar (a halted name may stop printing before the close)",
-   "resolution": "session_end is the day-level close from phase2_session_calendar.json, repeated on every row; the member's actual tape end is exposed as the producer addition member_last_et. Members whose tape ends before the close are counted under tape_shape.members_without_final_bar.",
+   "resolution": "session_end is the day-level close from phase2_session_calendar.json, repeated on every row; the member's actual tape end is the future-only producer addition future_member_last_et, and terminal_censored marks the members whose tape stops early (enumerated in coverage.censor_census).",
    "schema": "`session_end` | ET of the last bar used for this day"
   },
   {
@@ -22,7 +37,7 @@
   },
   {
    "issue": "whether the re-evaluated running high starts at t or from the fill",
-   "resolution": "the running high is the same object as the state column: max high from the fill through the bar being tested. Exit is the open of the bar after the first close <= running_high * (1 - g/100); when the trigger is the last bar, or when it never triggers, the exit is the forced flat close of the member's last bar (giveback_fired_* records whether it fired).",
+   "resolution": "the running high is the same object as the state column: max high from the fill through the bar being tested. Exit is the open of the bar after the first close <= running_high * (1 - g/100). When no condition appears before the engine's terminal decision, the continuation is the engine's forced flat: `future_forced_flat_px / next_open - 1` (the session_end bar's open), and `giveback_fired_g` records whether a give-back exit actually fired.",
    "schema": "`v_giveback_5/10/15/20` ('the running high as of that bar')"
   },
   {
@@ -101,9 +116,19 @@
    "available": true,
    "c1_members": 3188,
    "cell": "A_pm_N3_R0_bps100",
+   "common_members": 3188,
+   "entry_et_mismatches": [],
    "entry_px_mismatches": [],
+   "entry_rank_members_checked": 3188,
+   "entry_rank_mismatches": [],
    "expected_n_entries": 3188,
+   "forced_flat_checked": 3188,
+   "forced_flat_mismatches": [],
    "n_entries_metrics": 3188,
+   "n_entry_et_mismatches": 0,
+   "n_entry_px_mismatches": 0,
+   "n_entry_rank_mismatches": 0,
+   "n_forced_flat_mismatches": 0,
    "n_only_in_c1": 0,
    "n_only_in_panel": 0,
    "only_in_c1": [],
@@ -114,14 +139,2533 @@
    "available": true,
    "c1_members": 2972,
    "cell": "B600_N3_R0_bps100",
+   "common_members": 2972,
+   "entry_et_mismatches": [],
    "entry_px_mismatches": [],
+   "entry_rank_members_checked": 2972,
+   "entry_rank_mismatches": [],
    "expected_n_entries": 2972,
+   "forced_flat_checked": 2972,
+   "forced_flat_mismatches": [],
    "n_entries_metrics": 2972,
+   "n_entry_et_mismatches": 0,
+   "n_entry_px_mismatches": 0,
+   "n_entry_rank_mismatches": 0,
+   "n_forced_flat_mismatches": 0,
    "n_only_in_c1": 0,
    "n_only_in_panel": 0,
    "only_in_c1": [],
    "only_in_panel": [],
    "panel_members": 2972
+  }
+ },
+ "causal_excluded_families": [
+  "outcome_level",
+  "outcome_continuation",
+  "outcome_path",
+  "ticket_constant",
+  "future_meta",
+  "censor"
+ ],
+ "causal_safety_rule": "no market-state feature may be drawn from any column whose family is in causal_excluded_families, nor from any column named in future_only_columns / prefixed future_",
+ "censor_census": {
+  "censored_cells_nulled": 879970,
+  "censored_columns": [
+   "v_hold_flat",
+   "v_forced_flat",
+   "v_giveback_5",
+   "v_giveback_10",
+   "v_giveback_15",
+   "v_giveback_20",
+   "giveback_fired_5",
+   "giveback_fired_10",
+   "giveback_fired_15",
+   "giveback_fired_20",
+   "giveback_condition_after_forced_flat_5",
+   "giveback_condition_after_forced_flat_10",
+   "giveback_condition_after_forced_flat_15",
+   "giveback_condition_after_forced_flat_20",
+   "final_high_flag",
+   "remaining_run",
+   "cost_of_waiting",
+   "bars_to_peak",
+   "peak_et_after_t",
+   "tail_class_50",
+   "tail_class_100",
+   "tail_class_300",
+   "session_peak_et",
+   "session_peak_ret_from_entry",
+   "session_peak_bars_from_entry",
+   "session_close_ret_from_entry"
+  ],
+  "censored_member_list": [
+   {
+    "derived_last_et": 921,
+    "derived_rows": 23,
+    "entry_et": 603,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2021-02-09",
+    "ticker": "MTACW"
+   },
+   {
+    "derived_last_et": 952,
+    "derived_rows": 350,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2021-02-16",
+    "ticker": "SCKT"
+   },
+   {
+    "derived_last_et": 952,
+    "derived_rows": 328,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2021-02-16",
+    "ticker": "SCKT"
+   },
+   {
+    "derived_last_et": 953,
+    "derived_rows": 372,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2021-03-08",
+    "ticker": "EYES"
+   },
+   {
+    "derived_last_et": 953,
+    "derived_rows": 348,
+    "entry_et": 602,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2021-03-08",
+    "ticker": "EYES"
+   },
+   {
+    "derived_last_et": 953,
+    "derived_rows": 35,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2021-03-12",
+    "ticker": "EXN"
+   },
+   {
+    "derived_last_et": 854,
+    "derived_rows": 37,
+    "entry_et": 604,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2021-04-01",
+    "ticker": "LBTYB"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 158,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2021-04-20",
+    "ticker": "RELI"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 240,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2021-04-21",
+    "ticker": "ACU"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 69,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2021-04-23",
+    "ticker": "IMCC"
+   },
+   {
+    "derived_last_et": 940,
+    "derived_rows": 369,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2021-04-30",
+    "ticker": "ISNS"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 249,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2021-05-04",
+    "ticker": "VINO"
+   },
+   {
+    "derived_last_et": 947,
+    "derived_rows": 64,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2021-05-07",
+    "ticker": "BRPA"
+   },
+   {
+    "derived_last_et": 951,
+    "derived_rows": 382,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2021-05-12",
+    "ticker": "LHDX"
+   },
+   {
+    "derived_last_et": 797,
+    "derived_rows": 11,
+    "entry_et": 601,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2021-06-16",
+    "ticker": "AGMH"
+   },
+   {
+    "derived_last_et": 956,
+    "derived_rows": 9,
+    "entry_et": 602,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2021-06-17",
+    "ticker": "BROG"
+   },
+   {
+    "derived_last_et": 953,
+    "derived_rows": 51,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2021-06-21",
+    "ticker": "LINK"
+   },
+   {
+    "derived_last_et": 951,
+    "derived_rows": 178,
+    "entry_et": 603,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2021-08-20",
+    "ticker": "RGC"
+   },
+   {
+    "derived_last_et": 952,
+    "derived_rows": 345,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2021-08-27",
+    "ticker": "SPRT"
+   },
+   {
+    "derived_last_et": 957,
+    "derived_rows": 73,
+    "entry_et": 601,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2021-10-25",
+    "ticker": "LINK"
+   },
+   {
+    "derived_last_et": 940,
+    "derived_rows": 58,
+    "entry_et": 601,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2021-11-08",
+    "ticker": "DUOT"
+   },
+   {
+    "derived_last_et": 765,
+    "derived_rows": 192,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 779,
+    "sleeve_day": "2021-11-26",
+    "ticker": "BFRI"
+   },
+   {
+    "derived_last_et": 957,
+    "derived_rows": 45,
+    "entry_et": 603,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2021-12-10",
+    "ticker": "DLHC"
+   },
+   {
+    "derived_last_et": 943,
+    "derived_rows": 31,
+    "entry_et": 604,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2021-12-16",
+    "ticker": "AZYO"
+   },
+   {
+    "derived_last_et": 938,
+    "derived_rows": 16,
+    "entry_et": 602,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2022-01-18",
+    "ticker": "NMTC"
+   },
+   {
+    "derived_last_et": 633,
+    "derived_rows": 60,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2022-01-24",
+    "ticker": "ONE"
+   },
+   {
+    "derived_last_et": 956,
+    "derived_rows": 15,
+    "entry_et": 602,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2022-01-24",
+    "ticker": "KINS"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 259,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2022-02-09",
+    "ticker": "CYRN"
+   },
+   {
+    "derived_last_et": 921,
+    "derived_rows": 6,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2022-02-25",
+    "ticker": "IOR"
+   },
+   {
+    "derived_last_et": 955,
+    "derived_rows": 62,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2022-02-28",
+    "ticker": "GECC"
+   },
+   {
+    "derived_last_et": 953,
+    "derived_rows": 27,
+    "entry_et": 602,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2022-05-02",
+    "ticker": "UK"
+   },
+   {
+    "derived_last_et": 955,
+    "derived_rows": 31,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2022-05-16",
+    "ticker": "GAME"
+   },
+   {
+    "derived_last_et": 930,
+    "derived_rows": 14,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2022-05-25",
+    "ticker": "RNAZ"
+   },
+   {
+    "derived_last_et": 953,
+    "derived_rows": 29,
+    "entry_et": 603,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2022-05-25",
+    "ticker": "WYY"
+   },
+   {
+    "derived_last_et": 957,
+    "derived_rows": 16,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2022-06-06",
+    "ticker": "ATIF"
+   },
+   {
+    "derived_last_et": 925,
+    "derived_rows": 12,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2022-06-08",
+    "ticker": "BRAG"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 133,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2022-06-13",
+    "ticker": "NEPT"
+   },
+   {
+    "derived_last_et": 935,
+    "derived_rows": 10,
+    "entry_et": 603,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2022-06-23",
+    "ticker": "CNTG"
+   },
+   {
+    "derived_last_et": 951,
+    "derived_rows": 33,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2022-06-24",
+    "ticker": "ANEB"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 110,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2022-07-14",
+    "ticker": "KAL"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 162,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2022-07-25",
+    "ticker": "SYN"
+   },
+   {
+    "derived_last_et": 952,
+    "derived_rows": 56,
+    "entry_et": 604,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2022-08-01",
+    "ticker": "MHUA"
+   },
+   {
+    "derived_last_et": 955,
+    "derived_rows": 23,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2022-08-03",
+    "ticker": "BLCM"
+   },
+   {
+    "derived_last_et": 957,
+    "derived_rows": 197,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2022-08-18",
+    "ticker": "ITRM"
+   },
+   {
+    "derived_last_et": 957,
+    "derived_rows": 288,
+    "entry_et": 601,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2022-08-19",
+    "ticker": "GCT"
+   },
+   {
+    "derived_last_et": 943,
+    "derived_rows": 94,
+    "entry_et": 601,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2022-08-29",
+    "ticker": "NMTC"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 178,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2022-09-13",
+    "ticker": "ALLR"
+   },
+   {
+    "derived_last_et": 927,
+    "derived_rows": 35,
+    "entry_et": 601,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2022-09-13",
+    "ticker": "TSRI"
+   },
+   {
+    "derived_last_et": 952,
+    "derived_rows": 30,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2022-09-15",
+    "ticker": "ATIF"
+   },
+   {
+    "derived_last_et": 957,
+    "derived_rows": 34,
+    "entry_et": 601,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2022-09-21",
+    "ticker": "AIRT"
+   },
+   {
+    "derived_last_et": 956,
+    "derived_rows": 153,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2022-09-23",
+    "ticker": "CWBR"
+   },
+   {
+    "derived_last_et": 956,
+    "derived_rows": 132,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2022-09-23",
+    "ticker": "CWBR"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 196,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2022-09-26",
+    "ticker": "GBOX"
+   },
+   {
+    "derived_last_et": 949,
+    "derived_rows": 346,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2022-10-03",
+    "ticker": "FNGR"
+   },
+   {
+    "derived_last_et": 957,
+    "derived_rows": 308,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2022-10-06",
+    "ticker": "GGE"
+   },
+   {
+    "derived_last_et": 952,
+    "derived_rows": 99,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2022-10-18",
+    "ticker": "AIRI"
+   },
+   {
+    "derived_last_et": 923,
+    "derived_rows": 12,
+    "entry_et": 601,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2022-10-24",
+    "ticker": "VIVK"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 90,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2022-10-26",
+    "ticker": "HOTH"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 158,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2022-10-31",
+    "ticker": "EVK"
+   },
+   {
+    "derived_last_et": 893,
+    "derived_rows": 47,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2022-11-09",
+    "ticker": "CCNC"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 111,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2022-11-10",
+    "ticker": "AMV"
+   },
+   {
+    "derived_last_et": 956,
+    "derived_rows": 32,
+    "entry_et": 603,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2022-11-30",
+    "ticker": "ANGH"
+   },
+   {
+    "derived_last_et": 955,
+    "derived_rows": 43,
+    "entry_et": 571,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2022-12-01",
+    "ticker": "PTPI"
+   },
+   {
+    "derived_last_et": 956,
+    "derived_rows": 28,
+    "entry_et": 601,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2022-12-06",
+    "ticker": "BTN"
+   },
+   {
+    "derived_last_et": 956,
+    "derived_rows": 127,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2022-12-08",
+    "ticker": "LCFY"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 232,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2022-12-12",
+    "ticker": "BIMI"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 207,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2022-12-12",
+    "ticker": "BIMI"
+   },
+   {
+    "derived_last_et": 906,
+    "derived_rows": 32,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2022-12-19",
+    "ticker": "MSGM"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 132,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2022-12-23",
+    "ticker": "BTCM"
+   },
+   {
+    "derived_last_et": 955,
+    "derived_rows": 137,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2022-12-27",
+    "ticker": "HOFV"
+   },
+   {
+    "derived_last_et": 944,
+    "derived_rows": 60,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2022-12-29",
+    "ticker": "NUZE"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 107,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2022-12-29",
+    "ticker": "RACY"
+   },
+   {
+    "derived_last_et": 937,
+    "derived_rows": 44,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-01-03",
+    "ticker": "HALL"
+   },
+   {
+    "derived_last_et": 955,
+    "derived_rows": 132,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-01-05",
+    "ticker": "ALBT"
+   },
+   {
+    "derived_last_et": 948,
+    "derived_rows": 187,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-01-06",
+    "ticker": "AYTU"
+   },
+   {
+    "derived_last_et": 955,
+    "derived_rows": 9,
+    "entry_et": 603,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2023-01-17",
+    "ticker": "INKT"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 17,
+    "entry_et": 603,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2023-01-24",
+    "ticker": "GB"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 132,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-01-27",
+    "ticker": "MRKR"
+   },
+   {
+    "derived_last_et": 951,
+    "derived_rows": 232,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-02-10",
+    "ticker": "GFAI"
+   },
+   {
+    "derived_last_et": 954,
+    "derived_rows": 95,
+    "entry_et": 602,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2023-02-10",
+    "ticker": "BREA"
+   },
+   {
+    "derived_last_et": 955,
+    "derived_rows": 124,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-02-15",
+    "ticker": "ECOR"
+   },
+   {
+    "derived_last_et": 941,
+    "derived_rows": 24,
+    "entry_et": 573,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-02-17",
+    "ticker": "NXTP"
+   },
+   {
+    "derived_last_et": 957,
+    "derived_rows": 21,
+    "entry_et": 602,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2023-02-21",
+    "ticker": "ATY"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 81,
+    "entry_et": 601,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2023-02-27",
+    "ticker": "AAMC"
+   },
+   {
+    "derived_last_et": 957,
+    "derived_rows": 91,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-03-01",
+    "ticker": "RKDA"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 225,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2023-03-02",
+    "ticker": "LION"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 6,
+    "entry_et": 601,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2023-03-08",
+    "ticker": "KWE"
+   },
+   {
+    "derived_last_et": 952,
+    "derived_rows": 309,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2023-03-14",
+    "ticker": "AMBI"
+   },
+   {
+    "derived_last_et": 957,
+    "derived_rows": 60,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2023-03-24",
+    "ticker": "RAYA"
+   },
+   {
+    "derived_last_et": 956,
+    "derived_rows": 24,
+    "entry_et": 603,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2023-03-27",
+    "ticker": "WHLR"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 98,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2023-04-03",
+    "ticker": "HHRS"
+   },
+   {
+    "derived_last_et": 957,
+    "derived_rows": 137,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-04-17",
+    "ticker": "MEIP"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 122,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-04-19",
+    "ticker": "ASNS"
+   },
+   {
+    "derived_last_et": 934,
+    "derived_rows": 28,
+    "entry_et": 601,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2023-04-19",
+    "ticker": "OXBR"
+   },
+   {
+    "derived_last_et": 931,
+    "derived_rows": 31,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2023-04-20",
+    "ticker": "ACGN"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 161,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-04-24",
+    "ticker": "LGMK"
+   },
+   {
+    "derived_last_et": 947,
+    "derived_rows": 22,
+    "entry_et": 601,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2023-04-24",
+    "ticker": "BNOX"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 140,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2023-04-24",
+    "ticker": "KNW"
+   },
+   {
+    "derived_last_et": 956,
+    "derived_rows": 68,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-04-26",
+    "ticker": "SBET"
+   },
+   {
+    "derived_last_et": 955,
+    "derived_rows": 16,
+    "entry_et": 604,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2023-04-26",
+    "ticker": "MPU"
+   },
+   {
+    "derived_last_et": 954,
+    "derived_rows": 43,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-04-27",
+    "ticker": "EZFL"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 85,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-05-01",
+    "ticker": "VISL"
+   },
+   {
+    "derived_last_et": 957,
+    "derived_rows": 48,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2023-05-04",
+    "ticker": "MDRR"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 41,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2023-05-08",
+    "ticker": "JAN"
+   },
+   {
+    "derived_last_et": 947,
+    "derived_rows": 247,
+    "entry_et": 604,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2023-05-08",
+    "ticker": "TRVN"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 52,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2023-05-10",
+    "ticker": "SWVL"
+   },
+   {
+    "derived_last_et": 956,
+    "derived_rows": 127,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-05-12",
+    "ticker": "LPCN"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 143,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-05-12",
+    "ticker": "VERO"
+   },
+   {
+    "derived_last_et": 954,
+    "derived_rows": 43,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-05-23",
+    "ticker": "SEAC"
+   },
+   {
+    "derived_last_et": 956,
+    "derived_rows": 111,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-05-24",
+    "ticker": "NVFY"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 63,
+    "entry_et": 602,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2023-05-25",
+    "ticker": "LAES"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 110,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-06-08",
+    "ticker": "OP"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 170,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-06-09",
+    "ticker": "WETG"
+   },
+   {
+    "derived_last_et": 957,
+    "derived_rows": 130,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-06-12",
+    "ticker": "CELZ"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 25,
+    "entry_et": 604,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2023-06-13",
+    "ticker": "UNAM"
+   },
+   {
+    "derived_last_et": 956,
+    "derived_rows": 61,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2023-06-15",
+    "ticker": "NBSE"
+   },
+   {
+    "derived_last_et": 951,
+    "derived_rows": 28,
+    "entry_et": 601,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2023-06-20",
+    "ticker": "CISSV"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 80,
+    "entry_et": 602,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2023-06-29",
+    "ticker": "NXTC"
+   },
+   {
+    "derived_last_et": 932,
+    "derived_rows": 111,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-07-05",
+    "ticker": "AGFY"
+   },
+   {
+    "derived_last_et": 956,
+    "derived_rows": 100,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-07-10",
+    "ticker": "OWLT"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 53,
+    "entry_et": 602,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2023-07-13",
+    "ticker": "XCUR"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 139,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2023-07-14",
+    "ticker": "JAN"
+   },
+   {
+    "derived_last_et": 957,
+    "derived_rows": 276,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-07-27",
+    "ticker": "VIEW"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 246,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-07-31",
+    "ticker": "THTX"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 11,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2023-08-18",
+    "ticker": "NXPL"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 71,
+    "entry_et": 601,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2023-08-22",
+    "ticker": "LTRY"
+   },
+   {
+    "derived_last_et": 953,
+    "derived_rows": 81,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-08-25",
+    "ticker": "CLVR"
+   },
+   {
+    "derived_last_et": 946,
+    "derived_rows": 80,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-08-25",
+    "ticker": "RCRT"
+   },
+   {
+    "derived_last_et": 743,
+    "derived_rows": 144,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2023-08-29",
+    "ticker": "ICCT"
+   },
+   {
+    "derived_last_et": 951,
+    "derived_rows": 21,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2023-09-11",
+    "ticker": "MFH"
+   },
+   {
+    "derived_last_et": 955,
+    "derived_rows": 80,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-09-12",
+    "ticker": "AMPE"
+   },
+   {
+    "derived_last_et": 956,
+    "derived_rows": 93,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-09-12",
+    "ticker": "LFLY"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 30,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-09-13",
+    "ticker": "TLSI"
+   },
+   {
+    "derived_last_et": 955,
+    "derived_rows": 71,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-09-18",
+    "ticker": "AEHL"
+   },
+   {
+    "derived_last_et": 928,
+    "derived_rows": 50,
+    "entry_et": 601,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2023-09-18",
+    "ticker": "VSTA"
+   },
+   {
+    "derived_last_et": 957,
+    "derived_rows": 101,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-09-21",
+    "ticker": "PYPD"
+   },
+   {
+    "derived_last_et": 949,
+    "derived_rows": 34,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2023-09-27",
+    "ticker": "NAOV"
+   },
+   {
+    "derived_last_et": 957,
+    "derived_rows": 103,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-10-03",
+    "ticker": "VERY"
+   },
+   {
+    "derived_last_et": 949,
+    "derived_rows": 135,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-10-11",
+    "ticker": "TPST"
+   },
+   {
+    "derived_last_et": 931,
+    "derived_rows": 43,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2023-10-11",
+    "ticker": "CFFE"
+   },
+   {
+    "derived_last_et": 950,
+    "derived_rows": 108,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-10-16",
+    "ticker": "SLNH"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 58,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-10-18",
+    "ticker": "WAVD"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 44,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2023-10-18",
+    "ticker": "WAVD"
+   },
+   {
+    "derived_last_et": 852,
+    "derived_rows": 225,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-10-25",
+    "ticker": "ASPA"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 27,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-10-26",
+    "ticker": "GTH"
+   },
+   {
+    "derived_last_et": 940,
+    "derived_rows": 51,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2023-10-26",
+    "ticker": "AIRE"
+   },
+   {
+    "derived_last_et": 956,
+    "derived_rows": 36,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2023-10-26",
+    "ticker": "CUEN"
+   },
+   {
+    "derived_last_et": 957,
+    "derived_rows": 38,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-10-27",
+    "ticker": "CPOP"
+   },
+   {
+    "derived_last_et": 957,
+    "derived_rows": 85,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-10-31",
+    "ticker": "ALZN"
+   },
+   {
+    "derived_last_et": 953,
+    "derived_rows": 7,
+    "entry_et": 601,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2023-11-01",
+    "ticker": "JWEL"
+   },
+   {
+    "derived_last_et": 914,
+    "derived_rows": 42,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-11-02",
+    "ticker": "MOTS"
+   },
+   {
+    "derived_last_et": 951,
+    "derived_rows": 50,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-11-03",
+    "ticker": "JFBR"
+   },
+   {
+    "derived_last_et": 957,
+    "derived_rows": 106,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-11-15",
+    "ticker": "RVSN"
+   },
+   {
+    "derived_last_et": 919,
+    "derived_rows": 35,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-11-16",
+    "ticker": "AEY"
+   },
+   {
+    "derived_last_et": 957,
+    "derived_rows": 94,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2023-11-20",
+    "ticker": "CPOP"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 85,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-11-21",
+    "ticker": "THAR"
+   },
+   {
+    "derived_last_et": 945,
+    "derived_rows": 21,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2023-11-21",
+    "ticker": "EDTK"
+   },
+   {
+    "derived_last_et": 931,
+    "derived_rows": 35,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2023-11-22",
+    "ticker": "EFOI"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 177,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-11-28",
+    "ticker": "YOSH"
+   },
+   {
+    "derived_last_et": 950,
+    "derived_rows": 327,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-11-29",
+    "ticker": "VVOS"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 129,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-12-07",
+    "ticker": "PAVM"
+   },
+   {
+    "derived_last_et": 955,
+    "derived_rows": 64,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2023-12-13",
+    "ticker": "BLBX"
+   },
+   {
+    "derived_last_et": 933,
+    "derived_rows": 77,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-12-18",
+    "ticker": "VRAX"
+   },
+   {
+    "derived_last_et": 955,
+    "derived_rows": 71,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2023-12-20",
+    "ticker": "CELZ"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 240,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-12-29",
+    "ticker": "AVTX"
+   },
+   {
+    "derived_last_et": 957,
+    "derived_rows": 177,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-02-03",
+    "ticker": "EYEN"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 267,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-02-21",
+    "ticker": "CNSP"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 229,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-03-03",
+    "ticker": "CLEU"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 169,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-03-10",
+    "ticker": "MNDR"
+   },
+   {
+    "derived_last_et": 957,
+    "derived_rows": 22,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2025-03-12",
+    "ticker": "YJ"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 124,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-03-14",
+    "ticker": "NAOV"
+   },
+   {
+    "derived_last_et": 928,
+    "derived_rows": 33,
+    "entry_et": 574,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-03-17",
+    "ticker": "SAIH"
+   },
+   {
+    "derived_last_et": 953,
+    "derived_rows": 329,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-03-18",
+    "ticker": "RGC"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 101,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-03-31",
+    "ticker": "AUUD"
+   },
+   {
+    "derived_last_et": 953,
+    "derived_rows": 113,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-03-31",
+    "ticker": "NXU"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 169,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2025-03-31",
+    "ticker": "FTCI"
+   },
+   {
+    "derived_last_et": 720,
+    "derived_rows": 66,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-04-01",
+    "ticker": "GATE"
+   },
+   {
+    "derived_last_et": 955,
+    "derived_rows": 65,
+    "entry_et": 603,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2025-04-01",
+    "ticker": "PLAG"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 148,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2025-04-09",
+    "ticker": "ABVC"
+   },
+   {
+    "derived_last_et": 957,
+    "derived_rows": 145,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-04-11",
+    "ticker": "AMRN"
+   },
+   {
+    "derived_last_et": 956,
+    "derived_rows": 27,
+    "entry_et": 601,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2025-04-14",
+    "ticker": "ROMA"
+   },
+   {
+    "derived_last_et": 951,
+    "derived_rows": 143,
+    "entry_et": 571,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-04-15",
+    "ticker": "CPHI"
+   },
+   {
+    "derived_last_et": 867,
+    "derived_rows": 9,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2025-04-15",
+    "ticker": "ZEO"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 83,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2025-04-28",
+    "ticker": "SBEV"
+   },
+   {
+    "derived_last_et": 957,
+    "derived_rows": 90,
+    "entry_et": 603,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2025-04-29",
+    "ticker": "OST"
+   },
+   {
+    "derived_last_et": 957,
+    "derived_rows": 367,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-05-01",
+    "ticker": "ZCAR"
+   },
+   {
+    "derived_last_et": 957,
+    "derived_rows": 355,
+    "entry_et": 603,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2025-05-01",
+    "ticker": "ZCAR"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 251,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-05-02",
+    "ticker": "LITM"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 151,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-05-06",
+    "ticker": "SBET"
+   },
+   {
+    "derived_last_et": 948,
+    "derived_rows": 240,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2025-05-06",
+    "ticker": "RGC"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 120,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-05-12",
+    "ticker": "ALZN"
+   },
+   {
+    "derived_last_et": 947,
+    "derived_rows": 293,
+    "entry_et": 601,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2025-05-12",
+    "ticker": "INHD"
+   },
+   {
+    "derived_last_et": 950,
+    "derived_rows": 335,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-05-13",
+    "ticker": "HCWB"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 21,
+    "entry_et": 602,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2025-05-20",
+    "ticker": "FEBO"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 121,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2025-05-28",
+    "ticker": "YSXT"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 350,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-06-05",
+    "ticker": "LIMN"
+   },
+   {
+    "derived_last_et": 957,
+    "derived_rows": 197,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-06-06",
+    "ticker": "INAB"
+   },
+   {
+    "derived_last_et": 956,
+    "derived_rows": 201,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-06-13",
+    "ticker": "ONCO"
+   },
+   {
+    "derived_last_et": 951,
+    "derived_rows": 151,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-06-23",
+    "ticker": "TRUG"
+   },
+   {
+    "derived_last_et": 953,
+    "derived_rows": 46,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-06-26",
+    "ticker": "BREA"
+   },
+   {
+    "derived_last_et": 947,
+    "derived_rows": 282,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2025-06-27",
+    "ticker": "WFF"
+   },
+   {
+    "derived_last_et": 946,
+    "derived_rows": 204,
+    "entry_et": 603,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2025-07-02",
+    "ticker": "BGL"
+   },
+   {
+    "derived_last_et": 777,
+    "derived_rows": 91,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 779,
+    "sleeve_day": "2025-07-03",
+    "ticker": "SPRC"
+   },
+   {
+    "derived_last_et": 772,
+    "derived_rows": 160,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 779,
+    "sleeve_day": "2025-07-03",
+    "ticker": "BMNR"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 138,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-07-07",
+    "ticker": "NUWE"
+   },
+   {
+    "derived_last_et": 953,
+    "derived_rows": 84,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2025-07-18",
+    "ticker": "ZKIN"
+   },
+   {
+    "derived_last_et": 952,
+    "derived_rows": 100,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-07-22",
+    "ticker": "CNSP"
+   },
+   {
+    "derived_last_et": 957,
+    "derived_rows": 87,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-07-29",
+    "ticker": "AIHS"
+   },
+   {
+    "derived_last_et": 917,
+    "derived_rows": 2,
+    "entry_et": 601,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2025-08-01",
+    "ticker": "EDRY"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 223,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-08-04",
+    "ticker": "NIVF"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 111,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-08-05",
+    "ticker": "ACXP"
+   },
+   {
+    "derived_last_et": 957,
+    "derived_rows": 114,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-08-08",
+    "ticker": "EVTV"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 169,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-08-11",
+    "ticker": "WATT"
+   },
+   {
+    "derived_last_et": 957,
+    "derived_rows": 98,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2025-08-13",
+    "ticker": "ZYBT"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 227,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-09-05",
+    "ticker": "KITT"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 152,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2025-09-05",
+    "ticker": "FTHM"
+   },
+   {
+    "derived_last_et": 933,
+    "derived_rows": 77,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-09-18",
+    "ticker": "ATHA"
+   },
+   {
+    "derived_last_et": 957,
+    "derived_rows": 130,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-09-22",
+    "ticker": "NITO"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 123,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2025-09-22",
+    "ticker": "ABTS"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 21,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2025-09-30",
+    "ticker": "TOPP"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 107,
+    "entry_et": 571,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-10-13",
+    "ticker": "LGCL"
+   },
+   {
+    "derived_last_et": 955,
+    "derived_rows": 91,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-10-20",
+    "ticker": "DHAI"
+   },
+   {
+    "derived_last_et": 948,
+    "derived_rows": 275,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-10-29",
+    "ticker": "CMBM"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 126,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2025-10-30",
+    "ticker": "BQ"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 110,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-11-03",
+    "ticker": "ABP"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 146,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-11-03",
+    "ticker": "ADTX"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 192,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-11-03",
+    "ticker": "CJET"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 121,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2025-11-03",
+    "ticker": "ADTX"
+   },
+   {
+    "derived_last_et": 957,
+    "derived_rows": 91,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2025-11-05",
+    "ticker": "CJET"
+   },
+   {
+    "derived_last_et": 957,
+    "derived_rows": 142,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-11-07",
+    "ticker": "RAY"
+   },
+   {
+    "derived_last_et": 957,
+    "derived_rows": 102,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-11-18",
+    "ticker": "ASNS"
+   },
+   {
+    "derived_last_et": 954,
+    "derived_rows": 140,
+    "entry_et": 601,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2025-11-19",
+    "ticker": "WSHP"
+   },
+   {
+    "derived_last_et": 957,
+    "derived_rows": 155,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-11-21",
+    "ticker": "EZGO"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 238,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-11-21",
+    "ticker": "WTO"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 17,
+    "entry_et": 604,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2025-11-24",
+    "ticker": "FATBB"
+   },
+   {
+    "derived_last_et": 954,
+    "derived_rows": 338,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2025-11-26",
+    "ticker": "SMX"
+   },
+   {
+    "derived_last_et": 938,
+    "derived_rows": 195,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2025-12-01",
+    "ticker": "FLYE"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 119,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-12-02",
+    "ticker": "XHLD"
+   },
+   {
+    "derived_last_et": 957,
+    "derived_rows": 39,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2025-12-09",
+    "ticker": "PSNYW"
+   },
+   {
+    "derived_last_et": 956,
+    "derived_rows": 176,
+    "entry_et": 602,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2025-12-10",
+    "ticker": "BBGI"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 123,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-12-12",
+    "ticker": "BNAI"
+   },
+   {
+    "derived_last_et": 951,
+    "derived_rows": 304,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-12-17",
+    "ticker": "PCSA"
+   },
+   {
+    "derived_last_et": 956,
+    "derived_rows": 38,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2025-12-17",
+    "ticker": "FEBO"
+   },
+   {
+    "derived_last_et": 951,
+    "derived_rows": 300,
+    "entry_et": 602,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2025-12-17",
+    "ticker": "PCSA"
+   },
+   {
+    "derived_last_et": 887,
+    "derived_rows": 11,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2025-12-18",
+    "ticker": "FATBB"
+   },
+   {
+    "derived_last_et": 956,
+    "derived_rows": 353,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2025-12-22",
+    "ticker": "FJET"
+   },
+   {
+    "derived_last_et": 956,
+    "derived_rows": 84,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-12-26",
+    "ticker": "ELPW"
+   },
+   {
+    "derived_last_et": 945,
+    "derived_rows": 255,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2026-01-08",
+    "ticker": "MTEN"
+   },
+   {
+    "derived_last_et": 948,
+    "derived_rows": 325,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2026-01-09",
+    "ticker": "ANPA"
+   },
+   {
+    "derived_last_et": 930,
+    "derived_rows": 361,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2026-01-13",
+    "ticker": "ATON"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 189,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2026-01-14",
+    "ticker": "VMAR"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 165,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2026-01-16",
+    "ticker": "HUBC"
+   },
+   {
+    "derived_last_et": 950,
+    "derived_rows": 77,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2026-01-16",
+    "ticker": "AFJK"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 255,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2026-02-04",
+    "ticker": "RVSN"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 117,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2026-02-09",
+    "ticker": "UGRO"
+   },
+   {
+    "derived_last_et": 910,
+    "derived_rows": 35,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2026-02-17",
+    "ticker": "INTJ"
+   },
+   {
+    "derived_last_et": 954,
+    "derived_rows": 132,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2026-02-19",
+    "ticker": "INTS"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 60,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2026-02-27",
+    "ticker": "PTLE"
+   },
+   {
+    "derived_last_et": 957,
+    "derived_rows": 119,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2026-03-04",
+    "ticker": "SPRC"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 239,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2026-03-10",
+    "ticker": "KIDZ"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 230,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2026-03-23",
+    "ticker": "YYGH"
+   },
+   {
+    "derived_last_et": 958,
+    "derived_rows": 66,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2026-04-01",
+    "ticker": "SNYR"
+   },
+   {
+    "derived_last_et": 949,
+    "derived_rows": 346,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2026-04-08",
+    "ticker": "UCAR"
+   },
+   {
+    "derived_last_et": 954,
+    "derived_rows": 83,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2026-04-13",
+    "ticker": "HCAI"
+   },
+   {
+    "derived_last_et": 955,
+    "derived_rows": 340,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2026-04-13",
+    "ticker": "RMSG"
+   },
+   {
+    "derived_last_et": 955,
+    "derived_rows": 20,
+    "entry_et": 574,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2026-04-20",
+    "ticker": "EHGO"
+   },
+   {
+    "derived_last_et": 943,
+    "derived_rows": 53,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2026-04-30",
+    "ticker": "BKYI"
+   },
+   {
+    "derived_last_et": 952,
+    "derived_rows": 92,
+    "entry_et": 571,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2026-04-30",
+    "ticker": "UK"
+   },
+   {
+    "derived_last_et": 957,
+    "derived_rows": 57,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2026-05-04",
+    "ticker": "ERNA"
+   },
+   {
+    "derived_last_et": 956,
+    "derived_rows": 28,
+    "entry_et": 600,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2026-05-12",
+    "ticker": "BUUU"
+   },
+   {
+    "derived_last_et": 935,
+    "derived_rows": 107,
+    "entry_et": 602,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2026-05-18",
+    "ticker": "JLHL"
+   },
+   {
+    "derived_last_et": 956,
+    "derived_rows": 44,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2026-05-22",
+    "ticker": "UBXG"
+   },
+   {
+    "derived_last_et": 942,
+    "derived_rows": 332,
+    "entry_et": 570,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2026-05-28",
+    "ticker": "SPRC"
+   }
+  ],
+  "censored_members": 273,
+  "censored_rows": 33845,
+  "censored_rows_share": 0.01780910866581914,
+  "censored_stopped_before_entry": 0,
+  "condition_after_forced_flat_rows": {
+   "giveback_condition_after_forced_flat_10": 10166,
+   "giveback_condition_after_forced_flat_15": 11388,
+   "giveback_condition_after_forced_flat_20": 8152,
+   "giveback_condition_after_forced_flat_5": 11519
   }
  },
  "census": {
@@ -2161,14 +4705,19 @@
   "failed_reclaim_count": "state_episode",
   "family": "key",
   "final_high_flag": "outcome_path",
+  "future_forced_flat_px": "future_meta",
+  "future_member_last_et": "future_meta",
   "gap_count_so_far": "state_attention",
+  "giveback_condition_after_forced_flat_10": "outcome_continuation",
+  "giveback_condition_after_forced_flat_15": "outcome_continuation",
+  "giveback_condition_after_forced_flat_20": "outcome_continuation",
+  "giveback_condition_after_forced_flat_5": "outcome_continuation",
   "giveback_fired_10": "outcome_continuation",
   "giveback_fired_15": "outcome_continuation",
   "giveback_fired_20": "outcome_continuation",
   "giveback_fired_5": "outcome_continuation",
   "level_ret": "outcome_continuation",
   "mae_so_far": "state_path",
-  "member_last_et": "key",
   "mfe_so_far": "state_path",
   "mfe_surrendered": "state_path",
   "month": "key",
@@ -2178,6 +4727,7 @@
   "next_et": "outcome_level",
   "next_open": "outcome_level",
   "open0930": "tape",
+  "path_complete_to_session_end": "censor",
   "peak_et_after_t": "outcome_path",
   "peer_new_high_5": "state_cross",
   "peer_ret_median": "state_cross",
@@ -2202,8 +4752,10 @@
   "tail_class_100": "outcome_path",
   "tail_class_300": "outcome_path",
   "tail_class_50": "outcome_path",
+  "terminal_censored": "censor",
   "ticker": "key",
   "up_close_streak": "state_dynamics",
+  "v_forced_flat": "outcome_continuation",
   "v_giveback_10": "outcome_continuation",
   "v_giveback_15": "outcome_continuation",
   "v_giveback_20": "outcome_continuation",
@@ -2218,16 +4770,33 @@
   "block1": "days <= 2023-12-31; block2: days >= 2025-02-01",
   "causality": "state uses only bars with et <= t plus the fill; no session aggregate after t",
   "execution": "a decision at completed bar t executes at the open of bar t+1",
-  "fill_bar": "first bar of the member with et >= the anatomy fill et",
+  "fill_bar": "first bar of the member with et >= the anatomy fill et (anatomy is authoritative)",
   "friction": "none in the panel; analyses apply bps_total/2 per side on the executed action",
+  "future_columns": "future_member_last_et and the four session_peak_*/session_close_ret_* constants carry post-t information and must never be used as causal state (registry: coverage.json.future_only_columns)",
+  "giveback_execution": "the trigger bar's next bar must exist for the exit to execute. The engine's forced flat goes flat at the session_end bar's OPEN, so a give-back close condition first seen on that bar's CLOSE cannot preempt it: v_giveback_g = v_forced_flat, giveback_fired_g = false, recorded in giveback_condition_after_forced_flat_g (diagnostic only). Only terminal-censored tapes have null give-back values.",
   "last_bar": "at the member's last tracked bar, next_open/next_et and every outcome column are null",
-  "member_window": "fill bar .. last member bar with et <= session_end (see member_last_et)",
+  "member_window": "fill bar .. last member bar with et <= session_end",
   "no_fabrication": "a missing input yields null, never a filled or carried value",
   "session_end": "day-level session end (959, or 779 on the 7 half-days), repeated per row",
-  "sort": "rows sorted by (sleeve_day, family, entry_rank, et)"
+  "sort": "rows sorted by (sleeve_day, family, entry_rank, et)",
+  "terminal_censoring": "a member whose tape stops before the session close has every terminal-dependent outcome null (path_complete_to_session_end = false); state columns are unaffected",
+  "terminal_execution": "the engine schedules FORCED_FLAT on the completed bar at session_end-1 and executes it at the session_end bar's OPEN; future_forced_flat_px is that price and v_forced_flat is the hold-to-flat continuation measured from it. v_hold_flat is the labelled CLOSE baseline (close of the session_end bar), kept only for comparability \u2014 it is not the engine's execution price."
  },
  "days_dev_total": 1066,
  "days_in_panel": 1066,
+ "future_only_columns": [
+  "session_peak_et",
+  "session_peak_ret_from_entry",
+  "session_peak_bars_from_entry",
+  "session_close_ret_from_entry",
+  "future_member_last_et",
+  "future_forced_flat_px",
+  "path_complete_to_session_end",
+  "terminal_censored"
+ ],
+ "future_only_prefixes": [
+  "future_"
+ ],
  "members": 6160,
  "months": 51,
  "null_rates_by_column": {
@@ -2298,8 +4867,8 @@
   },
   "bars_to_peak": {
    "family": "outcome_path",
-   "null_count": 6160,
-   "null_rate": 0.0032413682783703915
+   "null_count": 39732,
+   "null_rate": 0.020906825395489027
   },
   "block": {
    "family": "key",
@@ -2313,8 +4882,8 @@
   },
   "cost_of_waiting": {
    "family": "outcome_path",
-   "null_count": 6160,
-   "null_rate": 0.0032413682783703915
+   "null_count": 39732,
+   "null_rate": 0.020906825395489027
   },
   "dd_before_next_high": {
    "family": "outcome_path",
@@ -2368,33 +4937,63 @@
   },
   "final_high_flag": {
    "family": "outcome_path",
-   "null_count": 6160,
-   "null_rate": 0.0032413682783703915
+   "null_count": 39732,
+   "null_rate": 0.020906825395489027
+  },
+  "future_forced_flat_px": {
+   "family": "future_meta",
+   "null_count": 33845,
+   "null_rate": 0.01780910866581914
+  },
+  "future_member_last_et": {
+   "family": "future_meta",
+   "null_count": 0,
+   "null_rate": 0.0
   },
   "gap_count_so_far": {
    "family": "state_attention",
    "null_count": 0,
    "null_rate": 0.0
   },
+  "giveback_condition_after_forced_flat_10": {
+   "family": "outcome_continuation",
+   "null_count": 39732,
+   "null_rate": 0.020906825395489027
+  },
+  "giveback_condition_after_forced_flat_15": {
+   "family": "outcome_continuation",
+   "null_count": 39732,
+   "null_rate": 0.020906825395489027
+  },
+  "giveback_condition_after_forced_flat_20": {
+   "family": "outcome_continuation",
+   "null_count": 39732,
+   "null_rate": 0.020906825395489027
+  },
+  "giveback_condition_after_forced_flat_5": {
+   "family": "outcome_continuation",
+   "null_count": 39732,
+   "null_rate": 0.020906825395489027
+  },
   "giveback_fired_10": {
    "family": "outcome_continuation",
-   "null_count": 6160,
-   "null_rate": 0.0032413682783703915
+   "null_count": 39732,
+   "null_rate": 0.020906825395489027
   },
   "giveback_fired_15": {
    "family": "outcome_continuation",
-   "null_count": 6160,
-   "null_rate": 0.0032413682783703915
+   "null_count": 39732,
+   "null_rate": 0.020906825395489027
   },
   "giveback_fired_20": {
    "family": "outcome_continuation",
-   "null_count": 6160,
-   "null_rate": 0.0032413682783703915
+   "null_count": 39732,
+   "null_rate": 0.020906825395489027
   },
   "giveback_fired_5": {
    "family": "outcome_continuation",
-   "null_count": 6160,
-   "null_rate": 0.0032413682783703915
+   "null_count": 39732,
+   "null_rate": 0.020906825395489027
   },
   "level_ret": {
    "family": "outcome_continuation",
@@ -2403,11 +5002,6 @@
   },
   "mae_so_far": {
    "family": "state_path",
-   "null_count": 0,
-   "null_rate": 0.0
-  },
-  "member_last_et": {
-   "family": "key",
    "null_count": 0,
    "null_rate": 0.0
   },
@@ -2456,10 +5050,15 @@
    "null_count": 2948,
    "null_rate": 0.0015512262475058302
   },
+  "path_complete_to_session_end": {
+   "family": "censor",
+   "null_count": 0,
+   "null_rate": 0.0
+  },
   "peak_et_after_t": {
    "family": "outcome_path",
-   "null_count": 6160,
-   "null_rate": 0.0032413682783703915
+   "null_count": 39732,
+   "null_rate": 0.020906825395489027
   },
   "peer_new_high_5": {
    "family": "state_cross",
@@ -2488,8 +5087,8 @@
   },
   "remaining_run": {
    "family": "outcome_path",
-   "null_count": 6160,
-   "null_rate": 0.0032413682783703915
+   "null_count": 39732,
+   "null_rate": 0.020906825395489027
   },
   "ret_1": {
    "family": "state_dynamics",
@@ -2533,8 +5132,8 @@
   },
   "session_close_ret_from_entry": {
    "family": "ticket_constant",
-   "null_count": 0,
-   "null_rate": 0.0
+   "null_count": 33845,
+   "null_rate": 0.01780910866581914
   },
   "session_end": {
    "family": "key",
@@ -2543,18 +5142,18 @@
   },
   "session_peak_bars_from_entry": {
    "family": "ticket_constant",
-   "null_count": 0,
-   "null_rate": 0.0
+   "null_count": 33845,
+   "null_rate": 0.01780910866581914
   },
   "session_peak_et": {
    "family": "ticket_constant",
-   "null_count": 0,
-   "null_rate": 0.0
+   "null_count": 33845,
+   "null_rate": 0.01780910866581914
   },
   "session_peak_ret_from_entry": {
    "family": "ticket_constant",
-   "null_count": 0,
-   "null_rate": 0.0
+   "null_count": 33845,
+   "null_rate": 0.01780910866581914
   },
   "sleeve_day": {
    "family": "key",
@@ -2563,18 +5162,23 @@
   },
   "tail_class_100": {
    "family": "outcome_path",
-   "null_count": 6160,
-   "null_rate": 0.0032413682783703915
+   "null_count": 39732,
+   "null_rate": 0.020906825395489027
   },
   "tail_class_300": {
    "family": "outcome_path",
-   "null_count": 6160,
-   "null_rate": 0.0032413682783703915
+   "null_count": 39732,
+   "null_rate": 0.020906825395489027
   },
   "tail_class_50": {
    "family": "outcome_path",
-   "null_count": 6160,
-   "null_rate": 0.0032413682783703915
+   "null_count": 39732,
+   "null_rate": 0.020906825395489027
+  },
+  "terminal_censored": {
+   "family": "censor",
+   "null_count": 0,
+   "null_rate": 0.0
   },
   "ticker": {
    "family": "key",
@@ -2586,30 +5190,35 @@
    "null_count": 0,
    "null_rate": 0.0
   },
+  "v_forced_flat": {
+   "family": "outcome_continuation",
+   "null_count": 39732,
+   "null_rate": 0.020906825395489027
+  },
   "v_giveback_10": {
    "family": "outcome_continuation",
-   "null_count": 6160,
-   "null_rate": 0.0032413682783703915
+   "null_count": 39732,
+   "null_rate": 0.020906825395489027
   },
   "v_giveback_15": {
    "family": "outcome_continuation",
-   "null_count": 6160,
-   "null_rate": 0.0032413682783703915
+   "null_count": 39732,
+   "null_rate": 0.020906825395489027
   },
   "v_giveback_20": {
    "family": "outcome_continuation",
-   "null_count": 6160,
-   "null_rate": 0.0032413682783703915
+   "null_count": 39732,
+   "null_rate": 0.020906825395489027
   },
   "v_giveback_5": {
    "family": "outcome_continuation",
-   "null_count": 6160,
-   "null_rate": 0.0032413682783703915
+   "null_count": 39732,
+   "null_rate": 0.020906825395489027
   },
   "v_hold_flat": {
    "family": "outcome_continuation",
-   "null_count": 6160,
-   "null_rate": 0.0032413682783703915
+   "null_count": 39732,
+   "null_rate": 0.020906825395489027
   },
   "v_sell": {
    "family": "outcome_continuation",
@@ -2633,19 +5242,33 @@
   }
  },
  "null_rates_by_column_family": {
+  "censor": {
+   "cells": 3800864,
+   "columns": 2,
+   "max_null_rate": 0.0,
+   "mean_null_rate": 0.0,
+   "null_count": 0
+  },
+  "future_meta": {
+   "cells": 3800864,
+   "columns": 2,
+   "max_null_rate": 0.01780910866581914,
+   "mean_null_rate": 0.00890455433290957,
+   "null_count": 33845
+  },
   "key": {
-   "cells": 24705616,
-   "columns": 13,
+   "cells": 22805184,
+   "columns": 12,
    "max_null_rate": 0.0,
    "mean_null_rate": 0.0,
    "null_count": 0
   },
   "outcome_continuation": {
-   "cells": 20904752,
-   "columns": 11,
-   "max_null_rate": 0.0032413682783703915,
-   "mean_null_rate": 0.003241368278370391,
-   "null_count": 67760
+   "cells": 30406912,
+   "columns": 16,
+   "max_null_rate": 0.020906825395489027,
+   "mean_null_rate": 0.0186986432558492,
+   "null_count": 568568
   },
   "outcome_level": {
    "cells": 3800864,
@@ -2658,8 +5281,8 @@
    "cells": 19004320,
    "columns": 10,
    "max_null_rate": 0.7655280483595309,
-   "mean_null_rate": 0.15569870429460247,
-   "null_count": 2958948
+   "mean_null_rate": 0.16983106998829736,
+   "null_count": 3227524
   },
   "state_attention": {
    "cells": 7601728,
@@ -2706,15 +5329,16 @@
   "ticket_constant": {
    "cells": 7601728,
    "columns": 4,
-   "max_null_rate": 0.0,
-   "mean_null_rate": 0.0,
-   "null_count": 0
+   "max_null_rate": 0.01780910866581914,
+   "mean_null_rate": 0.01780910866581914,
+   "null_count": 135380
   }
  },
  "outcome_columns": [
   "next_open",
   "next_et",
   "v_hold_flat",
+  "v_forced_flat",
   "v_giveback_5",
   "v_giveback_10",
   "v_giveback_15",
@@ -2723,6 +5347,10 @@
   "giveback_fired_10",
   "giveback_fired_15",
   "giveback_fired_20",
+  "giveback_condition_after_forced_flat_5",
+  "giveback_condition_after_forced_flat_10",
+  "giveback_condition_after_forced_flat_15",
+  "giveback_condition_after_forced_flat_20",
   "v_sell",
   "level_ret",
   "final_high_flag",
@@ -2737,59 +5365,59 @@
   "tail_class_300"
  ],
  "panel": "factory/artifacts/basket/phase2/ATLAS/panel.parquet",
- "panel_sha256": "8ce4615946e2f5eed41e32858bb4020246a448720e81d74cebf8db2d1b7d990c",
+ "panel_sha256": "2a021eda878cdbe53e41d4cc88e2d8ba3b14d9a3a819723d9f679c8aca7c3488",
  "part_sha256": {
-  "2021-02": "9820e836b33575db7c05653f30c001b01ab234eecc2ef5491f3f4f507206cb89",
-  "2021-03": "66e3812f23bd3c825bc06e97f5f168d0d674054177a5bf0aa0b77914cc3ee455",
-  "2021-04": "467f8ac7c7d5b3f3edaa846fda014017d3138879ab1a7a4073f2526314e2e118",
-  "2021-05": "4755a0cb54e55a27258584bd9d9ea929ac63073b82d52d85933c27c52061f490",
-  "2021-06": "30667ae898eeffd0d7fb707284d24c9ff9abf782cc9ca9de58385619c92b7276",
-  "2021-07": "e3b8a0f4625f990d4689ea3c2863d1c087ebac235fa20aef8644b7a34ba0bfe1",
-  "2021-08": "7e14918ee1346f0fd23834f9907ee4fa630274a95a2f38f55eb4bdc556427cf2",
-  "2021-09": "9cbf97f35ac142e7c0bd57c2fb210392548e806e360dc05b8b0767adbd2507ee",
-  "2021-10": "24350664eb8b7ff49d0a837cd7e1ffd1bae7da0b3032d6b1a583dd1fd34dc95a",
-  "2021-11": "04a24b7388222dc3bb7a9e644e2348a2a6a732371a6dbb4775390e08a390e015",
-  "2021-12": "f239428f5fdeccb423f4f84231c2f9765ad8fa82319fc61f2b73889537815d78",
-  "2022-01": "457a11a80cf7124deaa58a60b90978f867f8bfb94035dde8577c8507a2df2202",
-  "2022-02": "b8ad2e2b3eee15c773a4c647699557806be0ac6b9d7fcde6b0dfa6be3d8c0116",
-  "2022-03": "4ff43ce378e1a7f03dae81f7e8ad28bf2b9c4acebebc7de2d0dc0edc7364297b",
-  "2022-04": "7382ee86907301b65a37845240797940e4a129d3d646580550d4d54f2fd5d90b",
-  "2022-05": "7e2de014691a4b3f979c2f0acfc3f2b0bfc62d2da169a87e63611fd0456f7110",
-  "2022-06": "b44e5cc7dc08b7e18e4dbd75a634164bd63cdb1129a3bb25d1a02d86c36606a4",
-  "2022-07": "e4662eb9839d66a845002d9ce5f92ae301a4c66bfeaad20df4a6e9a7d5297768",
-  "2022-08": "9d2b7803b2bf4d45b460e75119a31f8a09e22e7920ce29ab7523d9e52113154f",
-  "2022-09": "12ac1d2ef254b520761d06d44ee804b1bd7ed7f8dc3ae11e76ce011806b4b97b",
-  "2022-10": "0cbf7229e8f10747276c1fc86ad5247678e8ac87b83f38f53bde287068c394ff",
-  "2022-11": "c769cf67f3bce29b394cc0b1d327508a117dcf9de6a25d43d60228a0ee1cb74b",
-  "2022-12": "250cde7d7c284dfae0f967691e3a4c19b071447e558023214d29cb2473c3417a",
-  "2023-01": "08b3d5b5dbc46e4ecf82e212c0c3241226acd46cd92ad187a9c0bc5e244e2700",
-  "2023-02": "0d792a61fa46aa28ef1e78b40cbf6fdacee65958c3426e870623f24a937eb853",
-  "2023-03": "2aa4d4b1b91089107bd9f3f38620312a188adc136d57718fea67708876122bae",
-  "2023-04": "edb0054968b3da95828a5a31465b2eb7cfc6757bd47dbf408dfdc2bff0d5cd81",
-  "2023-05": "0fef8d70eed997bc28c86c6720aa6c5f0b2a689ceead6d9574fac935c1e7be87",
-  "2023-06": "249fad450926188bed6a6c024db8b7522d111cf4cab08a810d496c2e354c4d67",
-  "2023-07": "90e8e985b5cc407331e19666ebf6ef95d0183495f525b8b6a25bf983f70f785a",
-  "2023-08": "ce05bc5362643d70c65ff018639d68355940c6ba7141cc0ae4c490b5a3e65abc",
-  "2023-09": "79b5fa9a26db89a703a22b84099804a8701bb003c72fd8a6d6b6e444292ceae4",
-  "2023-10": "ca8b3aa6fa0613ae5216f9937edcb14a3bace0948c867648ee8106fbe55fc189",
-  "2023-11": "b819e83a818180250b5390df28c8aede802aaaa8b35e16319ad95722b141437b",
-  "2023-12": "c2b7063dc58223a64f802616a254cd99f4d134a8a618282604f269ce418f1fda",
-  "2025-02": "21de9d7bf116e3e87faf54bda2643fff20a54a2dbcf57ebff509c6c50a63224f",
-  "2025-03": "6bb5d3a1e5b9ee07eaa8ceb147f34dfc92414ff5f1f1916f4e1ad5bd9b00182e",
-  "2025-04": "b86c825512c890e6c92c6f128783aebbf00ef08ca196c275bd35be577b18b832",
-  "2025-05": "cfc16e07ef17fdfd2df37e32a14e11626df0b5636ef3963c31f52207cb6decf4",
-  "2025-06": "f773cb8d1f5e95d728225677c56bfcd267e8401663c90219d54a422ab3507122",
-  "2025-07": "80b69b28e01821d38c05d43600796c2ba862d6296f3c7cca0b4eca8bb1bf9ddc",
-  "2025-08": "e10e58b83b107fc23ec035b371c7ea68092f8f0d8b7854e90133364aeb6090db",
-  "2025-09": "4cac44125ff3c65742d2e26634389c7c98dcb8d2907b6b0a49df241fe4ed1ec1",
-  "2025-10": "26904003236aa30ec347e0009fd3097ce298e87d9c8e67c54260567b11187ae1",
-  "2025-11": "74b5ef2294b4556a354b483103e6e0a9429322ea1ba33e50d0e4ac30da82127e",
-  "2025-12": "39bfc35f32dab3950df92430e8e5f369aad5b3436d462a7b04b0dabc7aec633a",
-  "2026-01": "ef79ab00246e5e640a0fe96c69d559e2ddcc3f7af6e26abfba6fbdf62f91af9b",
-  "2026-02": "26db4144df7c79f2f2ebb0a9aac30529854a819b7bfb2fcf20a2c6bc9eeefaeb",
-  "2026-03": "e8e0526a0b4018b992605ec1b70112f81538bc1f34db068f6fa0fe36bd0f9b90",
-  "2026-04": "cd59c64516f88cc7fac663cda7f1c693e91f26c07673c5e20c08eab86018038c",
-  "2026-05": "5656d5313b670feccf71632f5c56f7bf097392b456845f57d6d5a83368a0dc90"
+  "2021-02": "a57f2a0a0ca51e1496a71945eee3135e96a97a108840cde5d240483834403b24",
+  "2021-03": "46ef7c47976738592b486c94bc1433a7c1cbcf3bb475866d21e3ffe849f1747d",
+  "2021-04": "9ce80e104b2432b23f59d87870f405efbe5e077c4631ca98cd8f558ef0411b8c",
+  "2021-05": "25862836ac7885caa62fc4748224aa3ffbf529d4f8cdc4cd5101fd638c0654f2",
+  "2021-06": "d7cb570ce7d9303ccddc8f7f19cb1211b97eb1ea00988b623d524d0ade67c5b9",
+  "2021-07": "ce189609a6bdda269084c23d605a07317a0a06a152841a3754dcff944657a7ed",
+  "2021-08": "d33c537c083e34c2815fa5ebd7e6eb6a6d3e03f58370b9e5edcc23dc8241ba8e",
+  "2021-09": "dd78b6c1590fb18565f48209edbeb8fb3fa3578e19e0d252d4fe76321ea29fce",
+  "2021-10": "5e80d2798c7db18406269e7601123b102a0b96e3015150a26629ccc3f805ee8b",
+  "2021-11": "2d79a15f22078f686371e26584707d7a286117d85677c8afd031e54b44e0fd11",
+  "2021-12": "de4c7492a32385716d0f8f6a5979c6638a36582a86d0d719697f16eefd35acad",
+  "2022-01": "25d0f458bf21a0d709839fe207eeb3ba2b37ff38e50bc3c7f6436f54ebc1de4b",
+  "2022-02": "01d5135529e26855f092bc79dc92cc6e66f145b77f29d882df30c9623406c514",
+  "2022-03": "7a5d0d1cd20543b4f9e752684835cb37f201d649e95031009e858d052af6314f",
+  "2022-04": "d5b4336917683e517b3f6ca06208f02968e02ab84652fa64e2f7c316f73cdc87",
+  "2022-05": "0218309628abd92d0eaab3c7beb7d752de9dda0663e02110aeee2aab999e40a4",
+  "2022-06": "beb46fd02b4e872ede279123fd6901dde82bafa26e1e8361adf659830f2eaec3",
+  "2022-07": "8a68b4de3713410d4a94ff3d619327b07fad918e4f61dcf41de7a9db8b24912b",
+  "2022-08": "dde18316ce9e089f9e2f5b93ebe69c066a756504a5a3d564c6d5c1e5dbe5591e",
+  "2022-09": "98cf81fac2938f781fc52f8c1cb6cd815d90b29823dbb9777c5e1218deb2c79e",
+  "2022-10": "1b945b1166952abadb6a35656caa910c6e259bccd5ac86fc67c4b709085698e8",
+  "2022-11": "648295569d3398a221650b9785d14e0a0c779585045cf7b5e41ad47e16327691",
+  "2022-12": "5766a97da08b2869d120411f2c1554f92824c653d6baef82bb9010b2ba9d866e",
+  "2023-01": "08f9a2c5564e13e301a96dd411d7325a03ac53d49fe605bc536931c97ecf38ad",
+  "2023-02": "1069e4ab4396c8ab72143f67efe900ae518a40f87389fa0c18cf5ba40aeaa57e",
+  "2023-03": "574429ecaaf6d16b0bcd5dd9a46ac172295ae542251d460eff2f011d412ead70",
+  "2023-04": "720cb1b5b11ec9630055e59dacdb4e592768330cbc4d8705339801ffbd046268",
+  "2023-05": "19a807380ee4da0f604cb92009df9379337ee9d057dbd424fbb082b1bf5230d7",
+  "2023-06": "085e3123e27b0d737a703da2e9be7c86eae87f8f674941c5d3c22eb319c526f8",
+  "2023-07": "ace202779cdf3ee6e0ed31ec611581cecdd2b5918ad79132341d888a0a580829",
+  "2023-08": "7926561150b636743c34fbe7220f1cf27e6c74c0f0bd389ce9d57099f91d45a0",
+  "2023-09": "69bf10d4c7be718f3c9c7032ac1d05f8cb499ad5f842f445e19d5655260d3e74",
+  "2023-10": "2589095ad310dd485552424380dd78ef4c59ed23f490ac5edd8732185c8da3a6",
+  "2023-11": "ded3e1547ba1d5bd35861d282c681fb4b67bc32ce08e532884070df87fbcced1",
+  "2023-12": "31f3969967ffd6d5713fca3d8a7ec24ba30bf5d44b83a22f919d619f95ac84bf",
+  "2025-02": "8b9b97be3c8ab9c37253ac63123a4400757b546c1f42f50913306b33f7fa1365",
+  "2025-03": "d7295b9f68f2b1e602efb6e3f7fe241efa20b39f020491b85a0efd6f6dc832e7",
+  "2025-04": "cf302ca506adbf9d73aac99623b63fde155c6ae787ecd43e9116b200a4284645",
+  "2025-05": "f7724ebc5702b788d364926328f9ce5a17e302bfcf68692e89e827a99351c25e",
+  "2025-06": "530ed1f92ea3a301f1df68621fc7844cb847c25b95a3d1fc3952a6b3e7da98b9",
+  "2025-07": "a1e241c099201e020a8cc6b2ba451d0dc9ba68edf25db2b0f6105b2ee7b475db",
+  "2025-08": "01c08871391cf18e8a4ff21163d563433aac4b8c03443abfbdfe9d5c6eef9155",
+  "2025-09": "0fb4b8d52920814e14c4809a1ed45469f6cee048a51dcac36c578bdf05098859",
+  "2025-10": "62f2c652d240d5d6cf6862bf767d4c633613104ebf000dbb78b54ad03580f816",
+  "2025-11": "41993e2a57247d9652e848d22f79e915a57bb4997a13d9b8f4caca66e697331a",
+  "2025-12": "fb736f5d745c7830683ec0e5904d6d2e34f061ba0411b2c7c224b2cd226cfc4c",
+  "2026-01": "1e01482e50bd461787aaf7e63658c86a8aafbeff183eda4c5fa0c258a622e6cc",
+  "2026-02": "4195622adf5fb1a03228af5f95675855a71b1947d6003e6aa5737df5f43c60a3",
+  "2026-03": "1f3cbce5c79277596bf3ef133224568f5a86b4aa23ea44a5015a991818f09679",
+  "2026-04": "115667f347059335cb45306f414baccb53c6e0b221f5ef1731865ff0314cb651",
+  "2026-05": "3561dee967231365723c691528e0c5d75e0bf1cd7d1807715c693fd4d7f4d525"
  },
  "per_block": {
   "block1": {
@@ -2822,57 +5450,57 @@
   }
  },
  "per_month_rows": {
-  "2021-02": 37671,
-  "2021-03": 31546,
-  "2021-04": 40033,
-  "2021-05": 33197,
-  "2021-06": 31373,
-  "2021-07": 43716,
-  "2021-08": 35188,
-  "2021-09": 33170,
-  "2021-10": 34968,
-  "2021-11": 37164,
-  "2021-12": 34516,
+  "2021-02": 45970,
+  "2021-03": 37381,
+  "2021-04": 38198,
+  "2021-05": 31546,
+  "2021-06": 42752,
+  "2021-07": 34516,
+  "2021-08": 36353,
+  "2021-09": 32334,
+  "2021-10": 37125,
+  "2021-11": 33458,
+  "2021-12": 42761,
   "2022-01": 41688,
-  "2022-02": 33458,
-  "2022-03": 30700,
-  "2022-04": 33482,
-  "2022-05": 37871,
-  "2022-06": 37347,
+  "2022-02": 31373,
+  "2022-03": 32785,
+  "2022-04": 37909,
+  "2022-05": 40033,
+  "2022-06": 39258,
   "2022-07": 33677,
-  "2022-08": 38198,
-  "2022-09": 42629,
-  "2022-10": 36076,
-  "2022-11": 34774,
-  "2022-12": 37909,
-  "2023-01": 45970,
-  "2023-02": 44446,
-  "2023-03": 42752,
-  "2023-04": 30593,
-  "2023-05": 31941,
-  "2023-06": 36507,
-  "2023-07": 39678,
-  "2023-08": 39258,
-  "2023-09": 38403,
-  "2023-10": 32886,
-  "2023-11": 45753,
-  "2023-12": 42935,
-  "2025-02": 32334,
-  "2025-03": 32785,
-  "2025-04": 40439,
-  "2025-05": 42761,
-  "2025-06": 36487,
-  "2025-07": 34179,
-  "2025-08": 43192,
-  "2025-09": 37381,
-  "2025-10": 37067,
-  "2025-11": 36353,
-  "2025-12": 31555,
-  "2026-01": 38356,
-  "2026-02": 37193,
-  "2026-03": 39756,
-  "2026-04": 37125,
-  "2026-05": 41996
+  "2022-08": 37067,
+  "2022-09": 43716,
+  "2022-10": 38403,
+  "2022-11": 37347,
+  "2022-12": 39756,
+  "2023-01": 36076,
+  "2023-02": 40439,
+  "2023-03": 30700,
+  "2023-04": 42935,
+  "2023-05": 31555,
+  "2023-06": 39678,
+  "2023-07": 33170,
+  "2023-08": 32886,
+  "2023-09": 42629,
+  "2023-10": 38356,
+  "2023-11": 41996,
+  "2023-12": 36507,
+  "2025-02": 37671,
+  "2025-03": 37164,
+  "2025-04": 35188,
+  "2025-05": 34774,
+  "2025-06": 31941,
+  "2025-07": 37871,
+  "2025-08": 36487,
+  "2025-09": 44446,
+  "2025-10": 33197,
+  "2025-11": 33482,
+  "2025-12": 45753,
+  "2026-01": 30593,
+  "2026-02": 43192,
+  "2026-03": 34968,
+  "2026-04": 34179,
+  "2026-05": 37193
  },
  "producer": "factory/scripts/basket_atlas_panel.py",
  "producer_additions": {
@@ -2880,13 +5508,17 @@
   "bar_high": "raw tape: high of the completed bar t",
   "bar_low": "raw tape: low of the completed bar t",
   "bar_open": "raw tape: open of the completed bar t (causal; = next_open of row t-1)",
-  "member_last_et": "ET of the last bar of this member's tracked window; equals session_end when the member traded into the close",
+  "future_forced_flat_px": "FUTURE-ONLY: the engine's executable terminal price \u2014 the open of the session_end bar (basket_sim schedules FORCED_FLAT at session_end-1 and executes it at the next bar's open). Null when the member has no print at session_end (the engine carries it).",
+  "future_member_last_et": "FUTURE-ONLY: ET of the member's last print. Known only after the session; never an eligible causal input.",
+  "giveback_condition_after_forced_flat": "the close condition of the give-back rule appeared only on the session_end bar's close, after the engine had already gone flat \u2014 diagnostic, never a firing",
   "open0930": "anatomy day constant, used by ret_from_open0930 (repeated per row)",
-  "prev_close": "anatomy day constant, used by ret_from_prevclose (repeated per row)"
+  "path_complete_to_session_end": "member-level: the member printed at the session's last minute, so its tape carries the whole session",
+  "prev_close": "anatomy day constant, used by ret_from_prevclose (repeated per row)",
+  "terminal_censored": "member-level flag = not path_complete_to_session_end; every terminal-dependent outcome is null for that member"
  },
  "rows": 1900432,
  "schema": "factory/artifacts/basket/phase2/ATLAS/SCHEMA.md",
- "schema_version": 1,
+ "schema_version": 2,
  "tape_shape": {
   "entry_et_histogram": [
    {
@@ -2956,164 +5588,164 @@
   "members_without_final_bar": 273,
   "members_without_final_bar_examples": [
    {
-    "family": "A_pm",
-    "last_et": 955,
-    "session_end": 959,
-    "sleeve_day": "2023-09-18",
-    "ticker": "AEHL"
-   },
-   {
+    "derived_last_et": 955,
     "family": "B600",
-    "last_et": 958,
-    "session_end": 959,
-    "sleeve_day": "2025-05-28",
-    "ticker": "YSXT"
-   },
-   {
-    "family": "A_pm",
-    "last_et": 928,
-    "session_end": 959,
-    "sleeve_day": "2025-03-17",
-    "ticker": "SAIH"
-   },
-   {
-    "family": "B600",
-    "last_et": 957,
-    "session_end": 959,
-    "sleeve_day": "2025-05-01",
-    "ticker": "ZCAR"
-   },
-   {
-    "family": "A_pm",
-    "last_et": 955,
-    "session_end": 959,
-    "sleeve_day": "2026-04-20",
-    "ticker": "EHGO"
-   },
-   {
-    "family": "B600",
-    "last_et": 955,
     "session_end": 959,
     "sleeve_day": "2023-04-26",
     "ticker": "MPU"
    },
    {
+    "derived_last_et": 943,
     "family": "A_pm",
-    "last_et": 958,
     "session_end": 959,
-    "sleeve_day": "2023-06-09",
-    "ticker": "WETG"
+    "sleeve_day": "2026-04-30",
+    "ticker": "BKYI"
    },
    {
+    "derived_last_et": 958,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2023-05-25",
+    "ticker": "LAES"
+   },
+   {
+    "derived_last_et": 957,
     "family": "A_pm",
-    "last_et": 958,
     "session_end": 959,
-    "sleeve_day": "2025-03-10",
-    "ticker": "MNDR"
+    "sleeve_day": "2025-06-06",
+    "ticker": "INAB"
    },
    {
-    "family": "B600",
-    "last_et": 958,
-    "session_end": 959,
-    "sleeve_day": "2025-04-28",
-    "ticker": "SBEV"
-   },
-   {
+    "derived_last_et": 953,
     "family": "A_pm",
-    "last_et": 765,
-    "session_end": 779,
-    "sleeve_day": "2021-11-26",
-    "ticker": "BFRI"
-   },
-   {
-    "family": "B600",
-    "last_et": 958,
     "session_end": 959,
-    "sleeve_day": "2025-04-09",
-    "ticker": "ABVC"
+    "sleeve_day": "2021-03-08",
+    "ticker": "EYES"
    },
    {
-    "family": "B600",
-    "last_et": 958,
-    "session_end": 959,
-    "sleeve_day": "2023-04-03",
-    "ticker": "HHRS"
-   },
-   {
-    "family": "B600",
-    "last_et": 957,
-    "session_end": 959,
-    "sleeve_day": "2025-08-13",
-    "ticker": "ZYBT"
-   },
-   {
-    "family": "B600",
-    "last_et": 951,
-    "session_end": 959,
-    "sleeve_day": "2021-08-20",
-    "ticker": "RGC"
-   },
-   {
+    "derived_last_et": 958,
     "family": "A_pm",
-    "last_et": 940,
     "session_end": 959,
-    "sleeve_day": "2021-04-30",
-    "ticker": "ISNS"
+    "sleeve_day": "2025-11-03",
+    "ticker": "CJET"
    },
    {
+    "derived_last_et": 928,
     "family": "B600",
-    "last_et": 945,
     "session_end": 959,
-    "sleeve_day": "2026-01-08",
-    "ticker": "MTEN"
+    "sleeve_day": "2023-09-18",
+    "ticker": "VSTA"
    },
    {
+    "derived_last_et": 957,
     "family": "A_pm",
-    "last_et": 958,
     "session_end": 959,
-    "sleeve_day": "2022-12-12",
-    "ticker": "BIMI"
+    "sleeve_day": "2025-11-07",
+    "ticker": "RAY"
    },
    {
+    "derived_last_et": 951,
     "family": "B600",
-    "last_et": 938,
     "session_end": 959,
-    "sleeve_day": "2022-01-18",
-    "ticker": "NMTC"
+    "sleeve_day": "2023-09-11",
+    "ticker": "MFH"
    },
    {
+    "derived_last_et": 957,
     "family": "B600",
-    "last_et": 958,
+    "session_end": 959,
+    "sleeve_day": "2025-03-12",
+    "ticker": "YJ"
+   },
+   {
+    "derived_last_et": 958,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2022-10-31",
+    "ticker": "EVK"
+   },
+   {
+    "derived_last_et": 958,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-02-21",
+    "ticker": "CNSP"
+   },
+   {
+    "derived_last_et": 958,
+    "family": "B600",
     "session_end": 959,
     "sleeve_day": "2025-09-05",
     "ticker": "FTHM"
    },
    {
+    "derived_last_et": 957,
     "family": "A_pm",
-    "last_et": 958,
     "session_end": 959,
-    "sleeve_day": "2026-02-09",
-    "ticker": "UGRO"
+    "sleeve_day": "2025-02-03",
+    "ticker": "EYEN"
+   },
+   {
+    "derived_last_et": 867,
+    "family": "B600",
+    "session_end": 959,
+    "sleeve_day": "2025-04-15",
+    "ticker": "ZEO"
+   },
+   {
+    "derived_last_et": 946,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-08-25",
+    "ticker": "RCRT"
+   },
+   {
+    "derived_last_et": 951,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2025-06-23",
+    "ticker": "TRUG"
+   },
+   {
+    "derived_last_et": 957,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2026-05-04",
+    "ticker": "ERNA"
+   },
+   {
+    "derived_last_et": 958,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2021-04-21",
+    "ticker": "ACU"
+   },
+   {
+    "derived_last_et": 914,
+    "family": "A_pm",
+    "session_end": 959,
+    "sleeve_day": "2023-11-02",
+    "ticker": "MOTS"
    }
   ],
   "peak_clock_by_family": {
    "A_pm": {
-    "close_ret_from_entry_mean": -0.025069434399294255,
-    "close_ret_from_entry_median": -0.05344205378973105,
-    "peak_et_median": 587.0,
+    "close_ret_from_entry_mean": -0.029504431732980056,
+    "close_ret_from_entry_median": -0.05674839557096928,
+    "peak_et_median": 586.0,
     "peak_et_q25": 571.0,
-    "peak_et_q75": 679.0,
-    "peak_ret_from_entry_mean": 0.21326580213149765,
-    "peak_ret_from_entry_median": 0.10029586054760165
+    "peak_et_q75": 678.0,
+    "peak_ret_from_entry_mean": 0.2126484266523289,
+    "peak_ret_from_entry_median": 0.10035514040708637
    },
    "B600": {
-    "close_ret_from_entry_mean": -0.0227112012780476,
-    "close_ret_from_entry_median": -0.04384217515901295,
-    "peak_et_median": 631.0,
+    "close_ret_from_entry_mean": -0.027955929352069354,
+    "close_ret_from_entry_median": -0.044303797468354444,
+    "peak_et_median": 632.0,
     "peak_et_q25": 604.0,
     "peak_et_q75": 754.0,
-    "peak_ret_from_entry_mean": 0.19588813879189473,
-    "peak_ret_from_entry_median": 0.0925581242034017
+    "peak_ret_from_entry_mean": 0.18878929804191613,
+    "peak_ret_from_entry_median": 0.09385113268608425
    }
   },
   "rows_per_member": {
@@ -3131,5 +5763,41 @@
     "session_end": 959
    }
   ]
+ },
+ "verification": {
+  "corruption_command": "python factory/scripts/basket_atlas_panel.py corruption --panel factory/artifacts/basket/phase2/ATLAS/panel.parquet",
+  "independent_verifier": {
+   "command": "python factory/scripts/basket_atlas_verify.py --panel factory/artifacts/basket/phase2/ATLAS/panel.parquet --report factory/artifacts/basket/phase2/ATLAS/verify_report.json",
+   "path": "factory/scripts/basket_atlas_verify.py",
+   "sha256": "659f7abdab37e8f9b8ca4bdbc3fa212db6680d42052b3d90c781e1858dad5623"
+  },
+  "last_run": {
+   "all_ok": true,
+   "command": "/home/hillel/projects/Alpacatrader/.venv/bin/python /home/hillel/.config/opencode/worktrees/Alpacatrader/basket-phase2-f1/factory/scripts/basket_atlas_verify.py --panel /home/hillel/.config/opencode/worktrees/Alpacatrader/basket-phase2-f1/factory/artifacts/basket/phase2/ATLAS/panel.parquet --report /home/hillel/.config/opencode/worktrees/Alpacatrader/basket-phase2-f1/factory/artifacts/basket/phase2/ATLAS/verify_report.json",
+   "comparisons": 1496,
+   "mismatches": 0,
+   "report": "/home/hillel/.config/opencode/worktrees/Alpacatrader/basket-phase2-f1/factory/artifacts/basket/phase2/ATLAS/verify_report.json",
+   "rows_checked": 22,
+   "strata": {
+    "at_entry_bar": 2,
+    "blocked_fill_day": 2,
+    "condition_after_forced_flat": 2,
+    "duplicate_family_path": 2,
+    "early_close": 2,
+    "extreme_move": 2,
+    "high_tie_at_threshold": 2,
+    "incomplete_tape": 2,
+    "last_bar": 2,
+    "missing_reference": 2,
+    "ordinary": 2
+   },
+   "verifier_sha256": "659f7abdab37e8f9b8ca4bdbc3fa212db6680d42052b3d90c781e1858dad5623"
+  },
+  "producer": {
+   "corruption_command": "python factory/scripts/basket_atlas_panel.py corruption --panel factory/artifacts/basket/phase2/ATLAS/panel.parquet",
+   "path": "factory/scripts/basket_atlas_panel.py",
+   "selftest_command": "python factory/scripts/basket_atlas_panel.py selftest --panel factory/artifacts/basket/phase2/ATLAS/panel.parquet",
+   "sha256": "165a39a6f3fb6ec99d557d9c55fa4e62dd3437d982ec46a8cf18e749a1e83bf2"
+  }
  }
 }

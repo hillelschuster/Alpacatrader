@@ -1,0 +1,382 @@
+{
+ "all_ok": true,
+ "c1_check": {
+  "A_pm": {
+   "available": true,
+   "c1_members": 60,
+   "cell": "A_pm_N3_R0_bps100",
+   "common_members": 60,
+   "entry_et_mismatches": [],
+   "entry_px_mismatches": [],
+   "entry_rank_members_checked": 60,
+   "entry_rank_mismatches": [],
+   "expected_n_entries": 3188,
+   "forced_flat_checked": 60,
+   "forced_flat_mismatches": [],
+   "n_entries_metrics": 3188,
+   "n_entry_et_mismatches": 0,
+   "n_entry_px_mismatches": 0,
+   "n_entry_rank_mismatches": 0,
+   "n_forced_flat_mismatches": 0,
+   "n_only_in_c1": 0,
+   "n_only_in_panel": 0,
+   "only_in_c1": [],
+   "only_in_panel": [],
+   "panel_members": 60
+  },
+  "B600": {
+   "available": true,
+   "c1_members": 59,
+   "cell": "B600_N3_R0_bps100",
+   "common_members": 59,
+   "entry_et_mismatches": [],
+   "entry_px_mismatches": [],
+   "entry_rank_members_checked": 59,
+   "entry_rank_mismatches": [],
+   "expected_n_entries": 2972,
+   "forced_flat_checked": 59,
+   "forced_flat_mismatches": [],
+   "n_entries_metrics": 2972,
+   "n_entry_et_mismatches": 0,
+   "n_entry_px_mismatches": 0,
+   "n_entry_rank_mismatches": 0,
+   "n_forced_flat_mismatches": 0,
+   "n_only_in_c1": 0,
+   "n_only_in_panel": 0,
+   "only_in_c1": [],
+   "only_in_panel": [],
+   "panel_members": 59
+  }
+ },
+ "checks": [
+  {
+   "check": "(a) A_pm members = 60 (anchor check only on the full panel)",
+   "ok": true
+  },
+  {
+   "check": "(a) B600 members = 59 (anchor check only on the full panel)",
+   "ok": true
+  },
+  {
+   "check": "(a2) exact C1 equality on keys/entry_px/entry_et/entry_rank (all fields exact; ranks checked: 119)",
+   "ok": true
+  },
+  {
+   "check": "(b) rows per member == bars from fill et to session end (0 mismatches)",
+   "ok": true
+  },
+  {
+   "check": "(c) bar_index is 0..n-1 and et strictly increasing (0 offenders)",
+   "ok": true
+  },
+  {
+   "check": "(d) 8 sampled rows (random + censored/last-bar/unexecutable/early-close/missing-reference strata) recompute exactly from raw bars (0 mismatches)",
+   "ok": true
+  },
+  {
+   "check": "(e) no outcome column is populated when next_open is null ({})",
+   "ok": true
+  },
+  {
+   "check": "(e) on complete tapes every event-defined outcome column is populated when next_open exists ({}; no-event-null exceptions: ['bars_to_next_high', 'dd_before_next_high'])",
+   "ok": true
+  },
+  {
+   "check": "(f) censor flags are never null",
+   "ok": true
+  },
+  {
+   "check": "(f) terminal_censored and path_complete_to_session_end are complementary (0 rows violate)",
+   "ok": true
+  },
+  {
+   "check": "(f) terminal_censored == (future_member_last_et < session_end) (0 rows violate)",
+   "ok": true
+  },
+  {
+   "check": "(f) every terminal-dependent outcome is null on censored tapes ({})",
+   "ok": true
+  },
+  {
+   "check": "(f) censored: 8 members / 950 rows (2.71% of rows); complete: 34153 rows",
+   "ok": true
+  },
+  {
+   "check": "(g) a trigger without a next bar is censored, never executed at the same close ({})",
+   "ok": true
+  },
+  {
+   "check": "(g) unexecutable trigger rows per threshold: {'giveback_triggered_unexecutable_5': 102, 'giveback_triggered_unexecutable_10': 157, 'giveback_triggered_unexecutable_15': 123, 'giveback_triggered_unexecutable_20': 63}",
+   "ok": true
+  },
+  {
+   "check": "(h) every future_* column is in the leakage registry ([])",
+   "ok": true
+  },
+  {
+   "check": "(h) every registered future-only column is non-causal by family ([])",
+   "ok": true
+  },
+  {
+   "check": "(h) no future-only column is classified as causal state ([])",
+   "ok": true
+  },
+  {
+   "check": "(i) every column referenced by this producer exists in the registry ([])",
+   "ok": true
+  },
+  {
+   "check": "(i) a generic causal selector admits no future-only/outcome column ([])",
+   "ok": true
+  },
+  {
+   "check": "(i) the causal selector still admits the state columns ([])",
+   "ok": true
+  }
+ ],
+ "determinism": {
+  "identical": true,
+  "sha256_run1": "c3f638d60c0504bca71034b0cfbbd6ce41b65f5acbc86db4f744df949b109629",
+  "sha256_run2": "c3f638d60c0504bca71034b0cfbbd6ce41b65f5acbc86db4f744df949b109629"
+ },
+ "family_member_counts": {
+  "A_pm": 60,
+  "B600": 59
+ },
+ "members": 119,
+ "panel": "/home/hillel/.config/opencode/worktrees/Alpacatrader/basket-phase2-f1/factory/artifacts/basket/phase2/ATLAS/smoke/panel.parquet",
+ "panel_sha256": "c3f638d60c0504bca71034b0cfbbd6ce41b65f5acbc86db4f744df949b109629",
+ "rows": 35103,
+ "sampled_rows": [
+  {
+   "key": [
+    "2025-09-04",
+    "B600",
+    "BBLG",
+    615
+   ],
+   "panel": {
+    "cost_of_waiting": -0.26611700728006316,
+    "dist_from_running_high": -0.16947141577277902,
+    "final_high_flag": true,
+    "mfe_so_far": 0.11018817204301068,
+    "remaining_run": 0.16656433646171398,
+    "ret_from_fill": -0.07795698924731187,
+    "v_hold_flat": -0.1638160395286964
+   },
+   "recomputed": {
+    "cost_of_waiting": -0.26611700728006316,
+    "dist_from_running_high": -0.16947141577277902,
+    "final_high_flag": true,
+    "mfe_so_far": 0.11018817204301068,
+    "remaining_run": 0.16656433646171398,
+    "ret_from_fill": -0.07795698924731187,
+    "v_hold_flat": -0.1638160395286964
+   }
+  },
+  {
+   "key": [
+    "2025-03-27",
+    "A_pm",
+    "GTEC",
+    753
+   ],
+   "panel": {
+    "cost_of_waiting": -0.019138755980861233,
+    "dist_from_running_high": -0.19027131782945728,
+    "final_high_flag": true,
+    "mfe_so_far": 0.14159292035398252,
+    "remaining_run": 0.10521531100478465,
+    "ret_from_fill": -0.07561946902654848,
+    "v_hold_flat": 0.03832535885167476
+   },
+   "recomputed": {
+    "cost_of_waiting": -0.019138755980861233,
+    "dist_from_running_high": -0.19027131782945728,
+    "final_high_flag": true,
+    "mfe_so_far": 0.14159292035398252,
+    "remaining_run": 0.10521531100478465,
+    "ret_from_fill": -0.07561946902654848,
+    "v_hold_flat": 0.03832535885167476
+   }
+  },
+  {
+   "key": [
+    "2025-10-27",
+    "B600",
+    "CUPR",
+    686
+   ],
+   "panel": {
+    "cost_of_waiting": -0.03455284552845528,
+    "dist_from_running_high": -0.029316599666634025,
+    "final_high_flag": false,
+    "mfe_so_far": 0.00980198019801981,
+    "remaining_run": 0.07723577235772372,
+    "ret_from_fill": -0.01980198019801982,
+    "v_hold_flat": -0.014227642276422814
+   },
+   "recomputed": {
+    "cost_of_waiting": -0.03455284552845528,
+    "dist_from_running_high": -0.029316599666634025,
+    "final_high_flag": false,
+    "mfe_so_far": 0.00980198019801981,
+    "remaining_run": 0.07723577235772372,
+    "ret_from_fill": -0.01980198019801982,
+    "v_hold_flat": -0.014227642276422814
+   }
+  },
+  {
+   "key": [
+    "2023-01-10",
+    "A_pm",
+    "PRE",
+    619
+   ],
+   "panel": {
+    "cost_of_waiting": -0.18908531898539582,
+    "dist_from_running_high": -0.1950215176940463,
+    "final_high_flag": true,
+    "mfe_so_far": 0.055522875816993444,
+    "remaining_run": 0.003074558032282848,
+    "ret_from_fill": -0.15032679738562094,
+    "v_hold_flat": -0.14296694850115288
+   },
+   "recomputed": {
+    "cost_of_waiting": -0.18908531898539582,
+    "dist_from_running_high": -0.1950215176940463,
+    "final_high_flag": true,
+    "mfe_so_far": 0.055522875816993444,
+    "remaining_run": 0.003074558032282848,
+    "ret_from_fill": -0.15032679738562094,
+    "v_hold_flat": -0.14296694850115288
+   }
+  },
+  {
+   "key": [
+    "2023-05-08",
+    "B600",
+    "TRVN",
+    801
+   ],
+   "panel": {
+    "cost_of_waiting": null,
+    "dist_from_running_high": 0.0,
+    "final_high_flag": null,
+    "mfe_so_far": 1.4732824427480917,
+    "remaining_run": null,
+    "ret_from_fill": 1.4732824427480917,
+    "v_hold_flat": null
+   },
+   "recomputed": {
+    "cost_of_waiting": null,
+    "dist_from_running_high": 0.0,
+    "final_high_flag": null,
+    "mfe_so_far": 1.4732824427480917,
+    "remaining_run": null,
+    "ret_from_fill": 1.4732824427480917,
+    "v_hold_flat": null
+   }
+  },
+  {
+   "key": [
+    "2021-09-23",
+    "B600",
+    "RWLK",
+    959
+   ],
+   "panel": {
+    "cost_of_waiting": null,
+    "dist_from_running_high": -0.15748031496062986,
+    "final_high_flag": null,
+    "mfe_so_far": 0.2795969773299747,
+    "remaining_run": null,
+    "ret_from_fill": 0.07808564231738035,
+    "v_hold_flat": null
+   },
+   "recomputed": {
+    "cost_of_waiting": null,
+    "dist_from_running_high": -0.15748031496062986,
+    "final_high_flag": null,
+    "mfe_so_far": 0.2795969773299747,
+    "remaining_run": null,
+    "ret_from_fill": 0.07808564231738035,
+    "v_hold_flat": null
+   }
+  },
+  {
+   "key": [
+    "2025-09-04",
+    "A_pm",
+    "ZNB",
+    958
+   ],
+   "panel": {
+    "cost_of_waiting": -0.07749077490774903,
+    "dist_from_running_high": -0.6040939616997565,
+    "final_high_flag": true,
+    "mfe_so_far": 0.5088053097345133,
+    "remaining_run": 0.011070110701107083,
+    "ret_from_fill": -0.40265486725663713,
+    "v_hold_flat": -0.047970479704797064
+   },
+   "recomputed": {
+    "cost_of_waiting": -0.07749077490774903,
+    "dist_from_running_high": -0.6040939616997565,
+    "final_high_flag": true,
+    "mfe_so_far": 0.5088053097345133,
+    "remaining_run": 0.011070110701107083,
+    "ret_from_fill": -0.40265486725663713,
+    "v_hold_flat": -0.047970479704797064
+   }
+  },
+  {
+   "key": [
+    "2023-05-08",
+    "A_pm",
+    "PACW",
+    607
+   ],
+   "panel": {
+    "cost_of_waiting": -0.14074074074074072,
+    "dist_from_running_high": -0.09999999999999998,
+    "final_high_flag": true,
+    "mfe_so_far": 0.002673796791443861,
+    "remaining_run": 0.023703703703703782,
+    "ret_from_fill": -0.09759358288770059,
+    "v_hold_flat": -0.114074074074074
+   },
+   "recomputed": {
+    "cost_of_waiting": -0.14074074074074072,
+    "dist_from_running_high": -0.09999999999999998,
+    "final_high_flag": true,
+    "mfe_so_far": 0.002673796791443861,
+    "remaining_run": 0.023703703703703782,
+    "ret_from_fill": -0.09759358288770059,
+    "v_hold_flat": -0.114074074074074
+   }
+  }
+ ],
+ "verification": {
+  "all_ok": true,
+  "command": "/home/hillel/projects/Alpacatrader/.venv/bin/python /home/hillel/.config/opencode/worktrees/Alpacatrader/basket-phase2-f1/factory/scripts/basket_atlas_verify.py --panel /home/hillel/.config/opencode/worktrees/Alpacatrader/basket-phase2-f1/factory/artifacts/basket/phase2/ATLAS/smoke/panel.parquet --report /home/hillel/.config/opencode/worktrees/Alpacatrader/basket-phase2-f1/factory/artifacts/basket/phase2/ATLAS/smoke/verify_report.json",
+  "comparisons": 1072,
+  "mismatches": 0,
+  "report": "/home/hillel/.config/opencode/worktrees/Alpacatrader/basket-phase2-f1/factory/artifacts/basket/phase2/ATLAS/smoke/verify_report.json",
+  "rows_checked": 16,
+  "strata": {
+   "at_entry_bar": 2,
+   "blocked_fill_day": 2,
+   "duplicate_family_path": 2,
+   "early_close": 0,
+   "extreme_move": 0,
+   "first_trigger_on_final_bar": 2,
+   "high_tie_at_threshold": 2,
+   "incomplete_tape": 2,
+   "last_bar": 2,
+   "missing_reference": 0,
+   "ordinary": 2
+  },
+  "verifier_sha256": "90ce9309d654c344451ce8709e57424ff3e61f1d5a62fa18bee73e1facfd05c2"
+ }
+}

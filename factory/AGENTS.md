@@ -11,14 +11,14 @@
 Discover whether statistically identifiable states/transitions in top-gainer stocks predict subsequent price behavior with **executable positive expectancy after realistic costs**.
 
 ### The Window (core economic claim)
-The top-gainer phenomenon is an **early-session explosive-attention event**: catalyst in the morning, climb and climax concentrated in the morning-to-midday hours (measured: half the open-to-high move of ≥60% runners done by 11:25; MFE≥100 names peak ~180–234 minutes after entry; −28…−38% giveback after the peak), and the afternoon is the **relaxation** phase where these names die or return to base camp. **EOD is not the value horizon — it is the contradiction of the thesis.** Therefore: value every action over short intraday horizons (minutes to a few hours) and study the *time profile* of when marginal continuation EV dies before choosing triggers, levels or thresholds. Full doctrine: `researches/INTENT.md` §"THE WINDOW".
+The top-gainer phenomenon is an **early-session explosive-attention event**: catalyst in the morning, climb and climax concentrated in the morning-to-midday hours, and the afternoon is the **relaxation** phase where these names usually die or return to base camp. **EOD is terminal accounting, never the default economic horizon.** Measure continuation value, recovery, climax and the fall at every completed minute; do not substitute a short-horizon grid or convenient clock for the tape. The exact decay curve and exceptions must emerge from evidence. Full doctrine: `researches/INTENT.md` §"THE WINDOW".
 
 ### Integrity Rules (NON-NEGOTIABLE)
 - **No lookahead.** Ranking, feature computation, and filtering must use only data observable at timestamp T.
 - **Chronological integrity.** Train/validate always on past data relative to test/OOS periods.
-- **Realistic costs.** Assume spread, slippage, and commission. A signal that shows 0.3% edge pre-cost is dead.
+- **Realistic costs.** Model spread, slippage and commission exactly enough to measure executable EV. Do not impose a generic minimum edge as a kill rule; judge the total dollar opportunity, frequency, capacity, uncertainty and tail tradeoff.
 - **No survivorship cheating.** PIT universe join mandatory for 2021+. For pre-2021 data, acknowledge survivorship limitation.
-- **Preserve failures.** Dead hypotheses go in HYPOTHESES.jsonl with verdict. Do not delete them.
+- **Preserve negatives precisely.** Record what was tested, what failed and its evidence boundary. Do not generalize a negative beyond its formulation or make failure-seeking the research objective.
 
 ### Scope Boundaries
 - This is a **research subproject** inside Alpacatrader. Do not modify live trading code.

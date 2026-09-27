@@ -1,44 +1,8 @@
-# ATLAS panel schema — FROZEN 2026-09-25, AMENDED 2026-09-25 (v2)
+# ATLAS panel schema — FROZEN 2026-09-25
 
 Contract for `factory/artifacts/basket/phase2/ATLAS/panel.parquet`, produced by
 `factory/scripts/basket_atlas_panel.py`. Every downstream analysis (window profile, fall structure,
 matched pairs, dollar ledger, rule extraction) reads this file and **must not redefine its columns**.
-
-## Amendment log
-
-**v2 (2026-09-25) — foundation fix.** Four corrections to the frozen text; the v1 panel is INVALID
-and quarantined under `quarantine_v1/`:
-
-1. **The fill clock is the anatomy fill, not 571/601.** `family` below states the *nominal* clock for
-   readability only. `entry_et`/`entry_px`/`entry_rank` are the anatomy snapshot fill (A_pm commonly
-   ET570, B600 commonly ET600), which is exactly what the C1 engine reads; the panel asserts exact
-   equality of keys, `entry_px`, `entry_et` and `entry_rank` against the C1 tickets/anatomy. Realised
-   distributions: `coverage.json.tape_shape.entry_et_histogram`.
-2. **Terminal censoring.** A member whose tape stops before the session close has no terminal value
-   and no executable terminal liquidation. `path_complete_to_session_end` / `terminal_censored` mark
-   those members (future-derived: they are **not** causal state); every terminal-dependent outcome of
-   a censored member is `null`. See "Censoring" below.
-3. **No same-bar execution; the forced flat has precedence by clock ET.** A give-back exit is the
-   open of the bar *after* the trigger bar. `basket_sim` runs its forced-flat branch
-   (`if t == session_end - 1: schedule FORCED_FLAT; continue`) **before** release evaluation and
-   skips the ticket, so no release rule is ever evaluated on a bar with `et >= session_end - 1`.
-   Any give-back condition first appearing at such an ET is therefore non-firing: the row carries
-   `giveback_fired_g = false`, `v_giveback_g = v_forced_flat` (the engine's realized exit) and the
-   diagnostic `giveback_condition_after_forced_flat_g = true`. A first condition at
-   `et <= session_end - 2` **is** executable — its exit is the open of the next printed bar, which
-   may be the `session_end` bar itself when the tape gaps (a genuine firing). Give-back values are
-   `null` only for terminal-censored tapes and on the member's own last tracked row.
-4. **The executable terminal price is the session-end bar's open.** `basket_sim` schedules
-   `FORCED_FLAT` on the completed bar `session_end - 1` and executes it at the **open of the
-   `session_end` bar**; `future_forced_flat_px` is that price and `v_forced_flat` is the
-   hold-to-flat continuation measured from it. `v_hold_flat` is retained **only as the labelled
-   close baseline** (close of the `session_end` bar) for comparability with earlier results and is
-   *not* an execution price.
-5. **`future_` columns.** Future-only metadata carries the `future_` prefix
-   (`future_member_last_et`, `future_forced_flat_px`) and, together with the four `session_peak_*` /
-   `session_close_ret_from_entry` constants and the two censor flags, is listed in
-   `coverage.json.future_only_columns`. Several of these names are frozen (the ticket constants), so
-   the registry — not the prefix alone — is authoritative for the ledger guard.
 
 ## The thesis this panel exists to measure
 
@@ -61,13 +25,13 @@ One row per (member, completed bar):
 |---|---|---|
 | `sleeve_day` | str | session date, `YYYY-MM-DD` |
 | `ticker` | str | member |
-| `family` | str | `A_pm` or `B600` (nominal fill clocks 571/601; **the anatomy fill is authoritative**, see amendment v2.1) |
+| `family` | str | `A_pm` (fill at ET 571) or `B600` (fill at ET 601) |
 | `entry_rank` | int | canonical snapshot rank at entry, 1..3 |
 | `entry_et`, `entry_px` | int, float | anatomy fill (canonical bar open) |
 | `et` | int | ET minute-of-day of this completed bar |
 | `bar_index` | int | 0 at the fill bar, +1 per completed bar |
 | `bars_since_entry` | int | `bar_index` (alias kept for readability) |
-| `session_end` | int | day-level session end (959, or 779 on the seven half-days) |
+| `session_end` | int | ET of the last bar used for this day |
 | `month`, `block` | str | `YYYY-MM`; `block1` (2021-02..2023-12) or `block2` (2025-02..2026-05) |
 
 Population: A_pm top-3 and B600 top-3 filled members, all 1,066 development days. Blocked fills are
@@ -84,27 +48,6 @@ producer fails loudly on any deviation.
   action (`bps_total/2`, matching `basket_sim.py`).
 - **No fabrication:** a missing input (no bar at t, no next bar, no episode) yields `null`.
 - Determinism: identical inputs → identical file (sorted by `sleeve_day, family, entry_rank, et`).
-
-### Censoring, execution and future metadata (amendment v2)
-
-- `path_complete_to_session_end` / `terminal_censored`: member-level, complementary, future-derived
-  cohort labels (never causal state). A censored member has no print at `session_end`.
-- For a censored member these are **null on every row**: `v_hold_flat`, `v_forced_flat`, all
-  `v_giveback_*`, `giveback_fired_*`, `giveback_condition_after_forced_flat_*`, `final_high_flag`,
-  `remaining_run`, `cost_of_waiting`, `bars_to_peak`, `peak_et_after_t`, `tail_class_*`,
-  `session_peak_et`, `session_peak_ret_from_entry`, `session_peak_bars_from_entry`,
-  `session_close_ret_from_entry`, `future_forced_flat_px`.
-- State columns are unaffected by censoring; `next_open`, `next_et`, `level_ret`, `v_sell` and
-  (when the event exists inside the tape) `bars_to_next_high` / `dd_before_next_high` stay, because a
-  real bar supports them.
-- A give-back exit is the **open of the bar after the trigger bar**. If the first condition appears
-  on the member's *last* bar (the session_end bar of a complete tape) the forced flat already
-  happened at that bar's **open**, so the rule cannot fire: `v_giveback_g = v_forced_flat`,
-  `fired = false`, diagnostic `giveback_condition_after_forced_flat_g = true`.
-- With no trigger, the give-back continuation runs to the engine's forced flat:
-  `future_forced_flat_px / next_open - 1`.
-- `future_*`, the four session-wide constants and the censor flags are future-only
-  (`coverage.json.future_only_columns`): no causal feature may use them.
 
 ## State columns (all causal)
 
@@ -141,11 +84,9 @@ t), `peer_new_high_5` (how many of those others set a new high in the last 5 min
 
 | column | definition |
 |---|---|
-| `v_hold_flat` | close(session_end)/next_open − 1 — the **labelled close baseline**, kept only for comparability; not an execution price |
-| `v_forced_flat` | `future_forced_flat_px/next_open − 1` — the executable hold-to-flat continuation (engine forced-flat price) |
-| `v_giveback_5/10/15/20` | return from `next_open` to the exit of "leave at the open after the first bar whose close is ≥ g% below the running high *as of that bar*". The running high is re-evaluated causally forward. A first condition on a bar with `et >= session_end - 1` cannot fire (the engine's forced-flat decision on that bar precedes release evaluation), so the value is `v_forced_flat` with `giveback_fired_* = false`; `null` only for terminal-censored tapes and on the member's own last tracked row |
-| `giveback_fired_5/10/15/20` | bool, whether that rule fired with an executable next bar before the close |
-| `giveback_condition_after_forced_flat_5/10/15/20` | bool, diagnostic: the close condition first appeared on a bar with `et >= session_end - 1`, after engine forced-flat logic had already preempted release evaluation. The continuation therefore remains `v_forced_flat` and `giveback_fired_*` is false |
+| `v_hold_flat` | close(session_end)/next_open − 1 (the labeled EOD-anchored baseline, kept only for comparability) |
+| `v_giveback_5/10/15/20` | return from `next_open` to the exit price of "exit at the next open after the first bar whose close is ≥ g% below the running high *as of that bar*" — the running high is re-evaluated causally forward; null if it never triggers (then the position runs to the forced flat, and the column holds that value with `giveback_fired_* = false`) |
+| `giveback_fired_5/10/15/20` | bool, whether that rule fired before the close |
 | `v_sell` | 0 by construction (cash is the numeraire); `next_open/entry_px − 1` is available as `level_ret` for P&L accounting |
 
 **Path statistics (the explanation of why `v_*` move):**
