@@ -2584,3 +2584,15 @@ share; the rewrite moved those values verbatim to ..._of_all_finite_rows and pub
 class-denominator value under the original name; (b) d33e321's committed artifact was c1ad6f04,
 not the final-run cc100d (which was still uncommitted when audited) - the committed final is
 19e98a19 (3071b65); the rewrite path's refuse-to-write guard plus this diff bound the change.
+
+## 2026-09-28 — E1 CLOSED: no score-based release increment; the E1b niche was a look-ahead artifact
+E1a (corrected every-bar score, inner-cross-fit thresholds): primary + all three quantile rulers
+SURVIVE the pre-registered kill (positive vs hold) but are beaten on dollars by giveback:10 in both
+folds; the event-hazard ablation family is KILLED in fold B by the giant-tail clause. E1b's apparent
+conditional niche (top predicted-dispersion tercile) was produced by a member-median regime
+statistic that reads post-release bars: 87-99% of t2 members are t2 only because of post-decision
+bars. With a decision-time (trigger-bar) tercile, t2 dedup increments are NEGATIVE in all 16
+arm x fold combinations (dollar -3.498 A / -16.454 B; q70 -1.022 / -14.981; q80 -16.271 / -26.130;
+q90 -31.581 / -38.052). Independent debugger (E1bDebug) found this; artifact is being republished
+with the causal statistic and closure statement. Standing state: management-by-score adds nothing
+over the trivial peak-relative ruler; the trivial ruler remains the strongest release policy tested.
