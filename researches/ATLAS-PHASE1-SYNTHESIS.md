@@ -56,11 +56,16 @@ deviation 2.8e-17, exact by construction).
 | **direction** (sign of executable forward return, a non-max label) | **+0.07 / +0.04 over the clock alone** |
 
 Three consequences:
-1. **Dispersion is the strongest state target** and the exact clock explains much less of it
-   (0.60–0.61), so the state carries genuine forward-activity information.
-2. **Exhaustion is a separate, independent signal.** Inside forward-dispersion deciles the hazard
-   keeps full strength (within-decile medians 0.6748/0.6926 and 0.6714/0.6987 against 0.6734/0.6525
-   and 0.6935/0.6732 unconditioned). The hazard is not a volatility restatement.
+1. **Dispersion is generally the stronger state target, but not categorically.** On identical rows
+   and in the same within-clock coordinate, range-30 leads hazard by +0.038/+0.044 (A_pm) and
+   +0.037/+0.009 (B600); mean-absolute-return dispersion leads by +0.023/+0.033/+0.040 and trails
+   by −0.003 in the remaining B600 direction. Because the comparison is evaluated *within the exact
+   clock minute*, the clock-only reference is 0.5 by construction; the state carries genuine
+   forward-activity information, but the lead over hazard is small-to-moderate rather than universal.
+2. **Exhaustion is a separate signal.** Inside forward-dispersion deciles the global hazard model
+   keeps approximately the same discrimination (within-decile medians 0.6748/0.6926 and
+   0.6714/0.6987 against the *like-for-like, identical-row* unconditioned baselines
+   0.6758/0.6613 and 0.6986/0.7011). The hazard is not merely a volatility restatement.
 3. **No robust positive directional separator was found with the current 1-minute state
    representation and tests.** (This is a statement about the representation and the tests, not a
    proof that direction is absent from the tape.) The honest two-sided test — matched middle-decile
