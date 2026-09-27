@@ -2,6 +2,25 @@
 # Hypothesis ranking + falsifiers: researches/HYPOTHESES.md (living).
 # History before 2026-09-04: researches/CANONICAL_STATE.md (superseded snapshot, kept for trust map).
 
+## UPDATE 2026-09-27 — BASKET Phase 1 (ATLAS measurement) CLOSED; Phase 2 = E1 execution test
+Canonical entry: `researches/PLAN-ATLAS-01.md`; numbers: `factory/artifacts/basket/phase2/ATLAS/`;
+readable conclusion: `researches/ATLAS-PHASE1-SYNTHESIS.md`.
+- **Panel v2** (SIP, 1,066 dev days, 2017/2021-2026 + 2022-04 stub; 25,788 runner-days; 1,900,432
+  state rows; 100% point-in-time SI coverage 2017+, IDs zero) is the measurement backbone; block
+  boundaries frozen (`block_of`), reserved 2026-06..08 untouched, 2024/2025-01 sealed.
+- **Ledger v2** = same-bar forward VIOLATION; primary = next-bar PATH_RETURN on the canonical 25,788
+  complete-path runner-days (arms: hold, giveback:10, peak_pct:0.03/0.05/0.10, timestop); window v2
+  adds the 09:30-11:30 morning sleeve + dedup; every table dual-block, top-5-day-removed, day-clustered.
+- **Fall v2** (final sha 19e98a19...): state predicts *forward dispersion* strongly (within-clock AUC
+  0.67-0.74 across families/blocks); the exhaustion barrier is a real but weaker,
+  dispersion-independent score-level signal (like-for-like +0.038/+0.044/+0.037/+0.009 over hazard;
+  within-decile 0.675-0.702); per-decile coefficient allocation is UNIDENTIFIED and withdrawn as
+  mediation; no directional separator in the 1-minute state (the honest two-sided test is adverse).
+- **E1a (open)**: cross-fitted P(this new high is the last) -> release when the score is high; first
+  execution test, held/censored excluded; killed if flat vs the frozen rulers in either fold.
+- **Ruler honesty**: the in-sample price-perfect table is UNATTAINABLE (even q10 rows have higher
+  prices ahead); the in-sample estate table is oracle contamination, never a valid bar.
+
 ## Where we are (2026-09-13)
 Phase: LIVE PAPER VALIDATION of the first OOS-passed mechanism (stack STOPPED per
 factory/STATE 2026-09-16c; restart = rm data/KILL); research lanes closed except the new

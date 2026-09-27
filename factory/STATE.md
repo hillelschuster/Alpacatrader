@@ -2553,3 +2553,24 @@ atlas and it should be read before building a new one.
 intents only** (`basket_sim.py:844-858`). There is no mid-session entry, no re-entry after exit, and
 no per-name entry veto. The buy side of any learned handling policy is therefore structurally
 untestable today — the sell side and adds are expressible, nothing else.
+
+## 2026-09-27 — ATLAS Phase 1 CLOSED (measurement); Phase 2 open on E1
+Frozen this cycle (all committed on basket-phase2-f1): panel v2 (SIP, 1,066 dev days, 25,788
+runner-days, 1,900,432 state rows, 100% SI coverage 2017+, IDs zero, reserved 2026-06..08
+untouched); ledger v2 (same-bar forward violation; primary next-bar PATH_RETURN on
+complete-path runner-days; hold/giveback:10/peak_pct:0.03-0.10/timestop; dual-block,
+top-5-day-removed, day-clustered); window v2 (09:30-11:30 sleeve + dedup); fall v2 final sha
+19e98a19...; pairs v2 final sha ac85cb72...; readable conclusion
+researches/ATLAS-PHASE1-SYNTHESIS.md.
+Key results: state strongly predicts forward dispersion (within-clock AUC 0.67-0.74); the
+exhaustion barrier is a real, weaker, dispersion-independent score-level signal (like-for-like
++0.038/+0.044/+0.037/+0.009 over hazard; within-decile 0.675-0.702); per-decile coefficient
+allocation is UNIDENTIFIED (mediation claim withdrawn); no directional separator; the honest
+two-sided matched-pair test is adverse (higher range -> lower executable value later).
+Independent audits: panel/ledger/window/fall/pairs all audited; text-level defects fixed;
+remaining limits published in each artifact (shares, thin cells, idempotency).
+Ruler honesty: the in-sample price-perfect table is unattainable (q10 rows too), so execution
+tests are judged against the in-sample estate table as an oracle-CONTAMINATED ruler, never a bar.
+Open: E1a cross-fitted exhaustion-score release test (builder running); F4 microstructure plan
+drafted; SIP 2022-04-01..19 stub (19 days) + fold-2 vs post-2022 family split explained;
+blocks 0-3 = 2017/2021/2022-2026 (2022-03-25+ folded into block 2 by design).
