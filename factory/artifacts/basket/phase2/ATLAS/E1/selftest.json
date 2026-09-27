@@ -1,14 +1,14 @@
 {
  "producer": "factory/scripts/basket_atlas_e1.py",
- "generated": "2026-09-28T00:30:28",
- "n_cases": 14,
+ "generated": "2026-09-28T01:30:22",
+ "n_cases": 15,
  "n_failed": 0,
  "status": "PASS",
  "cases": [
   {
    "name": "final_high_now/definition",
    "description": "1 exactly where the running high equals the tape's final running high (ties included)",
-   "passed": 1,
+   "passed": true,
    "detail": {
     "labels": {
      "expected": [
@@ -27,29 +27,85 @@
       0.0,
       1.0
      ],
-     "ok": 1
+     "ok": true
+    }
+   }
+  },
+  {
+   "name": "day_half_map/deterministic_day_split",
+   "description": "sorted unique days alternate between the halves; every day lands in exactly one half and the map is order-independent",
+   "passed": true,
+   "detail": {
+    "sorted_half": {
+     "expected": [
+      0,
+      1,
+      0,
+      1,
+      0
+     ],
+     "actual": [
+      0,
+      1,
+      0,
+      1,
+      0
+     ],
+     "ok": true
+    },
+    "reversed_half": {
+     "expected": [
+      0,
+      1,
+      0,
+      1,
+      0
+     ],
+     "actual": [
+      0,
+      1,
+      0,
+      1,
+      0
+     ],
+     "ok": true
+    },
+    "n_days": {
+     "expected": 5,
+     "actual": 5,
+     "ok": true
+    },
+    "n_half0": {
+     "expected": 3,
+     "actual": 3,
+     "ok": true
+    },
+    "n_half1": {
+     "expected": 2,
+     "actual": 2,
+     "ok": true
     }
    }
   },
   {
    "name": "per_minute_quantiles/thin_fallback",
    "description": "a minute below min_obs falls back to the pooled quantile, a thick minute does not",
-   "passed": 1,
+   "passed": true,
    "detail": {
     "thick_minute": {
      "expected": 3.0,
      "actual": 3.0,
-     "ok": 1
+     "ok": true
     },
     "thin_minute_fallback": {
      "expected": 4.0,
      "actual": 4.0,
-     "ok": 1
+     "ok": true
     },
     "pooled": {
      "expected": 4.0,
      "actual": 4.0,
-     "ok": 1
+     "ok": true
     },
     "fallback_minutes": {
      "expected": [
@@ -60,63 +116,63 @@
       1,
       2
      ],
-     "ok": 1
+     "ok": true
     },
     "n_fallback": {
      "expected": 2,
      "actual": 2,
-     "ok": 1
+     "ok": true
     }
    }
   },
   {
    "name": "per_minute_quantiles/no_fallback_when_thick",
    "description": "with min_obs=2 the two-observation minute uses its own quantile",
-   "passed": 1,
+   "passed": true,
    "detail": {
     "minute_1": {
      "expected": 150.0,
      "actual": 150.0,
-     "ok": 1
+     "ok": true
     },
     "n_fallback": {
      "expected": 1,
      "actual": 1,
-     "ok": 1
+     "ok": true
     }
    }
   },
   {
    "name": "first_crossing",
    "description": "first qualifying index per member, -1 when none",
-   "passed": 1,
+   "passed": true,
    "detail": {
     "member0": {
      "expected": 2,
      "actual": 2,
-     "ok": 1
+     "ok": true
     },
     "member1": {
      "expected": 1,
      "actual": 1,
-     "ok": 1
+     "ok": true
     }
    }
   },
   {
    "name": "delta_stats/top5_removal",
    "description": "the five days with the largest |day net| are removed and the remainder is summed",
-   "passed": 1,
+   "passed": true,
    "detail": {
     "n_members": {
      "expected": 7,
      "actual": 7,
-     "ok": 1
+     "ok": true
     },
     "sum": {
      "expected": 6.0,
      "actual": 6.0,
-     "ok": 1
+     "ok": true
     },
     "top5": {
      "expected": [
@@ -133,315 +189,315 @@
       "d4",
       "d5"
      ],
-     "ok": 1
+     "ok": true
     },
     "sum_after_removal": {
      "expected": 2.0,
      "actual": 2.0,
-     "ok": 1
+     "ok": true
     },
     "n_after_removal": {
      "expected": 2,
      "actual": 2,
-     "ok": 1
+     "ok": true
     },
     "n_days_after_removal": {
      "expected": 2,
      "actual": 2,
-     "ok": 1
+     "ok": true
     }
    }
   },
   {
    "name": "tail_stats/giant_definitions",
    "description": "ledger view (destroyed>0 and MFE>=level) beside the contract view (early exit, MFE>=level and close>release; a member whose flat beat the release counts as cut with no destroyed dollars)",
-   "passed": 1,
+   "passed": true,
    "detail": {
     "giant100_ledger_n": {
      "expected": 3,
      "actual": 3,
-     "ok": 1
+     "ok": true
     },
     "giant100_contract_n": {
      "expected": 3,
      "actual": 3,
-     "ok": 1
+     "ok": true
     },
     "giant300_ledger_n": {
      "expected": 2,
      "actual": 2,
-     "ok": 1
+     "ok": true
     },
     "giant300_contract_n": {
      "expected": 2,
      "actual": 2,
-     "ok": 1
+     "ok": true
     },
     "giant300_ledger_dollars": {
      "expected": 0.7,
      "actual": 0.7,
-     "ok": 1
+     "ok": true
     },
     "giant300_contract_dollars": {
      "expected": 0.5,
      "actual": 0.5,
-     "ok": 1
+     "ok": true
     },
     "giant300_ledger_per_avoided": {
      "expected": 2.333333,
      "actual": 2.333333,
-     "ok": 1
+     "ok": true
     },
     "giant300_contract_per_avoided": {
      "expected": 1.666667,
      "actual": 1.666667,
-     "ok": 1
+     "ok": true
     },
     "avoided": {
      "expected": 0.3,
      "actual": 0.3,
-     "ok": 1
+     "ok": true
     }
    }
   },
   {
    "name": "tail_stats/no_avoided_dollars",
    "description": "a rule that avoids nothing has no tail ratio (never a fabricated zero)",
-   "passed": 1,
+   "passed": true,
    "detail": {
     "ratio": {
      "expected": null,
      "actual": null,
-     "ok": 1
+     "ok": true
     },
     "avoided": {
      "expected": 0.0,
      "actual": 0.0,
-     "ok": 1
+     "ok": true
     }
    }
   },
   {
    "name": "tail_test/pre_registered_clause",
    "description": "nothing destroyed passes; a worse per-avoided-dollar tail fails; no avoided dollars fails; a control with no reference cannot kill",
-   "passed": 1,
+   "passed": true,
    "detail": {
     "no_giants_passes": {
-     "expected": 1,
-     "actual": 1,
-     "ok": 1
+     "expected": true,
+     "actual": true,
+     "ok": true
     },
     "arm_worse_fails": {
-     "expected": 0,
-     "actual": 0,
-     "ok": 1
+     "expected": false,
+     "actual": false,
+     "ok": true
     },
     "arm_better_passes": {
-     "expected": 1,
-     "actual": 1,
-     "ok": 1
+     "expected": true,
+     "actual": true,
+     "ok": true
     },
     "no_avoided_fails": {
-     "expected": 0,
-     "actual": 0,
-     "ok": 1
+     "expected": false,
+     "actual": false,
+     "ok": true
     },
     "zero_control_ratio_blocks_a_destroyer": {
-     "expected": 0,
-     "actual": 0,
-     "ok": 1
+     "expected": false,
+     "actual": false,
+     "ok": true
     },
     "no_control_reference_passes": {
-     "expected": 1,
-     "actual": 1,
-     "ok": 1
+     "expected": true,
+     "actual": true,
+     "ok": true
     }
    }
   },
   {
    "name": "choose_grid_point/objective_and_tiebreak",
    "description": "the grid picks the largest train net and, on a tie, the fewest releases (then the lowest quantile, deterministically)",
-   "passed": 1,
+   "passed": true,
    "detail": {
     "quantile": {
      "expected": 0.9,
      "actual": 0.9,
-     "ok": 1
+     "ok": true
     },
     "net": {
      "expected": 7.0,
      "actual": 7.0,
-     "ok": 1
+     "ok": true
     },
     "n_releases": {
      "expected": 40,
      "actual": 40,
-     "ok": 1
+     "ok": true
     }
    }
   },
   {
    "name": "replay/score_release_priced_by_the_ledger",
    "description": "a release at bar 1 executes at bar 2's open; delta is the ledger's k*(rule-hold)",
-   "passed": 1,
+   "passed": true,
    "detail": {
     "status": {
      "expected": "early_exit",
      "actual": "early_exit",
-     "ok": 1
+     "ok": true
     },
     "exit_et": {
      "expected": 572,
      "actual": 572,
-     "ok": 1
+     "ok": true
     },
     "exit_px": {
      "expected": 10.5,
      "actual": 10.5,
-     "ok": 1
+     "ok": true
     },
     "gross_rule": {
      "expected": 0.050000000000000044,
      "actual": 0.050000000000000044,
-     "ok": 1
+     "ok": true
     },
     "gross_hold": {
      "expected": 0.06999999999999984,
      "actual": 0.06999999999999984,
-     "ok": 1
+     "ok": true
     },
     "delta": {
      "expected": -0.01980099502487542,
      "actual": -0.019800995024875423,
-     "ok": 1
+     "ok": true
     },
     "early_exit": {
-     "expected": 1,
-     "actual": 1,
-     "ok": 1
+     "expected": true,
+     "actual": true,
+     "ok": true
     }
    }
   },
   {
    "name": "replay/forced_flat_precedence",
    "description": "a trigger on the last completed bar is preempted by the forced flat (delta 0, no release)",
-   "passed": 1,
+   "passed": true,
    "detail": {
     "status": {
      "expected": "hold_equivalent",
      "actual": "hold_equivalent",
-     "ok": 1
+     "ok": true
     },
     "delta": {
      "expected": 0.0,
      "actual": 0.0,
-     "ok": 1
+     "ok": true
     },
     "early_exit": {
-     "expected": 0,
-     "actual": 0,
-     "ok": 1
+     "expected": false,
+     "actual": false,
+     "ok": true
     },
     "triggered_after_forced_flat": {
-     "expected": 1,
-     "actual": 1,
-     "ok": 1
+     "expected": true,
+     "actual": true,
+     "ok": true
     }
    }
   },
   {
    "name": "replay/censored_tape_unresolved",
    "description": "a release on a censored tape is an observation: the delta stays unresolved",
-   "passed": 1,
+   "passed": true,
    "detail": {
     "status": {
      "expected": "unresolved_terminal_censored",
      "actual": "unresolved_terminal_censored",
-     "ok": 1
+     "ok": true
     },
     "delta": {
      "expected": null,
      "actual": null,
-     "ok": 1
+     "ok": true
     },
     "early_exit": {
-     "expected": 1,
-     "actual": 1,
-     "ok": 1
+     "expected": true,
+     "actual": true,
+     "ok": true
     },
     "observed_rule_side_net": {
      "expected": 0.03955223880597014,
      "actual": 0.03955223880597014,
-     "ok": 1
+     "ok": true
     }
    }
   },
   {
    "name": "aggregate/hold_is_the_zero_baseline",
    "description": "hold_flat nets exactly zero and leaves every member judged",
-   "passed": 1,
+   "passed": true,
    "detail": {
     "net": {
      "expected": 0.0,
      "actual": 0.0,
-     "ok": 1
+     "ok": true
     },
     "n_judged": {
      "expected": 3,
      "actual": 3,
-     "ok": 1
+     "ok": true
     },
     "n_censored": {
      "expected": 1,
      "actual": 1,
-     "ok": 1
+     "ok": true
     }
    }
   },
   {
    "name": "channel_release/first_crossing_of_the_threshold",
    "description": "state decisions skip bars before the first new high; a scalar threshold applies at every clock minute; no crossing is -1",
-   "passed": 1,
+   "passed": true,
    "detail": {
     "state_member0": {
      "expected": 1,
      "actual": 1,
-     "ok": 1
+     "ok": true
     },
     "state_member1": {
      "expected": 1,
      "actual": 1,
-     "ok": 1
+     "ok": true
     },
     "state_member2": {
      "expected": 2,
      "actual": 2,
-     "ok": 1
+     "ok": true
     },
     "event_member0": {
      "expected": -1,
      "actual": -1,
-     "ok": 1
+     "ok": true
     },
     "event_member1": {
      "expected": 1,
      "actual": 1,
-     "ok": 1
+     "ok": true
     },
     "event_member2": {
      "expected": 2,
      "actual": 2,
-     "ok": 1
+     "ok": true
     },
     "scalar_threshold_member1": {
      "expected": 1,
      "actual": 1,
-     "ok": 1
+     "ok": true
     },
     "no_crossing": {
      "expected": -1,
      "actual": -1,
-     "ok": 1
+     "ok": true
     }
    }
   }

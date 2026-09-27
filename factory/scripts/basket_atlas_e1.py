@@ -274,6 +274,57 @@ def cross_fit_scores(frame, masks: dict, models: dict, target: str,
     return score, prov
 
 
+def day_half_map(days) -> dict:
+    """Deterministic day-level 2-fold split: sorted unique days alternate between the halves."""
+    uniq = sorted({str(d) for d in days})
+    return {d: (i % 2) for i, d in enumerate(uniq)}
+
+
+def inner_cross_fit_scores(frame, masks: dict, target: str, block: str, member_day: np.ndarray,
+                           member_keep: "np.ndarray | None" = None) -> tuple:
+    """Honest TRAIN-side scores: fit on one day-half of `block`, score the other day-half.
+
+    Threshold selection (the dollar grid and every clock-minute bank) must not be a function of the
+    evaluation block.  The other-block model used for the *evaluation* rows is itself fitted on the
+    whole train block, so scoring the train block with it would leak evaluation-block information
+    into the thresholds.  This routine re-fits inside the train block, on a day-level split, and
+    leaves the returned array NaN everywhere outside `block` — no selection routine can see an
+    evaluation row, day or outcome through it.
+    """
+    half_of_day = day_half_map(member_day[frame.m_block == block])
+    half = np.array([half_of_day.get(str(d), -1) for d in member_day], dtype=np.int64)
+    row_half = half[frame.mid]
+    train_name = "train_now" if target == "final_high_now" else "train_event"
+    y = masks["label_now"] if target == "final_high_now" else frame.final_high
+    pop = masks["complete"] if target == "final_high_now" else masks["event"]
+    score = np.full(frame.n, np.nan, dtype=np.float64)
+    info: dict = {"block": block, "target": target,
+                  "split": "sorted unique days of the block, alternating between the two halves",
+                  "n_days": int(len(half_of_day)), "halves": {}}
+    for h in (0, 1):
+        sel = masks[train_name] & (frame.block == block) & (row_half == h)
+        if member_keep is not None:
+            sel = sel & member_keep[frame.mid]
+        idx = np.flatnonzero(sel)
+        X, meta = fall.design_matrix(frame, idx, fall.MODEL_FEATURES, None)
+        eff = ((fall.minute_codes(frame, idx), fall.n_minute_codes(frame)),)
+        beta, it = fall.multi_effect_logit(X, y[idx], eff)
+        sel_o = pop & (frame.block == block) & (row_half == 1 - h)
+        if member_keep is not None:
+            sel_o = sel_o & member_keep[frame.mid]
+        ixo = np.flatnonzero(sel_o)
+        Xo, _ = fall.design_matrix(frame, ixo, fall.MODEL_FEATURES, meta["transform"])
+        effo = ((fall.minute_codes(frame, ixo), fall.n_minute_codes(frame)),)
+        score[ixo] = fall.predict_multi(Xo, beta, effo)
+        info["halves"][f"half{h}"] = {"n_train": int(idx.size), "iterations": int(it),
+                                      "n_days": int(sum(1 for d, hh in half_of_day.items()
+                                                        if hh == h)),
+                                      "scored_other_half_rows": int(ixo.size)}
+    info["n_scored"] = int(np.isfinite(score).sum())
+    info["finite_outside_block"] = int(np.isfinite(score[frame.block != block]).sum())
+    return score, info
+
+
 def threshold_row(frame, thr) -> np.ndarray:
     """Per-row threshold: a scalar applies everywhere, an array is indexed by exact clock minute."""
     if np.ndim(thr) == 0:
@@ -580,6 +631,38 @@ def choose_grid_point(curve: list) -> dict:
 # ======================================================================================
 # cells
 # ======================================================================================
+def reconciliation(agg: dict) -> dict:
+    """The ledger's own reconciliation counters, published per cell so a mismatch cannot hide."""
+    obs = agg["unresolved_censored"]["observed_exits"]
+    out = {
+        "fwd_mfe_check_n": int(agg["fwd_mfe_check_n"]),
+        "fwd_mfe_mismatch_n": int(agg["fwd_mfe_mismatch_n"]),
+        "forced_flat_check_n": int(agg["forced_flat_check_n"]),
+        "forced_flat_mismatch_n": int(agg["forced_flat_mismatch_n"]),
+        "level_ret_check_n": int(agg["level_ret_check_n"]),
+        "level_ret_mismatch_n": int(agg["level_ret_mismatch_n"]),
+        "tail_class_100_check_n": int(agg["tail_class_100_check_n"]),
+        "tail_class_100_mismatch_n": int(agg["tail_class_100_mismatch_n"]),
+        "tail_class_300_mismatch_n": int(agg["tail_class_300_mismatch_n"]),
+        "giveback_locator_check_n": int(agg["giveback_locator_check_n"]),
+        "giveback_locator_mismatch_n": int(agg["giveback_locator_mismatch_n"]),
+        "n_members_unscored_other": int(agg["n_members_unscored_other"]),
+        "unresolved_censored": {
+            "n_members": int(agg["unresolved_censored"]["n_members"]),
+            "observed_rule_side_exits": {
+                "n_exits": int(obs["n_exits"]),
+                "n_members_without_executable_exit":
+                    int(obs["n_members_without_executable_exit"]),
+                "rule_side_net_sum": r6(obs["rule_side_net_sum"]),
+                "mean_rule_side_net": r6(obs["mean_rule_side_net"]),
+            },
+        },
+    }
+    out["reconciliation_clean"] = bool(all(out[k] == 0 for k in out
+                                           if k.endswith("mismatch_n")))
+    return out
+
+
 def build_cell(arm: str, role: str, variant: str, fold: str, bps: float, train_block: str,
                eval_block: str, rows: list, agg: dict, control_day_sums: dict,
                control_cells: dict, extra: "dict | None" = None) -> dict:
@@ -626,6 +709,7 @@ def build_cell(arm: str, role: str, variant: str, fold: str, bps: float, train_b
             "accounting_views": agg["accounting_views"],
             "close_reference_baseline_net": agg["close_reference_baseline"]["net_dollar_ledger"],
             "checks": agg["checks"],
+            "reconciliation": reconciliation(agg),
         },
         "delta_vs_hold": {k: v for k, v in dst.items() if k != "surviving_days"},
         "tail": tail,
@@ -697,6 +781,7 @@ def control_cell(name: str, fold: str, bps: float, train_block: str, eval_block:
             "accounting_views": agg["accounting_views"],
             "close_reference_baseline_net": agg["close_reference_baseline"]["net_dollar_ledger"],
             "checks": agg["checks"],
+            "reconciliation": reconciliation(agg),
         },
         "delta_vs_hold": {k: v for k, v in dst.items() if k != "surviving_days"},
         "tail": tail_stats(rows),
@@ -782,6 +867,20 @@ def run_selftest() -> int:
         "1 exactly where the running high equals the tape's final running high (ties included)",
         {"labels": [0.0, 1.0, 1.0, 0.0, 0.0, 1.0]},
         {"labels": [float(x) for x in lab]}))
+
+    # -- (1b) the inner day-level split ---------------------------------------------------
+    days = ["2021-02-03", "2021-02-01", "2021-02-02", "2021-02-04", "2021-02-05"]
+    m = day_half_map(days)
+    results.append(_case(
+        "day_half_map/deterministic_day_split",
+        "sorted unique days alternate between the halves; every day lands in exactly one half and "
+        "the map is order-independent",
+        {"sorted_half": [0, 1, 0, 1, 0], "reversed_half": [0, 1, 0, 1, 0],
+         "n_days": 5, "n_half0": 3, "n_half1": 2},
+        {"sorted_half": [m[d] for d in sorted(days)],
+         "reversed_half": [day_half_map(list(reversed(days)))[d] for d in sorted(days)],
+         "n_days": len(m), "n_half0": sum(1 for v in m.values() if v == 0),
+         "n_half1": sum(1 for v in m.values() if v == 1)}))
 
     # -- (2) per-minute quantiles with the thin-minute fallback ---------------------------
     vals = np.array([1.0, 2.0, 3.0, 4.0, 5.0, 100.0, 200.0])
@@ -1163,25 +1262,41 @@ def main(argv=None) -> int:
         if any(not v["cross_fitted"] for v in prov.values()):
             failures.append("a block was scored by its own model (cross-fit broken)")
 
-    # ---- threshold banks ----------------------------------------------------------------
+    # ---- inner (train-side) cross-fit: thresholds may not read the evaluation block ---------
+    member_day = np.array(tbl["sleeve_day"].to_list(), dtype=object)
+    inner: dict = {}
+    for letter, train_block, _eval_block in FOLDS:
+        for target in TARGETS:
+            score_inner, info = inner_cross_fit_scores(frame, masks, target, train_block,
+                                                      member_day, member_keep)
+            inner[(letter, target)] = {"score": score_inner, "info": info}
+            if info["finite_outside_block"] != 0:
+                failures.append(f"fold {letter} inner cross-fit ({target}) scored "
+                                f"{info['finite_outside_block']} rows outside {train_block}")
+        print(f"[e1] fold {letter}: inner train-side cross-fit built "
+              f"({inner[(letter, 'final_high_now')]['info']['n_scored']} + "
+              f"{inner[(letter, 'event_hazard')]['info']['n_scored']} rows, "
+              f"0 outside {train_block}) ({time.time() - t0:.0f}s)", flush=True)
+
+    # ---- threshold banks (all built from the INNER cross-fit) ---------------------------
     thr_bank: dict = {}
     thr_arrays: dict = {}
-    for letter, train_block, _eval_block in FOLDS:
+    for letter, train_block, eval_block in FOLDS:
         variants = (
             ("secondary_ruler", "final_high_now", DECISION_STATE,
              masks["state"] & (frame.block == train_block)),
             ("ablation", "event_hazard", DECISION_EVENT,
-             masks["train_event"] & (frame.block == train_block)),
+             masks["event"] & (frame.block == train_block)),
         )
         for tag, target, decision, pool in variants:
             if args.smoke_frac < 1.0:
                 pool = pool & row_keep
-            score = score_now if target == "final_high_now" else score_event
+            score = inner[(letter, target)]["score"]
             minute = (frame.et[pool] - fall.FIRST_ET).astype(np.int64)
             values = score[pool]
             finite = np.isfinite(values)
             if not finite.all():
-                failures.append(f"{letter}/{tag}: non-finite scores in the threshold pool")
+                failures.append(f"{letter}/{tag}: non-finite train-side scores in the pool")
             thr, pooled, fallback = per_minute_quantiles(
                 values[finite], minute[finite], fall.n_minute_codes(frame), QUANTILES,
                 MIN_TRAIN_OBS_PER_MINUTE)
@@ -1189,6 +1304,10 @@ def main(argv=None) -> int:
             thr_bank[(letter, tag)] = {
                 "target": target, "decision_population": decision, "train_block": train_block,
                 "n_pool": int(finite.sum()),
+                "scored_by": ("inner day-level cross-fit inside the train block (fit on one day "
+                              "half, score the other) — no evaluation-block row is read"),
+                "eval_block": eval_block,
+                "n_eval_rows_in_pool": 0,
                 "pooled_quantiles": {quantile_tag(q): r6(pooled[i])
                                      for i, q in enumerate(QUANTILES)},
                 "n_minutes_with_fallback": len(fallback),
@@ -1197,7 +1316,8 @@ def main(argv=None) -> int:
                                               for i, q in enumerate(QUANTILES)}
                                     for et in (570, 600, 660, 720, 780, 840, 900, 959)},
             }
-        print(f"[e1] fold {letter}: threshold banks built ({time.time() - t0:.0f}s)", flush=True)
+        print(f"[e1] fold {letter}: threshold banks built from inner cross-fit "
+              f"({time.time() - t0:.0f}s)", flush=True)
 
     # ---- ledger cells -------------------------------------------------------------------
     control_rule = {name: led.parse_rule(name, led.load_registry()) for name in CONTROLS}
@@ -1275,9 +1395,18 @@ def main(argv=None) -> int:
                   f" ({time.time() - t0:.0f}s)", flush=True)
 
         # primary: the dollar-learned global threshold, frozen on the train block
+        # (threshold pool AND the train-side triggers both come from the inner day-level cross-fit,
+        #  so the evaluation block's rows/days/outcomes are never read by the selection)
+        df_train_blocks = set(df_train["block"].unique().to_list())
+        if df_train_blocks != {train_block}:
+            failures.append(f"fold {letter}: the grid replay frame is not {train_block}-only "
+                            f"({sorted(df_train_blocks)})")
         grid_doc = learn_dollar_threshold(
-            frame, masks, score_now, df_train, keys, train_block, grid, GRID_OBJECTIVE_BPS,
-            member_keep if args.smoke_frac < 1.0 else None)
+            frame, masks, inner[(letter, "final_high_now")]["score"], df_train, keys, train_block,
+            grid, GRID_OBJECTIVE_BPS, member_keep if args.smoke_frac < 1.0 else None)
+        grid_doc["scored_by"] = inner[(letter, "final_high_now")]["info"]
+        grid_doc["eval_block"] = eval_block
+        grid_doc["n_eval_rows_read_by_selection"] = 0
         grid_docs[letter] = grid_doc
         chosen = grid_doc["chosen"]
         print(f"[e1] fold {letter} grid: q{chosen['quantile']:.2f} thr {chosen['threshold']} "
@@ -1363,6 +1492,20 @@ def main(argv=None) -> int:
                 "bar_index_contiguous_from_zero": contig,
                 "score_cross_fitted": all(v["cross_fitted"] for v in
                                           list(prov_now.values()) + list(prov_event.values())),
+                "selection_never_reads_the_eval_block": {
+                    "inner_cross_fit_rows_outside_train_block": {
+                        f"{letter}|{target}":
+                            inner[(letter, target)]["info"]["finite_outside_block"]
+                        for letter in ("A", "B") for target in TARGETS},
+                    "grid_replay_frames_are_train_block_only": all(
+                        g["train_block"] == f[1] for g, f in
+                        zip([grid_docs[k] for k in sorted(grid_docs)], list(FOLDS))),
+                    "note": ("thresholds (dollar grid + clock-minute banks) come from the inner "
+                             "day-level cross-fit inside the train block; the grid objective is "
+                             "evaluated by replaying the ledger on the train block only"),
+                },
+                "reconciliation_clean_every_cell": all(
+                    cells[c]["ledger"]["reconciliation"]["reconciliation_clean"] for c in cells),
                 "cells_complete": bool(len(cells) == expected_cells),
                 "ledger_net_identities_hold": all(
                     cells[c]["ledger"]["checks"]["net_identity"] for c in cells),
@@ -1430,9 +1573,16 @@ def main(argv=None) -> int:
             "score": ("ridge logistic, 14 fall state features (fall.design_matrix scaling) + exact "
                       "clock-minute fixed effects (fall.multi_effect_logit), fitted pooled over "
                       "both families on the train block; score emitted for every complete bar"),
-            "cross_fit": ("every scored bar comes from the model fitted on the OTHER block, and the "
-                          "threshold pool is scored the same way: no evaluated row and no threshold "
-                          "is ever in sample"),
+            "cross_fit": ("TWO layers, both day/block-level. (1) Evaluation: every evaluated bar is "
+                          "scored by the model fitted on the OTHER block. (2) Selection: every "
+                          "threshold (the primary dollar grid and every clock-minute bank) is built "
+                          "from an INNER day-level cross-fit inside the train block (the block's "
+                          "sorted days alternate between two halves; each half is scored by the "
+                          "model fitted on the other half), and the grid's train-side replay runs "
+                          "on the train block only — so no threshold, and no selection objective, "
+                          "is a function of the evaluation block. Verified: the inner score arrays "
+                          "are finite on 0 rows outside their train block, and the grid replay "
+                          "frame contains only the train block."),
             "folds": {letter: {"train_block": tr, "eval_block": ev,
                                "note": ("block_of (frozen) carries exactly two blocks, so the "
                                         "brief's 'blocks 0-1 train -> 2-3 eval' is block1 -> "
@@ -1535,6 +1685,9 @@ def main(argv=None) -> int:
                                  for blk, m in models_event.items()},
             },
             "score_provenance": {"final_high_now": prov_now, "event_hazard": prov_event},
+            "inner_selection_cross_fit": {
+                f"{letter}|{target}": inner[(letter, target)]["info"]
+                for letter in ("A", "B") for target in TARGETS},
             "threshold_banks": {f"{letter}|{tag}": v for (letter, tag), v in thr_bank.items()},
         },
         "grid_search": grid_docs,

@@ -440,13 +440,15 @@ def jsonable(o):
         return {str(k): jsonable(v) for k, v in o.items()}
     if isinstance(o, (list, tuple)):
         return [jsonable(v) for v in o]
+    # bool BEFORE int: Python's bool is an int subclass, so testing int first turned every flag
+    # into 0/1 in the serialised artifacts (all other values are unaffected).
+    if isinstance(o, (bool, np.bool_)):
+        return bool(o)
     if isinstance(o, (np.floating, float)):
         f = float(o)
         return f if math.isfinite(f) else None
     if isinstance(o, (np.integer, int)):
         return int(o)
-    if isinstance(o, (np.bool_, bool)):
-        return bool(o)
     if isinstance(o, np.ndarray):
         return jsonable(o.tolist())
     return o
