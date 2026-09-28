@@ -2596,3 +2596,16 @@ arm x fold combinations (dollar -3.498 A / -16.454 B; q70 -1.022 / -14.981; q80 
 q90 -31.581 / -38.052). Independent debugger (E1bDebug) found this; artifact is being republished
 with the causal statistic and closure statement. Standing state: management-by-score adds nothing
 over the trivial peak-relative ruler; the trivial ruler remains the strongest release policy tested.
+
+## 2026-09-28 (E1b verification, corrected artifact) — residual boxes: not promotable
+Independent re-verification of the corrected artifact (672/672 compared fields match; control cells
+exact). Calm-tercile box (primary arm t0 +9.31 A / +21.19 B) is numerically real and stable to
+tercile edges, dedup, friction, and day removals - but the arm's own net inside the box is NEGATIVE
+in both folds (the entire increment is the ruler losing in calm states) and the pre-registered tail
+clause fails (both ratios 0.0 vs 0.0); the three clock-quantile arms' calm boxes are negative in
+both folds. The ablation family: cell-level fold-B tail kill confirmed; per-tercile, two boxes
+(q80/q90 B t2) have the arm below control with the biggest positive increments (56.4/55.7), but that
+is a post-hoc slice of an arm that already failed its pre-registered cell-level tail test. Decision:
+E1 stays CLOSED; no rescue pre-registration, no look at unused months. The look-ahead guard is a
+real regression lock (old member-median statistic fails it) but is specific to the single
+decision-bar read, not a general causality proof.
