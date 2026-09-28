@@ -1982,6 +1982,22 @@
       "p_raw": 1.0,
       "significant": false
      },
+     "perturbation": {
+      "alt_label_delta_auc": [
+       0.005109,
+       -0.008837,
+       0.008015,
+       -0.005346
+      ],
+      "alt_label_positive_both_directions": false,
+      "rule": "the perturbation condition is: the alternative-label run is positive in both directions in both families AND the volatility-matched subset is positive in both directions",
+      "vol_matched_positive_both_directions": true,
+      "vol_matched_subset": {
+       "delta_auc_block1->block2": 0.002113,
+       "delta_auc_block2->block1": 0.014592,
+       "n_rows": 1991
+      }
+     },
      "perturbation_holds": false,
      "positive_out_of_block_both_directions": false,
      "verdict": "null"
@@ -2012,6 +2028,22 @@
       "p_holm": null,
       "p_raw": null,
       "significant": false
+     },
+     "perturbation": {
+      "alt_label_delta_auc": [
+       null,
+       null,
+       null,
+       null
+      ],
+      "alt_label_positive_both_directions": false,
+      "rule": "the perturbation condition is: the alternative-label run is positive in both directions in both families AND the volatility-matched subset is positive in both directions",
+      "vol_matched_positive_both_directions": false,
+      "vol_matched_subset": {
+       "delta_auc_block1->block2": -0.004337,
+       "delta_auc_block2->block1": 0.005814,
+       "n_rows": 1991
+      }
      },
      "perturbation_holds": false,
      "positive_out_of_block_both_directions": false,
@@ -2056,6 +2088,22 @@
       "p_raw": 0.59,
       "significant": false
      },
+     "perturbation": {
+      "alt_label_delta_auc": [
+       0.005955,
+       -0.005593,
+       0.005962,
+       -0.008132
+      ],
+      "alt_label_positive_both_directions": false,
+      "rule": "the perturbation condition is: the alternative-label run is positive in both directions in both families AND the volatility-matched subset is positive in both directions",
+      "vol_matched_positive_both_directions": true,
+      "vol_matched_subset": {
+       "delta_auc_block1->block2": 0.012816,
+       "delta_auc_block2->block1": 0.024778,
+       "n_rows": 1991
+      }
+     },
      "perturbation_holds": false,
      "positive_out_of_block_both_directions": false,
      "verdict": "null"
@@ -2099,7 +2147,23 @@
       "p_raw": 0.83,
       "significant": false
      },
-     "perturbation_holds": false,
+     "perturbation": {
+      "alt_label_delta_auc": [
+       0.013383,
+       0.000287,
+       0.009002,
+       0.000216
+      ],
+      "alt_label_positive_both_directions": true,
+      "rule": "the perturbation condition is: the alternative-label run is positive in both directions in both families AND the volatility-matched subset is positive in both directions",
+      "vol_matched_positive_both_directions": true,
+      "vol_matched_subset": {
+       "delta_auc_block1->block2": 0.011014,
+       "delta_auc_block2->block1": 0.003031,
+       "n_rows": 1991
+      }
+     },
+     "perturbation_holds": true,
      "positive_out_of_block_both_directions": false,
      "verdict": "null"
     },
@@ -2129,6 +2193,22 @@
       "p_holm": null,
       "p_raw": null,
       "significant": false
+     },
+     "perturbation": {
+      "alt_label_delta_auc": [
+       null,
+       null,
+       null,
+       null
+      ],
+      "alt_label_positive_both_directions": false,
+      "rule": "the perturbation condition is: the alternative-label run is positive in both directions in both families AND the volatility-matched subset is positive in both directions",
+      "vol_matched_positive_both_directions": false,
+      "vol_matched_subset": {
+       "delta_auc_block1->block2": null,
+       "delta_auc_block2->block1": null,
+       "n_rows": 1991
+      }
      },
      "perturbation_holds": false,
      "positive_out_of_block_both_directions": false,
@@ -2172,6 +2252,22 @@
       "p_holm": 1.0,
       "p_raw": 0.84,
       "significant": false
+     },
+     "perturbation": {
+      "alt_label_delta_auc": [
+       -0.013723,
+       -0.004482,
+       0.001899,
+       -0.011215
+      ],
+      "alt_label_positive_both_directions": false,
+      "rule": "the perturbation condition is: the alternative-label run is positive in both directions in both families AND the volatility-matched subset is positive in both directions",
+      "vol_matched_positive_both_directions": true,
+      "vol_matched_subset": {
+       "delta_auc_block1->block2": 0.002419,
+       "delta_auc_block2->block1": 0.008105,
+       "n_rows": 1991
+      }
      },
      "perturbation_holds": false,
      "positive_out_of_block_both_directions": false,
@@ -2294,7 +2390,6 @@
     },
     "dropped_no_label": 19,
     "no_next_bar_windows": 19,
-    "tie_dropped_pairs": null,
     "unit": "anchored window",
     "units_available": 4000,
     "used": 3981,
@@ -2305,7 +2400,127 @@
     "g3_note": "G3 also requires |Delta| > 0.054 in both directions and both families, a day-clustered CI excluding 0, the label/threshold perturbation, and Holm",
     "g3_promoted": [],
     "information_claim": "closed as null (no family survived the kill rule)",
-    "kill_rule": "no feature family with a positive out-of-block delta in both blocks"
+    "kill_rule": "no feature family positive out-of-block in both blocks in both families - the four-cell rule: 2 block directions x 2 families (the implementation reads the four cells jointly, not the pooled coordinate)",
+    "kill_rule_literal_reading": {
+     "cells": {
+      "F1": {
+       "A_pm": {
+        "coordinate": "A_pm",
+        "delta_auc_block1->block2": 0.003884,
+        "delta_auc_block2->block1": 0.008267,
+        "family": "F1",
+        "positive_both_blocks": true
+       },
+       "B600": {
+        "coordinate": "B600",
+        "delta_auc_block1->block2": -0.003246,
+        "delta_auc_block2->block1": -0.001096,
+        "family": "F1",
+        "positive_both_blocks": false
+       },
+       "pooled(REPORT ONLY)": {
+        "coordinate": "pooled(REPORT ONLY)",
+        "delta_auc_block1->block2": -0.000681,
+        "delta_auc_block2->block1": 0.0045,
+        "family": "F1",
+        "positive_both_blocks": false
+       }
+      },
+      "F3": {
+       "A_pm": {
+        "coordinate": "A_pm",
+        "delta_auc_block1->block2": 0.007618,
+        "delta_auc_block2->block1": 0.011715,
+        "family": "F3",
+        "positive_both_blocks": true
+       },
+       "B600": {
+        "coordinate": "B600",
+        "delta_auc_block1->block2": -0.011494,
+        "delta_auc_block2->block1": -0.005611,
+        "family": "F3",
+        "positive_both_blocks": false
+       },
+       "pooled(REPORT ONLY)": {
+        "coordinate": "pooled(REPORT ONLY)",
+        "delta_auc_block1->block2": 0.005746,
+        "delta_auc_block2->block1": 0.008704,
+        "family": "F3",
+        "positive_both_blocks": true
+       }
+      },
+      "F4": {
+       "A_pm": {
+        "coordinate": "A_pm",
+        "delta_auc_block1->block2": 0.011176,
+        "delta_auc_block2->block1": 0.007807,
+        "family": "F4",
+        "positive_both_blocks": true
+       },
+       "B600": {
+        "coordinate": "B600",
+        "delta_auc_block1->block2": -0.001439,
+        "delta_auc_block2->block1": -0.001317,
+        "family": "F4",
+        "positive_both_blocks": false
+       },
+       "pooled(REPORT ONLY)": {
+        "coordinate": "pooled(REPORT ONLY)",
+        "delta_auc_block1->block2": 0.005802,
+        "delta_auc_block2->block1": 0.005933,
+        "family": "F4",
+        "positive_both_blocks": true
+       }
+      },
+      "F6": {
+       "A_pm": {
+        "coordinate": "A_pm",
+        "delta_auc_block1->block2": -0.003595,
+        "delta_auc_block2->block1": 0.007631,
+        "family": "F6",
+        "positive_both_blocks": false
+       },
+       "B600": {
+        "coordinate": "B600",
+        "delta_auc_block1->block2": -0.000959,
+        "delta_auc_block2->block1": 0.001764,
+        "family": "F6",
+        "positive_both_blocks": false
+       },
+       "pooled(REPORT ONLY)": {
+        "coordinate": "pooled(REPORT ONLY)",
+        "delta_auc_block1->block2": 0.002868,
+        "delta_auc_block2->block1": 0.00884,
+        "family": "F6",
+        "positive_both_blocks": true
+       }
+      }
+     },
+     "max_delta_auc": 0.011715,
+     "n_surviving_cells": 6,
+     "n_surviving_cells_families_only": 3,
+     "n_surviving_cells_pooled_only": 3,
+     "note": "every surviving cell is far inside the 0.054 null band, so the literal reading does not change the verdict either; the cells are published so the two readings can be compared on the artifact's face",
+     "rule": "the literal 'positive in both blocks' reading, evaluated per coordinate (including the pooled REPORT ONLY coordinate): a cell is (family, coordinate) positive in both block directions",
+     "surviving_cells": [
+      "F1:A_pm",
+      "F3:A_pm",
+      "F3:pooled(REPORT ONLY)",
+      "F4:A_pm",
+      "F4:pooled(REPORT ONLY)",
+      "F6:pooled(REPORT ONLY)"
+     ],
+     "surviving_cells_families_only": [
+      "F1:A_pm",
+      "F3:A_pm",
+      "F4:A_pm"
+     ],
+     "surviving_cells_pooled_only": [
+      "F3:pooled(REPORT ONLY)",
+      "F4:pooled(REPORT ONLY)",
+      "F6:pooled(REPORT ONLY)"
+     ]
+    }
    },
    "target": {
     "definition": "sign(v_forced_flat) at the reclaim bar t (executable from the open of bar t+1)",
@@ -4467,6 +4682,22 @@
       "p_raw": 0.2,
       "significant": false
      },
+     "perturbation": {
+      "alt_label_delta_auc": [
+       -0.003519,
+       -0.006596,
+       -0.003151,
+       -0.002079
+      ],
+      "alt_label_positive_both_directions": false,
+      "rule": "the perturbation condition is: the alternative-label run is positive in both directions in both families AND the volatility-matched subset is positive in both directions",
+      "vol_matched_positive_both_directions": false,
+      "vol_matched_subset": {
+       "delta_auc_block1->block2": 0.002017,
+       "delta_auc_block2->block1": -0.000787,
+       "n_rows": 2469
+      }
+     },
      "perturbation_holds": false,
      "positive_out_of_block_both_directions": false,
      "verdict": "null"
@@ -4506,6 +4737,22 @@
       "p_holm": 1.0,
       "p_raw": 0.58,
       "significant": false
+     },
+     "perturbation": {
+      "alt_label_delta_auc": [
+       -0.00361,
+       -0.002255,
+       null,
+       -0.000403
+      ],
+      "alt_label_positive_both_directions": false,
+      "rule": "the perturbation condition is: the alternative-label run is positive in both directions in both families AND the volatility-matched subset is positive in both directions",
+      "vol_matched_positive_both_directions": false,
+      "vol_matched_subset": {
+       "delta_auc_block1->block2": 0.001878,
+       "delta_auc_block2->block1": -0.000999,
+       "n_rows": 2469
+      }
      },
      "perturbation_holds": false,
      "positive_out_of_block_both_directions": false,
@@ -4550,6 +4797,22 @@
       "p_raw": 0.66,
       "significant": false
      },
+     "perturbation": {
+      "alt_label_delta_auc": [
+       -0.004663,
+       -0.007023,
+       -0.001444,
+       -0.007064
+      ],
+      "alt_label_positive_both_directions": false,
+      "rule": "the perturbation condition is: the alternative-label run is positive in both directions in both families AND the volatility-matched subset is positive in both directions",
+      "vol_matched_positive_both_directions": false,
+      "vol_matched_subset": {
+       "delta_auc_block1->block2": -0.002209,
+       "delta_auc_block2->block1": -0.00147,
+       "n_rows": 2469
+      }
+     },
      "perturbation_holds": false,
      "positive_out_of_block_both_directions": false,
      "verdict": "null"
@@ -4593,6 +4856,22 @@
       "p_raw": 0.81,
       "significant": false
      },
+     "perturbation": {
+      "alt_label_delta_auc": [
+       0.002453,
+       6.8e-05,
+       -0.003151,
+       -0.000266
+      ],
+      "alt_label_positive_both_directions": false,
+      "rule": "the perturbation condition is: the alternative-label run is positive in both directions in both families AND the volatility-matched subset is positive in both directions",
+      "vol_matched_positive_both_directions": false,
+      "vol_matched_subset": {
+       "delta_auc_block1->block2": -0.000892,
+       "delta_auc_block2->block1": -0.001447,
+       "n_rows": 2469
+      }
+     },
      "perturbation_holds": false,
      "positive_out_of_block_both_directions": false,
      "verdict": "null"
@@ -4623,6 +4902,22 @@
       "p_holm": null,
       "p_raw": null,
       "significant": false
+     },
+     "perturbation": {
+      "alt_label_delta_auc": [
+       null,
+       null,
+       null,
+       null
+      ],
+      "alt_label_positive_both_directions": false,
+      "rule": "the perturbation condition is: the alternative-label run is positive in both directions in both families AND the volatility-matched subset is positive in both directions",
+      "vol_matched_positive_both_directions": false,
+      "vol_matched_subset": {
+       "delta_auc_block1->block2": null,
+       "delta_auc_block2->block1": null,
+       "n_rows": 2469
+      }
      },
      "perturbation_holds": false,
      "positive_out_of_block_both_directions": false,
@@ -4666,6 +4961,22 @@
       "p_holm": 1.0,
       "p_raw": 0.04,
       "significant": false
+     },
+     "perturbation": {
+      "alt_label_delta_auc": [
+       -0.014545,
+       -0.002553,
+       -0.007553,
+       -0.003941
+      ],
+      "alt_label_positive_both_directions": false,
+      "rule": "the perturbation condition is: the alternative-label run is positive in both directions in both families AND the volatility-matched subset is positive in both directions",
+      "vol_matched_positive_both_directions": false,
+      "vol_matched_subset": {
+       "delta_auc_block1->block2": -7e-06,
+       "delta_auc_block2->block1": -0.00074,
+       "n_rows": 2469
+      }
      },
      "perturbation_holds": false,
      "positive_out_of_block_both_directions": false,
@@ -4788,7 +5099,6 @@
     },
     "dropped_no_label": 0,
     "no_next_bar_windows": 0,
-    "tie_dropped_pairs": null,
     "unit": "anchored window",
     "units_available": 4937,
     "used": 4937,
@@ -4799,7 +5109,132 @@
     "g3_note": "G3 also requires |Delta| > 0.054 in both directions and both families, a day-clustered CI excluding 0, the label/threshold perturbation, and Holm",
     "g3_promoted": [],
     "information_claim": "closed as null (no family survived the kill rule)",
-    "kill_rule": "no feature family with a positive out-of-block delta in both blocks"
+    "kill_rule": "no feature family positive out-of-block in both blocks in both families - the four-cell rule: 2 block directions x 2 families (the implementation reads the four cells jointly, not the pooled coordinate)",
+    "kill_rule_literal_reading": {
+     "cells": {
+      "F1": {
+       "A_pm": {
+        "coordinate": "A_pm",
+        "delta_auc_block1->block2": -0.00499,
+        "delta_auc_block2->block1": -0.009947,
+        "family": "F1",
+        "positive_both_blocks": false
+       },
+       "B600": {
+        "coordinate": "B600",
+        "delta_auc_block1->block2": -0.010233,
+        "delta_auc_block2->block1": -0.005097,
+        "family": "F1",
+        "positive_both_blocks": false
+       },
+       "pooled(REPORT ONLY)": {
+        "coordinate": "pooled(REPORT ONLY)",
+        "delta_auc_block1->block2": -0.005127,
+        "delta_auc_block2->block1": -0.004379,
+        "family": "F1",
+        "positive_both_blocks": false
+       }
+      },
+      "F2": {
+       "B600": {
+        "coordinate": "B600",
+        "delta_auc_block1->block2": -0.001142,
+        "delta_auc_block2->block1": 0.001279,
+        "family": "F2",
+        "positive_both_blocks": false
+       },
+       "pooled(REPORT ONLY)": {
+        "coordinate": "pooled(REPORT ONLY)",
+        "delta_auc_block1->block2": -0.000105,
+        "delta_auc_block2->block1": 3.6e-05,
+        "family": "F2",
+        "positive_both_blocks": false
+       }
+      },
+      "F3": {
+       "A_pm": {
+        "coordinate": "A_pm",
+        "delta_auc_block1->block2": -0.002683,
+        "delta_auc_block2->block1": -0.003569,
+        "family": "F3",
+        "positive_both_blocks": false
+       },
+       "B600": {
+        "coordinate": "B600",
+        "delta_auc_block1->block2": -0.009839,
+        "delta_auc_block2->block1": -0.011761,
+        "family": "F3",
+        "positive_both_blocks": false
+       },
+       "pooled(REPORT ONLY)": {
+        "coordinate": "pooled(REPORT ONLY)",
+        "delta_auc_block1->block2": -0.005099,
+        "delta_auc_block2->block1": -0.00867,
+        "family": "F3",
+        "positive_both_blocks": false
+       }
+      },
+      "F4": {
+       "A_pm": {
+        "coordinate": "A_pm",
+        "delta_auc_block1->block2": 0.000679,
+        "delta_auc_block2->block1": -0.001594,
+        "family": "F4",
+        "positive_both_blocks": false
+       },
+       "B600": {
+        "coordinate": "B600",
+        "delta_auc_block1->block2": 0.001503,
+        "delta_auc_block2->block1": 0.000229,
+        "family": "F4",
+        "positive_both_blocks": true
+       },
+       "pooled(REPORT ONLY)": {
+        "coordinate": "pooled(REPORT ONLY)",
+        "delta_auc_block1->block2": 0.000224,
+        "delta_auc_block2->block1": -0.00077,
+        "family": "F4",
+        "positive_both_blocks": false
+       }
+      },
+      "F6": {
+       "A_pm": {
+        "coordinate": "A_pm",
+        "delta_auc_block1->block2": -0.012275,
+        "delta_auc_block2->block1": -0.010652,
+        "family": "F6",
+        "positive_both_blocks": false
+       },
+       "B600": {
+        "coordinate": "B600",
+        "delta_auc_block1->block2": -0.00743,
+        "delta_auc_block2->block1": -0.011471,
+        "family": "F6",
+        "positive_both_blocks": false
+       },
+       "pooled(REPORT ONLY)": {
+        "coordinate": "pooled(REPORT ONLY)",
+        "delta_auc_block1->block2": -0.002607,
+        "delta_auc_block2->block1": -0.001571,
+        "family": "F6",
+        "positive_both_blocks": false
+       }
+      }
+     },
+     "max_delta_auc": 0.001503,
+     "n_surviving_cells": 1,
+     "n_surviving_cells_families_only": 1,
+     "n_surviving_cells_pooled_only": 0,
+     "note": "every surviving cell is far inside the 0.054 null band, so the literal reading does not change the verdict either; the cells are published so the two readings can be compared on the artifact's face",
+     "rule": "the literal 'positive in both blocks' reading, evaluated per coordinate (including the pooled REPORT ONLY coordinate): a cell is (family, coordinate) positive in both block directions",
+     "surviving_cells": [
+      "F4:B600"
+     ],
+     "surviving_cells_families_only": [
+      "F4:B600"
+     ],
+     "surviving_cells_pooled_only": []
+    }
    },
    "target": {
     "definition": "ledger readmissible at the giveback exit (traded >= +10% above the exit price)",
@@ -6539,6 +6974,22 @@
       "p_raw": 0.29,
       "significant": false
      },
+     "perturbation": {
+      "alt_label_delta_auc": [
+       0.014563,
+       0.002022,
+       0.000352,
+       0.003123
+      ],
+      "alt_label_positive_both_directions": true,
+      "rule": "the perturbation condition is: the alternative-label run is positive in both directions in both families AND the volatility-matched subset is positive in both directions",
+      "vol_matched_positive_both_directions": false,
+      "vol_matched_subset": {
+       "delta_auc_block1->block2": -0.002607,
+       "delta_auc_block2->block1": -0.013268,
+       "n_rows": 963
+      }
+     },
      "perturbation_holds": false,
      "positive_out_of_block_both_directions": false,
      "verdict": "null"
@@ -6569,6 +7020,22 @@
       "p_holm": null,
       "p_raw": null,
       "significant": false
+     },
+     "perturbation": {
+      "alt_label_delta_auc": [
+       null,
+       null,
+       null,
+       null
+      ],
+      "alt_label_positive_both_directions": false,
+      "rule": "the perturbation condition is: the alternative-label run is positive in both directions in both families AND the volatility-matched subset is positive in both directions",
+      "vol_matched_positive_both_directions": false,
+      "vol_matched_subset": {
+       "delta_auc_block1->block2": null,
+       "delta_auc_block2->block1": null,
+       "n_rows": 963
+      }
      },
      "perturbation_holds": false,
      "positive_out_of_block_both_directions": false,
@@ -6613,6 +7080,22 @@
       "p_raw": 0.93,
       "significant": false
      },
+     "perturbation": {
+      "alt_label_delta_auc": [
+       -0.005478,
+       0.007747,
+       -0.009573,
+       0.008662
+      ],
+      "alt_label_positive_both_directions": false,
+      "rule": "the perturbation condition is: the alternative-label run is positive in both directions in both families AND the volatility-matched subset is positive in both directions",
+      "vol_matched_positive_both_directions": false,
+      "vol_matched_subset": {
+       "delta_auc_block1->block2": -0.000485,
+       "delta_auc_block2->block1": -0.027139,
+       "n_rows": 963
+      }
+     },
      "perturbation_holds": false,
      "positive_out_of_block_both_directions": false,
      "verdict": "null"
@@ -6656,6 +7139,22 @@
       "p_raw": 0.9,
       "significant": false
      },
+     "perturbation": {
+      "alt_label_delta_auc": [
+       0.003417,
+       0.015522,
+       -0.000158,
+       0.001738
+      ],
+      "alt_label_positive_both_directions": false,
+      "rule": "the perturbation condition is: the alternative-label run is positive in both directions in both families AND the volatility-matched subset is positive in both directions",
+      "vol_matched_positive_both_directions": false,
+      "vol_matched_subset": {
+       "delta_auc_block1->block2": -0.000305,
+       "delta_auc_block2->block1": -0.00047,
+       "n_rows": 963
+      }
+     },
      "perturbation_holds": false,
      "positive_out_of_block_both_directions": false,
      "verdict": "null"
@@ -6686,6 +7185,22 @@
       "p_holm": null,
       "p_raw": null,
       "significant": false
+     },
+     "perturbation": {
+      "alt_label_delta_auc": [
+       null,
+       null,
+       null,
+       null
+      ],
+      "alt_label_positive_both_directions": false,
+      "rule": "the perturbation condition is: the alternative-label run is positive in both directions in both families AND the volatility-matched subset is positive in both directions",
+      "vol_matched_positive_both_directions": false,
+      "vol_matched_subset": {
+       "delta_auc_block1->block2": null,
+       "delta_auc_block2->block1": null,
+       "n_rows": 963
+      }
      },
      "perturbation_holds": false,
      "positive_out_of_block_both_directions": false,
@@ -6729,6 +7244,22 @@
       "p_holm": 1.0,
       "p_raw": 0.94,
       "significant": false
+     },
+     "perturbation": {
+      "alt_label_delta_auc": [
+       -0.002489,
+       -0.01498,
+       -0.013419,
+       0.001276
+      ],
+      "alt_label_positive_both_directions": false,
+      "rule": "the perturbation condition is: the alternative-label run is positive in both directions in both families AND the volatility-matched subset is positive in both directions",
+      "vol_matched_positive_both_directions": false,
+      "vol_matched_subset": {
+       "delta_auc_block1->block2": 0.00784,
+       "delta_auc_block2->block1": -0.000352,
+       "n_rows": 963
+      }
      },
      "perturbation_holds": false,
      "positive_out_of_block_both_directions": false,
@@ -6851,7 +7382,9 @@
     },
     "dropped_no_label": 75,
     "no_next_bar_windows": 120,
-    "tie_dropped_pairs": 75,
+    "pairs_dropped_note": "a matched pair leaves the CS-3 measurement for one of two reasons, counted separately: a side's v_forced_flat is undefined (the anchor is the member's last bar, 60 pairs), or the two sides are exactly equal (15 pairs)",
+    "pairs_dropped_null_outcome": 60,
+    "pairs_dropped_tie": 15,
     "unit": "matched pair",
     "units_available": 2000,
     "used": 1925,
@@ -6862,7 +7395,125 @@
     "g3_note": "G3 also requires |Delta| > 0.054 in both directions and both families, a day-clustered CI excluding 0, the label/threshold perturbation, and Holm",
     "g3_promoted": [],
     "information_claim": "closed as null (no family survived the kill rule)",
-    "kill_rule": "no feature family with a positive out-of-block delta in both blocks"
+    "kill_rule": "no feature family positive out-of-block in both blocks in both families - the four-cell rule: 2 block directions x 2 families (the implementation reads the four cells jointly, not the pooled coordinate)",
+    "kill_rule_literal_reading": {
+     "cells": {
+      "F1": {
+       "A_pm": {
+        "coordinate": "A_pm",
+        "delta_auc_block1->block2": 0.016781,
+        "delta_auc_block2->block1": 0.015054,
+        "family": "F1",
+        "positive_both_blocks": true
+       },
+       "B600": {
+        "coordinate": "B600",
+        "delta_auc_block1->block2": -0.05375,
+        "delta_auc_block2->block1": -0.007989,
+        "family": "F1",
+        "positive_both_blocks": false
+       },
+       "pooled(REPORT ONLY)": {
+        "coordinate": "pooled(REPORT ONLY)",
+        "delta_auc_block1->block2": 0.013959,
+        "delta_auc_block2->block1": 0.007991,
+        "family": "F1",
+        "positive_both_blocks": true
+       }
+      },
+      "F3": {
+       "A_pm": {
+        "coordinate": "A_pm",
+        "delta_auc_block1->block2": -0.002491,
+        "delta_auc_block2->block1": -0.01966,
+        "family": "F3",
+        "positive_both_blocks": false
+       },
+       "B600": {
+        "coordinate": "B600",
+        "delta_auc_block1->block2": 0.000855,
+        "delta_auc_block2->block1": 0.003858,
+        "family": "F3",
+        "positive_both_blocks": true
+       },
+       "pooled(REPORT ONLY)": {
+        "coordinate": "pooled(REPORT ONLY)",
+        "delta_auc_block1->block2": -0.00125,
+        "delta_auc_block2->block1": -0.005389,
+        "family": "F3",
+        "positive_both_blocks": false
+       }
+      },
+      "F4": {
+       "A_pm": {
+        "coordinate": "A_pm",
+        "delta_auc_block1->block2": 0.002668,
+        "delta_auc_block2->block1": -0.001112,
+        "family": "F4",
+        "positive_both_blocks": false
+       },
+       "B600": {
+        "coordinate": "B600",
+        "delta_auc_block1->block2": 0.008954,
+        "delta_auc_block2->block1": 0.002228,
+        "family": "F4",
+        "positive_both_blocks": true
+       },
+       "pooled(REPORT ONLY)": {
+        "coordinate": "pooled(REPORT ONLY)",
+        "delta_auc_block1->block2": 0.007492,
+        "delta_auc_block2->block1": 0.004651,
+        "family": "F4",
+        "positive_both_blocks": true
+       }
+      },
+      "F6": {
+       "A_pm": {
+        "coordinate": "A_pm",
+        "delta_auc_block1->block2": -0.009416,
+        "delta_auc_block2->block1": -0.030474,
+        "family": "F6",
+        "positive_both_blocks": false
+       },
+       "B600": {
+        "coordinate": "B600",
+        "delta_auc_block1->block2": -0.019076,
+        "delta_auc_block2->block1": -0.00019,
+        "family": "F6",
+        "positive_both_blocks": false
+       },
+       "pooled(REPORT ONLY)": {
+        "coordinate": "pooled(REPORT ONLY)",
+        "delta_auc_block1->block2": -0.013317,
+        "delta_auc_block2->block1": -0.016724,
+        "family": "F6",
+        "positive_both_blocks": false
+       }
+      }
+     },
+     "max_delta_auc": 0.016781,
+     "n_surviving_cells": 5,
+     "n_surviving_cells_families_only": 3,
+     "n_surviving_cells_pooled_only": 2,
+     "note": "every surviving cell is far inside the 0.054 null band, so the literal reading does not change the verdict either; the cells are published so the two readings can be compared on the artifact's face",
+     "rule": "the literal 'positive in both blocks' reading, evaluated per coordinate (including the pooled REPORT ONLY coordinate): a cell is (family, coordinate) positive in both block directions",
+     "surviving_cells": [
+      "F1:A_pm",
+      "F1:pooled(REPORT ONLY)",
+      "F3:B600",
+      "F4:B600",
+      "F4:pooled(REPORT ONLY)"
+     ],
+     "surviving_cells_families_only": [
+      "F1:A_pm",
+      "F3:B600",
+      "F4:B600"
+     ],
+     "surviving_cells_pooled_only": [
+      "F1:pooled(REPORT ONLY)",
+      "F4:pooled(REPORT ONLY)"
+     ]
+    }
    },
    "target": {
     "definition": "v_forced_flat_A > v_forced_flat_B on the matched pair",
@@ -8648,6 +9299,22 @@
       "p_raw": 0.78,
       "significant": false
      },
+     "perturbation": {
+      "alt_label_delta_auc": [
+       0.00029,
+       0.002244,
+       0.001444,
+       0.001011
+      ],
+      "alt_label_positive_both_directions": true,
+      "rule": "the perturbation condition is: the alternative-label run is positive in both directions in both families AND the volatility-matched subset is positive in both directions",
+      "vol_matched_positive_both_directions": false,
+      "vol_matched_subset": {
+       "delta_auc_block1->block2": -0.000893,
+       "delta_auc_block2->block1": 0.002719,
+       "n_rows": 2000
+      }
+     },
      "perturbation_holds": false,
      "positive_out_of_block_both_directions": false,
      "verdict": "null"
@@ -8678,6 +9345,22 @@
       "p_holm": null,
       "p_raw": null,
       "significant": false
+     },
+     "perturbation": {
+      "alt_label_delta_auc": [
+       null,
+       null,
+       null,
+       null
+      ],
+      "alt_label_positive_both_directions": false,
+      "rule": "the perturbation condition is: the alternative-label run is positive in both directions in both families AND the volatility-matched subset is positive in both directions",
+      "vol_matched_positive_both_directions": false,
+      "vol_matched_subset": {
+       "delta_auc_block1->block2": 0.001927,
+       "delta_auc_block2->block1": -0.00057,
+       "n_rows": 2000
+      }
      },
      "perturbation_holds": false,
      "positive_out_of_block_both_directions": false,
@@ -8722,6 +9405,22 @@
       "p_raw": 0.75,
       "significant": false
      },
+     "perturbation": {
+      "alt_label_delta_auc": [
+       -0.001213,
+       -0.002255,
+       -0.002323,
+       -0.000177
+      ],
+      "alt_label_positive_both_directions": false,
+      "rule": "the perturbation condition is: the alternative-label run is positive in both directions in both families AND the volatility-matched subset is positive in both directions",
+      "vol_matched_positive_both_directions": false,
+      "vol_matched_subset": {
+       "delta_auc_block1->block2": -0.00186,
+       "delta_auc_block2->block1": -0.003868,
+       "n_rows": 2000
+      }
+     },
      "perturbation_holds": false,
      "positive_out_of_block_both_directions": false,
      "verdict": "null"
@@ -8765,6 +9464,22 @@
       "p_raw": 0.77,
       "significant": false
      },
+     "perturbation": {
+      "alt_label_delta_auc": [
+       0.00075,
+       0.000136,
+       0.000602,
+       0.001617
+      ],
+      "alt_label_positive_both_directions": true,
+      "rule": "the perturbation condition is: the alternative-label run is positive in both directions in both families AND the volatility-matched subset is positive in both directions",
+      "vol_matched_positive_both_directions": false,
+      "vol_matched_subset": {
+       "delta_auc_block1->block2": -0.003114,
+       "delta_auc_block2->block1": 0.000418,
+       "n_rows": 2000
+      }
+     },
      "perturbation_holds": false,
      "positive_out_of_block_both_directions": false,
      "verdict": "null"
@@ -8795,6 +9510,22 @@
       "p_holm": null,
       "p_raw": null,
       "significant": false
+     },
+     "perturbation": {
+      "alt_label_delta_auc": [
+       null,
+       null,
+       null,
+       null
+      ],
+      "alt_label_positive_both_directions": false,
+      "rule": "the perturbation condition is: the alternative-label run is positive in both directions in both families AND the volatility-matched subset is positive in both directions",
+      "vol_matched_positive_both_directions": false,
+      "vol_matched_subset": {
+       "delta_auc_block1->block2": null,
+       "delta_auc_block2->block1": null,
+       "n_rows": 2000
+      }
      },
      "perturbation_holds": false,
      "positive_out_of_block_both_directions": false,
@@ -8838,6 +9569,22 @@
       "p_holm": 1.0,
       "p_raw": 0.54,
       "significant": false
+     },
+     "perturbation": {
+      "alt_label_delta_auc": [
+       -1.1e-05,
+       0.000381,
+       -0.002395,
+       0.000623
+      ],
+      "alt_label_positive_both_directions": false,
+      "rule": "the perturbation condition is: the alternative-label run is positive in both directions in both families AND the volatility-matched subset is positive in both directions",
+      "vol_matched_positive_both_directions": false,
+      "vol_matched_subset": {
+       "delta_auc_block1->block2": -0.00052,
+       "delta_auc_block2->block1": 0.001189,
+       "n_rows": 2000
+      }
      },
      "perturbation_holds": false,
      "positive_out_of_block_both_directions": false,
@@ -8960,7 +9707,6 @@
     },
     "dropped_no_label": 0,
     "no_next_bar_windows": 0,
-    "tie_dropped_pairs": null,
     "unit": "anchored window",
     "units_available": 4000,
     "used": 4000,
@@ -8971,7 +9717,119 @@
     "g3_note": "G3 also requires |Delta| > 0.054 in both directions and both families, a day-clustered CI excluding 0, the label/threshold perturbation, and Holm",
     "g3_promoted": [],
     "information_claim": "closed as null (no family survived the kill rule)",
-    "kill_rule": "no feature family with a positive out-of-block delta in both blocks"
+    "kill_rule": "no feature family positive out-of-block in both blocks in both families - the four-cell rule: 2 block directions x 2 families (the implementation reads the four cells jointly, not the pooled coordinate)",
+    "kill_rule_literal_reading": {
+     "cells": {
+      "F1": {
+       "A_pm": {
+        "coordinate": "A_pm",
+        "delta_auc_block1->block2": -0.001255,
+        "delta_auc_block2->block1": -0.000405,
+        "family": "F1",
+        "positive_both_blocks": false
+       },
+       "B600": {
+        "coordinate": "B600",
+        "delta_auc_block1->block2": -0.002023,
+        "delta_auc_block2->block1": 0.000178,
+        "family": "F1",
+        "positive_both_blocks": false
+       },
+       "pooled(REPORT ONLY)": {
+        "coordinate": "pooled(REPORT ONLY)",
+        "delta_auc_block1->block2": -0.000662,
+        "delta_auc_block2->block1": -0.0003,
+        "family": "F1",
+        "positive_both_blocks": false
+       }
+      },
+      "F3": {
+       "A_pm": {
+        "coordinate": "A_pm",
+        "delta_auc_block1->block2": 0.000518,
+        "delta_auc_block2->block1": -0.000312,
+        "family": "F3",
+        "positive_both_blocks": false
+       },
+       "B600": {
+        "coordinate": "B600",
+        "delta_auc_block1->block2": 0.000414,
+        "delta_auc_block2->block1": -0.000899,
+        "family": "F3",
+        "positive_both_blocks": false
+       },
+       "pooled(REPORT ONLY)": {
+        "coordinate": "pooled(REPORT ONLY)",
+        "delta_auc_block1->block2": 0.000496,
+        "delta_auc_block2->block1": -0.000197,
+        "family": "F3",
+        "positive_both_blocks": false
+       }
+      },
+      "F4": {
+       "A_pm": {
+        "coordinate": "A_pm",
+        "delta_auc_block1->block2": 0.001156,
+        "delta_auc_block2->block1": 0.001033,
+        "family": "F4",
+        "positive_both_blocks": true
+       },
+       "B600": {
+        "coordinate": "B600",
+        "delta_auc_block1->block2": -0.000887,
+        "delta_auc_block2->block1": 0.001741,
+        "family": "F4",
+        "positive_both_blocks": false
+       },
+       "pooled(REPORT ONLY)": {
+        "coordinate": "pooled(REPORT ONLY)",
+        "delta_auc_block1->block2": 0.000546,
+        "delta_auc_block2->block1": 0.001236,
+        "family": "F4",
+        "positive_both_blocks": true
+       }
+      },
+      "F6": {
+       "A_pm": {
+        "coordinate": "A_pm",
+        "delta_auc_block1->block2": -0.001414,
+        "delta_auc_block2->block1": -0.00163,
+        "family": "F6",
+        "positive_both_blocks": false
+       },
+       "B600": {
+        "coordinate": "B600",
+        "delta_auc_block1->block2": -0.006239,
+        "delta_auc_block2->block1": 0.00038,
+        "family": "F6",
+        "positive_both_blocks": false
+       },
+       "pooled(REPORT ONLY)": {
+        "coordinate": "pooled(REPORT ONLY)",
+        "delta_auc_block1->block2": -0.000766,
+        "delta_auc_block2->block1": 0.000614,
+        "family": "F6",
+        "positive_both_blocks": false
+       }
+      }
+     },
+     "max_delta_auc": 0.001236,
+     "n_surviving_cells": 2,
+     "n_surviving_cells_families_only": 1,
+     "n_surviving_cells_pooled_only": 1,
+     "note": "every surviving cell is far inside the 0.054 null band, so the literal reading does not change the verdict either; the cells are published so the two readings can be compared on the artifact's face",
+     "rule": "the literal 'positive in both blocks' reading, evaluated per coordinate (including the pooled REPORT ONLY coordinate): a cell is (family, coordinate) positive in both block directions",
+     "surviving_cells": [
+      "F4:A_pm",
+      "F4:pooled(REPORT ONLY)"
+     ],
+     "surviving_cells_families_only": [
+      "F4:A_pm"
+     ],
+     "surviving_cells_pooled_only": [
+      "F4:pooled(REPORT ONLY)"
+     ]
+    }
    },
    "strata": {
     "bottom": {
@@ -11173,6 +12031,22 @@
       "p_raw": 0.04,
       "significant": false
      },
+     "perturbation": {
+      "alt_label_delta_auc": [
+       -0.000855,
+       -0.00309,
+       -0.0046,
+       0.003196
+      ],
+      "alt_label_positive_both_directions": false,
+      "rule": "the perturbation condition is: the alternative-label run is positive in both directions in both families AND the volatility-matched subset is positive in both directions",
+      "vol_matched_positive_both_directions": true,
+      "vol_matched_subset": {
+       "delta_auc_block1->block2": 0.001598,
+       "delta_auc_block2->block1": 0.00523,
+       "n_rows": 3000
+      }
+     },
      "perturbation_holds": false,
      "positive_out_of_block_both_directions": true,
      "verdict": "null"
@@ -11203,6 +12077,22 @@
       "p_holm": null,
       "p_raw": null,
       "significant": false
+     },
+     "perturbation": {
+      "alt_label_delta_auc": [
+       null,
+       null,
+       null,
+       null
+      ],
+      "alt_label_positive_both_directions": false,
+      "rule": "the perturbation condition is: the alternative-label run is positive in both directions in both families AND the volatility-matched subset is positive in both directions",
+      "vol_matched_positive_both_directions": false,
+      "vol_matched_subset": {
+       "delta_auc_block1->block2": null,
+       "delta_auc_block2->block1": null,
+       "n_rows": 3000
+      }
      },
      "perturbation_holds": false,
      "positive_out_of_block_both_directions": false,
@@ -11247,7 +12137,23 @@
       "p_raw": 0.18,
       "significant": false
      },
-     "perturbation_holds": false,
+     "perturbation": {
+      "alt_label_delta_auc": [
+       0.035616,
+       0.036134,
+       0.03194,
+       0.046198
+      ],
+      "alt_label_positive_both_directions": true,
+      "rule": "the perturbation condition is: the alternative-label run is positive in both directions in both families AND the volatility-matched subset is positive in both directions",
+      "vol_matched_positive_both_directions": true,
+      "vol_matched_subset": {
+       "delta_auc_block1->block2": 0.001263,
+       "delta_auc_block2->block1": 0.003784,
+       "n_rows": 3000
+      }
+     },
+     "perturbation_holds": true,
      "positive_out_of_block_both_directions": true,
      "verdict": "null"
     },
@@ -11289,6 +12195,22 @@
       "p_holm": 1.0,
       "p_raw": 0.88,
       "significant": false
+     },
+     "perturbation": {
+      "alt_label_delta_auc": [
+       0.0,
+       0.000322,
+       -0.00023,
+       0.000566
+      ],
+      "alt_label_positive_both_directions": false,
+      "rule": "the perturbation condition is: the alternative-label run is positive in both directions in both families AND the volatility-matched subset is positive in both directions",
+      "vol_matched_positive_both_directions": false,
+      "vol_matched_subset": {
+       "delta_auc_block1->block2": 1e-05,
+       "delta_auc_block2->block1": -1.1e-05,
+       "n_rows": 3000
+      }
      },
      "perturbation_holds": false,
      "positive_out_of_block_both_directions": false,
@@ -11333,6 +12255,22 @@
       "p_raw": 0.95,
       "significant": false
      },
+     "perturbation": {
+      "alt_label_delta_auc": [
+       0.090392,
+       0.096078,
+       0.075537,
+       0.089677
+      ],
+      "alt_label_positive_both_directions": true,
+      "rule": "the perturbation condition is: the alternative-label run is positive in both directions in both families AND the volatility-matched subset is positive in both directions",
+      "vol_matched_positive_both_directions": false,
+      "vol_matched_subset": {
+       "delta_auc_block1->block2": 0.00049,
+       "delta_auc_block2->block1": -0.005741,
+       "n_rows": 3000
+      }
+     },
      "perturbation_holds": false,
      "positive_out_of_block_both_directions": false,
      "verdict": "null"
@@ -11376,7 +12314,23 @@
       "p_raw": 0.21,
       "significant": false
      },
-     "perturbation_holds": false,
+     "perturbation": {
+      "alt_label_delta_auc": [
+       0.018483,
+       0.009437,
+       0.004515,
+       0.006818
+      ],
+      "alt_label_positive_both_directions": true,
+      "rule": "the perturbation condition is: the alternative-label run is positive in both directions in both families AND the volatility-matched subset is positive in both directions",
+      "vol_matched_positive_both_directions": true,
+      "vol_matched_subset": {
+       "delta_auc_block1->block2": 0.00101,
+       "delta_auc_block2->block1": 0.003754,
+       "n_rows": 3000
+      }
+     },
+     "perturbation_holds": true,
      "positive_out_of_block_both_directions": true,
      "verdict": "null"
     }
@@ -11559,7 +12513,6 @@
     },
     "dropped_no_label": 0,
     "no_next_bar_windows": 0,
-    "tie_dropped_pairs": null,
     "unit": "anchored window",
     "units_available": 4000,
     "used": 4000,
@@ -11574,7 +12527,160 @@
     "g3_note": "G3 also requires |Delta| > 0.054 in both directions and both families, a day-clustered CI excluding 0, the label/threshold perturbation, and Holm",
     "g3_promoted": [],
     "information_claim": "open (a family survived the kill rule)",
-    "kill_rule": "no feature family with a positive out-of-block delta in both blocks"
+    "kill_rule": "no feature family positive out-of-block in both blocks in both families - the four-cell rule: 2 block directions x 2 families (the implementation reads the four cells jointly, not the pooled coordinate)",
+    "kill_rule_literal_reading": {
+     "cells": {
+      "F1": {
+       "A_pm": {
+        "coordinate": "A_pm",
+        "delta_auc_block1->block2": 0.000293,
+        "delta_auc_block2->block1": 0.001918,
+        "family": "F1",
+        "positive_both_blocks": true
+       },
+       "B600": {
+        "coordinate": "B600",
+        "delta_auc_block1->block2": 0.002271,
+        "delta_auc_block2->block1": 0.005314,
+        "family": "F1",
+        "positive_both_blocks": true
+       },
+       "pooled(REPORT ONLY)": {
+        "coordinate": "pooled(REPORT ONLY)",
+        "delta_auc_block1->block2": 0.000735,
+        "delta_auc_block2->block1": 0.002862,
+        "family": "F1",
+        "positive_both_blocks": true
+       }
+      },
+      "F3": {
+       "A_pm": {
+        "coordinate": "A_pm",
+        "delta_auc_block1->block2": 0.000254,
+        "delta_auc_block2->block1": 0.001593,
+        "family": "F3",
+        "positive_both_blocks": true
+       },
+       "B600": {
+        "coordinate": "B600",
+        "delta_auc_block1->block2": 0.002475,
+        "delta_auc_block2->block1": 0.005495,
+        "family": "F3",
+        "positive_both_blocks": true
+       },
+       "pooled(REPORT ONLY)": {
+        "coordinate": "pooled(REPORT ONLY)",
+        "delta_auc_block1->block2": 0.000766,
+        "delta_auc_block2->block1": 0.002704,
+        "family": "F3",
+        "positive_both_blocks": true
+       }
+      },
+      "F4": {
+       "A_pm": {
+        "coordinate": "A_pm",
+        "delta_auc_block1->block2": 3.3e-05,
+        "delta_auc_block2->block1": 3.3e-05,
+        "family": "F4",
+        "positive_both_blocks": true
+       },
+       "B600": {
+        "coordinate": "B600",
+        "delta_auc_block1->block2": -0.000161,
+        "delta_auc_block2->block1": 3e-05,
+        "family": "F4",
+        "positive_both_blocks": false
+       },
+       "pooled(REPORT ONLY)": {
+        "coordinate": "pooled(REPORT ONLY)",
+        "delta_auc_block1->block2": 5.5e-05,
+        "delta_auc_block2->block1": 4.4e-05,
+        "family": "F4",
+        "positive_both_blocks": true
+       }
+      },
+      "F5": {
+       "A_pm": {
+        "coordinate": "A_pm",
+        "delta_auc_block1->block2": 0.00013,
+        "delta_auc_block2->block1": -0.001806,
+        "family": "F5",
+        "positive_both_blocks": false
+       },
+       "B600": {
+        "coordinate": "B600",
+        "delta_auc_block1->block2": -0.000728,
+        "delta_auc_block2->block1": 0.002723,
+        "family": "F5",
+        "positive_both_blocks": false
+       },
+       "pooled(REPORT ONLY)": {
+        "coordinate": "pooled(REPORT ONLY)",
+        "delta_auc_block1->block2": 0.000419,
+        "delta_auc_block2->block1": -0.002414,
+        "family": "F5",
+        "positive_both_blocks": false
+       }
+      },
+      "F6": {
+       "A_pm": {
+        "coordinate": "A_pm",
+        "delta_auc_block1->block2": 0.000209,
+        "delta_auc_block2->block1": 0.00182,
+        "family": "F6",
+        "positive_both_blocks": true
+       },
+       "B600": {
+        "coordinate": "B600",
+        "delta_auc_block1->block2": 0.001865,
+        "delta_auc_block2->block1": 0.004645,
+        "family": "F6",
+        "positive_both_blocks": true
+       },
+       "pooled(REPORT ONLY)": {
+        "coordinate": "pooled(REPORT ONLY)",
+        "delta_auc_block1->block2": 0.000752,
+        "delta_auc_block2->block1": 0.002581,
+        "family": "F6",
+        "positive_both_blocks": true
+       }
+      }
+     },
+     "max_delta_auc": 0.005495,
+     "n_surviving_cells": 11,
+     "n_surviving_cells_families_only": 7,
+     "n_surviving_cells_pooled_only": 4,
+     "note": "every surviving cell is far inside the 0.054 null band, so the literal reading does not change the verdict either; the cells are published so the two readings can be compared on the artifact's face",
+     "rule": "the literal 'positive in both blocks' reading, evaluated per coordinate (including the pooled REPORT ONLY coordinate): a cell is (family, coordinate) positive in both block directions",
+     "surviving_cells": [
+      "F1:A_pm",
+      "F1:B600",
+      "F1:pooled(REPORT ONLY)",
+      "F3:A_pm",
+      "F3:B600",
+      "F3:pooled(REPORT ONLY)",
+      "F4:A_pm",
+      "F4:pooled(REPORT ONLY)",
+      "F6:A_pm",
+      "F6:B600",
+      "F6:pooled(REPORT ONLY)"
+     ],
+     "surviving_cells_families_only": [
+      "F1:A_pm",
+      "F1:B600",
+      "F3:A_pm",
+      "F3:B600",
+      "F4:A_pm",
+      "F6:A_pm",
+      "F6:B600"
+     ],
+     "surviving_cells_pooled_only": [
+      "F1:pooled(REPORT ONLY)",
+      "F3:pooled(REPORT ONLY)",
+      "F4:pooled(REPORT ONLY)",
+      "F6:pooled(REPORT ONLY)"
+     ]
+    }
    },
    "target": {
     "definition": "the reopen print of the hole carries tape condition 5",
@@ -11599,6 +12705,16 @@
   "b1_decision_instant": {
    "causal_prints_with_tau_positive": 0,
    "close_definition": "close(t) = (et_t + 1) * 60 seconds after ET midnight",
+   "cs5_exception": {
+    "bound_s": 8580.0,
+    "declared": true,
+    "max_hole_minutes_in_set": 143.0,
+    "measured_from": "the pre-hole bar's close",
+    "measured_max_s": 411.8,
+    "note": "the debug pass measured hole prints at tau up to +411.8 s from the pre-hole bar's close, bounded by the longest hole in the frozen set",
+    "read_by": "only the CS-5 predictors (F3/F4/F5) and the diagnostic f5_hole_prints_all; every non-CS-5 window obeys tau <= 0 strictly",
+    "rule": "CS-5's anchor IS a print, not a bar: its decision instant is the FIRST U-path print of the reopen minute (frozen action_stamp_tau = 0), so the pre-hole bar and the hole's own prints are causal by design"
+   },
    "first_print_offset_s": {
     "max": 59.998,
     "mean": 9.387,

@@ -2002,6 +2002,21 @@ def stage_b_diagnostics(features: pl.DataFrame, diag: dict, wins: list[dict],
         "b1_decision_instant": {
             "rule": ("the decision is the CLOSE of the anchor bar t: every causal feature reads "
                      "only prints with ts <= close(t), i.e. tau = ts - close(t) <= 0"),
+            "cs5_exception": {
+                "declared": True,
+                "rule": ("CS-5's anchor IS a print, not a bar: its decision instant is the FIRST "
+                         "U-path print of the reopen minute (frozen action_stamp_tau = 0), so the "
+                         "pre-hole bar and the hole's own prints are causal by design"),
+                "measured_from": "the pre-hole bar's close",
+                "max_hole_minutes_in_set": _round(float(
+                    features.filter(pl.col("case_set") == "CS-5")["f5_hole_minutes"].max() or 0), 3),
+                "bound_s": _round(60.0 * float(
+                    features.filter(pl.col("case_set") == "CS-5")["f5_hole_minutes"].max() or 0), 1),
+                "measured_max_s": 411.8,
+                "read_by": ("only the CS-5 predictors (F3/F4/F5) and the diagnostic "
+                            "f5_hole_prints_all; every non-CS-5 window obeys tau <= 0 strictly"),
+                "note": ("the debug pass measured hole prints at tau up to +411.8 s from the "
+                         "pre-hole bar's close, bounded by the longest hole in the frozen set")},
             "close_definition": "close(t) = (et_t + 1) * 60 seconds after ET midnight",
             "first_print_offset_s": dist_summary(off, nd=3),
             "print_cutoff_recorded_per_window": "cutoff_sec_et (the last causal print's ET second)",
@@ -2115,11 +2130,25 @@ def _verdicts(coords: dict, pert: dict, holm: dict) -> dict:
         ci = all(rec[c][k + "_ci"] and rec[c][k + "_ci"][0] is not None
                  and rec[c][k + "_ci"][0] > 0
                  for c in ("A_pm", "B600") for k in ("d12", "d21"))
-        p = pert.get(fam, {})
-        pert_ok = bool(p.get("positive_both_directions") and p.get("positive_both_families"))
+        p_alt = (pert.get(fam) or {}).get("alt_label") or {}
+        p_vol = (pert.get(fam) or {}).get("vol_matched_subset") or {}
+        vol_ok = bool(p_vol.get("delta_auc_block1->block2") is not None
+                      and p_vol.get("delta_auc_block2->block1") is not None
+                      and float(p_vol["delta_auc_block1->block2"]) > 0
+                      and float(p_vol["delta_auc_block2->block1"]) > 0)
+        pert_ok = bool(p_alt.get("positive_both_directions") and vol_ok)
         out[fam] = {"delta_auc": rec, "positive_out_of_block_both_directions": bool(both_pos),
                     "exceeds_null_band": bool(band), "ci_excludes_zero_both_directions": bool(ci),
                     "perturbation_holds": pert_ok,
+                    "perturbation": {
+                        "alt_label_positive_both_directions":
+                            bool(p_alt.get("positive_both_directions")),
+                        "alt_label_delta_auc": p_alt.get("delta_auc"),
+                        "vol_matched_positive_both_directions": vol_ok,
+                        "vol_matched_subset": p_vol,
+                        "rule": ("the perturbation condition is: the alternative-label run is "
+                                 "positive in both directions in both families AND the "
+                                 "volatility-matched subset is positive in both directions")},
                     "holm": holm.get(fam),
                     "verdict": ("promoted" if (both_pos and band and ci and pert_ok
                                                and (holm.get(fam) or {}).get("significant"))
@@ -2271,7 +2300,16 @@ def stage_b_analysis(features: pl.DataFrame, wins: list[dict], diag: dict,
             va, vb = y_extra["_vhf"][keep_arr(keep, 0)], y_extra["_vhf"][keep_arr(keep, 1)]
             y_extra["y_alt"] = np.where(np.isfinite(va) & np.isfinite(vb) & (va != vb),
                                         (va > vb).astype(float), np.nan)
+            n_null = sum(1 for pp in pairs
+                         if not (np.isfinite(y_extra["_vff"][ia[pp]])
+                                 and np.isfinite(y_extra["_vff"][ib[pp]])))
+            n_tie = sum(1 for pp in pairs
+                        if np.isfinite(y_extra["_vff"][ia[pp]])
+                        and np.isfinite(y_extra["_vff"][ib[pp]])
+                        and y_extra["_vff"][ia[pp]] == y_extra["_vff"][ib[pp]])
             rows_cs["_tie_dropped"] = len(pairs) - len(keep)
+            rows_cs["_pairs_null_outcome"] = n_null
+            rows_cs["_pairs_tie"] = n_tie
             rows_cs["_pairs_available"] = len(pairs)
         rows_cs["y"] = y_extra[base]
         finite = np.isfinite(rows_cs["y"])
@@ -2284,19 +2322,28 @@ def stage_b_analysis(features: pl.DataFrame, wins: list[dict], diag: dict,
                    for k, v in y_extra.items()}
         entry: dict = {"target": {"primary": base, "definition": dict(
             (n, d) for n, r, d in SB_TARGETS[cs] if n == base).get(base), "note": y_extra.get("target_note")},
-            "rows": {"windows": int(sel.sum()),
-                     "unit": "matched pair" if cs == "CS-3" else "anchored window",
-                     "units_available": n_units_avail, "used": int(rows_cs["y"].size),
-                     "base_rate_primary_label": _round(float(rows_cs["y"].mean()), 6)
-                     if rows_cs["y"].size else None,
-                     "dropped_no_label": int(n_units_avail - rows_cs["y"].size),
-                     "tie_dropped_pairs": rows_cs.get("_tie_dropped"),
-                     "no_next_bar_windows": sum(1 for w in ws
-                                                if w["case_set"] == cs
-                                                and w["guards"]["no_next_bar"]),
-                     "by_family": counts(rows_cs["family"].tolist()),
-                     "by_block": counts(rows_cs["block"].tolist())},
+            "rows": None,
             "coordinates": {}}
+        rows_rec = {"windows": int(sel.sum()),
+                    "unit": "matched pair" if cs == "CS-3" else "anchored window",
+                    "units_available": n_units_avail, "used": int(rows_cs["y"].size),
+                    "base_rate_primary_label": _round(float(rows_cs["y"].mean()), 6)
+                    if rows_cs["y"].size else None,
+                    "dropped_no_label": int(n_units_avail - rows_cs["y"].size),
+                    "no_next_bar_windows": sum(1 for w in ws
+                                               if w["case_set"] == cs
+                                               and w["guards"]["no_next_bar"]),
+                    "by_family": counts(rows_cs["family"].tolist()),
+                    "by_block": counts(rows_cs["block"].tolist())}
+        if cs == "CS-3":
+            rows_rec.update({
+                "pairs_dropped_null_outcome": rows_cs.get("_pairs_null_outcome"),
+                "pairs_dropped_tie": rows_cs.get("_pairs_tie"),
+                "pairs_dropped_note": ("a matched pair leaves the CS-3 measurement for one of two "
+                                       "reasons, counted separately: a side's v_forced_flat is "
+                                       "undefined (the anchor is the member's last bar, 60 "
+                                       "pairs), or the two sides are exactly equal (15 pairs)")})
+        entry["rows"] = rows_rec
         coord_masks = {"A_pm": rows_cs["family"] == "A_pm", "B600": rows_cs["family"] == "B600",
                        "pooled(REPORT ONLY)": np.ones(rows_cs["y"].size, dtype=bool)}
         for cname, cm in coord_masks.items():
@@ -2434,8 +2481,46 @@ def stage_b_analysis(features: pl.DataFrame, wins: list[dict], diag: dict,
         entry["family_verdicts"] = _verdicts(entry["coordinates"], pert, holm)
         killed = [f2 for f2, v in entry["family_verdicts"].items()
                   if v["positive_out_of_block_both_directions"]]
+        lit, lit_cells = {}, []
+        for fm in SB_FAMILIES:
+            for cname, co in entry["coordinates"].items():
+                d12 = (co.get("block1->block2") or {}).get("families", {}).get(fm, {}).get("delta_auc")
+                d21 = (co.get("block2->block1") or {}).get("families", {}).get(fm, {}).get("delta_auc")
+                if d12 is None or d21 is None:
+                    continue
+                cell = {"family": fm, "coordinate": cname, "delta_auc_block1->block2": d12,
+                        "delta_auc_block2->block1": d21,
+                        "positive_both_blocks": bool(d12 > 0 and d21 > 0)}
+                lit.setdefault(fm, {})[cname] = cell
+                if cell["positive_both_blocks"]:
+                    lit_cells.append(cell)
+        lit_max = max([max(c["delta_auc_block1->block2"], c["delta_auc_block2->block1"])
+                       for c in lit_cells] or [None])
         entry["set_verdict"] = {
-            "kill_rule": ("no feature family with a positive out-of-block delta in both blocks"),
+            "kill_rule": ("no feature family positive out-of-block in both blocks in both families "
+                          "- the four-cell rule: 2 block directions x 2 families (the implementation "
+                          "reads the four cells jointly, not the pooled coordinate)"),
+            "kill_rule_literal_reading": {
+                "rule": ("the literal 'positive in both blocks' reading, evaluated per coordinate "
+                         "(including the pooled REPORT ONLY coordinate): a cell is "
+                         "(family, coordinate) positive in both block directions"),
+                "surviving_cells": [f"{c['family']}:{c['coordinate']}" for c in lit_cells],
+                "n_surviving_cells": len(lit_cells),
+                "surviving_cells_families_only": [
+                    f"{c['family']}:{c['coordinate']}" for c in lit_cells
+                    if not c["coordinate"].startswith("pooled")],
+                "n_surviving_cells_families_only": sum(
+                    1 for c in lit_cells if not c["coordinate"].startswith("pooled")),
+                "surviving_cells_pooled_only": [
+                    f"{c['family']}:{c['coordinate']}" for c in lit_cells
+                    if c["coordinate"].startswith("pooled")],
+                "n_surviving_cells_pooled_only": sum(
+                    1 for c in lit_cells if c["coordinate"].startswith("pooled")),
+                "max_delta_auc": lit_max,
+                "note": ("every surviving cell is far inside the 0.054 null band, so the literal "
+                         "reading does not change the verdict either; the cells are published so the "
+                         "two readings can be compared on the artifact's face"),
+                "cells": lit},
             "families_with_positive_delta_in_both_blocks": killed,
             "information_claim": "open (a family survived the kill rule)" if killed
             else "closed as null (no family survived the kill rule)",

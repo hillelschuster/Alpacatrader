@@ -683,7 +683,7 @@ hashed in `iev.json:feature_table.sha256`; no number in §G was seen before it w
 
 | element | implemented rule |
 |---|---|
-| decision instant | the **close of the anchor bar t**: `close(t) = (et_t + 1) × 60` seconds after ET midnight. CS-5's anchor is a print, so its decision instant is the **reopen print** (frozen `action_stamp_tau = 0`). |
+| decision instant | the **close of the anchor bar t**: `close(t) = (et_t + 1) × 60` seconds after ET midnight. **CS-5 exception (declared):** its anchor is a print, not a bar, so its decision instant is the **first U-path print of the reopen minute** (frozen `action_stamp_tau = 0`); measured from the pre-hole bar's close the hole's own prints therefore sit at τ up to **+411.8 s** and are still causal — they are read only by the CS-5 predictors (F3/F4/F5) and by the diagnostic `f5_hole_prints_all`. |
 | causal guard (G2) | every `causal_at_decision` feature reads only prints with `tau = ts − close(t) ≤ 0`. The extractor raises on the first violation; the artifact counts the prints the frozen `tau < 60` rule would have admitted at `tau > 0`. |
 | per-window record | `decision_close_s`, `cutoff_sec_et` (the last causal print actually read), `first_print_offset_s` (the B1 evidence), `n_prints_causal`, `n_prints_window_all/path`. |
 | segments | the member's **own panel bars**: `pre = t−1`, `anchor = t`, `post1 = t+1` (the execution bar), `post2 = t+2`; CS-5: `pre = t−1`, `anchor = t` (the pre-hole bar), `hole =` the silent minutes. Each bar segment is exactly 60 s; the hole segment is `hole_minutes × 60`. |
@@ -750,7 +750,9 @@ The descriptive columns (`post_arr_rate_*`, `post_size_*`, `post_top_decile_*`, 
   **both** families, Δ exceeds the 0.054 null band, the day-clustered CI excludes 0, the
   label/threshold perturbation holds, and Holm within the surviving set is significant.
 * **Kill rule (the contract's, reported separately).** A case set with no family showing a positive
-  out-of-block delta in both blocks is **closed as null**.
+  out-of-block delta in **all four cells — both block directions × both families** — is **closed as
+  null**. The artifact publishes the literal two-direction reading per coordinate as well
+  (`kill_rule_literal_reading`); no family clears the 0.054 band under either reading.
 * **Perturbation.** Alternative label (CS-1 `1[v_hold_flat > 0]`, CS-2 `final_high_flag`, CS-3
   `1[v_hold_flat_A > v_hold_flat_B]`, CS-4 `1[remaining_run > 0.10]`, CS-5 the hole-length split)
   and a volatility-matched subset (anchor `bar_range_pct` inside the inter-quartile range).
@@ -882,12 +884,17 @@ blocks; `band` = above the 0.054 null band; `ci` = day-clustered 95 % CI excludi
 |---|---|---|---|---|---|
 | CS-1 durable/fragile reclaim | 3,981 (19 no execution bar) | 0.4017 | 0.577 / 0.613 | none | none |
 | CS-2 false cuts | 4,937 | 0.4612 | 0.616 / 0.688 | none | none |
-| CS-3 mid-decile axis (descriptive) | 1,925 pairs of 2,000 (75 ties) | 0.5283 | 0.605 / 0.611 | none | none |
+| CS-3 mid-decile axis (descriptive) | 1,925 pairs of 2,000 (75 dropped: 60 null-outcome + 15 ties) | 0.5283 | 0.605 / 0.611 | none | none |
 | CS-4 exhaustion × stratum (descriptive) | 4,000 | 0.7040 | 0.856 / 0.857 | none | none |
 | CS-5 halt/reopen | 4,000 | 0.3108 | 0.9997 / 0.9964 | F1, F3, F6 | none |
 
-* **Kill rule (the contract's).** CS-1, CS-2, CS-3 and CS-4: **no feature family shows a positive
-  out-of-block delta in both blocks** → the information claim for those sets is **closed as null**.
+* **Kill rule (the contract's).** CS-1, CS-2, CS-3 and CS-4: **no feature family is positive
+  out-of-block in all four cells (both block directions × both families)** → the information claim
+  for those sets is **closed as null**. The literal two-direction reading (per family × coordinate)
+  leaves **15 family-coordinate cells** alive (25 including the pooled report-only coordinate), the
+  largest Δ AUC among them **0.0168** (CS-3) — an order of magnitude inside the 0.054 null band, so
+  the verdict is the same under either reading. `iev.json:kill_rule_literal_reading` publishes both
+  counts and every surviving cell.
   CS-5 survives the kill rule (F1 arrival, F3 occupancy and F6 signed flow are positive in both blocks in
   both families, with CIs excluding zero) — but **nothing is promoted**: every CS-5 Δ is 0.0002–0.005,
   far inside the 0.054 null band, and the perturbation check fails. `any_promoted = []` in `iev.json`.
@@ -914,6 +921,22 @@ blocks; `band` = above the 0.054 null band; `ci` = day-clustered 95 % CI excludi
   (`29d6cee9…`).
 * The five Stage-A freeze artifacts are **byte-unchanged** (`58f0405b…`, `6566a3d2…`, `d6ade76d…`,
   `678230f5…`, `588eabfe…` — re-checked by the self-test's `sb_freeze_sha_*` checks).
+* Four post-debug corrections (requested by the freeze debug pass, all in the analysis stage only; the
+  extraction parquets and every measured number are unchanged — verified leaf-by-leaf, 0 measurement
+  leaves differ):
+  1. the **perturbation gate** read a key `stage_b_analysis` never wrote (`positive_both_families`), so
+     `perturbation_holds` was hard-False; it now ANDs the alternative-label run (positive in both
+     directions in both families) with the volatility-matched subset (positive in both directions) and
+     publishes both components. No verdict changes: every family already fails the 0.054 band, and the
+     alternative-label run is genuinely non-positive (e.g. CS-1 F1: +0.0051 / −0.0088 / +0.0080 / −0.0053).
+  2. the **kill-rule sentence** now states the implemented four-cell rule (2 block directions × 2
+     families) and the artifact adds the literal per-coordinate reading with its survivors and maximum.
+  3. `diagnostics.b1_decision_instant.cs5_exception` states the CS-5 decision instant (the first U-path
+     print of the reopen minute) and the resulting τ range of causal hole prints (measured +411.8 s from
+     the pre-hole bar's close; declared bound = the longest hole in the set × 60 s).
+  4. the CS-3 drop reason is split: `pairs_dropped_null_outcome` (60) vs `pairs_dropped_tie` (15),
+     replacing the conflated `tie_dropped_pairs`.
+  `iev.json` sha256 after these fixes: `f5466c1261f1d17521c76121958711cdec05e9d73d45938e145c5f240dcdc825`.
 * One post-run correction: the CS-5 hole-length split was first computed with a mask built over the wrong
   case set (`_subset` silently passed full-length arrays through). `_subset` now **raises** on a
   row-length mismatch, and the split is computed on the CS-5 rows; the published `iev.json` is the
