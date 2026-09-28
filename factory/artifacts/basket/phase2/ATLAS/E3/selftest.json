@@ -1,0 +1,620 @@
+{
+ "checks": [
+  {
+   "actual": [
+    [
+     572,
+     574
+    ],
+    [
+     577,
+     589
+    ]
+   ],
+   "check": "empty_runs_basic",
+   "description": "runs of silent minutes between prints",
+   "expected": [
+    [
+     572,
+     574
+    ],
+    [
+     577,
+     589
+    ]
+   ],
+   "passed": true
+  },
+  {
+   "actual": [
+    [
+     560,
+     569
+    ],
+    [
+     573,
+     574
+    ],
+    [
+     578,
+     580
+    ]
+   ],
+   "check": "empty_runs_leading_trailing",
+   "description": "leading/trailing silence is reported",
+   "expected": [
+    [
+     560,
+     569
+    ],
+    [
+     573,
+     574
+    ],
+    [
+     578,
+     580
+    ]
+   ],
+   "passed": true
+  },
+  {
+   "actual": true,
+   "check": "halt_jump_algebra",
+   "description": "a 4-minute silent run is a 5-minute print-to-print jump",
+   "expected": true,
+   "passed": true
+  },
+  {
+   "actual": 1,
+   "check": "price_updating_filters_odd_lots",
+   "description": "the imported U-path filter drops @|I odd lots",
+   "expected": 1,
+   "passed": true
+  },
+  {
+   "actual": [
+    "k169",
+    "k55",
+    "k53",
+    "k451",
+    "k187",
+    "k79",
+    "k217",
+    "k211",
+    "k181",
+    "k305",
+    "k59",
+    "k19",
+    "k107",
+    "k245",
+    "k239",
+    "k223",
+    "k347",
+    "k101",
+    "k355",
+    "k247",
+    "k329",
+    "k295",
+    "k307",
+    "k11",
+    "k143",
+    "k111",
+    "k3",
+    "k303",
+    "k393",
+    "k333",
+    "k483",
+    "k201",
+    "k489",
+    "k213",
+    "k345",
+    "k141",
+    "k291",
+    "k231",
+    "k117",
+    "k195",
+    "k297",
+    "k93",
+    "k309",
+    "k417",
+    "k63",
+    "k369",
+    "k363",
+    "k381",
+    "k219",
+    "k15",
+    "k2",
+    "k356",
+    "k292",
+    "k476",
+    "k494",
+    "k178",
+    "k344",
+    "k422",
+    "k34",
+    "k320",
+    "k238",
+    "k298",
+    "k388",
+    "k400",
+    "k310",
+    "k398",
+    "k446",
+    "k364",
+    "k452",
+    "k332",
+    "k260",
+    "k184",
+    "k202",
+    "k250",
+    "k140",
+    "k114",
+    "k456",
+    "k390",
+    "k276",
+    "k84",
+    "k144",
+    "k6",
+    "k30",
+    "k204",
+    "k306",
+    "k24",
+    "k420",
+    "k312",
+    "k468",
+    "k156",
+    "k288",
+    "k138",
+    "k150",
+    "k378",
+    "k480",
+    "k216",
+    "k492",
+    "k162",
+    "k264",
+    "k402"
+   ],
+   "check": "selection_order_invariant",
+   "description": "selection does not depend on input order",
+   "expected": [
+    "k169",
+    "k55",
+    "k53",
+    "k451",
+    "k187",
+    "k79",
+    "k217",
+    "k211",
+    "k181",
+    "k305",
+    "k59",
+    "k19",
+    "k107",
+    "k245",
+    "k239",
+    "k223",
+    "k347",
+    "k101",
+    "k355",
+    "k247",
+    "k329",
+    "k295",
+    "k307",
+    "k11",
+    "k143",
+    "k111",
+    "k3",
+    "k303",
+    "k393",
+    "k333",
+    "k483",
+    "k201",
+    "k489",
+    "k213",
+    "k345",
+    "k141",
+    "k291",
+    "k231",
+    "k117",
+    "k195",
+    "k297",
+    "k93",
+    "k309",
+    "k417",
+    "k63",
+    "k369",
+    "k363",
+    "k381",
+    "k219",
+    "k15",
+    "k2",
+    "k356",
+    "k292",
+    "k476",
+    "k494",
+    "k178",
+    "k344",
+    "k422",
+    "k34",
+    "k320",
+    "k238",
+    "k298",
+    "k388",
+    "k400",
+    "k310",
+    "k398",
+    "k446",
+    "k364",
+    "k452",
+    "k332",
+    "k260",
+    "k184",
+    "k202",
+    "k250",
+    "k140",
+    "k114",
+    "k456",
+    "k390",
+    "k276",
+    "k84",
+    "k144",
+    "k6",
+    "k30",
+    "k204",
+    "k306",
+    "k24",
+    "k420",
+    "k312",
+    "k468",
+    "k156",
+    "k288",
+    "k138",
+    "k150",
+    "k378",
+    "k480",
+    "k216",
+    "k492",
+    "k162",
+    "k264",
+    "k402"
+   ],
+   "passed": true
+  },
+  {
+   "actual": 100,
+   "check": "selection_size",
+   "description": "selection honours the cap",
+   "expected": 100,
+   "passed": true
+  },
+  {
+   "actual": true,
+   "check": "selection_per_day_balanced",
+   "description": "inside a cell, per-day counts differ by at most one",
+   "expected": true,
+   "passed": true
+  },
+  {
+   "actual": true,
+   "check": "selection_is_subset",
+   "description": "selection returns population rows unchanged",
+   "expected": true,
+   "passed": true
+  },
+  {
+   "actual": {
+    "A_pm|block1": 10,
+    "A_pm|block2": 10,
+    "B600|block1": 5,
+    "B600|block2": 5
+   },
+   "check": "selection_explicit_allocation",
+   "description": "an explicit plan allocation is honoured exactly",
+   "expected": {
+    "A_pm|block1": 10,
+    "A_pm|block2": 10,
+    "B600|block1": 5,
+    "B600|block2": 5
+   },
+   "passed": true
+  },
+  {
+   "actual": 30,
+   "check": "selection_explicit_total",
+   "description": "an explicit allocation returns exactly its own total",
+   "expected": 30,
+   "passed": true
+  },
+  {
+   "actual": 4946,
+   "check": "cs2_matches_ledger",
+   "description": "CS-2 anchors equal the ledger's giveback:10 early exits",
+   "expected": 4946,
+   "passed": true
+  },
+  {
+   "actual": {
+    "A_pm": 2596,
+    "B600": 2350
+   },
+   "check": "cs2_family_split",
+   "description": "CS-2 family split matches the ledger sleeve totals",
+   "expected": {
+    "A_pm": 2596,
+    "B600": 2350
+   },
+   "passed": true
+  },
+  {
+   "actual": 0,
+   "check": "cs2_flag_locator_agreement",
+   "description": "the panel's giveback_fired_10 flag and the ledger locator agree on every member",
+   "expected": 0,
+   "passed": true
+  },
+  {
+   "actual": {
+    "A_pm": 86050,
+    "B600": 51506
+   },
+   "check": "cs3_matches_pairs_artifact",
+   "description": "CS-3 pair counts equal matched_pairs.json",
+   "expected": {
+    "A_pm": 86050,
+    "B600": 51506
+   },
+   "passed": true
+  },
+  {
+   "actual": [
+    1900432,
+    6160,
+    1066
+   ],
+   "check": "panel_grain",
+   "description": "panel rows / members / days match the declared grain",
+   "expected": [
+    1900432,
+    6160,
+    1066
+   ],
+   "passed": true
+  },
+  {
+   "actual": true,
+   "check": "member_day_window",
+   "description": "every member's fill clock is at or after its family checkpoint",
+   "expected": true,
+   "passed": true
+  },
+  {
+   "actual": [
+    779,
+    959
+   ],
+   "check": "session_end_values",
+   "description": "session_end is the regular or the half-day close only",
+   "expected": [
+    779,
+    959
+   ],
+   "passed": true
+  },
+  {
+   "actual": 21213,
+   "check": "accounting_raw_CS-1",
+   "description": "CS-1: anchors_before_gates == gated population + raw-gate drops",
+   "expected": 21213,
+   "passed": true
+  },
+  {
+   "actual": 21196,
+   "check": "accounting_sample_CS-1",
+   "description": "CS-1: gated population == frozen sample + cap drops",
+   "expected": 21196,
+   "passed": true
+  },
+  {
+   "actual": {
+    "healthy_raw": 2730
+   },
+   "check": "sample_gated_CS-1",
+   "description": "CS-1: every frozen window sits on a healthy_raw member-day",
+   "expected": {
+    "healthy_raw": 2730
+   },
+   "passed": true
+  },
+  {
+   "actual": 4946,
+   "check": "accounting_raw_CS-2",
+   "description": "CS-2: anchors_before_gates == gated population + raw-gate drops",
+   "expected": 4946,
+   "passed": true
+  },
+  {
+   "actual": 4937,
+   "check": "accounting_sample_CS-2",
+   "description": "CS-2: gated population == frozen sample + cap drops",
+   "expected": 4937,
+   "passed": true
+  },
+  {
+   "actual": {
+    "healthy_raw": 4937
+   },
+   "check": "sample_gated_CS-2",
+   "description": "CS-2: every frozen window sits on a healthy_raw member-day",
+   "expected": {
+    "healthy_raw": 4937
+   },
+   "passed": true
+  },
+  {
+   "actual": 275112,
+   "check": "accounting_raw_CS-3",
+   "description": "CS-3: anchors_before_gates == gated population + raw-gate drops",
+   "expected": 275112,
+   "passed": true
+  },
+  {
+   "actual": 275102,
+   "check": "accounting_sample_CS-3",
+   "description": "CS-3: gated population == frozen sample + cap drops",
+   "expected": 275102,
+   "passed": true
+  },
+  {
+   "actual": {
+    "healthy_raw": 2330
+   },
+   "check": "sample_gated_CS-3",
+   "description": "CS-3: every frozen window sits on a healthy_raw member-day",
+   "expected": {
+    "healthy_raw": 2330
+   },
+   "passed": true
+  },
+  {
+   "actual": 369147,
+   "check": "accounting_raw_CS-4",
+   "description": "CS-4: anchors_before_gates == gated population + raw-gate drops",
+   "expected": 369147,
+   "passed": true
+  },
+  {
+   "actual": 369059,
+   "check": "accounting_sample_CS-4",
+   "description": "CS-4: gated population == frozen sample + cap drops",
+   "expected": 369059,
+   "passed": true
+  },
+  {
+   "actual": {
+    "healthy_raw": 3100
+   },
+   "check": "sample_gated_CS-4",
+   "description": "CS-4: every frozen window sits on a healthy_raw member-day",
+   "expected": {
+    "healthy_raw": 3100
+   },
+   "passed": true
+  },
+  {
+   "actual": 23567,
+   "check": "accounting_raw_CS-5",
+   "description": "CS-5: anchors_before_gates == gated population + raw-gate drops",
+   "expected": 23567,
+   "passed": true
+  },
+  {
+   "actual": 23567,
+   "check": "accounting_sample_CS-5",
+   "description": "CS-5: gated population == frozen sample + cap drops",
+   "expected": 23567,
+   "passed": true
+  },
+  {
+   "actual": {
+    "healthy_raw": 2088
+   },
+   "check": "sample_gated_CS-5",
+   "description": "CS-5: every frozen window sits on a healthy_raw member-day",
+   "expected": {
+    "healthy_raw": 2088
+   },
+   "passed": true
+  },
+  {
+   "actual": "678230f5757ff45555d021d38a7d09571e7858ee147e130ffdc1807d8412bd1c",
+   "check": "anchors_parquet_sha",
+   "description": "anchors.parquet is the sha recorded in case_sets.json",
+   "expected": "678230f5757ff45555d021d38a7d09571e7858ee147e130ffdc1807d8412bd1c",
+   "passed": true
+  },
+  {
+   "actual": "6566a3d2bf549156adc7169654dec078ffed7c1344348bb86648f1ec0680bf06",
+   "check": "census_parquet_sha",
+   "description": "census.parquet is the sha recorded in case_sets.json",
+   "expected": "6566a3d2bf549156adc7169654dec078ffed7c1344348bb86648f1ec0680bf06",
+   "passed": true
+  },
+  {
+   "actual": 20937,
+   "check": "anchors_case_sets",
+   "description": "anchors.parquet carries exactly the frozen sample rows",
+   "expected": 20937,
+   "passed": true
+  },
+  {
+   "actual": 4,
+   "check": "window_segments",
+   "description": "exactly four declared segments, none subdivided",
+   "expected": 4,
+   "passed": true
+  },
+  {
+   "actual": [
+    -60,
+    180
+   ],
+   "check": "window_bounds",
+   "description": "the window is [-60, 180)",
+   "expected": [
+    -60,
+    180
+   ],
+   "passed": true
+  },
+  {
+   "actual": [
+    [
+     -60,
+     0
+    ],
+    [
+     0,
+     60
+    ],
+    [
+     60,
+     120
+    ],
+    [
+     120,
+     180
+    ]
+   ],
+   "check": "segment_contiguity",
+   "description": "segments tile the window exactly",
+   "expected": [
+    [
+     -60,
+     0
+    ],
+    [
+     0,
+     60
+    ],
+    [
+     60,
+     120
+    ],
+    [
+     120,
+     180
+    ]
+   ],
+   "passed": true
+  }
+ ],
+ "deterministic": "no timestamps",
+ "kind": "self-test",
+ "summary": {
+  "failed": [],
+  "passed": 38,
+  "total": 38
+ },
+ "tool": "factory/scripts/basket_atlas_e3.py"
+}

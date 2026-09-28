@@ -1,0 +1,907 @@
+{
+ "artifacts": {
+  "anchors_parquet_sha256": "678230f5757ff45555d021d38a7d09571e7858ee147e130ffdc1807d8412bd1c",
+  "census_parquet_sha256": "6566a3d2bf549156adc7169654dec078ffed7c1344348bb86648f1ec0680bf06"
+ },
+ "case_sets": {
+  "CS-1": {
+   "action_stamp_note": "the reclaim is a completed-bar event: features labelled causal_at_decision may read tau < 60 only; post1 is the earliest legal action segment",
+   "action_stamp_tau": 60,
+   "anchor_event": "the reclaim bar t_r: reclaim_count(t_r) > reclaim_count(t_r-1)",
+   "exclusions": {
+    "note": "panel_side counts are panel rows/events dropped by the case set's own rules before the raw gates; raw_gates are census-derived drops; anchors_before_gates = anchors + raw_gates; anchors = frozen_sample.anchors + sample_cap_dropped",
+    "panel_side": {
+     "member_terminal_censored": 782,
+     "no_previous_bar_in_member_day": 0
+    },
+    "raw_gates": {
+     "coverage_class_provider_only": 17
+    },
+    "sample_cap_dropped": 17196
+   },
+   "frozen_sample": {
+    "anchor_ids_sha256": "f376588768a0ed65d54d17354c3c3359ee6ba943e6b0905663cabb9d8d0fd8ba",
+    "anchors": 4000,
+    "anchors_per_day": {
+     "max": 8.0,
+     "mean": 3.752,
+     "n": 1066,
+     "p10": 2.0,
+     "p50": 3.0,
+     "p90": 7.0
+    },
+    "anchors_per_member_day": {
+     "max": 4.0,
+     "mean": 1.465,
+     "n": 2730,
+     "p10": 1.0,
+     "p50": 1.0,
+     "p90": 3.0
+    },
+    "by_block": {
+     "block1": 2000,
+     "block2": 2000
+    },
+    "by_family": {
+     "A_pm": 1899,
+     "B600": 2101
+    },
+    "by_family_block": {
+     "A_pm|block1": 953,
+     "A_pm|block2": 946,
+     "B600|block1": 1047,
+     "B600|block2": 1054
+    },
+    "cap": 4000,
+    "coverage_class": {
+     "healthy_raw": 2730
+    },
+    "days": 1066,
+    "member_days": 2730,
+    "n_on_shared_cross_family_paths": 269,
+    "prints_per_member_day_all": {
+     "max": 3436593.0,
+     "mean": 144265.254,
+     "n": 2730,
+     "p10": 2822.0,
+     "p50": 57008.0,
+     "p90": 395330.0
+    },
+    "prints_per_member_day_path": {
+     "max": 1885861.0,
+     "mean": 78825.315,
+     "n": 2730,
+     "p10": 786.0,
+     "p50": 29830.0,
+     "p90": 221598.0
+    },
+    "rule": "deterministic capped subsample; see common_construction.selection"
+   },
+   "inclusion_rule": "panel rows with terminal_censored == false, a previous bar inside the member-day, coverage_class == healthy_raw and >= 1 U-path print in [entry_et, session_end]",
+   "matching_unit": "(sleeve_day, et, family, reclaim_count, bars_below_entry_episode bucket, dist_from_running_high bucket, bar_index bucket) \u2014 the Phase-1 PRIMARY_EDGES buckets",
+   "minute_blindness": "reclaim_count / bars_below_entry_episode / dist_from_running_high are close-based 1-minute constructions; identical minute state still leaves the durable/fragile split open (Phase-1: median 1 bar, median cost -0.05%, yet 25.7% / 44.0% make a new low within 30 bars)",
+   "name": "durable vs fragile reclaim",
+   "outcomes": [
+    "sign(v_forced_flat) at t_r+1",
+    "final_high_flag at t_r",
+    "cost_of_waiting at t_r",
+    "failed_reclaim_count delta over the next 5 bars"
+   ],
+   "population": {
+    "anchor_ids_sha256": "8e37f7b66d5f053e196e658ef962ecb86c86fc331b5a4c0a1934cada45cd2a13",
+    "anchors": 21196,
+    "anchors_before_gates": 21213,
+    "anchors_per_day": {
+     "max": 83.0,
+     "mean": 19.884,
+     "n": 1066,
+     "p10": 7.0,
+     "p50": 19.0,
+     "p90": 34.0
+    },
+    "anchors_per_member_day": {
+     "max": 68.0,
+     "mean": 4.893,
+     "n": 4332,
+     "p10": 1.0,
+     "p50": 3.0,
+     "p90": 11.0
+    },
+    "by_block": {
+     "block1": 14283,
+     "block2": 6913
+    },
+    "by_family": {
+     "A_pm": 10076,
+     "B600": 11120
+    },
+    "by_family_block": {
+     "A_pm|block1": 6805,
+     "A_pm|block2": 3271,
+     "B600|block1": 7478,
+     "B600|block2": 3642
+    },
+    "coverage_class": {
+     "healthy_raw": 4332
+    },
+    "days": 1066,
+    "member_days": 4332,
+    "n_on_shared_cross_family_paths": 1506,
+    "prints_per_member_day_all": {
+     "max": 3479735.0,
+     "mean": 146105.939,
+     "n": 4332,
+     "p10": 2801.0,
+     "p50": 58158.0,
+     "p90": 397582.0
+    },
+    "prints_per_member_day_path": {
+     "max": 2016289.0,
+     "mean": 80561.037,
+     "n": 4332,
+     "p10": 847.0,
+     "p50": 30170.0,
+     "p90": 226908.0
+    }
+   }
+  },
+  "CS-2": {
+   "action_stamp_note": "decision at the close of the trigger bar (tau = 60); the execution bar is post1 [60, 120)",
+   "action_stamp_tau": 60,
+   "anchor_event": "the decision bar t of giveback:10 (panel v_giveback_10 / giveback_fired_10; the bar is located by basket_atlas_ledger.Giveback.locate_exit)",
+   "exclusions": {
+    "note": "panel_side counts are panel rows/events dropped by the case set's own rules before the raw gates; raw_gates are census-derived drops; anchors_before_gates = anchors + raw_gates; anchors = frozen_sample.anchors + sample_cap_dropped",
+    "panel_side": {
+     "clock_precedence_non_firing": 3,
+     "condition_never_fires": 938,
+     "member_terminal_censored": 273,
+     "no_execution_bar": 0,
+     "panel_flag_locator_disagreement": 0
+    },
+    "raw_gates": {
+     "coverage_class_provider_only": 9
+    },
+    "sample_cap_dropped": 0
+   },
+   "frozen_sample": {
+    "anchor_ids_sha256": "225d5ab4ed036be090457caf4381a59c9905657e65fa99439ed3ba5b04b9c7b9",
+    "anchors": 4937,
+    "anchors_per_day": {
+     "max": 6.0,
+     "mean": 4.631,
+     "n": 1066,
+     "p10": 3.0,
+     "p50": 5.0,
+     "p90": 6.0
+    },
+    "anchors_per_member_day": {
+     "max": 1.0,
+     "mean": 1.0,
+     "n": 4937,
+     "p10": 1.0,
+     "p50": 1.0,
+     "p90": 1.0
+    },
+    "by_block": {
+     "block1": 3309,
+     "block2": 1628
+    },
+    "by_family": {
+     "A_pm": 2593,
+     "B600": 2344
+    },
+    "by_family_block": {
+     "A_pm|block1": 1746,
+     "A_pm|block2": 847,
+     "B600|block1": 1563,
+     "B600|block2": 781
+    },
+    "cap": null,
+    "coverage_class": {
+     "healthy_raw": 4937
+    },
+    "days": 1066,
+    "member_days": 4937,
+    "n_on_shared_cross_family_paths": 487,
+    "prints_per_member_day_all": {
+     "max": 3479735.0,
+     "mean": 152884.806,
+     "n": 4937,
+     "p10": 3221.0,
+     "p50": 68654.0,
+     "p90": 407795.0
+    },
+    "prints_per_member_day_path": {
+     "max": 2016289.0,
+     "mean": 84034.597,
+     "n": 4937,
+     "p10": 930.0,
+     "p50": 35414.0,
+     "p90": 229630.0
+    },
+    "rule": "population (no subsample: the cap equals the eligible population)"
+   },
+   "inclusion_rule": "non-censored members whose giveback condition first appears at a bar with et < session_end - 1 and which have an execution bar t+1, coverage_class == healthy_raw and >= 1 U-path print",
+   "matching_unit": "(family, block, exit_et, bar_index bucket), sides blind",
+   "minute_blindness": "the ruler is a completed-bar close condition executed at the next bar's open; the seconds inside the trigger bar and inside the execution bar are invisible to the minute panel",
+   "name": "false cuts vs genuine deaths under a frozen exit ruler",
+   "outcomes": [
+    "readmissible == true -> FALSE CUT (ledger)",
+    "readmissible == false and final_high_flag -> GENUINE DEATH (ledger)"
+   ],
+   "population": {
+    "anchor_ids_sha256": "225d5ab4ed036be090457caf4381a59c9905657e65fa99439ed3ba5b04b9c7b9",
+    "anchors": 4937,
+    "anchors_before_gates": 4946,
+    "anchors_per_day": {
+     "max": 6.0,
+     "mean": 4.631,
+     "n": 1066,
+     "p10": 3.0,
+     "p50": 5.0,
+     "p90": 6.0
+    },
+    "anchors_per_member_day": {
+     "max": 1.0,
+     "mean": 1.0,
+     "n": 4937,
+     "p10": 1.0,
+     "p50": 1.0,
+     "p90": 1.0
+    },
+    "by_block": {
+     "block1": 3309,
+     "block2": 1628
+    },
+    "by_family": {
+     "A_pm": 2593,
+     "B600": 2344
+    },
+    "by_family_block": {
+     "A_pm|block1": 1746,
+     "A_pm|block2": 847,
+     "B600|block1": 1563,
+     "B600|block2": 781
+    },
+    "coverage_class": {
+     "healthy_raw": 4937
+    },
+    "days": 1066,
+    "member_days": 4937,
+    "n_on_shared_cross_family_paths": 487,
+    "prints_per_member_day_all": {
+     "max": 3479735.0,
+     "mean": 152884.806,
+     "n": 4937,
+     "p10": 3221.0,
+     "p50": 68654.0,
+     "p90": 407795.0
+    },
+    "prints_per_member_day_path": {
+     "max": 2016289.0,
+     "mean": 84034.597,
+     "n": 4937,
+     "p10": 930.0,
+     "p50": 35414.0,
+     "p90": 229630.0
+    }
+   }
+  },
+  "CS-3": {
+   "action_stamp_note": "the matched state is the completed bar t; the outcome is the executable future value from next_open(t)",
+   "action_stamp_tau": 60,
+   "anchor_event": "both sides of a Phase-1 middle_decile_executable_axis pair: the same (sleeve_day, et, family, bar_index bucket) unit, deterministic side split, same-member pairs dropped",
+   "exclusions": {
+    "note": "panel_side counts are panel rows/events dropped by the case set's own rules before the raw gates; raw_gates are census-derived drops; anchors_before_gates = anchors + raw_gates; anchors = frozen_sample.anchors + sample_cap_dropped",
+    "panel_side": {
+     "row_pair_same_member": 0,
+     "row_row_dup_cross_family": 178043,
+     "row_row_is_decile_extreme_down": 189011,
+     "row_row_is_decile_extreme_up": 186708,
+     "row_row_terminal_censored": 33845,
+     "row_units_with_one_middle_member": 350807
+    },
+    "raw_gates": {
+     "coverage_class_provider_only": 5,
+     "pair_partner_failed_gate": 5
+    },
+    "sample_cap_dropped": 271102
+   },
+   "frozen_sample": {
+    "anchor_ids_sha256": "52fcf8d66f36c3e99db31728ca449f2622cd98e705c75f30a06ed68826f1182c",
+    "anchors": 4000,
+    "anchors_per_day": {
+     "max": 14.0,
+     "mean": 5.284,
+     "n": 757,
+     "p10": 2.0,
+     "p50": 4.0,
+     "p90": 10.0
+    },
+    "anchors_per_member_day": {
+     "max": 4.0,
+     "mean": 1.717,
+     "n": 2330,
+     "p10": 1.0,
+     "p50": 2.0,
+     "p90": 3.0
+    },
+    "by_block": {
+     "block1": 2000,
+     "block2": 2000
+    },
+    "by_family": {
+     "A_pm": 2400,
+     "B600": 1600
+    },
+    "by_family_block": {
+     "A_pm|block1": 1200,
+     "A_pm|block2": 1200,
+     "B600|block1": 800,
+     "B600|block2": 800
+    },
+    "cap": 4000,
+    "coverage_class": {
+     "healthy_raw": 2330
+    },
+    "days": 757,
+    "member_days": 2330,
+    "n_on_shared_cross_family_paths": 0,
+    "prints_per_member_day_all": {
+     "max": 3066469.0,
+     "mean": 113465.32,
+     "n": 2330,
+     "p10": 3125.0,
+     "p50": 45481.0,
+     "p90": 300459.0
+    },
+    "prints_per_member_day_path": {
+     "max": 871102.0,
+     "mean": 62157.848,
+     "n": 2330,
+     "p10": 1017.0,
+     "p50": 24316.0,
+     "p90": 171585.0
+    },
+    "rule": "deterministic capped subsample; see common_construction.selection"
+   },
+   "inclusion_rule": "pairs built by basket_atlas_pairs.prepare/add_cells/PRIMARY_UNIT from non-decile, non-censored, non-dup_cross_family rows; both sides healthy_raw with >= 1 U-path print",
+   "matching_unit": "(sleeve_day, et, family, bar_index bucket)",
+   "meta": {
+    "allocation_pairs": {
+     "A_pm|block1": 600,
+     "A_pm|block2": 600,
+     "B600|block1": 400,
+     "B600|block2": 400
+    },
+    "n_member_windows_sampled": 4000,
+    "n_pairs_before_gates": 137556,
+    "n_pairs_by_family_block": {
+     "A_pm|block1": 64367,
+     "A_pm|block2": 21679,
+     "B600|block1": 35402,
+     "B600|block2": 16103
+    },
+    "n_pairs_population": 137551,
+    "n_pairs_sampled": 2000
+   },
+   "minute_blindness": "measured: the best minute feature on this axis reaches |effect| <= 0.054 and is inverted (0.446 A_pm / 0.453 B600) \u2014 the pre-registered null band",
+   "name": "matched minute states, divergent futures (middle-decile executable axis)",
+   "outcomes": [
+    "v_forced_flat_A > v_forced_flat_B (executable winner/loser)"
+   ],
+   "population": {
+    "anchor_ids_sha256": "ed9df335fac15af8fa00a634c5ba7c8b01c83acf66003a6f757bc0f130d95e79",
+    "anchors": 275102,
+    "anchors_before_gates": 275112,
+    "anchors_per_day": {
+     "max": 1196.0,
+     "mean": 363.411,
+     "n": 757,
+     "p10": 28.0,
+     "p50": 336.0,
+     "p90": 758.0
+    },
+    "anchors_per_member_day": {
+     "max": 363.0,
+     "mean": 118.07,
+     "n": 2330,
+     "p10": 5.0,
+     "p50": 101.0,
+     "p90": 259.0
+    },
+    "by_block": {
+     "block1": 199538,
+     "block2": 75564
+    },
+    "by_family": {
+     "A_pm": 172092,
+     "B600": 103010
+    },
+    "by_family_block": {
+     "A_pm|block1": 128734,
+     "A_pm|block2": 43358,
+     "B600|block1": 70804,
+     "B600|block2": 32206
+    },
+    "coverage_class": {
+     "healthy_raw": 2330
+    },
+    "days": 757,
+    "member_days": 2330,
+    "n_on_shared_cross_family_paths": 0,
+    "prints_per_member_day_all": {
+     "max": 3066469.0,
+     "mean": 113465.32,
+     "n": 2330,
+     "p10": 3125.0,
+     "p50": 45481.0,
+     "p90": 300459.0
+    },
+    "prints_per_member_day_path": {
+     "max": 871102.0,
+     "mean": 62157.848,
+     "n": 2330,
+     "p10": 1017.0,
+     "p50": 24316.0,
+     "p90": 171585.0
+    }
+   }
+  },
+  "CS-4": {
+   "action_stamp_note": "the carrier state is a completed-bar state; the stratum is a future label and is never a feature",
+   "action_stamp_tau": 60,
+   "anchor_event": "a bar where at least one exhaustion carrier moves versus the previous bar of the member-day: dist_from_running_high, mfe_surrendered_pos, up_close_streak, accel_1_5, bars_below_entry_episode",
+   "exclusions": {
+    "note": "panel_side counts are panel rows/events dropped by the case set's own rules before the raw gates; raw_gates are census-derived drops; anchors_before_gates = anchors + raw_gates; anchors = frozen_sample.anchors + sample_cap_dropped",
+    "panel_side": {
+     "carrier_state_constant": 10640,
+     "carrier_state_constant_variant_4carriers": 17504,
+     "member_terminal_censored": 33536,
+     "no_forward_range_30": 11744,
+     "no_future_target_bar": 0,
+     "outside_top_bottom_dispersion_decile": 1475365
+    },
+    "raw_gates": {
+     "coverage_class_provider_only": 88
+    },
+    "sample_cap_dropped": 365059
+   },
+   "frozen_sample": {
+    "anchor_ids_sha256": "06285399abeb4766962635250d832bbe1d98cff1cea7c3bcc841ffe53a16043b",
+    "anchors": 4000,
+    "anchors_per_day": {
+     "max": 8.0,
+     "mean": 3.788,
+     "n": 1056,
+     "p10": 2.0,
+     "p50": 3.0,
+     "p90": 7.0
+    },
+    "anchors_per_member_day": {
+     "max": 4.0,
+     "mean": 1.29,
+     "n": 3100,
+     "p10": 1.0,
+     "p50": 1.0,
+     "p90": 2.0
+    },
+    "by_block": {
+     "block1": 2000,
+     "block2": 2000
+    },
+    "by_family": {
+     "A_pm": 2347,
+     "B600": 1653
+    },
+    "by_family_block": {
+     "A_pm|block1": 1259,
+     "A_pm|block2": 1088,
+     "B600|block1": 741,
+     "B600|block2": 912
+    },
+    "cap": 4000,
+    "coverage_class": {
+     "healthy_raw": 3100
+    },
+    "days": 1056,
+    "member_days": 3100,
+    "n_on_shared_cross_family_paths": 341,
+    "prints_per_member_day_all": {
+     "max": 3479735.0,
+     "mean": 160728.549,
+     "n": 3100,
+     "p10": 4057.0,
+     "p50": 69157.0,
+     "p90": 434617.0
+    },
+    "prints_per_member_day_path": {
+     "max": 2016289.0,
+     "mean": 86334.406,
+     "n": 3100,
+     "p10": 1084.0,
+     "p50": 34564.0,
+     "p90": 241765.0
+    },
+    "rule": "deterministic capped subsample; see common_construction.selection"
+   },
+   "inclusion_rule": "non-censored, final_high_flag finite (not the member's last bar), fwd_range_30 finite, and inside the top or bottom fwd_range_30 decile of its block",
+   "matching_unit": "state cell of the carriers; the stratum is shown on every number",
+   "meta": {
+    "block_quantiles": {
+     "block1": {
+      "n": 1286406,
+      "q10": 0.018519,
+      "q90": 0.167832
+     },
+     "block2": {
+      "n": 558106,
+      "q10": 0.026882,
+      "q90": 0.222649
+     }
+    },
+    "carriers": [
+     "dist_from_running_high",
+     "mfe_surrendered_pos",
+     "up_close_streak",
+     "accel_1_5",
+     "bars_below_entry_episode"
+    ],
+    "carriers_in_frozen_producer": [
+     "dist_from_running_high",
+     "mfe_surrendered_pos",
+     "up_close_streak",
+     "accel_1_5"
+    ],
+    "variant_4carriers_eligible": 1837791
+   },
+   "minute_blindness": "the stratum is a FUTURE quantity: this is descriptive heterogeneity, not a predictive test (fall.json circularity tell: final_high_flag control = 1.0)",
+   "name": "exhaustion at matched state, split by dispersion stratum (DESCRIPTIVE)",
+   "outcomes": [
+    "final_high_flag",
+    "no_further_new_high"
+   ],
+   "population": {
+    "anchor_ids_sha256": "4995eb8767cd3469486add743746cc32918dd5232e79dc85670d15058bc69655",
+    "anchors": 369059,
+    "anchors_before_gates": 369147,
+    "anchors_per_day": {
+     "max": 1264.0,
+     "mean": 346.209,
+     "n": 1066,
+     "p10": 129.0,
+     "p50": 309.0,
+     "p90": 623.0
+    },
+    "anchors_per_member_day": {
+     "max": 387.0,
+     "mean": 67.544,
+     "n": 5464,
+     "p10": 5.0,
+     "p50": 38.0,
+     "p90": 172.0
+    },
+    "by_block": {
+     "block1": 257328,
+     "block2": 111731
+    },
+    "by_family": {
+     "A_pm": 222740,
+     "B600": 146319
+    },
+    "by_family_block": {
+     "A_pm|block1": 161949,
+     "A_pm|block2": 60791,
+     "B600|block1": 95379,
+     "B600|block2": 50940
+    },
+    "coverage_class": {
+     "healthy_raw": 5464
+    },
+    "days": 1066,
+    "member_days": 5464,
+    "n_on_shared_cross_family_paths": 40083,
+    "prints_per_member_day_all": {
+     "max": 3479735.0,
+     "mean": 142555.313,
+     "n": 5464,
+     "p10": 3031.0,
+     "p50": 56988.0,
+     "p90": 389696.0
+    },
+    "prints_per_member_day_path": {
+     "max": 2016289.0,
+     "mean": 78112.926,
+     "n": 5464,
+     "p10": 921.0,
+     "p50": 28545.0,
+     "p90": 218930.0
+    }
+   }
+  },
+  "CS-5": {
+   "action_stamp_note": "the anchor IS a print (the reopen print, tau = 0): the causal side is the pre-segment plus the hole, and any feature read at the reopen must not use prints after it",
+   "action_stamp_tau": 0,
+   "anchor_event": "the first U-path print after a run of >= 5 consecutive silent minutes (print-to-print jump >= 5 min) inside the member window, bracketed by prints",
+   "census_candidates": {
+    "bracketed_candidates": 29975,
+    "halt_runs_ge5min_in_member_windows": 30029,
+    "note": "the census candidate list is every bracketed halt-sized run; the panel-side rules (terminal censoring, activity floor) and then the raw gates reduce it to anchors_before_gates",
+    "unbracketed_silent_runs": 54
+   },
+   "exclusions": {
+    "note": "panel_side counts are panel rows/events dropped by the case set's own rules before the raw gates; raw_gates are census-derived drops; anchors_before_gates = anchors + raw_gates; anchors = frozen_sample.anchors + sample_cap_dropped",
+    "panel_side": {
+     "member_activity_below_floor": 1849,
+     "member_terminal_censored": 4559
+    },
+    "raw_gates": {},
+    "sample_cap_dropped": 19567
+   },
+   "frozen_sample": {
+    "anchor_ids_sha256": "2a2cf3ea0e3904964cae7738710c17d1581b457ecbfab5806edffb7c7d656d86",
+    "anchors": 4000,
+    "anchors_per_day": {
+     "max": 9.0,
+     "mean": 3.984,
+     "n": 1004,
+     "p10": 2.0,
+     "p50": 4.0,
+     "p90": 8.0
+    },
+    "anchors_per_member_day": {
+     "max": 5.0,
+     "mean": 1.916,
+     "n": 2088,
+     "p10": 1.0,
+     "p50": 2.0,
+     "p90": 3.0
+    },
+    "by_block": {
+     "block1": 2000,
+     "block2": 2000
+    },
+    "by_family": {
+     "A_pm": 2191,
+     "B600": 1809
+    },
+    "by_family_block": {
+     "A_pm|block1": 1013,
+     "A_pm|block2": 1178,
+     "B600|block1": 987,
+     "B600|block2": 822
+    },
+    "cap": 4000,
+    "coverage_class": {
+     "healthy_raw": 2088
+    },
+    "days": 1004,
+    "member_days": 2088,
+    "n_on_shared_cross_family_paths": 336,
+    "prints_per_member_day_all": {
+     "max": 3479735.0,
+     "mean": 114224.73,
+     "n": 2088,
+     "p10": 1497.0,
+     "p50": 7865.0,
+     "p90": 385592.0
+    },
+    "prints_per_member_day_path": {
+     "max": 2016289.0,
+     "mean": 56039.672,
+     "n": 2088,
+     "p10": 433.0,
+     "p50": 2728.0,
+     "p90": 194159.0
+    },
+    "rule": "deterministic capped subsample; see common_construction.selection"
+   },
+   "inclusion_rule": "non-censored member-days with >= 60 minutes with a U-path print and coverage_class == healthy_raw",
+   "matching_unit": "family / block / hole-length bucket",
+   "minute_blindness": "a hole has no interior in the minute panel; the probe measured 53/103 halt-sized holes carry a condition-5 reopen print and the rest are indistinguishable from illiquidity",
+   "name": "halt / reopen ordering",
+   "outcomes": [
+    "reopen_code5 (the label)",
+    "reopen_gap_ret",
+    "pre_halt_trend"
+   ],
+   "population": {
+    "anchor_ids_sha256": "8c19327a1b14ada4608130e316435d88ca27b94b5fb6b1184d9095bfdb0293a1",
+    "anchors": 23567,
+    "anchors_before_gates": 23567,
+    "anchors_per_day": {
+     "max": 101.0,
+     "mean": 23.473,
+     "n": 1004,
+     "p10": 3.0,
+     "p50": 20.0,
+     "p90": 51.0
+    },
+    "anchors_per_member_day": {
+     "max": 38.0,
+     "mean": 9.061,
+     "n": 2601,
+     "p10": 1.0,
+     "p50": 5.0,
+     "p90": 22.0
+    },
+    "by_block": {
+     "block1": 14351,
+     "block2": 9216
+    },
+    "by_family": {
+     "A_pm": 12701,
+     "B600": 10866
+    },
+    "by_family_block": {
+     "A_pm|block1": 7271,
+     "A_pm|block2": 5430,
+     "B600|block1": 7080,
+     "B600|block2": 3786
+    },
+    "coverage_class": {
+     "healthy_raw": 2601
+    },
+    "days": 1004,
+    "member_days": 2601,
+    "n_on_shared_cross_family_paths": 1369,
+    "prints_per_member_day_all": {
+     "max": 3479735.0,
+     "mean": 117099.428,
+     "n": 2601,
+     "p10": 1627.0,
+     "p50": 9314.0,
+     "p90": 380199.0
+    },
+    "prints_per_member_day_path": {
+     "max": 2016289.0,
+     "mean": 56704.704,
+     "n": 2601,
+     "p10": 480.0,
+     "p50": 3406.0,
+     "p90": 188213.0
+    }
+   }
+  }
+ },
+ "common_construction": {
+  "anchor_indexing": "bar_index-indexed, never clock-indexed",
+  "capped": "each case set is capped at 4,000 anchored member-windows (CS-3's number in the plan, applied to CS-1/CS-4/CS-5 by analogy) except CS-2, which is the plan's own eligible population (4,946 firing members)",
+  "cross_family_duplicates": "the 255 (day,ticker) paths held by both families are excluded from cross-family statements only; CS-3's axis drops them by construction",
+  "families": "never pooled for inference",
+  "member_rows": "panel.parquet, terminal_censored == false",
+  "selection": "inside each declared cell: days in ascending sha256(day) order, each day's candidates in ascending sha256(anchor_id) order, picks taken round-robin across days -> per-day counts differ by at most one",
+  "sides": "deterministic order inside the matching unit, blind to every print feature"
+ },
+ "deterministic": "byte-stable; no timestamps; anchors.parquet is the frozen anchor list",
+ "deviation_log": [
+  {
+   "id": "caps",
+   "text": "the plan states a 4,000-window bound only for CS-3; CS-1/CS-4/CS-5 carry the same bound here (the plan gives them none) and CS-2 keeps its full eligible population (4,946) because the plan quotes that number as the CS-2 population."
+  },
+  {
+   "id": "CS-4 carriers",
+   "text": "the plan lists five carriers; the frozen producer's fall.VOL_MEDIATION_FEATURES carries four (no bars_below_entry_episode). The plan's five are used (all panel-native) and the 4-carrier variant count is published in meta.CS-4."
+  },
+  {
+   "id": "CS-4 stratum",
+   "text": "deciles are computed inside each block (the plan says 'within the training block'); the block label is kept on every anchor so either block can be the training block at analysis time."
+  },
+  {
+   "id": "CS-5 bracketing",
+   "text": "a halt run must be bracketed by prints inside the member window (leading/trailing silence is reported separately, not anchored), because a reopen anchor needs a pre-hole print for pre_halt_trend."
+  },
+  {
+   "id": "CS-5 activity floor",
+   "text": "the probe's HALT_ACTIVITY_FLOOR=60 is applied as a member-day inclusion rule (>= 60 minutes with a U-path print)."
+  },
+  {
+   "id": "CS-2 anchor bar",
+   "text": "the anchor is the DECISION bar t (the first bar whose close satisfies the giveback condition), not the execution bar t+1; post1 is therefore the execution bar, as the window rationale requires."
+  },
+  {
+   "id": "CS-3 sample unit",
+   "text": "the 4,000 bound is on member-windows = 2,000 pairs, so the plan's 60/40 family and 50/50 block allocation is applied at pair level."
+  },
+  {
+   "id": "global budget",
+   "text": "the plan's section 6 cost line says '~4,000 anchored windows' for stage B while its section 1 sets CS-3 at 4,000 member-windows and CS-2 at 4,946 firing members; the contradiction is resolved as per-case-set caps and both numbers are published."
+  }
+ ],
+ "panel": {
+  "days": 1066,
+  "members": 6160,
+  "path": "factory/artifacts/basket/phase2/ATLAS/panel.parquet",
+  "rows": 1900432,
+  "sha256": "2a021eda878cdbe53e41d4cc88e2d8ba3b14d9a3a819723d9f679c8aca7c3488",
+  "terminal_censored_members": 273
+ },
+ "plan": "researches/PLAN-ATLAS-E3-MICROSCOPE.md (DRAFT-IMPLEMENTED)",
+ "reproduce": "python factory/scripts/basket_atlas_e3.py --stage all --bars-check",
+ "stage": "A \u2014 case-set freeze (bounded, deterministic, hashed)",
+ "stage_b_cost_projection": {
+  "basis": "window prints = 4 x (member-day U-path prints / member-day grid minutes), measured by the census; 20 B/print binary estimate from the probe's cost model; the extraction stores a capped 2,000-print sample per window",
+  "per_case_set": {
+   "CS-1": {
+    "projected_window_prints": 3307141,
+    "windows": 4000
+   },
+   "CS-2": {
+    "projected_window_prints": 4398059,
+    "windows": 4937
+   },
+   "CS-3": {
+    "projected_window_prints": 2644113,
+    "windows": 4000
+   },
+   "CS-4": {
+    "projected_window_prints": 3635071,
+    "windows": 4000
+   },
+   "CS-5": {
+    "projected_window_prints": 2043047,
+    "windows": 4000
+   }
+  },
+  "projected_bytes_binary_20B_per_print": 320548662,
+  "projected_prints": 16027433,
+  "projected_sample_bytes_cap_2000_per_window": 320548662,
+  "windows": 20937
+ },
+ "tool": "factory/scripts/basket_atlas_e3.py",
+ "totals": {
+  "by_case_set": {
+   "CS-1": 4000,
+   "CS-2": 4937,
+   "CS-3": 4000,
+   "CS-4": 4000,
+   "CS-5": 4000
+  },
+  "cs5_anchor_candidates_before_gates": 29975,
+  "frozen_anchor_windows": 20937,
+  "population_anchors": 693861
+ },
+ "window": {
+  "event_time": "tau = seconds relative to the anchor bar's first U-path print",
+  "guards": [
+   "-60 <= tau < 180 for every stored print",
+   "n_distinct_segments == 4 and no segment is subdivided",
+   "features labelled causal_at_decision may only read tau < action stamp"
+  ],
+  "rationale": "decision on completed bar t executes at the open of bar t+1, so the earliest legal print-level action is inside bar t+1 (post1); nothing beyond +180 s and no parameter is a horizon",
+  "segments": [
+   {
+    "name": "pre",
+    "tau": [
+     -60,
+     0
+    ]
+   },
+   {
+    "name": "anchor",
+    "tau": [
+     0,
+     60
+    ]
+   },
+   {
+    "name": "post1",
+    "tau": [
+     60,
+     120
+    ]
+   },
+   {
+    "name": "post2",
+    "tau": [
+     120,
+     180
+    ]
+   }
+  ],
+  "tau": [
+   -60,
+   180
+  ]
+ }
+}
