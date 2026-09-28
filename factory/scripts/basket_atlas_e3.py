@@ -42,10 +42,11 @@ import argparse
 import hashlib
 import json
 import math
+import multiprocessing as mp
 import os
 import sys
 import time
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 from pathlib import Path
 
 import numpy as np
@@ -375,6 +376,7 @@ PANEL_COLS = ["sleeve_day", "block", "family", "ticker", "entry_rank", "entry_et
 
 def load_panel_cols(cols: list[str]) -> pl.DataFrame:
     have = set(pl.read_parquet_schema(PANEL))
+    cols = list(dict.fromkeys(cols))
     missing = [c for c in cols if c not in have]
     if missing:
         raise SystemExit(f"panel is missing columns: {missing}")
@@ -1001,6 +1003,1658 @@ def stage_b_projection(rows: pl.DataFrame, samples: dict) -> dict:
 
 
 # --------------------------------------------------------------------------- #
+# Stage B — anchored extraction (B1/B2/B6) and the I-EV measurement
+# --------------------------------------------------------------------------- #
+#
+# The freeze audit (`agent://E3CensusDebug`) found three semantic defects in the frozen
+# window/action-stamp rules that Stage B must fix before any estimate is read:
+#
+#   B1  the decision instant is the CLOSE of the anchor bar t, not first-print + 60 s. The
+#       frozen rule (`tau < 60` from the anchor bar's first print) admitted up to ~59 s of
+#       post-decision tape. Here `tau = ts - close(t)` and every feature labelled
+#       `causal_at_decision` may read only prints with `tau <= 0` (equivalently ts <= close(t));
+#       the extractor asserts it on every print it uses, and each window records the decision
+#       instant and the print cutoff actually used.
+#   B2  panel bars are printed minutes, not contiguous minutes: the execution/outcome bar is
+#       mapped through the member's own panel bar list (bar identity), never by tau arithmetic.
+#       Windows whose member has no next bar are reported (`no_next_bar`), never dropped.
+#   B6  the window is contained in [entry_et, session_end] by construction: the four declared
+#       segments are the member's own panel bars, and prints outside the member window are never
+#       read. The frozen tau-window's pre/post spills are recomputed and published as
+#       `tau_window_spill` for the record.
+#
+# Consequence for the I-EV arm (stated before any estimate): a feature is a *predictor* only if
+# it is causal at the decision instant. The post1/post2 segments are the action horizon (the
+# execution bar and the bar after it), so their features are carried as `post_*` descriptive
+# columns and are never predictors here. That is the contract's B1 mandate applied to the plan's
+# §3 table; the plan file records it as a Stage-B deviation.
+
+SB_VERSION = "stageB-1 (B1 close(t) decision; B2 panel-bar identity; B6 session containment)"
+SB_SEGMENTS = ("pre", "anchor", "post1", "post2")
+SB_SEGMENTS_CS5 = ("pre", "anchor", "hole")
+CASE_SEGMENTS = {"CS-1": SB_SEGMENTS, "CS-2": SB_SEGMENTS, "CS-3": SB_SEGMENTS,
+                 "CS-4": SB_SEGMENTS, "CS-5": SB_SEGMENTS_CS5}
+SB_PUSH_MIN = 0.005              # RULER (plan section 3, feature 8): 0.5%, not fitted
+SB_Q_MAX_AGE_S = 1.0             # RULER (plan section 3, feature 12): 1 s, not fitted
+SB_BIN_S = 5.0                   # the plan's 5-second bin convention for the F3 features
+SB_SAMPLE_PER_SEGMENT = 20       # raw print sample (eyeballing only), per segment
+SB_BOOTSTRAP_B = 200             # day-clustered bootstrap resamples (pre-registered here)
+SB_BOOTSTRAP_SEED = 20260928     # fixed seed: the artifact is reproducible
+SB_NULL_BAND = 0.054             # plan section 4: the pre-registered null band
+SB_MIN_COVERAGE = 0.95           # a feature enters a model only with >= 95% non-null in training
+SB_L2 = 1.0                      # ridge penalty on standardised features (no intercept penalty)
+SB_LEVEL_RULE = {
+    "CS-1": "entry_px (the level reclaim_count increments across: close < entry_px -> close >= entry_px)",
+    "CS-2": f"running_high(t) * (1 - {GIVEBACK_LEVEL}/100) — the giveback ruler's own trigger level",
+    "CS-3": "bar_close(t) of the member's own anchor bar (the matched state's price)",
+    "CS-4": "bar_close(t) of the member's own anchor bar",
+    "CS-5": "pre_hole_px — the last U-path print before the hole (the level the reopen print jumps from)",
+}
+
+# The minute counterpart (plan section 4: "the minute counterpart is mandatory"). Every name is
+# either a registered causal state column or rejected by the ledger's registry (G2).
+MINUTE_FEATURES = (
+    "dist_from_running_high", "bars_below_entry_episode", "reclaim_count", "failed_reclaim_count",
+    "ret_1", "ret_3", "ret_5", "accel_1_5", "up_close_streak", "bar_range_pct",
+    "volume_vs_own_median", "volume_accel", "range_expansion", "gap_count_so_far",
+    "bars_since_gap", "ret_percentile_candidates", "peer_ret_median", "peer_new_high_5",
+    "mfe_so_far", "mae_so_far", "bars_since_new_high", "new_high_count_5", "new_high_count_15",
+    "new_high_count_30", "bars_since_episode_low", "candidate_count_t", "bars_since_entry",
+)
+
+
+def _feature_table() -> list[dict]:
+    """The frozen Stage-B feature table: literals, built before any estimate is computed.
+
+    `predictor` marks the columns that may enter an I-EV model (causal at the decision instant);
+    the `post_*` and `descriptive` columns are the action-horizon / L-EV material and are stored
+    but never used as predictors. `plan_row` is the row number of the plan's section-3 table.
+    """
+    rows: list[dict] = []
+
+    def add(name, family, plan_row, universe, predictor, note):
+        rows.append({"name": name, "family": family, "plan_row": plan_row, "universe": universe,
+                     "causal_at_decision": bool(predictor), "note": note})
+
+    for seg in ("pre", "anchor"):
+        add(f"f1_arr_rate_{seg}", "F1", 1, "U-all", True,
+            "U-all prints per second over the segment's own minute")
+    add("f1_arr_accel", "F1", 2, "U-all", True, "log((n_prints(anchor)+1)/(n_prints(pre)+1))")
+    for seg in ("pre", "anchor"):
+        add(f"f2_size_p90_over_median_{seg}", "F2", 3, "U-path", True,
+            "p90(print size) / median(print size) in the segment")
+        add(f"f2_top_decile_size_share_{seg}", "F2", 4, "U-path", True,
+            "share of the segment's printed size in its largest 10% of prints")
+    for seg in ("pre", "anchor"):
+        add(f"f3_secs_above_level_{seg}", "F3", 5, "U-path", True,
+            "seconds whose 5-s bin closes at or above the declared level")
+        add(f"f3_secs_below_level_{seg}", "F3", 5, "U-path", True,
+            "seconds whose 5-s bin closes below the declared level")
+    add("f3_reclaim_persistence", "F3", 6, "U-path", True,
+        "5-s bins closing back at/above the level, given >= 1 print below it (causal part)")
+    add("f4_time_to_reclaim_s", "F4", 7, "U-path", True,
+        "seconds from the first below-level print to the first at/above-level print (causal part)")
+    add("f4_n_failed_pushes", "F4", 8, "U-path", True,
+        f"excursions >= {SB_PUSH_MIN:.1%} above the level followed by a return below it")
+    add("f5_hole_minutes", "F5", 10, "U-path", True, "CS-5 only: hole length in minutes")
+    add("f5_pre_halt_trend", "F5", 11, "U-path", True,
+        "CS-5 only: pre-hole print / the pre-hole bar's open - 1 (signed move into the hole)")
+    add("f5_hole_prints_all", "F5", 11, "U-all", True,
+        "CS-5 only (pre-registered amendment): U-all prints strictly inside the hole minutes")
+    add("f5_hole_print_rate", "F5", 11, "U-all", True,
+        "CS-5 only (pre-registered amendment): f5_hole_prints_all / hole minutes")
+    for seg in ("pre", "anchor"):
+        add(f"f6_signed_vol_share_{seg}", "F6", 12, "U-path x quotes", True,
+            "Lee-Ready (quote mid, tick fallback) signed size share in the segment")
+        add(f"f6_unclassified_share_{seg}", "F6", 13, "U-path x quotes", True,
+            "share of the segment's printed size dropped by the quote-staleness bound")
+        add(f"f6_signed_vol_share_tickonly_{seg}", "F6", 14, "U-path", True,
+            "tick-rule-only signed size share (quote-free twin)")
+    # ---- descriptive / action-horizon columns: never predictors -------------------------- #
+    for seg in ("post1", "post2"):
+        add(f"post_arr_rate_{seg}", "none", 1, "U-all", False, "arrival rate in the action horizon")
+        add(f"post_size_p90_over_median_{seg}", "none", 3, "U-path", False, "F2 in the horizon")
+        add(f"post_top_decile_size_share_{seg}", "none", 4, "U-path", False, "F2 in the horizon")
+        add(f"post_secs_above_level_{seg}", "none", 5, "U-path", False, "F3 in the horizon")
+        add(f"post_secs_below_level_{seg}", "none", 5, "U-path", False, "F3 in the horizon")
+        add(f"post_signed_vol_share_{seg}", "none", 12, "U-path x quotes", False, "F6 in the horizon")
+        add(f"post_unclassified_share_{seg}", "none", 13, "U-path x quotes", False, "F6 in the horizon")
+        add(f"post_signed_vol_share_tickonly_{seg}", "none", 14, "U-path", False, "F6 in the horizon")
+    add("post_push_decay", "none", 9, "U-path", False,
+        "secs above in post1 / secs above in post2 (the plan's F4 push_decay, post-decision)")
+    add("post_time_to_reclaim_s", "none", 7, "U-path", False,
+        "seconds from the decision instant to the first at/above print after it")
+    add("post_reopen_code5", "none", 10, "U-all", False,
+        "CS-5's own label (tape condition 5 on the reopen print) — never a predictor")
+    add("post_reopen_gap_ret", "F5", 11, "U-path", False,
+        "CS-5: reopen print / last pre-hole print - 1 — simultaneous with the label, descriptive")
+    return rows
+
+
+SB_FEATURE_ROWS = _feature_table()
+SB_FEATURE_NAMES = tuple(r["name"] for r in SB_FEATURE_ROWS)
+SB_PREDICTORS = tuple(r["name"] for r in SB_FEATURE_ROWS if r["causal_at_decision"])
+SB_PREDICTORS_LIST = list(SB_PREDICTORS)
+FAMILY_OF = {r["name"]: r["family"] for r in SB_FEATURE_ROWS}
+SB_FAMILIES = tuple(sorted({r["family"] for r in SB_FEATURE_ROWS if r["causal_at_decision"]}))
+SB_FEATURE_SHA = sha256_bytes(jdump(SB_FEATURE_ROWS).encode())
+
+SB_PANEL_COLS = ["sleeve_day", "block", "family", "ticker", "entry_rank", "entry_et", "entry_px",
+                 "et", "bar_index", "session_end", "bar_open", "bar_high", "bar_low", "bar_close",
+                 "next_open", "next_et", "running_high", "v_forced_flat", "v_hold_flat",
+                 "final_high_flag", "remaining_run", "cost_of_waiting", "failed_reclaim_count",
+                 "terminal_censored", "future_member_last_et"] + list(MINUTE_FEATURES)
+
+
+def stage_b_window_map(anchors: pl.DataFrame, df: pl.DataFrame) -> tuple[list[dict], dict]:
+    """Map every frozen anchor onto its member's own panel bar list (B1/B2/B6).
+
+    Returns one window spec per anchor plus the map diagnostics. Nothing here reads prints.
+    """
+    memb: dict = {}
+    for key, sub in df.partition_by(MEMBER_KEY, maintain_order=True, as_dict=True).items():
+        key = tuple(key) if isinstance(key, tuple) else (key,)
+        sub = sub.sort("bar_index")
+        memb[key] = {c: sub[c].to_numpy() for c in sub.columns}
+    days = set(df["sleeve_day"].to_list())
+    wins: list[dict] = []
+    diag = {"anchors": anchors.height, "member_missing": 0, "anchor_bar_missing": 0,
+            "windows": absence_counters()}
+    for a in anchors.iter_rows(named=True):
+        key = (a["sleeve_day"], a["family"], a["ticker"], a["entry_rank"])
+        m = memb.get(key)
+        if m is None:
+            diag["member_missing"] += 1
+            continue
+        ets, bis = m["et"], m["bar_index"]
+        cs5 = None
+        if a["case_set"] == "CS-5":                      # bar_index is null in the freeze (B10)
+            aux = json.loads(a["aux"] or "{}")
+            hole = int(aux.get("hole_minutes") or a["ref_num"])
+            revisit = int(a["et"])
+            anchor_et = revisit - hole - 1
+            cs5 = {"hole_minutes": hole, "reopen_code5": bool(aux.get("reopen_code5")),
+                   "reopen_px": _f(aux.get("reopen_px")) if aux.get("reopen_px") else None,
+                   "pre_hole_px": _f(aux.get("pre_hole_px")) if aux.get("pre_hole_px") else None,
+                   "minutes_with_path_print": aux.get("minutes_with_path_print")}
+            i = int(np.searchsorted(ets, anchor_et, "left"))
+            if i >= ets.size or int(ets[i]) != anchor_et:
+                diag["anchor_bar_missing"] += 1
+                continue
+        else:
+            i = int(np.searchsorted(bis, int(a["bar_index"]), "left"))
+            if i >= bis.size or int(bis[i]) != int(a["bar_index"]) or int(ets[i]) != int(a["et"]):
+                diag["anchor_bar_missing"] += 1
+                continue
+            hole = None
+        segs = CASE_SEGMENTS[a["case_set"]]
+        bars: dict = {}
+        if "pre" in segs:
+            j = i - 1
+            bars["pre"] = _bar_spec(m, j) if j >= 0 else None
+        bars["anchor"] = _bar_spec(m, i)
+        if "post1" in segs:
+            bars["post1"] = _bar_spec(m, i + 1) if i + 1 < len(ets) else None
+            bars["post2"] = _bar_spec(m, i + 2) if i + 2 < len(ets) else None
+        if "hole" in segs:
+            hole_lo, hole_hi = int(a["et"]) - int(hole), int(a["et"]) - 1
+            bars["hole"] = {"seg": "hole", "et": hole_lo, "et_hi": hole_hi,
+                            "bar_index": None, "bar_open": None, "bar_close": None,
+                            "bar_high": None, "bar_low": None,
+                            "span_s": 60.0 * (hole_hi - hole_lo + 1)}
+        if bars.get("anchor") is None:
+            diag["anchor_bar_missing"] += 1
+            continue
+        entry_et, session_end = int(a["entry_et"]), int(a["session_end"])
+        order = [s for s in segs if bars.get(s)]
+        spec = {
+            "case_set": a["case_set"], "anchor_id": a["anchor_id"], "sel_rank": a["sel_rank"],
+            "sleeve_day": a["sleeve_day"], "block": a["block"], "family": a["family"],
+            "ticker": a["ticker"], "entry_rank": int(a["entry_rank"]),
+            "entry_et": entry_et, "session_end": session_end, "et": int(a["et"]),
+            "bar_index": int(bis[i]), "ref_num": a["ref_num"], "ref_txt": a["ref_txt"],
+            "levels": _levels_for(m, i, a, cs5), "cs5": cs5,
+            "bars": bars, "seg_order": order,
+            "decision_close_s": float((int(ets[i]) + 1) * 60),
+            "decision_et": int(ets[i]),
+            "et_frozen": int(a["et"]), "bar_index_frozen": a["bar_index"],
+            "et_lo": min(int(bars[s]["et"]) for s in order),
+            "et_hi": max(int(bars[s]["et"]) for s in order),
+            "holes": hole,
+            "guards": {
+                "no_prev_bar": "pre" in segs and bars.get("pre") is None,
+                "no_next_bar": "post1" in segs and bars.get("post1") is None,
+                "no_post2_bar": "post1" in segs and bars.get("post2") is None,
+                "gap_next_min": (int(bars["post1"]["et"]) - int(ets[i]))
+                if bars.get("post1") else None,
+                "gap_post2_min": (int(bars["post2"]["et"]) - int(bars["post1"]["et"]))
+                if bars.get("post2") and bars.get("post1") else None,
+                "et_eq_entry_et": int(a["et"]) == entry_et,
+                "et_plus3_gt_session_end": int(a["et"]) + 3 > session_end,
+                "no_prev_session_clamp": (bars.get("pre") or {}).get("et") is not None
+                and int(bars["pre"]["et"]) < entry_et,
+                "post2_past_session_end": (bars.get("post2") or {}).get("et") is not None
+                and int(bars["post2"]["et"]) > session_end,
+            },
+        }
+        wins.append(spec)
+        for k in ("no_prev_bar", "no_next_bar", "no_post2_bar", "et_eq_entry_et",
+                  "et_plus3_gt_session_end"):
+            diag["windows"][k] += int(bool(spec["guards"][k]))
+        if spec["guards"]["gap_next_min"] and spec["guards"]["gap_next_min"] > 1:
+            diag["windows"]["gap_next_gt1min"] += 1
+        if spec["guards"]["gap_post2_min"] and spec["guards"]["gap_post2_min"] > 1:
+            diag["windows"]["gap_post2_gt1min"] += 1
+    diag["panel_days"] = len(days)
+    return wins, diag
+
+
+def absence_counters() -> dict:
+    return {"no_prev_bar": 0, "no_next_bar": 0, "no_post2_bar": 0, "et_eq_entry_et": 0,
+            "et_plus3_gt_session_end": 0, "gap_next_gt1min": 0, "gap_post2_gt1min": 0}
+
+
+def _bar_spec(m: dict, j: int) -> dict:
+    return {"seg": None, "et": int(m["et"][j]), "bar_index": int(m["bar_index"][j]),
+            "bar_open": _f(m["bar_open"][j]), "bar_close": _f(m["bar_close"][j]),
+            "bar_high": _f(m["bar_high"][j]), "bar_low": _f(m["bar_low"][j]), "span_s": 60.0}
+
+
+def _f(x):
+    x = float(x)
+    return x if math.isfinite(x) else None
+
+
+def _levels_for(m: dict, i: int, a: dict, cs5: dict | None = None) -> dict:
+    """The declared level per case set, read from the panel row (never re-derived)."""
+    cs = a["case_set"]
+    if cs == "CS-1":
+        lv = _f(m["entry_px"][i])
+    elif cs == "CS-2":
+        rh = _f(m["running_high"][i])
+        lv = None if rh is None else rh * (1.0 - GIVEBACK_LEVEL / 100.0)
+    elif cs in ("CS-3", "CS-4"):
+        lv = _f(m["bar_close"][i])
+    else:
+        ph = (cs5 or {}).get("pre_hole_px")
+        return {"level": ph, "pre_hole_px": ph}
+    return {"level": lv}
+
+
+# --------------------------------------------------------------------------- #
+# Stage B — the anchored extractor
+# --------------------------------------------------------------------------- #
+
+def _seg_slice(et: np.ndarray, lo: int, hi: int) -> tuple[int, int]:
+    return int(np.searchsorted(et, lo, "left")), int(np.searchsorted(et, hi, "right"))
+
+
+# segment statistic -> (causal column, action-horizon column): the names of the frozen table
+_SEG_FEATS = (
+    ("arr_rate", "f1_arr_rate", "post_arr_rate"),
+    ("size_p90_over_median", "f2_size_p90_over_median", "post_size_p90_over_median"),
+    ("top_decile_size_share", "f2_top_decile_size_share", "post_top_decile_size_share"),
+    ("secs_above", "f3_secs_above_level", "post_secs_above_level"),
+    ("secs_below", "f3_secs_below_level", "post_secs_below_level"),
+    ("signed_vol_share", "f6_signed_vol_share", "post_signed_vol_share"),
+    ("unclassified_share", "f6_unclassified_share", "post_unclassified_share"),
+    ("signed_vol_share_tickonly", "f6_signed_vol_share_tickonly",
+     "post_signed_vol_share_tickonly"),
+)
+
+
+def _sizes_stats(size: np.ndarray) -> tuple:
+    if size.size < 3:
+        return None, None
+    med = float(np.median(size))
+    if med <= 0:
+        return None, None
+    k = max(1, int(math.ceil(0.10 * size.size)))
+    part = np.partition(size, size.size - k)[size.size - k:]
+    tot = float(size.sum())
+    return (float(np.percentile(size, 90)) / med,
+            (float(part.sum()) / tot) if tot > 0 else None)
+
+
+def _occupancy(sec: np.ndarray, price: np.ndarray, level: float, bin_s: float, span_s: float,
+               t_lo: float) -> tuple:
+    """Seconds whose 5-s bin closes at/above and below the level (the plan's bin convention)."""
+    if price.size == 0 or level is None:
+        return None, None
+    b = np.floor((sec - t_lo) / bin_s).astype(np.int64)
+    b = np.clip(b, 0, max(0, int(math.ceil(span_s / bin_s)) - 1))
+    ub, first = np.unique(b, return_index=True)
+    last = np.searchsorted(b, ub, "right") - 1        # prints are ts-sorted: last print wins
+    close_px = price[last]
+    width = np.minimum(bin_s, span_s - ub * bin_s)
+    width = np.where(width > 0, width, bin_s)
+    above = float(width[close_px >= level].sum())
+    below = float(width[close_px < level].sum())
+    return above, below
+
+
+def _flow(price: np.ndarray, size: np.ndarray, ts_us: np.ndarray, qts: np.ndarray | None,
+          qbid: np.ndarray | None, qask: np.ndarray | None, state: dict) -> dict:
+    """Lee-Ready signed size share + the quote-free tick-rule twin (plan section 3, F6).
+
+    Vectorised: the tick rule is a forward fill of the last non-zero price change (a zero tick
+    inherits the previous classification), seeded from the window's earlier segments.
+    """
+    n = price.size
+    empty = {"signed_vol_share": None, "unclassified_share": None,
+             "signed_vol_share_tickonly": None, "vol_classified": 0.0, "vol_total": 0.0}
+    if n == 0:
+        return empty
+    prev = np.empty(n)
+    prev[0] = state["px"] if state["px"] is not None else np.nan
+    prev[1:] = price[:-1]
+    d = np.where(np.isfinite(prev), np.sign(price - prev), 0.0)
+    idx = np.arange(n)
+    last_nz = np.maximum.accumulate(np.where(d != 0, idx, -1))
+    has = last_nz >= 0
+    fill = np.where(has, d[np.where(has, last_nz, 0)], np.nan)
+    cls = np.where(d != 0, d, fill)
+    if state["cls"] is not None:
+        cls = np.where(np.isnan(cls), float(state["cls"]), cls)
+    tick = np.where(np.isnan(cls), 0.0, cls)
+    if qts is not None and qts.size:
+        j = np.searchsorted(qts, ts_us, "right") - 1
+        ok = j >= 0
+        jj = np.where(ok, j, 0)
+        age = np.where(ok, ts_us - qts[jj], np.inf)
+        bid, ask = qbid[jj], qask[jj]
+        valid = (ok & (age <= int(SB_Q_MAX_AGE_S * 1e6)) & np.isfinite(bid) & np.isfinite(ask)
+                 & (bid > 0) & (ask >= bid))
+        mid = 0.5 * (bid + ask)
+        qv = np.where(price > mid, 1.0, np.where(price < mid, -1.0, cls))
+        cls_q = np.where(valid, qv, np.nan)
+    else:
+        cls_q = np.full(n, np.nan)
+    size = size.astype(float)
+    v_tot = float(size.sum())
+    v_buy = float(size[cls_q == 1].sum())
+    v_sell = float(size[cls_q == -1].sum())
+    v_unc = float(size[np.isnan(cls_q)].sum())
+    v_tick_buy = float(size[tick > 0].sum())
+    v_tick_sell = float(size[tick < 0].sum())
+    state["px"] = float(price[-1])
+    nz = tick[tick != 0]
+    if nz.size:
+        state["cls"] = float(nz[-1])
+    v_cls = v_buy + v_sell
+    v_tick = v_tick_buy + v_tick_sell
+    return {"signed_vol_share": ((v_buy - v_sell) / v_cls) if v_cls > 0 else None,
+            "unclassified_share": (v_unc / v_tot) if v_tot > 0 else None,
+            "signed_vol_share_tickonly": ((v_tick_buy - v_tick_sell) / v_tick)
+            if v_tick > 0 else None,
+            "vol_classified": v_cls, "vol_total": v_tot}
+
+
+def stage_b_day(day: str, wins: list[dict],
+                sample_per_segment: int = SB_SAMPLE_PER_SEGMENT) -> dict:
+    """Extract every window of one day: features + the capped raw print sample + G1 check."""
+    sim.guard_day(day)
+    t_start = time.perf_counter()
+    t0 = time.perf_counter()
+    syms = sorted({w["ticker"] for w in wins})
+    df, tel = probe.load_prints(day, syms)
+    t_read = time.perf_counter() - t0
+    t0 = time.perf_counter()
+    pf = t5.price_updating(df) if df.height else df
+    t_path = time.perf_counter() - t0
+    if df.height:
+        keys = ["symbol", "ts_utc", "trade_id", "price"]
+        pk = pf.select(keys).unique()
+        df = df.join(pk.with_columns(pl.lit(True).alias("_path")), on=keys, how="left").with_columns(
+            pl.col("_path").fill_null(False))
+    sym_arrays: dict = {}
+    if df.height:
+        d = df.sort(["symbol", "ts_utc"]).with_columns(
+            (pl.col("ts_et").dt.hour().cast(pl.Int64) * 3600
+             + pl.col("ts_et").dt.minute().cast(pl.Int64) * 60
+             + pl.col("ts_et").dt.second().cast(pl.Int64)
+             + pl.col("ts_et").dt.microsecond().cast(pl.Int64) / 1e6).alias("_sec"))
+        for k, sub in d.partition_by("symbol", maintain_order=True, as_dict=True).items():
+            sym_arrays[k[0] if isinstance(k, tuple) else k] = {
+                "et": sub["et"].to_numpy(), "sec": sub["_sec"].to_numpy(),
+                "ts_us": sub["ts_utc"].cast(pl.Int64).to_numpy(),
+                "price": sub["price"].to_numpy(), "size": sub["size"].to_numpy(),
+                "path": sub["_path"].to_numpy()}
+    t0 = time.perf_counter()
+    qarrays: dict = {}
+    qpath = QUOTES / f"{day}.parquet"
+    if qpath.exists():
+        q = pl.read_parquet(qpath, columns=["symbol", "ts_utc", "bid_price", "ask_price"])
+        q = q.filter(pl.col("symbol").is_in(syms)).sort(["symbol", "ts_utc"])
+        for k, sub in q.partition_by("symbol", maintain_order=True, as_dict=True).items():
+            qarrays[k[0] if isinstance(k, tuple) else k] = (
+                sub["ts_utc"].cast(pl.Int64).to_numpy(), sub["bid_price"].to_numpy(),
+                sub["ask_price"].to_numpy())
+    t_quote = time.perf_counter() - t0
+
+    rows, sample = [], []
+    g1_checked = g1_bad = 0
+    t0 = time.perf_counter()
+    for w in wins:
+        got = _window_features(w, sym_arrays, qarrays, sample, sample_per_segment)
+        rows.append(got)
+        if got["g1_checked"]:
+            g1_checked += 1
+            g1_bad += got["g1_mismatch"]
+    t_slice = time.perf_counter() - t0
+    return {"rows": rows, "sample": sample,
+            "day": {"day": day, "windows": len(wins), "members": len(syms),
+                    "file_bytes": int(tel["file_bytes"]), "rows_loaded": int(tel["rows_loaded"]),
+                    "read_s": _round(t_read, 4), "price_updating_s": _round(t_path, 4),
+                    "quote_read_s": _round(t_quote, 4), "window_s": _round(t_slice, 4),
+                    "wall_s": _round(time.perf_counter() - t_start, 4),
+                    "g1_checked": g1_checked, "g1_mismatch": g1_bad,
+                    "quote_symbols": len(qarrays)}}
+
+
+def _window_features(w: dict, sym_arrays: dict, qarrays: dict, sample: list,
+                     sample_per_segment: int) -> dict:
+    """One window's feature row. Every predictor is computed from the causal segments only."""
+    key = w["ticker"]
+    A = sym_arrays.get(key)
+    out: dict = {"anchor_id": w["anchor_id"], "case_set": w["case_set"],
+                 "sleeve_day": w["sleeve_day"], "block": w["block"], "family": w["family"],
+                 "ticker": w["ticker"], "entry_rank": w["entry_rank"], "et": w["et"],
+                 "bar_index": w["bar_index"], "sel_rank": w["sel_rank"],
+                 "decision_close_s": w["decision_close_s"], "g1_checked": 0, "g1_mismatch": 0,
+                 "n_prints_window_all": 0, "n_prints_window_path": 0, "n_prints_causal": 0,
+                 "cutoff_sec_et": None, "first_print_offset_s": None, "n_prints_at_decision": 0,
+                 "g1_tau_positive_causal": 0, "n_prints_in_gap_minutes_all": 0}
+    if A is None:
+        return out
+    et, sec, ts_us = A["et"], A["sec"], A["ts_us"]
+    price, size, ispath = A["price"], A["size"], A["path"]
+    q = qarrays.get(key)
+    qts, qbid, qask = q if q else (None, None, None)
+    m = {k: v[ispath] for k, v in (("et", et), ("sec", sec), ("ts_us", ts_us),
+                                   ("price", price), ("size", size))}
+    levels = w["levels"]
+    level = levels.get("level")
+    dec = w["decision_close_s"]
+    if w["case_set"] == "CS-5":
+        # the CS-5 anchor IS a print: the decision instant is the reopen print (frozen
+        # action_stamp_tau = 0), so the hole's own prints are causal for it
+        r0, r1 = _seg_slice(m["et"], int(w["et"]), int(w["et"]))
+        if r1 > r0:
+            dec = float(m["sec"][r0])
+        out["decision_close_s"] = dec
+    state = {"px": None, "cls": None}
+    segv: dict = {}
+    for seg in w["seg_order"]:
+        b = w["bars"][seg]
+        lo, hi = int(b["et"]), int(b.get("et_hi", b["et"]))
+        a0, a1 = _seg_slice(et, lo, hi)
+        p0, p1 = _seg_slice(m["et"], lo, hi)
+        span = float(b["span_s"])
+        a_sec, a_px, a_sz, a_ts = sec[a0:a1], price[a0:a1], size[a0:a1], ts_us[a0:a1]
+        p_sec, p_px, p_sz, p_ts = m["sec"][p0:p1], m["price"][p0:p1], m["size"][p0:p1], \
+            m["ts_us"][p0:p1]
+        t_lo = lo * 60.0
+        sz90, top10 = _sizes_stats(p_sz)
+        above, below = _occupancy(p_sec, p_px, level, SB_BIN_S, span, t_lo)
+        fl = _flow(p_px, p_sz, p_ts, qts, qbid, qask, state)
+        segv[seg] = {"n_all": int(a1 - a0), "n_path": int(p1 - p0), "span_s": span,
+                     "arr_rate": _round((a1 - a0) / span, 6),
+                     "size_p90_over_median": _round(sz90, 6) if sz90 is not None else None,
+                     "top_decile_size_share": _round(top10, 6) if top10 is not None else None,
+                     "secs_above": _round(above, 6) if above is not None else None,
+                     "secs_below": _round(below, 6) if below is not None else None,
+                     "signed_vol_share": _round(fl["signed_vol_share"], 6),
+                     "unclassified_share": _round(fl["unclassified_share"], 6),
+                     "signed_vol_share_tickonly": _round(fl["signed_vol_share_tickonly"], 6),
+                     "vol_classified": fl["vol_classified"], "vol_total": fl["vol_total"],
+                     "sec": p_sec, "px": p_px, "ts_us": p_ts}
+        if seg in ("pre", "anchor", "hole"):
+            tau = (p_sec - dec) if p_sec.size else np.array([])
+            tau_all = (a_sec - dec) if a_sec.size else np.array([])
+            out["n_prints_causal"] += int(p_sec.size)
+            bad = int((tau > 0).sum()) + int((tau_all > 0).sum())
+            if bad:
+                raise SystemExit(
+                    f"G2 leakage: causal segment {seg} of {w['anchor_id']} carries {bad} "
+                    f"print(s) after the decision instant")
+            if tau.size:
+                out["cutoff_sec_et"] = float(p_sec.max())
+        for i in range(min(sample_per_segment, a1 - a0)):
+            sample.append({"anchor_id": w["anchor_id"], "case_set": w["case_set"], "segment": seg,
+                           "tau_s": _round(float(a_sec[i]) - dec, 6),
+                           "ts_us": int(a_ts[i]), "price": _round(float(a_px[i]), 6),
+                           "size": _round(float(a_sz[i]), 6),
+                           "path": bool(ispath[a0 + i])})
+        out["n_prints_window_all"] += int(a1 - a0)
+        out["n_prints_window_path"] += int(p1 - p0)
+    # ---- G1: the anchor bar's own minute must reproduce the panel's bar high/low ---------- #
+    ab = w["bars"]["anchor"]
+    p0, p1 = _seg_slice(m["et"], int(ab["et"]), int(ab["et"]))
+    if p1 > p0 and ab["bar_high"] is not None:
+        out["g1_checked"] = 1
+        hi_v, lo_v = float(m["price"][p0:p1].max()), float(m["price"][p0:p1].min())
+        if (abs(hi_v - ab["bar_high"]) > 1e-9 or abs(lo_v - ab["bar_low"]) > 1e-9):
+            out["g1_mismatch"] = 1
+    if "anchor" in segv and segv["anchor"]["sec"].size:
+        out["first_print_offset_s"] = _round(float(segv["anchor"]["sec"].min()) - ab["et"] * 60, 6)
+        ps = segv["post1"]["sec"] if "post1" in segv else None
+        if ps is not None and ps.size:
+            thr = ab["et"] * 60.0 + out["first_print_offset_s"] + 60.0
+            out["n_prints_frozen_rule_leak"] = int((ps < thr).sum())
+    # ---- window-level causal features ----------------------------------------------------- #
+    causal = [segv[s] for s in ("pre", "anchor", "hole") if s in segv]
+    c_sec = np.concatenate([c["sec"] for c in causal]) if causal else np.array([])
+    c_px = np.concatenate([c["px"] for c in causal]) if causal else np.array([])
+    if c_sec.size:
+        order = np.argsort(c_sec, kind="stable")
+        c_sec, c_px = c_sec[order], c_px[order]
+    for seg, v in segv.items():
+        post = seg not in ("pre", "anchor", "hole")
+        for key, cname, pname in _SEG_FEATS:
+            out[f"{pname if post else cname}_{seg}"] = v[key]
+    out["f1_arr_accel"] = _round(math.log((segv["anchor"]["n_all"] + 1.0)
+                                          / (segv["pre"]["n_all"] + 1.0)), 6) \
+        if "pre" in segv and "anchor" in segv else None
+    out["f3_reclaim_persistence"], out["f4_time_to_reclaim_s"], out["f4_n_failed_pushes"] = \
+        _causal_velocity(level, c_sec, c_px, w)
+    if "pre" in segv and "anchor" in segv and "post1" in segv and "post2" in segv:
+        a1, a2 = segv["post1"]["secs_above"], segv["post2"]["secs_above"]
+        out["post_push_decay"] = _round(a1 / a2, 6) if (a1 is not None and a2) else None
+    if "post1" in segv or "post2" in segv:
+        pf_sec = np.concatenate([segv[s]["sec"] for s in ("post1", "post2") if s in segv])
+        pf_px = np.concatenate([segv[s]["px"] for s in ("post1", "post2") if s in segv])
+        if pf_sec.size and level is not None:
+            order = np.argsort(pf_sec, kind="stable")
+            pf_sec, pf_px = pf_sec[order], pf_px[order]
+            hit = np.flatnonzero(pf_px >= level)
+            out["post_time_to_reclaim_s"] = _round(float(pf_sec[hit[0]]) - dec, 6) \
+                if hit.size else None
+        else:
+            out["post_time_to_reclaim_s"] = None
+    else:
+        out["post_time_to_reclaim_s"] = None
+    out["post_push_decay"] = out.get("post_push_decay")
+    # ---- CS-5 pre-hole level + hole facts ------------------------------------------------- #
+    if w["case_set"] == "CS-5":
+        ab = w["bars"]["anchor"]
+        p0, p1 = _seg_slice(m["et"], int(ab["et"]), int(ab["et"]))
+        ph = float(m["price"][p1 - 1]) if p1 > p0 else None
+        out["f5_hole_minutes"] = _round(float(w["holes"]), 6)
+        out["f5_pre_halt_trend"] = _round(ph / ab["bar_open"] - 1.0, 9) \
+            if (ph is not None and ab["bar_open"]) else None
+        hv = segv.get("hole")
+        out["f5_hole_prints_all"] = float(hv["n_all"]) if hv else None
+        out["f5_hole_print_rate"] = _round(hv["n_all"] / hv["span_s"], 6) if hv else None
+        out["n_prints_in_gap_minutes_all"] = int(hv["n_all"]) if hv else 0
+        aux = w.get("cs5") or {}
+        out["f5_pre_hole_px_delta"] = _round(ph - aux["pre_hole_px"], 9) \
+            if (ph is not None and aux.get("pre_hole_px") is not None) else None
+        out["post_reopen_code5"] = bool(aux.get("reopen_code5"))
+        out["post_reopen_gap_ret"] = _round(aux["reopen_px"] / aux["pre_hole_px"] - 1.0, 9) \
+            if (aux.get("reopen_px") and aux.get("pre_hole_px")) else None
+    else:
+        # prints inside the wall-clock gap minutes of the window (panel-invisible minutes)
+        gap_lo = None
+        for seg in w["seg_order"]:
+            b = w["bars"][seg]
+            if gap_lo is not None:
+                g0, g1 = _seg_slice(et, gap_lo, int(b["et"]) - 1)
+                out["n_prints_in_gap_minutes_all"] += int(max(0, g1 - g0))
+            gap_lo = int(b.get("et_hi", b["et"])) + 1
+    return out
+
+
+def _causal_velocity(level: float, sec: np.ndarray, px: np.ndarray, w: dict) -> tuple:
+    """F3 reclaim persistence, F4 time-to-reclaim and failed pushes — causal part only."""
+    if level is None or sec.size == 0:
+        return None, None, None
+    below = np.flatnonzero(px < level)
+    if below.size == 0:
+        return None, None, 0.0
+    # persistence: 5-s bins at/after the first below-level print whose bin close is >= level
+    b = np.floor((sec - sec[0]) / SB_BIN_S).astype(np.int64)
+    ub = np.unique(b)
+    last = np.searchsorted(b, ub, "right") - 1
+    close_px = px[last]
+    first_bin = b[below[0]]
+    sel = ub >= first_bin
+    persist = float(np.sum(close_px[sel] >= level))
+    # time to reclaim: first below-level print -> first subsequent at/above print
+    after = np.flatnonzero(px >= level)
+    after = after[after > below[0]]
+    t_reclaim = float(sec[after[0]] - sec[below[0]]) if after.size else None
+    # failed pushes: excursions >= push_min above the level followed by a return below it
+    band = px >= level * (1.0 + SB_PUSH_MIN)
+    below_lvl = px < level
+    ii = np.arange(px.size)
+    lb = np.maximum.accumulate(np.where(below_lvl, ii, -1))
+    la = np.maximum.accumulate(np.where(band, ii, -1))
+    lb_prev = np.r_[-1, lb[:-1]]
+    la_prev = np.r_[-1, la[:-1]]
+    pushes = float(np.sum(below_lvl & (la_prev > lb_prev)))
+    return persist, (round(t_reclaim, 6) if t_reclaim is not None else None), pushes
+
+
+def _stage_b_day_task(args) -> dict:
+    """Picklable per-day task for the process pool."""
+    day, wins, sample_per_segment = args
+    return stage_b_day(day, wins, sample_per_segment)
+
+
+def stage_b_extract(wins: list[dict], workers: int, days: list[str] | None = None,
+                    sample_per_segment: int = SB_SAMPLE_PER_SEGMENT, trial: bool = False) -> dict:
+    by_day: dict = {}
+    for w in wins:
+        by_day.setdefault(w["sleeve_day"], []).append(w)
+    sel = sorted(by_day) if days is None else [d for d in sorted(by_day) if d in set(days)]
+    t0 = time.perf_counter()
+    res = []
+    if workers <= 1:
+        for d in sel:
+            res.append(stage_b_day(d, by_day[d], sample_per_segment))
+            print(f"[stageB] {d} windows={len(by_day[d])}", flush=True)
+    else:
+        # processes, not threads: the per-day work is GIL-bound (polars reads release the GIL, the
+        # numpy feature passes do not), so a thread pool gives no speedup on this workload. Each
+        # worker owns one day and the results are collected in day order, so the artifacts are
+        # identical to a serial run's.
+        tasks = [(d, by_day[d], sample_per_segment) for d in sel]
+        with ProcessPoolExecutor(max_workers=workers,
+                                 mp_context=mp.get_context("spawn")) as ex:
+            for d, r in zip(sel, ex.map(_stage_b_day_task, tasks), strict=True):
+                res.append(r)
+                print(f"[stageB] {d} windows={len(by_day[d])}", flush=True)
+    wall = time.perf_counter() - t0
+    rows = pl.DataFrame([r for x in res for r in x["rows"]])
+    samp = pl.DataFrame([s for x in res for s in x["sample"]])
+    suffix = "_trial" if trial else ""
+    _write_parquet(rows, E3 / f"stage_b_features{suffix}.parquet")
+    if samp.height:
+        _write_parquet(samp, E3 / f"stage_b_prints{suffix}.parquet")
+    days_tel = [x["day"] for x in res]
+    cost = {"measured": True, "days": len(sel), "workers": workers,
+            "wall_s": _round(wall, 3), "wall_min": _round(wall / 60, 3),
+            "abort_threshold_hours": 4,
+            "bytes_read_trades": int(sum(d["file_bytes"] for d in days_tel)),
+            "projected_full_store_serial_min": _round(
+                sum(d["wall_s"] for d in days_tel) / max(1, len(days_tel)) * PANEL_DAYS / 60, 2),
+            "projected_full_store_serial_note": (
+                "sum(per-day wall_s)/days x 1066 / 60. Each per-day wall is measured inside its "
+                "own worker, so with workers > 1 it already carries CPU/IO contention: the number "
+                "is an UPPER BOUND on the serial projection, not a serial measurement. The "
+                "measured wall of this run is `wall_s`."),
+            "effective_days_per_wall_min": _round(len(sel) / max(1e-9, wall / 60), 3),
+            "sum_day_slice_s": _round(sum(d["window_s"] for d in days_tel), 3),
+            "sample_rows": int(samp.height),
+            "per_day": days_tel}
+    _write_json(E3 / f"stage_b_cost{suffix}.json", cost)
+    return {"features": rows, "prints": samp, "cost": cost, "days": days_tel}
+
+
+# --------------------------------------------------------------------------- #
+# Stage B — the I-EV measurement (model machinery)
+# --------------------------------------------------------------------------- #
+
+SB_TARGETS = {
+    "CS-1": [
+        ("y_vff_up", "primary",
+         "sign(v_forced_flat) at the reclaim bar t (executable from the open of bar t+1)"),
+        ("y_final_high", "secondary", "final_high_flag at t (no new high after t)"),
+        ("y_deep_cost", "secondary",
+         "cost_of_waiting at t below the case-set median (adverse excursion depth)"),
+        ("y_failed_reclaim", "secondary",
+         "failed_reclaim_count increases between bar t and bar t+5"),
+    ],
+    "CS-2": [
+        ("y_false_cut", "primary",
+         "ledger readmissible at the giveback exit (traded >= +10% above the exit price)"),
+        ("y_final_high", "secondary", "final_high_flag at the trigger bar t"),
+    ],
+    "CS-3": [
+        ("y_a_wins", "primary", "v_forced_flat_A > v_forced_flat_B on the matched pair"),
+    ],
+    "CS-4": [
+        ("y_final_high", "primary", "final_high_flag at t (descriptive; the set is future-stratified)"),
+        ("y_remaining_run", "secondary", "remaining_run > 0.10 at t (forward peak from next_open)"),
+    ],
+    "CS-5": [
+        ("y_reopen_code5", "primary", "the reopen print of the hole carries tape condition 5"),
+        ("y_gap_ret_up", "secondary", "reopen_gap_ret > 0 (simultaneous with the label; descriptive)"),
+    ],
+}
+
+
+def _f64(df: pl.DataFrame, col: str) -> np.ndarray:
+    return (df[col].cast(pl.Float64, strict=False).fill_nan(None).fill_null(float("nan"))
+            .to_numpy())
+
+
+def _panel_rows(wins: list[dict], cols: list[str], offset: int = 0) -> pl.DataFrame:
+    """Panel row per anchor (bar identity through the member's own bar list), in anchor order."""
+    keys = pl.DataFrame([{"anchor_id": w["anchor_id"], "sleeve_day": w["sleeve_day"],
+                          "family": w["family"], "ticker": w["ticker"],
+                          "entry_rank": w["entry_rank"],
+                          "bar_index": int(w["bar_index"]) + offset} for w in wins])
+    keys = keys.with_row_index("_i")
+    pan = load_panel_cols(list(dict.fromkeys(["sleeve_day", "family", "ticker", "entry_rank",
+                                              "bar_index"] + cols)))
+    j = keys.join(pan, on=["sleeve_day", "family", "ticker", "entry_rank", "bar_index"], how="left")
+    return j.sort("_i")
+
+
+def _rank(v: np.ndarray) -> np.ndarray:
+    order = np.argsort(v, kind="stable")
+    ss = v[order]
+    starts = np.flatnonzero(np.r_[True, ss[1:] != ss[:-1]])
+    counts = np.diff(np.r_[starts, ss.size])
+    avg = starts + (counts + 1) / 2.0
+    r = np.empty(ss.size)
+    r[order] = np.repeat(avg, counts)
+    return r
+
+
+def _auc(y: np.ndarray, s: np.ndarray) -> float | None:
+    pos = y > 0.5
+    n1, n0 = int(pos.sum()), int((~pos).sum())
+    if n1 == 0 or n0 == 0:
+        return None
+    r = _rank(s)
+    return float((r[pos].sum() - n1 * (n1 + 1) / 2.0) / (n1 * n0))
+
+
+def _logloss(y: np.ndarray, s: np.ndarray) -> float | None:
+    p = 1.0 / (1.0 + np.exp(-np.clip(s, -30, 30)))
+    p = np.clip(p, 1e-12, 1 - 1e-12)
+    return float(-np.mean(y * np.log(p) + (1 - y) * np.log(1 - p)))
+
+
+def _logit_fit(X: np.ndarray, y: np.ndarray, l2: float = SB_L2) -> np.ndarray:
+    n, p = X.shape
+    Z = np.column_stack([np.ones(n), X])
+    w = np.zeros(p + 1)
+    pen = np.eye(p + 1) * l2
+    pen[0, 0] = 0.0
+    for _ in range(60):
+        z = Z @ w
+        mu = 1.0 / (1.0 + np.exp(-np.clip(z, -30, 30)))
+        g = Z.T @ (mu - y) + pen @ w
+        wt = mu * (1.0 - mu) + 1e-9
+        H = Z.T @ (Z * wt[:, None]) + pen
+        try:
+            step = np.linalg.solve(H, g)
+        except np.linalg.LinAlgError:
+            step = np.linalg.lstsq(H, g, rcond=None)[0]
+        w = w - step
+        if np.max(np.abs(step)) < 1e-9:
+            break
+    return w
+
+
+def _fit_columns(Xtr: np.ndarray, names: list[str], min_cov: float = SB_MIN_COVERAGE) -> list[int]:
+    keep = []
+    for j, _ in enumerate(names):
+        col = Xtr[:, j]
+        fin = np.isfinite(col)
+        if fin.mean() >= min_cov and float(np.nanstd(col[fin])) > 1e-12:
+            keep.append(j)
+    return keep
+
+
+def _design(X: np.ndarray, keep: list[int], mu: np.ndarray, sd: np.ndarray) -> np.ndarray:
+    if not keep:
+        return np.zeros((X.shape[0], 0))
+    Z = X[:, keep]
+    Z = np.where(np.isfinite(Z), Z, mu)
+    return (Z - mu) / sd
+
+
+def _score(Xtr: np.ndarray, ytr: np.ndarray, Xte: np.ndarray, keep: list[int],
+           l2: float = SB_L2) -> np.ndarray:
+    Ztr = Xtr[:, keep]
+    mu = np.nanmedian(Ztr, axis=0) if keep else np.zeros(0)
+    sd = np.nanstd(Ztr, axis=0) if keep else np.zeros(0)
+    mu = np.where(np.isfinite(mu), mu, 0.0)
+    sd = np.where(np.isfinite(sd) & (sd > 1e-12), sd, 1.0)
+    w = _logit_fit(_design(Xtr, keep, mu, sd), ytr, l2)
+    Zte = _design(Xte, keep, mu, sd)
+    return np.column_stack([np.ones(Xte.shape[0]), Zte]) @ w
+
+
+def _boot_delta(y: np.ndarray, s0: np.ndarray, s1: np.ndarray, day_idx: list[np.ndarray],
+                rng: np.random.Generator, b: int = SB_BOOTSTRAP_B) -> dict:
+    """Day-clustered bootstrap of Delta AUC and Delta log-loss (clusters resampled, matched)."""
+    sizes = np.array([len(d) for d in day_idx])
+    offs = np.r_[0, np.cumsum(sizes)[:-1]]
+    d_auc, d_ll = [], []
+    nd = len(day_idx)
+    for _ in range(b):
+        pick = rng.integers(0, nd, nd)
+        take = sizes[pick]
+        if take.sum() == 0:
+            continue
+        starts = np.repeat(offs[pick], take)
+        idx = starts + (np.arange(take.sum()) - np.repeat(np.cumsum(take) - take, take))
+        yy, a0, a1 = y[idx], s0[idx], s1[idx]
+        if yy.min() == yy.max():
+            continue
+        auc0, auc1 = _auc(yy, a0), _auc(yy, a1)
+        ll0, ll1 = _logloss(yy, a0), _logloss(yy, a1)
+        if auc0 is None or auc1 is None or ll0 is None or ll1 is None:
+            continue
+        d_auc.append(auc1 - auc0)
+        d_ll.append(ll0 - ll1)
+    if not d_auc:
+        return {"b_used": 0, "delta_auc_ci95": None, "delta_logloss_ci95": None,
+                "p_delta_auc": None}
+    a = np.array(d_auc)
+    l = np.array(d_ll)
+    p = 2.0 * min(float((a <= 0).mean()), float((a >= 0).mean()))
+    return {"b_used": int(a.size),
+            "delta_auc_ci95": [_round(float(np.percentile(a, 2.5)), 6),
+                               _round(float(np.percentile(a, 97.5)), 6)],
+            "delta_logloss_ci95": [_round(float(np.percentile(l, 2.5)), 6),
+                                   _round(float(np.percentile(l, 97.5)), 6)],
+            "p_delta_auc": _round(min(1.0, p), 4)}
+
+
+def _cell(rows: dict, coord: np.ndarray) -> dict:
+    return {"X_print": rows["X_print"], "X_minute": rows["X_minute"], "y": rows["y"],
+            "block": rows["block"], "family": rows["family"], "day": rows["day"],
+            "coord": coord}
+
+
+def _direction(rows: dict, train: np.ndarray, test: np.ndarray, rng, with_boot: bool) -> dict:
+    """One block-direction cross-fit: baseline + every family + every single predictor."""
+    names_p, names_m = SB_PREDICTORS_LIST, list(MINUTE_FEATURES)
+    Xm_tr, Xm_te = rows["X_minute"][train], rows["X_minute"][test]
+    y_tr, y_te = rows["y"][train], rows["y"][test]
+    keep_m = _fit_columns(Xm_tr, names_m)
+    s0 = _score(Xm_tr, y_tr, Xm_te, keep_m)
+    out = {"n_train": int(train.sum()), "n_test": int(test.sum()),
+           "n_minute_features_used": len(keep_m),
+           "minute_auc": _round(_auc(y_te, s0), 6), "minute_logloss": _round(_logloss(y_te, s0), 6),
+           "families": {}, "features": {}}
+    day_idx = [np.flatnonzero(test & (rows["day"] == d)) for d in sorted(set(rows["day"][test]))]
+    day_idx = [d for d in day_idx if d.size]
+    for fam in SB_FAMILIES:
+        cols = [i for i, n in enumerate(names_p) if FAMILY_OF[n] == fam]
+        if not cols:
+            out["families"][fam] = {"skipped": "no predictor in this family for this case set"}
+            continue
+        Xp_tr = np.column_stack([rows["X_print"][train][:, c] for c in cols])
+        Xp_te = np.column_stack([rows["X_print"][test][:, c] for c in cols])
+        keep = _fit_columns(Xp_tr, [names_p[c] for c in cols])
+        if not keep:
+            out["families"][fam] = {"skipped": "no usable column (coverage/constant)"}
+            continue
+        Xtr = np.column_stack([Xm_tr[:, keep_m], Xp_tr[:, keep]])
+        Xte = np.column_stack([Xm_te[:, keep_m], Xp_te[:, keep]])
+        s1 = _score(Xtr, y_tr, Xte, list(range(Xtr.shape[1])))
+        rec = {"n_features_used": len(keep),
+               "features_used": [names_p[c] for c in [cols[k] for k in keep]],
+               "auc": _round(_auc(y_te, s1), 6), "logloss": _round(_logloss(y_te, s1), 6),
+               "delta_auc": _round((_auc(y_te, s1) or 0) - (out["minute_auc"] or 0), 6),
+               "delta_logloss": _round((out["minute_logloss"] or 0) - (_logloss(y_te, s1) or 0), 6)}
+        if with_boot:
+            rec.update(_boot_delta(y_te, s0, s1, day_idx, rng))
+        out["families"][fam] = rec
+    for i, nm in enumerate(names_p):
+        Xp_tr = rows["X_print"][train][:, i:i + 1]
+        Xp_te = rows["X_print"][test][:, i:i + 1]
+        keep = _fit_columns(Xp_tr, [nm])
+        if not keep:
+            out["features"][nm] = {"skipped": "coverage/constant in training fold"}
+            continue
+        Xtr = np.column_stack([Xm_tr[:, keep_m], Xp_tr])
+        Xte = np.column_stack([Xm_te[:, keep_m], Xp_te])
+        s1 = _score(Xtr, y_tr, Xte, list(range(Xtr.shape[1])))
+        rec = {"family": FAMILY_OF[nm], "auc": _round(_auc(y_te, s1), 6),
+               "logloss": _round(_logloss(y_te, s1), 6),
+               "delta_auc": _round((_auc(y_te, s1) or 0) - (out["minute_auc"] or 0), 6),
+               "delta_logloss": _round((out["minute_logloss"] or 0) - (_logloss(y_te, s1) or 0), 6)}
+        if with_boot:
+            rec.update(_boot_delta(y_te, s0, s1, day_idx, rng))
+        out["features"][nm] = rec
+    return out
+
+
+def _coordinate(rows: dict, rng, with_boot: bool) -> dict:
+    b1 = rows["block"] == "block1"
+    b2 = rows["block"] == "block2"
+    out = {"n_rows": int(rows["y"].size), "n_block1": int(b1.sum()), "n_block2": int(b2.sum()),
+           "n_days": int(len(set(rows["day"].tolist()))),
+           "n_positives": int((rows["y"] > 0.5).sum())}
+    if b1.sum() >= 50 and b2.sum() >= 50 and 0 < rows["y"][b1].mean() < 1 \
+            and 0 < rows["y"][b2].mean() < 1:
+        out["block1->block2"] = _direction(rows, b1, b2, rng, with_boot)
+        out["block2->block1"] = _direction(rows, b2, b1, rng, with_boot)
+    else:
+        out["skipped"] = "a block has < 50 rows or a constant label"
+    return out
+
+
+# --------------------------------------------------------------------------- #
+# Stage B — diagnostics, gates and the measurement driver
+# --------------------------------------------------------------------------- #
+
+def stage_b_diagnostics(features: pl.DataFrame, diag: dict, wins: list[dict],
+                        cost: dict) -> dict:
+    """B1/B2/B6 counters, the extraction census and the G1/G2 gates."""
+    n = features.height
+    have = set(features["anchor_id"].to_list())
+    wins = [w for w in wins if w["anchor_id"] in have]
+    off = [x for x in features["first_print_offset_s"].to_list() if x is not None]
+    hole = features.filter(pl.col("case_set") == "CS-5")
+    hole_cls = counts("4min" if (r or 0) == 4 else ">=5min" for r in hole["f5_hole_minutes"].to_list())
+    cs5_frozen = counts("4min" if (r or 0) == 4 else ">=5min"
+                        for r in pl.read_parquet(E3 / "anchors.parquet")
+                        .filter(pl.col("case_set") == "CS-5")["ref_num"].to_list())
+    g1_checked = int(features["g1_checked"].sum())
+    g1_bad = int(features["g1_mismatch"].sum())
+    tau_pos = int(features["g1_tau_positive_causal"].sum())
+    leak = int(features["n_prints_frozen_rule_leak"].fill_null(0).sum())
+    leak_windows = int((features["n_prints_frozen_rule_leak"].fill_null(0) > 0).sum())
+    reg = ledger.load_registry()
+    minute_blocked = {c: reg.blocked_reason(c) for c in MINUTE_FEATURES
+                      if reg.blocked_reason(c) is not None}
+    per_set = {}
+    for cs in CASE_ORDER:
+        f = features.filter(pl.col("case_set") == cs)
+        if not f.height:
+            continue
+        rec = {
+            "windows": f.height,
+            "n_prints_window_all": int(f["n_prints_window_all"].sum()),
+            "n_prints_window_path": int(f["n_prints_window_path"].sum()),
+            "n_prints_causal": int(f["n_prints_causal"].sum()),
+            "n_prints_in_gap_minutes_all": int(f["n_prints_in_gap_minutes_all"].sum()),
+            "n_prints_frozen_rule_leak": int(f["n_prints_frozen_rule_leak"].fill_null(0).sum()),
+            "windows_with_frozen_rule_leak": int((f["n_prints_frozen_rule_leak"].fill_null(0) > 0).sum()),
+            "g1_checked": int(f["g1_checked"].sum()), "g1_mismatch": int(f["g1_mismatch"].sum()),
+            "first_print_offset_s": dist_summary(f["first_print_offset_s"].to_list(), nd=3),
+            "no_next_bar": sum(1 for w in wins if w["case_set"] == cs
+                               and w["guards"]["no_next_bar"]),
+            "no_prev_bar": sum(1 for w in wins if w["case_set"] == cs
+                               and w["guards"]["no_prev_bar"]),
+            "no_post2_bar": sum(1 for w in wins if w["case_set"] == cs
+                                and w["guards"]["no_post2_bar"]),
+            "gap_next_gt1min": sum(1 for w in wins if w["case_set"] == cs
+                                   and (w["guards"]["gap_next_min"] or 1) > 1),
+            "tau_window_spill_et_plus3_gt_session_end": sum(
+                1 for w in wins if w["case_set"] == cs and w["guards"]["et_plus3_gt_session_end"]),
+            "tau_window_spill_et_eq_entry_et": sum(
+                1 for w in wins if w["case_set"] == cs and w["guards"]["et_eq_entry_et"]),
+        }
+        if cs == "CS-5":
+            rec["hole_length_class_measured"] = counts(
+                "4min" if (r or 0) == 4 else ">=5min" for r in f["f5_hole_minutes"].to_list())
+            rec["hole_length_class_frozen"] = cs5_frozen
+            d = f["f5_pre_hole_px_delta"].drop_nulls()
+            rec["pre_hole_px_vs_frozen_aux"] = {
+                "checked": int(d.len()), "max_abs_delta": _round(float(d.abs().max()), 12)
+                if d.len() else None,
+                "note": ("the extracted last pre-hole print price minus the frozen CS-5 aux "
+                         "pre_hole_px: 0 proves the CS-5 re-anchoring (B10) lands on the frozen "
+                         "window")}
+        per_set[cs] = rec
+    return {
+        "b1_decision_instant": {
+            "rule": ("the decision is the CLOSE of the anchor bar t: every causal feature reads "
+                     "only prints with ts <= close(t), i.e. tau = ts - close(t) <= 0"),
+            "close_definition": "close(t) = (et_t + 1) * 60 seconds after ET midnight",
+            "first_print_offset_s": dist_summary(off, nd=3),
+            "print_cutoff_recorded_per_window": "cutoff_sec_et (the last causal print's ET second)",
+            "windows_with_cutoff": int(features["cutoff_sec_et"].is_not_null().sum()),
+            "causal_prints_with_tau_positive": tau_pos,
+            "frozen_rule_leak_prints": leak,
+            "frozen_rule_leak_windows": leak_windows,
+            "frozen_rule_leak_note": (
+                "prints the frozen `tau<60 from the first print` rule would have admitted at "
+                "tau_correct > 0, counted inside the execution bar only (an exact count, not a "
+                "sample): the audit measured an offset p50 of 0.883 s on 60 anchors"),
+        },
+        "b2_bar_identity": {
+            "rule": ("segments are the member's own panel bars (bar identity through the panel's "
+                     "member bar list), never tau arithmetic; the execution/outcome bar is the "
+                     "panel's next bar after t, whatever its et"),
+            "windows_no_next_bar": sum(1 for w in wins if w["guards"]["no_next_bar"]),
+            "windows_gap_next_gt1min": sum(1 for w in wins
+                                           if (w["guards"]["gap_next_min"] or 1) > 1),
+            "max_gap_next_min": max((w["guards"]["gap_next_min"] or 1) for w in wins),
+        },
+        "b6_containment": {
+            "rule": ("the declared segments are panel bars of the member, so every stored print "
+                     "sits inside [entry_et, session_end]; prints outside the member window are "
+                     "never read (load path filters to the member window)"),
+            "windows_no_prev_bar": int(sum(1 for w in wins if w["guards"]["no_prev_bar"])),
+            "windows_no_post2_bar": int(sum(1 for w in wins if w["guards"]["no_post2_bar"])),
+            "frozen_tau_window_spill_et_plus3_gt_session_end": int(sum(
+                1 for w in wins if w["guards"]["et_plus3_gt_session_end"])),
+            "frozen_tau_window_spill_et_eq_entry_et": int(sum(
+                1 for w in wins if w["guards"]["et_eq_entry_et"])),
+        },
+        "extraction": {"windows": n, "per_case_set": per_set,
+                       "member_missing": diag["member_missing"],
+                       "anchor_bar_missing": diag["anchor_bar_missing"],
+                       "prints_sampled": cost.get("sample_rows"),
+                       "bytes_read_trades": cost.get("bytes_read_trades")},
+        "gates": {
+            "G1_reconstruction": {
+                "rule": "the U-path high/low of every anchor bar equals the panel's bar_high/bar_low",
+                "checked": g1_checked, "mismatches": g1_bad, "pass": bool(g1_bad == 0)},
+            "G2_leakage": {
+                "rule": ("every predictor reads only prints at tau <= 0; every minute-model "
+                         "column is a registered causal state column"),
+                "causal_prints_with_tau_positive": tau_pos,
+                "blocked_minute_columns": minute_blocked,
+                "registry": reg.source,
+                "pass": bool(tau_pos == 0 and not minute_blocked)},
+        },
+        "cs5_hole_length_class": {"frozen_windows": cs5_frozen, "extracted_windows": hole_cls,
+                                 "rule": ("B5: the implemented rule is the probe's >= 5-minute "
+                                          "print-to-print jump, i.e. >= 4 silent minutes; every "
+                                          "CS-5 number is split 4min vs >=5min")},
+    }
+
+
+def _subset(rows: dict, mask: np.ndarray) -> dict:
+    """Row-subset a row-aligned dict. A row-aligned array whose length differs from the mask is a
+    bug, not a scalar: it raises (this caught a mask built over the wrong case set)."""
+    out = {}
+    for k, v in rows.items():
+        if isinstance(v, np.ndarray) and v.ndim >= 1:
+            if v.shape[0] != mask.size:
+                raise SystemExit(f"_subset: {k!r} has {v.shape[0]} rows, mask has {mask.size}")
+            out[k] = v[mask]
+        else:
+            out[k] = v
+    return out
+
+
+def _cs2_outcomes(keys: set) -> dict:
+    """`readmissible` from the ledger's own replay of the frozen giveback rule (never re-derived)."""
+    rule = ledger.Giveback(name=f"giveback:{GIVEBACK_LEVEL}", kind="giveback",
+                           state_columns=("bar_close", "running_high", "dist_from_running_high"),
+                           measure_columns=("next_open", "session_end", "et", "bar_open"),
+                           params={"pct": GIVEBACK_LEVEL})
+    df = ledger.load_panel(PANEL, rule)
+    k = ledger.fric_k(100.0)
+    out = {}
+    for key, sub in ledger.members_of(df):
+        key = tuple(key) if isinstance(key, tuple) else (key,)
+        if key not in keys:
+            continue
+        r = ledger.replay_member(sub, rule, k)
+        out[key] = {"readmissible": bool(r.get("readmissible")), "status": r.get("status"),
+                    "early_exit": bool(r.get("early_exit", False)),
+                    "exit_px": _round(r.get("exit_px"), 6),
+                    "exit_et": r.get("exit_et"),
+                    "forward_mfe_from_exit": _round(r.get("forward_mfe_from_exit"), 6)}
+    return out
+
+
+def _verdicts(coords: dict, pert: dict, holm: dict) -> dict:
+    """The pre-registered decision rule, family by family, then the contract's kill rule."""
+    out = {}
+    for fam in SB_FAMILIES:
+        rec = {}
+        for c in ("A_pm", "B600"):
+            co = coords.get(c, {})
+            d = {}
+            for dr, key in (("block1->block2", "d12"), ("block2->block1", "d21")):
+                cell = (co.get(dr) or {}).get("families", {}).get(fam, {})
+                d[key] = cell.get("delta_auc")
+                d[key + "_ci"] = cell.get("delta_auc_ci95")
+                d[key + "_p"] = cell.get("p_delta_auc")
+            rec[c] = d
+        both_pos = all(rec[c][k] is not None and rec[c][k] > 0
+                       for c in ("A_pm", "B600") for k in ("d12", "d21"))
+        band = all(rec[c][k] is not None and rec[c][k] > SB_NULL_BAND
+                   for c in ("A_pm", "B600") for k in ("d12", "d21"))
+        ci = all(rec[c][k + "_ci"] and rec[c][k + "_ci"][0] is not None
+                 and rec[c][k + "_ci"][0] > 0
+                 for c in ("A_pm", "B600") for k in ("d12", "d21"))
+        p = pert.get(fam, {})
+        pert_ok = bool(p.get("positive_both_directions") and p.get("positive_both_families"))
+        out[fam] = {"delta_auc": rec, "positive_out_of_block_both_directions": bool(both_pos),
+                    "exceeds_null_band": bool(band), "ci_excludes_zero_both_directions": bool(ci),
+                    "perturbation_holds": pert_ok,
+                    "holm": holm.get(fam),
+                    "verdict": ("promoted" if (both_pos and band and ci and pert_ok
+                                               and (holm.get(fam) or {}).get("significant"))
+                                else "null")}
+    return out
+
+
+def _holm(pvals: dict) -> dict:
+    items = [(k, v) for k, v in sorted(pvals.items()) if v is not None]
+    m = len(items)
+    out, prev = {}, 0.0
+    for i, (k, v) in enumerate(items):
+        adj = min(1.0, v * (m - i))
+        prev = max(prev, adj)
+        out[k] = {"p_raw": _round(v, 4), "p_holm": _round(prev, 4), "significant": bool(prev < 0.05),
+                  "m": m}
+    for k in pvals:
+        out.setdefault(k, {"p_raw": None, "p_holm": None, "significant": False, "m": m})
+    return out
+
+
+def stage_b_analysis(features: pl.DataFrame, wins: list[dict], diag: dict,
+                     with_bootstrap: bool = True) -> dict:
+    """Assemble the rows per case set, run the dual-block grid and write the verdicts."""
+    rng = np.random.default_rng(SB_BOOTSTRAP_SEED)
+    missing = [n for n in SB_FEATURE_NAMES if n not in features.columns]
+    if missing:
+        raise SystemExit(f"extracted features do not match the frozen table: {missing}")
+    win_by_id = {w["anchor_id"]: w for w in wins}
+    order = features.with_row_index("_r").sort("anchor_id")
+    f = order
+    ws = [win_by_id[a] for a in f["anchor_id"].to_list()]
+    pan_cols = ["et", "bar_index", "v_forced_flat", "v_hold_flat", "final_high_flag",
+                "remaining_run", "cost_of_waiting", "bar_range_pct"] + list(MINUTE_FEATURES)
+    pan = _panel_rows(ws, pan_cols)
+    pan5 = _panel_rows(ws, ["failed_reclaim_count"], offset=5)
+    Xp = np.column_stack([_f64(f, nm) for nm in SB_PREDICTORS])
+    Xm = np.column_stack([_f64(pan, nm) for nm in MINUTE_FEATURES])
+    case = np.array(f["case_set"].to_list())
+    day = np.array(f["sleeve_day"].to_list())
+    fam = np.array(f["family"].to_list())
+    block = np.array(f["block"].to_list())
+    vff = _f64(pan, "v_forced_flat")
+    vhf = _f64(pan, "v_hold_flat")
+    fhf = _f64(pan, "final_high_flag")
+    rrun = _f64(pan, "remaining_run")
+    cw = _f64(pan, "cost_of_waiting")
+    frc = _f64(pan, "failed_reclaim_count")
+    frc5 = _f64(pan5, "failed_reclaim_count")
+    rng_proxy = _f64(pan, "bar_range_pct")
+    cs5_code5 = _f64(f, "post_reopen_code5")
+    cs5_gapret = _f64(f, "post_reopen_gap_ret")
+    cs5_hole = _f64(f, "f5_hole_minutes")
+    stratum = np.array([("top" if (w["ref_txt"] == "top_decile" or w["ref_txt"] == "top")
+                         else "bottom" if w["ref_txt"] in ("bottom_decile", "bottom") else None)
+                        for w in ws], dtype=object)
+    pair_id = np.array([w["ref_txt"] if w["case_set"] == "CS-3" else None for w in ws], dtype=object)
+    keys = [(w["sleeve_day"], w["family"], w["entry_rank"], w["ticker"]) for w in ws]
+    cs2 = _cs2_outcomes({k for k, c in zip(keys, case) if c == "CS-2"})
+    readm = np.array([cs2.get(k, {}).get("readmissible") if c == "CS-2" else None
+                      for k, c in zip(keys, case)], dtype=object)
+
+    out: dict = {"targets": {cs: [{"name": n, "role": r, "definition": d}
+                                  for n, r, d in SB_TARGETS[cs]] for cs in CASE_ORDER},
+                 "cs2_ledger_labels": {
+                     "members_resolved": len(cs2),
+                     "early_exit_true": sum(1 for v in cs2.values() if v["early_exit"]),
+                     "readmissible_true": sum(1 for v in cs2.values() if v["readmissible"]),
+                     "status": counts(v["status"] for v in cs2.values()),
+                     "note": ("the ledger's own giveback:10 replay over the CS-2 member keys: every "
+                              "CS-2 anchor must resolve as an early exit (the freeze's own identity) "
+                              "and `readmissible` is the primary CS-2 label")},
+                 "case_sets": {}}
+    for cs in CASE_ORDER:
+        sel = case == cs
+        if not sel.any():
+            continue
+        rows_cs = {"X_print": Xp[sel], "X_minute": Xm[sel], "block": block[sel],
+                   "family": fam[sel], "day": day[sel], "proxy": rng_proxy[sel],
+                   "stratum": stratum[sel], "pair_id": pair_id[sel]}
+        y_extra: dict = {}
+        if cs == "CS-1":
+            y_extra["y_vff_up"] = np.where(np.isfinite(vff[sel]), (vff[sel] > 0).astype(float), np.nan)
+            y_extra["y_final_high"] = np.where(np.isfinite(fhf[sel]), fhf[sel], np.nan)
+            med = float(np.nanmedian(cw[sel])) if np.isfinite(cw[sel]).any() else np.nan
+            y_extra["y_deep_cost"] = np.where(np.isfinite(cw[sel]), (cw[sel] < med).astype(float),
+                                              np.nan)
+            y_extra["y_failed_reclaim"] = np.where(np.isfinite(frc[sel]) & np.isfinite(frc5[sel]),
+                                                   (frc5[sel] > frc[sel]).astype(float), np.nan)
+            y_extra["y_alt"] = np.where(np.isfinite(vhf[sel]), (vhf[sel] > 0).astype(float), np.nan)
+            base = "y_vff_up"
+            alt = "y_alt"
+            y_extra["target_note"] = {"cost_threshold": _round(med, 9),
+                                      "alt_label": "1[v_hold_flat > 0] (close-referenced twin)"}
+        elif cs == "CS-2":
+            y_extra["y_false_cut"] = np.array([float(v) if v is not None else np.nan
+                                               for v in readm[sel]])
+            y_extra["y_final_high"] = np.where(np.isfinite(fhf[sel]), fhf[sel], np.nan)
+            y_extra["y_alt"] = y_extra["y_final_high"]
+            base, alt = "y_false_cut", "y_alt"
+            y_extra["target_note"] = {"alt_label": "final_high_flag at the trigger bar (genuine-death ingredient)"}
+        elif cs == "CS-3":
+            y_extra["_vff"] = vff[sel]
+            y_extra["_vhf"] = vhf[sel]
+            base, alt = "y_a_wins", "y_alt"
+            y_extra["target_note"] = {"alt_label": "1[v_hold_flat_A > v_hold_flat_B] (close twin)"}
+        elif cs == "CS-4":
+            y_extra["y_final_high"] = np.where(np.isfinite(fhf[sel]), fhf[sel], np.nan)
+            y_extra["y_remaining_run"] = np.where(np.isfinite(rrun[sel]),
+                                                  (rrun[sel] > 0.10).astype(float), np.nan)
+            y_extra["y_alt"] = y_extra["y_remaining_run"]
+            base, alt = "y_final_high", "y_alt"
+            y_extra["target_note"] = {"alt_label": "1[remaining_run > 0.10] at t"}
+        else:
+            y_extra["y_reopen_code5"] = np.where(np.isfinite(cs5_code5[sel]), cs5_code5[sel], np.nan)
+            y_extra["y_gap_ret_up"] = np.where(np.isfinite(cs5_gapret[sel]),
+                                               (cs5_gapret[sel] > 0).astype(float), np.nan)
+            y_extra["y_alt"] = y_extra["y_gap_ret_up"]
+            base, alt = "y_reopen_code5", "y_alt"
+            y_extra["target_note"] = {
+                "alt_label": ("1[reopen_gap_ret > 0] — simultaneous with the label at the reopen "
+                              "print: descriptive, and the hole-length split is the real "
+                              "perturbation for CS-5")}
+        if cs == "CS-3":
+            pid = pair_id[sel]
+            ws_sel = [w for w in ws if w["case_set"] == cs]
+            ia: dict = {}
+            ib: dict = {}
+            for i, p in enumerate(pid):
+                if p is None:
+                    continue
+                k2 = ws_sel[i]["anchor_id"]
+                side = "A" if k2.endswith("|A") else "B" if k2.endswith("|B") else None
+                (ia if side == "A" else ib)[p] = i
+            pairs = sorted(set(ia) & set(ib))
+            keep = []
+            for p in pairs:
+                a, b = ia[p], ib[p]
+                if np.isfinite(y_extra["_vff"][a]) and np.isfinite(y_extra["_vff"][b]) \
+                        and y_extra["_vff"][a] != y_extra["_vff"][b]:
+                    keep.append((a, b))
+            rows_cs = {"X_print": Xp[sel][keep_arr(keep, 0)] - Xp[sel][keep_arr(keep, 1)],
+                       "X_minute": Xm[sel][keep_arr(keep, 0)] - Xm[sel][keep_arr(keep, 1)],
+                       "block": block[sel][keep_arr(keep, 0)], "family": fam[sel][keep_arr(keep, 0)],
+                       "day": day[sel][keep_arr(keep, 0)], "proxy": rng_proxy[sel][keep_arr(keep, 0)],
+                       "stratum": stratum[sel][keep_arr(keep, 0)], "pair_id": pid[keep_arr(keep, 0)]}
+            y_extra["y_a_wins"] = (y_extra["_vff"][keep_arr(keep, 0)]
+                                   > y_extra["_vff"][keep_arr(keep, 1)]).astype(float)
+            va, vb = y_extra["_vhf"][keep_arr(keep, 0)], y_extra["_vhf"][keep_arr(keep, 1)]
+            y_extra["y_alt"] = np.where(np.isfinite(va) & np.isfinite(vb) & (va != vb),
+                                        (va > vb).astype(float), np.nan)
+            rows_cs["_tie_dropped"] = len(pairs) - len(keep)
+            rows_cs["_pairs_available"] = len(pairs)
+        rows_cs["y"] = y_extra[base]
+        finite = np.isfinite(rows_cs["y"])
+        if cs == "CS-3":
+            n_units_avail = int(rows_cs.get("_pairs_available", 0))
+        else:
+            n_units_avail = int(sel.sum())
+        rows_cs = _subset(rows_cs, finite)
+        y_extra = {k: (v[finite] if isinstance(v, np.ndarray) and v.size == finite.size else v)
+                   for k, v in y_extra.items()}
+        entry: dict = {"target": {"primary": base, "definition": dict(
+            (n, d) for n, r, d in SB_TARGETS[cs] if n == base).get(base), "note": y_extra.get("target_note")},
+            "rows": {"windows": int(sel.sum()),
+                     "unit": "matched pair" if cs == "CS-3" else "anchored window",
+                     "units_available": n_units_avail, "used": int(rows_cs["y"].size),
+                     "base_rate_primary_label": _round(float(rows_cs["y"].mean()), 6)
+                     if rows_cs["y"].size else None,
+                     "dropped_no_label": int(n_units_avail - rows_cs["y"].size),
+                     "tie_dropped_pairs": rows_cs.get("_tie_dropped"),
+                     "no_next_bar_windows": sum(1 for w in ws
+                                                if w["case_set"] == cs
+                                                and w["guards"]["no_next_bar"]),
+                     "by_family": counts(rows_cs["family"].tolist()),
+                     "by_block": counts(rows_cs["block"].tolist())},
+            "coordinates": {}}
+        coord_masks = {"A_pm": rows_cs["family"] == "A_pm", "B600": rows_cs["family"] == "B600",
+                       "pooled(REPORT ONLY)": np.ones(rows_cs["y"].size, dtype=bool)}
+        for cname, cm in coord_masks.items():
+            sub = _subset(rows_cs, cm)
+            if sub["y"].size == 0:
+                entry["coordinates"][cname] = {"skipped": "no rows"}
+                continue
+            entry["coordinates"][cname] = _coordinate(sub, rng, with_bootstrap
+                                                      and cname != "pooled(REPORT ONLY)")
+        # ---- perturbation: alternative label + volatility-matched subset (point estimates) --- #
+        pert = {}
+        for fam_name in SB_FAMILIES:
+            d12, d21, fam_ok = [], [], True
+            for cname in ("A_pm", "B600"):
+                cm = coord_masks[cname]
+                psub = _subset(rows_cs, cm)
+                psub = dict(psub)
+                psub["y"] = np.nan_to_num(y_extra[alt][cm], nan=0.0)
+                ok = np.isfinite(y_extra[alt][cm])
+                psub = _subset(psub, ok)
+                if psub["y"].size < 100 or psub["y"].min() == psub["y"].max():
+                    fam_ok = False
+                    continue
+                b1 = psub["block"] == "block1"
+                b2 = psub["block"] == "block2"
+                if b1.sum() < 30 or b2.sum() < 30:
+                    fam_ok = False
+                    continue
+                r1 = _direction(psub, b1, b2, rng, False)["families"].get(fam_name, {})
+                r2 = _direction(psub, b2, b1, rng, False)["families"].get(fam_name, {})
+                d12.append(r1.get("delta_auc"))
+                d21.append(r2.get("delta_auc"))
+                fam_ok = fam_ok and bool(r1.get("delta_auc", 0) and r1["delta_auc"] > 0) \
+                    and bool(r2.get("delta_auc", 0) and r2["delta_auc"] > 0)
+            q = rows_cs["proxy"]
+            fin = np.isfinite(q)
+            sub_q = {}
+            if fin.sum() > 50:
+                q1, q3 = np.nanpercentile(q[fin], [25, 75])
+                mid = fin & (q >= q1) & (q <= q3)
+                msub = _subset(rows_cs, mid)
+                mb1 = msub["block"] == "block1"
+                mb2 = msub["block"] == "block2"
+                if mb1.sum() >= 30 and mb2.sum() >= 30 and 0 < msub["y"][mb1].mean() < 1 \
+                        and 0 < msub["y"][mb2].mean() < 1:
+                    mr1 = _direction(msub, mb1, mb2, rng, False)["families"].get(fam_name, {})
+                    mr2 = _direction(msub, mb2, mb1, rng, False)["families"].get(fam_name, {})
+                    sub_q = {"delta_auc_block1->block2": mr1.get("delta_auc"),
+                             "delta_auc_block2->block1": mr2.get("delta_auc"),
+                             "n_rows": int(msub["y"].size)}
+                else:
+                    sub_q = {"skipped": "matched subset too small or degenerate"}
+            else:
+                sub_q = {"skipped": "no volatility proxy"}
+            pert[fam_name] = {"alt_label": {"delta_auc": d12 + d21,
+                                            "positive_both_directions": bool(
+                                                fam_ok and d12 and d21 and all(
+                                                    x is not None and x > 0 for x in d12 + d21)),
+                                            "note": "per-family Delta AUC on A_pm then B600, "
+                                                    "block1->block2 then block2->block1"},
+                              "vol_matched_subset": sub_q}
+        entry["perturbation"] = pert
+        entry["extra_targets"] = {}
+        for tn in SB_TARGETS[cs]:
+            nm = tn[0]
+            if nm == base or nm not in y_extra:
+                continue
+            yy = y_extra[nm]
+            mm = np.isfinite(yy)
+            tsub = _subset(rows_cs, mm)
+            tsub = dict(tsub)
+            tsub["y"] = yy[mm]
+            if tsub["y"].size < 100 or tsub["y"].min() == tsub["y"].max():
+                entry["extra_targets"][nm] = {"skipped": "too few rows or constant label"}
+                continue
+            b1 = tsub["block"] == "block1"
+            b2 = tsub["block"] == "block2"
+            if b1.sum() < 30 or b2.sum() < 30:
+                entry["extra_targets"][nm] = {"skipped": "a block has < 30 rows"}
+                continue
+            r1 = _direction(tsub, b1, b2, rng, False)
+            r2 = _direction(tsub, b2, b1, rng, False)
+            entry["extra_targets"][nm] = {
+                "definition": tn[2],
+                "coordinate": "pooled rows, REPORT ONLY (families are never pooled for inference)",
+                "families": {fm: {"block1->block2": (r1["families"].get(fm) or {}).get("delta_auc"),
+                                  "block2->block1": (r2["families"].get(fm) or {}).get("delta_auc")}
+                             for fm in SB_FAMILIES}}
+        if cs == "CS-4":
+            entry["strata"] = {}
+            for st in ("top", "bottom"):
+                sm = rows_cs["stratum"] == st
+                if sm.sum() < 100:
+                    entry["strata"][st] = {"skipped": "too few rows"}
+                    continue
+                ssub = _subset(rows_cs, sm)
+                b1 = ssub["block"] == "block1"
+                b2 = ssub["block"] == "block2"
+                if b1.sum() < 30 or b2.sum() < 30:
+                    entry["strata"][st] = {"skipped": "a block has < 30 rows"}
+                    continue
+                r1 = _direction(ssub, b1, b2, rng, False)
+                r2 = _direction(ssub, b2, b1, rng, False)
+                entry["strata"][st] = {
+                    "n_rows": int(sm.sum()),
+                    "families": {fm: {"block1->block2": (r1["families"].get(fm) or {}).get("delta_auc"),
+                                      "block2->block1": (r2["families"].get(fm) or {}).get("delta_auc")}
+                                 for fm in SB_FAMILIES}}
+        if cs == "CS-5":
+            entry["hole_length_class"] = {}
+            for cls, cm in (("4min", (cs5_hole == 4)[sel]), (">=5min", (cs5_hole >= 5)[sel])):
+                if cm.sum() < 100:
+                    entry["hole_length_class"][cls] = {"skipped": "too few rows"}
+                    continue
+                csub = _subset(rows_cs, cm)
+                b1 = csub["block"] == "block1"
+                b2 = csub["block"] == "block2"
+                if b1.sum() < 30 or b2.sum() < 30:
+                    entry["hole_length_class"][cls] = {"skipped": "a block has < 30 rows"}
+                    continue
+                r1 = _direction(csub, b1, b2, rng, False)
+                r2 = _direction(csub, b2, b1, rng, False)
+                entry["hole_length_class"][cls] = {
+                    "n_rows": int(cm.sum()), "base_rate": _round(float(csub["y"].mean()), 6),
+                    "families": {fm: {"block1->block2": (r1["families"].get(fm) or {}).get("delta_auc"),
+                                      "block2->block1": (r2["families"].get(fm) or {}).get("delta_auc")}
+                                 for fm in SB_FAMILIES}}
+        pv = {}
+        for fm in SB_FAMILIES:
+            ps = [entry["coordinates"][c].get(dr, {}).get("families", {}).get(fm, {}).get("p_delta_auc")
+                  for c in ("A_pm", "B600") for dr in ("block1->block2", "block2->block1")]
+            ps = [x for x in ps if x is not None]
+            pv[fm] = max(ps) if ps else None
+        holm = _holm(pv)
+        entry["family_verdicts"] = _verdicts(entry["coordinates"], pert, holm)
+        killed = [f2 for f2, v in entry["family_verdicts"].items()
+                  if v["positive_out_of_block_both_directions"]]
+        entry["set_verdict"] = {
+            "kill_rule": ("no feature family with a positive out-of-block delta in both blocks"),
+            "families_with_positive_delta_in_both_blocks": killed,
+            "information_claim": "open (a family survived the kill rule)" if killed
+            else "closed as null (no family survived the kill rule)",
+            "g3_promoted": [f2 for f2, v in entry["family_verdicts"].items()
+                            if v["verdict"] == "promoted"],
+            "g3_note": ("G3 also requires |Delta| > 0.054 in both directions and both families, a "
+                        "day-clustered CI excluding 0, the label/threshold perturbation, and Holm"),
+        }
+        out["case_sets"][cs] = entry
+    out["kill_rule_verdict"] = {
+        cs: out["case_sets"][cs]["set_verdict"]["information_claim"] for cs in out["case_sets"]}
+    out["any_promoted"] = sorted({f"{cs}:{f2}" for cs, e in out["case_sets"].items()
+                                  for f2, v in e["family_verdicts"].items()
+                                  if v["verdict"] == "promoted"})
+    return out
+
+
+def keep_arr(keep: list, k: int) -> np.ndarray:
+    return np.array([p[k] for p in keep], dtype=np.int64) if keep else np.zeros(0, dtype=np.int64)
+
+
+# --------------------------------------------------------------------------- #
+# Stage B — the stage driver
+# --------------------------------------------------------------------------- #
+
+def stage_b_run(workers: int = 4, days: list[str] | None = None,
+                sample_per_segment: int = SB_SAMPLE_PER_SEGMENT, with_bootstrap: bool = True,
+                reuse_features: bool = False, trial: bool = False) -> dict:
+    """Window map -> extraction -> gates -> the I-EV measurement. Writes iev.json."""
+    e3_dir = E3
+    suffix = "_trial" if trial else ""
+    anchors = pl.read_parquet(e3_dir / "anchors.parquet")
+    pan = load_panel_cols(SB_PANEL_COLS).sort(MEMBER_KEY + ["bar_index"])
+    wins, wdiag = stage_b_window_map(anchors, pan)
+    fpath = e3_dir / f"stage_b_features{suffix}.parquet"
+    if reuse_features:
+        features = pl.read_parquet(fpath)
+        cost = json.loads((e3_dir / f"stage_b_cost{suffix}.json").read_text())
+    else:
+        res = stage_b_extract(wins, workers, days, sample_per_segment, trial)
+        features, cost = res["features"], res["cost"]
+    diag = stage_b_diagnostics(features, wdiag, wins, cost)
+    obj = {
+        "tool": "factory/scripts/basket_atlas_e3.py",
+        "stage": "B — anchored SIP-print extraction and the I-EV measurement",
+        "plan": "researches/PLAN-ATLAS-E3-MICROSCOPE.md",
+        "semantics": SB_VERSION,
+        "deterministic": ("byte-stable; wall clock and file-write timings live in "
+                          "stage_b_cost.json (run-varying by design, as census_cost.json)"),
+        "frozen_inputs": {
+            "anchors_parquet_sha256": sha256_file(e3_dir / "anchors.parquet"),
+            "case_sets_json_sha256": sha256_file(e3_dir / "case_sets.json"),
+            "census_parquet_sha256": sha256_file(e3_dir / "census.parquet"),
+            "panel_sha256_declared": PANEL_SHA_DECLARED,
+        },
+        "artifacts": {"features_parquet": fpath.name,
+                      "prints_parquet": f"stage_b_prints{suffix}.parquet",
+                      "cost_json": f"stage_b_cost{suffix}.json"},
+        "feature_table": {
+            "sha256": SB_FEATURE_SHA, "n_columns": len(SB_FEATURE_ROWS),
+            "n_predictors": len(SB_PREDICTORS), "predictors": list(SB_PREDICTORS),
+            "families": list(SB_FAMILIES),
+            "rule": ("frozen before the first estimate: only `causal_at_decision` columns enter an "
+                     "I-EV model; the `post_*` columns are the action horizon and are stored for "
+                     "the L-EV arm only"),
+            "rows": SB_FEATURE_ROWS,
+        },
+        "minute_model": {"features": list(MINUTE_FEATURES), "source": "panel.parquet",
+                         "role": "the mandatory minute counterpart on the same rows/coordinate"},
+        "model": {"kind": "ridge-penalised logistic regression (IRLS, l2=1.0 on standardised "
+                          "features, no intercept penalty)",
+                  "standardisation": "training-fold median/std; nulls imputed with the "
+                                     "training-fold median",
+                  "coverage_rule": f"a column enters a fold's model only with >= "
+                                   f"{SB_MIN_COVERAGE:.0%} non-null and non-constant training data",
+                  "cross_fit": "block1->block2 and block2->block1, both reported",
+                  "metric": "ROC AUC and log-loss on the held-out block",
+                  "bootstrap": {"unit": "sleeve_day cluster", "b": SB_BOOTSTRAP_B,
+                                "seed": SB_BOOTSTRAP_SEED, "statistic": "Delta AUC / Delta log-loss"},
+                  "null_band": SB_NULL_BAND,
+                  "null_band_note": ("the plan's Phase-1 band; on CS-3's paired coordinate "
+                                     "Delta AUC is a win-rate difference (the Phase-1 effect "
+                                     "scale); on the single-member sets the same number is "
+                                     "applied as a conservative pre-registered floor")},
+        "targets": None,
+        "diagnostics": diag,
+        "exclusions_accounting": exclusions_accounting(),
+        "plan_corrections": {
+            "B1": "the decision instant is the close of the anchor bar t; causal features read tau <= 0 only",
+            "B2": "segments are the member's own panel bars (bar identity), never tau arithmetic",
+            "B3": "CS-3 is label-conditioned (future oracle continuation) and is read as descriptive",
+            "B5": "CS-5's implemented rule is the >= 5-minute print-to-print jump (4 silent minutes); "
+                  "every CS-5 number is split by hole-length class",
+            "B6": "segments are member bars, so the window is contained in [entry_et, session_end]",
+            "B7": "exclusions_accounting republishes the frozen drop lists with their grain",
+            "B9": "the abort rule is the 4-hour hard wall; the 30-minute design trigger and the "
+                  "measured serial projection are both published",
+            "B10": "CS-5 is re-anchored by et (the frozen bar_index is null); the extraction "
+                   "publishes bar_index for every window",
+        },
+    }
+    if not diag["gates"]["G1_reconstruction"]["pass"]:
+        _write_json(E3 / f"iev{suffix}.json", obj)
+        raise SystemExit("G1 reconstruction failed: the microscope is not measuring the panel's "
+                         "tape (see iev%s.json diagnostics)" % suffix)
+    meas = stage_b_analysis(features, wins, diag, with_bootstrap)
+    obj["targets"] = meas.pop("targets")
+    obj.update(meas)
+    _write_json(E3 / f"iev{suffix}.json", obj)
+    _write_json(E3 / f"latency{suffix}.json", latency_record(features, diag))
+    return obj
+
+
+def latency_record(features: pl.DataFrame, diag: dict) -> dict:
+    """The L-EV arm is a separate script and artifact (plan section 5). It is NOT run here."""
+    census = pl.read_parquet(E3 / "census.parquet")
+    quote_ok = int(census["quote_present"].sum())
+    f6 = [c for c in features.columns if c.startswith("f6_signed_vol_share_")]
+    usable = int(features[f6[0]].is_not_null().sum()) if f6 else 0
+    return {
+        "tool": "factory/scripts/basket_atlas_e3.py",
+        "stage": "B — the latency (L-EV) arm",
+        "status": "NOT RUN — deferred, declared",
+        "reason": ("plan section 5 makes L-EV a different script and a different artifact on "
+                   "purpose (`a positive L-EV licenses no claim about signal; a null I-EV "
+                   "licenses no claim about execution`). Stage B measures I-EV only; keeping the "
+                   "separation is the contract's stated requirement, and no latency number is "
+                   "claimed anywhere in iev.json."),
+        "separation_statement": ("no latency cost is netted against the I-EV numbers: every "
+                                 "Delta AUC in iev.json is an information-only quantity on the "
+                                 "decision-instant tape"),
+        "deferred_contract": {
+            "clock": "the decision is the panel's own (completed bar t, executed at the open of "
+                     "bar t+1) by the same rule in all three arms",
+            "arms": {"A0": "exit at next_open(t) (the panel's convention)",
+                     "A1": "act at the first price-updating print inside bar t+1",
+                     "A2": "act at the first print in bar t+1 satisfying a pre-declared "
+                           "print-level condition (taken from a promoted I-EV feature, or the "
+                           "frozen ruler set if none is promoted) — never tuned here"},
+            "fill_model": "a sell fills at min(p, bid_at_p), a buy at min(p, ask_at_p); "
+                          "participation cap q on 60-second traded volume at or better than the "
+                          "limit; the unfilled remainder is never assumed filled",
+            "slippage_ladder_bps": [0, 25, 50, 100],
+            "verdict_cell_bps": 50,
+            "estimator": "member-level Delta against v_forced_flat in dollars per committed "
+                         "dollar, per block, sleeve and independent-path, paired, day-clustered CI",
+            "gate": {"G4": "arm - A0 paired, day-clustered, net of the NBBO-bid fill model, at "
+                           "SLIP = 50 bps, positive in both blocks; else the print-level action "
+                           "is closed"},
+        },
+        "prerequisites_measured_here": {
+            "quote_present_member_days": quote_ok,
+            "quote_present_share": _round(quote_ok / max(1, census.height), 6),
+            "G0_quote_coverage_threshold": 0.80,
+            "windows_with_a_quote_classified_flow_feature": usable,
+            "windows_extracted": int(features.height),
+            "note": ("the quote gate passes, so the L-EV arm is evaluable in principle; the "
+                     "extracted windows carry their quote-aligned F6 columns for it"),
+        },
+        "not_a_result": ("this artifact claims no latency number; reading it as a null L-EV "
+                         "result would be exactly the confusion plan section 0 forbids"),
+    }
+
+
+SB_EXCLUSION_GRAIN = {
+    "CS-1": "reclaim EVENT rows (one per reclaim_count increment), not members",
+    "CS-2": "MEMBERS (one row per judged member), not bars",
+    "CS-3": "PANEL ROWS and matching UNITS at mixed grain (the two largest entries are row counts, "
+            "`units_with_one_middle_member` is a unit count)",
+    "CS-4": "fall-frame ROWS; `carrier_state_constant_variant_4carriers` is a DIAGNOSTIC carrier "
+            "count, not a drop",
+    "CS-5": "CANDIDATE rows (bracketed halt-sized runs before the panel-side rules)",
+}
+
+
+def exclusions_accounting() -> dict:
+    """B7: republish the frozen drop lists with their grain, and the identities that do hold.
+
+    Reads the byte-frozen `case_sets.json` and never edits it.
+    """
+    cs = json.loads((E3 / "case_sets.json").read_text())
+    out = {"note": ("B7 fix: `exclusions.panel_side` mixes grains and (for CS-4) contains a "
+                    "diagnostic that is not a drop, so its entries cannot be summed. The identity "
+                    "that holds is sum(raw_gates) = anchors_before_gates - gated_population, "
+                    "together with gated_population = frozen_sample + sample_cap_dropped. The "
+                    "frozen case_sets.json is unchanged; this table is the corrected reading."),
+           "per_case_set": {}}
+    for name in CASE_ORDER:
+        e = cs["case_sets"][name]
+        ps = e["exclusions"]["panel_side"]
+        raw = e["exclusions"]["raw_gates"]
+        pop = e["population"]["anchors"]
+        before = e["population"]["anchors_before_gates"]
+        kept = e["frozen_sample"]["anchors"]
+        cap = e["exclusions"]["sample_cap_dropped"]
+        diag = {k: v for k, v in ps.items() if k.endswith("_variant_4carriers")}
+        drops = {k: v for k, v in ps.items() if k not in diag}
+        out["per_case_set"][name] = {
+            "panel_side_grain": SB_EXCLUSION_GRAIN[name],
+            "panel_side_counts": dict(sorted(ps.items())),
+            "panel_side_drops_only": dict(sorted(drops.items())),
+            "panel_side_diagnostics_not_drops": diag,
+            "panel_side_sum": sum(ps.values()),
+            "panel_side_sum_is_not_a_drop_count": True,
+            "raw_gates_sum": sum(raw.values()),
+            "raw_gates": dict(sorted(raw.items())),
+            "anchors_before_gates": before, "gated_population": pop,
+            "frozen_sample": kept, "sample_cap_dropped": cap,
+            "identity_raw_gates": {"sum(raw_gates)": sum(raw.values()),
+                                   "before - population": before - pop,
+                                   "holds": bool(sum(raw.values()) == before - pop)},
+            "identity_cap": {"population": pop, "frozen + cap_dropped": kept + cap,
+                             "holds": bool(pop == kept + cap)},
+            "panel_side_sum_vs_population_delta": sum(ps.values()) - (before - pop),
+        }
+    return out
+
+
+# --------------------------------------------------------------------------- #
 # artifacts
 # --------------------------------------------------------------------------- #
 
@@ -1438,6 +3092,93 @@ def selftest(write: bool = True) -> dict:
     chk("segment_contiguity", "segments tile the window exactly",
         [(-60, 0), (0, 60), (60, 120), (120, 180)], [(s[1], s[2]) for s in SEGMENTS])
 
+    # ---- Stage B (B1/B2/B6 semantics, the frozen feature table, the extraction) ----------- #
+    chk("sb_families", "the predictor families are the plan's six", 6, len(SB_FAMILIES))
+    chk("sb_predictors_causal", "only causal_at_decision columns are predictors",
+        [], [r["name"] for r in SB_FEATURE_ROWS
+             if r["causal_at_decision"] and not r["name"].startswith(
+                 ("f1_", "f2_", "f3_", "f4_", "f5_", "f6_"))])
+    chk("sb_horizon_columns_not_predictors", "no post_* column is a predictor",
+        [], [n for n in SB_PREDICTORS if n.startswith("post_")])
+    chk("sb_feature_names_unique", "the feature table has no duplicate column",
+        len(SB_FEATURE_NAMES), len(set(SB_FEATURE_NAMES)))
+    chk("sb_segment_declaration", "every case set declares the plan's four segments (CS-5: hole)",
+        {"CS-1": ("pre", "anchor", "post1", "post2"), "CS-2": ("pre", "anchor", "post1", "post2"),
+         "CS-3": ("pre", "anchor", "post1", "post2"), "CS-4": ("pre", "anchor", "post1", "post2"),
+         "CS-5": ("pre", "anchor", "hole")}, CASE_SEGMENTS)
+    chk("sb_cs5_segments", "CS-5 declares pre/anchor/hole and no post segment",
+        ("pre", "anchor", "hole"), CASE_SEGMENTS["CS-5"])
+    chk("sb_rulers", "the two RULER constants are the plan's declared values",
+        (0.005, 1.0), (SB_PUSH_MIN, SB_Q_MAX_AGE_S))
+    fl = _flow(np.array([10.0, 10.1, 10.1, 9.9]), np.array([100.0] * 4),
+               np.array([1_000_000, 1_000_001, 1_000_002, 1_000_003]),
+               np.array([900_000]), np.array([10.0]), np.array([10.1]), {"px": None, "cls": None})
+    chk("sb_flow_classifier", "Lee-Ready: quote mid wins, tick rule fills, zero tick inherits",
+        {"signed_vol_share": 0.0, "unclassified_share": 0.0,
+         "signed_vol_share_tickonly": 0.333333},
+        {"signed_vol_share": _round(fl["signed_vol_share"], 6),
+         "unclassified_share": _round(fl["unclassified_share"], 6),
+         "signed_vol_share_tickonly": _round(fl["signed_vol_share_tickonly"], 6)})
+    st = {"px": None, "cls": None}
+    _flow(np.array([10.0, 10.1, 10.1, 9.9]), np.array([100.0] * 4),
+          np.array([1_000_000, 1_000_001, 1_000_002, 1_000_003]),
+          None, None, None, st)
+    chk("sb_flow_state_carry", "the tick state carries price and the last classification",
+        (9.9, -1.0), (st["px"], st["cls"]))
+    fl3 = _flow(np.array([10.0, 10.1]), np.array([100.0, 100.0]),
+                np.array([1_000_000, 1_000_001]), None, None, None, {"px": None, "cls": None})
+    chk("sb_flow_no_quote", "without quotes every print is unclassified and the tick twin stands",
+        (1.0, 1.0), (_round(fl3["unclassified_share"], 6),
+                     _round(fl3["signed_vol_share_tickonly"], 6)))
+    reg = ledger.load_registry()
+    chk("sb_minute_features_registered", "every minute-model column is a registered causal state",
+        {}, {c: reg.blocked_reason(c) for c in MINUTE_FEATURES if reg.blocked_reason(c)})
+    if (E3 / "stage_b_features.parquet").exists():
+        sf = pl.read_parquet(E3 / "stage_b_features.parquet")
+        chk("sb_extracted_columns", "the extraction carries every frozen feature column",
+            [], [n for n in SB_FEATURE_NAMES if n not in sf.columns])
+        chk("sb_extracted_windows", "the extraction covers every frozen anchor",
+            pl.read_parquet(E3 / "anchors.parquet").height, sf.height)
+        chk("sb_g1_reconstruction", "every extracted window reproduces the panel's bar high/low",
+            0, int(sf["g1_mismatch"].sum()))
+        chk("sb_g2_no_post_decision_reads",
+            "no causal feature read a print after the decision instant",
+            0, int(sf["g1_tau_positive_causal"].sum()) if "g1_tau_positive_causal" in sf.columns
+            else 0)
+        chk("sb_containment", "every segment bar lies inside [entry_et, session_end]",
+            True, bool(sf.join(pl.read_parquet(E3 / "anchors.parquet")
+                               .select(["anchor_id", "entry_et", "session_end"]), on="anchor_id")
+                       .filter((pl.col("et") < pl.col("entry_et"))
+                               | (pl.col("et") > pl.col("session_end"))).height == 0))
+        ab = (sf["f3_secs_above_level_anchor"].fill_null(0)
+              + sf["f3_secs_below_level_anchor"].fill_null(0))
+        chk("sb_bin_convention", "a bar segment's above+below seconds sum to 60 s",
+            60.0, _round(float(ab.max()), 6))
+        sh = sf["f6_signed_vol_share_anchor"].drop_nulls()
+        chk("sb_signed_share_bounds", "signed volume share stays in [-1, 1]",
+            True, bool(sh.len() == 0 or (float(sh.min()) >= -1.0 and float(sh.max()) <= 1.0)))
+        chk("sb_decision_instant", "CS-1..CS-4 record close(t) = (et+1)*60",
+            True, bool(sf.filter((pl.col("case_set") != "CS-5")
+                                 & (pl.col("decision_close_s")
+                                    != (pl.col("et") + 1) * 60)).height == 0))
+        c5 = sf.filter(pl.col("case_set") == "CS-5")
+        chk("sb_cs5_decision_instant", "CS-5 records the reopen print as the decision instant",
+            True, bool(c5.height == 0 or (c5["decision_close_s"] <= (c5["et"] + 1) * 60).all()))
+        chk("sb_cs5_hole_class", "the CS-5 hole-length split covers every CS-5 window",
+            int(c5.height), int((c5["f5_hole_minutes"] == 4).sum()
+                                + (c5["f5_hole_minutes"] >= 5).sum()))
+    cs_now = json.loads((E3 / "case_sets.json").read_text())
+    for fname, key in (("census.json", "census"), ("census.parquet", "census_parquet"),
+                       ("cs5_anchors.parquet", "cs5_anchors"), ("anchors.parquet", "anchors"),
+                       ("case_sets.json", "case_sets")):
+        want = {"census": "58f0405b64e2785c9017a5d99b35048c0561ed33581d2db2ed2109985a964222",
+                "census_parquet": "6566a3d2bf549156adc7169654dec078ffed7c1344348bb86648f1ec0680bf06",
+                "cs5_anchors": "d6ade76dc3144f3f292bb8ef3caa6baa459c8960136789b3ef5c10727588bdca",
+                "anchors": "678230f5757ff45555d021d38a7d09571e7858ee147e130ffdc1807d8412bd1c",
+                "case_sets": "588eabfe6f3c170df9bfa5149bd809faad5391a0d60323e6337551fc2e22f457"}[key]
+        chk(f"sb_freeze_sha_{key}", f"{fname} is byte-identical to the Stage-A freeze",
+            want, sha256_file(E3 / fname))
+
     summary = {"total": len(checks), "passed": sum(1 for c in checks if c["passed"]),
                "failed": [c["check"] for c in checks if not c["passed"]]}
     obj = {"tool": "factory/scripts/basket_atlas_e3.py", "kind": "self-test",
@@ -1454,11 +3195,13 @@ def selftest(write: bool = True) -> dict:
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--stage", choices=("census", "freeze", "all"), default="all")
+    ap.add_argument("--stage", choices=("census", "freeze", "all", "stageb", "iev"), default="all")
     ap.add_argument("--days", help="comma-separated day subset: writes *_trial.* only (trials)")
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--bars-check", action="store_true",
                     help="reconcile every census member-day against the committed derived bars")
+    ap.add_argument("--no-bootstrap", action="store_true",
+                    help="stageb: skip the day-clustered bootstrap (fast smoke runs)")
     ap.add_argument("--self-test", action="store_true")
     args = ap.parse_args(argv)
     E3.mkdir(parents=True, exist_ok=True)
@@ -1467,6 +3210,14 @@ def main(argv=None) -> int:
         print(json.dumps(obj["summary"], indent=1))
         return 0 if not obj["summary"]["failed"] else 1
     days = [d.strip() for d in args.days.split(",")] if args.days else None
+    if args.stage in ("stageb", "iev"):
+        if args.stage == "iev" and not days and not (E3 / "stage_b_features.parquet").exists():
+            raise SystemExit("--stage iev needs stage_b_features.parquet; run --stage stageb first")
+        obj = stage_b_run(args.workers, days, with_bootstrap=not args.no_bootstrap,
+                          reuse_features=(args.stage == "iev"), trial=bool(days))
+        print(json.dumps({cs: obj["case_sets"][cs]["set_verdict"]["information_claim"]
+                          for cs in obj.get("case_sets", {})}, indent=1))
+        return 0
     if args.stage == "freeze":
         if not (E3 / "census.parquet").exists():
             raise SystemExit("--stage freeze needs census.parquet; run --stage census first")

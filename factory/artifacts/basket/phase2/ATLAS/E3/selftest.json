@@ -607,14 +607,290 @@
     ]
    ],
    "passed": true
+  },
+  {
+   "actual": 6,
+   "check": "sb_families",
+   "description": "the predictor families are the plan's six",
+   "expected": 6,
+   "passed": true
+  },
+  {
+   "actual": [],
+   "check": "sb_predictors_causal",
+   "description": "only causal_at_decision columns are predictors",
+   "expected": [],
+   "passed": true
+  },
+  {
+   "actual": [],
+   "check": "sb_horizon_columns_not_predictors",
+   "description": "no post_* column is a predictor",
+   "expected": [],
+   "passed": true
+  },
+  {
+   "actual": 44,
+   "check": "sb_feature_names_unique",
+   "description": "the feature table has no duplicate column",
+   "expected": 44,
+   "passed": true
+  },
+  {
+   "actual": {
+    "CS-1": [
+     "pre",
+     "anchor",
+     "post1",
+     "post2"
+    ],
+    "CS-2": [
+     "pre",
+     "anchor",
+     "post1",
+     "post2"
+    ],
+    "CS-3": [
+     "pre",
+     "anchor",
+     "post1",
+     "post2"
+    ],
+    "CS-4": [
+     "pre",
+     "anchor",
+     "post1",
+     "post2"
+    ],
+    "CS-5": [
+     "pre",
+     "anchor",
+     "hole"
+    ]
+   },
+   "check": "sb_segment_declaration",
+   "description": "every case set declares the plan's four segments (CS-5: hole)",
+   "expected": {
+    "CS-1": [
+     "pre",
+     "anchor",
+     "post1",
+     "post2"
+    ],
+    "CS-2": [
+     "pre",
+     "anchor",
+     "post1",
+     "post2"
+    ],
+    "CS-3": [
+     "pre",
+     "anchor",
+     "post1",
+     "post2"
+    ],
+    "CS-4": [
+     "pre",
+     "anchor",
+     "post1",
+     "post2"
+    ],
+    "CS-5": [
+     "pre",
+     "anchor",
+     "hole"
+    ]
+   },
+   "passed": true
+  },
+  {
+   "actual": [
+    "pre",
+    "anchor",
+    "hole"
+   ],
+   "check": "sb_cs5_segments",
+   "description": "CS-5 declares pre/anchor/hole and no post segment",
+   "expected": [
+    "pre",
+    "anchor",
+    "hole"
+   ],
+   "passed": true
+  },
+  {
+   "actual": [
+    0.005,
+    1.0
+   ],
+   "check": "sb_rulers",
+   "description": "the two RULER constants are the plan's declared values",
+   "expected": [
+    0.005,
+    1.0
+   ],
+   "passed": true
+  },
+  {
+   "actual": {
+    "signed_vol_share": 0.0,
+    "signed_vol_share_tickonly": 0.333333,
+    "unclassified_share": 0.0
+   },
+   "check": "sb_flow_classifier",
+   "description": "Lee-Ready: quote mid wins, tick rule fills, zero tick inherits",
+   "expected": {
+    "signed_vol_share": 0.0,
+    "signed_vol_share_tickonly": 0.333333,
+    "unclassified_share": 0.0
+   },
+   "passed": true
+  },
+  {
+   "actual": [
+    9.9,
+    -1.0
+   ],
+   "check": "sb_flow_state_carry",
+   "description": "the tick state carries price and the last classification",
+   "expected": [
+    9.9,
+    -1.0
+   ],
+   "passed": true
+  },
+  {
+   "actual": [
+    1.0,
+    1.0
+   ],
+   "check": "sb_flow_no_quote",
+   "description": "without quotes every print is unclassified and the tick twin stands",
+   "expected": [
+    1.0,
+    1.0
+   ],
+   "passed": true
+  },
+  {
+   "actual": {},
+   "check": "sb_minute_features_registered",
+   "description": "every minute-model column is a registered causal state",
+   "expected": {},
+   "passed": true
+  },
+  {
+   "actual": [],
+   "check": "sb_extracted_columns",
+   "description": "the extraction carries every frozen feature column",
+   "expected": [],
+   "passed": true
+  },
+  {
+   "actual": 20937,
+   "check": "sb_extracted_windows",
+   "description": "the extraction covers every frozen anchor",
+   "expected": 20937,
+   "passed": true
+  },
+  {
+   "actual": 0,
+   "check": "sb_g1_reconstruction",
+   "description": "every extracted window reproduces the panel's bar high/low",
+   "expected": 0,
+   "passed": true
+  },
+  {
+   "actual": 0,
+   "check": "sb_g2_no_post_decision_reads",
+   "description": "no causal feature read a print after the decision instant",
+   "expected": 0,
+   "passed": true
+  },
+  {
+   "actual": true,
+   "check": "sb_containment",
+   "description": "every segment bar lies inside [entry_et, session_end]",
+   "expected": true,
+   "passed": true
+  },
+  {
+   "actual": 60.0,
+   "check": "sb_bin_convention",
+   "description": "a bar segment's above+below seconds sum to 60 s",
+   "expected": 60.0,
+   "passed": true
+  },
+  {
+   "actual": true,
+   "check": "sb_signed_share_bounds",
+   "description": "signed volume share stays in [-1, 1]",
+   "expected": true,
+   "passed": true
+  },
+  {
+   "actual": true,
+   "check": "sb_decision_instant",
+   "description": "CS-1..CS-4 record close(t) = (et+1)*60",
+   "expected": true,
+   "passed": true
+  },
+  {
+   "actual": true,
+   "check": "sb_cs5_decision_instant",
+   "description": "CS-5 records the reopen print as the decision instant",
+   "expected": true,
+   "passed": true
+  },
+  {
+   "actual": 4000,
+   "check": "sb_cs5_hole_class",
+   "description": "the CS-5 hole-length split covers every CS-5 window",
+   "expected": 4000,
+   "passed": true
+  },
+  {
+   "actual": "58f0405b64e2785c9017a5d99b35048c0561ed33581d2db2ed2109985a964222",
+   "check": "sb_freeze_sha_census",
+   "description": "census.json is byte-identical to the Stage-A freeze",
+   "expected": "58f0405b64e2785c9017a5d99b35048c0561ed33581d2db2ed2109985a964222",
+   "passed": true
+  },
+  {
+   "actual": "6566a3d2bf549156adc7169654dec078ffed7c1344348bb86648f1ec0680bf06",
+   "check": "sb_freeze_sha_census_parquet",
+   "description": "census.parquet is byte-identical to the Stage-A freeze",
+   "expected": "6566a3d2bf549156adc7169654dec078ffed7c1344348bb86648f1ec0680bf06",
+   "passed": true
+  },
+  {
+   "actual": "d6ade76dc3144f3f292bb8ef3caa6baa459c8960136789b3ef5c10727588bdca",
+   "check": "sb_freeze_sha_cs5_anchors",
+   "description": "cs5_anchors.parquet is byte-identical to the Stage-A freeze",
+   "expected": "d6ade76dc3144f3f292bb8ef3caa6baa459c8960136789b3ef5c10727588bdca",
+   "passed": true
+  },
+  {
+   "actual": "678230f5757ff45555d021d38a7d09571e7858ee147e130ffdc1807d8412bd1c",
+   "check": "sb_freeze_sha_anchors",
+   "description": "anchors.parquet is byte-identical to the Stage-A freeze",
+   "expected": "678230f5757ff45555d021d38a7d09571e7858ee147e130ffdc1807d8412bd1c",
+   "passed": true
+  },
+  {
+   "actual": "588eabfe6f3c170df9bfa5149bd809faad5391a0d60323e6337551fc2e22f457",
+   "check": "sb_freeze_sha_case_sets",
+   "description": "case_sets.json is byte-identical to the Stage-A freeze",
+   "expected": "588eabfe6f3c170df9bfa5149bd809faad5391a0d60323e6337551fc2e22f457",
+   "passed": true
   }
  ],
  "deterministic": "no timestamps",
  "kind": "self-test",
  "summary": {
   "failed": [],
-  "passed": 38,
-  "total": 38
+  "passed": 64,
+  "total": 64
  },
  "tool": "factory/scripts/basket_atlas_e3.py"
 }

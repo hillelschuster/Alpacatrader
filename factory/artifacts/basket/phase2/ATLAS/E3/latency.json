@@ -1,0 +1,36 @@
+{
+ "deferred_contract": {
+  "arms": {
+   "A0": "exit at next_open(t) (the panel's convention)",
+   "A1": "act at the first price-updating print inside bar t+1",
+   "A2": "act at the first print in bar t+1 satisfying a pre-declared print-level condition (taken from a promoted I-EV feature, or the frozen ruler set if none is promoted) \u2014 never tuned here"
+  },
+  "clock": "the decision is the panel's own (completed bar t, executed at the open of bar t+1) by the same rule in all three arms",
+  "estimator": "member-level Delta against v_forced_flat in dollars per committed dollar, per block, sleeve and independent-path, paired, day-clustered CI",
+  "fill_model": "a sell fills at min(p, bid_at_p), a buy at min(p, ask_at_p); participation cap q on 60-second traded volume at or better than the limit; the unfilled remainder is never assumed filled",
+  "gate": {
+   "G4": "arm - A0 paired, day-clustered, net of the NBBO-bid fill model, at SLIP = 50 bps, positive in both blocks; else the print-level action is closed"
+  },
+  "slippage_ladder_bps": [
+   0,
+   25,
+   50,
+   100
+  ],
+  "verdict_cell_bps": 50
+ },
+ "not_a_result": "this artifact claims no latency number; reading it as a null L-EV result would be exactly the confusion plan section 0 forbids",
+ "prerequisites_measured_here": {
+  "G0_quote_coverage_threshold": 0.8,
+  "note": "the quote gate passes, so the L-EV arm is evaluable in principle; the extracted windows carry their quote-aligned F6 columns for it",
+  "quote_present_member_days": 6159,
+  "quote_present_share": 0.999838,
+  "windows_extracted": 20937,
+  "windows_with_a_quote_classified_flow_feature": 17242
+ },
+ "reason": "plan section 5 makes L-EV a different script and a different artifact on purpose (`a positive L-EV licenses no claim about signal; a null I-EV licenses no claim about execution`). Stage B measures I-EV only; keeping the separation is the contract's stated requirement, and no latency number is claimed anywhere in iev.json.",
+ "separation_statement": "no latency cost is netted against the I-EV numbers: every Delta AUC in iev.json is an information-only quantity on the decision-instant tape",
+ "stage": "B \u2014 the latency (L-EV) arm",
+ "status": "NOT RUN \u2014 deferred, declared",
+ "tool": "factory/scripts/basket_atlas_e3.py"
+}
