@@ -409,6 +409,11 @@ negative (Study B + EXIT-01). Files: `factory/scripts/lb18_exit.py`,
 
 ## 16. Latest state (2026-09-13...) — superseded by §16.1 for research; forward paper unchanged
 ### §16.1 UPDATE 2026-09-27 — BASKET Phase 1 (ATLAS measurement) CLOSED; Phase 2 = E1 execution test
+**§16.2 (2026-09-28): ATLAS Phase 2 also CLOSED** — E1 (management by exhaustion score) has no dollar
+increment over the trivial giveback:10 ruler (its conditional niche was a look-ahead artifact), and E3
+(sub-minute print information) is a null (no family positive out-of-block in both blocks; nothing
+promoted). Read `researches/ATLAS-PHASE2-CLOSURE.md`; the only validated executable mechanism remains
+the H025 flush rule (separate live-paper workstream).
 Worktree/branch: `basket-phase2-f1`. Entry docs: `researches/PLAN-ATLAS-01.md` (plan/foundations),
 `researches/ATLAS-PHASE1-SYNTHESIS.md` (readable conclusion), `researches/STATE.md` (current truth),
 `factory/artifacts/basket/phase2/ATLAS/` (numbers). Frozen and committed this cycle: panel v2 (SIP,
