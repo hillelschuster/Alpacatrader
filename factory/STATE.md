@@ -2609,3 +2609,14 @@ is a post-hoc slice of an arm that already failed its pre-registered cell-level 
 E1 stays CLOSED; no rescue pre-registration, no look at unused months. The look-ahead guard is a
 real regression lock (old member-median statistic fails it) but is specific to the single
 decision-bar read, not a general causality proof.
+
+## 2026-09-28 — ATLAS Phase 2 CLOSED (E1 management + E3 sub-minute); synthesis file added
+E1 closed: every-bar exhaustion score (AUC 0.82-0.84) is profitable vs hold but never beats the
+trivial giveback:10 ruler; the conditional niche was a look-ahead artifact (member-median
+conditioning read post-release bars; decision-time statistic negative in 16/16 cells); the
+calm-tercile box nets <= 0 and fails the tail clause. E3 closed null: 20,937 frozen windows, I-EV
+no family positive out-of-block in both blocks for CS-1..CS-4; CS-5 weak-only (<=0.0055, inside the
+0.054 band); nothing promoted; L-EV blocked by precondition. Readable closure:
+researches/ATLAS-PHASE2-CLOSURE.md. Every verdict-carrying artifact has an independent debug pass;
+all runs byte-reproducible. Standing: only validated executable mechanism remains the H025 flush
+rule (separate workstream); the peak-relative ruler is the strongest management policy tested.
