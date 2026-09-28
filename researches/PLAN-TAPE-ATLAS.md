@@ -1,469 +1,536 @@
 # PLAN (DRAFT) — Tape Pattern Atlas / Empirical Grammar
 
-**Status: architecture-reviewed against the current code and data; still DRAFT.**
-No Stage-0 implementation or discovery run is authorized until the representation/invariance
-registry, version graph and race-universe contract below are frozen.
+**Status: final targeted architecture revision; still DRAFT.**
+The observation contract below is intended to become Freeze O. No future anatomy, economic label or
+P&L is permitted in construction of the observation corpus or discovery geometry.
 
 ## 1. Purpose and evidence order
 
-The Atlas is first an instrument for understanding the top-gainer phenomenon, not an alpha model.
-Its mandatory order is:
+The Atlas is first an instrument for understanding the top-gainer phenomenon:
 
 > **raw tape → recurring structure / retrieval geometry → empirical lexicon (if modes exist) →
 > subsequent path distributions → economic hypotheses → executable rules**
 
-P&L is deliberately absent from Atlas-construction gates. A later action rule can fail without
-invalidating a truthful descriptive asset.
+P&L is not an Atlas-construction gate. A later rule can fail without invalidating a truthful
+descriptive asset.
 
-Prior negatives are narrow:
+Prior negative evidence is narrow:
 
-* flattened/z-scored 30/60-minute and event-anchored k-means, plus the tested H018 DTW
+* flattened/z-scored 30/60-minute and event-anchored k-means, and the tested H018 DTW
   shape-ordering formulation, are closed;
 * E1's tested exhaustion-score release policies add no dollars over `giveback:10`;
-* E3's 24 hand-built print predictors in five bounded case sets add no material out-of-block
-  information.
+* E3 closed CS-1..CS-4 as null; CS-5 survived only its weak kill rule, every delta was ≤0.0168
+  (CS-5 ≤0.0055) inside the 0.054 null band, and nothing was promoted.
 
-They do **not** test outcome-blind sequence representations, continuous similarity geometry,
-multi-scale motif retrieval, duration grammars, raw-print/quote representations or joint race
-geometry.
+None of that tests outcome-blind sequence representation, continuous retrieval geometry,
+multi-scale raw-print/quote representations, duration grammars or joint race geometry.
 
-## 2. Architecture decisions from the code/data review
+## 2. Two freezes separated by a blind corpus inspection
 
-### 2.1 Market observation and policy state are separate
+### Freeze O — observation contract (before any corpus build)
 
-**Cash is not part of discovery.** It has no tape. Cash, positions, exposure, blocked slots,
-funding and actions exist only in the later policy/economic namespace.
+Freeze what the tape **is** and what may be read:
 
-The discovered race contains a variable-cardinality set of instruments and their market-observable
-joint state. It does not contain a synthetic cash member. When a frozen market pattern later becomes
-an action hypothesis, the engine combines it with a separate policy state (cash, positions and
-constraints).
+* day registry and `guard_day`;
+* raw input hashes, IDs, coverage/missingness semantics and lineage;
+* independent path versus membership identity;
+* retrospective versus prospective rosters;
+* positive per-column causal allowlists (default deny);
+* row-level `selectable_asof_et`;
+* decision instant and occurrence clocks;
+* physical separation of observation from outcomes/censoring/policy;
+* materialized canonical-table schemas and reconciliation guards;
+* permitted outcome-blind corpus summaries.
 
-This matches the frozen panel contract: policy bookkeeping is not market state. It also prevents a
-particular simulator policy from becoming part of the empirical grammar.
+Freeze O contains no distance metric, channel weighting, scale ladder, segmentation penalty,
+augmentation or learned-model parameter.
 
-### 2.2 The race universe is not the 6,160-member panel
+### Blind corpus inspection
 
-The panel is a selected post-fill population: A_pm/B600 top-3 members only. It cannot, by itself,
-support claims about later entrants or a full evolving leaderboard.
+After building the corpus, inspection is limited to a frozen whitelist:
 
-Available race substrates are separate coverage tiers:
+* row/support/coverage/null counts;
+* path/window length and magnitude distributions;
+* per-block/family/era/channel quantiles;
+* duplicate/overlap and roster-census facts;
+* no-outcome distance, density, neighbour, perturbation and surrogate statistics;
+* resource/cost measurements.
 
-1. **Full-universe checkpoint board:** `data/sip/universe/rth/<day>.parquet`, all 1,066 dev days,
-   roughly 5,000 names/day and 13 declared clocks. Its raw rows contain full-day fields
-   (`hi/lo/c_last/vol/n_bars/first_et/last_et/delayed_open`) and future row-presence information.
-   A prospective board must therefore rebuild each checkpoint roster from the PIT-eligible universe
-   plus events actually observed by that clock, using only `px_T` / `px_T_et` and references already
-   known by T. The raw compact table is otherwise retrospective.
-2. **Candidate-net minute board:** SIP net bars/trades, roughly 38–115 trade symbols/day (median
-   about 65). The stored day roster contains full-day winners/margin names, so it is
-   selection-conditioned. Retrospective geometry may use it as labelled; prospective geometry at
-   time t must use only snapshot membership selected at or before t plus tape observed by t.
-3. **Selected-member minute board:** panel paths for 6,160 A_pm/B600 members. Its live cross fields
-   use a ≤10-name A_pm snapshot and ≤2 same-family peers; they are not a full-market leaderboard.
-4. **Quote board:** 7–25 symbols/day (median 15), the union of top-3 names across snapshots. Whole-day
-   quote availability reveals later membership. Retrospective quote geometry is explicitly
-   rank-selected; prospective geometry uses only names selected by snapshots at or before t, and
-   future-selected coverage/absence remains metadata, never an input.
+Every inspected statistic and resulting choice enters an **Adaptive Choice Ledger**:
 
-Atlas v0 publishes these as distinct retrospective and prospective views. It never silently treats
-checkpoint, candidate-net and selected-member coverage as the same race. A true full-universe
-minute race requires new data; the current store cannot manufacture it.
+`choice_id, alternatives, evidence inspected, columns read, blind flag, decision, affected node,
+recheck block, status`.
 
-The discovery layer uses neutral IDs (`path_id`, `instrument_id`, `rank_slot`) rather than A/B/C/D
-trader labels. Human concepts such as leader, replacement, resurrection and handoff are overlaid
-only after race geometry freezes.
+### Freeze R — bounded representation matrix (after blind inspection, before anatomy)
 
-### 2.3 Magnitude and shape remain parallel
+Freeze how observations are compared:
 
-Normalization is a hypothesis, never preprocessing hidden from the evidence.
+* a small declared representation family;
+* channels and transforms per view;
+* metric and channel weights per view;
+* scale ladder and segment/crop rules;
+* change-point budget;
+* one self-supervised architecture/configuration;
+* augmentations/invariances;
+* neighbour/density/index rules and sparse exact-recall floor;
+* no-outcome quality gates.
 
-Every episode keeps parallel views:
+Freeze R cannot read any outcome, censor or future-anatomy column. `anatomy@vN` may attach only to
+occurrences whose representation and geometry have a non-withdrawn Freeze-R record.
 
-| View | Preserved information |
+## 3. Observation and policy are separate
+
+Cash has no tape and is not part of discovery. Positions, exposure, funding, blocked slots and
+actions exist only in the later policy namespace.
+
+The discovered race is a variable-cardinality set of instruments and observable joint market state.
+When a frozen phenomenon becomes an economic hypothesis, it is joined to a separate policy state.
+
+This matches the frozen panel contract, which explicitly excludes cash/exposure/actions from market
+state.
+
+## 4. Actual data tiers and their limits
+
+### 4.1 Selected-member panel
+
+`panel.parquet`: 1,900,432 rows, 6,160 A_pm/B600 memberships, 5,905 unique `(day,ticker)` paths,
+1,066 dev days. It is a post-fill top-3 population, not the race universe.
+
+Its `state_cross` fields use a ≤10-name A_pm candidate list and ≤2 same-family peers. They are
+retained under `legacy_candidate_context`, never labelled market rank or full-race context.
+
+### 4.2 Existing full-roster checkpoint board
+
+`data/sip/universe/rth/<day>.parquet` covers all dev days and roughly 5,300–6,100 PIT names/day at
+twelve decision clocks:
+
+`575,580,585,590,595,600,615,630,645,660,690,720`.
+
+It has no afternoon coverage after 12:00. `px_T` is the last completed bar known at T and `px_T_et`
+states its age. Whole-day `hi/lo/c_last/vol/n_bars/first_et/last_et/delayed_open` and row presence
+are not prospective features.
+
+A prospective checkpoint roster is rebuilt from `data/pit/pit_symbols.parquet` plus data actually
+observed by T. Symbols that have not traded by T remain an explicit `not_observed_by_t` stratum;
+they are not deleted.
+
+### 4.3 Broad minute race board — build now, source-qualified
+
+Unfiltered provider bars exist for 50 of 51 dev months:
+
+* HF/Finnhub-lineage `data/ohlcv_YYYY-MM.parquet` for 2021-02..2023-12 and 2025-03..2026-02;
+* Alpaca SIP `data/backfill/ohlcv_YYYY-MM.parquet` for 2026-03..05.
+
+The 50 raw month files contain about 1.45B all-hours rows; the current estimate is about 1.35B RTH
+name-minutes. Freeze O pins the actual convention: timestamps are UTC, converted DST-aware to
+`America/New_York`, then restricted to `570..session_end`. Only 2025-02 lacks an unfiltered source;
+its clean fallback contains 20.5M rows but embeds `$2`/100-share bar floors. A one-month raw SIP
+reacquisition is required before the full v0 build; a canary may use the fallback only with a visible
+`qualified_floor_source` flag.
+
+The raw lane recovers the sub-$2 slice the clean files removed. It is still mixed-source evidence:
+HF feed conditions/as-of revision are unknown, while 2026-03..05 is Alpaca SIP. A completed audit
+found a systematic 145–235 PIT-name/day hole across the 41 dev days of 2026-04/05; targeted
+reacquisition of those names is required before the full v0 board, while canaries carry a
+`raw_roster_missing` coverage state. Feed/source/era, staleness and quality remain first-class strata.
+
+The board is built over the full available cross-section, not top-K:
+
+`day, t, ticker, px, prev_close, prev_close_et, prev_close_age_sessions,
+prev_close_floor_qualified, gain, age_min, known_by_t, fresh_2m, rank_eligible, rank_known,
+rank_fresh_2m, order_slot, n_known, n_fresh_2m, source, quality ratios/flags, roster provenance`.
+
+Rules:
+
+* decision t uses only bars with `et <= t-1`;
+* previous close is the sorted last bar of the immediately prior stored session;
+* PIT eligibility is the latest vintage available on/before day;
+* `known_by_t=false` implies null price/gain/rank—never forward-filled from the future;
+* competition rank is `1 + count(gain_j > gain_i)`; `order_slot` is the deterministic ordinal from
+  `(gain desc, ticker asc)` and is not a second rank definition;
+* both all-known and `age_min <= 2` ranks are stored; `rank_fresh_2m` is the default published race
+  coordinate and every rank row carries `population_def` and `n_eligible`;
+* top-30/50/100/300 are query views, not builds;
+* session end comes from `phase2_session_calendar.json`; no later row exists;
+* store `day_high_vs_sip_high_ratio` and `prevclose_vs_sip_clast_ratio`; the outer day-envelope
+  warning is outside `[0.5,2.0]`, while previous-close hard warning is `abs(ratio-1) > 0.10`;
+* `rank_eligible=false` nulls the quality-filtered rank family while preserving raw rows/ranks;
+* previous-close session/date/age/source travel with every gain; floor-qualified or stale
+  denominators cannot support rank-trajectory or era-stability claims;
+* suspect split/bad-print rows are flagged, never silently deleted.
+
+The raw full board is expected to hold roughly 1.35B RTH name-minutes and occupy approximately
+15–17 GB with preserved floating prices/ranks/provenance. The measured clean-board pilot was
+12.2 hours serial; raw scale implies roughly 3.5–7 hours at safe 2–4 worker concurrency.
+
+This board can observe trajectories such as #30→#12→#5→#2 throughout the session. Existing SIP
+checkpoints provide an independent, full-roster morning ruler at twelve clocks. Legacy
+`data/leaderboard/lb_*`/`path_*` is top-3/union-of-top-3 lineage only and has a wrong month-first
+previous-close fallback on 51 dev days; the rebuilt board supersedes it.
+
+### 4.4 Candidate-net minute board
+
+Raw SIP net covers roughly 38–115 names/day. Its stored `net` includes full-day winners and is
+future-selected.
+
+Retrospective geometry may use the full roster with that label. Prospective roster membership comes
+only from `data/sip/candidates/<day>.json` snapshot `top`/`margin` lists whose snapshot time is
+≤ t; `winners_open` and `winners_prev` are excluded by construction and counted.
+
+### 4.5 Quotes
+
+Current quote files: 853.3M rows / 3.85 GiB / 1,068 days, 7–25 symbols/day (median 15). The roster is
+the full-day union of top-3 names across snapshots and leaks future membership: approximately 56%
+of stored symbols are not selectable at 09:35 and 25% at 10:00.
+
+Existing quotes remain a retrospective, rank-selected raw lane. Prospective use joins quotes to a
+causal roster table `R(day,t)`; future-selected quote presence/absence is metadata, never input.
+Until causal acquisition lands, the stored lane serves only a median 57% of `R(day,t)` at 09:35
+and 38% at 12:00. Missing quotes for newly added causal-roster names mean **not acquired**, never
+“no quote”; no prospective quote channel is materialized from that absence.
+
+The recommended expansion is one bounded later acquisition:
+
+* union of causal top-10 at the twelve B checkpoints plus causal A_open/A_pm top-3;
+* about 39 names/day (max measured 52);
+* projected 4.8–10.2 GiB, about 99 pages/day, roughly three hours at eight workers after a 20-day
+  canary;
+* stored under a new root, never overwriting existing quotes.
+
+Top-20 is deferred until the canary measures out-of-net density. Candidate-net quotes are rejected
+because that roster contains ex-post winners. Full-market quotes are unnecessary.
+
+Before acquisition, fix `sip_ingest.py`: apply `guard_day`, measure free space on the output
+filesystem instead of hard-coded `/mnt/c`, and write the full roster/rule/checkpoint provenance to
+the manifest. No provider pricing is assumed.
+
+### 4.6 Future PIT context
+
+Float, shares outstanding, market cap and catalyst/news history are absent today. True turnover or
+float rotation remains unavailable and is never approximated.
+
+Future context attaches as versioned sidecars keyed by:
+
+`instrument_id, effective_from, effective_to, source_vintage, source_sha`.
+
+Adding `context.fundamentals@vN` or `context.catalyst@vN` never changes path, membership, segment or
+occurrence identity and never rewrites earlier geometry.
+
+## 5. Canonical observation corpus
+
+Storage is not the constraint. The raw archive remains immutable truth, but repeatedly rebuilding
+lossy minute/print views is unnecessary.
+
+Four storage classes:
+
+| Class | Meaning |
 |---|---|
-| absolute level | bar/print price, entry/open/previous-close/running-high/episode-low references |
-| relative magnitude | returns from each declared reference, range, drawdown and reclaim depth |
-| normalized shape | scale-free geometry, explicitly separate from magnitude |
-| speed/duration | both bar count and elapsed ET seconds; gap/hole state retained |
-| attention/liquidity | shares, dollar-notional proxy, exact `sum(price*size)` when print-backed, print count |
-| race context | named population, population size, rank, absolute cohort level/dispersion and peer state |
-
-No dimensionless row may lose its reference level. No relative-volume row may lose its raw
-numerator or named denominator.
-
-Current limits are explicit:
-
-* historical point-in-time float/shares outstanding and market cap are absent, so true turnover or
-  float rotation is **unavailable** and must remain null;
-* panel `dollar_volume` is `close*volume`, not exact notional;
-* panel volume is condition-policy filtered and 53/6,160 member-days use provider bars;
-* no panel ADV/RVOL baseline exists;
-* quote coverage is rank-selected and local artifacts do not independently prove NBBO status.
-
-Level filters are population definitions, not cleaning: entry price spans roughly $0.86–$868 and
-20.2% of members fill below $2.
-
-### 2.4 Invariances are versioned rulers
-
-Every transform or augmentation is entered in an **Invariance Registry** before training:
-
-`id, channels, transform, claimed invariance, economic risk, permitted range, affected scales,
-no-outcome probe, comparison view, status`.
-
-At minimum the registry covers:
-
-* crop length, endpoint and left/right/event alignment;
-* fill/entry anchoring, level translation and per-window demeaning;
-* return/price/volume scaling and whitening;
-* time shift, resampling and bounded time warping;
-* masking, padding and missingness semantics;
-* distance metric and channel weights;
-* scale ladder and cross-scale aggregation;
-* change-point penalty/minimum duration;
-* race-set ordering/permutation treatment;
-* overlap, sampling and recurrence weights.
-
-Default constraints:
-
-* no blind per-window z-scoring as the primary view;
-* no unbounded time warping; duration/speed always remains a channel;
-* clock and tenure remain coordinates—neither a dominant clustering feature nor an erased
-  invariant;
-* halt/hole structure is never random-masked or zero-filled;
-* observed zero, true tape silence, provider absence and terminal censoring are distinct states;
-* scales are reported separately, not averaged into one distance;
-* metric families are explicit invariance claims, with agreement/disagreement published;
-* augmentation may not move sparse/rare episodes into dense regions without being detected.
-* every fitted parameter—normalization/whitening statistics, channel or metric weights,
-  augmentation/model parameters, segmentation penalties and thresholds—is fit on a declared
-  day-grouped training block and judged out-of-block; overlapping source intervals never cross the
-  fit/evaluation boundary;
-* a prospective decision instant is the completed bar's close; no print after close(t) may enter
-  its representation (special retrospective event definitions remain separately labelled);
-* volume self-normalization records its warm-up: `volume_vs_own_median` is unavailable before five
-  prior bars and may not be backfilled.
-
-Masked reconstruction, temporal prediction and contrastive learning are admissible views, not
-assumption-free defaults. The primary baseline is exact retrieval on declared raw/dimensional and
-relative coordinates.
-
-### 2.5 Continuous geometry is a valid Atlas product
-
-Atlas v0 does not require clusters or 20–50 motif IDs.
-
-Its primary product may be a calibrated retrieval graph/manifold with:
-
-* nearest historical neighbours and decomposed distance;
-* density spectrum and uncertainty;
-* stable local transition/duration statistics;
-* low-density, uncertain and unique mass;
-* exact retrieval for the sparsest stratum when approximate indexing is unreliable.
-
-Discrete motif IDs are created only if a predeclared mode-structure gate is met (for example,
-density gaps / neighbourhood connectivity / scale-metric agreement). Otherwise the empirical
-lexicon is the frozen retrieval geometry plus versioned neighbourhood descriptors. Human concepts
-can be mapped to regions/exemplars, not only to motif IDs.
-
-Unique episodes remain first-class catalogue rows. They receive raw references and later anatomy;
-they are never merged away to improve recurrence. Rare, severe episodes may later support an
-explicit tail-risk hypothesis, with rarity kept visible.
-
-### 2.6 Minute-first is not minute-only
-
-The current panel is a sparse **printed-U-path-minute** sequence, not a contiguous full-minute grid:
-1,900,432 panel rows versus about 2,305,138 member grid-minutes; 69% of member-days contain at
-least one print-free minute.
-
-The Episode Store therefore preserves:
-
-1. sparse panel bars;
-2. an optional reindexed minute grid with explicit `no_print` state (never fabricated prices);
-3. immutable pointers to raw trade and quote day files;
-4. bounded, versioned print/quote materializations keyed by parent shas and window specification.
-
-Raw pointers use `(raw_store_generation, day_file_sha256, row_ordinal)` as identity. Trade ID alone
-is not unique and intra-microsecond order is not recoverable; file order is preserved as evidence.
-
-E3 is reused narrowly: its frozen anchors/census are named reference sets, while its capped
-`stage_b_prints` sample is not an exemplar archive. E3 did not test raw sequence encoders,
-multi-scale print motifs, quote geometry, race-level lead/lag or retrieval. Its null neither
-licenses nor kills those lanes.
+| raw archive | provider/raw bytes, immutable and authoritative |
+| canonical observation | deterministic, reversible projection with parent-row identity and hashes |
+| canonical-of-proxy observation | deterministic projection of a qualified third-party substrate; completeness claimed only inside its named population/source |
+| rebuildable cache/representation | quote-minute aggregates, tensors, embeddings, ANN indexes |
 
-Minute geometry is built first for coverage and cost. A declared **resolution-disagreement probe**
-materializes one frozen, coverage-qualified raw print/quote sample solely to compare minute
-neighbours with raw-sequence neighbours. Its sample rule, statistic and threshold freeze before
-reading the disagreement. If minute-near episodes are systematically sub-minute-far (or vice versa),
-a full sub-minute representation becomes a new sibling version; the minute version and Episode
-Store remain unchanged.
+### 5.1 Identity
 
-### 2.7 Freezes are immutable versions, not doctrine
+* `path_id = (day, ticker)` — one market tape.
+* `member_id = (day, family, ticker, entry_et, entry_rank)` — one fill/reference context.
+* every segment/episode carries both `path_id` and the applicable `member_id`/anchor; raw tape
+  deduplication never erases separate fill-anchored views.
 
-Every node is an immutable directory with a deterministic `manifest.json`:
+The 255 shared A_pm/B600 paths collapse before raw-tape fitting/index/support counting. Membership
+views remain separate, and support reports both independent-path and membership counts.
 
-`node_id, version, schema, producer/code sha, parent node ids+shas, input day shas, config sha,
-keys/sort order, coverage classes, deterministic payload shas, status, supersedes/withdraws`.
+### 5.2 Canonical materializations
 
-The day registry is derived only from `basket_sim.dev_days()` and every day passes `guard_day`;
-builders never glob raw directories or trust `manifest_index.jsonl` as the research calendar.
-Sealed 2024/2025-01 and reserved 2026-06..08 tape is refused; 2021-01-29 is allowed only as the
-declared previous-close seed. Each registry row records trade/quote/bar/universe shas, coverage-class
-counts and raw-store status, including the seven dev days whose store manifest is `partial`.
+1. **`raw_index/day_registry`** — dev calendar, all raw/bar/universe/coverage shas, source/status and
+   selection provenance.
+2. **`paths` / `memberships`** — identities, anchors, source spans, coverage and raw row pointers.
+3. **`prints.selected_paths`** — full available 09:25–16:05 print tape for each unique selected
+   `(day,ticker)`, preserving every raw field plus source row ordinal and parent day sha. Estimated
+   about 4–6 GB, month-partitioned and sorted. It is a reversible projection, not new raw truth.
+4. **`grid.selected_paths`** — complete session grid with separate axes:
+   * `bar_state = raw | provider | none`;
+   * `print_state = path_print | excluded_prints_only | no_print`;
+   * `within_observed_span`, `session_end`, full-day coverage class and terminal-censor metadata.
+   Prospective readers cannot use full-day/censor fields. Tape silence, condition-excluded prints,
+   tape end and provider absence never collapse.
+5. **`race.minute_full`** — full raw/provider broad minute board, canonical-of-proxy, approximately
+   15–17 GB.
+6. **`race.checkpoint_full`** — causal and retrospective full-roster checkpoint views
+   (~73M clock rows / ~0.55 GB).
+7. **`race.candidate_net`** — retrospective full-day and prospective snapshot-as-of-t views
+   (~27.3M grid rows / ~0.55 GB).
+8. **`quote_rosters`** — day/checkpoint/rank/symbol/score/rule table; existing quote rows remain raw.
+9. **`coverage`** — per-layer presence/status and `selectable_asof_et`.
 
-Version graph:
+Selected-path prints are materialized because they preserve raw evidence, make multi-resolution
+retrieval cheap and avoid re-implementing the condition/window join. Raw day files and row pointers
+remain authoritative. Raw quotes are not copied; minute aggregates are caches with raw spans.
 
-1. `raw.index@vN` — per-day trade/quote/bar/universe shas and coverage;
-2. `episodes@vN` — path, membership, segment, race-board pointers and masks;
-3. `representation.<view>@vN` — channels + Invariance Registry + transforms/model;
-4. `geometry.<view>@vN` — metric/index/search parameters + exact-recall audit;
-5. `lexicon.within@vN` and `lexicon.race@vN` — optional mode definitions/detection rules;
-6. `overlay.human@vN` — annotations/concordance;
-7. `anatomy@vN` — future-path overlays;
-8. `hypothesis@vN` — later economic tests.
+Expected initial canonical corpus: roughly 22–25 GB, inside the new 50–150 GB headroom.
+Representations/indexes are additional rebuildable nodes, not observation truth.
 
-Discovery nodes have no parent edge from anatomy, human overlays or P&L. An omitted channel,
-different invariance or new sub-minute view creates `v1`; `v0` remains byte-identical and its claims
-remain auditable. Versions are compared through a separate concordance artifact, never rewritten.
-Withdrawal records the defect and affected descendants; it does not erase lineage.
-If a recorded parent sha no longer matches the on-disk parent, the node is stale. It is never
-updated in place: affected materialization is rebuilt as a new version and the stale descendants
-are recorded.
+### 5.3 Provenance and calendar
 
-The freeze binds representation, transforms, augmentations, metrics, scale ladder, segmentation
-penalties, sampling/overlap weights, index parameters and detection rule—not merely model weights.
-Run-varying cost/timing lives outside deterministic evidence files.
+Day registry derives only from `basket_sim.dev_days()` and every access calls `guard_day`. Builders
+never glob directories or trust a store index as the research calendar. Sealed 2024/2025-01 and
+reserved 2026-06..08 tape is refused; 2021-01-29 is previous-close seed only.
 
-## 3. Canonical Episode Store
+Every immutable node manifest contains:
 
-The smallest robust store is a pointer/manifest layer, not a copy of the 23.9-GB trades and 4.1-GB
-quotes and not an embedding table.
+`node_id/version, schema, code sha, parent ids+shas, per-day input shas, config sha, keys/sort order,
+coverage/selection classes, payload shas, status, supersedes/withdraws`.
 
-### 3.1 Independent path and membership identities
+Parent-sha drift makes a node stale; it creates a new version, never an in-place repair.
 
-* `path_id = (day, ticker)` identifies one market tape.
-* `member_id = (sleeve_day, family, ticker, entry_et, entry_rank)` identifies one research
-  membership/entry context.
-* a membership table maps many members to one path.
+### 5.4 Default-deny causal registry
 
-The 255 A_pm/B600 shared paths are collapsed **before** representation fitting, indexing,
-neighbourhood construction and recurrence counting. Family/sleeve occurrences remain contextual
-metadata. Overlapping subsequences use source-interval exclusion zones before fitting and support
-counts.
+Observation tables physically exclude `outcome_*`, `ticket_constant`, future metadata and censor
+columns. Every remaining column has explicit Freeze-O flags:
 
-### 3.2 Store tables
+`observable_asof_rule, selectable_asof_et, coordinate_only, prospective_allowed,
+retrospective_only, supportable_by_tier`.
 
-1. **`paths`** — path ID, session bounds, sparse bar spans, optional minute-grid mask, raw/quote row
-   spans, coverage lattice, source shas.
-2. **`memberships`** — member ID, path ID, entry context/family/rank and declared population.
-3. **`segments`** — segment/occurrence ID, path ID, `start_et`, `end_et`, scale, segmentation
-   version, source interval and coverage.
-4. **`race_boards`** — separate checkpoint full-universe, minute candidate-net and minute
-   selected-member records, each with roster source, population size and coverage tier.
-5. **`costs` / `selftest`** — non-evidence timings plus identity/rebuild checks.
+Freeze O does **not** decide distance eligibility. Tape/state columns default to available for
+Freeze-R consideration; Freeze R declares each view's exact channel tuple. `month`, `block`, family,
+clock, tenure and coverage classes are split/audit coordinates, not distance channels. Row-level
+roster selectability is checked before column access.
 
-Coverage lattice, carried on every read:
+Full-day coverage class and terminal censoring may support retrospective audits/exclusions but never
+prospective input.
+
+## 6. Occurrence, detection and completion anatomy
+
+Discovery segments store:
+
+`segment_id, path_id, member_id/anchor_id, start_et, end_et, source_interval, scale,
+representation_version, retrospective_only`.
+
+Geometry/detection rows store:
+
+`detection_id, segment_id, detected_asof_et, cutoff_ts_us, prefix_set, geometry_version,
+detector_rule_sha, density, uncertainty, neighbour_path_id, neighbour_segment_id,
+neighbour_own_bar_index, neighbour_own_et`.
 
-* file present / absent;
-* healthy raw / provider-only / unresolved;
-* raw-derived bar / provider bar;
-* quote present / absent and quote-selection rule;
-* printed / print-free minute;
-* complete / terminal-censored (future-derived; never a causal input);
-* selected-member / candidate-net / checkpoint-universe race tier.
+Rules:
 
-No aggregate silently mixes coverage or substrate classes.
+* a retrospective object becomes complete at `end_et`;
+* a prospective object is usable only at `detected_asof_et`;
+* the normal decision cut is the close of the completed bar, `(et_cut+1)*60` seconds after ET
+  midnight; no later print/quote enters a prospective representation or its anatomy;
+* a declared print-anchored event (for example CS-5 reopen) stores its exact print timestamp as the
+  exception;
+* anatomy begins after `end_et` for completed-morphology questions and after `detected_asof_et` for
+  prospective-action questions;
+* first legal anatomy row is the next member bar by bar identity, not `et+1`;
+* retrospective and prospective anatomy are separate tables and never averaged;
+* every anatomy field group carries `first_available_bar_index` and `supportable_by_tier`.
+
+This supports both “what follows the completed morphology?” and “when did this structure first
+become distinguishable, and what remained then?”
 
-### 3.3 Information already dropped in current derivatives
+## 7. Rare/tail exemplar product
 
-The store documents, rather than hides:
+Rare/unique episodes remain catalogue rows whether or not they have neighbours.
 
-* U-path condition policy excludes about 45.3% of observed prints from the bar path (keeps 54.7%);
-* net-bar merge drops exact `sum(price*size)`, VWAP, print count and bar-source provenance;
-* provider-only member-days substitute provider bars;
-* quote coverage is the top-3-per-snapshot union;
-* full-universe race state exists only at declared checkpoints.
+After Freeze R, `tail.exemplars@vN` may select frozen geometry using outcome labels. It has no
+dependency edge back into observations, representations, geometry or lexicons. Censored members'
+tail classes are **undefined**, never false, and never enter matched-ordinary controls.
 
-Raw pointers allow later versions to revisit these choices without rebuilding prior versions.
+The retrospective predicate is frozen:
 
-## 4. Discovery products
+`tail_L(t) := max(high[t+1..tape_end]) / open(t+1) - 1 >= L/100`, for `L in {50,100,300}`.
 
-### 4.1 Retrospective geometry
+The occurrence unit is each contiguous true run under `member_id`, with contiguity defined by
+adjacent `bar_index` values—not adjacent ET minutes and not family-deduplicated `path_id`. Measured
+totals:
 
-May use a completed segment/path to describe its full structure, but it is labelled
-`retrospective_only`. It cannot be inserted into a live race state or used as a causal detector.
+| Level | members | contiguous runs | runs live on first observed bar |
+|---|---:|---:|---:|
+| L50 | 731 | 2,219 | 493 |
+| L100 | 219 | 595 | 167 |
+| L300 | 20 | 31 | 13 |
 
-### 4.2 Prospective/prefix geometry
+All 273 terminal-censored members are unavailable. The L300 scope is 18 day files / about 7.2M
+U-path prints; L50 is 528 days / about 142.6M.
 
-Uses an explicit causal allowlist from `column_registry.json`. It rejects every
-`causal_excluded_families` / `future_only_columns` field, including terminal censor flags and future
-sequence length. Padding/masks reveal only what is known at `detected_asof_et`.
+Every run stores raw pointers, density/uncertainty and matched ordinary contrasts. A run already
+live at the first observed bar records an open-left start rather than fabricating `start_et`.
+At frozen causal prefix stages the product asks for nearest ordinary analogues, preserving each
+neighbour's own path/segment/clock/bar and excluding neighbours not observable by the query instant.
 
-Each occurrence stores:
+Rare-tail coverage is reported within liquidity/attention strata. No tail label changes training
+weights, sampling, transforms or distances.
 
-`occurrence_id, path_id, start_et, end_et, detected_asof_et, assignment_mode, scale,
-representation_version, geometry_version, coverage, density/uncertainty`.
+## 8. Freeze R — bounded representation matrix
 
-Future anatomy begins strictly after `end_et` for retrospective occurrences and after
-`detected_asof_et` for prospective occurrences. The two anatomy tables are never conflated.
+Freeze R happens only after the outcome-blind corpus report. Geometry choices may use only the
+permitted blind summaries in §2.
 
-### 4.3 Parallel representation views
+Exactly five principled hand views plus one learned view:
 
-Pilot views, all outcome-blind:
+1. **magnitude-dominant** — level, return/depth, raw attention intensity and duration;
+2. **normalized-shape-dominant** — declared scale-free path geometry, reference levels retained as
+   audit coordinates;
+3. **duration/event-dominant** — wall time, printed-bar duration, gaps/holes and change points;
+4. **activity/microstructure-dominant** — print/bar arrival, size/count/notional, condition and
+   available quote geometry;
+5. **balanced multichannel reference** — fixed equal-weight combination of standardized view
+   distances, never tuned into the best-looking geometry;
+6. **one outcome-blind learned sequence family** — mandatory in the serious pilot.
 
-1. **Dimensional/raw-coordinate retrieval** — level, magnitude, duration, volume/count and race
-   context preserved.
-2. **Fill/reference-relative retrieval** — declared return/depth coordinates with reference levels.
-3. **Normalized-shape retrieval** — an explicit comparison view, never the only geometry.
-4. **Change-point/duration geometry** — online and retrospective versions with declared penalties.
-5. **Optional self-supervised geometry** — admitted only after its augmentations and probes freeze.
-6. **Optional raw print/quote geometry** — added as a new representation version after the
-   resolution-disagreement probe.
+No view is declared primary after seeing outcomes. Neighbour overlap and pairwise distance agreement
+are published. Strong agreement is evidence of structure; disagreement is an empirical result.
 
-Race geometry is discovered independently from raw joint boards; it is not merely a sequence of
-within-name motif tokens.
+### 8.1 Constrained learned family
 
-### 4.4 Human vocabulary
+One family only: a small masked-sequence temporal convolutional encoder, with causal and
+retrospective variants of the same architecture.
 
-After within-name and race geometries freeze, annotate stratified exemplars/regions with surge,
-flush, reclaim, failed reclaim, repeated high, exhaustion, resurrection, halt/reopen, volume burst,
-leader handoff, bull-flag-like structure and new concepts.
+* objective: masked-span reconstruction only; invalid/padded positions contribute zero loss;
+* no future-return prediction, contrastive outcome proxy, cluster loss or policy loss;
+* inputs: selected raw/reference-relative minute channels plus explicit validity/coverage masks;
+* no clock, block, family, entry rank or future/censor input;
+* causal variant uses left-only receptive fields and garbage-suffix invariance;
+* retrospective variant is labelled, never used live and must be insensitive to out-of-window junk;
+* every augmentation freezes with measured per-view neighbour displacement and a permitted bound
+  **before** training; a crop/warp benign for shape is not automatically allowed for
+  magnitude/activity; no masking across silence, halts, provider gaps or censor boundaries;
+* train by day/block; all normalization/model parameters fit on one block and judged on the other;
+  no overlapping source interval crosses the split;
+* compare against the same architecture with frozen random weights;
+* one configuration and one run per fold; no architecture or hyperparameter retry.
 
-Publish many-to-many human↔neighbourhood concordance, concept splits/merges, unnamed regions,
-unstable concepts and disagreement examples. Human labels never train the primary discovery
-geometry.
+Before training, Freeze R records numeric one-shot gates for recurrence, mutual-neighbour support,
+block stability, coordinate/family leakage, magnitude preservation, sparse exact recall and
+SSL-over-random improvement, plus measured runtime. Failure retires this learned family for v0, not
+the Atlas. These retrieval gates replace silhouette; they do not require clusters.
 
-## 5. How discovery is judged
+### 8.2 Geometry gates
 
-No-outcome geometry gates:
+Outcome-blind only:
 
-1. recurrence/support across independent `(day,ticker,source_interval)` units;
-2. density spectrum and evidence for/against discrete modes;
-3. block/family/era stability without requiring identical mixture weights;
-4. metric/scale/view agreement and explicitly preserved disagreement;
-5. nearest-neighbour quality with distance decomposition;
-6. exact-vs-approximate recall by density decile; exact search for sparse regions if required;
-7. transition/duration/hazard stability for continuous neighbourhoods and any supported motifs;
-8. prefix determinism, detection delay and retrospective/prospective concordance;
-9. magnitude-rank preservation and invariance-probe results;
-10. coverage without coercion: recurring, uncertain, sparse and unique mass all published.
+* neighbour distances/identity versus tier-specific block/clock/level/volatility/coverage-matched
+  surrogates;
+* recurrence and mutual-neighbour support on independent `(day,ticker,source_interval)` units;
+* block/era stability within each declared population and feed-source stratum;
+* exact-vs-ANN recall by density decile, with exact search in sparse strata where needed;
+* magnitude-rank preservation;
+* prefix determinism and retrospective/prospective detection delay;
+* view agreement/disagreement and augmentation displacement;
+* recurring, uncertain, low-density and unique mass all published.
 
-Block-respecting surrogate tapes and shuffled segment order calibrate recurrence/density claims.
-Neighbour distances and neighbour identity are separately calibrated against
-block/clock/level/volatility/coverage-matched surrogates; that null is published before any
-historical episode is called an analogue. There is no forced `k`, support floor disguised as truth,
-or requirement that every episode receive a motif ID.
+Stability is primarily within the population/era where a structure exists. Cross-family transfer is
+valuable evidence but **not a universal kill condition**; A_pm and B600 observe different stages.
+Any population-specific claim must reproduce across independent days/eras within that population.
 
-## 6. Freezing and later anatomy
+Discrete motif IDs are created only if mode structure is evidenced. Otherwise Lexicon v0 is the
+frozen continuous geometry plus neighbourhood/density/transition descriptors.
 
-First freeze:
+### 8.3 View × data-tier availability
 
-* Episode Store version;
-* Invariance Registry and scale/metric/segmentation ruler matrix;
-* representation versions;
-* retrieval geometries/indexes and recall audits;
-* optional within-name and race lexicons only where mode structure is evidenced;
-* residual/unique episode catalogue.
+Every result publishes which geometry the tier actually supports:
 
-Only then attach subsequent anatomy **to every episode/occurrence**, not only motifs:
+| Tier | Magnitude/shape/duration | activity/prints | quotes | learned minute sequence |
+|---|---|---|---|---|
+| selected paths | yes | yes | rank-selected where acquired | yes |
+| candidate-net minute | yes | raw prints | only roster-covered | bar/print sibling versions |
+| broad provider minute | yes, source-qualified | bar volume only | no | bar-only variant |
+| full checkpoint | twelve-point morning only | no raw sequence | no | no |
 
-* next high/re-break probability and time;
-* MFE/MAE and multi-horizon path distributions;
-* reclaim probability/time/depth;
-* remaining tail and terminal-peak probability;
-* later rank/leader status, peer replacement and new entrants where the race tier supports them;
-* censoring-aware counts and uncertainty.
+No missing channel is encoded as a market zero, and a null from a non-supporting tier cannot enter a
+cross-tier mode gate.
 
-Outcomes describe frozen geometry; they never redefine it.
 
-## 7. Economic layer (later)
+## 9. Versioning and later overlays
 
-Stable, economically distinct regions or rare severe episodes may generate hypotheses for exits,
-adds, re-entry, jump-ship/reallocation, basket management or execution. One explicit causal rule at
-a time is then tested through the ledger/engine.
+Immutable graph:
 
-Current engine limits are part of the action contract, not the discovery architecture:
+`raw.index → observations → representation → geometry → optional lexicon → human overlay →
+anatomy → hypothesis`.
 
-* EXT-1 can ADD only at five checkpoints and its raw `BatchCheckpointContext.rec` contains future
-  fields; an Atlas consumer must receive a new guarded causal context, never `ctx.rec`;
-* EXT-2 mid-entry is confined to original snapshot `top_n` and does not re-rank;
-* every Atlas policy must implement `signature()` and bind the exact Atlas node IDs+shas through
-  `fingerprint_extra`, or two empirical versions could share a run identity;
-* declaring a buy-side hook extends the engine event grid, so `deployed_avg` is not directly
-  comparable with a no-hook run unless the accounting grid is held identical;
-* new-entrant handoff/reallocation is not currently executable and requires a declared extension
-  with a causal dynamic candidate universe, funded transfer/ENTER/EXIT intents and deterministic
-  accounting.
+Changing an observation omission, roster, invariant or resolution creates a sibling version.
+Earlier versions remain byte-identical; concordance compares versions. Future
+`context.fundamentals` / `context.catalyst` sidecars attach by instrument and effective vintage
+without changing episode identity.
 
-Failure of an action rule retires the rule, not the Atlas geometry.
+Human vocabulary is overlaid only after within-name and race geometry freeze. Subsequent anatomy is
+attached to every occurrence, including sparse/unique objects, and cannot redefine geometry.
 
-## 8. Smallest robust implementation
+## 10. Smallest serious implementation
 
-### Stage 0A — freeze architecture contracts (no data build)
+### Stage 0A — Freeze O
 
-Freeze the manifest schema, ID grammar, coverage lattice, causal allowlist, Invariance Registry
-schema, scale/metric ruler matrix and race-tier definitions.
+Freeze:
 
-### Stage 0B — Episode Store v0
+* manifests/IDs/keys;
+* dev calendar and raw provenance;
+* physical observation-only schemas;
+* multi-axis minute coverage and coverage lattice;
+* prospective roster/rank rules, quality ratios and positive causal allowlists;
+* the UTC→`America/New_York` DST-aware timestamp/session convention and per-day `session_end`;
+* occurrence/detection clock semantics;
+* storage/materialization contracts;
+* per-tier supportability matrix;
+* permitted blind-summary list.
 
-Build pointer-only `paths`, `memberships`, `segments` and `race_boards` plus day registry,
-provenance, costs and selftests. The registry comes from `basket_sim.dev_days()` with `guard_day`,
-never a directory listing or store index. Reuse E3 census; add row-span pointers rather than copying
-prints. Require byte-identical rebuilds, parent-sha verification and explicit reporting of partial
-raw-store days.
+No metric, distance channel, weight, scale, penalty, augmentation or learned-model parameter freezes
+here.
 
-### Stage 1 — retrieval geometry pilot
+### Stage 0B — Build canonical observation corpus
 
-Scope: representation and geometry only—no outcomes, human labels, P&L or forced clustering.
+Build deterministically and resumably:
 
-Build dimensional, reference-relative, normalized-shape and change-point views on the full minute
-corpus under one frozen ruler matrix. All fitted transforms obey day-grouped block splits and
-source-interval embargoes. Publish distance-null calibration, density spectra,
-agreement/disagreement, sparse exact recall, unique mass, prefix checks and a nearest-100 query.
-Run the frozen bounded resolution-disagreement sample; self-supervised and full sub-minute views are
-optional sibling versions, not mandatory foundations.
+1. day/raw index;
+2. paths/memberships/coverage;
+3. full selected-path print projection;
+4. multi-axis selected-path minute grid;
+5. full unfiltered broad minute race board (canary may flag the qualified 2025-02 fallback);
+6. checkpoint and candidate-net race boards;
+7. causal quote-roster table;
+8. selftests/reconciliation/costs.
 
-### Stage 2 — race geometry pilot
+Build the broad race board in one pass for all ranks; no arbitrary K defines observation. Before the
+full v0 build, reacquire raw 2025-02 and the measured missing-name slice on 2026-04/05. If acquisition
+fails, the affected source/coverage strata remain explicit and cannot support universal rank claims.
 
-Build independent geometry for:
+### Stage 0C — Blind corpus report and Freeze R
 
-* retrospective and causal-roster full-universe checkpoint boards;
-* retrospective full-day and prospective snapshot-as-of-t candidate-net minute boards;
-* selected-member minute boards;
-* rank-selected retrospective and snapshot-as-of-t quote boards where coverage permits.
+Inspect only permitted outcome-blind summaries. Freeze the five-view + one-learned matrix,
+Invariance Registry, scale/metric/segmentation ruler set, tier-specific nulls, index/recall floors
+and Adaptive Choice Ledger.
 
-Do not merge their evidence. Do not add cash. Report roster provenance and whether any stable joint
-geometry exists.
+### Stage 1 — Within-name geometry
 
-### Stage 3 — freeze empirical products
+Build/query all six views; publish nearest-100 retrieval, density, recurrence, disagreement,
+uncertainty and rare/unique mass. No outcomes or human labels.
 
-Freeze the within-name and race retrieval geometries. Create motif IDs only if the mode-structure
-gate passes; otherwise freeze a continuous lexicon of neighbourhoods/density/transition
-descriptors. Freeze the residual catalogue before reading outcomes.
+### Stage 2 — Race geometry
 
-### Stage 4 — overlays
+Build independent geometries for each race tier. Do not merge their evidence and do not add cash.
 
-Add human concordance and subsequent anatomy under separate versions. If minute geometry aliases
-materially different raw sequences, add a declared sub-minute representation version and preserve
-the minute result unchanged.
+### Stage 3 — Freeze empirical products
 
-### Stage 5 — hypotheses
+Freeze continuous within-name/race geometries and residual catalogue. Add motif IDs only where the
+mode gate passes.
 
-Only now generate economic/action hypotheses. P&L is not a Stage-0–4 gate.
+### Stage 4 — Human and anatomy overlays
 
-## 9. Pre-freeze blockers
+Add human concordance, completed-pattern anatomy, prospective detection anatomy and rare-tail
+exemplars as separate versioned nodes.
 
-Before this DRAFT can become a frozen build contract:
+### Stage 5 — Economic hypotheses
 
-1. choose and declare the minute scale ladder, metric families, channel weights and segmentation
-   penalty search budget;
-2. write the initial Invariance Registry entries, fitted-parameter split/embargo rules and
-   no-outcome probe thresholds;
-3. define the full-universe checkpoint-board PIT roster and causal column allowlist;
-4. define retrospective and prospective candidate-net/quote roster rules and selection provenance;
-5. define exact geometry/mode gates, matched-surrogate distance nulls and sparse-region ANN recall
-   floors;
-6. freeze the resolution-disagreement probe's sample, statistic and threshold;
-7. decide whether v0 includes a self-supervised view or reserves it for a sibling version;
-8. specify the guarded engine context only when an economic hypothesis exists—not before.
+Only now formulate exits, adds, re-entry, jump-ship, basket or execution rules.
 
-Until these are frozen, implementation does not start.
+## 11. Immediate build order after this DRAFT is approved
+
+1. commit Freeze-O schemas/registries and negative leakage selftests;
+2. implement the deterministic Stage-0 builder;
+3. run a 20-day stratified canary;
+4. independently audit identities, multi-axis minute coverage, broad-race ranks, parent shas and
+   sealed/reserved refusal;
+5. run the full 1,066-day corpus build;
+6. only then inspect blind corpus geometry and freeze R.
+
+Architecture work stops here. The next deliverable is the observation substrate.
