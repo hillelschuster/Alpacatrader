@@ -1,7 +1,7 @@
 {
  "producer": "factory/scripts/basket_atlas_e1.py",
- "generated": "2026-09-28T02:15:14",
- "n_cases": 17,
+ "generated": "2026-09-28T03:12:23",
+ "n_cases": 18,
  "n_failed": 0,
  "status": "PASS",
  "cases": [
@@ -564,6 +564,43 @@
     "t0_giant300_arm_dollars": {
      "expected": 0.0,
      "actual": 0.0,
+     "ok": true
+    }
+   }
+  },
+  {
+   "name": "e1b/conditioning_statistic_is_decision_time",
+   "description": "the tercile is read at the decision bar only; scrambling every later bar changes nothing, perturbing the decision bar changes it, and a member with no decision bar gets no niche",
+   "passed": true,
+   "detail": {
+    "m0": {
+     "expected": 1,
+     "actual": 1,
+     "ok": true
+    },
+    "m1": {
+     "expected": 1,
+     "actual": 1,
+     "ok": true
+    },
+    "after_scramble_identical": {
+     "expected": true,
+     "actual": true,
+     "ok": true
+    },
+    "perturb_changes": {
+     "expected": 2,
+     "actual": 2,
+     "ok": true
+    },
+    "guard_passed": {
+     "expected": true,
+     "actual": true,
+     "ok": true
+    },
+    "no_decision_bar_excluded": {
+     "expected": 1,
+     "actual": 1,
      "ok": true
     }
    }

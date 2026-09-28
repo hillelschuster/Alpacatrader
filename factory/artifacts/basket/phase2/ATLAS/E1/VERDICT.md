@@ -1,15 +1,15 @@
 # ATLAS E1 — exhaustion-score release rule (verdict)
 
-Producer `factory/scripts/basket_atlas_e1.py` (sha256 `83e2e8a5b986e4a8a2f5ff150ae0fd74cf592d310da6ae839d146f5ed9c654d7`) →
-`factory/artifacts/basket/phase2/ATLAS/E1/E1.json` (sha256 `90e922ad98a47248bc15fe79915b2266a18aafa4947879c6a17b0d0dca6a3b95`, 2945642 bytes),
-`E1/selftest.json` (sha256 `e075a20f7fd78980be1d643c4edd6d1fa276128f764cbe2a7907d496d60bfb1f`, 17 unit/integration cases,
+Producer `factory/scripts/basket_atlas_e1.py` (sha256 `1305c17149b7b6f075d650a5b0ed40041037eac20e85d9a3e21372f03be055b9`) →
+`factory/artifacts/basket/phase2/ATLAS/E1/E1.json` (sha256 `d33cddb28f2a844abbe1f1e43bbf457ed9678cb07fa5daa669f78d6c045a6ac0`, 2952320 bytes),
+`E1/selftest.json` (sha256 `4ac1df9c2e031604c56ba4f1609ba2b82f8c1274cb85727100085503abbc112e`, 18 unit/integration cases,
 PASS) and this file. Panel `ATLAS/panel.parquet` sha `2a021eda878cdbe53e41d4cc88e2d8ba3b14d9a3a819723d9f679c8aca7c3488` —
 1900432 rows, 6160 members, 273
 terminal-censored members. Imported code (shas in `E1.json:provenance`):
 `basket_atlas_fall.py` `67a9b2712a527faf…`,
 `basket_atlas_ledger.py` `7f8686350ebe3000…`.
 Run status **PASS**, 36 cells (9 arms x 2 folds x 2 frictions), wall
-922s. **Reproducible:** two independent full runs of this producer are identical in
+928s. **Reproducible:** two independent full runs of this producer are identical in
 every cell, arm, grid curve, niche table and attribution (0 differences excluding
 timestamp/runtime/provenance keys).
 
@@ -152,62 +152,76 @@ timestamp/runtime/provenance keys).
 **Splitter (frozen before any outcome is read).** ridge least squares (fall.multi_effect_ridge_linear) on log1p(fwd_range_30) with the 14 fall state features + exact clock-minute fixed effects, fitted pooled over both families; fitted on
 fwd_range_30 (a label-side target) and scored on causal state only. Train side:
 inner day-level cross-fit inside the train block (the B1 split discipline): each day half is scored by the model fitted on the other half, so the tercile cuts see no evaluation row. Eval side: predicted by the model fitted on the whole train block. Splitter quality on the
-evaluation block, measured after the cuts were frozen: Spearman
+evaluation block, after the cuts were frozen: Spearman
 A: 0.601496, B: 0.574636; R2 on
 log1p A: 0.101623, B: 0.141366.
 
-**The niche.** A member's FIRST state bar is systematically a high-predicted-dispersion moment (the
-first new high past the fill) and putting the niche there collapsed ~97% of members into the top
-tercile, so the niche is the MEDIAN of the member's state-bar terciles under the same frozen cuts —
-arm-independent, causal, invariant to the monotone score transform, and it partitions the same judged
-members for every arm, so the terciles decompose the unconditional increment. The cuts stay the frozen
-train-side terciles; the eval rows' terciles come from the train-block dispersion model.
+**The niche (corrected).** The conditioning statistic is the predicted-dispersion tercile **at the
+arm's own decision bar** (its trigger bar) under the frozen train-side cuts — the last row the arm is
+allowed to know about. Members the arm never released have no decision bar and are excluded from the
+conditional table (counted per cell in the artifact). A future-perturbation guard runs on the real
+data for every fold and arm — scrambling every tercile strictly AFTER the decision bar leaves the
+statistic identical while perturbing the decision bar itself changes it — and
+`run.checks.e1b_lookahead_guards_all_passed` = True.
 
-| fold | train block | cuts | eval row terciles | eval members per tercile | eval members without an assigned niche |
+> **Retraction.** An earlier revision of this block conditioned on the member-level MEDIAN
+> predicted-dispersion tercile over the member's state bars. That statistic reads bars *after* the
+> release decision (87-99% of its top-tercile members were top-tercile only because of post-decision
+> bars), so its positive niche increments were a **look-ahead artifact**. The median statistic has
+> been deleted from the code path, not kept under an invalid label; the numbers in this section are
+> the corrected ones, and the corrected tercile-2 cells reproduce the debug pass's values exactly.
+
+| fold | train block | cuts | eval row terciles | eval members with a decision bar / without | guard |
 |---|---|---|---|---|---|
-| A | block1 | [0.515469, 0.523272] | [111151, 132822, 199430] | [339, 644, 531] | 428 |
-| B | block2 | [0.51947, 0.529892] | [429460, 338537, 247389] | [1465, 1498, 317] | 938 |
+| A | block1 | [0.515469, 0.523272] | [111151, 132822, 199430] | 1082 / 333 | 7/7 arms pass |
+| B | block2 | [0.51947, 0.529892] | [429460, 338537, 247389] | 1905 / 919 | 7/7 arms pass |
 
 **Increments @100 bps** (sleeve / dedup): arm net minus `giveback:10` net on the arm's own surviving
-days, with the control restricted to the same members. A positive dedup increment in the same tercile
-in BOTH folds is what the pre-registered closure rule looks for.
+days, with the control restricted to the same members.
 
 | arm | tercile | n members A / B | increment sleeve A / B | increment dedup A / B | arm net A / B | control net A / B | giant300/avoided (arm) A / B | positive in both folds |
 |---|---|---|---|---|---|---|---|---|
-| `dollar_threshold` | 0 | 335 / 1458 | -0.484015 / -30.625625 | **-0.484015 / -30.590512** | -2.262039 / 3.503255 | -1.778024 / 34.12888 | 0.0 / 0.0 | - |
-| `dollar_threshold` | 1 | 637 / 1490 | 1.958133 / -3.741062 | **1.752169 / -2.886222** | -9.293994 / 9.141394 | -11.252127 / 12.882455 | 0.0 / 0.0 | - |
-| `dollar_threshold` | 2 | 516 / 308 | 8.633367 / 34.18351 | **8.796307 / 32.983028** | 28.603815 / 31.123227 | 19.970448 / -3.060283 | 0.038591 / 0.0 | YES |
-| `quantile_q70` | 0 | 335 / 1460 | 6.114415 / 8.308517 | **6.114415 / 8.202558** | 4.336391 / 42.577713 | -1.778024 / 34.269196 | 0.0 / 0.0 | YES |
-| `quantile_q70` | 1 | 637 / 1489 | 6.308143 / -4.096766 | **5.875569 / -3.100413** | -4.176605 / 9.751039 | -10.484748 / 13.847805 | 0.0 / 0.0 | - |
-| `quantile_q70` | 2 | 517 / 309 | 17.389715 / 17.660187 | **17.381033 / 15.950525** | 32.824503 / 14.400894 | 15.434788 / -3.259293 | 0.036108 / 0.007259 | YES |
-| `quantile_q80` | 0 | 334 / 1460 | 5.015479 / -4.3941 | **5.015479 / -4.452957** | 3.269431 / 29.875095 | -1.746048 / 34.269196 | 0.0 / 0.0 | - |
-| `quantile_q80` | 1 | 639 / 1489 | 10.444276 / -3.394494 | **10.009248 / -1.7836** | -1.033497 / 10.453311 | -11.477773 / 13.847805 | 0.0 / 0.0 | - |
-| `quantile_q80` | 2 | 517 / 309 | 12.51077 / 18.672507 | **13.568862 / 17.481404** | 23.395653 / 15.413215 | 10.884883 / -3.259293 | 0.042459 / 0.00974 | YES |
-| `quantile_q90` | 0 | 333 / 1459 | 1.945966 / -20.823387 | **1.945966 / -20.846446** | 0.430699 / 13.414812 | -1.515268 / 34.238199 | 0.0 / 0.0 | - |
-| `quantile_q90` | 1 | 639 / 1492 | 11.27389 / -5.027355 | **10.839986 / -2.623927** | -0.404568 / 11.18646 | -11.678459 / 16.213815 | 0.0 / 0.0 | - |
-| `quantile_q90` | 2 | 518 / 306 | 12.913231 / 23.578175 | **13.427264 / 21.439316** | 22.785294 / 9.510646 | 9.872063 / -14.067529 | 0.023405 / 0.0 | YES |
-| `ablation_event_hazard_quantile_q70` | 0 | 335 / 1457 | 8.599972 / 25.959857 | **8.599972 / 25.648499** | 6.825973 / 60.209877 | -1.773999 / 34.250021 | 0.0 / 0.0 | YES |
-| `ablation_event_hazard_quantile_q70` | 1 | 630 / 1492 | 13.196392 / -4.980337 | **13.25741 / -4.724913** | 5.054126 / 11.233478 | -8.142266 / 16.213815 | 0.0 / 0.0 | - |
-| `ablation_event_hazard_quantile_q70` | 2 | 522 / 309 | -6.670573 / -7.991634 | **-5.843712 / -7.748389** | 20.262805 / -7.93183 | 26.933377 / 0.059804 | 0.018975 / 0.221159 | - |
-| `ablation_event_hazard_quantile_q80` | 0 | 335 / 1457 | 8.489292 / 10.559273 | **8.489292 / 10.330496** | 6.715293 / 44.809294 | -1.773999 / 34.250021 | 0.0 / 0.0 | YES |
-| `ablation_event_hazard_quantile_q80` | 1 | 630 / 1492 | 13.327656 / 3.864221 | **13.543833 / 5.423399** | 5.18539 / 20.078037 | -8.142266 / 16.213815 | 0.0 / 0.0 | YES |
-| `ablation_event_hazard_quantile_q80` | 2 | 522 / 309 | -3.275886 / -0.716986 | **-2.476792 / -0.009382** | 23.657491 / -0.657182 | 26.933377 / 0.059804 | 0.019655 / 0.201197 | - |
-| `ablation_event_hazard_quantile_q90` | 0 | 335 / 1459 | 5.463086 / -14.294563 | **5.463086 / -14.343712** | 3.758868 / 19.834317 | -1.704218 / 34.12888 | 0.0 / 0.0 | - |
-| `ablation_event_hazard_quantile_q90` | 1 | 631 / 1490 | 13.32187 / 2.806326 | **13.376662 / 2.199792** | 5.079059 / 17.400582 | -8.24281 / 14.594256 | 0.0 / 0.0 | YES |
-| `ablation_event_hazard_quantile_q90` | 2 | 521 / 309 | 2.531063 / 17.760336 | **4.682265 / 16.096842** | 24.742996 / 18.748859 | 22.211933 / 0.988523 | 0.02188 / 0.059073 | YES |
+| `dollar_threshold` | 0 | 379 / 1603 | 9.311128 / 21.48488 | **9.311128 / 21.188703** | -0.676386 / -0.576727 | -9.987515 / -22.061607 | 0.0 / 0.0 | YES |
+| `dollar_threshold` | 1 | 298 / 847 | 3.317388 / -15.078182 | **3.255449 / -14.912696** | -5.412006 / 9.323252 | -8.729394 / 24.401434 | 0.0 / 0.0 | - |
+| `dollar_threshold` | 2 | 798 / 660 | -3.818433 / -19.060929 | **-3.498236 / -16.454273** | 23.136175 / 35.021351 | 26.954609 / 54.08228 | 0.033911 / 0.0 | - |
+| `quantile_q70` | 0 | 15 / 111 | -0.586146 / -8.978341 | **-0.586146 / -8.978341** | -0.061335 / 0.472216 | 0.524811 / 9.450556 | 0.0 / 0.0 | - |
+| `quantile_q70` | 1 | 44 / 175 | -1.748875 / -11.207998 | **-1.748875 / -10.960808** | -0.449916 / 1.748533 | 1.298958 / 12.956531 | 0.0 / 0.0 | - |
+| `quantile_q70` | 2 | 934 / 1525 | -1.270642 / -18.012948 | **-1.021778 / -14.980943** | 33.495541 / 64.508898 | 34.766183 / 82.521846 | 0.026704 / 0.002101 | - |
+| `quantile_q80` | 0 | 6 / 84 | -0.83575 / -10.170145 | **-0.83575 / -9.776792** | 0.149722 / 0.732452 | 0.985472 / 10.902597 | 0.0 / 0.0 | - |
+| `quantile_q80` | 1 | 35 / 139 | -2.222376 / -13.535289 | **-2.222376 / -13.196228** | 0.303878 / -0.949706 | 2.526254 / 12.585583 | 0.0 / 0.0 | - |
+| `quantile_q80` | 2 | 772 / 1056 | -17.718184 / -30.107354 | **-16.271326 / -26.129586** | 25.177988 / 55.958875 | 42.896172 / 86.066229 | 0.032843 / 0.003067 | - |
+| `quantile_q90` | 0 | 4 / 49 | -0.752841 / -8.784943 | **-0.752841 / -8.784943** | -0.059665 / 0.20703 | 0.693176 / 8.991973 | None / 0.0 | - |
+| `quantile_q90` | 1 | 19 / 76 | -2.324343 / -9.596337 | **-2.324343 / -9.596337** | -0.011413 / 0.994725 | 2.312931 / 10.591062 | 0.0 / 0.0 | - |
+| `quantile_q90` | 2 | 556 / 550 | -35.448477 / -42.050476 | **-31.581266 / -38.051688** | 22.882502 / 32.910162 | 58.330979 / 74.960638 | 0.018982 / 0.0 | - |
+| `ablation_event_hazard_quantile_q70` | 0 | 6 / 21 | 0.567454 / 1.00587 | **0.567454 / 1.00587** | 0.024194 / 0.006347 | -0.543261 / -0.999523 | 0.0 / 0.0 | YES |
+| `ablation_event_hazard_quantile_q70` | 1 | 32 / 97 | 1.291034 / 2.117624 | **1.291034 / 2.130228** | -0.130614 / -1.018539 | -1.421648 / -3.136163 | 0.0 / 0.0 | YES |
+| `ablation_event_hazard_quantile_q70` | 2 | 730 / 1745 | 27.899017 / 43.043435 | **27.785933 / 41.785024** | 34.893403 / 68.968531 | 6.994386 / 25.925096 | 0.017648 / 0.008235 | YES |
+| `ablation_event_hazard_quantile_q80` | 0 | 5 / 23 | 0.472888 / 0.963227 | **0.472888 / 0.963227** | 0.024194 / 0.000494 | -0.448694 / -0.962733 | 0.0 / 0.0 | YES |
+| `ablation_event_hazard_quantile_q80` | 1 | 30 / 98 | 1.299408 / 3.20307 | **1.299408 / 3.210758** | 0.156952 / -1.452293 | -1.142457 / -4.655362 | 0.0 / 0.0 | YES |
+| `ablation_event_hazard_quantile_q80` | 2 | 704 / 1506 | 39.34497 / 59.408666 | **38.349238 / 56.386346** | 37.740486 / 70.95945 | -1.604483 / 11.550785 | 0.017539 / 0.020147 | YES |
+| `ablation_event_hazard_quantile_q90` | 0 | 5 / 27 | 0.623451 / 3.433722 | **0.623451 / 3.433722** | 0.077095 / 0.043232 | -0.546355 / -3.39049 | 0.0 / 0.0 | YES |
+| `ablation_event_hazard_quantile_q90` | 1 | 17 / 66 | 0.809557 / 7.298774 | **0.809557 / 7.291753** | 0.24267 / -0.256806 | -0.566887 / -7.55558 | 0.0 / 0.0 | YES |
+| `ablation_event_hazard_quantile_q90` | 2 | 577 / 926 | 49.81004 / 60.407692 | **48.747079 / 55.653297** | 36.614088 / 57.823033 | -13.195952 / -2.584659 | 0.019139 / 0.01177 | YES |
 
-**Tercile 2 (highest predicted dispersion), dedup increments of the every-bar arms:**
-`dollar_threshold` 8.796307 (A) / 32.983028 (B); `quantile_q70` 17.381033 (A) / 15.950525 (B); `quantile_q80` 13.568862 (A) / 17.481404 (B); `quantile_q90` 13.427264 (A) / 21.439316 (B).
-**Their giant300 dollars per avoided dollar vs the control on those same days:**
-`dollar_threshold` arm 0.038591 vs control 0.068384 (A), arm 0.0 vs control 0.132427 (B); `quantile_q70` arm 0.036108 vs control 0.113579 (A), arm 0.007259 vs control 0.140802 (B); `quantile_q80` arm 0.042459 vs control 0.152122 (A), arm 0.00974 vs control 0.140802 (B); `quantile_q90` arm 0.023405 vs control 0.132911 (A), arm 0.0 vs control 0.348436 (B).
+**Tercile 2 (highest predicted dispersion), dedup increments of the every-bar arms** (sleeve in
+brackets): `dollar_threshold` -3.498236 [-3.818433] (A, n 798) / -16.454273 [-19.060929] (B, n 660); `quantile_q70` -1.021778 [-1.270642] (A, n 934) / -14.980943 [-18.012948] (B, n 1525); `quantile_q80` -16.271326 [-17.718184] (A, n 772) / -26.129586 [-30.107354] (B, n 1056); `quantile_q90` -31.581266 [-35.448477] (A, n 556) / -38.051688 [-42.050476] (B, n 550). **All 16 every-bar tercile-2 cells are negative**
+(4 arms x 2 folds x 2 frictions), so the violent-state
+niche hypothesis is dead on the corrected statistic. The clock-quantile rulers q70/q80/q90 have
+**no positive dedup increment in any tercile in either fold** (36 cells,
+all negative). The primary arm's only positive conditional
+cells are the calm tercile (t0): 9.311128 (A, n 379) / 21.188703 (B, n 1603); its
+tercile-1 cells are 3.255449 / -14.912696 and its tercile-2 cells -3.498236 / -16.454273. The ablation family
+(the event-hazard object on its own new-high support) is positive in all 18 (arm, fold, tercile) cells;
+it is nevertheless dead: E1a's pre-registered tail clause kills all three ablation rulers in fold B,
+and in this corrected niche its fold-B tercile-2 giant300 dollars per avoided dollar
+(0.008235) is above the control's on the same days (0.006154).
 
-**Pre-registered closure verdict.** Rule: E1 (score-based release) is economically closed unless some tercile shows a positive dedup increment for a score arm in BOTH folds
-Terciles positive (dedup) in both folds at 100 bps: ablation_event_hazard_quantile_q70 tercile 0, ablation_event_hazard_quantile_q80 tercile 0, ablation_event_hazard_quantile_q80 tercile 1, ablation_event_hazard_quantile_q90 tercile 1, ablation_event_hazard_quantile_q90 tercile 2, dollar_threshold tercile 2, quantile_q70 tercile 0, quantile_q70 tercile 2, quantile_q80 tercile 2, quantile_q90 tercile 2.
-Arms holding such a tercile: ablation_event_hazard_quantile_q70, ablation_event_hazard_quantile_q80, ablation_event_hazard_quantile_q90, dollar_threshold, quantile_q70, quantile_q80, quantile_q90.
-Restricted to the every-bar arms (primary + the three clock-quantile rulers):
-dollar_threshold, quantile_q70, quantile_q80, quantile_q90.
-
-**E1 is NOT closed by this test**: the rule asks for one tercile with a positive dedup increment in both folds for at
-least one score arm at 100 bps; the pairs above meet it, so the rule does NOT close E1. Restricted to the every-bar arms:
-NOT closed either. At 150 bps the same
-pairs are positive (ablation_event_hazard_quantile_q70 tercile 0, ablation_event_hazard_quantile_q80 tercile 0, ablation_event_hazard_quantile_q80 tercile 1, ablation_event_hazard_quantile_q90 tercile 1, ablation_event_hazard_quantile_q90 tercile 2, dollar_threshold tercile 2, quantile_q70 tercile 0, quantile_q70 tercile 2, quantile_q80 tercile 2, quantile_q90 tercile 2), consistent with 100 bps.
+**Closure.** Pre-registered rule: E1 (score-based release) is economically closed unless some tercile shows a positive dedup increment for a score arm in BOTH folds. Verdict on that rule: **the letter of the pre-registered rule is NOT satisfied**. Pairs positive in both folds =
+ablation_event_hazard_quantile_q70 tercile 0, ablation_event_hazard_quantile_q70 tercile 1, ablation_event_hazard_quantile_q70 tercile 2, ablation_event_hazard_quantile_q80 tercile 0, ablation_event_hazard_quantile_q80 tercile 1, ablation_event_hazard_quantile_q80 tercile 2, ablation_event_hazard_quantile_q90 tercile 0, ablation_event_hazard_quantile_q90 tercile 1, ablation_event_hazard_quantile_q90 tercile 2, dollar_threshold tercile 0; restricted to the every-bar arms = dollar_threshold.
+Read against the question that was asked, the answer is unambiguous: **E1 as a *violent-state* release
+rule is economically closed** — no every-bar arm beats `giveback:10` in the high-dispersion tercile in
+either fold at either friction, no score arm beats it unconditionally, and the earlier positive niche
+is retracted as a look-ahead artifact. The cells that keep the *letter* of the rule open are the
+primary arm's calm-tercile (t0) cells and the ablation family; neither survives E1a's tail clause
+reading (the primary nets 17.05 after top-5-day removal in fold A with a CI that includes 0, the ablation
+family is killed in fold B).

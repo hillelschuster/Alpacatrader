@@ -3,7 +3,7 @@
  "provenance": {
   "producer": {
    "path": "factory/scripts/basket_atlas_e1.py",
-   "sha256": "83e2e8a5b986e4a8a2f5ff150ae0fd74cf592d310da6ae839d146f5ed9c654d7"
+   "sha256": "1305c17149b7b6f075d650a5b0ed40041037eac20e85d9a3e21372f03be055b9"
   },
   "imported_modules": {
    "basket_atlas_ledger.py": {
@@ -22,8 +22,8 @@
   "panel_sha256": "2a021eda878cdbe53e41d4cc88e2d8ba3b14d9a3a819723d9f679c8aca7c3488"
  },
  "reproduce": "git -C <worktree> rev-parse HEAD && .venv/bin/python factory/scripts/basket_atlas_e1.py",
- "generated": "2026-09-28T01:57:21",
- "runtime_s": 922.3,
+ "generated": "2026-09-28T02:55:56",
+ "runtime_s": 927.8,
  "mode": {
   "smoke_frac": 1.0,
   "smoke": false,
@@ -75,6 +75,28 @@
     "eval_prediction_source": "the train-block dispersion model",
     "note": "the splitter's cuts come from the inner day-split cross-fit of the train block; the eval-side prediction-vs-label correlation is computed after the cuts exist and is reported as POST_FREEZE"
    },
+   "e1b_conditioning_statistic_reads_no_post_decision_row": {
+    "A": {
+     "dollar_threshold": true,
+     "quantile_q70": true,
+     "quantile_q80": true,
+     "quantile_q90": true,
+     "ablation_event_hazard_quantile_q70": true,
+     "ablation_event_hazard_quantile_q80": true,
+     "ablation_event_hazard_quantile_q90": true
+    },
+    "B": {
+     "dollar_threshold": true,
+     "quantile_q70": true,
+     "quantile_q80": true,
+     "quantile_q90": true,
+     "ablation_event_hazard_quantile_q70": true,
+     "ablation_event_hazard_quantile_q80": true,
+     "ablation_event_hazard_quantile_q90": true
+    }
+   },
+   "e1b_lookahead_guards_all_passed": true,
+   "e1b_retraction": "the member-median predicted-dispersion niche is retracted as a look-ahead artifact and deleted from the code path; the conditioning statistic is the decision-bar tercile",
    "cells_complete": true,
    "ledger_net_identities_hold": true,
    "censoring_never_gates_a_decision": "the score is emitted for every complete bar and decisions are taken on the state mask (complete & uncensored & a new high already seen); censored members are excluded from training and never enter an executable aggregate \u2014 the ledger partitions them as unresolved",
@@ -2207,7 +2229,8 @@
    "causal_inputs_only": "the splitter is a function of state at t only; the dispersion label is label-side and is never given to the model that scores the evaluation block",
    "train_side": "inner day-level cross-fit inside the train block (the B1 split discipline): each day half is scored by the model fitted on the other half, so the tercile cuts see no evaluation row",
    "eval_side": "predicted by the model fitted on the whole train block",
-   "niche_moment": "a member's tercile at its FIRST state bar (the first completed bar where a new high has already occurred) \u2014 arm-independent, so the terciles partition the same judged members for every arm and decompose the unconditional increment",
+   "conditioning_statistic": "the predicted-dispersion tercile at the arm's OWN decision bar (its trigger bar) \u2014 the last row the arm is allowed to know about; members the arm never released have no decision bar and are reported separately",
+   "lookahead_guard": "future-perturbation test per fold and arm: scrambling every tercile strictly AFTER the decision bar leaves the statistic identical, while perturbing the decision bar itself changes it (so the test cannot pass by the statistic being constant)",
    "cuts_frozen_before_outcomes": true,
    "by_fold": {
     "A": {
@@ -2237,14 +2260,51 @@
       199430
      ],
      "no_outcome_used_for_freeze": true,
-     "eval_members": 1942,
-     "eval_members_without_a_state_bar": 428,
-     "eval_members_per_tercile": [
-      339,
-      644,
-      531
-     ],
-     "train_members_are_never_niche_assigned": true
+     "conditioning_statistic": "the predicted-dispersion tercile AT THE ARM'S OWN DECISION BAR (its trigger bar), read from the frozen row terciles",
+     "lookahead_guard": {
+      "dollar_threshold": {
+       "n_members_with_a_decision_bar": 1501,
+       "identical_when_bars_after_the_decision_are_scrambled": true,
+       "n_changed_when_the_decision_bar_is_perturbed": 1501,
+       "passed": true
+      },
+      "quantile_q70": {
+       "n_members_with_a_decision_bar": 1011,
+       "identical_when_bars_after_the_decision_are_scrambled": true,
+       "n_changed_when_the_decision_bar_is_perturbed": 1011,
+       "passed": true
+      },
+      "quantile_q80": {
+       "n_members_with_a_decision_bar": 832,
+       "identical_when_bars_after_the_decision_are_scrambled": true,
+       "n_changed_when_the_decision_bar_is_perturbed": 832,
+       "passed": true
+      },
+      "quantile_q90": {
+       "n_members_with_a_decision_bar": 594,
+       "identical_when_bars_after_the_decision_are_scrambled": true,
+       "n_changed_when_the_decision_bar_is_perturbed": 594,
+       "passed": true
+      },
+      "ablation_event_hazard_quantile_q70": {
+       "n_members_with_a_decision_bar": 1469,
+       "identical_when_bars_after_the_decision_are_scrambled": true,
+       "n_changed_when_the_decision_bar_is_perturbed": 1469,
+       "passed": true
+      },
+      "ablation_event_hazard_quantile_q80": {
+       "n_members_with_a_decision_bar": 1263,
+       "identical_when_bars_after_the_decision_are_scrambled": true,
+       "n_changed_when_the_decision_bar_is_perturbed": 1263,
+       "passed": true
+      },
+      "ablation_event_hazard_quantile_q90": {
+       "n_members_with_a_decision_bar": 907,
+       "identical_when_bars_after_the_decision_are_scrambled": true,
+       "n_changed_when_the_decision_bar_is_perturbed": 907,
+       "passed": true
+      }
+     }
     },
     "B": {
      "letter": "B",
@@ -2273,17 +2333,55 @@
       247389
      ],
      "no_outcome_used_for_freeze": true,
-     "eval_members": 4218,
-     "eval_members_without_a_state_bar": 938,
-     "eval_members_per_tercile": [
-      1465,
-      1498,
-      317
-     ],
-     "train_members_are_never_niche_assigned": true
+     "conditioning_statistic": "the predicted-dispersion tercile AT THE ARM'S OWN DECISION BAR (its trigger bar), read from the frozen row terciles",
+     "lookahead_guard": {
+      "dollar_threshold": {
+       "n_members_with_a_decision_bar": 3134,
+       "identical_when_bars_after_the_decision_are_scrambled": true,
+       "n_changed_when_the_decision_bar_is_perturbed": 3134,
+       "passed": true
+      },
+      "quantile_q70": {
+       "n_members_with_a_decision_bar": 1830,
+       "identical_when_bars_after_the_decision_are_scrambled": true,
+       "n_changed_when_the_decision_bar_is_perturbed": 1830,
+       "passed": true
+      },
+      "quantile_q80": {
+       "n_members_with_a_decision_bar": 1295,
+       "identical_when_bars_after_the_decision_are_scrambled": true,
+       "n_changed_when_the_decision_bar_is_perturbed": 1295,
+       "passed": true
+      },
+      "quantile_q90": {
+       "n_members_with_a_decision_bar": 688,
+       "identical_when_bars_after_the_decision_are_scrambled": true,
+       "n_changed_when_the_decision_bar_is_perturbed": 688,
+       "passed": true
+      },
+      "ablation_event_hazard_quantile_q70": {
+       "n_members_with_a_decision_bar": 2838,
+       "identical_when_bars_after_the_decision_are_scrambled": true,
+       "n_changed_when_the_decision_bar_is_perturbed": 2838,
+       "passed": true
+      },
+      "ablation_event_hazard_quantile_q80": {
+       "n_members_with_a_decision_bar": 2244,
+       "identical_when_bars_after_the_decision_are_scrambled": true,
+       "n_changed_when_the_decision_bar_is_perturbed": 2244,
+       "passed": true
+      },
+      "ablation_event_hazard_quantile_q90": {
+       "n_members_with_a_decision_bar": 1310,
+       "identical_when_bars_after_the_decision_are_scrambled": true,
+       "n_changed_when_the_decision_bar_is_perturbed": 1310,
+       "passed": true
+      }
+     }
     }
    }
   },
+  "retraction": "An earlier revision of this block conditioned on the member-level MEDIAN predicted-dispersion tercile over the member's state bars. That statistic reads bars AFTER the release decision (87-99% of its top-tercile members were top-tercile only because of post-decision bars), so its positive niche increments were a look-ahead artifact: the median statistic has been DELETED (not kept under an invalid label) and replaced by the decision-bar tercile. The numbers below are the corrected ones.",
   "increment_definition": {
    "sleeve": "sum over the arm's judged members in the tercile of (arm delta - giveback:10 delta)",
    "dedup": "the same increment after collapsing shared (day, ticker) paths with the ledger's declared duplicate rule (A_pm first, then the lower entry_rank)",
@@ -2296,26 +2394,28 @@
     "role": "primary",
     "fold": "A",
     "friction_bps": 100.0,
+    "n_members_with_a_decision_bar": 1501,
+    "n_members_without_a_decision_bar": 333,
     "terciles": [
      {
       "tercile": 0,
-      "n_members": 335,
-      "n_releases": 327,
-      "arm_net": -2.262039,
-      "control_net": -1.778024,
-      "increment_sleeve": -0.484015,
-      "increment_dedup": -0.484015,
-      "n_paths": 335,
+      "n_members": 379,
+      "n_releases": 371,
+      "arm_net": -0.676386,
+      "control_net": -9.987515,
+      "increment_sleeve": 9.311128,
+      "increment_dedup": 9.311128,
+      "n_paths": 379,
       "n_members_dropped_by_dedup": 0,
       "arm": {
-       "avoided_dollars": 4.944362,
-       "destroyed_dollars": 7.206401,
+       "avoided_dollars": 4.607519,
+       "destroyed_dollars": 5.283906,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 5.697572,
-       "destroyed_dollars": 7.475596,
+       "avoided_dollars": 2.486192,
+       "destroyed_dollars": 12.473706,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
@@ -2324,23 +2424,23 @@
      },
      {
       "tercile": 1,
-      "n_members": 637,
-      "n_releases": 626,
-      "arm_net": -9.293994,
-      "control_net": -11.252127,
-      "increment_sleeve": 1.958133,
-      "increment_dedup": 1.752169,
-      "n_paths": 629,
-      "n_members_dropped_by_dedup": 8,
+      "n_members": 298,
+      "n_releases": 298,
+      "arm_net": -5.412006,
+      "control_net": -8.729394,
+      "increment_sleeve": 3.317388,
+      "increment_dedup": 3.255449,
+      "n_paths": 295,
+      "n_members_dropped_by_dedup": 3,
       "arm": {
-       "avoided_dollars": 17.164569,
-       "destroyed_dollars": 26.458563,
+       "avoided_dollars": 7.544898,
+       "destroyed_dollars": 12.956904,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 27.572786,
-       "destroyed_dollars": 38.824913,
+       "avoided_dollars": 9.599818,
+       "destroyed_dollars": 18.329211,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
@@ -2349,28 +2449,28 @@
      },
      {
       "tercile": 2,
-      "n_members": 516,
-      "n_releases": 514,
-      "arm_net": 28.603815,
-      "control_net": 19.970448,
-      "increment_sleeve": 8.633367,
-      "increment_dedup": 8.796307,
-      "n_paths": 488,
-      "n_members_dropped_by_dedup": 28,
+      "n_members": 798,
+      "n_releases": 798,
+      "arm_net": 23.136175,
+      "control_net": 26.954609,
+      "increment_sleeve": -3.818433,
+      "increment_dedup": -3.498236,
+      "n_paths": 760,
+      "n_members_dropped_by_dedup": 38,
       "arm": {
-       "avoided_dollars": 72.143829,
-       "destroyed_dollars": 43.540013,
+       "avoided_dollars": 82.100343,
+       "destroyed_dollars": 58.964167,
        "giant300_dollars": 2.784111,
        "n_giant300": 2
       },
       "control": {
-       "avoided_dollars": 83.810236,
-       "destroyed_dollars": 63.839788,
+       "avoided_dollars": 104.98983,
+       "destroyed_dollars": 78.035222,
        "giant300_dollars": 5.731248,
        "n_giant300": 3
       },
-      "giant300_per_avoided_dollar_arm": 0.038591,
-      "giant300_per_avoided_dollar_control": 0.068384
+      "giant300_per_avoided_dollar_arm": 0.033911,
+      "giant300_per_avoided_dollar_control": 0.054589
      }
     ]
    },
@@ -2379,26 +2479,28 @@
     "role": "primary",
     "fold": "A",
     "friction_bps": 150.0,
+    "n_members_with_a_decision_bar": 1501,
+    "n_members_without_a_decision_bar": 333,
     "terciles": [
      {
       "tercile": 0,
-      "n_members": 335,
-      "n_releases": 327,
-      "arm_net": -2.250756,
-      "control_net": -1.769155,
-      "increment_sleeve": -0.481601,
-      "increment_dedup": -0.481601,
-      "n_paths": 335,
+      "n_members": 379,
+      "n_releases": 371,
+      "arm_net": -0.673013,
+      "control_net": -9.9377,
+      "increment_sleeve": 9.264687,
+      "increment_dedup": 9.264687,
+      "n_paths": 379,
       "n_members_dropped_by_dedup": 0,
       "arm": {
-       "avoided_dollars": 4.919701,
-       "destroyed_dollars": 7.170458,
+       "avoided_dollars": 4.584538,
+       "destroyed_dollars": 5.257551,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 5.669154,
-       "destroyed_dollars": 7.43831,
+       "avoided_dollars": 2.473791,
+       "destroyed_dollars": 12.411491,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
@@ -2407,23 +2509,23 @@
      },
      {
       "tercile": 1,
-      "n_members": 637,
-      "n_releases": 626,
-      "arm_net": -9.247638,
-      "control_net": -11.196005,
-      "increment_sleeve": 1.948366,
-      "increment_dedup": 1.74343,
-      "n_paths": 629,
-      "n_members_dropped_by_dedup": 8,
+      "n_members": 298,
+      "n_releases": 298,
+      "arm_net": -5.385013,
+      "control_net": -8.685854,
+      "increment_sleeve": 3.300841,
+      "increment_dedup": 3.239212,
+      "n_paths": 295,
+      "n_members_dropped_by_dedup": 3,
       "arm": {
-       "avoided_dollars": 17.078957,
-       "destroyed_dollars": 26.326595,
+       "avoided_dollars": 7.507266,
+       "destroyed_dollars": 12.892279,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 27.435261,
-       "destroyed_dollars": 38.631266,
+       "avoided_dollars": 9.551936,
+       "destroyed_dollars": 18.23779,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
@@ -2432,28 +2534,28 @@
      },
      {
       "tercile": 2,
-      "n_members": 516,
-      "n_releases": 514,
-      "arm_net": 28.461148,
-      "control_net": 19.870841,
-      "increment_sleeve": 8.590306,
-      "increment_dedup": 8.752434,
-      "n_paths": 488,
-      "n_members_dropped_by_dedup": 28,
+      "n_members": 798,
+      "n_releases": 798,
+      "arm_net": 23.020778,
+      "control_net": 26.820167,
+      "increment_sleeve": -3.799388,
+      "increment_dedup": -3.480788,
+      "n_paths": 760,
+      "n_members_dropped_by_dedup": 38,
       "arm": {
-       "avoided_dollars": 71.783996,
-       "destroyed_dollars": 43.322848,
+       "avoided_dollars": 81.690849,
+       "destroyed_dollars": 58.670071,
        "giant300_dollars": 2.770225,
        "n_giant300": 2
       },
       "control": {
-       "avoided_dollars": 83.392214,
-       "destroyed_dollars": 63.521373,
+       "avoided_dollars": 104.466171,
+       "destroyed_dollars": 77.646004,
        "giant300_dollars": 5.702663,
        "n_giant300": 3
       },
-      "giant300_per_avoided_dollar_arm": 0.038591,
-      "giant300_per_avoided_dollar_control": 0.068384
+      "giant300_per_avoided_dollar_arm": 0.033911,
+      "giant300_per_avoided_dollar_control": 0.054589
      }
     ]
    },
@@ -2462,26 +2564,28 @@
     "role": "secondary_ruler",
     "fold": "A",
     "friction_bps": 100.0,
+    "n_members_with_a_decision_bar": 1011,
+    "n_members_without_a_decision_bar": 823,
     "terciles": [
      {
       "tercile": 0,
-      "n_members": 335,
-      "n_releases": 132,
-      "arm_net": 4.336391,
-      "control_net": -1.778024,
-      "increment_sleeve": 6.114415,
-      "increment_dedup": 6.114415,
-      "n_paths": 335,
+      "n_members": 15,
+      "n_releases": 15,
+      "arm_net": -0.061335,
+      "control_net": 0.524811,
+      "increment_sleeve": -0.586146,
+      "increment_dedup": -0.586146,
+      "n_paths": 15,
       "n_members_dropped_by_dedup": 0,
       "arm": {
-       "avoided_dollars": 6.641375,
-       "destroyed_dollars": 2.304984,
+       "avoided_dollars": 0.52313,
+       "destroyed_dollars": 0.584465,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 5.697572,
-       "destroyed_dollars": 7.475596,
+       "avoided_dollars": 0.931924,
+       "destroyed_dollars": 0.407113,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
@@ -2490,23 +2594,23 @@
      },
      {
       "tercile": 1,
-      "n_members": 637,
-      "n_releases": 381,
-      "arm_net": -4.176605,
-      "control_net": -10.484748,
-      "increment_sleeve": 6.308143,
-      "increment_dedup": 5.875569,
-      "n_paths": 629,
-      "n_members_dropped_by_dedup": 8,
+      "n_members": 44,
+      "n_releases": 44,
+      "arm_net": -0.449916,
+      "control_net": 1.298958,
+      "increment_sleeve": -1.748875,
+      "increment_dedup": -1.748875,
+      "n_paths": 44,
+      "n_members_dropped_by_dedup": 0,
       "arm": {
-       "avoided_dollars": 22.301851,
-       "destroyed_dollars": 26.478456,
+       "avoided_dollars": 1.450415,
+       "destroyed_dollars": 1.900332,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 27.78637,
-       "destroyed_dollars": 38.271118,
+       "avoided_dollars": 2.488999,
+       "destroyed_dollars": 1.190041,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
@@ -2515,28 +2619,28 @@
      },
      {
       "tercile": 2,
-      "n_members": 517,
-      "n_releases": 479,
-      "arm_net": 32.824503,
-      "control_net": 15.434788,
-      "increment_sleeve": 17.389715,
-      "increment_dedup": 17.381033,
-      "n_paths": 489,
-      "n_members_dropped_by_dedup": 28,
+      "n_members": 934,
+      "n_releases": 933,
+      "arm_net": 33.495541,
+      "control_net": 34.766183,
+      "increment_sleeve": -1.270642,
+      "increment_dedup": -1.021778,
+      "n_paths": 897,
+      "n_members_dropped_by_dedup": 37,
       "arm": {
-       "avoided_dollars": 76.585244,
-       "destroyed_dollars": 43.760741,
+       "avoided_dollars": 103.554925,
+       "destroyed_dollars": 70.059384,
        "giant300_dollars": 2.765354,
        "n_giant300": 2
       },
       "control": {
-       "avoided_dollars": 83.877911,
-       "destroyed_dollars": 68.443123,
-       "giant300_dollars": 9.526732,
-       "n_giant300": 3
+       "avoided_dollars": 109.650587,
+       "destroyed_dollars": 74.884404,
+       "giant300_dollars": 2.765354,
+       "n_giant300": 2
       },
-      "giant300_per_avoided_dollar_arm": 0.036108,
-      "giant300_per_avoided_dollar_control": 0.113579
+      "giant300_per_avoided_dollar_arm": 0.026704,
+      "giant300_per_avoided_dollar_control": 0.02522
      }
     ]
    },
@@ -2545,26 +2649,28 @@
     "role": "secondary_ruler",
     "fold": "A",
     "friction_bps": 150.0,
+    "n_members_with_a_decision_bar": 1011,
+    "n_members_without_a_decision_bar": 823,
     "terciles": [
      {
       "tercile": 0,
-      "n_members": 335,
-      "n_releases": 132,
-      "arm_net": 4.314762,
-      "control_net": -1.769155,
-      "increment_sleeve": 6.083918,
-      "increment_dedup": 6.083918,
-      "n_paths": 335,
+      "n_members": 15,
+      "n_releases": 15,
+      "arm_net": -0.061029,
+      "control_net": 0.522193,
+      "increment_sleeve": -0.583223,
+      "increment_dedup": -0.583223,
+      "n_paths": 15,
       "n_members_dropped_by_dedup": 0,
       "arm": {
-       "avoided_dollars": 6.60825,
-       "destroyed_dollars": 2.293487,
+       "avoided_dollars": 0.52052,
+       "destroyed_dollars": 0.58155,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 5.669154,
-       "destroyed_dollars": 7.43831,
+       "avoided_dollars": 0.927276,
+       "destroyed_dollars": 0.405082,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
@@ -2573,23 +2679,23 @@
      },
      {
       "tercile": 1,
-      "n_members": 637,
-      "n_releases": 381,
-      "arm_net": -4.155773,
-      "control_net": -10.432453,
-      "increment_sleeve": 6.27668,
-      "increment_dedup": 5.846264,
-      "n_paths": 629,
-      "n_members_dropped_by_dedup": 8,
+      "n_members": 44,
+      "n_releases": 44,
+      "arm_net": -0.447672,
+      "control_net": 1.292479,
+      "increment_sleeve": -1.740152,
+      "increment_dedup": -1.740152,
+      "n_paths": 44,
+      "n_members_dropped_by_dedup": 0,
       "arm": {
-       "avoided_dollars": 22.190616,
-       "destroyed_dollars": 26.346388,
+       "avoided_dollars": 1.443181,
+       "destroyed_dollars": 1.890853,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 27.64778,
-       "destroyed_dollars": 38.080233,
+       "avoided_dollars": 2.476585,
+       "destroyed_dollars": 1.184106,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
@@ -2598,28 +2704,28 @@
      },
      {
       "tercile": 2,
-      "n_members": 517,
-      "n_releases": 479,
-      "arm_net": 32.660784,
-      "control_net": 15.357803,
-      "increment_sleeve": 17.30298,
-      "increment_dedup": 17.294342,
-      "n_paths": 489,
-      "n_members_dropped_by_dedup": 28,
+      "n_members": 934,
+      "n_releases": 933,
+      "arm_net": 33.328475,
+      "control_net": 34.59278,
+      "increment_sleeve": -1.264305,
+      "increment_dedup": -1.016681,
+      "n_paths": 897,
+      "n_members_dropped_by_dedup": 37,
       "arm": {
-       "avoided_dollars": 76.203258,
-       "destroyed_dollars": 43.542475,
+       "avoided_dollars": 103.038422,
+       "destroyed_dollars": 69.709947,
        "giant300_dollars": 2.751562,
        "n_giant300": 2
       },
       "control": {
-       "avoided_dollars": 83.459551,
-       "destroyed_dollars": 68.101748,
-       "giant300_dollars": 9.479215,
-       "n_giant300": 3
+       "avoided_dollars": 109.103681,
+       "destroyed_dollars": 74.510902,
+       "giant300_dollars": 2.751562,
+       "n_giant300": 2
       },
-      "giant300_per_avoided_dollar_arm": 0.036108,
-      "giant300_per_avoided_dollar_control": 0.113579
+      "giant300_per_avoided_dollar_arm": 0.026704,
+      "giant300_per_avoided_dollar_control": 0.02522
      }
     ]
    },
@@ -2628,26 +2734,28 @@
     "role": "secondary_ruler",
     "fold": "A",
     "friction_bps": 100.0,
+    "n_members_with_a_decision_bar": 832,
+    "n_members_without_a_decision_bar": 1002,
     "terciles": [
      {
       "tercile": 0,
-      "n_members": 334,
-      "n_releases": 92,
-      "arm_net": 3.269431,
-      "control_net": -1.746048,
-      "increment_sleeve": 5.015479,
-      "increment_dedup": 5.015479,
-      "n_paths": 334,
+      "n_members": 6,
+      "n_releases": 5,
+      "arm_net": 0.149722,
+      "control_net": 0.985472,
+      "increment_sleeve": -0.83575,
+      "increment_dedup": -0.83575,
+      "n_paths": 6,
       "n_members_dropped_by_dedup": 0,
       "arm": {
-       "avoided_dollars": 4.599504,
-       "destroyed_dollars": 1.330073,
+       "avoided_dollars": 0.162947,
+       "destroyed_dollars": 0.013226,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 5.659766,
-       "destroyed_dollars": 7.405814,
+       "avoided_dollars": 0.985472,
+       "destroyed_dollars": 0.0,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
@@ -2656,23 +2764,23 @@
      },
      {
       "tercile": 1,
-      "n_members": 639,
-      "n_releases": 276,
-      "arm_net": -1.033497,
-      "control_net": -11.477773,
-      "increment_sleeve": 10.444276,
-      "increment_dedup": 10.009248,
-      "n_paths": 631,
-      "n_members_dropped_by_dedup": 8,
+      "n_members": 35,
+      "n_releases": 35,
+      "arm_net": 0.303878,
+      "control_net": 2.526254,
+      "increment_sleeve": -2.222376,
+      "increment_dedup": -2.222376,
+      "n_paths": 35,
+      "n_members_dropped_by_dedup": 0,
       "arm": {
-       "avoided_dollars": 15.959836,
-       "destroyed_dollars": 16.993333,
+       "avoided_dollars": 1.326488,
+       "destroyed_dollars": 1.02261,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 27.717023,
-       "destroyed_dollars": 39.194796,
+       "avoided_dollars": 3.076487,
+       "destroyed_dollars": 0.550233,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
@@ -2681,28 +2789,28 @@
      },
      {
       "tercile": 2,
-      "n_members": 517,
-      "n_releases": 444,
-      "arm_net": 23.395653,
-      "control_net": 10.884883,
-      "increment_sleeve": 12.51077,
-      "increment_dedup": 13.568862,
-      "n_paths": 490,
-      "n_members_dropped_by_dedup": 27,
+      "n_members": 772,
+      "n_releases": 772,
+      "arm_net": 25.177988,
+      "control_net": 42.896172,
+      "increment_sleeve": -17.718184,
+      "increment_dedup": -16.271326,
+      "n_paths": 738,
+      "n_members_dropped_by_dedup": 34,
       "arm": {
-       "avoided_dollars": 65.130522,
-       "destroyed_dollars": 41.734869,
+       "avoided_dollars": 84.200426,
+       "destroyed_dollars": 59.022439,
        "giant300_dollars": 2.765354,
        "n_giant300": 2
       },
       "control": {
-       "avoided_dollars": 82.12236,
-       "destroyed_dollars": 71.237477,
-       "giant300_dollars": 12.492626,
-       "n_giant300": 4
+       "avoided_dollars": 102.846496,
+       "destroyed_dollars": 59.950324,
+       "giant300_dollars": 2.765354,
+       "n_giant300": 2
       },
-      "giant300_per_avoided_dollar_arm": 0.042459,
-      "giant300_per_avoided_dollar_control": 0.152122
+      "giant300_per_avoided_dollar_arm": 0.032843,
+      "giant300_per_avoided_dollar_control": 0.026888
      }
     ]
    },
@@ -2711,26 +2819,28 @@
     "role": "secondary_ruler",
     "fold": "A",
     "friction_bps": 150.0,
+    "n_members_with_a_decision_bar": 832,
+    "n_members_without_a_decision_bar": 1002,
     "terciles": [
      {
       "tercile": 0,
-      "n_members": 334,
-      "n_releases": 92,
-      "arm_net": 3.253124,
-      "control_net": -1.73734,
-      "increment_sleeve": 4.990464,
-      "increment_dedup": 4.990464,
-      "n_paths": 334,
+      "n_members": 6,
+      "n_releases": 5,
+      "arm_net": 0.148975,
+      "control_net": 0.980556,
+      "increment_sleeve": -0.831582,
+      "increment_dedup": -0.831582,
+      "n_paths": 6,
       "n_members_dropped_by_dedup": 0,
       "arm": {
-       "avoided_dollars": 4.576563,
-       "destroyed_dollars": 1.323439,
+       "avoided_dollars": 0.162134,
+       "destroyed_dollars": 0.01316,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 5.631537,
-       "destroyed_dollars": 7.368876,
+       "avoided_dollars": 0.980556,
+       "destroyed_dollars": 0.0,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
@@ -2739,23 +2849,23 @@
      },
      {
       "tercile": 1,
-      "n_members": 639,
-      "n_releases": 276,
-      "arm_net": -1.028342,
-      "control_net": -11.420525,
-      "increment_sleeve": 10.392183,
-      "increment_dedup": 9.959325,
-      "n_paths": 631,
-      "n_members_dropped_by_dedup": 8,
+      "n_members": 35,
+      "n_releases": 35,
+      "arm_net": 0.302362,
+      "control_net": 2.513654,
+      "increment_sleeve": -2.211291,
+      "increment_dedup": -2.211291,
+      "n_paths": 35,
+      "n_members_dropped_by_dedup": 0,
       "arm": {
-       "avoided_dollars": 15.880232,
-       "destroyed_dollars": 16.908575,
+       "avoided_dollars": 1.319872,
+       "destroyed_dollars": 1.01751,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 27.578778,
-       "destroyed_dollars": 38.999303,
+       "avoided_dollars": 3.061142,
+       "destroyed_dollars": 0.547489,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
@@ -2764,28 +2874,28 @@
      },
      {
       "tercile": 2,
-      "n_members": 517,
-      "n_releases": 444,
-      "arm_net": 23.278962,
-      "control_net": 10.830592,
-      "increment_sleeve": 12.44837,
-      "increment_dedup": 13.501184,
-      "n_paths": 490,
-      "n_members_dropped_by_dedup": 27,
+      "n_members": 772,
+      "n_releases": 772,
+      "arm_net": 25.052407,
+      "control_net": 42.682218,
+      "increment_sleeve": -17.629811,
+      "increment_dedup": -16.190169,
+      "n_paths": 738,
+      "n_members_dropped_by_dedup": 34,
       "arm": {
-       "avoided_dollars": 64.805669,
-       "destroyed_dollars": 41.526707,
+       "avoided_dollars": 83.780458,
+       "destroyed_dollars": 58.728052,
        "giant300_dollars": 2.751562,
        "n_giant300": 2
       },
       "control": {
-       "avoided_dollars": 81.712757,
-       "destroyed_dollars": 70.882165,
-       "giant300_dollars": 12.430316,
-       "n_giant300": 4
+       "avoided_dollars": 102.333526,
+       "destroyed_dollars": 59.651308,
+       "giant300_dollars": 2.751562,
+       "n_giant300": 2
       },
-      "giant300_per_avoided_dollar_arm": 0.042459,
-      "giant300_per_avoided_dollar_control": 0.152122
+      "giant300_per_avoided_dollar_arm": 0.032843,
+      "giant300_per_avoided_dollar_control": 0.026888
      }
     ]
    },
@@ -2794,51 +2904,53 @@
     "role": "secondary_ruler",
     "fold": "A",
     "friction_bps": 100.0,
+    "n_members_with_a_decision_bar": 594,
+    "n_members_without_a_decision_bar": 1240,
     "terciles": [
      {
       "tercile": 0,
-      "n_members": 333,
-      "n_releases": 56,
-      "arm_net": 0.430699,
-      "control_net": -1.515268,
-      "increment_sleeve": 1.945966,
-      "increment_dedup": 1.945966,
-      "n_paths": 333,
+      "n_members": 4,
+      "n_releases": 3,
+      "arm_net": -0.059665,
+      "control_net": 0.693176,
+      "increment_sleeve": -0.752841,
+      "increment_dedup": -0.752841,
+      "n_paths": 4,
       "n_members_dropped_by_dedup": 0,
       "arm": {
-       "avoided_dollars": 2.067777,
-       "destroyed_dollars": 1.637078,
+       "avoided_dollars": 0.0,
+       "destroyed_dollars": 0.059665,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 5.693327,
-       "destroyed_dollars": 7.208595,
+       "avoided_dollars": 0.693176,
+       "destroyed_dollars": 0.0,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
-      "giant300_per_avoided_dollar_arm": 0.0,
+      "giant300_per_avoided_dollar_arm": null,
       "giant300_per_avoided_dollar_control": 0.0
      },
      {
       "tercile": 1,
-      "n_members": 639,
-      "n_releases": 167,
-      "arm_net": -0.404568,
-      "control_net": -11.678459,
-      "increment_sleeve": 11.27389,
-      "increment_dedup": 10.839986,
-      "n_paths": 631,
-      "n_members_dropped_by_dedup": 8,
+      "n_members": 19,
+      "n_releases": 19,
+      "arm_net": -0.011413,
+      "control_net": 2.312931,
+      "increment_sleeve": -2.324343,
+      "increment_dedup": -2.324343,
+      "n_paths": 19,
+      "n_members_dropped_by_dedup": 0,
       "arm": {
-       "avoided_dollars": 10.524972,
-       "destroyed_dollars": 10.929541,
+       "avoided_dollars": 0.768996,
+       "destroyed_dollars": 0.780409,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 27.626634,
-       "destroyed_dollars": 39.305093,
+       "avoided_dollars": 2.628494,
+       "destroyed_dollars": 0.315564,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
@@ -2847,28 +2959,28 @@
      },
      {
       "tercile": 2,
-      "n_members": 518,
-      "n_releases": 355,
-      "arm_net": 22.785294,
-      "control_net": 9.872063,
-      "increment_sleeve": 12.913231,
-      "increment_dedup": 13.427264,
-      "n_paths": 491,
-      "n_members_dropped_by_dedup": 27,
+      "n_members": 556,
+      "n_releases": 556,
+      "arm_net": 22.882502,
+      "control_net": 58.330979,
+      "increment_sleeve": -35.448477,
+      "increment_dedup": -31.581266,
+      "n_paths": 531,
+      "n_members_dropped_by_dedup": 25,
       "arm": {
-       "avoided_dollars": 50.746051,
-       "destroyed_dollars": 27.960757,
+       "avoided_dollars": 62.569804,
+       "destroyed_dollars": 39.687302,
        "giant300_dollars": 1.187705,
        "n_giant300": 1
       },
       "control": {
-       "avoided_dollars": 82.12236,
-       "destroyed_dollars": 72.250297,
-       "giant300_dollars": 10.914977,
-       "n_giant300": 3
+       "avoided_dollars": 91.30602,
+       "destroyed_dollars": 32.97504,
+       "giant300_dollars": 1.187705,
+       "n_giant300": 1
       },
-      "giant300_per_avoided_dollar_arm": 0.023405,
-      "giant300_per_avoided_dollar_control": 0.132911
+      "giant300_per_avoided_dollar_arm": 0.018982,
+      "giant300_per_avoided_dollar_control": 0.013008
      }
     ]
    },
@@ -2877,51 +2989,53 @@
     "role": "secondary_ruler",
     "fold": "A",
     "friction_bps": 150.0,
+    "n_members_with_a_decision_bar": 594,
+    "n_members_without_a_decision_bar": 1240,
     "terciles": [
      {
       "tercile": 0,
-      "n_members": 333,
-      "n_releases": 56,
-      "arm_net": 0.428551,
-      "control_net": -1.50771,
-      "increment_sleeve": 1.936261,
-      "increment_dedup": 1.936261,
-      "n_paths": 333,
+      "n_members": 4,
+      "n_releases": 3,
+      "arm_net": -0.059368,
+      "control_net": 0.689719,
+      "increment_sleeve": -0.749086,
+      "increment_dedup": -0.749086,
+      "n_paths": 4,
       "n_members_dropped_by_dedup": 0,
       "arm": {
-       "avoided_dollars": 2.057463,
-       "destroyed_dollars": 1.628913,
+       "avoided_dollars": 0.0,
+       "destroyed_dollars": 0.059368,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 5.664931,
-       "destroyed_dollars": 7.17264,
+       "avoided_dollars": 0.689719,
+       "destroyed_dollars": 0.0,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
-      "giant300_per_avoided_dollar_arm": 0.0,
+      "giant300_per_avoided_dollar_arm": null,
       "giant300_per_avoided_dollar_control": 0.0
      },
      {
       "tercile": 1,
-      "n_members": 639,
-      "n_releases": 167,
-      "arm_net": -0.402551,
-      "control_net": -11.62021,
-      "increment_sleeve": 11.217659,
-      "increment_dedup": 10.78592,
-      "n_paths": 631,
-      "n_members_dropped_by_dedup": 8,
+      "n_members": 19,
+      "n_releases": 19,
+      "arm_net": -0.011356,
+      "control_net": 2.301394,
+      "increment_sleeve": -2.31275,
+      "increment_dedup": -2.31275,
+      "n_paths": 19,
+      "n_members_dropped_by_dedup": 0,
       "arm": {
-       "avoided_dollars": 10.472477,
-       "destroyed_dollars": 10.875027,
+       "avoided_dollars": 0.765161,
+       "destroyed_dollars": 0.776517,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 27.48884,
-       "destroyed_dollars": 39.10905,
+       "avoided_dollars": 2.615384,
+       "destroyed_dollars": 0.31399,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
@@ -2930,28 +3044,28 @@
      },
      {
       "tercile": 2,
-      "n_members": 518,
-      "n_releases": 355,
-      "arm_net": 22.671647,
-      "control_net": 9.822824,
-      "increment_sleeve": 12.848823,
-      "increment_dedup": 13.360293,
-      "n_paths": 491,
-      "n_members_dropped_by_dedup": 27,
+      "n_members": 556,
+      "n_releases": 556,
+      "arm_net": 22.768371,
+      "control_net": 58.040041,
+      "increment_sleeve": -35.27167,
+      "increment_dedup": -31.423747,
+      "n_paths": 531,
+      "n_members_dropped_by_dedup": 25,
       "arm": {
-       "avoided_dollars": 50.492944,
-       "destroyed_dollars": 27.821297,
+       "avoided_dollars": 62.257724,
+       "destroyed_dollars": 39.489353,
        "giant300_dollars": 1.181782,
        "n_giant300": 1
       },
       "control": {
-       "avoided_dollars": 81.712757,
-       "destroyed_dollars": 71.889933,
-       "giant300_dollars": 10.860536,
-       "n_giant300": 3
+       "avoided_dollars": 90.850611,
+       "destroyed_dollars": 32.81057,
+       "giant300_dollars": 1.181782,
+       "n_giant300": 1
       },
-      "giant300_per_avoided_dollar_arm": 0.023405,
-      "giant300_per_avoided_dollar_control": 0.132911
+      "giant300_per_avoided_dollar_arm": 0.018982,
+      "giant300_per_avoided_dollar_control": 0.013008
      }
     ]
    },
@@ -2960,81 +3074,83 @@
     "role": "ablation",
     "fold": "A",
     "friction_bps": 100.0,
+    "n_members_with_a_decision_bar": 1469,
+    "n_members_without_a_decision_bar": 365,
     "terciles": [
      {
       "tercile": 0,
-      "n_members": 335,
-      "n_releases": 210,
-      "arm_net": 6.825973,
-      "control_net": -1.773999,
-      "increment_sleeve": 8.599972,
-      "increment_dedup": 8.599972,
-      "n_paths": 335,
+      "n_members": 6,
+      "n_releases": 2,
+      "arm_net": 0.024194,
+      "control_net": -0.543261,
+      "increment_sleeve": 0.567454,
+      "increment_dedup": 0.567454,
+      "n_paths": 6,
       "n_members_dropped_by_dedup": 0,
       "arm": {
-       "avoided_dollars": 10.237242,
-       "destroyed_dollars": 3.411269,
+       "avoided_dollars": 0.024194,
+       "destroyed_dollars": 0.0,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 5.701597,
-       "destroyed_dollars": 7.475596,
+       "avoided_dollars": 0.0,
+       "destroyed_dollars": 0.543261,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "giant300_per_avoided_dollar_arm": 0.0,
-      "giant300_per_avoided_dollar_control": 0.0
+      "giant300_per_avoided_dollar_control": null
      },
      {
       "tercile": 1,
-      "n_members": 630,
-      "n_releases": 544,
-      "arm_net": 5.054126,
-      "control_net": -8.142266,
-      "increment_sleeve": 13.196392,
-      "increment_dedup": 13.25741,
-      "n_paths": 623,
-      "n_members_dropped_by_dedup": 7,
+      "n_members": 32,
+      "n_releases": 30,
+      "arm_net": -0.130614,
+      "control_net": -1.421648,
+      "increment_sleeve": 1.291034,
+      "increment_dedup": 1.291034,
+      "n_paths": 32,
+      "n_members_dropped_by_dedup": 0,
       "arm": {
-       "avoided_dollars": 35.895382,
-       "destroyed_dollars": 30.841256,
+       "avoided_dollars": 0.45039,
+       "destroyed_dollars": 0.581005,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 27.626261,
-       "destroyed_dollars": 35.768527,
+       "avoided_dollars": 0.0,
+       "destroyed_dollars": 1.421648,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "giant300_per_avoided_dollar_arm": 0.0,
-      "giant300_per_avoided_dollar_control": 0.0
+      "giant300_per_avoided_dollar_control": null
      },
      {
       "tercile": 2,
-      "n_members": 522,
-      "n_releases": 494,
-      "arm_net": 20.262805,
-      "control_net": 26.933377,
-      "increment_sleeve": -6.670573,
-      "increment_dedup": -5.843712,
-      "n_paths": 492,
-      "n_members_dropped_by_dedup": 30,
+      "n_members": 730,
+      "n_releases": 730,
+      "arm_net": 34.893403,
+      "control_net": 6.994386,
+      "increment_sleeve": 27.899017,
+      "increment_dedup": 27.785933,
+      "n_paths": 717,
+      "n_members_dropped_by_dedup": 13,
       "arm": {
-       "avoided_dollars": 83.142166,
-       "destroyed_dollars": 62.879361,
+       "avoided_dollars": 89.397536,
+       "destroyed_dollars": 54.504134,
        "giant300_dollars": 1.577649,
        "n_giant300": 1
       },
       "control": {
-       "avoided_dollars": 88.450219,
-       "destroyed_dollars": 61.516841,
-       "giant300_dollars": 2.765354,
-       "n_giant300": 2
+       "avoided_dollars": 68.429742,
+       "destroyed_dollars": 61.435356,
+       "giant300_dollars": 1.577649,
+       "n_giant300": 1
       },
-      "giant300_per_avoided_dollar_arm": 0.018975,
-      "giant300_per_avoided_dollar_control": 0.031265
+      "giant300_per_avoided_dollar_arm": 0.017648,
+      "giant300_per_avoided_dollar_control": 0.023055
      }
     ]
    },
@@ -3043,81 +3159,83 @@
     "role": "ablation",
     "fold": "A",
     "friction_bps": 150.0,
+    "n_members_with_a_decision_bar": 1469,
+    "n_members_without_a_decision_bar": 365,
     "terciles": [
      {
       "tercile": 0,
-      "n_members": 335,
-      "n_releases": 210,
-      "arm_net": 6.791927,
-      "control_net": -1.765151,
-      "increment_sleeve": 8.557078,
-      "increment_dedup": 8.557078,
-      "n_paths": 335,
+      "n_members": 6,
+      "n_releases": 2,
+      "arm_net": 0.024073,
+      "control_net": -0.540551,
+      "increment_sleeve": 0.564624,
+      "increment_dedup": 0.564624,
+      "n_paths": 6,
       "n_members_dropped_by_dedup": 0,
       "arm": {
-       "avoided_dollars": 10.186182,
-       "destroyed_dollars": 3.394255,
+       "avoided_dollars": 0.024073,
+       "destroyed_dollars": 0.0,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 5.673159,
-       "destroyed_dollars": 7.43831,
+       "avoided_dollars": 0.0,
+       "destroyed_dollars": 0.540551,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "giant300_per_avoided_dollar_arm": 0.0,
-      "giant300_per_avoided_dollar_control": 0.0
+      "giant300_per_avoided_dollar_control": null
      },
      {
       "tercile": 1,
-      "n_members": 630,
-      "n_releases": 544,
-      "arm_net": 5.028918,
-      "control_net": -8.101654,
-      "increment_sleeve": 13.130572,
-      "increment_dedup": 13.191286,
-      "n_paths": 623,
-      "n_members_dropped_by_dedup": 7,
+      "n_members": 32,
+      "n_releases": 30,
+      "arm_net": -0.129963,
+      "control_net": -1.414558,
+      "increment_sleeve": 1.284595,
+      "increment_dedup": 1.284595,
+      "n_paths": 32,
+      "n_members_dropped_by_dedup": 0,
       "arm": {
-       "avoided_dollars": 35.716346,
-       "destroyed_dollars": 30.687428,
+       "avoided_dollars": 0.448144,
+       "destroyed_dollars": 0.578107,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 27.488469,
-       "destroyed_dollars": 35.590123,
+       "avoided_dollars": 0.0,
+       "destroyed_dollars": 1.414558,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "giant300_per_avoided_dollar_arm": 0.0,
-      "giant300_per_avoided_dollar_control": 0.0
+      "giant300_per_avoided_dollar_control": null
      },
      {
       "tercile": 2,
-      "n_members": 522,
-      "n_releases": 494,
-      "arm_net": 20.16174,
-      "control_net": 26.799041,
-      "increment_sleeve": -6.637302,
-      "increment_dedup": -5.814565,
-      "n_paths": 492,
-      "n_members_dropped_by_dedup": 30,
+      "n_members": 730,
+      "n_releases": 730,
+      "arm_net": 34.719364,
+      "control_net": 6.9595,
+      "increment_sleeve": 27.759864,
+      "increment_dedup": 27.647344,
+      "n_paths": 717,
+      "n_members_dropped_by_dedup": 13,
       "arm": {
-       "avoided_dollars": 82.727476,
-       "destroyed_dollars": 62.565736,
+       "avoided_dollars": 88.951647,
+       "destroyed_dollars": 54.232282,
        "giant300_dollars": 1.56978,
        "n_giant300": 1
       },
       "control": {
-       "avoided_dollars": 88.009054,
-       "destroyed_dollars": 61.210012,
-       "giant300_dollars": 2.751562,
-       "n_giant300": 2
+       "avoided_dollars": 68.088434,
+       "destroyed_dollars": 61.128934,
+       "giant300_dollars": 1.56978,
+       "n_giant300": 1
       },
-      "giant300_per_avoided_dollar_arm": 0.018975,
-      "giant300_per_avoided_dollar_control": 0.031265
+      "giant300_per_avoided_dollar_arm": 0.017648,
+      "giant300_per_avoided_dollar_control": 0.023055
      }
     ]
    },
@@ -3126,81 +3244,83 @@
     "role": "ablation",
     "fold": "A",
     "friction_bps": 100.0,
+    "n_members_with_a_decision_bar": 1263,
+    "n_members_without_a_decision_bar": 571,
     "terciles": [
      {
       "tercile": 0,
-      "n_members": 335,
-      "n_releases": 157,
-      "arm_net": 6.715293,
-      "control_net": -1.773999,
-      "increment_sleeve": 8.489292,
-      "increment_dedup": 8.489292,
-      "n_paths": 335,
+      "n_members": 5,
+      "n_releases": 2,
+      "arm_net": 0.024194,
+      "control_net": -0.448694,
+      "increment_sleeve": 0.472888,
+      "increment_dedup": 0.472888,
+      "n_paths": 5,
       "n_members_dropped_by_dedup": 0,
       "arm": {
-       "avoided_dollars": 8.886234,
-       "destroyed_dollars": 2.170942,
+       "avoided_dollars": 0.024194,
+       "destroyed_dollars": 0.0,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 5.701597,
-       "destroyed_dollars": 7.475596,
+       "avoided_dollars": 0.0,
+       "destroyed_dollars": 0.448694,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "giant300_per_avoided_dollar_arm": 0.0,
-      "giant300_per_avoided_dollar_control": 0.0
+      "giant300_per_avoided_dollar_control": null
      },
      {
       "tercile": 1,
-      "n_members": 630,
-      "n_releases": 456,
-      "arm_net": 5.18539,
-      "control_net": -8.142266,
-      "increment_sleeve": 13.327656,
-      "increment_dedup": 13.543833,
-      "n_paths": 623,
-      "n_members_dropped_by_dedup": 7,
+      "n_members": 30,
+      "n_releases": 30,
+      "arm_net": 0.156952,
+      "control_net": -1.142457,
+      "increment_sleeve": 1.299408,
+      "increment_dedup": 1.299408,
+      "n_paths": 30,
+      "n_members_dropped_by_dedup": 0,
       "arm": {
-       "avoided_dollars": 30.035576,
-       "destroyed_dollars": 24.850186,
+       "avoided_dollars": 0.575026,
+       "destroyed_dollars": 0.418075,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 27.626261,
-       "destroyed_dollars": 35.768527,
+       "avoided_dollars": 0.0,
+       "destroyed_dollars": 1.142457,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "giant300_per_avoided_dollar_arm": 0.0,
-      "giant300_per_avoided_dollar_control": 0.0
+      "giant300_per_avoided_dollar_control": null
      },
      {
       "tercile": 2,
-      "n_members": 522,
-      "n_releases": 465,
-      "arm_net": 23.657491,
-      "control_net": 26.933377,
-      "increment_sleeve": -3.275886,
-      "increment_dedup": -2.476792,
-      "n_paths": 492,
-      "n_members_dropped_by_dedup": 30,
+      "n_members": 704,
+      "n_releases": 704,
+      "arm_net": 37.740486,
+      "control_net": -1.604483,
+      "increment_sleeve": 39.34497,
+      "increment_dedup": 38.349238,
+      "n_paths": 688,
+      "n_members_dropped_by_dedup": 16,
       "arm": {
-       "avoided_dollars": 80.265894,
-       "destroyed_dollars": 56.608403,
+       "avoided_dollars": 89.951613,
+       "destroyed_dollars": 52.211127,
        "giant300_dollars": 1.577649,
        "n_giant300": 1
       },
       "control": {
-       "avoided_dollars": 88.450219,
-       "destroyed_dollars": 61.516841,
-       "giant300_dollars": 2.765354,
-       "n_giant300": 2
+       "avoided_dollars": 65.12738,
+       "destroyed_dollars": 66.731863,
+       "giant300_dollars": 1.577649,
+       "n_giant300": 1
       },
-      "giant300_per_avoided_dollar_arm": 0.019655,
-      "giant300_per_avoided_dollar_control": 0.031265
+      "giant300_per_avoided_dollar_arm": 0.017539,
+      "giant300_per_avoided_dollar_control": 0.024224
      }
     ]
    },
@@ -3209,81 +3329,83 @@
     "role": "ablation",
     "fold": "A",
     "friction_bps": 150.0,
+    "n_members_with_a_decision_bar": 1263,
+    "n_members_without_a_decision_bar": 571,
     "terciles": [
      {
       "tercile": 0,
-      "n_members": 335,
-      "n_releases": 157,
-      "arm_net": 6.681799,
-      "control_net": -1.765151,
-      "increment_sleeve": 8.446949,
-      "increment_dedup": 8.446949,
-      "n_paths": 335,
+      "n_members": 5,
+      "n_releases": 2,
+      "arm_net": 0.024073,
+      "control_net": -0.446456,
+      "increment_sleeve": 0.470529,
+      "increment_dedup": 0.470529,
+      "n_paths": 5,
       "n_members_dropped_by_dedup": 0,
       "arm": {
-       "avoided_dollars": 8.841912,
-       "destroyed_dollars": 2.160114,
+       "avoided_dollars": 0.024073,
+       "destroyed_dollars": 0.0,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 5.673159,
-       "destroyed_dollars": 7.43831,
+       "avoided_dollars": 0.0,
+       "destroyed_dollars": 0.446456,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "giant300_per_avoided_dollar_arm": 0.0,
-      "giant300_per_avoided_dollar_control": 0.0
+      "giant300_per_avoided_dollar_control": null
      },
      {
       "tercile": 1,
-      "n_members": 630,
-      "n_releases": 456,
-      "arm_net": 5.159527,
-      "control_net": -8.101654,
-      "increment_sleeve": 13.261181,
-      "increment_dedup": 13.47628,
-      "n_paths": 623,
-      "n_members_dropped_by_dedup": 7,
+      "n_members": 30,
+      "n_releases": 30,
+      "arm_net": 0.156169,
+      "control_net": -1.136758,
+      "increment_sleeve": 1.292927,
+      "increment_dedup": 1.292927,
+      "n_paths": 30,
+      "n_members_dropped_by_dedup": 0,
       "arm": {
-       "avoided_dollars": 29.885767,
-       "destroyed_dollars": 24.72624,
+       "avoided_dollars": 0.572158,
+       "destroyed_dollars": 0.415989,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 27.488469,
-       "destroyed_dollars": 35.590123,
+       "avoided_dollars": 0.0,
+       "destroyed_dollars": 1.136758,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "giant300_per_avoided_dollar_arm": 0.0,
-      "giant300_per_avoided_dollar_control": 0.0
+      "giant300_per_avoided_dollar_control": null
      },
      {
       "tercile": 2,
-      "n_members": 522,
-      "n_releases": 465,
-      "arm_net": 23.539494,
-      "control_net": 26.799041,
-      "increment_sleeve": -3.259547,
-      "increment_dedup": -2.464439,
-      "n_paths": 492,
-      "n_members_dropped_by_dedup": 30,
+      "n_members": 704,
+      "n_releases": 704,
+      "arm_net": 37.552248,
+      "control_net": -1.596481,
+      "increment_sleeve": 39.148728,
+      "increment_dedup": 38.157963,
+      "n_paths": 688,
+      "n_members_dropped_by_dedup": 16,
       "arm": {
-       "avoided_dollars": 79.86555,
-       "destroyed_dollars": 56.326056,
+       "avoided_dollars": 89.50296,
+       "destroyed_dollars": 51.950712,
        "giant300_dollars": 1.56978,
        "n_giant300": 1
       },
       "control": {
-       "avoided_dollars": 88.009054,
-       "destroyed_dollars": 61.210012,
-       "giant300_dollars": 2.751562,
-       "n_giant300": 2
+       "avoided_dollars": 64.802543,
+       "destroyed_dollars": 66.399023,
+       "giant300_dollars": 1.56978,
+       "n_giant300": 1
       },
-      "giant300_per_avoided_dollar_arm": 0.019655,
-      "giant300_per_avoided_dollar_control": 0.031265
+      "giant300_per_avoided_dollar_arm": 0.017539,
+      "giant300_per_avoided_dollar_control": 0.024224
      }
     ]
    },
@@ -3292,81 +3414,83 @@
     "role": "ablation",
     "fold": "A",
     "friction_bps": 100.0,
+    "n_members_with_a_decision_bar": 907,
+    "n_members_without_a_decision_bar": 927,
     "terciles": [
      {
       "tercile": 0,
-      "n_members": 335,
-      "n_releases": 78,
-      "arm_net": 3.758868,
-      "control_net": -1.704218,
-      "increment_sleeve": 5.463086,
-      "increment_dedup": 5.463086,
-      "n_paths": 335,
+      "n_members": 5,
+      "n_releases": 3,
+      "arm_net": 0.077095,
+      "control_net": -0.546355,
+      "increment_sleeve": 0.623451,
+      "increment_dedup": 0.623451,
+      "n_paths": 5,
       "n_members_dropped_by_dedup": 0,
       "arm": {
-       "avoided_dollars": 4.714019,
-       "destroyed_dollars": 0.955151,
+       "avoided_dollars": 0.086597,
+       "destroyed_dollars": 0.009501,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 5.701597,
-       "destroyed_dollars": 7.405814,
+       "avoided_dollars": 0.0,
+       "destroyed_dollars": 0.546355,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "giant300_per_avoided_dollar_arm": 0.0,
-      "giant300_per_avoided_dollar_control": 0.0
+      "giant300_per_avoided_dollar_control": null
      },
      {
       "tercile": 1,
-      "n_members": 631,
-      "n_releases": 306,
-      "arm_net": 5.079059,
-      "control_net": -8.24281,
-      "increment_sleeve": 13.32187,
-      "increment_dedup": 13.376662,
-      "n_paths": 624,
-      "n_members_dropped_by_dedup": 7,
+      "n_members": 17,
+      "n_releases": 17,
+      "arm_net": 0.24267,
+      "control_net": -0.566887,
+      "increment_sleeve": 0.809557,
+      "increment_dedup": 0.809557,
+      "n_paths": 17,
+      "n_members_dropped_by_dedup": 0,
       "arm": {
-       "avoided_dollars": 21.054458,
-       "destroyed_dollars": 15.975399,
+       "avoided_dollars": 0.363291,
+       "destroyed_dollars": 0.120621,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 27.556914,
-       "destroyed_dollars": 35.799724,
+       "avoided_dollars": 0.0,
+       "destroyed_dollars": 0.566887,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "giant300_per_avoided_dollar_arm": 0.0,
-      "giant300_per_avoided_dollar_control": 0.0
+      "giant300_per_avoided_dollar_control": null
      },
      {
       "tercile": 2,
-      "n_members": 521,
-      "n_releases": 393,
-      "arm_net": 24.742996,
-      "control_net": 22.211933,
-      "increment_sleeve": 2.531063,
-      "increment_dedup": 4.682265,
-      "n_paths": 492,
-      "n_members_dropped_by_dedup": 29,
+      "n_members": 577,
+      "n_releases": 577,
+      "arm_net": 36.614088,
+      "control_net": -13.195952,
+      "increment_sleeve": 49.81004,
+      "increment_dedup": 48.747079,
+      "n_paths": 561,
+      "n_members_dropped_by_dedup": 16,
       "arm": {
-       "avoided_dollars": 72.10497,
-       "destroyed_dollars": 47.361974,
+       "avoided_dollars": 82.432664,
+       "destroyed_dollars": 45.818576,
        "giant300_dollars": 1.577649,
        "n_giant300": 1
       },
       "control": {
-       "avoided_dollars": 86.694668,
-       "destroyed_dollars": 64.482735,
-       "giant300_dollars": 5.731248,
-       "n_giant300": 3
+       "avoided_dollars": 56.421603,
+       "destroyed_dollars": 69.617556,
+       "giant300_dollars": 4.543543,
+       "n_giant300": 2
       },
-      "giant300_per_avoided_dollar_arm": 0.02188,
-      "giant300_per_avoided_dollar_control": 0.066108
+      "giant300_per_avoided_dollar_arm": 0.019139,
+      "giant300_per_avoided_dollar_control": 0.080528
      }
     ]
    },
@@ -3375,81 +3499,83 @@
     "role": "ablation",
     "fold": "A",
     "friction_bps": 150.0,
+    "n_members_with_a_decision_bar": 907,
+    "n_members_without_a_decision_bar": 927,
     "terciles": [
      {
       "tercile": 0,
-      "n_members": 335,
-      "n_releases": 78,
-      "arm_net": 3.74012,
-      "control_net": -1.695718,
-      "increment_sleeve": 5.435838,
-      "increment_dedup": 5.435838,
-      "n_paths": 335,
+      "n_members": 5,
+      "n_releases": 3,
+      "arm_net": 0.076711,
+      "control_net": -0.54363,
+      "increment_sleeve": 0.620341,
+      "increment_dedup": 0.620341,
+      "n_paths": 5,
       "n_members_dropped_by_dedup": 0,
       "arm": {
-       "avoided_dollars": 4.690507,
-       "destroyed_dollars": 0.950387,
+       "avoided_dollars": 0.086165,
+       "destroyed_dollars": 0.009454,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 5.673159,
-       "destroyed_dollars": 7.368876,
+       "avoided_dollars": 0.0,
+       "destroyed_dollars": 0.54363,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "giant300_per_avoided_dollar_arm": 0.0,
-      "giant300_per_avoided_dollar_control": 0.0
+      "giant300_per_avoided_dollar_control": null
      },
      {
       "tercile": 1,
-      "n_members": 631,
-      "n_releases": 306,
-      "arm_net": 5.053726,
-      "control_net": -8.201698,
-      "increment_sleeve": 13.255424,
-      "increment_dedup": 13.309943,
-      "n_paths": 624,
-      "n_members_dropped_by_dedup": 7,
+      "n_members": 17,
+      "n_releases": 17,
+      "arm_net": 0.24146,
+      "control_net": -0.564059,
+      "increment_sleeve": 0.805519,
+      "increment_dedup": 0.805519,
+      "n_paths": 17,
+      "n_members_dropped_by_dedup": 0,
       "arm": {
-       "avoided_dollars": 20.949444,
-       "destroyed_dollars": 15.895718,
+       "avoided_dollars": 0.361479,
+       "destroyed_dollars": 0.120019,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 27.419468,
-       "destroyed_dollars": 35.621165,
+       "avoided_dollars": 0.0,
+       "destroyed_dollars": 0.564059,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "giant300_per_avoided_dollar_arm": 0.0,
-      "giant300_per_avoided_dollar_control": 0.0
+      "giant300_per_avoided_dollar_control": null
      },
      {
       "tercile": 2,
-      "n_members": 521,
-      "n_releases": 393,
-      "arm_net": 24.619584,
-      "control_net": 22.101146,
-      "increment_sleeve": 2.518439,
-      "increment_dedup": 4.658911,
-      "n_paths": 492,
-      "n_members_dropped_by_dedup": 29,
+      "n_members": 577,
+      "n_releases": 577,
+      "arm_net": 36.431467,
+      "control_net": -13.130135,
+      "increment_sleeve": 49.561602,
+      "increment_dedup": 48.503942,
+      "n_paths": 561,
+      "n_members_dropped_by_dedup": 16,
       "arm": {
-       "avoided_dollars": 71.74533,
-       "destroyed_dollars": 47.125746,
+       "avoided_dollars": 82.021513,
+       "destroyed_dollars": 45.590046,
        "giant300_dollars": 1.56978,
        "n_giant300": 1
       },
       "control": {
-       "avoided_dollars": 86.262259,
-       "destroyed_dollars": 64.161113,
-       "giant300_dollars": 5.702663,
-       "n_giant300": 3
+       "avoided_dollars": 56.140188,
+       "destroyed_dollars": 69.270323,
+       "giant300_dollars": 4.520881,
+       "n_giant300": 2
       },
-      "giant300_per_avoided_dollar_arm": 0.02188,
-      "giant300_per_avoided_dollar_control": 0.066108
+      "giant300_per_avoided_dollar_arm": 0.019139,
+      "giant300_per_avoided_dollar_control": 0.080528
      }
     ]
    },
@@ -3458,26 +3584,28 @@
     "role": "primary",
     "fold": "B",
     "friction_bps": 100.0,
+    "n_members_with_a_decision_bar": 3134,
+    "n_members_without_a_decision_bar": 919,
     "terciles": [
      {
       "tercile": 0,
-      "n_members": 1458,
-      "n_releases": 1364,
-      "arm_net": 3.503255,
-      "control_net": 34.12888,
-      "increment_sleeve": -30.625625,
-      "increment_dedup": -30.590512,
-      "n_paths": 1449,
-      "n_members_dropped_by_dedup": 9,
+      "n_members": 1603,
+      "n_releases": 1471,
+      "arm_net": -0.576727,
+      "control_net": -22.061607,
+      "increment_sleeve": 21.48488,
+      "increment_dedup": 21.188703,
+      "n_paths": 1586,
+      "n_members_dropped_by_dedup": 17,
       "arm": {
-       "avoided_dollars": 28.792537,
-       "destroyed_dollars": 25.289282,
+       "avoided_dollars": 22.345252,
+       "destroyed_dollars": 22.921978,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 55.817972,
-       "destroyed_dollars": 21.689092,
+       "avoided_dollars": 30.972548,
+       "destroyed_dollars": 53.034155,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
@@ -3486,23 +3614,23 @@
      },
      {
       "tercile": 1,
-      "n_members": 1490,
-      "n_releases": 1315,
-      "arm_net": 9.141394,
-      "control_net": 12.882455,
-      "increment_sleeve": -3.741062,
-      "increment_dedup": -2.886222,
-      "n_paths": 1428,
-      "n_members_dropped_by_dedup": 62,
+      "n_members": 847,
+      "n_releases": 842,
+      "arm_net": 9.323252,
+      "control_net": 24.401434,
+      "increment_sleeve": -15.078182,
+      "increment_dedup": -14.912696,
+      "n_paths": 801,
+      "n_members_dropped_by_dedup": 46,
       "arm": {
-       "avoided_dollars": 52.568048,
-       "destroyed_dollars": 43.426654,
+       "avoided_dollars": 37.257608,
+       "destroyed_dollars": 27.934356,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 104.083407,
-       "destroyed_dollars": 91.200951,
+       "avoided_dollars": 70.035683,
+       "destroyed_dollars": 45.634249,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
@@ -3511,28 +3639,28 @@
      },
      {
       "tercile": 2,
-      "n_members": 308,
-      "n_releases": 294,
-      "arm_net": 31.123227,
-      "control_net": -3.060283,
-      "increment_sleeve": 34.18351,
-      "increment_dedup": 32.983028,
-      "n_paths": 280,
-      "n_members_dropped_by_dedup": 28,
+      "n_members": 660,
+      "n_releases": 660,
+      "arm_net": 35.021351,
+      "control_net": 54.08228,
+      "increment_sleeve": -19.060929,
+      "increment_dedup": -16.454273,
+      "n_paths": 607,
+      "n_members_dropped_by_dedup": 53,
       "arm": {
-       "avoided_dollars": 47.707307,
-       "destroyed_dollars": 16.584079,
+       "avoided_dollars": 69.465032,
+       "destroyed_dollars": 34.443681,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 52.168923,
-       "destroyed_dollars": 55.229206,
+       "avoided_dollars": 110.800889,
+       "destroyed_dollars": 56.718609,
        "giant300_dollars": 6.908591,
        "n_giant300": 5
       },
       "giant300_per_avoided_dollar_arm": 0.0,
-      "giant300_per_avoided_dollar_control": 0.132427
+      "giant300_per_avoided_dollar_control": 0.062351
      }
     ]
    },
@@ -3541,26 +3669,28 @@
     "role": "primary",
     "fold": "B",
     "friction_bps": 150.0,
+    "n_members_with_a_decision_bar": 3134,
+    "n_members_without_a_decision_bar": 919,
     "terciles": [
      {
       "tercile": 0,
-      "n_members": 1458,
-      "n_releases": 1364,
-      "arm_net": 3.485782,
-      "control_net": 33.958655,
-      "increment_sleeve": -30.472873,
-      "increment_dedup": -30.437935,
-      "n_paths": 1449,
-      "n_members_dropped_by_dedup": 9,
+      "n_members": 1603,
+      "n_releases": 1471,
+      "arm_net": -0.57385,
+      "control_net": -21.95157,
+      "increment_sleeve": 21.37772,
+      "increment_dedup": 21.08302,
+      "n_paths": 1586,
+      "n_members_dropped_by_dedup": 17,
       "arm": {
-       "avoided_dollars": 28.648928,
-       "destroyed_dollars": 25.163146,
+       "avoided_dollars": 22.2338,
+       "destroyed_dollars": 22.80765,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 55.539568,
-       "destroyed_dollars": 21.580913,
+       "avoided_dollars": 30.818066,
+       "destroyed_dollars": 52.769636,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
@@ -3569,23 +3699,23 @@
      },
      {
       "tercile": 1,
-      "n_members": 1490,
-      "n_releases": 1315,
-      "arm_net": 9.095799,
-      "control_net": 12.818201,
-      "increment_sleeve": -3.722402,
-      "increment_dedup": -2.871826,
-      "n_paths": 1428,
-      "n_members_dropped_by_dedup": 62,
+      "n_members": 847,
+      "n_releases": 842,
+      "arm_net": 9.27675,
+      "control_net": 24.279727,
+      "increment_sleeve": -15.002977,
+      "increment_dedup": -14.838315,
+      "n_paths": 801,
+      "n_members_dropped_by_dedup": 46,
       "arm": {
-       "avoided_dollars": 52.305853,
-       "destroyed_dollars": 43.210054,
+       "avoided_dollars": 37.071777,
+       "destroyed_dollars": 27.795027,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 103.564268,
-       "destroyed_dollars": 90.746067,
+       "avoided_dollars": 69.686365,
+       "destroyed_dollars": 45.406638,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
@@ -3594,28 +3724,28 @@
      },
      {
       "tercile": 2,
-      "n_members": 308,
-      "n_releases": 294,
-      "arm_net": 30.967993,
-      "control_net": -3.045019,
-      "increment_sleeve": 34.013012,
-      "increment_dedup": 32.818518,
-      "n_paths": 280,
-      "n_members_dropped_by_dedup": 28,
+      "n_members": 660,
+      "n_releases": 660,
+      "arm_net": 34.846674,
+      "control_net": 53.812532,
+      "increment_sleeve": -18.965858,
+      "increment_dedup": -16.372204,
+      "n_paths": 607,
+      "n_members_dropped_by_dedup": 53,
       "arm": {
-       "avoided_dollars": 47.469356,
-       "destroyed_dollars": 16.501363,
+       "avoided_dollars": 69.11856,
+       "destroyed_dollars": 34.271886,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 51.908719,
-       "destroyed_dollars": 54.953738,
+       "avoided_dollars": 110.248246,
+       "destroyed_dollars": 56.435713,
        "giant300_dollars": 6.874133,
        "n_giant300": 5
       },
       "giant300_per_avoided_dollar_arm": 0.0,
-      "giant300_per_avoided_dollar_control": 0.132427
+      "giant300_per_avoided_dollar_control": 0.062351
      }
     ]
    },
@@ -3624,26 +3754,28 @@
     "role": "secondary_ruler",
     "fold": "B",
     "friction_bps": 100.0,
+    "n_members_with_a_decision_bar": 1830,
+    "n_members_without_a_decision_bar": 2223,
     "terciles": [
      {
       "tercile": 0,
-      "n_members": 1460,
-      "n_releases": 795,
-      "arm_net": 42.577713,
-      "control_net": 34.269196,
-      "increment_sleeve": 8.308517,
-      "increment_dedup": 8.202558,
-      "n_paths": 1451,
-      "n_members_dropped_by_dedup": 9,
+      "n_members": 111,
+      "n_releases": 106,
+      "arm_net": 0.472216,
+      "control_net": 9.450556,
+      "increment_sleeve": -8.978341,
+      "increment_dedup": -8.978341,
+      "n_paths": 111,
+      "n_members_dropped_by_dedup": 0,
       "arm": {
-       "avoided_dollars": 54.387044,
-       "destroyed_dollars": 11.809331,
+       "avoided_dollars": 2.223496,
+       "destroyed_dollars": 1.75128,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 55.958288,
-       "destroyed_dollars": 21.689092,
+       "avoided_dollars": 9.845264,
+       "destroyed_dollars": 0.394708,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
@@ -3652,23 +3784,23 @@
      },
      {
       "tercile": 1,
-      "n_members": 1489,
-      "n_releases": 765,
-      "arm_net": 9.751039,
-      "control_net": 13.847805,
-      "increment_sleeve": -4.096766,
-      "increment_dedup": -3.100413,
-      "n_paths": 1427,
-      "n_members_dropped_by_dedup": 62,
+      "n_members": 175,
+      "n_releases": 175,
+      "arm_net": 1.748533,
+      "control_net": 12.956531,
+      "increment_sleeve": -11.207998,
+      "increment_dedup": -10.960808,
+      "n_paths": 172,
+      "n_members_dropped_by_dedup": 3,
       "arm": {
-       "avoided_dollars": 62.678587,
-       "destroyed_dollars": 52.927548,
+       "avoided_dollars": 6.146299,
+       "destroyed_dollars": 4.397767,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 104.337624,
-       "destroyed_dollars": 90.489818,
+       "avoided_dollars": 15.47752,
+       "destroyed_dollars": 2.520989,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
@@ -3677,28 +3809,28 @@
      },
      {
       "tercile": 2,
-      "n_members": 309,
-      "n_releases": 246,
-      "arm_net": 14.400894,
-      "control_net": -3.259293,
-      "increment_sleeve": 17.660187,
-      "increment_dedup": 15.950525,
-      "n_paths": 281,
-      "n_members_dropped_by_dedup": 28,
+      "n_members": 1525,
+      "n_releases": 1525,
+      "arm_net": 64.508898,
+      "control_net": 82.521846,
+      "increment_sleeve": -18.012948,
+      "increment_dedup": -14.980943,
+      "n_paths": 1455,
+      "n_members_dropped_by_dedup": 70,
       "arm": {
-       "avoided_dollars": 44.288393,
-       "destroyed_dollars": 29.887499,
+       "avoided_dollars": 152.984229,
+       "destroyed_dollars": 88.475331,
        "giant300_dollars": 0.321475,
        "n_giant300": 1
       },
       "control": {
-       "avoided_dollars": 52.445801,
-       "destroyed_dollars": 55.705093,
-       "giant300_dollars": 7.384479,
-       "n_giant300": 5
+       "avoided_dollars": 165.502639,
+       "destroyed_dollars": 82.980793,
+       "giant300_dollars": 4.52402,
+       "n_giant300": 4
       },
-      "giant300_per_avoided_dollar_arm": 0.007259,
-      "giant300_per_avoided_dollar_control": 0.140802
+      "giant300_per_avoided_dollar_arm": 0.002101,
+      "giant300_per_avoided_dollar_control": 0.027335
      }
     ]
    },
@@ -3707,26 +3839,28 @@
     "role": "secondary_ruler",
     "fold": "B",
     "friction_bps": 150.0,
+    "n_members_with_a_decision_bar": 1830,
+    "n_members_without_a_decision_bar": 2223,
     "terciles": [
      {
       "tercile": 0,
-      "n_members": 1460,
-      "n_releases": 795,
-      "arm_net": 42.365347,
-      "control_net": 34.098271,
-      "increment_sleeve": 8.267077,
-      "increment_dedup": 8.161646,
-      "n_paths": 1451,
-      "n_members_dropped_by_dedup": 9,
+      "n_members": 111,
+      "n_releases": 106,
+      "arm_net": 0.46986,
+      "control_net": 9.40342,
+      "increment_sleeve": -8.933559,
+      "increment_dedup": -8.933559,
+      "n_paths": 111,
+      "n_members_dropped_by_dedup": 0,
       "arm": {
-       "avoided_dollars": 54.115776,
-       "destroyed_dollars": 11.750429,
+       "avoided_dollars": 2.212406,
+       "destroyed_dollars": 1.742545,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 55.679184,
-       "destroyed_dollars": 21.580913,
+       "avoided_dollars": 9.796159,
+       "destroyed_dollars": 0.392739,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
@@ -3735,23 +3869,23 @@
      },
      {
       "tercile": 1,
-      "n_members": 1489,
-      "n_releases": 765,
-      "arm_net": 9.702404,
-      "control_net": 13.778737,
-      "increment_sleeve": -4.076333,
-      "increment_dedup": -3.084949,
-      "n_paths": 1427,
-      "n_members_dropped_by_dedup": 62,
+      "n_members": 175,
+      "n_releases": 175,
+      "arm_net": 1.739812,
+      "control_net": 12.891907,
+      "increment_sleeve": -11.152095,
+      "increment_dedup": -10.906138,
+      "n_paths": 172,
+      "n_members_dropped_by_dedup": 3,
       "arm": {
-       "avoided_dollars": 62.365964,
-       "destroyed_dollars": 52.66356,
+       "avoided_dollars": 6.115643,
+       "destroyed_dollars": 4.375832,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 103.817217,
-       "destroyed_dollars": 90.03848,
+       "avoided_dollars": 15.400322,
+       "destroyed_dollars": 2.508415,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
@@ -3760,28 +3894,28 @@
      },
      {
       "tercile": 2,
-      "n_members": 309,
-      "n_releases": 246,
-      "arm_net": 14.329067,
-      "control_net": -3.243036,
-      "increment_sleeve": 17.572103,
-      "increment_dedup": 15.870968,
-      "n_paths": 281,
-      "n_members_dropped_by_dedup": 28,
+      "n_members": 1525,
+      "n_releases": 1525,
+      "arm_net": 64.187146,
+      "control_net": 82.110251,
+      "increment_sleeve": -17.923105,
+      "increment_dedup": -14.906222,
+      "n_paths": 1455,
+      "n_members_dropped_by_dedup": 70,
       "arm": {
-       "avoided_dollars": 44.067495,
-       "destroyed_dollars": 29.738429,
+       "avoided_dollars": 152.221186,
+       "destroyed_dollars": 88.034041,
        "giant300_dollars": 0.319872,
        "n_giant300": 1
       },
       "control": {
-       "avoided_dollars": 52.184216,
-       "destroyed_dollars": 55.427252,
-       "giant300_dollars": 7.347647,
-       "n_giant300": 5
+       "avoided_dollars": 164.677159,
+       "destroyed_dollars": 82.566908,
+       "giant300_dollars": 4.501455,
+       "n_giant300": 4
       },
-      "giant300_per_avoided_dollar_arm": 0.007259,
-      "giant300_per_avoided_dollar_control": 0.140802
+      "giant300_per_avoided_dollar_arm": 0.002101,
+      "giant300_per_avoided_dollar_control": 0.027335
      }
     ]
    },
@@ -3790,26 +3924,28 @@
     "role": "secondary_ruler",
     "fold": "B",
     "friction_bps": 100.0,
+    "n_members_with_a_decision_bar": 1295,
+    "n_members_without_a_decision_bar": 2758,
     "terciles": [
      {
       "tercile": 0,
-      "n_members": 1460,
-      "n_releases": 548,
-      "arm_net": 29.875095,
-      "control_net": 34.269196,
-      "increment_sleeve": -4.3941,
-      "increment_dedup": -4.452957,
-      "n_paths": 1451,
-      "n_members_dropped_by_dedup": 9,
+      "n_members": 84,
+      "n_releases": 77,
+      "arm_net": 0.732452,
+      "control_net": 10.902597,
+      "increment_sleeve": -10.170145,
+      "increment_dedup": -9.776792,
+      "n_paths": 82,
+      "n_members_dropped_by_dedup": 2,
       "arm": {
-       "avoided_dollars": 39.208267,
-       "destroyed_dollars": 9.333171,
+       "avoided_dollars": 2.068435,
+       "destroyed_dollars": 1.335983,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 55.958288,
-       "destroyed_dollars": 21.689092,
+       "avoided_dollars": 11.086844,
+       "destroyed_dollars": 0.184247,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
@@ -3818,23 +3954,23 @@
      },
      {
       "tercile": 1,
-      "n_members": 1489,
-      "n_releases": 515,
-      "arm_net": 10.453311,
-      "control_net": 13.847805,
-      "increment_sleeve": -3.394494,
-      "increment_dedup": -1.7836,
-      "n_paths": 1427,
-      "n_members_dropped_by_dedup": 62,
+      "n_members": 139,
+      "n_releases": 139,
+      "arm_net": -0.949706,
+      "control_net": 12.585583,
+      "increment_sleeve": -13.535289,
+      "increment_dedup": -13.196228,
+      "n_paths": 137,
+      "n_members_dropped_by_dedup": 2,
       "arm": {
-       "avoided_dollars": 43.305429,
-       "destroyed_dollars": 32.852118,
+       "avoided_dollars": 4.954336,
+       "destroyed_dollars": 5.904043,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 104.337624,
-       "destroyed_dollars": 90.489818,
+       "avoided_dollars": 16.236766,
+       "destroyed_dollars": 3.651183,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
@@ -3843,28 +3979,28 @@
      },
      {
       "tercile": 2,
-      "n_members": 309,
-      "n_releases": 209,
-      "arm_net": 15.413215,
-      "control_net": -3.259293,
-      "increment_sleeve": 18.672507,
-      "increment_dedup": 17.481404,
-      "n_paths": 281,
-      "n_members_dropped_by_dedup": 28,
+      "n_members": 1056,
+      "n_releases": 1056,
+      "arm_net": 55.958875,
+      "control_net": 86.066229,
+      "increment_sleeve": -30.107354,
+      "increment_dedup": -26.129586,
+      "n_paths": 1016,
+      "n_members_dropped_by_dedup": 40,
       "arm": {
-       "avoided_dollars": 34.697688,
-       "destroyed_dollars": 19.284473,
+       "avoided_dollars": 110.188613,
+       "destroyed_dollars": 54.229738,
        "giant300_dollars": 0.337941,
        "n_giant300": 1
       },
       "control": {
-       "avoided_dollars": 52.445801,
-       "destroyed_dollars": 55.705093,
-       "giant300_dollars": 7.384479,
-       "n_giant300": 5
+       "avoided_dollars": 135.554137,
+       "destroyed_dollars": 49.487907,
+       "giant300_dollars": 1.091384,
+       "n_giant300": 2
       },
-      "giant300_per_avoided_dollar_arm": 0.00974,
-      "giant300_per_avoided_dollar_control": 0.140802
+      "giant300_per_avoided_dollar_arm": 0.003067,
+      "giant300_per_avoided_dollar_control": 0.008051
      }
     ]
    },
@@ -3873,26 +4009,28 @@
     "role": "secondary_ruler",
     "fold": "B",
     "friction_bps": 150.0,
+    "n_members_with_a_decision_bar": 1295,
+    "n_members_without_a_decision_bar": 2758,
     "terciles": [
      {
       "tercile": 0,
-      "n_members": 1460,
-      "n_releases": 548,
-      "arm_net": 29.726087,
-      "control_net": 34.098271,
-      "increment_sleeve": -4.372184,
-      "increment_dedup": -4.430747,
-      "n_paths": 1451,
-      "n_members_dropped_by_dedup": 9,
+      "n_members": 84,
+      "n_releases": 77,
+      "arm_net": 0.728799,
+      "control_net": 10.848218,
+      "increment_sleeve": -10.119419,
+      "increment_dedup": -9.728028,
+      "n_paths": 82,
+      "n_members_dropped_by_dedup": 2,
       "arm": {
-       "avoided_dollars": 39.012707,
-       "destroyed_dollars": 9.28662,
+       "avoided_dollars": 2.058118,
+       "destroyed_dollars": 1.329319,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 55.679184,
-       "destroyed_dollars": 21.580913,
+       "avoided_dollars": 11.031546,
+       "destroyed_dollars": 0.183328,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
@@ -3901,23 +4039,23 @@
      },
      {
       "tercile": 1,
-      "n_members": 1489,
-      "n_releases": 515,
-      "arm_net": 10.401173,
-      "control_net": 13.778737,
-      "increment_sleeve": -3.377564,
-      "increment_dedup": -1.774704,
-      "n_paths": 1427,
-      "n_members_dropped_by_dedup": 62,
+      "n_members": 139,
+      "n_releases": 139,
+      "arm_net": -0.944969,
+      "control_net": 12.522809,
+      "increment_sleeve": -13.467779,
+      "increment_dedup": -13.130409,
+      "n_paths": 137,
+      "n_members_dropped_by_dedup": 2,
       "arm": {
-       "avoided_dollars": 43.089434,
-       "destroyed_dollars": 32.688261,
+       "avoided_dollars": 4.929625,
+       "destroyed_dollars": 5.874595,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 103.817217,
-       "destroyed_dollars": 90.03848,
+       "avoided_dollars": 16.155782,
+       "destroyed_dollars": 3.632972,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
@@ -3926,28 +4064,28 @@
      },
      {
       "tercile": 2,
-      "n_members": 309,
-      "n_releases": 209,
-      "arm_net": 15.336338,
-      "control_net": -3.243036,
-      "increment_sleeve": 18.579374,
-      "increment_dedup": 17.394212,
-      "n_paths": 281,
-      "n_members_dropped_by_dedup": 28,
+      "n_members": 1056,
+      "n_releases": 1056,
+      "arm_net": 55.679768,
+      "control_net": 85.636955,
+      "increment_sleeve": -29.957187,
+      "increment_dedup": -25.999259,
+      "n_paths": 1016,
+      "n_members_dropped_by_dedup": 40,
       "arm": {
-       "avoided_dollars": 34.524626,
-       "destroyed_dollars": 19.188288,
+       "avoided_dollars": 109.639023,
+       "destroyed_dollars": 53.959255,
        "giant300_dollars": 0.336255,
        "n_giant300": 1
       },
       "control": {
-       "avoided_dollars": 52.184216,
-       "destroyed_dollars": 55.427252,
-       "giant300_dollars": 7.347647,
-       "n_giant300": 5
+       "avoided_dollars": 134.878031,
+       "destroyed_dollars": 49.241076,
+       "giant300_dollars": 1.085941,
+       "n_giant300": 2
       },
-      "giant300_per_avoided_dollar_arm": 0.00974,
-      "giant300_per_avoided_dollar_control": 0.140802
+      "giant300_per_avoided_dollar_arm": 0.003067,
+      "giant300_per_avoided_dollar_control": 0.008051
      }
     ]
    },
@@ -3956,26 +4094,28 @@
     "role": "secondary_ruler",
     "fold": "B",
     "friction_bps": 100.0,
+    "n_members_with_a_decision_bar": 688,
+    "n_members_without_a_decision_bar": 3365,
     "terciles": [
      {
       "tercile": 0,
-      "n_members": 1459,
-      "n_releases": 286,
-      "arm_net": 13.414812,
-      "control_net": 34.238199,
-      "increment_sleeve": -20.823387,
-      "increment_dedup": -20.846446,
-      "n_paths": 1450,
-      "n_members_dropped_by_dedup": 9,
+      "n_members": 49,
+      "n_releases": 45,
+      "arm_net": 0.20703,
+      "control_net": 8.991973,
+      "increment_sleeve": -8.784943,
+      "increment_dedup": -8.784943,
+      "n_paths": 49,
+      "n_members_dropped_by_dedup": 0,
       "arm": {
-       "avoided_dollars": 19.391554,
-       "destroyed_dollars": 5.976742,
+       "avoided_dollars": 0.986124,
+       "destroyed_dollars": 0.779093,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 55.855288,
-       "destroyed_dollars": 21.617089,
+       "avoided_dollars": 9.014668,
+       "destroyed_dollars": 0.022694,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
@@ -3984,23 +4124,23 @@
      },
      {
       "tercile": 1,
-      "n_members": 1492,
-      "n_releases": 262,
-      "arm_net": 11.18646,
-      "control_net": 16.213815,
-      "increment_sleeve": -5.027355,
-      "increment_dedup": -2.623927,
-      "n_paths": 1431,
-      "n_members_dropped_by_dedup": 61,
+      "n_members": 76,
+      "n_releases": 76,
+      "arm_net": 0.994725,
+      "control_net": 10.591062,
+      "increment_sleeve": -9.596337,
+      "increment_dedup": -9.596337,
+      "n_paths": 76,
+      "n_members_dropped_by_dedup": 0,
       "arm": {
-       "avoided_dollars": 24.389808,
-       "destroyed_dollars": 13.203348,
+       "avoided_dollars": 3.481442,
+       "destroyed_dollars": 2.486716,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 105.167749,
-       "destroyed_dollars": 88.953934,
+       "avoided_dollars": 11.418701,
+       "destroyed_dollars": 0.827638,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
@@ -4009,28 +4149,28 @@
      },
      {
       "tercile": 2,
-      "n_members": 306,
-      "n_releases": 122,
-      "arm_net": 9.510646,
-      "control_net": -14.067529,
-      "increment_sleeve": 23.578175,
-      "increment_dedup": 21.439316,
-      "n_paths": 278,
-      "n_members_dropped_by_dedup": 28,
+      "n_members": 550,
+      "n_releases": 549,
+      "arm_net": 32.910162,
+      "control_net": 74.960638,
+      "increment_sleeve": -42.050476,
+      "increment_dedup": -38.051688,
+      "n_paths": 530,
+      "n_members_dropped_by_dedup": 20,
       "arm": {
-       "avoided_dollars": 18.243828,
-       "destroyed_dollars": 8.733182,
+       "avoided_dollars": 57.557625,
+       "destroyed_dollars": 24.647462,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 51.447424,
-       "destroyed_dollars": 65.514953,
-       "giant300_dollars": 17.926147,
-       "n_giant300": 7
+       "avoided_dollars": 93.65574,
+       "destroyed_dollars": 18.695101,
+       "giant300_dollars": 0.753444,
+       "n_giant300": 1
       },
       "giant300_per_avoided_dollar_arm": 0.0,
-      "giant300_per_avoided_dollar_control": 0.348436
+      "giant300_per_avoided_dollar_control": 0.008045
      }
     ]
    },
@@ -4039,26 +4179,28 @@
     "role": "secondary_ruler",
     "fold": "B",
     "friction_bps": 150.0,
+    "n_members_with_a_decision_bar": 688,
+    "n_members_without_a_decision_bar": 3365,
     "terciles": [
      {
       "tercile": 0,
-      "n_members": 1459,
-      "n_releases": 286,
-      "arm_net": 13.347903,
-      "control_net": 34.067429,
-      "increment_sleeve": -20.719526,
-      "increment_dedup": -20.742469,
-      "n_paths": 1450,
-      "n_members_dropped_by_dedup": 9,
+      "n_members": 49,
+      "n_releases": 45,
+      "arm_net": 0.205998,
+      "control_net": 8.947124,
+      "increment_sleeve": -8.741126,
+      "increment_dedup": -8.741126,
+      "n_paths": 49,
+      "n_members_dropped_by_dedup": 0,
       "arm": {
-       "avoided_dollars": 19.294834,
-       "destroyed_dollars": 5.946931,
+       "avoided_dollars": 0.981205,
+       "destroyed_dollars": 0.775207,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 55.576698,
-       "destroyed_dollars": 21.509269,
+       "avoided_dollars": 8.969705,
+       "destroyed_dollars": 0.022581,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
@@ -4067,23 +4209,23 @@
      },
      {
       "tercile": 1,
-      "n_members": 1492,
-      "n_releases": 262,
-      "arm_net": 11.130665,
-      "control_net": 16.132945,
-      "increment_sleeve": -5.00228,
-      "increment_dedup": -2.61084,
-      "n_paths": 1431,
-      "n_members_dropped_by_dedup": 61,
+      "n_members": 76,
+      "n_releases": 76,
+      "arm_net": 0.989764,
+      "control_net": 10.538237,
+      "increment_sleeve": -9.548473,
+      "increment_dedup": -9.548473,
+      "n_paths": 76,
+      "n_members_dropped_by_dedup": 0,
       "arm": {
-       "avoided_dollars": 24.268158,
-       "destroyed_dollars": 13.137493,
+       "avoided_dollars": 3.464077,
+       "destroyed_dollars": 2.474313,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 104.643202,
-       "destroyed_dollars": 88.510256,
+       "avoided_dollars": 11.361747,
+       "destroyed_dollars": 0.82351,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
@@ -4092,28 +4234,28 @@
      },
      {
       "tercile": 2,
-      "n_members": 306,
-      "n_releases": 122,
-      "arm_net": 9.46321,
-      "control_net": -13.997364,
-      "increment_sleeve": 23.460574,
-      "increment_dedup": 21.332383,
-      "n_paths": 278,
-      "n_members_dropped_by_dedup": 28,
+      "n_members": 550,
+      "n_releases": 549,
+      "arm_net": 32.746016,
+      "control_net": 74.586756,
+      "increment_sleeve": -41.84074,
+      "increment_dedup": -37.861897,
+      "n_paths": 530,
+      "n_members_dropped_by_dedup": 20,
       "arm": {
-       "avoided_dollars": 18.152833,
-       "destroyed_dollars": 8.689623,
+       "avoided_dollars": 57.270544,
+       "destroyed_dollars": 24.524528,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 51.190819,
-       "destroyed_dollars": 65.188183,
-       "giant300_dollars": 17.836737,
-       "n_giant300": 7
+       "avoided_dollars": 93.188611,
+       "destroyed_dollars": 18.601855,
+       "giant300_dollars": 0.749686,
+       "n_giant300": 1
       },
       "giant300_per_avoided_dollar_arm": 0.0,
-      "giant300_per_avoided_dollar_control": 0.348436
+      "giant300_per_avoided_dollar_control": 0.008045
      }
     ]
    },
@@ -4122,51 +4264,53 @@
     "role": "ablation",
     "fold": "B",
     "friction_bps": 100.0,
+    "n_members_with_a_decision_bar": 2838,
+    "n_members_without_a_decision_bar": 1215,
     "terciles": [
      {
       "tercile": 0,
-      "n_members": 1457,
-      "n_releases": 910,
-      "arm_net": 60.209877,
-      "control_net": 34.250021,
-      "increment_sleeve": 25.959857,
-      "increment_dedup": 25.648499,
-      "n_paths": 1448,
-      "n_members_dropped_by_dedup": 9,
+      "n_members": 21,
+      "n_releases": 12,
+      "arm_net": 0.006347,
+      "control_net": -0.999523,
+      "increment_sleeve": 1.00587,
+      "increment_dedup": 1.00587,
+      "n_paths": 21,
+      "n_members_dropped_by_dedup": 0,
       "arm": {
-       "avoided_dollars": 71.477908,
-       "destroyed_dollars": 11.268031,
+       "avoided_dollars": 0.071313,
+       "destroyed_dollars": 0.064966,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 55.867109,
-       "destroyed_dollars": 21.617089,
+       "avoided_dollars": 0.0,
+       "destroyed_dollars": 0.999523,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "giant300_per_avoided_dollar_arm": 0.0,
-      "giant300_per_avoided_dollar_control": 0.0
+      "giant300_per_avoided_dollar_control": null
      },
      {
       "tercile": 1,
-      "n_members": 1492,
-      "n_releases": 1295,
-      "arm_net": 11.233478,
-      "control_net": 16.213815,
-      "increment_sleeve": -4.980337,
-      "increment_dedup": -4.724913,
-      "n_paths": 1431,
-      "n_members_dropped_by_dedup": 61,
+      "n_members": 97,
+      "n_releases": 97,
+      "arm_net": -1.018539,
+      "control_net": -3.136163,
+      "increment_sleeve": 2.117624,
+      "increment_dedup": 2.130228,
+      "n_paths": 96,
+      "n_members_dropped_by_dedup": 1,
       "arm": {
-       "avoided_dollars": 101.86878,
-       "destroyed_dollars": 90.635302,
+       "avoided_dollars": 1.562913,
+       "destroyed_dollars": 2.581452,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 105.167749,
-       "destroyed_dollars": 88.953934,
+       "avoided_dollars": 1.852505,
+       "destroyed_dollars": 4.988668,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
@@ -4175,28 +4319,28 @@
      },
      {
       "tercile": 2,
-      "n_members": 309,
-      "n_releases": 291,
-      "arm_net": -7.93183,
-      "control_net": 0.059804,
-      "increment_sleeve": -7.991634,
-      "increment_dedup": -7.748389,
-      "n_paths": 281,
-      "n_members_dropped_by_dedup": 28,
+      "n_members": 1745,
+      "n_releases": 1745,
+      "arm_net": 68.968531,
+      "control_net": 25.925096,
+      "increment_sleeve": 43.043435,
+      "increment_dedup": 41.785024,
+      "n_paths": 1690,
+      "n_members_dropped_by_dedup": 55,
       "arm": {
-       "avoided_dollars": 46.599953,
-       "destroyed_dollars": 54.531783,
-       "giant300_dollars": 10.306002,
-       "n_giant300": 6
+       "avoided_dollars": 163.07348,
+       "destroyed_dollars": 94.104949,
+       "giant300_dollars": 1.342878,
+       "n_giant300": 1
       },
       "control": {
-       "avoided_dollars": 54.110036,
-       "destroyed_dollars": 54.050232,
-       "giant300_dollars": 9.76905,
-       "n_giant300": 6
+       "avoided_dollars": 122.434149,
+       "destroyed_dollars": 96.509053,
+       "giant300_dollars": 0.753444,
+       "n_giant300": 1
       },
-      "giant300_per_avoided_dollar_arm": 0.221159,
-      "giant300_per_avoided_dollar_control": 0.18054
+      "giant300_per_avoided_dollar_arm": 0.008235,
+      "giant300_per_avoided_dollar_control": 0.006154
      }
     ]
    },
@@ -4205,51 +4349,53 @@
     "role": "ablation",
     "fold": "B",
     "friction_bps": 150.0,
+    "n_members_with_a_decision_bar": 2838,
+    "n_members_without_a_decision_bar": 1215,
     "terciles": [
      {
       "tercile": 0,
-      "n_members": 1457,
-      "n_releases": 910,
-      "arm_net": 59.909567,
-      "control_net": 34.079191,
-      "increment_sleeve": 25.830376,
-      "increment_dedup": 25.520571,
-      "n_paths": 1448,
-      "n_members_dropped_by_dedup": 9,
+      "n_members": 21,
+      "n_releases": 12,
+      "arm_net": 0.006315,
+      "control_net": -0.994537,
+      "increment_sleeve": 1.000853,
+      "increment_dedup": 1.000853,
+      "n_paths": 21,
+      "n_members_dropped_by_dedup": 0,
       "arm": {
-       "avoided_dollars": 71.121396,
-       "destroyed_dollars": 11.211829,
+       "avoided_dollars": 0.070958,
+       "destroyed_dollars": 0.064642,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 55.58846,
-       "destroyed_dollars": 21.509269,
+       "avoided_dollars": 0.0,
+       "destroyed_dollars": 0.994537,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "giant300_per_avoided_dollar_arm": 0.0,
-      "giant300_per_avoided_dollar_control": 0.0
+      "giant300_per_avoided_dollar_control": null
      },
      {
       "tercile": 1,
-      "n_members": 1492,
-      "n_releases": 1295,
-      "arm_net": 11.177449,
-      "control_net": 16.132945,
-      "increment_sleeve": -4.955496,
-      "increment_dedup": -4.701347,
-      "n_paths": 1431,
-      "n_members_dropped_by_dedup": 61,
+      "n_members": 97,
+      "n_releases": 97,
+      "arm_net": -1.013459,
+      "control_net": -3.120521,
+      "increment_sleeve": 2.107062,
+      "increment_dedup": 2.119603,
+      "n_paths": 96,
+      "n_members_dropped_by_dedup": 1,
       "arm": {
-       "avoided_dollars": 101.360687,
-       "destroyed_dollars": 90.183238,
+       "avoided_dollars": 1.555117,
+       "destroyed_dollars": 2.568576,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 104.643202,
-       "destroyed_dollars": 88.510256,
+       "avoided_dollars": 1.843265,
+       "destroyed_dollars": 4.963786,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
@@ -4258,28 +4404,28 @@
      },
      {
       "tercile": 2,
-      "n_members": 309,
-      "n_releases": 291,
-      "arm_net": -7.892268,
-      "control_net": 0.059506,
-      "increment_sleeve": -7.951774,
-      "increment_dedup": -7.709742,
-      "n_paths": 281,
-      "n_members_dropped_by_dedup": 28,
+      "n_members": 1745,
+      "n_releases": 1745,
+      "arm_net": 68.624536,
+      "control_net": 25.795789,
+      "increment_sleeve": 42.828747,
+      "increment_dedup": 41.576612,
+      "n_paths": 1690,
+      "n_members_dropped_by_dedup": 55,
       "arm": {
-       "avoided_dollars": 46.367526,
-       "destroyed_dollars": 54.259794,
-       "giant300_dollars": 10.254599,
-       "n_giant300": 6
+       "avoided_dollars": 162.260115,
+       "destroyed_dollars": 93.63558,
+       "giant300_dollars": 1.33618,
+       "n_giant300": 1
       },
       "control": {
-       "avoided_dollars": 53.84015,
-       "destroyed_dollars": 53.780644,
-       "giant300_dollars": 9.720324,
-       "n_giant300": 6
+       "avoided_dollars": 121.823482,
+       "destroyed_dollars": 96.027693,
+       "giant300_dollars": 0.749686,
+       "n_giant300": 1
       },
-      "giant300_per_avoided_dollar_arm": 0.221159,
-      "giant300_per_avoided_dollar_control": 0.18054
+      "giant300_per_avoided_dollar_arm": 0.008235,
+      "giant300_per_avoided_dollar_control": 0.006154
      }
     ]
    },
@@ -4288,51 +4434,53 @@
     "role": "ablation",
     "fold": "B",
     "friction_bps": 100.0,
+    "n_members_with_a_decision_bar": 2244,
+    "n_members_without_a_decision_bar": 1809,
     "terciles": [
      {
       "tercile": 0,
-      "n_members": 1457,
-      "n_releases": 632,
-      "arm_net": 44.809294,
-      "control_net": 34.250021,
-      "increment_sleeve": 10.559273,
-      "increment_dedup": 10.330496,
-      "n_paths": 1448,
-      "n_members_dropped_by_dedup": 9,
+      "n_members": 23,
+      "n_releases": 13,
+      "arm_net": 0.000494,
+      "control_net": -0.962733,
+      "increment_sleeve": 0.963227,
+      "increment_dedup": 0.963227,
+      "n_paths": 23,
+      "n_members_dropped_by_dedup": 0,
       "arm": {
-       "avoided_dollars": 52.211259,
-       "destroyed_dollars": 7.401965,
+       "avoided_dollars": 0.071058,
+       "destroyed_dollars": 0.070564,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 55.867109,
-       "destroyed_dollars": 21.617089,
+       "avoided_dollars": 0.0,
+       "destroyed_dollars": 0.962733,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "giant300_per_avoided_dollar_arm": 0.0,
-      "giant300_per_avoided_dollar_control": 0.0
+      "giant300_per_avoided_dollar_control": null
      },
      {
       "tercile": 1,
-      "n_members": 1492,
-      "n_releases": 1083,
-      "arm_net": 20.078037,
-      "control_net": 16.213815,
-      "increment_sleeve": 3.864221,
-      "increment_dedup": 5.423399,
-      "n_paths": 1431,
-      "n_members_dropped_by_dedup": 61,
+      "n_members": 98,
+      "n_releases": 98,
+      "arm_net": -1.452293,
+      "control_net": -4.655362,
+      "increment_sleeve": 3.20307,
+      "increment_dedup": 3.210758,
+      "n_paths": 96,
+      "n_members_dropped_by_dedup": 2,
       "arm": {
-       "avoided_dollars": 89.198907,
-       "destroyed_dollars": 69.12087,
+       "avoided_dollars": 1.37572,
+       "destroyed_dollars": 2.828012,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 105.167749,
-       "destroyed_dollars": 88.953934,
+       "avoided_dollars": 1.739292,
+       "destroyed_dollars": 6.394655,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
@@ -4341,28 +4489,28 @@
      },
      {
       "tercile": 2,
-      "n_members": 309,
-      "n_releases": 276,
-      "arm_net": -0.657182,
-      "control_net": 0.059804,
-      "increment_sleeve": -0.716986,
-      "increment_dedup": -0.009382,
-      "n_paths": 281,
-      "n_members_dropped_by_dedup": 28,
+      "n_members": 1506,
+      "n_releases": 1506,
+      "arm_net": 70.95945,
+      "control_net": 11.550785,
+      "increment_sleeve": 59.408666,
+      "increment_dedup": 56.386346,
+      "n_paths": 1452,
+      "n_members_dropped_by_dedup": 54,
       "arm": {
-       "avoided_dollars": 49.149302,
-       "destroyed_dollars": 49.806484,
-       "giant300_dollars": 9.888692,
-       "n_giant300": 5
+       "avoided_dollars": 155.674677,
+       "destroyed_dollars": 84.715227,
+       "giant300_dollars": 3.136425,
+       "n_giant300": 2
       },
       "control": {
-       "avoided_dollars": 54.110036,
-       "destroyed_dollars": 54.050232,
-       "giant300_dollars": 9.76905,
-       "n_giant300": 6
+       "avoided_dollars": 112.266345,
+       "destroyed_dollars": 100.71556,
+       "giant300_dollars": 2.986286,
+       "n_giant300": 3
       },
-      "giant300_per_avoided_dollar_arm": 0.201197,
-      "giant300_per_avoided_dollar_control": 0.18054
+      "giant300_per_avoided_dollar_arm": 0.020147,
+      "giant300_per_avoided_dollar_control": 0.0266
      }
     ]
    },
@@ -4371,51 +4519,53 @@
     "role": "ablation",
     "fold": "B",
     "friction_bps": 150.0,
+    "n_members_with_a_decision_bar": 2244,
+    "n_members_without_a_decision_bar": 1809,
     "terciles": [
      {
       "tercile": 0,
-      "n_members": 1457,
-      "n_releases": 632,
-      "arm_net": 44.585798,
-      "control_net": 34.079191,
-      "increment_sleeve": 10.506606,
-      "increment_dedup": 10.27897,
-      "n_paths": 1448,
-      "n_members_dropped_by_dedup": 9,
+      "n_members": 23,
+      "n_releases": 13,
+      "arm_net": 0.000492,
+      "control_net": -0.957931,
+      "increment_sleeve": 0.958423,
+      "increment_dedup": 0.958423,
+      "n_paths": 23,
+      "n_members_dropped_by_dedup": 0,
       "arm": {
-       "avoided_dollars": 51.950844,
-       "destroyed_dollars": 7.365046,
+       "avoided_dollars": 0.070704,
+       "destroyed_dollars": 0.070212,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 55.58846,
-       "destroyed_dollars": 21.509269,
+       "avoided_dollars": 0.0,
+       "destroyed_dollars": 0.957931,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "giant300_per_avoided_dollar_arm": 0.0,
-      "giant300_per_avoided_dollar_control": 0.0
+      "giant300_per_avoided_dollar_control": null
      },
      {
       "tercile": 1,
-      "n_members": 1492,
-      "n_releases": 1083,
-      "arm_net": 19.977893,
-      "control_net": 16.132945,
-      "increment_sleeve": 3.844948,
-      "increment_dedup": 5.396348,
-      "n_paths": 1431,
-      "n_members_dropped_by_dedup": 61,
+      "n_members": 98,
+      "n_releases": 98,
+      "arm_net": -1.445049,
+      "control_net": -4.632143,
+      "increment_sleeve": 3.187094,
+      "increment_dedup": 3.194744,
+      "n_paths": 96,
+      "n_members_dropped_by_dedup": 2,
       "arm": {
-       "avoided_dollars": 88.754008,
-       "destroyed_dollars": 68.776115,
+       "avoided_dollars": 1.368858,
+       "destroyed_dollars": 2.813907,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 104.643202,
-       "destroyed_dollars": 88.510256,
+       "avoided_dollars": 1.730617,
+       "destroyed_dollars": 6.36276,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
@@ -4424,28 +4574,28 @@
      },
      {
       "tercile": 2,
-      "n_members": 309,
-      "n_releases": 276,
-      "arm_net": -0.653904,
-      "control_net": 0.059506,
-      "increment_sleeve": -0.71341,
-      "increment_dedup": -0.009335,
-      "n_paths": 281,
-      "n_members_dropped_by_dedup": 28,
+      "n_members": 1506,
+      "n_releases": 1506,
+      "arm_net": 70.605525,
+      "control_net": 11.493173,
+      "increment_sleeve": 59.112352,
+      "increment_dedup": 56.105106,
+      "n_paths": 1452,
+      "n_members_dropped_by_dedup": 54,
       "arm": {
-       "avoided_dollars": 48.90416,
-       "destroyed_dollars": 49.558064,
-       "giant300_dollars": 9.83937,
-       "n_giant300": 5
+       "avoided_dollars": 154.898216,
+       "destroyed_dollars": 84.292691,
+       "giant300_dollars": 3.120782,
+       "n_giant300": 2
       },
       "control": {
-       "avoided_dollars": 53.84015,
-       "destroyed_dollars": 53.780644,
-       "giant300_dollars": 9.720324,
-       "n_giant300": 6
+       "avoided_dollars": 111.706392,
+       "destroyed_dollars": 100.21322,
+       "giant300_dollars": 2.971392,
+       "n_giant300": 3
       },
-      "giant300_per_avoided_dollar_arm": 0.201197,
-      "giant300_per_avoided_dollar_control": 0.18054
+      "giant300_per_avoided_dollar_arm": 0.020147,
+      "giant300_per_avoided_dollar_control": 0.0266
      }
     ]
    },
@@ -4454,51 +4604,53 @@
     "role": "ablation",
     "fold": "B",
     "friction_bps": 100.0,
+    "n_members_with_a_decision_bar": 1310,
+    "n_members_without_a_decision_bar": 2743,
     "terciles": [
      {
       "tercile": 0,
-      "n_members": 1459,
-      "n_releases": 279,
-      "arm_net": 19.834317,
-      "control_net": 34.12888,
-      "increment_sleeve": -14.294563,
-      "increment_dedup": -14.343712,
-      "n_paths": 1450,
-      "n_members_dropped_by_dedup": 9,
+      "n_members": 27,
+      "n_releases": 13,
+      "arm_net": 0.043232,
+      "control_net": -3.39049,
+      "increment_sleeve": 3.433722,
+      "increment_dedup": 3.433722,
+      "n_paths": 27,
+      "n_members_dropped_by_dedup": 0,
       "arm": {
-       "avoided_dollars": 23.140207,
-       "destroyed_dollars": 3.30589,
+       "avoided_dollars": 0.101858,
+       "destroyed_dollars": 0.058626,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 55.817972,
-       "destroyed_dollars": 21.689092,
+       "avoided_dollars": 0.0,
+       "destroyed_dollars": 3.39049,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "giant300_per_avoided_dollar_arm": 0.0,
-      "giant300_per_avoided_dollar_control": 0.0
+      "giant300_per_avoided_dollar_control": null
      },
      {
       "tercile": 1,
-      "n_members": 1490,
-      "n_releases": 643,
-      "arm_net": 17.400582,
-      "control_net": 14.594256,
-      "increment_sleeve": 2.806326,
-      "increment_dedup": 2.199792,
-      "n_paths": 1428,
-      "n_members_dropped_by_dedup": 62,
+      "n_members": 66,
+      "n_releases": 62,
+      "arm_net": -0.256806,
+      "control_net": -7.55558,
+      "increment_sleeve": 7.298774,
+      "increment_dedup": 7.291753,
+      "n_paths": 65,
+      "n_members_dropped_by_dedup": 1,
       "arm": {
-       "avoided_dollars": 56.126756,
-       "destroyed_dollars": 38.726173,
+       "avoided_dollars": 0.943145,
+       "destroyed_dollars": 1.199951,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 105.084074,
-       "destroyed_dollars": 90.489818,
+       "avoided_dollars": 0.069666,
+       "destroyed_dollars": 7.625246,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
@@ -4507,28 +4659,28 @@
      },
      {
       "tercile": 2,
-      "n_members": 309,
-      "n_releases": 230,
-      "arm_net": 18.748859,
-      "control_net": 0.988523,
-      "increment_sleeve": 17.760336,
-      "increment_dedup": 16.096842,
-      "n_paths": 280,
-      "n_members_dropped_by_dedup": 29,
+      "n_members": 926,
+      "n_releases": 926,
+      "arm_net": 57.823033,
+      "control_net": -2.584659,
+      "increment_sleeve": 60.407692,
+      "increment_dedup": 55.653297,
+      "n_paths": 889,
+      "n_members_dropped_by_dedup": 37,
       "arm": {
-       "avoided_dollars": 48.149252,
-       "destroyed_dollars": 29.400393,
-       "giant300_dollars": 2.844323,
-       "n_giant300": 2
+       "avoided_dollars": 111.890385,
+       "destroyed_dollars": 54.067352,
+       "giant300_dollars": 1.316922,
+       "n_giant300": 1
       },
       "control": {
-       "avoided_dollars": 53.833157,
-       "destroyed_dollars": 52.844634,
-       "giant300_dollars": 4.52402,
-       "n_giant300": 4
+       "avoided_dollars": 81.111703,
+       "destroyed_dollars": 83.696362,
+       "giant300_dollars": 1.091384,
+       "n_giant300": 2
       },
-      "giant300_per_avoided_dollar_arm": 0.059073,
-      "giant300_per_avoided_dollar_control": 0.084038
+      "giant300_per_avoided_dollar_arm": 0.01177,
+      "giant300_per_avoided_dollar_control": 0.013455
      }
     ]
    },
@@ -4537,51 +4689,53 @@
     "role": "ablation",
     "fold": "B",
     "friction_bps": 150.0,
+    "n_members_with_a_decision_bar": 1310,
+    "n_members_without_a_decision_bar": 2743,
     "terciles": [
      {
       "tercile": 0,
-      "n_members": 1459,
-      "n_releases": 279,
-      "arm_net": 19.735389,
-      "control_net": 33.958655,
-      "increment_sleeve": -14.223266,
-      "increment_dedup": -14.272169,
-      "n_paths": 1450,
-      "n_members_dropped_by_dedup": 9,
+      "n_members": 27,
+      "n_releases": 13,
+      "arm_net": 0.043017,
+      "control_net": -3.373579,
+      "increment_sleeve": 3.416596,
+      "increment_dedup": 3.416596,
+      "n_paths": 27,
+      "n_members_dropped_by_dedup": 0,
       "arm": {
-       "avoided_dollars": 23.02479,
-       "destroyed_dollars": 3.289401,
+       "avoided_dollars": 0.10135,
+       "destroyed_dollars": 0.058334,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 55.539568,
-       "destroyed_dollars": 21.580913,
+       "avoided_dollars": 0.0,
+       "destroyed_dollars": 3.373579,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "giant300_per_avoided_dollar_arm": 0.0,
-      "giant300_per_avoided_dollar_control": 0.0
+      "giant300_per_avoided_dollar_control": null
      },
      {
       "tercile": 1,
-      "n_members": 1490,
-      "n_releases": 643,
-      "arm_net": 17.313793,
-      "control_net": 14.521464,
-      "increment_sleeve": 2.792329,
-      "increment_dedup": 2.18882,
-      "n_paths": 1428,
-      "n_members_dropped_by_dedup": 62,
+      "n_members": 66,
+      "n_releases": 62,
+      "arm_net": -0.255525,
+      "control_net": -7.517895,
+      "increment_sleeve": 7.26237,
+      "increment_dedup": 7.255384,
+      "n_paths": 65,
+      "n_members_dropped_by_dedup": 1,
       "arm": {
-       "avoided_dollars": 55.846811,
-       "destroyed_dollars": 38.533018,
+       "avoided_dollars": 0.938441,
+       "destroyed_dollars": 1.193966,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
       "control": {
-       "avoided_dollars": 104.559945,
-       "destroyed_dollars": 90.03848,
+       "avoided_dollars": 0.069318,
+       "destroyed_dollars": 7.587213,
        "giant300_dollars": 0.0,
        "n_giant300": 0
       },
@@ -4590,28 +4744,28 @@
      },
      {
       "tercile": 2,
-      "n_members": 309,
-      "n_releases": 230,
-      "arm_net": 18.655345,
-      "control_net": 0.983592,
-      "increment_sleeve": 17.671753,
-      "increment_dedup": 16.016556,
-      "n_paths": 280,
-      "n_members_dropped_by_dedup": 29,
+      "n_members": 926,
+      "n_releases": 926,
+      "arm_net": 57.534628,
+      "control_net": -2.571767,
+      "increment_sleeve": 60.106395,
+      "increment_dedup": 55.375714,
+      "n_paths": 889,
+      "n_members_dropped_by_dedup": 37,
       "arm": {
-       "avoided_dollars": 47.909097,
-       "destroyed_dollars": 29.253752,
-       "giant300_dollars": 2.830136,
-       "n_giant300": 2
+       "avoided_dollars": 111.332307,
+       "destroyed_dollars": 53.797679,
+       "giant300_dollars": 1.310354,
+       "n_giant300": 1
       },
       "control": {
-       "avoided_dollars": 53.564653,
-       "destroyed_dollars": 52.58106,
-       "giant300_dollars": 4.501455,
-       "n_giant300": 4
+       "avoided_dollars": 80.707141,
+       "destroyed_dollars": 83.278908,
+       "giant300_dollars": 1.085941,
+       "n_giant300": 2
       },
-      "giant300_per_avoided_dollar_arm": 0.059073,
-      "giant300_per_avoided_dollar_control": 0.084038
+      "giant300_per_avoided_dollar_arm": 0.01177,
+      "giant300_per_avoided_dollar_control": 0.013455
      }
     ]
    }
@@ -4621,6 +4775,63 @@
    "rule": "E1 (score-based release) is economically closed unless some tercile shows a positive dedup increment for a score arm in BOTH folds",
    "per_arm": {
     "ablation_event_hazard_quantile_q70": {
+     "positive_terciles_dedup": {
+      "A": [
+       0,
+       1,
+       2
+      ],
+      "B": [
+       0,
+       1,
+       2
+      ]
+     },
+     "positive_in_both_folds": [
+      0,
+      1,
+      2
+     ]
+    },
+    "ablation_event_hazard_quantile_q80": {
+     "positive_terciles_dedup": {
+      "A": [
+       0,
+       1,
+       2
+      ],
+      "B": [
+       0,
+       1,
+       2
+      ]
+     },
+     "positive_in_both_folds": [
+      0,
+      1,
+      2
+     ]
+    },
+    "ablation_event_hazard_quantile_q90": {
+     "positive_terciles_dedup": {
+      "A": [
+       0,
+       1,
+       2
+      ],
+      "B": [
+       0,
+       1,
+       2
+      ]
+     },
+     "positive_in_both_folds": [
+      0,
+      1,
+      2
+     ]
+    },
+    "dollar_threshold": {
      "positive_terciles_dedup": {
       "A": [
        0,
@@ -4634,99 +4845,26 @@
       0
      ]
     },
-    "ablation_event_hazard_quantile_q80": {
-     "positive_terciles_dedup": {
-      "A": [
-       0,
-       1
-      ],
-      "B": [
-       0,
-       1
-      ]
-     },
-     "positive_in_both_folds": [
-      0,
-      1
-     ]
-    },
-    "ablation_event_hazard_quantile_q90": {
-     "positive_terciles_dedup": {
-      "A": [
-       0,
-       1,
-       2
-      ],
-      "B": [
-       1,
-       2
-      ]
-     },
-     "positive_in_both_folds": [
-      1,
-      2
-     ]
-    },
-    "dollar_threshold": {
-     "positive_terciles_dedup": {
-      "A": [
-       1,
-       2
-      ],
-      "B": [
-       2
-      ]
-     },
-     "positive_in_both_folds": [
-      2
-     ]
-    },
     "quantile_q70": {
      "positive_terciles_dedup": {
-      "A": [
-       0,
-       1,
-       2
-      ],
-      "B": [
-       0,
-       2
-      ]
+      "A": [],
+      "B": []
      },
-     "positive_in_both_folds": [
-      0,
-      2
-     ]
+     "positive_in_both_folds": []
     },
     "quantile_q80": {
      "positive_terciles_dedup": {
-      "A": [
-       0,
-       1,
-       2
-      ],
-      "B": [
-       2
-      ]
+      "A": [],
+      "B": []
      },
-     "positive_in_both_folds": [
-      2
-     ]
+     "positive_in_both_folds": []
     },
     "quantile_q90": {
      "positive_terciles_dedup": {
-      "A": [
-       0,
-       1,
-       2
-      ],
-      "B": [
-       2
-      ]
+      "A": [],
+      "B": []
      },
-     "positive_in_both_folds": [
-      2
-     ]
+     "positive_in_both_folds": []
     }
    },
    "terciles_positive_in_both_folds": [
@@ -4735,12 +4873,28 @@
      "tercile": 0
     },
     {
+     "arm": "ablation_event_hazard_quantile_q70",
+     "tercile": 1
+    },
+    {
+     "arm": "ablation_event_hazard_quantile_q70",
+     "tercile": 2
+    },
+    {
      "arm": "ablation_event_hazard_quantile_q80",
      "tercile": 0
     },
     {
      "arm": "ablation_event_hazard_quantile_q80",
      "tercile": 1
+    },
+    {
+     "arm": "ablation_event_hazard_quantile_q80",
+     "tercile": 2
+    },
+    {
+     "arm": "ablation_event_hazard_quantile_q90",
+     "tercile": 0
     },
     {
      "arm": "ablation_event_hazard_quantile_q90",
@@ -4752,39 +4906,17 @@
     },
     {
      "arm": "dollar_threshold",
-     "tercile": 2
-    },
-    {
-     "arm": "quantile_q70",
      "tercile": 0
-    },
-    {
-     "arm": "quantile_q70",
-     "tercile": 2
-    },
-    {
-     "arm": "quantile_q80",
-     "tercile": 2
-    },
-    {
-     "arm": "quantile_q90",
-     "tercile": 2
     }
    ],
    "arms_with_a_positive_tercile_in_both_folds": [
     "ablation_event_hazard_quantile_q70",
     "ablation_event_hazard_quantile_q80",
     "ablation_event_hazard_quantile_q90",
-    "dollar_threshold",
-    "quantile_q70",
-    "quantile_q80",
-    "quantile_q90"
+    "dollar_threshold"
    ],
    "every_bar_arms_with_a_positive_tercile_in_both_folds": [
-    "dollar_threshold",
-    "quantile_q70",
-    "quantile_q80",
-    "quantile_q90"
+    "dollar_threshold"
    ],
    "every_bar_arms": [
     "dollar_threshold",
@@ -4803,30 +4935,38 @@
      "positive_terciles_dedup": {
       "A": [
        0,
-       1
+       1,
+       2
       ],
       "B": [
-       0
+       0,
+       1,
+       2
       ]
      },
      "positive_in_both_folds": [
-      0
+      0,
+      1,
+      2
      ]
     },
     "ablation_event_hazard_quantile_q80": {
      "positive_terciles_dedup": {
       "A": [
        0,
-       1
+       1,
+       2
       ],
       "B": [
        0,
-       1
+       1,
+       2
       ]
      },
      "positive_in_both_folds": [
       0,
-      1
+      1,
+      2
      ]
     },
     "ablation_event_hazard_quantile_q90": {
@@ -4837,11 +4977,13 @@
        2
       ],
       "B": [
+       0,
        1,
        2
       ]
      },
      "positive_in_both_folds": [
+      0,
       1,
       2
      ]
@@ -4849,63 +4991,37 @@
     "dollar_threshold": {
      "positive_terciles_dedup": {
       "A": [
-       1,
-       2
+       0,
+       1
       ],
       "B": [
-       2
+       0
       ]
      },
      "positive_in_both_folds": [
-      2
+      0
      ]
     },
     "quantile_q70": {
      "positive_terciles_dedup": {
-      "A": [
-       0,
-       1,
-       2
-      ],
-      "B": [
-       0,
-       2
-      ]
+      "A": [],
+      "B": []
      },
-     "positive_in_both_folds": [
-      0,
-      2
-     ]
+     "positive_in_both_folds": []
     },
     "quantile_q80": {
      "positive_terciles_dedup": {
-      "A": [
-       0,
-       1,
-       2
-      ],
-      "B": [
-       2
-      ]
+      "A": [],
+      "B": []
      },
-     "positive_in_both_folds": [
-      2
-     ]
+     "positive_in_both_folds": []
     },
     "quantile_q90": {
      "positive_terciles_dedup": {
-      "A": [
-       0,
-       1,
-       2
-      ],
-      "B": [
-       2
-      ]
+      "A": [],
+      "B": []
      },
-     "positive_in_both_folds": [
-      2
-     ]
+     "positive_in_both_folds": []
     }
    },
    "terciles_positive_in_both_folds": [
@@ -4914,12 +5030,28 @@
      "tercile": 0
     },
     {
+     "arm": "ablation_event_hazard_quantile_q70",
+     "tercile": 1
+    },
+    {
+     "arm": "ablation_event_hazard_quantile_q70",
+     "tercile": 2
+    },
+    {
      "arm": "ablation_event_hazard_quantile_q80",
      "tercile": 0
     },
     {
      "arm": "ablation_event_hazard_quantile_q80",
      "tercile": 1
+    },
+    {
+     "arm": "ablation_event_hazard_quantile_q80",
+     "tercile": 2
+    },
+    {
+     "arm": "ablation_event_hazard_quantile_q90",
+     "tercile": 0
     },
     {
      "arm": "ablation_event_hazard_quantile_q90",
@@ -4931,39 +5063,17 @@
     },
     {
      "arm": "dollar_threshold",
-     "tercile": 2
-    },
-    {
-     "arm": "quantile_q70",
      "tercile": 0
-    },
-    {
-     "arm": "quantile_q70",
-     "tercile": 2
-    },
-    {
-     "arm": "quantile_q80",
-     "tercile": 2
-    },
-    {
-     "arm": "quantile_q90",
-     "tercile": 2
     }
    ],
    "arms_with_a_positive_tercile_in_both_folds": [
     "ablation_event_hazard_quantile_q70",
     "ablation_event_hazard_quantile_q80",
     "ablation_event_hazard_quantile_q90",
-    "dollar_threshold",
-    "quantile_q70",
-    "quantile_q80",
-    "quantile_q90"
+    "dollar_threshold"
    ],
    "every_bar_arms_with_a_positive_tercile_in_both_folds": [
-    "dollar_threshold",
-    "quantile_q70",
-    "quantile_q80",
-    "quantile_q90"
+    "dollar_threshold"
    ],
    "every_bar_arms": [
     "dollar_threshold",

@@ -739,26 +739,49 @@ def top5_drop(judged: list) -> tuple:
     return dropped, {d: day_sum[d] for d in dropped}, set(day_sum) - set(dropped)
 
 
-def member_niche(frame, masks: dict, tercile: np.ndarray) -> np.ndarray:
-    """Each member's dispersion REGIME: the median tercile over its state bars (-1 when it has none).
+def decision_niche(frame, tercile: np.ndarray, bars: np.ndarray, keys: list) -> dict:
+    """key -> dispersion tercile AT THE ARM'S DECISION BAR (trigger bar); -1 keys are absent.
 
-    A member's first state bar is systematically a high-predicted-dispersion moment (it is the first
-    new high past the fill), so a first-bar niche collapses ~97% of members into the top tercile and
-    carries no conditioning.  The median over the member's releasable bars is arm-independent,
-    causal, invariant to the monotone score transform, and spreads members across the terciles; the
-    tercile cuts themselves stay the frozen train-side ones.
+    The conditioning statistic is read only from rows up to and including the decision bar: the
+    arm's trigger bar is the last row it is allowed to know about, and the tercile of that single
+    row is the whole statistic.  Members with no decision bar (the arm never released them) get no
+    niche and are reported separately.
     """
-    sel = masks["state"] & (tercile >= 0)
-    idx = np.flatnonzero(sel)
-    niche = np.full(frame.n_members, -1, dtype=np.int64)
-    if idx.size == 0:
-        return niche
-    order = np.argsort(frame.mid[idx], kind="mergesort")
-    m_sorted, v_sorted = frame.mid[idx][order], tercile[idx][order]
-    bounds = np.flatnonzero(np.r_[True, m_sorted[1:] != m_sorted[:-1], True])
-    for a, b in zip(bounds[:-1], bounds[1:]):
-        niche[int(m_sorted[a])] = int(np.median(v_sorted[a:b]))
-    return niche
+    out: dict = {}
+    for i, k in enumerate(keys):
+        b = int(bars[i])
+        if b < 0:
+            continue
+        out[member_key(*k)] = int(tercile[int(frame.off[i]) + b])
+    return out
+
+
+def lookahead_guard(frame, tercile: np.ndarray, bars: np.ndarray, keys: list,
+                    statistic: dict) -> dict:
+    """Future-perturbation test: scrambling every tercile AFTER the decision bar must change nothing.
+
+    Also perturbs the decision bar itself, which must change something, so the test cannot pass by
+    the statistic being constant.
+    """
+    rng = np.random.default_rng(SEED)
+    after = tercile.copy()
+    on_bar = tercile.copy()
+    for i in range(frame.n_members):
+        b = int(bars[i])
+        if b < 0:
+            continue
+        r = int(frame.off[i]) + b
+        e = int(frame.off[i + 1])
+        if e > r + 1:
+            after[r + 1:e] = rng.integers(0, 3, size=e - r - 1)
+        on_bar[r] = (int(tercile[r]) + 1) % 3
+    same_after = decision_niche(frame, after, bars, keys) == statistic
+    changed_on_bar = sum(1 for k, v in decision_niche(frame, on_bar, bars, keys).items()
+                         if statistic.get(k) != v)
+    return {"n_members_with_a_decision_bar": len(statistic),
+            "identical_when_bars_after_the_decision_are_scrambled": bool(same_after),
+            "n_changed_when_the_decision_bar_is_perturbed": int(changed_on_bar),
+            "passed": bool(same_after and changed_on_bar > 0)}
 
 
 def member_key(day: str, ticker: str, family: str, rank) -> str:
@@ -1341,6 +1364,32 @@ def run_selftest() -> int:
          "t0_giant300_arm_n": tabs[0]["arm"]["n_giant300"],
          "t0_giant300_arm_dollars": tabs[0]["arm"]["giant300_dollars"]}))
 
+    # -- (10b) E1b: the conditioning statistic reads only the decision bar -----------------
+    class _TinyFrame:
+        pass
+    tf = _TinyFrame()
+    tf.n_members = 2
+    tf.off = np.array([0, 4, 8], dtype=np.int64)
+    tf.mid = np.repeat(np.array([0, 1], dtype=np.int64), 4)
+    tercile = np.array([0, 1, 2, 1, 2, 0, 1, 2], dtype=np.int64)
+    tiny_keys = [("d1", "AAA", "A_pm", 1), ("d2", "BBB", "A_pm", 2)]
+    bars = np.array([1, 2], dtype=np.int64)          # decisions at bar 1 and bar 2
+    stat = decision_niche(tf, tercile, bars, tiny_keys)
+    guard = lookahead_guard(tf, tercile, bars, tiny_keys, stat)
+    stat_no2 = decision_niche(tf, tercile, np.array([1, -1], dtype=np.int64), tiny_keys)
+    results.append(_case(
+        "e1b/conditioning_statistic_is_decision_time",
+        "the tercile is read at the decision bar only; scrambling every later bar changes nothing, "
+        "perturbing the decision bar changes it, and a member with no decision bar gets no niche",
+        {"m0": 1, "m1": 1, "after_scramble_identical": True, "perturb_changes": 2,
+         "guard_passed": True, "no_decision_bar_excluded": 1},
+        {"m0": stat["d1|AAA|A_pm|1"], "m1": stat["d2|BBB|A_pm|2"],
+         "after_scramble_identical": guard[
+             "identical_when_bars_after_the_decision_are_scrambled"],
+         "perturb_changes": guard["n_changed_when_the_decision_bar_is_perturbed"],
+         "guard_passed": guard["passed"],
+         "no_decision_bar_excluded": len(stat_no2)}))
+
     # -- (11) E1b: the closure rule --------------------------------------------------------
     def fake_cell(arm, fold, incs, bps=100.0):
         return {"arm": arm, "fold": fold, "friction_bps": bps,
@@ -1635,22 +1684,15 @@ def main(argv=None) -> int:
         # ---- E1b: the dispersion splitter, frozen before any outcome is read ---------------
         split = dispersion_splitter(frame, masks, disp_label, member_day, letter, train_block,
                                     eval_block, member_keep if args.smoke_frac < 1.0 else None)
-        niche = member_niche(frame, masks, split["tercile"])
-        niche_by_key = {member_key(*keys[i]): int(niche[i]) for i in range(frame.n_members)}
-        in_eval = frame.m_block == eval_block
         e1b_splitter[letter] = {
             **split["diagnostics"],
-            "eval_members": int(in_eval.sum()),
-            "eval_members_without_a_state_bar": int(((niche < 0) & in_eval).sum()),
-            "eval_members_per_tercile": [int(((niche == t) & in_eval).sum()) for t in (0, 1, 2)],
-            "train_members_are_never_niche_assigned": True,
+            "conditioning_statistic": ("the predicted-dispersion tercile AT THE ARM'S OWN DECISION "
+                                       "BAR (its trigger bar), read from the frozen row terciles"),
+            "lookahead_guard": {},
         }
         print(f"[e1] fold {letter} dispersion splitter: cuts "
               f"{[round(float(c), 4) for c in split['cuts']]} tercile rows "
-              f"{split['diagnostics']['tercile_row_counts']} eval members/tercile "
-              f"{e1b_splitter[letter]['eval_members_per_tercile']} "
-              f"({e1b_splitter[letter]['eval_members_without_a_state_bar']} without a state bar) "
-              f"({time.time() - t0:.0f}s)", flush=True)
+              f"{split['diagnostics']['tercile_row_counts']} ({time.time() - t0:.0f}s)", flush=True)
 
         # controls first: their per-day sums are the same-basis reference
         control_cells: dict = {bps: {} for bps in args.bps}
@@ -1677,6 +1719,13 @@ def main(argv=None) -> int:
             bars = channel_release(frame, masks, score, thr, eval_block, decision,
                                    member_keep if args.smoke_frac < 1.0 else None)
             triggers = triggers_of(keys, bars)
+            # E1b conditioning statistic: the dispersion tercile at THIS arm's decision bar, plus
+            # the future-perturbation guard that proves no post-decision row enters it.
+            niche_by_key = decision_niche(frame, split["tercile"], bars, keys)
+            guard = lookahead_guard(frame, split["tercile"], bars, keys, niche_by_key)
+            e1b_splitter[letter]["lookahead_guard"][arm] = guard
+            if not guard["passed"]:
+                failures.append(f"fold {letter} {arm}: E1b look-ahead guard failed {guard}")
             rule = ScoreRelease(name=f"score:{arm}:fold{letter}", kind="scan", triggers=triggers,
                                 params={"arm": arm, "role": role, "variant": variant,
                                         "quantile": quantile, "fold": letter,
@@ -1700,6 +1749,9 @@ def main(argv=None) -> int:
                 cells_by_arm.setdefault(arm, []).append(cid)
                 e1b_cells[cid] = {
                     "arm": arm, "role": role, "fold": letter, "friction_bps": bps,
+                    "n_members_with_a_decision_bar": len(niche_by_key),
+                    "n_members_without_a_decision_bar":
+                        int(cell["n_members_judged"]) - len(niche_by_key),
                     "terciles": niche_increments(rows, control_rows[bps], niche_by_key,
                                                  top5_drop(judged_rows(rows))[2]),
                 }
@@ -1830,6 +1882,15 @@ def main(argv=None) -> int:
                              "train block; the eval-side prediction-vs-label correlation is "
                              "computed after the cuts exist and is reported as POST_FREEZE"),
                 },
+                "e1b_conditioning_statistic_reads_no_post_decision_row": {
+                    letter: {arm: g["passed"] for arm, g in v["lookahead_guard"].items()}
+                    for letter, v in e1b_splitter.items()},
+                "e1b_lookahead_guards_all_passed": all(
+                    g["passed"] for v in e1b_splitter.values()
+                    for g in v["lookahead_guard"].values()),
+                "e1b_retraction": ("the member-median predicted-dispersion niche is retracted as a "
+                                   "look-ahead artifact and deleted from the code path; the "
+                                   "conditioning statistic is the decision-bar tercile"),
                 "cells_complete": bool(len(cells) == expected_cells),
                 "ledger_net_identities_hold": all(
                     cells[c]["ledger"]["checks"]["net_identity"] for c in cells),
@@ -2031,13 +2092,25 @@ def main(argv=None) -> int:
                                "discipline): each day half is scored by the model fitted on the "
                                "other half, so the tercile cuts see no evaluation row"),
                 "eval_side": "predicted by the model fitted on the whole train block",
-                "niche_moment": ("a member's tercile at its FIRST state bar (the first completed "
-                                 "bar where a new high has already occurred) — arm-independent, so "
-                                 "the terciles partition the same judged members for every arm and "
-                                 "decompose the unconditional increment"),
+                "conditioning_statistic": ("the predicted-dispersion tercile at the arm's OWN "
+                                           "decision bar (its trigger bar) — the last row the arm is "
+                                           "allowed to know about; members the arm never released "
+                                           "have no decision bar and are reported separately"),
+                "lookahead_guard": ("future-perturbation test per fold and arm: scrambling every "
+                                    "tercile strictly AFTER the decision bar leaves the statistic "
+                                    "identical, while perturbing the decision bar itself changes it "
+                                    "(so the test cannot pass by the statistic being constant)"),
                 "cuts_frozen_before_outcomes": True,
                 "by_fold": e1b_splitter,
             },
+            "retraction": ("An earlier revision of this block conditioned on the member-level "
+                           "MEDIAN predicted-dispersion tercile over the member's state bars. That "
+                           "statistic reads bars AFTER the release decision (87-99% of its "
+                           "top-tercile members were top-tercile only because of post-decision "
+                           "bars), so its positive niche increments were a look-ahead artifact: the "
+                           "median statistic has been DELETED (not kept under an invalid label) and "
+                           "replaced by the decision-bar tercile. The numbers below are the "
+                           "corrected ones."),
             "increment_definition": {
                 "sleeve": "sum over the arm's judged members in the tercile of (arm delta - giveback:10 delta)",
                 "dedup": ("the same increment after collapsing shared (day, ticker) paths with the "
