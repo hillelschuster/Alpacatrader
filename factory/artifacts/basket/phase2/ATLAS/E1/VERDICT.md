@@ -2,7 +2,7 @@
 
 Producer `factory/scripts/basket_atlas_e1.py` (sha256 `1305c17149b7b6f075d650a5b0ed40041037eac20e85d9a3e21372f03be055b9`) →
 `factory/artifacts/basket/phase2/ATLAS/E1/E1.json` (sha256 `d33cddb28f2a844abbe1f1e43bbf457ed9678cb07fa5daa669f78d6c045a6ac0`, 2952320 bytes),
-`E1/selftest.json` (sha256 `4ac1df9c2e031604c56ba4f1609ba2b82f8c1274cb85727100085503abbc112e`, 18 unit/integration cases,
+`E1/selftest.json` (sha256 `0b782b2e5e11c9942a15531b067300685435230bf1fe2db7fb845e5ef02318f0`, 18 unit/integration cases,
 PASS) and this file. Panel `ATLAS/panel.parquet` sha `2a021eda878cdbe53e41d4cc88e2d8ba3b14d9a3a819723d9f679c8aca7c3488` —
 1900432 rows, 6160 members, 273
 terminal-censored members. Imported code (shas in `E1.json:provenance`):
