@@ -1,0 +1,127 @@
+{
+ "blocker_id": "B6_missing_net_manifest_2026_05_21_29",
+ "code_id": "atlas-net-index-reconcile-v0",
+ "contract_id": "atlas.net_index_reconcile",
+ "evidence": {
+  "emit_rule": "factory/artifacts/basket/phase2/ATLAS/TAPE/OBSERVATION/v0/acquisition/net_reconciliation.json is written ONLY when (a) every parent_sha below matches the file bytes exactly, (b) every target day entry is complete, and (c) the on-disk derived index is byte-identical to the canonical manifest rebuild. A blocked, dry-run, inspected or drifted run prints its report, exits non-zero where it is blocked, and leaves the evidence path untouched.",
+  "path": "factory/artifacts/basket/phase2/ATLAS/TAPE/OBSERVATION/v0/acquisition/net_reconciliation.json",
+  "schema": "atlas/net_reconciliation/v0",
+  "written_by": "factory/scripts/atlas_net_index_reconcile.py --stage repair|--stage verify",
+  "not_written_by": "this tool never writes blockers_resolved.json, the frozen observation contract/lock, or any market data file; resolution is the parent verification's act and it needs its own evidence shas"
+ },
+ "market_data_absent_from_contract": "this contract names the source files, the hash field that binds each file to its manifest, and the status field that decides completeness. Per-day file/manifest sha256 values and the rebuilt index sha256 are RUN facts and live in net_reconciliation.json, never in a tracked contract.",
+ "parent_shas": {
+  "factory/scripts/atlas_net_index_reconcile.py": "94292725ddba256f767dcee8ff38643e29893cf6ae6830bb678614f5cf7e1117",
+  "factory/scripts/basket_sim.py": "852434d78c668db77b31eb334238ee4dce93f2aba83e9fb197e28be0a77e0dfc"
+ },
+ "parent_sha_rule": "recomputed from the file bytes at every run; any drift (edited code, edited guard) refuses the stage and no evidence is written. Re-stamp these two values only in the same commit that changes the file.",
+ "prohibitions": [
+  "no source file mutation: bars/, trades/, quotes/, coverage/ and every per-day manifest are read-only; only the derived index is replaced",
+  "no parquet is ever opened for data; per-day verification hashes file bytes, the rebuild reads manifests only, and a sealed day's manifest metadata may appear in the index without its bytes ever being read",
+  "no network fetch: a missing or corrupt day is reported, never re-acquired",
+  "no sealed or reserved day is ever a target: basket_sim.guard_day refuses 2024-*, 2025-01* and 2026-06/07/08 before any path is opened",
+  "no fabricated record: a day with a missing file, a missing manifest, a hash mismatch or a non-ok status stays blocked and produces no evidence"
+ ],
+ "purpose": "Freeze the provenance rules that let the SIP net DERIVED manifest index be rebuilt and admitted for B6: which physical files and per-day manifests count, which hash field binds them, how the new index is made deterministic, and what completeness a guarded dev-day target must reach before the shared evidence exists.",
+ "schema": "atlas/net_contract/v0",
+ "source": {
+  "coverage": {
+   "data_file": "coverage/<day>.json",
+   "hash_fields": {
+    "data": "none declared; the census is verified by parse + day id, and the derived bars are bound through the trades source hash below"
+   },
+   "kind_marker": "the record carries the day census (symbols/rows_merged/classes) and no 'kind' field",
+   "manifest": "coverage/<day>.manifest.json",
+   "status_field": "status",
+   "status_semantics": "status must be 'ok'; provider_unavailable true blocks the day (provider-side completeness is not claimable)"
+  },
+  "index": {
+   "derived": true,
+   "name": "manifest_index.jsonl",
+   "rebuild_inputs": "every <root>/*/*.manifest.json for kinds coverage, quotes, trades",
+   "role": "derived artifact - exactly the concatenation of the per-day manifests; it is never a source of truth and is always rebuildable from them"
+  },
+  "kinds": {
+   "coverage": {
+    "data_file": "coverage/<day>.json",
+    "hash_field": "src_sha256 (of trades/<day>.parquet)",
+    "manifest": "coverage/<day>.manifest.json",
+    "status_field": "status"
+   },
+   "quotes": {
+    "data_file": "quotes/<day>.parquet",
+    "hash_field": "sha256",
+    "manifest": "quotes/<day>.manifest.json",
+    "status_field": "status"
+   },
+   "trades": {
+    "data_file": "trades/<day>.parquet",
+    "hash_field": "sha256",
+    "manifest": "trades/<day>.manifest.json",
+    "status_field": "status"
+   }
+  },
+  "root": {
+   "default": "the resolved market data root's sip/net (BASKET_DATA_ROOT, then the worktree data/, then /home/hillel/projects/Alpacatrader/data); data/sip/net is a symlink onto the SIP archive",
+   "flag": "--root takes an ABSOLUTE net root; a relative root is refused"
+  },
+  "bars": {
+   "data_file": "bars/<day>.parquet",
+   "manifest": null,
+   "note": "derived bars carry no per-day manifest of their own; coverage/<day>.manifest.json is their provenance record, and the file is admitted only when that record verifies and the day's trades source hash matches"
+  }
+ },
+ "target_completeness": {
+  "day_rule": "a target day is a canonical guarded dev day (basket_sim.dev_days(), the anatomy date stems) and is refused before any path is opened when sealed or reserved",
+  "files_required": [
+   "bars/<day>.parquet",
+   "trades/<day>.parquet",
+   "quotes/<day>.parquet",
+   "coverage/<day>.json"
+  ],
+  "manifests_required": [
+   "coverage/<day>.manifest.json",
+   "trades/<day>.manifest.json",
+   "quotes/<day>.manifest.json"
+  ],
+  "rules": [
+   "every required file exists, is non-empty and hashes (sha256 of the bytes) as declared by its manifest where the manifest declares a hash",
+   "coverage/<day>.manifest.json src_sha256 equals the sha256 of trades/<day>.parquet (the derived bars stay bound to their source)",
+   "every required manifest declares the same day id and status 'ok'; coverage provider_unavailable must be false",
+   "the rebuilt index carries all three manifest records for the day, byte-equal to the manifests on disk",
+   "any missing file, missing kind, hash mismatch, unparsable manifest, day mismatch or non-ok status leaves the day incomplete and emits no evidence"
+  ]
+ },
+ "target_days": [
+  "2026-05-21",
+  "2026-05-29"
+ ],
+ "index_determinism": {
+  "byte_form": "one record per line, json.dumps(record, separators=(',', ':'), sort_keys=True) + '\\n'",
+  "encoding": "utf-8, LF terminated, final newline present",
+  "inputs": "only the per-day manifest JSON objects; no parquet is read and no clock, host or elapsed value is synthesised",
+  "ordering": "(day, kind rank [coverage < quotes < trades], manifest relpath) - a total order, so the rebuild is byte-identical for identical inputs",
+  "replace": "write manifest_index.jsonl.tmp then os.replace onto manifest_index.jsonl; a reader never observes a partial index",
+  "record_set": "all per-day manifests present under the root, including a sealed day's metadata; sealed bytes are never read and sealed days are never reconciliation targets"
+ },
+ "tool": {
+  "cli": [
+   "--stage inspect (read-only report)",
+   "--stage repair (verify, snapshot, atomic rebuild, re-verify, emit)",
+   "--stage repair --dry-run (report the rebuild, never replace)",
+   "--stage verify (read-only: require the index to already be the canonical rebuild, then emit)",
+   "--days (comma/space separated; default the target_days above)",
+   "--root (absolute net root)",
+   "--out-evidence (evidence path)",
+   "--contract (net_contract.json path)",
+   "--selftest (synthetic: wrong hash, missing kind, missing file, stale/missing rows, sealed and non-dev refusal, deterministic rebuild, contract parent-sha drift)"
+  ],
+  "exit_codes": {
+   "0": "ok / inspected (nothing was admitted)",
+   "1": "blocked: incomplete day, non-canonical index or contract parent-sha drift (no evidence written)",
+   "2": "refused: relative or non-net root, or a sealed/reserved/non-dev day"
+  },
+  "script": "factory/scripts/atlas_net_index_reconcile.py"
+ },
+ "version": "v0"
+}

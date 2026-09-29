@@ -2620,3 +2620,15 @@ no family positive out-of-block in both blocks for CS-1..CS-4; CS-5 weak-only (<
 researches/ATLAS-PHASE2-CLOSURE.md. Every verdict-carrying artifact has an independent debug pass;
 all runs byte-reproducible. Standing: only validated executable mechanism remains the H025 flush
 rule (separate workstream); the peak-relative ruler is the strongest management policy tested.
+
+## 2026-09-30 — Tape Atlas resumed; SIP net index repaired
+Research center: `researches/PLAN-TAPE-ATLAS.md`; observation before geometry, geometry before
+future anatomy, economics only afterward. Prior E1/E3 negatives constrain their tested
+formulations, not raw sequence/retrieval/race discovery.
+Actual local canary was a first run, not a completed final deterministic chain; no `verify.json`
+survived. Partial gate work recovered. Core and quote-channel readiness are now separate.
+Verified B6 repair: existing raw day files/manifests for 2026-05-21/29 were intact; the derived
+net index omitted six entries and contained forty stale entries. Rebuilt atomically from
+per-day manifests: 3,198 -> 3,204 entries, sha256 `446090fd9f60524934a500504a1f73fa2a92d01daf68292f634dd8a171be42b6`.
+Real `atlas_net_index_reconcile.py --stage repair` and `--stage verify` both exited 0;
+no fetch, no market-source mutation. B1/B2 acquisition and final canary closure remain in progress.

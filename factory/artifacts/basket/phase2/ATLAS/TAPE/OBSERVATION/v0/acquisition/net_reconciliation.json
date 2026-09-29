@@ -1,0 +1,255 @@
+{
+ "blocker_id": "B6_missing_net_manifest_2026_05_21_29",
+ "code_id": "atlas-net-index-reconcile-v0",
+ "contract": {
+  "contract_id": "atlas.net_index_reconcile",
+  "target_days": [
+   "2026-05-21",
+   "2026-05-29"
+  ],
+  "version": "v0"
+ },
+ "crosscheck": {
+  "days_missing_from_index_after": [],
+  "days_stale_in_index_after": [],
+  "fetches": 0,
+  "index_is_canonical_rebuild": true,
+  "index_rows_actual": 3204,
+  "index_rows_expected": 3204,
+  "index_rows_missing": [],
+  "index_rows_orphan": [],
+  "index_rows_stale": [],
+  "manifests_on_disk": 3204,
+  "sealed_parquet_reads": 0,
+  "source_files_mutated": false
+ },
+ "days": {
+  "2026-05-21": {
+   "complete": true,
+   "counts": {
+    "classes": {
+     "healthy_raw": 43,
+     "provider_only": 2,
+     "unresolved": 0
+    },
+    "quotes_errors": [],
+    "quotes_rows": 600646,
+    "quotes_symbols_requested": 15,
+    "quotes_symbols_with_data": 15,
+    "rows_merged": 12904,
+    "source_trades": "/mnt/c/Users/\u05d4\u05dc\u05dc/Desktop/algo projects/Alpacatrader/data/sip/net/trades/2026-05-21.parquet",
+    "symbols": 45,
+    "trades_errors": [],
+    "trades_rows": 2791809,
+    "trades_symbols_requested": 45,
+    "trades_symbols_with_data": 45
+   },
+   "day": "2026-05-21",
+   "files": {
+    "bars": {
+     "bytes": 185006,
+     "hash_mode": "sha256_bytes",
+     "path": "bars/2026-05-21.parquet",
+     "present": true,
+     "sha256": "8bee9582012e9dd262bf41ec560a78a79930d25c821a36ff480567315c5eb82e",
+     "status": "ok"
+    },
+    "coverage": {
+     "bytes": 8388,
+     "hash_mode": "sha256_bytes",
+     "path": "coverage/2026-05-21.json",
+     "present": true,
+     "sha256": "f2b081e5b9d3be0d79c76f2d176f54391038555de8aa7502cc91b136408aa53c",
+     "status": "ok"
+    },
+    "quotes": {
+     "bytes": 2831418,
+     "hash_mode": "sha256_bytes",
+     "path": "quotes/2026-05-21.parquet",
+     "present": true,
+     "sha256": "999d47db1c7356fa18ab237dcb1f68bb6b1edb040410eca0c953300c18982ca6",
+     "status": "ok"
+    },
+    "trades": {
+     "bytes": 23649588,
+     "hash_mode": "sha256_bytes",
+     "path": "trades/2026-05-21.parquet",
+     "present": true,
+     "sha256": "d7e0b9158b60bf418cbdefa2a4987215e79fa43675f60e37f518616a7793c3aa",
+     "status": "ok"
+    }
+   },
+   "index_rows": {
+    "present_after": [
+     "coverage",
+     "quotes",
+     "trades"
+    ],
+    "present_before": [
+     "coverage",
+     "quotes",
+     "trades"
+    ],
+    "record_count": 3,
+    "stale_after": [],
+    "stale_before": []
+   },
+   "manifests": {
+    "coverage": {
+     "declared_day": "2026-05-21",
+     "path": "coverage/2026-05-21.manifest.json",
+     "present": true,
+     "sha256": "9fe3d018347679048cd89c079d9f5a617e12fe579d9e32072549dea54c4dee91",
+     "status": "ok"
+    },
+    "quotes": {
+     "declared_day": "2026-05-21",
+     "path": "quotes/2026-05-21.manifest.json",
+     "present": true,
+     "sha256": "2edb77859665e72207fbd1ede4324bcb9fe18a9cb168edf43bada43f1912bc55",
+     "status": "ok"
+    },
+    "trades": {
+     "declared_day": "2026-05-21",
+     "path": "trades/2026-05-21.manifest.json",
+     "present": true,
+     "sha256": "526dbadff02237c1d5650d48842a80d2283581a908f94d58a2c3d985cd1f9801",
+     "status": "ok"
+    }
+   },
+   "problems": [],
+   "status": "ok",
+   "verified": true
+  },
+  "2026-05-29": {
+   "complete": true,
+   "counts": {
+    "classes": {
+     "healthy_raw": 53,
+     "provider_only": 8,
+     "unresolved": 0
+    },
+    "quotes_errors": [],
+    "quotes_rows": 853019,
+    "quotes_symbols_requested": 17,
+    "quotes_symbols_with_data": 17,
+    "rows_merged": 15371,
+    "source_trades": "/mnt/c/Users/\u05d4\u05dc\u05dc/Desktop/algo projects/Alpacatrader/data/sip/net/trades/2026-05-29.parquet",
+    "symbols": 61,
+    "trades_errors": [],
+    "trades_rows": 5060650,
+    "trades_symbols_requested": 61,
+    "trades_symbols_with_data": 61
+   },
+   "day": "2026-05-29",
+   "files": {
+    "bars": {
+     "bytes": 219567,
+     "hash_mode": "sha256_bytes",
+     "path": "bars/2026-05-29.parquet",
+     "present": true,
+     "sha256": "e3ac44e210ae25cfe0f35eb2b447c6bfb39561be7c59ae4ba6f33464ec7a8fc2",
+     "status": "ok"
+    },
+    "coverage": {
+     "bytes": 11278,
+     "hash_mode": "sha256_bytes",
+     "path": "coverage/2026-05-29.json",
+     "present": true,
+     "sha256": "040976577bc798b63122f3fcb7f76c9f11cb782c52fbee316e17735cde8b74f1",
+     "status": "ok"
+    },
+    "quotes": {
+     "bytes": 4361124,
+     "hash_mode": "sha256_bytes",
+     "path": "quotes/2026-05-29.parquet",
+     "present": true,
+     "sha256": "558e88d0ae04c14d848ecc391220023b165761759d22ca77f817ba45269131cb",
+     "status": "ok"
+    },
+    "trades": {
+     "bytes": 43065493,
+     "hash_mode": "sha256_bytes",
+     "path": "trades/2026-05-29.parquet",
+     "present": true,
+     "sha256": "f1ad27a64b42d4a8c051e0efa3a7aa8e14ece3e889611c1e15c8de4e7c857b44",
+     "status": "ok"
+    }
+   },
+   "index_rows": {
+    "present_after": [
+     "coverage",
+     "quotes",
+     "trades"
+    ],
+    "present_before": [
+     "coverage",
+     "quotes",
+     "trades"
+    ],
+    "record_count": 3,
+    "stale_after": [],
+    "stale_before": []
+   },
+   "manifests": {
+    "coverage": {
+     "declared_day": "2026-05-29",
+     "path": "coverage/2026-05-29.manifest.json",
+     "present": true,
+     "sha256": "769f70edde5662b89bc8fdee212002def5c5789b21c4ba1a5bd4bc3700d64060",
+     "status": "ok"
+    },
+    "quotes": {
+     "declared_day": "2026-05-29",
+     "path": "quotes/2026-05-29.manifest.json",
+     "present": true,
+     "sha256": "fe8e06dd1ab8084062365c553f9d3631af74825b768837e42fdc3cbe9a0fa690",
+     "status": "ok"
+    },
+    "trades": {
+     "declared_day": "2026-05-29",
+     "path": "trades/2026-05-29.manifest.json",
+     "present": true,
+     "sha256": "f25d182508ae2ae819af305528cc4056649ea9de92369fc1d5ad76b90835f8b4",
+     "status": "ok"
+    }
+   },
+   "problems": [],
+   "status": "ok",
+   "verified": true
+  }
+ },
+ "derived_index": {
+  "atomic_replace": false,
+  "canonical_sha256": "446090fd9f60524934a500504a1f73fa2a92d01daf68292f634dd8a171be42b6",
+  "derived_only": true,
+  "manifests_expected": 3204,
+  "path": "manifest_index.jsonl",
+  "pre_repair_snapshot": null,
+  "rebuilt": false,
+  "rows": 3204,
+  "rows_after": 3204,
+  "rows_before": 3204,
+  "sha256": "446090fd9f60524934a500504a1f73fa2a92d01daf68292f634dd8a171be42b6",
+  "sha256_after": "446090fd9f60524934a500504a1f73fa2a92d01daf68292f634dd8a171be42b6",
+  "sha256_before": "446090fd9f60524934a500504a1f73fa2a92d01daf68292f634dd8a171be42b6",
+  "source_files_mutated": false
+ },
+ "generated_at_utc": "2026-09-29T22:29:35.572083+00:00",
+ "parent_shas": {
+  "factory/scripts/atlas_net_index_reconcile.py": "94292725ddba256f767dcee8ff38643e29893cf6ae6830bb678614f5cf7e1117",
+  "factory/scripts/basket_sim.py": "852434d78c668db77b31eb334238ee4dce93f2aba83e9fb197e28be0a77e0dfc",
+  "net_contract.json": "622bde103e8c76b40e86b26cc4320ae5e77e8dea7f3aa20ec9411afaf19645af"
+ },
+ "root": "/home/hillel/algo projects/data/Alpacatrader/sip/net",
+ "schema": "atlas/net_reconciliation/v0",
+ "stages_run": [
+  "verify"
+ ],
+ "status": "ok",
+ "target_days": [
+  "2026-05-21",
+  "2026-05-29"
+ ],
+ "version": "v0"
+}
