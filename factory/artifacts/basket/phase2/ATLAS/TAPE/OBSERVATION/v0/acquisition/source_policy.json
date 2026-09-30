@@ -1,0 +1,134 @@
+{
+ "acquisition_feed": "sip",
+ "captured_at": "2026-09-30",
+ "evidence": {
+  "baseline_lane_b1_feed_is_unknown": "factory/artifacts/basket/data_provenance.json families.clean_ohlcv_YYYY-MM.parquet: provider 'inherits ohlcv family (HF mito0o852)', feed 'unknown', producer factory/scripts/clean_month.py (price_floor 2.0, min_volume 100). factory/artifacts/basket/DATA_PROVENANCE.md records the same and lists 'Origin of clean_ohlcv_2025-02 raw input' as unresolvable from local code and files. There is no raw sibling lane for 2025-02.",
+  "baseline_lane_b2_feed_is_sip": "factory/artifacts/basket/data_provenance.json families.'backfill/clean_ohlcv_2026-03..2026-08': provider Alpaca, feed SIP, producer factory/scripts/backfill_alpaca.py (raw) then clean_month.py. The acquisition contract's own blocker entry calls backfill/ohlcv_<month>.parquet the 'raw SIP backfill' lane, and the v3 manifests carry its digest in input_sha256.baseline_lane.",
+  "compact_sip_feed_is_sip": "data/sip/universe/rth/<day>.parquet is the day's own SIP query of the same PIT roster (alpaca-py), unfiltered: the primary same-feed evidence of 'this name printed'. It carries per-symbol bar counts, not bars, so it cannot yield witness rows - and it never needs to, because it IS the acquisition feed and its zeros are hard.",
+  "dxr_2025_02_03": "the case that forced this policy. The replaced B1 fallback carries one 12:55 ET bar for DXR (O=H=L=C=7.78, volume 124); the SIP minute-bar response returns no bar (a second independent SIP pull agrees), while the SIP trade endpoint shows 24 prints / 501 shares, every print an auction or odd-lot condition for which the provider emits no minute bar, and the daily bar is n=0/v=0. Not a non-trader, not a tape revision, not an identity or alias problem: a cross-feed disagreement, preserved and reported.",
+  "why_pins": "each declared source carries a sha256 pin per month where the lane is durable. A pin that no longer matches the file on disk means the origin archive was replaced or edited, and every claim made against it is void."
+ },
+ "feed_classes": {
+  "sip": {
+   "blocks_admission_when_expected_positive_and_absent": true,
+   "expected_positive_zero": "same_feed_contradictory_zero",
+   "matches_acquisition_feed": true,
+   "may_require_sip_minute_bar": true
+  },
+  "unknown": {
+   "blocks_admission_when_expected_positive_and_absent": false,
+   "expected_positive_zero": "cross_feed_bar_not_reproduced",
+   "matches_acquisition_feed": false,
+   "may_require_sip_minute_bar": false,
+   "preserve": "cross_feed_witness_rows"
+  }
+ },
+ "forbidden": [
+  "blockers_resolved.json (resolution is the parent verification's act and needs its own evidence shas)",
+  "declaring a cross-feed witness a non-trader, or relabelling its rows as SIP",
+  "requiring the currently installed tool hash to equal a historical producer's hash",
+  "re-pointing a blocker at another blocker's already-verified root, or changing its pinned producer/contract",
+  "refetching or rewriting any day of a root whose bytes are pinned by a capture"
+ ],
+ "per_blocker": {
+  "B1_raw_2025_02": {
+   "attestation_rel": "evidence/acquisition_admission_feb2025.json",
+   "expected_days": 19,
+   "producer": {
+    "code_sha256_at_capture": "7ed53e5bd220d21c3bdec21cf4ce9a9f90f91704586031280ad5591d4a988a85",
+    "contract_sha256_at_capture": "42f1c7bb0f6660619ca6dba6bf5d16cccf904a8cebcf36ed3f2abef88958122b",
+    "contract_snapshot_path": "factory/artifacts/basket/phase2/ATLAS/TAPE/OBSERVATION/v0/acquisition/producers/atlas_acquisition_contract.v4.json",
+    "contract_snapshot_sha256": "42f1c7bb0f6660619ca6dba6bf5d16cccf904a8cebcf36ed3f2abef88958122b",
+    "snapshot_path": "factory/artifacts/basket/phase2/ATLAS/TAPE/OBSERVATION/v0/acquisition/producers/atlas_acquire_sip_bars.v4.py",
+    "snapshot_sha256": "7ed53e5bd220d21c3bdec21cf4ce9a9f90f91704586031280ad5591d4a988a85"
+   },
+   "root_rel": "atlas/acquisition/v4",
+   "scope": "feb2025",
+   "sources": [
+    "compact_sip",
+    "baseline_lane_b1"
+   ],
+   "version": "v4"
+  },
+  "B2_raw_roster_2026_04_05": {
+   "attestation_rel": "evidence/acquisition_admission_aprmay2026.json",
+   "expected_days": 41,
+   "producer": {
+    "code_sha256_at_capture": "ce4b97d97869689730801072130bc148706d23359644ac472d6d148aee2dad58",
+    "contract_sha256_at_capture": "1ebe78500370e88a02753f7b408fcc87188cbdf78a40e4ad68a2d5849bab67c5",
+    "contract_snapshot_path": "factory/artifacts/basket/phase2/ATLAS/TAPE/OBSERVATION/v0/acquisition/producers/atlas_acquisition_contract.v3.json",
+    "contract_snapshot_sha256": "1ebe78500370e88a02753f7b408fcc87188cbdf78a40e4ad68a2d5849bab67c5",
+    "snapshot_path": "factory/artifacts/basket/phase2/ATLAS/TAPE/OBSERVATION/v0/acquisition/producers/atlas_acquire_sip_bars.v3.py",
+    "snapshot_sha256": "ce4b97d97869689730801072130bc148706d23359644ac472d6d148aee2dad58"
+   },
+   "root_rel": "atlas/acquisition/v3",
+   "scope": "aprmay2026",
+   "sources": [
+    "compact_sip",
+    "baseline_lane_b2"
+   ],
+   "version": "v3"
+  }
+ },
+ "policy_id": "atlas.acquisition.feed-compatibility",
+ "principle": "A source may oblige the acquisition to emit a SIP minute bar only when its own feed identity equals the acquisition feed. A source whose feed identity is unknown or different cannot demand a bar the SIP feed does not build: its observation is reported, its ORIGINAL rows are preserved, and the archive stays authoritative for that proxy. It is never called a non-trader and never relabelled as SIP.",
+ "schema": "atlas.acquisition.source-policy.v0",
+ "sources": {
+  "baseline_lane_b1": {
+   "counts_window": "in_window",
+   "evidence": "the lane B1 replaces (the acquisition contract calls it the 'CLEAN FALLBACK, $2/100-share floors'). Filtered, not constructed by us, feed identity unknown, no raw sibling for 2025-02.",
+   "feed": "unknown",
+   "feed_basis": "declared from factory/artifacts/basket/data_provenance.json (feed 'unknown'); NOT an inference from the numbers",
+   "path_template": "clean_ohlcv_<month>.parquet",
+   "provenance_ref": "factory/artifacts/basket/data_provenance.json#families.clean_ohlcv_YYYY-MM.parquet",
+   "provider": "mito0o852/OHLCV-1m (Hugging Face)",
+   "role": "replaced_baseline",
+   "sha256_pins": {
+    "2025-02": "00d2a2e04fd480a74aabdc541e54b6ff52eadf96c60efbe02336db68965fc43e"
+   },
+   "upstream_provider": "Finnhub (documented in factory/AGENTS.md; not independently verifiable from code)",
+   "witness_rows_available": true
+  },
+  "baseline_lane_b2": {
+   "counts_window": "in_window",
+   "evidence": "the raw lane B2 supplements and keeps in place. Its own names stay covered by the lane; only evidence-backed missing names are requested.",
+   "feed": "sip",
+   "feed_basis": "declared from factory/artifacts/basket/data_provenance.json (backfill family: provider Alpaca, feed SIP) and from the acquisition contract's own blocker entry ('raw SIP backfill')",
+   "path_template": "backfill/ohlcv_<month>.parquet",
+   "provenance_ref": "factory/artifacts/basket/data_provenance.json#families.backfill/clean_ohlcv_2026-03..2026-08",
+   "provider": "alpaca",
+   "role": "supplemented_baseline",
+   "sha256_pins": {
+    "2026-04": "21f252ba48c4feea837a9d8f3bd7c1ef4056a1a1d6d2db30667e1a4d0fd25bfb",
+    "2026-05": "0a6762194e5af002155e036e43e048e6406a9315e1ca083057400afec1474358"
+   },
+   "witness_rows_available": true
+  },
+  "compact_sip": {
+   "counts_window": "source_reported",
+   "evidence": "the day's own SIP query of the same PIT roster (alpaca-py), unfiltered: the primary same-feed evidence of 'this name printed'. It carries per-symbol bar counts, not bars.",
+   "feed": "sip",
+   "path_template": "sip/universe/rth/<day>.parquet",
+   "provider": "alpaca",
+   "role": "obligation_evidence",
+   "sha256_pins": {},
+   "witness_rows_available": false
+  }
+ },
+ "status": "frozen",
+ "validator": {
+  "checks": [
+   "schema is atlas.acquisition.source-policy.v0 and acquisition_feed is the feed this producer acquires",
+   "every feed class in REQUIRED_FEED_CLASSES is declared with exactly the semantics fixed in code, so a policy cannot relabel a feed to change whose evidence counts",
+   "every source declares role, feed, a data-root-relative path_template and a counts_window, and its feed class exists",
+   "every source whose feed is NOT the acquisition feed is witness_rows_available and counts on the same closed projection window (its preserved rows must be exactly reproducible)",
+   "the per_blocker set is exactly the blocker ids this producer knows, each with the matching scope, a version, a root_rel, an attestation_rel and sources that include an obligation_evidence source and a baseline source",
+   "each blocker's declared expected_days equals the dev calendar via full_scope_day_set() (19 for B1, 41 for B2)",
+   "each blocker's producer snapshot exists, and its digest IS both the pinned snapshot_sha256 and code_sha256_at_capture; likewise the contract snapshot and contract_sha256_at_capture",
+   "every declared lane pin still hashes to the file on disk, and the file exists"
+  ],
+  "run_by": "validate_policy() on every plan/acquire/verify/publish run, before any file is opened",
+  "writes": "nothing. This policy is read-only to the producer; publishing the admission is a separate act that never writes blockers_resolved.json"
+ },
+ "witness_rule": "cross_feed_witnesses/<day>.parquet, inside the blocker's own root, holds the ORIGINAL in-window rows of a source whose feed is not the acquisition feed, keyed by (parent_sha256, row_ordinal, canonical_time_utc) with the source name, path, feed, provider, its observed in-window count and fresh_n_bars=0. It is a preserved proxy sibling: never under bars/, never a SIP lane input, never part of the SIP payload digest, and never evidence that a name did not trade."
+}

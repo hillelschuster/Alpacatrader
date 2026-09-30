@@ -2632,3 +2632,19 @@ net index omitted six entries and contained forty stale entries. Rebuilt atomica
 per-day manifests: 3,198 -> 3,204 entries, sha256 `446090fd9f60524934a500504a1f73fa2a92d01daf68292f634dd8a171be42b6`.
 Real `atlas_net_index_reconcile.py --stage repair` and `--stage verify` both exited 0;
 no fetch, no market-source mutation. B1/B2 acquisition and final canary closure remain in progress.
+
+## 2026-09-30 — Real SIP repair scopes complete; cross-feed witnesses preserved
+Actual API acquisition and full-scope verification completed: B1 19/19 February-2025 days in
+`data/atlas/acquisition/v4`, B2 41/41 April/May-2026 days in `v3` (reused, not refetched).
+Published tracked joint admission under `TAPE/OBSERVATION/v0/acquisition/evidence`; zero
+missing/stale scopes and zero unresolved same-feed gaps. Origin producer/contract snapshots,
+per-day raw payloads, manifests and rosters are SHA-bound. Market rows remain gitignored.
+Real defects caught before admission: inclusive endpoint mismatch; one-day subsets wrongly
+claiming full scope; missing historical `asof` losing BK/ARMN; failed batches mislabeled zeros;
+month-wide planning OOM; and conflating third-party proxy bars with SIP bar obligations.
+DXR on 2025-02-03: SIP has 24 trades / 501 shares but no minute bar, while HF/Finnhub has one
+unreproduced 12:55 bar (7.78, 124 shares). Absence of a bar is not absence of trading.
+General feed-aware policy preserves four cross-feed disagreements (BYNO, DXR, FTII, VISL) as
+original proxy witness rows under the acquisition root; none is invented or relabeled as SIP.
+The fresh API canaries and entire scopes verify; final observation canary and full corpus remain
+pending. No retrieval/discovery result or alpha claim has been produced.

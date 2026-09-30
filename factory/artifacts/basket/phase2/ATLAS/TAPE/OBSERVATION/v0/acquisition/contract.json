@@ -1,0 +1,313 @@
+{
+ "admission_evidence": {
+  "per_scope": {
+   "contains": "per blocker: blocker_version, the pinned parents (its own code and contract capture plus the current alias map/PIT/source policy), the guarded days with each day's file/manifest/roster/witness sha256, requested-outcome accounting, the residual confirmed-trading-gap list (same-feed zeros only), the cross-feed disagreement report (count, names, witness days and items), and the scope's own all_checks_passed",
+   "path": "<blocker root>/evidence/acquisition_admission_<scope>.json",
+   "schema": "atlas.acquisition.admission.v0",
+   "why_per_scope": "a single shared file written per scope would let a B2 run overwrite the B1 attestation. The per-scope files are the durable records; they are never rewritten by another scope's run, and each one lives under the root its own blocker is pinned to.",
+   "written_by": "one --stage verify run, for its own scope only"
+  },
+  "trust_rule": "the consumer re-hashes every referenced file itself; this evidence is a pointer, not an authority",
+  "union": {
+   "cli_exit_semantics": "--stage verify exits 0 when every day THIS run was asked about passed its checks (days_verified_ok), which is the honest outcome for a --days subset. --stage publish exits 0 only when every blocker is ready. Scope-wide readiness is reported separately as all_scopes_ready in the printed output and must not be inferred from a verify exit code.",
+   "contains": "scopes{<scope>: {blocker_id, version, acquisition_root, root_rel, state, reason, is_full_scope, required_days, required_day_count, admitted_days, verified_subset_days, missing_required_days, unadmitted_days, residual_confirmed_trading_gaps, cross_feed_disagreements, source, source_sha256, verified_at, requested_outcome_accounting, failed_checks, rehash{days_rehashed, mismatches}, policy_pinned_in_attestation}}, blockers{<B1,B2>: {scope, version, state, is_full_scope, acquisition_root, root_rel, producer, attestation{path,sha256}, required_day_count, admitted_day_count, missing_required_day_count, admitted_days, verified_subset_days, unadmitted_days, residual_confirmed_trading_gaps, cross_feed_disagreements, rehash}}, day_roots{<day>: {blocker_id, scope, version, acquisition_root, payload, payload_sha256, manifest, manifest_sha256, roster, roster_sha256, admitted, cross_feed_disagreement_count, cross_feed_names, cross_feed_witness, cross_feed_witness_sha256, sip_coverage_complete}}, per_blocker_roots{<blocker>: <root>}, source_policy{path, sha256, policy_id}, parents{shared_inputs, per_blocker{...}}, cross_feed_disagreements{count, names, diagnostic, is_a_sip_coverage_failure}, missing_scopes, stale_scopes, all_scopes_ready, requested_outcome_accounting, readiness_rule, witness_rule",
+   "day_admission_rule": "a day is admitted only when its own verify checks all pass AND it survives the publisher's re-check of the bytes. status=complete alone is never sufficient: a stale manifest claiming complete while its checks fail lands the day in unadmitted_days with verify_checks_failed populated.",
+   "day_roots_rule": "day_roots is the ONLY day -> root mapping. Paths in it are relative to that day's acquisition_root, so a consumer never has to guess which version root holds a day, and the two blockers are never merged into one apparent root.",
+   "no_fabricated_pass": "a blocker with no attestation is reported in missing_scopes with state=unverified and an empty admitted_days. all_scopes_ready is false whenever any blocker is missing, stale, a verified_subset or not ready. The union never invents evidence for a blocker it does not have, and never treats a subset as a discharge of the whole.",
+   "path": "evidence/acquisition_admission.json under the directory passed as --out-evidence (the tracked copy is factory/artifacts/basket/phase2/ATLAS/TAPE/OBSERVATION/v0/acquisition/evidence/acquisition_admission.json)",
+   "per_blocker_reference_rule": "each blocker is published from an EXPLICIT reference: --blocker-ref <blocker_id>=<attestation path>, or the path source_policy.json declares for it. The union validates that reference against the policy's pinned root, producer and contract; a reference that disagrees is reported stale and contributes nothing.",
+   "producer_pin_rule": "each blocker's days are verified against the code and contract the blocker was CAPTURED under (producer.snapshot_sha256 / contract_snapshot_sha256), never against the currently installed tool. Changing one blocker's rule therefore cannot stale another blocker's already-verified days, and a historical producer is never re-typed as today's. The current alias map, PIT archive and source policy are still compared strictly.",
+   "readiness_rule": "A scope is ready ONLY when its admitted day set equals every guarded dev day the scope owes: B1 = 19 days of 2025-02, B2 = 41 days of 2026-04/05. The counts are derived from the dev calendar via full_scope_day_set(), never hardcoded, so a calendar change cannot leave readiness asserting a stale total. Admitting one verified day of nineteen does not discharge the blocker.",
+   "rehash_rule": "the union re-hashes every admitted day's parquet, manifest, roster and witness artifact at publish time, and additionally refuses a day whose manifest is not status=complete, whose errors or symbols_request_failed are non-empty, whose producer/contract are not the pinned ones, whose baseline lane does not hash to the policy pin for its month, whose sip_coverage.complete is not true, or which records a same-feed contradictory zero. A day that no longer hashes to what its attestation recorded is named in rehash.mismatches and dropped.",
+   "schema": "atlas.acquisition.admission-union.v0",
+   "scope_states": [
+    "ready - parents match the pin, the scope's own all_checks_passed is true, every required day was admitted, and every one of them re-hashed correctly just now",
+    "verified_subset - the scope's own checks passed for the days it ran, but it covered fewer than every required day. admitted_days is EMPTY; the days it did verify are listed under verified_subset_days, and every uncovered day is named in missing_required_days. This state can never be read as full coverage",
+    "not_ready - the file exists and the parents match, but the scope's own checks failed, a day no longer hashes, or a re-checked day fails the pinned-producer/pinned-lane/coverage rules; admitted_days is emptied",
+    "stale - produced by a different root, producer, contract, PIT, alias map or source policy than the blocker's pin; it contributes nothing",
+    "unverified - no per-scope attestation has been produced for that scope at all"
+   ],
+   "written_by": "every --stage verify and --stage publish run, REBUILT from the per-blocker attestations on disk (never appended to). It is never named blockers_resolved.json and never claims a blocker resolved."
+  }
+ },
+ "admission_states": {
+  "admitted": "status=complete, no errors, no failed requests, a complete SIP request/coverage accounting, and no unresolved SAME-FEED contradictory zero: the day replaces/augments the baseline raw lane. A cross-feed disagreement does not prevent admission",
+  "incomplete": "an error occurred, or a request never completed, or a same-feed source recorded a positive bar count for a symbol that came back with none, or the payload is empty: the day is NOT admitted and is listed in the residual confirmed-trading gaps",
+  "note": "there is no 'partial' admission and no ack flag; a day is either complete or it is not admitted. Complete SIP request/coverage and cross-feed disagreement count are recorded as SEPARATE axes, so neither can be read as the other"
+ },
+ "alias_rule": {
+  "allowed_basis": "class_share_separator: the PIT archive spells a share class with '/' and the provider's own data uses '.'; the mapping is a separator transliteration of the SAME name, backed by the provider's own spelling appearing in a same-provider lane artifact",
+  "forbidden_basis": [
+   "price similarity or volume similarity of any kind",
+   "fuzzy or edit-distance matching",
+   "bare-stripping of a '^' unit suffix (MS^A is NOT MSA; a stripped base that happens to be a different listed company is a different instrument)",
+   "any inference from 'the name looks like it should be X'"
+  ],
+  "injective": "one canonical name maps to at most one provider spelling AND one provider spelling maps to at most one canonical name; a collision is a hard error that refuses the day, because two identities may never share one payload",
+  "map": "factory/artifacts/basket/phase2/ATLAS/TAPE/OBSERVATION/v0/acquisition/alias_map.json",
+  "no_dedup_by_price": "two canonical names with identical price series stay two names. Aliases are spelling, never economics.",
+  "unresolved_syntax_names": "a syntax PIT name with no verified provider spelling is recorded in the roster's no_verified_provider_spelling class. It is never requested under a guessed spelling."
+ },
+ "blockers": {
+  "B1_raw_2025_02": {
+   "baseline_feed": "unknown",
+   "baseline_lane": "clean_ohlcv_<month>.parquet (CLEAN FALLBACK, $2/100-share floors; HF mito0o852/OHLCV-1m, upstream Finnhub per data_provenance.json) - NOT the acquisition feed",
+   "baseline_sha256_pin": "declared per month in source_policy.json sources.baseline_lane_b1.sha256_pins",
+   "cross_feed_rule": "a name only this lane observed is preserved as a cross-feed witness; the SIP response is never required to reproduce it",
+   "guarded_days": 19,
+   "replaces_baseline": true,
+   "request_rule": "every canonical PIT name of the day; the same-day acquisition file REPLACES the fallback for those days",
+   "scope": "feb2025",
+   "version": "v4"
+  },
+  "B2_raw_roster_2026_04_05": {
+   "baseline_feed": "sip",
+   "baseline_lane": "backfill/ohlcv_<month>.parquet (raw Alpaca SIP backfill, partial PIT coverage; factory/scripts/backfill_alpaca.py)",
+   "baseline_sha256_pin": "declared per month in source_policy.json sources.baseline_lane_b2.sha256_pins",
+   "guarded_days": 41,
+   "request_rule": "only evidence-backed missing names: PIT x compact-universe-present minus names the baseline lane already carries in-window for that day, plus the syntax names with a VERIFIED provider spelling",
+   "scope": "aprmay2026",
+   "supplements_baseline": true,
+   "version": "v3"
+  }
+ },
+ "cli": {
+  "flags": [
+   "--stage plan|acquire|verify|publish",
+   "--scope feb2025|aprmay2026 (plan/acquire/verify only)",
+   "--days comma-separated guarded dev days (optional; default the whole scope)",
+   "--out-data acquisition root (default: the root source_policy.json declares for --scope's blocker, i.e. B1 -> atlas/acquisition/v4 and B2 -> atlas/acquisition/v3)",
+   "--out-evidence evidence root (default <out-data>/evidence; REQUIRED for --stage publish)",
+   "--blocker-ref <blocker_id>=<attestation path> (repeatable; publish/verify; overrides the path source_policy.json declares)",
+   "--client sdk|rest",
+   "--selftest"
+  ],
+  "secrets": "ALPACA_API_KEY/ALPACA_SECRET_KEY from the environment or the repo .env; never written to any artifact or log",
+  "stages": "plan (offline, writes the acquisition plan), acquire (network), verify (offline, writes the per-blocker admission evidence), publish (offline, rebuilds the joint admission from explicit per-blocker references)"
+ },
+ "contract_id": "freeze-o.acquisition",
+ "contract_revision": "r1 - the feed-compatibility revision. It attributes every evidence count to its source's declared feed, adds the preserved cross-feed witness artifact, and publishes the joint admission from per-blocker references with pinned producer/contract captures. v3's 41 B2 days were acquired under the previous revision (contract sha 1ebe7850..., captured at producers/atlas_acquisition_contract.v3.json) and are neither refetched nor restated.",
+ "contract_version": "v0",
+ "coverage_standing": {
+  "aprmay2026": "the acquired day file SUPPLEMENTS the baseline raw lane, so a compact-observed name is covered when it is in the payload OR already in the baseline lane in-window for that day",
+  "feb2025": "the acquired day file REPLACES the floored clean fallback, so every compact-observed PIT name must be present in that payload alone, and a name only the replaced fallback observed must be preserved as a cross-feed witness. The replaced fallback is a non-SIP (feed unknown) source, so its names are never required of the SIP response",
+  "uncovered": "anything still uncovered is an unresolved missing confirmed trader. It is listed in the roster's accounting and in the admission evidence, never assumed away."
+ },
+ "data_roots": {
+  "acquisition_payloads": "gitignored, per blocker version (B1: data/atlas/acquisition/v4, B2: data/atlas/acquisition/v3); each day's cross-feed witnesses live under that same root in cross_feed_witnesses/",
+  "market_data": "outside the worktree, read-only, gitignored (BASKET_DATA_ROOT, ROOT/data, /home/hillel/projects/Alpacatrader/data)",
+  "tracked_evidence": "factory/artifacts/basket/phase2/ATLAS/TAPE/OBSERVATION/v0/acquisition (this contract, source_policy.json, the alias map, the immutably captured producers/ and, once published, evidence/) - hashes, declarations and counts only; never market rows, never a witness parquet"
+ },
+ "error_semantics": {
+  "api_error": "429/5xx/transport are retried with bounded backoff; on exhaustion the error is recorded and the day is incomplete and unadmitted.",
+  "cross_feed_bar_not_reproduced": "A source whose DECLARED feed is not the acquisition feed recorded a positive in-window bar count for a name, and the SIP minute-bar response returned none. The two feeds build bars under different condition/aggregation rules, so the SIP feed is NOT required to reproduce the bar. This is recorded per name with the source, its feed, its provider, its sha256 and its observed count; the source's ORIGINAL rows are written to cross_feed_witnesses/<day>.parquet keyed by (parent sha256, row ordinal, canonical time), and the archive original stays authoritative for that proxy. It does NOT block admission, it is NOT a coverage failure of the SIP request, it is never recorded as a non-trader, and it is never relabelled as SIP. The name still appears in symbols_zero_bars: the SIP response genuinely returned no bar, and both facts are kept.",
+  "duplicate_rows": "a repeated (ticker,timestamp) is a payload integrity error; the day is incomplete.",
+  "invalid_symbol": "the provider rejects the spelling. Recorded in symbols_invalid with the reason, never renamed to something that might work.",
+  "out_of_window": "a bar outside the declared window is a payload integrity error; the day is incomplete.",
+  "request_failed": "A symbol we never completed a request for is recorded in symbols_request_failed, never as a zero. The three symbol classes are disjoint and mean different things: symbols_invalid (the provider rejected the spelling), symbols_request_failed (we know nothing about whether it traded), symbols_zero_bars (a genuine provider zero). Any request_failed symbol blocks admission with refusal_reasons containing request_failed_symbols, and it is never converted into a cross-feed witness either: nothing is known about that request.",
+  "same_feed_contradictory_zero": "A source whose DECLARED feed IS the feed being acquired recorded a positive bar count for a name - the compact SIP source, or the Alpaca SIP baseline lane B2 supplements - and the fresh pull has none. Keying this on the compact source alone was structurally blind to names that source never observed, which is how baseline-only names were recorded as clean provider zeros. A source that is not the acquisition feed can no longer reach this class at all. Recorded with the source, feed and observed count, left UNRESOLVED, and it blocks admission with refusal_reasons containing same_feed_contradictory_zeros.",
+  "symbols_zero_bars": "the provider accepted the spelling and returned no bar. Recorded in symbols_zero_bars; a legitimate zero is recorded, never fabricated. A name may be a genuine SIP zero and still carry a cross-feed witness - those are separate axes and neither erases the other."
+ },
+ "estimator": {
+  "bars_per_day_reference": 390,
+  "bytes": "rows x 96 planning bytes/row; the real size is always read back from the written file",
+  "measured_not_estimated": "every run reports measured bytes and measured rows per day in the manifest",
+  "requests": "ceil(requested_symbols / 500) batches, one paginated request stream per batch",
+  "rows": "per-symbol bar count from the compact SIP source; bars_per_day_reference for names the compact source does not carry"
+ },
+ "evidence_rule": "a name is repairable only when some source shows it actually printed that session. Every positive bar count is attributed to the SOURCE that recorded it, and each source carries a DECLARED feed (source_policy.json), because merging the sources into one count is what let a non-SIP lane oblige the SIP feed. The compact SIP source (sip/universe/rth/<day>.parquet) is the primary same-feed evidence. absent_all_sources names are never requested: a name that did not trade is not a hole, and asking the provider cannot manufacture a print.",
+ "feed_provenance": {
+  "DXR_2025_02_03": "the worked example, and the reason this contract changed. The replaced B1 fallback carries one 12:55 ET bar for DXR (O=H=L=C=7.78, volume 124) from an HF/Finnhub-derived lane whose feed is unknown; the SIP minute-bar response returns no bar for that day (a second independent SIP pull agrees), while the SIP trade endpoint shows 24 prints / 501 shares, every one an auction or odd-lot condition for which the provider emits no minute bar, and the daily bar is v=0/n=0. The name is therefore NOT a non-trader, the provider did NOT revise a SIP tape, and there is no identity or alias problem. It is a cross-feed disagreement: recorded, its original row preserved, and never required of the SIP feed.",
+  "principle": "REQUEST outcome and EVIDENCE support are separate axes. The request axis says what the SIP request returned for every requested symbol (present / zero / invalid / request_failed, disjoint and fully accounted, no partial admission). The evidence axis says what each source observed and whether that source's feed is the one being acquired. Neither axis may be read from the other, and neither erases the other.",
+  "same_feed_example": "a symbol the Alpaca SIP baseline lane (B2) or the compact SIP source observed with positive bars that the fresh SIP response does not return remains a hard, unresolved contradiction: within one feed that is a revision or an unrequestable spelling, and there is no third party to blame."
+ },
+ "fetch": {
+  "adjustment": "raw",
+  "asof": "session_day",
+  "asof_rule": "Every request carries an explicit historical asof=YYYY-MM-DD equal to the session day, in BOTH the SDK (StockBarsRequest(asof=...)) and the REST client (params['asof']). Without it the provider applies default entity linking and can attribute a renamed entity's tape to the queried PIT name, which is a PIT-identity violation. asof is part of the config hash, so a run cannot silently resume days fetched without it.",
+  "batch_size": 500,
+  "client_default": "sdk",
+  "feed": "sip",
+  "max_attempts": 5,
+  "page_limit": 10000,
+  "paging": "next_page_token followed to exhaustion by the REST client; the SDK client is called without a limit so the SDK pages internally. A repeated page_token is an error, not a loop.",
+  "provider": "alpaca",
+  "retry": "bounded: 429/5xx/transport retried with exponential backoff (2,4,8,16s, capped 30s) honouring Retry-After up to 60s; on exhaustion the error is recorded and the day is incomplete. Unbounded retrying is refused.",
+  "timeframe_minutes": 1,
+  "universe_rule": "the PIT archive (data/pit/pit_symbols.parquet, latest vintage <= day) plus per-day compact-universe evidence. A 'latest active assets' list is NEVER fetched: present-day listings are not a point-in-time roster.",
+  "upper_bound_meaning": "A bar stamped 16:05 ET is a vendor bar timestamp at the window's upper bound. Nothing in the acquisition or the frozen contracts identifies it as an auction, a close, or any particular session event, so it is described only by its timestamp. The baseline backfill lane already carries 412 bars stamped 16:05 for 2026-04-01, so the acquired day agrees with the lane it supplements.",
+  "window_bounds_inclusive": true,
+  "window_bounds_rule": "CLOSED interval [565, 965] on both ends. A bar stamped exactly at 16:05 ET is IN window and is kept. This matches the frozen observation contract's declared closed projection window \"[565, 965] (09:25-16:05 ET)\", the consumer's grid range(565, 966), and the provider's inclusive end parameter. The request end is the bound itself with no epsilon subtracted.",
+  "window_et": [
+   565,
+   965
+  ],
+  "window_et_readable": "09:25-16:05 America/New_York"
+ },
+ "guard": {
+  "calendar": "basket_sim.dev_days() (date stems of factory/artifacts/basket/sip/anatomy/*.jsonl); a day in the scope that is not a dev day is not acquirable",
+  "refusal": "a sealed or reserved day, or a --days value outside the scope's guarded set, raises before any file is opened. There is no flag that admits a sealed day.",
+  "reserved_months": [
+   "2026-06",
+   "2026-07",
+   "2026-08"
+  ],
+  "sealed_prefixes": [
+   "2024-",
+   "2025-01"
+  ],
+  "source": "factory/scripts/basket_sim.py:guard_day (called via dev_days()/directly before any path is opened)"
+ },
+ "obligation": {
+  "aprmay2026": "the acquired day file SUPPLEMENTS the baseline lane, which stays in place, so the obligation is PIT x compact-observed and the lane covers its own names.",
+  "evidence_rule": "every obligated name must carry a positive bar count from some source; an obligation without evidence would be unfalsifiable. Coverage is reported per carrier - payload / baseline lane / cross-feed witness - in obligation.coverage, with uncovered_n and the uncovered names stated explicitly, so 'covered' can never be read as 'in the SIP payload' when it is not.",
+  "feb2025": "the acquired day file REPLACES the floored fallback, so the obligation is PIT x (compact-observed UNION replaced-baseline in-window). A PIT name the fallback carried but the compact source never observed is STILL owed; keying the obligation on compact alone silently dropped BK and ARMN on 19 of 19 days with status=complete. The fallback is not the acquisition feed, so such a name is owed a PRESERVED WITNESS rather than a fabricated SIP bar: it is carried by cross_feed_witnesses/<day>.parquet, never required of the SIP response, and its absence from the payload is reported instead of being hidden."
+ },
+ "payload": {
+  "atomicity": "each day is written to <name>.tmp then os.replace'd, bars first then the manifest; the manifest carries the payload sha256",
+  "columns": [
+   "timestamp",
+   "open",
+   "high",
+   "low",
+   "close",
+   "volume",
+   "ticker",
+   "provider_symbol"
+  ],
+  "root_layout": {
+   "bars/<day>.manifest.json": "per-day provenance, accounting and hashes",
+   "bars/<day>.parquet": "the payload",
+   "cross_feed_witnesses/<day>.parquet": "the ORIGINAL in-window rows of every source whose feed is not the acquisition feed that recorded a positive bar count the SIP response did not reproduce. Columns: parent_sha256, row_ordinal, canonical_time_utc, et_minute, ticker (canonical PIT), source_name, source_path, source_feed, source_provider, open, high, low, close, volume, source_n_bars_in_window, fresh_feed, fresh_n_bars, diagnostic, day; key = (parent_sha256, row_ordinal, canonical_time_utc). Separate directory by construction: these rows are a preserved proxy, never a SIP lane, never a SIP rank input, and never part of the SIP payload or its digest",
+   "evidence/acquisition_admission.json": "the joint admission, written to the directory passed as --out-evidence",
+   "evidence/acquisition_admission_<scope>.json": "the per-blocker attestation, written under that blocker's own root",
+   "rosters/<day>.json": "per-day PIT roster, provider mapping, evidence sources with their declared feeds, and verified-absent classes"
+  },
+  "row_policy": "every bar the provider returns for a requested symbol is written, including non-positive or inconsistent OHLC. Quality is graded downstream by the consumer's flag_nonpositive_px machinery; acquisition never drops a row to make itself look clean.",
+  "schema": {
+   "close": "Float64",
+   "high": "Float64",
+   "low": "Float64",
+   "open": "Float64",
+   "provider_symbol": "String (audit only; never a join key)",
+   "ticker": "String (CANONICAL PIT spelling; the only join key)",
+   "timestamp": "Datetime(ns, UTC)",
+   "volume": "Float64"
+  }
+ },
+ "purpose": "Freeze HOW the two missing raw SIP lanes (B1 2025-02, B2 2026-04/05) are reacquired AND how their two blockers are jointly published, so the observation corpus can claim an unfiltered raw source for every guarded day. This contract governs acquisition and its admission evidence only: it declares no representation, no distance, no channel, no learned parameter and no outcome. Nothing here decides what the acquired tape is later used for.",
+ "resource_policy": {
+  "digest_cache": "content hashes are memoized per process on (size, mtime_ns), so the 585 MiB lane is hashed once per run rather than once per day (~25 GiB of re-reads removed). A modified file is always rehashed.",
+  "interning": "lane tickers are interned; ~212k references collapse to ~10.8k distinct string objects.",
+  "lane_read": "per-day predicate-pushed streaming projection; the month-wide group_by/agg form materialised a hash table over all ~10.8M tickers of a 585 MiB file and peaked at +1740 MiB per month, running twice and retaining both dicts. Measured after the fix: 0.0 MiB peak growth over 8 B2 planning days, and faster.",
+  "no_truncation": "these are streaming and caching changes only. No ROI, density or row-count truncation is applied anywhere; every bar returned is written.",
+  "pit_read": "vintages are indexed by name only; a vintage's symbols are read on demand instead of materializing all 1397 vintages (~8.1M strings, a measured 127 MiB)."
+ },
+ "resume_and_drift": {
+  "drift_checked_first": "the code/config/contract hash comparison runs BEFORE the resume skip, so an intact admitted day is still refused when the current run has a different window, batch, client, scope, contract or producer. That day was acquired under a different configuration, and keeping the old bytes would silently hide it.",
+  "drift_scope": "the config hash covers feed, adjustment, timeframe, window, batch size, retry attempts, scope and client, so a rerun under any changed acquisition setting must target a new version directory",
+  "never_overwrite": "admitted bytes are never rewritten. A payload whose bytes disagree with its manifest, a torn write (payload without manifest), or a code/config/contract hash that differs from the stored one STOP the run and ask for a new version directory (--out-data .../acquisition/vN).",
+  "per_blocker_isolation": "a blocker may only be produced in the root its source policy declares, and an acquire/verify run whose target is not that root is refused before a file is opened. A rule change for one blocker therefore lands in a NEW root and can never be run against the directory that holds another blocker's verified bytes; the joint admission publishes each blocker from its own root, producer and contract.",
+  "resume": "an existing day whose manifest is status=complete and whose payload still hashes to the recorded sha is skipped, never refetched",
+  "versioning": "acquisition/v0-v3 are the existing captures; v4 is the B1 root. A schema, window, batch or contract change requires a new version directory rather than a silent rewrite of an existing one"
+ },
+ "selftests": {
+  "command": ".venv/bin/python factory/scripts/atlas_acquire_sip_bars.py --selftest",
+  "count": 82,
+  "covers": [
+   "payload schema, dtypes and ordering; the synthetic bars are built on the ET clock so the window check is exercised honestly",
+   "duplicate (ticker,timestamp) detected",
+   "out-of-window row detected",
+   "paginated pages are joined into one symbol's bar list",
+   "truncated page stream yields a recorded zero, never a fabricated bar",
+   "invalid symbol is recorded and the batch continues with the rest",
+   "REST next_page_token paging followed to exhaustion; a repeated token is refused rather than looped",
+   "429 retried with bounded backoff, then surfaced once the bound is exhausted",
+   "sealed, reserved and malformed days refused before any path is opened; an out-of-scope --days value is refused",
+   "the same provider spelling under two canonical names is refused in the payload and in the alias map",
+   "an alias map entry without explicit spelling evidence is refused",
+   "sha resume skips an intact admitted day; tampered admitted bytes, torn writes and empty payloads are refused",
+   "code, config and contract hash drift on an existing day stops the run and asks for a new version",
+   "a zero-bar symbol is recorded rather than fabricated, and a SAME-FEED source that contradicts it blocks admission with the contradiction stated explicitly",
+   "verify flags uncovered compact-observed symbols, an incomplete status, a same-feed contradiction, producer drift and a manifest window that disagrees with the contract",
+   "a fully covered day with no contradiction IS admitted, with one row set per canonical name",
+   "coverage standing differs correctly by scope: feb2025 requires the payload alone, aprmay2026 credits the baseline lane",
+   "admitted_days contains only days whose own verify checks all passed; an incomplete or check-failing day is listed in unadmitted_days with its reasons and its failed check names",
+   "the union publisher: verifying B1 then B2 retains BOTH blockers and both scope entries, so a B2 run can never overwrite the B1 attestation",
+   "a blocker with no attestation stays in missing_scopes with state=unverified and an empty admitted_days; the union never fabricates a pass",
+   "corrupting an admitted day payload invalidates the union at publish time even though its manifest still says status=complete, because the union re-hashes every included day and every witness artifact",
+   "a corrupted blocker leaves the other blocker's entry intact",
+   "an attestation whose parents name a different producer than that blocker's PIN is stale and contributes nothing, while the other blocker stays ready - a B1 rule change cannot stale B2",
+   "a blocker whose own checks failed contributes no admitted days",
+   "a one-day --days subset per scope cannot resolve a full scope: both scopes report verified_subset with EMPTY admitted_days, list the days they did verify under verified_subset_days, and name every missing required day",
+   "a full-scope attestation covering all 19 B1 and all 41 B2 days IS ready, the blocker entries report the matching admitted_day_count, and the two blockers sit under DIFFERENT roots with different pinned producers, contracts and versions (v4, v3) and the exact required day counts",
+   "day_roots resolves every admitted day to its own root with the payload, manifest, roster and witness hashes re-derived at publish time",
+   "a cross-feed source whose feed is not the acquisition feed: its positive bar count is reported as cross_feed_bar_not_reproduced, its ORIGINAL rows are preserved keyed by (parent sha256, row ordinal, canonical time) with the source feed, provider and count, the name stays in symbols_zero_bars, the SIP request is still reported complete, and the day IS admitted",
+   "a cross-feed witness that no longer hashes to its manifest is refused by verify and by the publisher",
+   "cross-feed and same-feed evidence never collapse into one class: a same-feed positive/observed-zero blocks while a cross-feed one is reported",
+   "a symbol whose request never completed is recorded as request_failed, never as a zero, never as a cross-feed witness, and blocks admission",
+   "policy validation: a cross-feed source without witness row support is refused, feed-class semantics are fixed in code, a declared per-blocker root/attestation is required, and the declared expected_days must equal the dev calendar",
+   "origin pins: editing a producer snapshot, or replacing a pinned baseline lane, refuses to publish; an origin proof outside the tracked producers/ directory is refused; and a blocker may only be produced in the root its policy declares"
+  ],
+  "isolation": "synthetic and offline: scripted fetchers and fake HTTP sessions only, temporary directories only, no network and no shared data root"
+ },
+ "source_policy": {
+  "feed_classes": "closed set declared in the policy and FIXED IN CODE: sip (matches the acquisition feed; a positive/observed-zero is the hard same_feed_contradictory_zero that blocks) and unknown (does not match; a positive/observed-zero is cross_feed_bar_not_reproduced, reported and preserved, non-blocking). A policy that declares different semantics for a class is refused: the policy may not relabel a feed in order to change whose evidence counts.",
+  "forbidden_writes": [
+   "blockers_resolved.json (resolution is the parent verification's act, and it needs its own evidence shas)",
+   "any SIP bar fabricated from a non-SIP witness",
+   "any rewrite of an admitted payload, manifest, roster or witness artifact",
+   "changing another blocker's root, producer, contract or version"
+  ],
+  "path": "factory/artifacts/basket/phase2/ATLAS/TAPE/OBSERVATION/v0/acquisition/source_policy.json",
+  "per_blocker_versions": {
+   "B1_raw_2025_02": {
+    "root_rel": "atlas/acquisition/v4",
+    "version": "v4",
+    "why": "the first producer that distinguishes feed-compatible evidence: the B1 replacement keeps every request it already made and stops requiring the SIP feed to reproduce a non-SIP lane's bar"
+   },
+   "B2_raw_roster_2026_04_05": {
+    "root_rel": "atlas/acquisition/v3",
+    "version": "v3",
+    "why": "unchanged, byte-for-byte: all 41 days verified under producer ce4b97d... and contract 1ebe7850..., whose raw payloads are never refetched. Its 19 sibling B1 day in the same root is NOT the B1 evidence and is not admitted by any v4 claim"
+   }
+  },
+  "pinned_origin_proofs": "per blocker: producer.snapshot_path (an immutable copy of the producer source), producer.snapshot_sha256 == producer.code_sha256_at_capture, and contract_snapshot_path/contract_snapshot_sha256 == contract_sha256_at_capture (an immutable copy of the acquisition contract the blocker acquired under). The snapshot digest IS the code hash that producer wrote into its manifests, so verification pins the origin producer and applies its own stricter checks instead of requiring the currently installed tool to hash like a historical one. Snapshot files: factory/artifacts/basket/phase2/ATLAS/TAPE/OBSERVATION/v0/acquisition/producers/",
+  "schema": "atlas.acquisition.source-policy.v0",
+  "sources": {
+   "baseline_lane_b1": "clean_ohlcv_<month>.parquet, feed unknown (HF mito0o852/OHLCV-1m, upstream Finnhub), role replaced_baseline, witness_rows_available true, sha256 pinned per month",
+   "baseline_lane_b2": "backfill/ohlcv_<month>.parquet, feed sip (raw Alpaca backfill), role supplemented_baseline, sha256 pinned per month",
+   "compact_sip": "sip/universe/rth/<day>.parquet, feed sip, role obligation_evidence, witness_rows_available false (it carries bar counts, not bars)"
+  },
+  "validator": "validate_policy() runs on every plan/acquire/verify/publish: schema and acquisition feed, the fixed feed-class semantics, every declared source's feed class and data-root-relative template, that a non-acquisition-feed source can yield witness rows counted on the same closed window, the exact blocker id set, each blocker's scope/version/root/attestation/expected_days (checked against the dev calendar), each declared source, and every origin pin (producer snapshot, contract snapshot, baseline lane digest). Any failure is a hard error before a file is opened.",
+  "why": "a source's feed identity decides whether it can oblige the acquisition feed to emit a bar. Leaving that identity implicit in a filename is what let the HF/Finnhub fallback be treated as if it were SIP."
+ },
+ "stage": "atlas-acquisition",
+ "status": "frozen",
+ "verify_checks": [
+  "guarded exact target days: the verified day set equals the scope's guarded dev days (or the --days filter), and every day passed guard_day",
+  "manifest day equals the filename date, scope matches, source feed is sip and adjustment is raw",
+  "payload sha256 equals the manifest sha256; roster sha256 matches; code and contract match the blocker's PINNED capture (not the currently installed tool); alias map matches the current file",
+  "schema is exactly the eight declared columns with the declared dtypes (timestamp is ns UTC)",
+  "all OHLC finite and positive with high >= max(open,close) >= min(open,close) >= low",
+  "every row timestamp falls inside the declared 09:25-16:05 ET window",
+  "no duplicate (ticker, timestamp)",
+  "all requested symbols accounted for: present, or in symbols_zero_bars, or in symbols_invalid, or in symbols_request_failed, with the four classes disjoint",
+  "no request_failed symbol (nothing is known about those requests, so they are never rendered as zeros or witnesses)",
+  "no unrequested symbol appears in the payload",
+  "manifest errors list is empty",
+  "sip_coverage.complete is true and agrees with the manifest's own accounting: the SIP REQUEST was complete for every requested symbol. This says nothing about cross-feed evidence",
+  "all expected observed same-feed symbols are covered (see coverage_standing for what covered means per scope); a same-feed-observed symbol with zero fresh bars is an unresolved same-feed contradictory zero and blocks admission",
+  "every cross-feed disagreement names a source whose declared feed is not the acquisition feed, carries the cross_feed_bar_not_reproduced diagnostic, and states fresh_n_bars=0",
+  "every cross-feed disagreement has its ORIGINAL rows preserved in cross_feed_witnesses/<day>.parquet, re-hashed against the manifest, with a unique (parent_sha256, row_ordinal, canonical_time_utc) key, the source's declared feed, and fresh_n_bars=0; no witness row ever claims the acquisition feed, and no witness is declared without a disagreement",
+  "the obligation's declared per-carrier coverage matches the recomputed payload/baseline/witness split, and every obligated name has positive bar-count evidence from some source",
+  "published union: each blocker's attestation parents match its PINNED root/producer/contract and the current shared inputs, every admitted day re-hashes with its manifest, roster and witness, and the admitted day set equals the exact required set (19 for B1, 41 for B2)"
+ ],
+ "versions": {
+  "v0": "first real fetch. Its manifest records status=incomplete: the window's upper bound was treated as exclusive, flagging 10 legitimate 16:05-stamped bars. Retained as evidence.",
+  "v1": "two ONE-DAY canaries. Not admissible: a subset never discharges a full scope.",
+  "v2": "11 days fetched (4 B1 + 7 B2) before the audit. Retained immutable and UNADMITTED, and NOT trustworthy admitted evidence: baseline-only names were lost and asof was omitted.",
+  "v3": "the corrected root for B2. Uses explicit historical asof and the full B1 obligation. aprmay2026: 41/41 days admitted under producer ce4b97d... and contract 1ebe7850..., whose raw payloads are byte-for-byte preserved and never refetched. The single 2025-02-03 day it also holds is incomplete (the DXR cross-feed zero under the old, feed-blind oracle) and is B1's evidence ONLY as a preserved historical witness, never as v4 evidence: B1's admission comes from v4 alone.",
+  "v4": "the B1 root. Same payload semantics as v3 otherwise (SIP, raw, asof=session_day, closed 09:25-16:05 window), with feed-compatible evidence: a positive bar count is attributed to the source that recorded it, a source whose declared feed is the acquisition feed still yields a hard same-feed contradictory zero, and a source whose feed is unknown/different yields a reported, preserved cross_feed_bar_not_reproduced witness instead. The joint admission names B1=v4 and B2=v3 with each blocker's pinned producer and contract, and never requires an old producer to hash like the current tool."
+ }
+}

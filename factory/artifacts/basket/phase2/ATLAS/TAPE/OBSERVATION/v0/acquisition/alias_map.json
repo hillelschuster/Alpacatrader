@@ -1,0 +1,175 @@
+{
+ "alias_map_id": "freeze-o.acquisition-aliases",
+ "alias_map_version": "v0",
+ "schema": "atlas.acquisition.alias-map.v0",
+ "contract": "factory/artifacts/basket/phase2/ATLAS/TAPE/OBSERVATION/v0/acquisition/contract.json",
+ "rule": "A canonical PIT name is aliased ONLY by transliterating the vendor's share-class separator '/' to the provider's '.', with every other character preserved verbatim (AKO/A -> AKO.A, RAC/WS -> RAC.WS). The transliteration is accepted only when the provider's own spelling is OBSERVED in a same-provider lane artifact: the baseline raw lanes below were themselves pulled from the SIP feed, so a ticker string appearing there is the provider's spelling of that instrument, not a guess.",
+ "never": [
+  "price or volume similarity, ever: two canonical names with identical price series stay two names",
+  "fuzzy or edit-distance matching",
+  "bare-stripping of a '^' unit suffix (MS^A is NOT MSA; a stripped base that happens to be a different listed company is a different instrument)",
+  "any spelling not present in the evidence list below"
+ ],
+ "injective": "one canonical name -> at most one provider spelling, and one provider spelling -> at most one canonical name. A collision is a hard error that refuses the day: two identities may never share one payload.",
+ "usage": "the acquisition writes canonical `ticker` and audit-only `provider_symbol`; the consumer applies this map to OLD raw lanes when it builds them. Both sides read this file; neither invents a mapping.",
+ "evidence_sources": {
+  "2025-02": {
+   "path": "data/clean_ohlcv_2025-02.parquet",
+   "column": "ticker",
+   "sha256": "00d2a2e04fd480a74aabdc541e54b6ff52eadf96c60efbe02336db68965fc43e"
+  },
+  "2026-04": {
+   "path": "data/backfill/ohlcv_2026-04.parquet",
+   "column": "ticker",
+   "sha256": "21f252ba48c4feea837a9d8f3bd7c1ef4056a1a1d6d2db30667e1a4d0fd25bfb"
+  },
+  "2026-05": {
+   "path": "data/backfill/ohlcv_2026-05.parquet",
+   "column": "ticker",
+   "sha256": "0a6762194e5af002155e036e43e048e6406a9315e1ca083057400afec1474358"
+  }
+ },
+ "aliases": {
+  "AKO/A": {
+   "provider_symbol": "AKO.A",
+   "basis": "class_share_separator",
+   "evidence": [
+    "data/clean_ohlcv_2025-02.parquet#ticker contains AKO.A",
+    "data/backfill/ohlcv_2026-04.parquet#ticker contains AKO.A",
+    "data/backfill/ohlcv_2026-05.parquet#ticker contains AKO.A"
+   ]
+  },
+  "AKO/B": {
+   "provider_symbol": "AKO.B",
+   "basis": "class_share_separator",
+   "evidence": [
+    "data/clean_ohlcv_2025-02.parquet#ticker contains AKO.B",
+    "data/backfill/ohlcv_2026-04.parquet#ticker contains AKO.B",
+    "data/backfill/ohlcv_2026-05.parquet#ticker contains AKO.B"
+   ]
+  },
+  "BF/A": {
+   "provider_symbol": "BF.A",
+   "basis": "class_share_separator",
+   "evidence": [
+    "data/clean_ohlcv_2025-02.parquet#ticker contains BF.A",
+    "data/backfill/ohlcv_2026-04.parquet#ticker contains BF.A",
+    "data/backfill/ohlcv_2026-05.parquet#ticker contains BF.A"
+   ]
+  },
+  "BF/B": {
+   "provider_symbol": "BF.B",
+   "basis": "class_share_separator",
+   "evidence": [
+    "data/clean_ohlcv_2025-02.parquet#ticker contains BF.B",
+    "data/backfill/ohlcv_2026-04.parquet#ticker contains BF.B",
+    "data/backfill/ohlcv_2026-05.parquet#ticker contains BF.B"
+   ]
+  },
+  "BIO/B": {
+   "provider_symbol": "BIO.B",
+   "basis": "class_share_separator",
+   "evidence": [
+    "data/clean_ohlcv_2025-02.parquet#ticker contains BIO.B",
+    "data/backfill/ohlcv_2026-04.parquet#ticker contains BIO.B",
+    "data/backfill/ohlcv_2026-05.parquet#ticker contains BIO.B"
+   ]
+  },
+  "BRK/A": {
+   "provider_symbol": "BRK.A",
+   "basis": "class_share_separator",
+   "evidence": [
+    "data/clean_ohlcv_2025-02.parquet#ticker contains BRK.A",
+    "data/backfill/ohlcv_2026-04.parquet#ticker contains BRK.A",
+    "data/backfill/ohlcv_2026-05.parquet#ticker contains BRK.A"
+   ]
+  },
+  "BRK/B": {
+   "provider_symbol": "BRK.B",
+   "basis": "class_share_separator",
+   "evidence": [
+    "data/clean_ohlcv_2025-02.parquet#ticker contains BRK.B",
+    "data/backfill/ohlcv_2026-04.parquet#ticker contains BRK.B",
+    "data/backfill/ohlcv_2026-05.parquet#ticker contains BRK.B"
+   ]
+  },
+  "CRD/A": {
+   "provider_symbol": "CRD.A",
+   "basis": "class_share_separator",
+   "evidence": [
+    "data/clean_ohlcv_2025-02.parquet#ticker contains CRD.A",
+    "data/backfill/ohlcv_2026-04.parquet#ticker contains CRD.A",
+    "data/backfill/ohlcv_2026-05.parquet#ticker contains CRD.A"
+   ]
+  },
+  "CRD/B": {
+   "provider_symbol": "CRD.B",
+   "basis": "class_share_separator",
+   "evidence": [
+    "data/clean_ohlcv_2025-02.parquet#ticker contains CRD.B",
+    "data/backfill/ohlcv_2026-04.parquet#ticker contains CRD.B",
+    "data/backfill/ohlcv_2026-05.parquet#ticker contains CRD.B"
+   ]
+  },
+  "HEI/A": {
+   "provider_symbol": "HEI.A",
+   "basis": "class_share_separator",
+   "evidence": [
+    "data/clean_ohlcv_2025-02.parquet#ticker contains HEI.A",
+    "data/backfill/ohlcv_2026-04.parquet#ticker contains HEI.A",
+    "data/backfill/ohlcv_2026-05.parquet#ticker contains HEI.A"
+   ]
+  },
+  "HVT/A": {
+   "provider_symbol": "HVT.A",
+   "basis": "class_share_separator",
+   "evidence": [
+    "data/clean_ohlcv_2025-02.parquet#ticker contains HVT.A",
+    "data/backfill/ohlcv_2026-04.parquet#ticker contains HVT.A",
+    "data/backfill/ohlcv_2026-05.parquet#ticker contains HVT.A"
+   ]
+  },
+  "WSO/B": {
+   "provider_symbol": "WSO.B",
+   "basis": "class_share_separator",
+   "evidence": [
+    "data/clean_ohlcv_2025-02.parquet#ticker contains WSO.B",
+    "data/backfill/ohlcv_2026-04.parquet#ticker contains WSO.B",
+    "data/backfill/ohlcv_2026-05.parquet#ticker contains WSO.B"
+   ]
+  },
+  "RAC/WS": {
+   "provider_symbol": "RAC.WS",
+   "basis": "class_share_separator",
+   "note": "the '/WS' unit tail is preserved verbatim; only the separator is transliterated. Present in the PIT vintage of 2026-05 only, so it applies to those days alone.",
+   "evidence": [
+    "data/backfill/ohlcv_2026-04.parquet#ticker contains RAC.WS",
+    "data/backfill/ohlcv_2026-05.parquet#ticker contains RAC.WS"
+   ]
+  }
+ },
+ "not_aliased": {
+  "names": [
+   "ATCO^D",
+   "ATCO^H",
+   "BAC^E",
+   "BAC^L",
+   "CADE^A",
+   "DBRG^H",
+   "DBRG^I",
+   "DBRG^J",
+   "EPR^E",
+   "GAB^H",
+   "GS^D",
+   "MER^K",
+   "MS^A",
+   "MS^F",
+   "NLY^F",
+   "SCE^L",
+   "VNO^L"
+  ],
+  "class": "no_verified_provider_spelling",
+  "reason": "the vendor spells these units/preferreds with '^', which the stock data API rejects, and the provider's own spelling for each was never observed in any same-provider lane artifact. Stripping the '^' suffix would be a guess: MS^A stripped to 'MSA' collides with a different listed company, which is exactly the kind of silent identity substitution this map exists to prevent. These names are recorded in each roster's no_verified_provider_spelling class and are NEVER requested under a guessed spelling.",
+  "measured": "none of the 17 appears in any of data/clean_ohlcv_2025-02.parquet, data/backfill/ohlcv_2026-04.parquet or data/backfill/ohlcv_2026-05.parquet under any spelling"
+ }
+}
