@@ -1,0 +1,311 @@
+{
+ "canary_id": "freeze-o.canary",
+ "canary_version": "v0",
+ "coverage_requirements": {
+  "all_early_closes": 7,
+  "all_net_partial_days": 7,
+  "both_blocks": [
+   "block1",
+   "block2"
+  ],
+  "branch_coverage": {
+   "excluded_prints_only_no_print": "exercised (measured print_state rows)",
+   "observation_ends_early": {
+    "asserted": true,
+    "days": [
+     "2021-02-09"
+    ],
+    "measured": "401 grid rows, path MTACW"
+   },
+   "panel_member_censor_anchors": {
+    "asserted": false,
+    "days": [
+     "2025-02-03",
+     "2025-03-03",
+     "2026-03-04"
+    ],
+    "note": "era anchors selected by the panel censor coverage flag; they do not by themselves prove the observation ends_early branch"
+   },
+   "provider_bar": "exercised (measured bar_state=provider rows in the 20-day set)",
+   "quote_not_acquired": "exercised (measured existing_quote_lane_present=false rows)"
+  },
+  "feed_eras": [
+   "hf_era",
+   "floor_fallback",
+   "hf_resume_era",
+   "alpaca_sip_era"
+  ],
+  "floor_qualified_source_days": [
+   "2025-02-03"
+  ],
+  "integrity_sentinels": [
+   "2022-03-10"
+  ],
+  "raw_roster_missing_days": [
+   "2026-04-01",
+   "2026-05-01"
+  ]
+ },
+ "days": [
+  {
+   "branch_claim": {
+    "asserted": true,
+    "kind": "observation_ends_early_exercised"
+   },
+   "day": "2021-02-09",
+   "reasons": [
+    "branch_coverage: observation ends_early is exercised here (measured 401 grid rows on path MTACW); first block1/hf-era dev day whose selected path tape ends before the session end (censor coverage fact)"
+   ],
+   "stratum": [
+    "block1",
+    "hf_era",
+    "branch_terminal_censored"
+   ]
+  },
+  {
+   "day": "2021-11-26",
+   "reasons": [
+    "early_close (session_end=779)"
+   ],
+   "stratum": [
+    "block1",
+    "hf_era",
+    "early_close"
+   ]
+  },
+  {
+   "day": "2022-03-10",
+   "reasons": [
+    "bad-print integrity sentinel: the frozen SIP certification artifact documents 13 symbols whose maximum raw trade price exceeds their maximum RTH bar price; the canary recomputes the same relation from the raw lanes it uses (net/trades vs net/bars) and cross-checks the artifact values on the overlapping names"
+   ],
+   "stratum": [
+    "block1",
+    "hf_era",
+    "integrity_sentinel"
+   ]
+  },
+  {
+   "day": "2022-05-19",
+   "reasons": [
+    "net_manifest_partial (raw acquisition lost symbols)"
+   ],
+   "stratum": [
+    "block1",
+    "hf_era",
+    "net_partial"
+   ]
+  },
+  {
+   "day": "2022-06-23",
+   "reasons": [
+    "net_manifest_partial"
+   ],
+   "stratum": [
+    "block1",
+    "hf_era",
+    "net_partial"
+   ]
+  },
+  {
+   "day": "2022-06-27",
+   "reasons": [
+    "net_manifest_partial"
+   ],
+   "stratum": [
+    "block1",
+    "hf_era",
+    "net_partial"
+   ]
+  },
+  {
+   "day": "2022-11-25",
+   "reasons": [
+    "early_close (session_end=779)"
+   ],
+   "stratum": [
+    "block1",
+    "hf_era",
+    "early_close"
+   ]
+  },
+  {
+   "day": "2023-05-25",
+   "reasons": [
+    "net_manifest_partial"
+   ],
+   "stratum": [
+    "block1",
+    "hf_era",
+    "net_partial"
+   ]
+  },
+  {
+   "day": "2023-06-28",
+   "reasons": [
+    "net_manifest_partial"
+   ],
+   "stratum": [
+    "block1",
+    "hf_era",
+    "net_partial"
+   ]
+  },
+  {
+   "day": "2023-07-03",
+   "reasons": [
+    "early_close + net_manifest_partial"
+   ],
+   "stratum": [
+    "block1",
+    "hf_era",
+    "early_close",
+    "net_partial"
+   ]
+  },
+  {
+   "day": "2023-07-05",
+   "reasons": [
+    "net_manifest_partial"
+   ],
+   "stratum": [
+    "block1",
+    "hf_era",
+    "net_partial"
+   ]
+  },
+  {
+   "day": "2023-11-24",
+   "reasons": [
+    "early_close (session_end=779)"
+   ],
+   "stratum": [
+    "block1",
+    "hf_era",
+    "early_close"
+   ]
+  },
+  {
+   "branch_claim": {
+    "asserted": false,
+    "kind": "panel_member_censor_anchor",
+    "note": "selected as an era anchor by the panel member-censor coverage flag; the observation layer exercised ends_early only on 2021-02-09 (measured). Panel censor semantics are a property of the panel substrate, not of the observation ends_early branch."
+   },
+   "day": "2025-02-03",
+   "reasons": [
+    "floor_qualified source stratum (first dev day of 2025-02); block2 start; true prior session 2025-01-31 is sealed",
+    "panel_member_censor_anchor (era anchor; observation ends_early not claimed)"
+   ],
+   "stratum": [
+    "block2",
+    "floor_fallback",
+    "block_start",
+    "sealed_prior_session"
+   ]
+  },
+  {
+   "branch_claim": {
+    "asserted": false,
+    "kind": "panel_member_censor_anchor",
+    "note": "selected as an era anchor by the panel member-censor coverage flag; the observation layer exercised ends_early only on 2021-02-09 (measured). Panel censor semantics are a property of the panel substrate, not of the observation ends_early branch."
+   },
+   "day": "2025-03-03",
+   "reasons": [
+    "generic_era_anchor: first dev day of the HF-resumed era",
+    "panel_member_censor_anchor (era anchor; observation ends_early not claimed)"
+   ],
+   "stratum": [
+    "block2",
+    "hf_resume_era"
+   ]
+  },
+  {
+   "day": "2025-07-03",
+   "reasons": [
+    "early_close (session_end=779)"
+   ],
+   "stratum": [
+    "block2",
+    "hf_resume_era",
+    "early_close"
+   ]
+  },
+  {
+   "day": "2025-11-28",
+   "reasons": [
+    "early_close (session_end=779)"
+   ],
+   "stratum": [
+    "block2",
+    "hf_resume_era",
+    "early_close"
+   ]
+  },
+  {
+   "day": "2025-12-24",
+   "reasons": [
+    "early_close (session_end=779)"
+   ],
+   "stratum": [
+    "block2",
+    "hf_resume_era",
+    "early_close"
+   ]
+  },
+  {
+   "branch_claim": {
+    "asserted": false,
+    "kind": "panel_member_censor_anchor",
+    "note": "selected as an era anchor by the panel member-censor coverage flag; the observation layer exercised ends_early only on 2021-02-09 (measured). Panel censor semantics are a property of the panel substrate, not of the observation ends_early branch."
+   },
+   "day": "2026-03-04",
+   "reasons": [
+    "panel_member_censor_anchor (era anchor; observation ends_early not claimed)"
+   ],
+   "stratum": [
+    "block2",
+    "alpaca_sip_era",
+    "branch_terminal_censored"
+   ]
+  },
+  {
+   "day": "2026-04-01",
+   "reasons": [
+    "2026-04 raw roster hole stratum"
+   ],
+   "stratum": [
+    "block2",
+    "alpaca_sip_era",
+    "raw_roster_missing"
+   ]
+  },
+  {
+   "day": "2026-05-01",
+   "reasons": [
+    "2026-05 raw roster hole stratum"
+   ],
+   "stratum": [
+    "block2",
+    "alpaca_sip_era",
+    "raw_roster_missing"
+   ]
+  }
+ ],
+ "resolved_union_n": 20,
+ "selection_algorithm": [
+  "1. specials = all 7 early closes UNION all 7 net-manifest partial days UNION the 2022-03-10 integrity sentinel (14 distinct days)",
+  "2. required strata anchors = first dev day of 2025-02 (floor-qualified source), first dev day of 2026-04 and of 2026-05 (raw roster hole), first dev day of 2021-02 (block1/HF era), first dev day of 2025-03 (HF resumed era), first dev day of 2026-03 (Alpaca SIP era)",
+  "3. if union > 20: drop generic era anchors only, never an integrity/special day, in the declared anchor priority order (2026-03, 2025-03, 2021-02, 2026-05, 2026-04, 2025-02 excluded last)",
+  "4. if union < 20: fill with the first dev day of each remaining month in ascending month order",
+  "5. branch anchors replace the generic era anchors where a censor-coverage day exists (D11); target stays 20"
+ ],
+ "selection_inputs": [
+  "basket_sim.dev_days() (1,066 guarded dev days)",
+  "phase2_session_calendar.json detected_early_closes (7)",
+  "data/sip/net/manifest_index.jsonl status=partial (7 days)",
+  "sip certification artifacts (2022-03-10 bad-print integrity sentinel)",
+  "raw lane source availability per month (2025-02 fallback; 2026-03..05 Alpaca SIP backfill)",
+  "PIT roster vs raw roster audit strata (2026-04/05)"
+ ],
+ "selection_is_outcome_blind": true,
+ "target_n": 20
+}

@@ -1,0 +1,149 @@
+{
+ "blind": true,
+ "columns_read_semantics": "columns_read lists OBSERVATION-layer columns only (must be disjoint from the deny list); substrate-level coverage facts used for selection are recorded in evidence_inspected/substrate_fact_used and are never materialized in observation tables",
+ "entries": [
+  {
+   "affected_node": "canary_days.json",
+   "alternatives": [
+    "generic era anchors",
+    "censor-coverage days"
+   ],
+   "blind_flag": true,
+   "choice_id": "ACL-001",
+   "columns_read": [],
+   "decision": "replace 2021-02-01/2026-03-02 with 2021-02-09/2026-03-04; retain 2025-02-03/2025-03-03 as era anchors",
+   "evidence_inspected": [
+    "panel member censor coverage flag",
+    "net coverage last_et vs session_end"
+   ],
+   "recheck_block": "next canary revision",
+   "stage": "canary-day-selection",
+   "status": "frozen",
+   "substrate_fact_used": "panel terminal_censored / future_member_last_et censor coverage flag (day-selection coverage fact only; excluded from every observation table by contract)"
+  },
+  {
+   "affected_node": "canary_days.json + contract.json",
+   "alternatives": [
+    "claim observation ends_early on all four censor days",
+    "claim it only where measured"
+   ],
+   "blind_flag": true,
+   "choice_id": "ACL-002",
+   "columns_read": [
+    "day",
+    "ticker",
+    "coverage_class"
+   ],
+   "decision": "2021-02-09 is the only observation ends_early day (401 rows, MTACW); 2025-02-03/2025-03-03/2026-03-04 are panel-member-censor anchors only",
+   "evidence_inspected": [
+    "per-day grid coverage_class counts"
+   ],
+   "recheck_block": "next canary revision",
+   "stage": "branch-claim-correction",
+   "status": "frozen",
+   "substrate_fact_used": "panel member censor coverage flag (context for the corrected claim; not an observation column)"
+  },
+  {
+   "affected_node": "coverage + manifest core",
+   "alternatives": [
+    "carry measured free space in coverage notes",
+    "keep payloads free of run-varying values"
+   ],
+   "blind_flag": true,
+   "choice_id": "ACL-003",
+   "columns_read": [
+    "coverage.notes"
+   ],
+   "decision": "measured free space lives only in costs.json/summary.json; deterministic payloads carry declared constants",
+   "evidence_inspected": [
+    "byte-identity failure between two runs"
+   ],
+   "recheck_block": "every run (byte-identity gate)",
+   "stage": "payload-determinism",
+   "status": "frozen"
+  },
+  {
+   "affected_node": "contract.json projections + summary + costs",
+   "alternatives": [
+    "use measured 39.2 GiB headroom",
+    "use the reviewed PLAN numbers"
+   ],
+   "blind_flag": true,
+   "choice_id": "ACL-004",
+   "columns_read": [],
+   "decision": "declare broad board 1.95B rows / 37.7 GiB, full corpus 45-50 GiB, headroom 20 GiB, full gate 55 GiB; measured value recorded run-varying only",
+   "evidence_inspected": [
+    "PLAN-TAPE-ATLAS.md reviewed 2026-09-28"
+   ],
+   "recheck_block": "each run",
+   "stage": "projections",
+   "status": "frozen"
+  },
+  {
+   "affected_node": "producer resource policy",
+   "alternatives": [
+    "fixed 15/30 GiB",
+    "host-adaptive with user ceilings"
+   ],
+   "blind_flag": true,
+   "choice_id": "ACL-005",
+   "columns_read": [],
+   "decision": "soft=min(15 GiB,70% limit), hard=min(30 GiB,90% limit); 15/30 preserved as ceilings on larger hosts",
+   "evidence_inspected": [
+    "/proc/meminfo MemTotal 11.57 GiB; per-day peak RSS 4.10-4.75 GiB"
+   ],
+   "recheck_block": "each run",
+   "stage": "resource-policy",
+   "status": "frozen"
+  },
+  {
+   "affected_node": "canary_days.json reason + t_sentinel_2022_03_10",
+   "alternatives": [
+    "claim the certification artifact equals the net lane",
+    "relabel and recompute from the used lanes"
+   ],
+   "blind_flag": true,
+   "choice_id": "ACL-006",
+   "columns_read": [
+    "symbol",
+    "price",
+    "high"
+   ],
+   "decision": "2022-03-10 reason = documented bad-print sentinel; the selftest recomputes print>bar from net/trades vs net/bars and cross-checks artifact values on overlapping names",
+   "evidence_inspected": [
+    "certification_2022-03-10.json tail symbols vs net/trades 2022-03-10"
+   ],
+   "recheck_block": "each verify",
+   "stage": "sentinel-relabel",
+   "status": "frozen"
+  },
+  {
+   "affected_node": "coverage table + t_blocker_branches",
+   "alternatives": [
+    "single B4 canary flag",
+    "per-blocker branches"
+   ],
+   "blind_flag": true,
+   "choice_id": "ACL-007",
+   "columns_read": [
+    "day",
+    "status",
+    "kind",
+    "day",
+    "missingness_class"
+   ],
+   "decision": "coverage rows carry B1..B6 branches with matching missingness_class; B6 days materialize explicit rows",
+   "evidence_inspected": [
+    "net manifest index gaps 2026-05-21/2026-05-29",
+    "roster holes 245-373/day"
+   ],
+   "recheck_block": "each run",
+   "stage": "coverage-blockers",
+   "status": "frozen"
+  }
+ ],
+ "ledger_id": "freeze-o.adaptive-choice-ledger",
+ "ledger_version": "v0",
+ "outcome_columns_read": [],
+ "rule": "every inspected statistic and resulting choice in the canary stage is recorded here; all entries are outcome-blind"
+}

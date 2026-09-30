@@ -1,0 +1,23 @@
+{
+ "schema": "atlas/blockers_resolved/v0",
+ "recorded_at_utc": "2026-09-30T07:28:00.949600+00:00",
+ "resolved": {
+  "B1_raw_2025_02": {
+   "evidence_path": "factory/artifacts/basket/phase2/ATLAS/TAPE/OBSERVATION/v0/acquisition/evidence/acquisition_admission.json",
+   "evidence_sha256": "eaf082436e00f5ab6eefefcbe5e106728502e874d625839b515bc86647dbf3ea"
+  },
+  "B2_raw_roster_2026_04_05": {
+   "evidence_path": "factory/artifacts/basket/phase2/ATLAS/TAPE/OBSERVATION/v0/acquisition/evidence/acquisition_admission.json",
+   "evidence_sha256": "eaf082436e00f5ab6eefefcbe5e106728502e874d625839b515bc86647dbf3ea"
+  },
+  "B5_storage_headroom": {
+   "evidence_path": "factory/artifacts/basket/phase2/ATLAS/TAPE/OBSERVATION/v0/storage_evidence.json",
+   "evidence_sha256": "206af51f7241a12c52ac13720c3ba599d9742e569c9f2deb532b0619c8180879"
+  },
+  "B6_unreconciled_net_manifest": {
+   "evidence_path": "factory/artifacts/basket/phase2/ATLAS/TAPE/OBSERVATION/v0/acquisition/net_reconciliation.json",
+   "evidence_sha256": "a2e77e138637c758c7e39f52e0fec0f42e0aa16f1222ed5c5097aebf6737f996"
+  }
+ },
+ "quote_channel_note": "B3 is an unacquired versioned sibling, not a core prerequisite. No quote feature is asserted ready."
+}

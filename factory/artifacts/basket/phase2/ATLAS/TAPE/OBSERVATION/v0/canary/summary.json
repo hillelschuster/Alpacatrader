@@ -1,0 +1,433 @@
+{
+ "acquisition": {
+  "admission_present": true,
+  "admitted_days": 60,
+  "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+  "all_scopes_ready": true,
+  "days_using_acquisition": [
+   "2025-02-03",
+   "2026-04-01",
+   "2026-05-01"
+  ],
+  "missing_scopes": [],
+  "residual_confirmed_trading_gaps": [],
+  "root": "/home/hillel/projects/Alpacatrader/data/atlas/acquisition/v1",
+  "scope_states": {
+   "B1_raw_2025_02": "ready",
+   "B2_raw_roster_2026_04_05": "ready"
+  },
+  "stale_scopes": []
+ },
+ "blockers": [
+  "B1_raw_2025_02",
+  "B2_raw_roster_2026_04_05",
+  "B3_quote_lane",
+  "B4_canary_only",
+  "B5_storage_headroom",
+  "B6_unreconciled_net_manifest"
+ ],
+ "blockers_by_class": {
+  "canary": [
+   "B4_canary_only"
+  ],
+  "core": [
+   "B1_raw_2025_02",
+   "B2_raw_roster_2026_04_05",
+   "B5_storage_headroom",
+   "B6_unreconciled_net_manifest"
+  ],
+  "quote": [
+   "B3_quote_lane"
+  ]
+ },
+ "branch_coverage": {
+  "bar_state": {
+   "none": 12150,
+   "provider": 58,
+   "raw": 34308
+  },
+  "coverage_class": {
+   "complete_to_session_end": 46115,
+   "ends_early": 401
+  },
+  "excluded_prints_exercised": true,
+  "no_print_exercised": true,
+  "print_state": {
+   "excluded_prints_only": 5141,
+   "no_print": 6288,
+   "path_print": 35087
+  },
+  "provider_bar_exercised": true,
+  "quote_not_acquired_exercised": true,
+  "quote_not_acquired_rows": 1058,
+  "terminal_censored_exercised": true,
+  "terminal_censored_rows": 401
+ },
+ "canary_id": "freeze-o.canary",
+ "contract_version": "freeze-o-v0",
+ "day_filter": null,
+ "days": [
+  "2021-02-09",
+  "2021-11-26",
+  "2022-03-10",
+  "2022-05-19",
+  "2022-06-23",
+  "2022-06-27",
+  "2022-11-25",
+  "2023-05-25",
+  "2023-06-28",
+  "2023-07-03",
+  "2023-07-05",
+  "2023-11-24",
+  "2025-02-03",
+  "2025-03-03",
+  "2025-07-03",
+  "2025-11-28",
+  "2025-12-24",
+  "2026-03-04",
+  "2026-04-01",
+  "2026-05-01"
+ ],
+ "days_built": 20,
+ "determinism_vs_previous_manifest": {
+  "coverage": true,
+  "day_registry": true,
+  "memberships": true,
+  "paths": true,
+  "quote_rosters": true,
+  "quote_rosters/2021-02-09": true,
+  "quote_rosters/2021-11-26": true,
+  "quote_rosters/2022-03-10": true,
+  "quote_rosters/2022-05-19": true,
+  "quote_rosters/2022-06-23": true,
+  "quote_rosters/2022-06-27": true,
+  "quote_rosters/2022-11-25": true,
+  "quote_rosters/2023-05-25": true,
+  "quote_rosters/2023-06-28": true,
+  "quote_rosters/2023-07-03": true,
+  "quote_rosters/2023-07-05": true,
+  "quote_rosters/2023-11-24": true,
+  "quote_rosters/2025-02-03": true,
+  "quote_rosters/2025-03-03": true,
+  "quote_rosters/2025-07-03": true,
+  "quote_rosters/2025-11-28": true,
+  "quote_rosters/2025-12-24": true,
+  "quote_rosters/2026-03-04": true,
+  "quote_rosters/2026-04-01": true,
+  "quote_rosters/2026-05-01": true,
+  "race_candidate_net/2021-02-09": true,
+  "race_candidate_net/2021-11-26": true,
+  "race_candidate_net/2022-03-10": true,
+  "race_candidate_net/2022-05-19": true,
+  "race_candidate_net/2022-06-23": true,
+  "race_candidate_net/2022-06-27": true,
+  "race_candidate_net/2022-11-25": true,
+  "race_candidate_net/2023-05-25": true,
+  "race_candidate_net/2023-06-28": true,
+  "race_candidate_net/2023-07-03": true,
+  "race_candidate_net/2023-07-05": true,
+  "race_candidate_net/2023-11-24": true,
+  "race_candidate_net/2025-02-03": true,
+  "race_candidate_net/2025-03-03": true,
+  "race_candidate_net/2025-07-03": true,
+  "race_candidate_net/2025-11-28": true,
+  "race_candidate_net/2025-12-24": true,
+  "race_candidate_net/2026-03-04": true,
+  "race_candidate_net/2026-04-01": true,
+  "race_candidate_net/2026-05-01": true,
+  "race_checkpoint_full/2021-02-09": true,
+  "race_checkpoint_full/2021-11-26": true,
+  "race_checkpoint_full/2022-03-10": true,
+  "race_checkpoint_full/2022-05-19": true,
+  "race_checkpoint_full/2022-06-23": true,
+  "race_checkpoint_full/2022-06-27": true,
+  "race_checkpoint_full/2022-11-25": true,
+  "race_checkpoint_full/2023-05-25": true,
+  "race_checkpoint_full/2023-06-28": true,
+  "race_checkpoint_full/2023-07-03": true,
+  "race_checkpoint_full/2023-07-05": true,
+  "race_checkpoint_full/2023-11-24": true,
+  "race_checkpoint_full/2025-02-03": true,
+  "race_checkpoint_full/2025-03-03": true,
+  "race_checkpoint_full/2025-07-03": true,
+  "race_checkpoint_full/2025-11-28": true,
+  "race_checkpoint_full/2025-12-24": true,
+  "race_checkpoint_full/2026-03-04": true,
+  "race_checkpoint_full/2026-04-01": true,
+  "race_checkpoint_full/2026-05-01": true,
+  "race_minute_full/2021-02-09": true,
+  "race_minute_full/2021-11-26": true,
+  "race_minute_full/2022-03-10": true,
+  "race_minute_full/2022-05-19": true,
+  "race_minute_full/2022-06-23": true,
+  "race_minute_full/2022-06-27": true,
+  "race_minute_full/2022-11-25": true,
+  "race_minute_full/2023-05-25": true,
+  "race_minute_full/2023-06-28": true,
+  "race_minute_full/2023-07-03": true,
+  "race_minute_full/2023-07-05": true,
+  "race_minute_full/2023-11-24": true,
+  "race_minute_full/2025-02-03": true,
+  "race_minute_full/2025-03-03": true,
+  "race_minute_full/2025-07-03": true,
+  "race_minute_full/2025-11-28": true,
+  "race_minute_full/2025-12-24": true,
+  "race_minute_full/2026-03-04": true,
+  "race_minute_full/2026-04-01": true,
+  "race_minute_full/2026-05-01": true,
+  "selected_path_grid/2021-02-09": true,
+  "selected_path_grid/2021-11-26": true,
+  "selected_path_grid/2022-03-10": true,
+  "selected_path_grid/2022-05-19": true,
+  "selected_path_grid/2022-06-23": true,
+  "selected_path_grid/2022-06-27": true,
+  "selected_path_grid/2022-11-25": true,
+  "selected_path_grid/2023-05-25": true,
+  "selected_path_grid/2023-06-28": true,
+  "selected_path_grid/2023-07-03": true,
+  "selected_path_grid/2023-07-05": true,
+  "selected_path_grid/2023-11-24": true,
+  "selected_path_grid/2025-02-03": true,
+  "selected_path_grid/2025-03-03": true,
+  "selected_path_grid/2025-07-03": true,
+  "selected_path_grid/2025-11-28": true,
+  "selected_path_grid/2025-12-24": true,
+  "selected_path_grid/2026-03-04": true,
+  "selected_path_grid/2026-04-01": true,
+  "selected_path_grid/2026-05-01": true,
+  "selected_path_prints/2021-02-09": true,
+  "selected_path_prints/2021-11-26": true,
+  "selected_path_prints/2022-03-10": true,
+  "selected_path_prints/2022-05-19": true,
+  "selected_path_prints/2022-06-23": true,
+  "selected_path_prints/2022-06-27": true,
+  "selected_path_prints/2022-11-25": true,
+  "selected_path_prints/2023-05-25": true,
+  "selected_path_prints/2023-06-28": true,
+  "selected_path_prints/2023-07-03": true,
+  "selected_path_prints/2023-07-05": true,
+  "selected_path_prints/2023-11-24": true,
+  "selected_path_prints/2025-02-03": true,
+  "selected_path_prints/2025-03-03": true,
+  "selected_path_prints/2025-07-03": true,
+  "selected_path_prints/2025-11-28": true,
+  "selected_path_prints/2025-12-24": true,
+  "selected_path_prints/2026-03-04": true,
+  "selected_path_prints/2026-04-01": true,
+  "selected_path_prints/2026-05-01": true
+ },
+ "full_v0_ready": false,
+ "identity": {
+  "memberships": 118,
+  "panel_sha256": "2a021eda878cdbe53e41d4cc88e2d8ba3b14d9a3a819723d9f679c8aca7c3488",
+  "paths": 116,
+  "shared_paths": 2
+ },
+ "layers": {
+  "quote_rosters": {
+   "days": 20,
+   "rows": 2520
+  },
+  "race_candidate_net": {
+   "days": 20,
+   "rows": 432540
+  },
+  "race_checkpoint_full": {
+   "days": 20,
+   "rows": 1402080
+  },
+  "race_minute_full": {
+   "days": 20,
+   "rows": 36764610
+  },
+  "selected_path_grid": {
+   "days": 20,
+   "rows": 46516
+  },
+  "selected_path_prints": {
+   "days": 20,
+   "rows": 14531450
+  }
+ },
+ "measured": {
+  "board_rows_total": 36764610,
+  "day_rss_gib_range": [
+   2.854,
+   3.001
+  ],
+  "payload_bytes_total": null
+ },
+ "mode": "canary",
+ "net_reconciliation": {
+  "path": "/home/hillel/algo projects/worktrees/Alpacatrader/basket-phase2-f1/factory/artifacts/basket/phase2/ATLAS/TAPE/OBSERVATION/v0/acquisition/net_reconciliation.json",
+  "present": true,
+  "status": "ok",
+  "unreconciled_dev_days": [],
+  "verified_days": [
+   "2026-05-21",
+   "2026-05-29"
+  ]
+ },
+ "note": "canary stage; core_full_ready=False (a canary never claims it), quote_channel_ready=False. Core full-build blockers: B1_raw_2025_02; B2_raw_roster_2026_04_05; B5_storage_headroom; B6_unreconciled_net_manifest. Quote-sibling blocker (prospective quote channel only, never the core build): B3_quote_lane",
+ "projections_mirrored_from_plan": {
+  "broad_board_gib": 37.7,
+  "broad_board_rows": 1950000000.0,
+  "canary_gate_gib": 2,
+  "full_corpus_gib": [
+   45,
+   50
+  ],
+  "full_gate_gib": 75,
+  "memory_hard_gib": 30,
+  "memory_soft_gib": 15,
+  "planning_headroom_gib": [
+   70,
+   80
+  ],
+  "storage_readings": "costs.json storage block (guest free, mount facts, declared host volume, conservative free, margin); never a contract or summary claim"
+ },
+ "raw_roster": {
+  "missing_unresolved": {
+   "2021-02-09": 65,
+   "2021-11-26": 200,
+   "2022-03-10": 264,
+   "2022-05-19": 354,
+   "2022-06-23": 316,
+   "2022-06-27": 310,
+   "2022-11-25": 406,
+   "2023-05-25": 188,
+   "2023-06-28": 195,
+   "2023-07-03": 281,
+   "2023-07-05": 211,
+   "2023-11-24": 299,
+   "2025-03-03": 89,
+   "2025-07-03": 115,
+   "2025-11-28": 111,
+   "2025-12-24": 138,
+   "2026-03-04": 358
+  },
+  "verified_absent": {
+   "2025-02-03": 17,
+   "2026-04-01": 106,
+   "2026-05-01": 131
+  }
+ },
+ "raw_roster_missing": {
+  "2026-04-01": 110,
+  "2026-05-01": 136
+ },
+ "readiness": {
+  "build_state": {
+   "days_built": 20,
+   "dev_days": 1066,
+   "n_payload_mismatched": 0,
+   "n_payload_missing": 0,
+   "n_payloads": 125,
+   "ok": false,
+   "parent_drift": [],
+   "problems": [
+    "day set covers 20 of 1066 dev days"
+   ]
+  },
+  "core_blockers": [
+   "B1_raw_2025_02",
+   "B2_raw_roster_2026_04_05",
+   "B5_storage_headroom",
+   "B6_unreconciled_net_manifest"
+  ],
+  "core_evidence_state": {
+   "B1_raw_2025_02": {
+    "actual_sha256": "eaf082436e00f5ab6eefefcbe5e106728502e874d625839b515bc86647dbf3ea",
+    "blocker_id": "B1_raw_2025_02",
+    "declared": true,
+    "declared_sha256": "eaf082436e00f5ab6eefefcbe5e106728502e874d625839b515bc86647dbf3ea",
+    "evidence_path": "factory/artifacts/basket/phase2/ATLAS/TAPE/OBSERVATION/v0/acquisition/evidence/acquisition_admission.json",
+    "problems": [],
+    "verified": true
+   },
+   "B2_raw_roster_2026_04_05": {
+    "actual_sha256": "eaf082436e00f5ab6eefefcbe5e106728502e874d625839b515bc86647dbf3ea",
+    "blocker_id": "B2_raw_roster_2026_04_05",
+    "declared": true,
+    "declared_sha256": "eaf082436e00f5ab6eefefcbe5e106728502e874d625839b515bc86647dbf3ea",
+    "evidence_path": "factory/artifacts/basket/phase2/ATLAS/TAPE/OBSERVATION/v0/acquisition/evidence/acquisition_admission.json",
+    "problems": [],
+    "verified": true
+   },
+   "B5_storage_headroom": {
+    "actual_sha256": "206af51f7241a12c52ac13720c3ba599d9742e569c9f2deb532b0619c8180879",
+    "blocker_id": "B5_storage_headroom",
+    "declared": true,
+    "declared_sha256": "206af51f7241a12c52ac13720c3ba599d9742e569c9f2deb532b0619c8180879",
+    "evidence_path": "factory/artifacts/basket/phase2/ATLAS/TAPE/OBSERVATION/v0/storage_evidence.json",
+    "problems": [],
+    "verified": true
+   },
+   "B6_unreconciled_net_manifest": {
+    "actual_sha256": "a2e77e138637c758c7e39f52e0fec0f42e0aa16f1222ed5c5097aebf6737f996",
+    "blocker_id": "B6_unreconciled_net_manifest",
+    "declared": true,
+    "declared_sha256": "a2e77e138637c758c7e39f52e0fec0f42e0aa16f1222ed5c5097aebf6737f996",
+    "evidence_path": "factory/artifacts/basket/phase2/ATLAS/TAPE/OBSERVATION/v0/acquisition/net_reconciliation.json",
+    "problems": [],
+    "verified": true
+   }
+  },
+  "core_full_ready": false,
+  "core_full_ready_reasons": [
+   "mode=canary: only the full stage can claim core_full_ready",
+   "day set covers 20 of 1066 dev days"
+  ],
+  "core_outstanding_blockers": [],
+  "independence": "quote_channel_ready never gates core_full_ready and vice versa",
+  "quote_channel_blockers": [
+   "B3_quote_lane"
+  ],
+  "quote_channel_outstanding_blockers": [
+   "B3_quote_lane"
+  ],
+  "quote_channel_ready": false,
+  "quote_channel_ready_reasons": [
+   "outstanding quote blockers: B3_quote_lane"
+  ],
+  "quote_feature_fields": [],
+  "quote_feature_policy": "no prospective quote feature is materialized before the quote gate passes; a null/missing quote for a causal-roster name is 'not acquired', never market data",
+  "resolved_state_manifest": "/home/hillel/algo projects/worktrees/Alpacatrader/basket-phase2-f1/factory/artifacts/basket/phase2/ATLAS/TAPE/OBSERVATION/v0/blockers_resolved.json",
+  "storage_gate": {
+   "conservative_free_bytes": 112296992768,
+   "conservative_free_source": "backing host volume reported directly through 9p (C:\\ on /mnt/c)",
+   "conservative_ok": true,
+   "operating_reserve_bytes": 10737418240,
+   "planning_headroom_bytes": [
+    75161927680,
+    85899345920
+   ],
+   "readings_recorded_in": "costs.json storage block",
+   "reserve_basis": "canary: fixed 2 GiB floor",
+   "reserve_bytes": 2147483648,
+   "role": "entry gate: measured before the build wrote any byte"
+  }
+ },
+ "registry": {
+  "canary_members": 20,
+  "rows": 1066
+ },
+ "selection_classes": {
+  "acquisition_repaired": 3,
+  "acquisition_replace": 1,
+  "acquisition_supplement": 2,
+  "alpaca_sip_era": 3,
+  "block1": 12,
+  "block2": 8,
+  "early_close": 7,
+  "floor_fallback": 0,
+  "net_partial": 0,
+  "net_reconciled": 0,
+  "net_unreconciled": 0,
+  "raw_roster_month": 2,
+  "roster_missing_unresolved": 17,
+  "roster_verified_absent": 3
+ },
+ "selftest_failed": [],
+ "selftest_ok": true
+}

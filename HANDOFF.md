@@ -414,6 +414,60 @@ increment over the trivial giveback:10 ruler (its conditional niche was a look-a
 (sub-minute print information) is a null (no family positive out-of-block in both blocks; nothing
 promoted). Read `researches/ATLAS-PHASE2-CLOSURE.md`; the only validated executable mechanism remains
 the H025 flush rule (separate live-paper workstream).
+**§16.3 (2026-09-30): Tape Atlas (ATA) observation lane — data repairs SOLID, canary NOT complete.**
+This is the current entry point for the active lane; the chronicle paragraph is `factory/STATE.md`
+"2026-09-30 (later)" and the current-truth snapshot is the `UPDATE 2026-09-30` block at the top of
+`researches/STATE.md`. Plan/foundations: `researches/PLAN-TAPE-ATLAS.md`.
+Committed and verified: `8f2ff07` rebuilt the derived SIP net manifest index from the per-day
+manifests (3,198 → 3,204 entries, sha256 `446090fd…`, repair+verify exit 0, no source mutated) and
+`dcefbd5` published the joint acquisition admission (B1 **19/19** Feb-2025 days in
+`data/atlas/acquisition/v4`, B2 **41/41** Apr/May-2026 days in `v3`, reused not refetched) with zero
+missing/stale scopes and zero residual same-feed gaps; producers/contracts/aliases, per-day manifests
+and rosters are SHA-bound and market rows stay gitignored. Blockers B1/B2/B5/B6 now bind to real
+evidence **files** listed in `TAPE/OBSERVATION/v0/blockers_resolved.json` (B3 is a declared-sibling
+quote lane, no quote feature claimed ready).
+**Not done — do not read any canary artifact as a result:** the 20-day observation canary never
+completed (three **kernel global OOM** interruptions of `python` at 11:01/12:02/13:25 — victims 9.05 /
+10.35 / 7.58 GiB anon RSS, no agent-initiated termination, victim command lines unrecoverable; report
+`local://wsl-interruption-investigation.md`), **no `verify.json` exists**, and the tracked
+`canary/summary.json` is the pre-repair artifact (old blocker id
+`B6_missing_net_manifest_2026_05_21_29`, `full_v0_ready: false`, `determinism_vs_previous_manifest:
+null`). Recovered bookkeeping is 117/120 layers with 2025-03-03 not re-hashing, so a `--force` rebuild
+is required. Run 1 built all 20 days then exited 1: `day_registry` built its 1,066 day dicts under
+polars' default 100-row schema inference, so acquisition string fields inferred Null for the first
+~1,006 dev days and the first acquisition day raised `ComputeError` (now fixed with full-length
+inference; the registry builds and 60 acquisition days resolve). No OOM/signal (peak RSS 4.71 GiB), no
+new manifest/summary/costs/selftest, and the source changed mid-run — so run 1 is smoke-only and the
+tree's `canary/summary.json` remains the stale pre-repair artefact. **The contract lock is not valid
+right now** (`schema.json` stale; one `--stage contract --force` re-freeze is authorized — a lock
+refresh that adds exactly two `day_registry` coverage fields and touches no market payload, so runs A/B
+must be identical everywhere). Then a hold for the new SHA, a fresh A/B run, `verify-canary` and the
+audit. There is **no old `HistoricalBarsRepair` blocker**. Still open: full 1,066-day
+corpus (`--stage full`, never run), outcome-blind inspection (`inspection_contract.json`
+`PREPARED-NOT-RUN`), **Freeze R not frozen** (`representation_matrix_template.json` `DRAFT-NOT-RUN`),
+nearest-100 retrieval proof, one constrained SSL run, independent race tiers. The within-name
+geometry producer and the masked-TCN sequence family are prepared/scoped-verified only. The `RTH_LO`
+question is now **CLOSED**: the board stays RTH-trimmed and no clock moved; coverage now derives from
+the untrimmed declared `[565, 965]` window with two published populations, after the real NTZ
+counterexample (2025-02-03, one bar at 16:01, 137 shares, counted as missing). **No retrieval,
+discovery or alpha claim exists.**
+Identity/microstructure facts retained (non-blocking): DXR 2025-02-03 = 24 SIP trades / 501 shares
+and **no** SIP minute bar vs one unreproduced HF/Finnhub 12:55 bar (7.78, 124 shares) — a missing bar
+is not a missing trade; BYNO/DXR/FTII/VISL preserved as original cross-feed proxy witnesses; three
+fixed-width padded PIT names (`ECC`, `ETX`, `SAND`) corrected injectively (5,535 → 5,535 distinct,
+collision-guarded) so the Feb-3 accounting closes at 0 unresolved.
+Operations: `CanaryRecoveryOps` is the single heavy owner of the canary/full chain; everyone else stays
+on light code/doc/metadata, cooperative stop only (no signals, no kills, no WSL restarts). The three
+30-Sep interruptions were **kernel global OOM kills of `python`** (11:01/12:02/13:25; victims 9.05 /
+10.35 / 7.58 GiB anon RSS), not agent actions; the child-only cgroup cap is unproven and not adopted.
+Host is now 16 GiB + 32 GiB swap: Ops holds the `>= 10 GiB` cold start before the parent is loaded, and
+the script's own gate is ONE shared calculation — `cap = floor(min(8.0 − current parent VmRSS,
+MemAvailable − 2.0 GiB margin) / 5.0 GiB child)`, **cap 0 refuses** (the 6.0 GiB figure is contract
+text only, not a gate; the parent term is current VmRSS, not lifetime peak). Peak RSS now uses exact
+÷2²⁰ GiB instead of ÷10⁶ (+4.86% over-report before), so peak figures must not be differenced across
+that pin. The exact resume/proof command chain lives in `researches/PLAN-TAPE-ATLAS.md` §10.1 — one
+copy only, do not duplicate it here. Nothing in this lane was committed this cycle; the parent waits
+for a green canary. The H025 flush paper workstream (§1–§15) is a separate lane and is untouched.
 Worktree/branch: `basket-phase2-f1`. Entry docs: `researches/PLAN-ATLAS-01.md` (plan/foundations),
 `researches/ATLAS-PHASE1-SYNTHESIS.md` (readable conclusion), `researches/STATE.md` (current truth),
 `factory/artifacts/basket/phase2/ATLAS/` (numbers). Frozen and committed this cycle: panel v2 (SIP,

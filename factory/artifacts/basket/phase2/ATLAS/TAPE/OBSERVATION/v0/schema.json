@@ -1,0 +1,3403 @@
+{
+ "contract_version": "v0",
+ "coverage_missingness_vocabulary": {
+  "acquisition_repaired": "an admitted acquisition day supplied this day's raw lane",
+  "net_manifest_unreconciled": "the day's net files exist and verify locally but the derived-index row is absent/stale"
+ },
+ "field_attributes": {
+  "coordinate_only_rule": "month, block, feed_era, dow, canary flags, clock labels and coverage classes are split/audit coordinates, never distance channels",
+  "dtype_vocabulary": [
+   "str",
+   "int32",
+   "int64",
+   "float64",
+   "bool",
+   "datetime[us, UTC]",
+   "datetime[us, America/New_York]",
+   "list[str]"
+  ],
+  "namespace_vocabulary": [
+   "key",
+   "identity",
+   "audit_coordinate",
+   "calendar",
+   "provenance",
+   "tape",
+   "print",
+   "state_price",
+   "race",
+   "coverage",
+   "quality",
+   "roster",
+   "censor"
+  ],
+  "no_distance_eligible": "Freeze O declares NO distance_eligible field anywhere; Freeze R declares each view's channel tuple",
+  "required": [
+   "dtype",
+   "namespace",
+   "observable_asof_rule",
+   "coordinate_only",
+   "prospective_allowed",
+   "retrospective_only",
+   "supportable_by_tier"
+  ],
+  "retrospective_rule": "retrospective_only fields use whole-day, censor or other post-t information and must never enter a prospective representation",
+  "supportable_by_tier_vocabulary": [
+   "all",
+   "selected_paths",
+   "candidate_net",
+   "broad_minute",
+   "checkpoint",
+   "quote_roster"
+  ]
+ },
+ "projections": {
+  "broad_board_gib": 37.7,
+  "broad_board_rows": 1950000000.0,
+  "canary_min_free_bytes": 2147483648,
+  "full_build_gate_gib": 75,
+  "full_build_min_free_bytes": 80530636800,
+  "full_corpus_gib_high": 50,
+  "full_corpus_gib_low": 45,
+  "measurements": "capacity readings live in costs.json storage only; planning numbers only here",
+  "memory_hard_gib": 30,
+  "memory_soft_gib": 15,
+  "planning_headroom_gib_high": 80,
+  "planning_headroom_gib_low": 70,
+  "source": "researches/PLAN-TAPE-ATLAS.md (reviewed 2026-09-30)"
+ },
+ "readiness_states": {
+  "canary": "a canary claims neither state; both are false in the canary summary",
+  "core_full_ready": "full dev calendar built with core blockers B1,B2,B5,B6 resolved and >= 75 GiB of conservatively measured free space on the output mount's backing volume (planning band 70-80 GiB); never gated by B3_quote_lane",
+  "note": "readiness states are recorded in summary.json readiness, never as table columns; while the quote channel is not ready no quote feature field may exist in any table - a quote_ name is legal only when this schema declares it with a provenance namespace (roster provenance/counts are bookkeeping about the roster ARTIFACT, never quote alpha), and the registry quote-value/absence vocabulary is denied outright",
+  "quote_channel_ready": "B3_quote_lane resolved with evidence; gates only prospective quote materialization (a null/missing quote for a causal-roster name means 'not acquired', never market data)"
+ },
+ "schema_id": "freeze-o.observation-tables",
+ "schema_version": "v0",
+ "tables": {
+  "coverage": {
+   "fields": {
+    "blocker_id": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "coverage",
+     "observable_asof_rule": "B1_raw_2025_02 | B2_raw_roster_2026_04_05 | B3_quote_lane | B4_canary_only | B5_storage_headroom | B6_missing_net_manifest_2026_05_21_29 | null; B3 is quote-class and gates only the prospective quote channel, never the core full build",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "day": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "key",
+     "observable_asof_rule": "session date",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "layer": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "key",
+     "observable_asof_rule": "day_registry | paths | memberships | prints.selected_paths | grid.selected_paths | race.minute_full | race.checkpoint_full | race.candidate_net | quote_rosters",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "missingness_class": {
+     "coordinate_only": true,
+     "dtype": "str",
+     "namespace": "coverage",
+     "observable_asof_rule": "not_acquired | no_prints | excluded_prints_only | provider_absent | tape_end | raw_roster_missing | qualified_floor_source | net_manifest_partial | net_manifest_missing | none",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "n_expected": {
+     "coordinate_only": false,
+     "dtype": "int64",
+     "namespace": "coverage",
+     "observable_asof_rule": "expected rows/count when known",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "n_missing": {
+     "coordinate_only": false,
+     "dtype": "int64",
+     "namespace": "coverage",
+     "observable_asof_rule": "missing rows/count",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "n_present": {
+     "coordinate_only": false,
+     "dtype": "int64",
+     "namespace": "coverage",
+     "observable_asof_rule": "materialized rows/count",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "notes": {
+     "coordinate_only": false,
+     "dtype": "list[str]",
+     "namespace": "coverage",
+     "observable_asof_rule": "audit notes; null when empty | carries the per-day coverage facts: verified_no_sip_bar counts, cross-feed-witnessed counts and the general vs 2026-04/05-scoped missing-source strata",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "scope": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "key",
+     "observable_asof_rule": "day | day|ticker | day|T | day|ticker|et style scope key; 'all' for day-level",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "selectable_asof_et": {
+     "coordinate_only": true,
+     "dtype": "int32",
+     "namespace": "roster",
+     "observable_asof_rule": "earliest instant the layer's rows are selectable (prospective layers only)",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "source_path": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "source file the layer was derived from",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "source_sha256": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "sha256 of that file",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "status": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "coverage",
+     "observable_asof_rule": "ok | partial | missing | not_built",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    }
+   },
+   "grain": [
+    "layer",
+    "day",
+    "scope"
+   ],
+   "n_rows_expected": "one row per layer x day (per-scope rows where a layer has sub-scopes)",
+   "partitioning": null,
+   "primary_key": [
+    "layer",
+    "day",
+    "scope"
+   ],
+   "sort": [
+    "layer",
+    "day",
+    "scope"
+   ],
+   "storage_class": "canonical_observation"
+  },
+  "day_registry": {
+   "fields": {
+    "acq_bars_path": {
+     "coordinate_only": true,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "absolute path of the admitted acquisition day parquet; null when none",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "acq_bars_present": {
+     "coordinate_only": true,
+     "dtype": "bool",
+     "namespace": "provenance",
+     "observable_asof_rule": "an admitted acquisition day file exists and re-hashes to its manifest sha256",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "acq_bars_sha256": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "locally re-hashed sha256 of the admitted acquisition day parquet",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "acq_manifest_sha256": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "sha256 of the admitted acquisition day manifest",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "acq_mode": {
+     "coordinate_only": true,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "replace_baseline | supplement_baseline; null when no acquisition is admitted",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "acq_roster_sha256": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "sha256 of the admitted acquisition day roster file",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "acq_scope": {
+     "coordinate_only": true,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "declared acquisition scope (B1 replaces the floor fallback, B2 supplements the baseline)",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "alias_map_sha256": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "sha256 of the explicit alias map; null when no alias map file exists",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "anatomy_present": {
+     "coordinate_only": false,
+     "dtype": "bool",
+     "namespace": "coverage",
+     "observable_asof_rule": "factory/artifacts/basket/sip/anatomy/<day>.jsonl exists",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "anatomy_sha256": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "per-day anatomy record sha (membership source)",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "block": {
+     "coordinate_only": true,
+     "dtype": "str",
+     "namespace": "audit_coordinate",
+     "observable_asof_rule": "block1 (<=2023-12-31) or block2 (>=2025-02-01)",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "build_status": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "coverage",
+     "observable_asof_rule": "full_built | canary_built | registry_only - derived from the BUILT day set, never from the frozen canary list, so a full run never records its days as registry_only",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "built": {
+     "coordinate_only": false,
+     "dtype": "bool",
+     "namespace": "provenance",
+     "observable_asof_rule": "true when THIS stage wrote and hashed the day's layers. Distinct from canary_member, which is the frozen 20-day canary list: a full run has built=true for all 1,066 dev days and canary_member=true for only 20 of them",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "calendar_sha256": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "sha256 of the frozen session calendar",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "canary_member": {
+     "coordinate_only": true,
+     "dtype": "bool",
+     "namespace": "audit_coordinate",
+     "observable_asof_rule": "true when the day is in the frozen 20-day canary selection - a selection fact, independent of whether this stage built it",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "canary_reason": {
+     "coordinate_only": true,
+     "dtype": "list[str]",
+     "namespace": "audit_coordinate",
+     "observable_asof_rule": "frozen canary stratum reasons",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "candidates_present": {
+     "coordinate_only": false,
+     "dtype": "bool",
+     "namespace": "coverage",
+     "observable_asof_rule": "data/sip/candidates/<day>.json exists",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "candidates_sha256": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "per-day candidate snapshot file sha",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "cross_feed_disagreement_count": {
+     "coordinate_only": true,
+     "dtype": "int32",
+     "namespace": "provenance",
+     "observable_asof_rule": "whole-day count of names the SIP response did not reproduce from the named non-SIP source; collection-time EVIDENCE provenance, scoped to this day's own crosscheck, never a market feature",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "cross_feed_witness_present": {
+     "coordinate_only": true,
+     "dtype": "bool",
+     "namespace": "provenance",
+     "observable_asof_rule": "a cross-feed witness artifact is catalogued for this day",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "cross_feed_witness_role": {
+     "coordinate_only": true,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "the witness's declared role, e.g. legacy_cross_feed_proxy_not_sip; a non-SIP retrospective proxy, never a SIP rank input",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "cross_feed_witness_sha256": {
+     "coordinate_only": true,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "locally re-hashed sha256 of the witness artifact; the declared sha must equal it or the day is refused",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "day": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "key",
+     "observable_asof_rule": "session date label in America/New_York",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "dow": {
+     "coordinate_only": true,
+     "dtype": "int32",
+     "namespace": "audit_coordinate",
+     "observable_asof_rule": "weekday 0=Mon",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "feed_era": {
+     "coordinate_only": true,
+     "dtype": "str",
+     "namespace": "audit_coordinate",
+     "observable_asof_rule": "hf_era | floor_fallback | hf_resume_era | alpaca_sip_era",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "guard_status": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "always ok (guard_day passed before any path was opened)",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "is_early_close": {
+     "coordinate_only": false,
+     "dtype": "bool",
+     "namespace": "calendar",
+     "observable_asof_rule": "session_end == 779",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "month": {
+     "coordinate_only": true,
+     "dtype": "str",
+     "namespace": "audit_coordinate",
+     "observable_asof_rule": "calendar month label",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "n_panel_members": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "coverage",
+     "observable_asof_rule": "panel memberships on the day",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "n_panel_paths": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "coverage",
+     "observable_asof_rule": "unique panel paths on the day",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "net_bars_present": {
+     "coordinate_only": false,
+     "dtype": "bool",
+     "namespace": "coverage",
+     "observable_asof_rule": "data/sip/net/bars/<day>.parquet exists",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "net_bars_sha256": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "per-day SIP bar lane sha",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "net_coverage_manifest_sha256": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "sha256 of the per-day net coverage manifest",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "net_coverage_present": {
+     "coordinate_only": false,
+     "dtype": "bool",
+     "namespace": "coverage",
+     "observable_asof_rule": "data/sip/net/coverage/<day>.json exists",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "net_coverage_sha256": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "per-day net coverage class file sha",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "net_manifest_status": {
+     "coordinate_only": true,
+     "dtype": "str",
+     "namespace": "coverage",
+     "observable_asof_rule": "ok | partial | missing | unreconciled (measured, never hardcoded) | AUDIT COORDINATE ONLY: COLLECTION-TIME INFRASTRUCTURE metadata, scoped to this day's own index row; not historical market state and never a feature",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "net_reconciled": {
+     "coordinate_only": true,
+     "dtype": "bool",
+     "namespace": "provenance",
+     "observable_asof_rule": "true when the net reconciliation verified this day's files, manifests and rebuilt index row | AUDIT COORDINATE ONLY: COLLECTION-TIME INFRASTRUCTURE metadata, scoped to this day's own reconciliation; not historical market state and never a feature",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "net_trades_present": {
+     "coordinate_only": false,
+     "dtype": "bool",
+     "namespace": "coverage",
+     "observable_asof_rule": "data/sip/net/trades/<day>.parquet exists",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "net_trades_sha256": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "per-day raw print file sha; null until hashed",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "notes": {
+     "coordinate_only": false,
+     "dtype": "list[str]",
+     "namespace": "coverage",
+     "observable_asof_rule": "free-text audit notes; null when empty",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "pit_n": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "coverage",
+     "observable_asof_rule": "count of PIT-eligible names for the day's vintage, computed WITHOUT materializing a frozenset, so walking the dev calendar cannot grow the producer's resident set",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "pit_vintage": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "latest pit_symbols vintage <= day",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "qualified_floor_source": {
+     "coordinate_only": false,
+     "dtype": "bool",
+     "namespace": "coverage",
+     "observable_asof_rule": "day's raw lane is the 2025-02 clean fallback with $2/100-share floors",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "raw_baseline_path": {
+     "coordinate_only": true,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "baseline raw lane file for the day (month file or clean fallback)",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "raw_baseline_sha256": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "sha256 of the baseline raw lane file",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "raw_inputs_hashed": {
+     "coordinate_only": false,
+     "dtype": "bool",
+     "namespace": "coverage",
+     "observable_asof_rule": "true when this stage hashed the day's inputs; follows `built`, not canary membership",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "raw_n_pit_offhours_only": {
+     "coordinate_only": true,
+     "dtype": "int32",
+     "namespace": "coverage",
+     "observable_asof_rule": "PIT names observed only OUTSIDE the RTH board window: present for COVERAGE, contributing no board row. Reported so full-window coverage and the RTH board population reconcile explicitly rather than one silently implying the other",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "raw_n_pit_symbols": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "coverage",
+     "observable_asof_rule": "raw symbols that are PIT eligible, measured for built days",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "raw_n_pit_symbols_full_window": {
+     "coordinate_only": true,
+     "dtype": "int32",
+     "namespace": "coverage",
+     "observable_asof_rule": "PIT names with ANY admitted bar in the declared window [565,965], including off-hours-only names. This is the COVERAGE population and is deliberately NOT the board population: deriving coverage from the RTH-trimmed frame manufactured false gaps (2025-02-03 NTZ has exactly one bar at etm 961 / 16:01 ET, PIT-present, and was dropped entirely)",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "raw_n_symbols": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "coverage",
+     "observable_asof_rule": "raw symbols observed in RTH (24h lane), measured for built days",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "raw_roster_cross_feed_witnessed_n": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "coverage",
+     "observable_asof_rule": "whole-day count of PIT names classified as cross-feed WITNESSED: a non-SIP source preserved the bar the SIP pull did not reproduce. Precedence: witnessed is tested BEFORE the generic API zero, otherwise this class is unreachable and always 0. RETROSPECTIVE proxy only, never a SIP rank input, never a market claim",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "raw_roster_missing_n": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "coverage",
+     "observable_asof_rule": "PIT-eligible names with zero raw rows after the acquisition, excluding names the acquisition verified absent (zero bars / no RTH / invalid symbol) | RETROSPECTIVE ONLY: whole-day PIT hole count over the completed session",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "raw_roster_missing_unresolved_n": {
+     "coordinate_only": true,
+     "dtype": "int32",
+     "namespace": "coverage",
+     "observable_asof_rule": "PIT names with zero raw rows that no source verified absent: a genuine missing confirmed trader | RETROSPECTIVE ONLY: whole-day unresolved missing-trader count over the completed session",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "raw_roster_no_sip_bar_also_witnessed_n": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "coverage",
+     "observable_asof_rule": "whole-day count of PIT names that are BOTH an API zero and cross-feed witnessed. Published so the overlap is explicit: a witnessed name is classified as WITNESSED (the more specific fact) but remains an API zero on the SIP request axis",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "raw_roster_verified_absent_n": {
+     "coordinate_only": true,
+     "dtype": "int32",
+     "namespace": "coverage",
+     "observable_asof_rule": "whole-day count of PIT names with no bar in the DECLARED STORED BAR SOURCES (roster `unavailable`), or whose spelling is unrequestable. This is an OBSERVATION statement only: an absent bar is NOT evidence of an absent trade, and nothing here infers one. On 2025-02-03 DXR printed 24 times / 501 shares on the SIP TRADE endpoint while the SIP minute-bar pull returned zero, so data was uncaptured, not silent. A syntax-unrequestable spelling is tracked separately",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "raw_roster_verified_no_sip_bar_n": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "coverage",
+     "observable_asof_rule": "whole-day count of unobserved PIT names that are API ZEROS (sip_coverage.symbols_zero_bars), counted by set MEMBERSHIP rather than by class: a cross-feed-witnessed name is also an API zero (the missing SIP bar is why it was witnessed) and must still be counted on this request axis. A REQUEST/COVERAGE fact, never a market claim",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "raw_source_kind": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "ohlcv_raw | clean_fallback | backfill_raw | acquired_day, joined with '+' when an admitted acquisition day supplements the baseline lane",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "raw_source_path": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "raw lane file for the day",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "raw_source_present": {
+     "coordinate_only": false,
+     "dtype": "bool",
+     "namespace": "coverage",
+     "observable_asof_rule": "true only when EVERY raw lane file for the day exists",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "raw_source_sha256": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "combined sha256 over every contributing raw lane file plus the explicit alias map; hashed for every dev day, not only built days",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "raw_source_uri": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "file URI of the raw lane input",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "session_end": {
+     "coordinate_only": true,
+     "dtype": "int32",
+     "namespace": "calendar",
+     "observable_asof_rule": "phase2_session_calendar.json session_end_by_day; known before the session",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "sip_coverage_complete": {
+     "coordinate_only": true,
+     "dtype": "bool",
+     "namespace": "provenance",
+     "observable_asof_rule": "the acquisition declares the day's SIP REQUEST axis complete. NULL means NOT CLAIMED, not false: the pinned v3 manifests predate the field, so fall back to the manifest status/errors/request_failed checks",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "source_policy_id": {
+     "coordinate_only": true,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "the joint evidence's source policy id: collection-time INFRASTRUCTURE provenance about which feed policy produced the capture, never a market feature",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "universe_present": {
+     "coordinate_only": false,
+     "dtype": "bool",
+     "namespace": "coverage",
+     "observable_asof_rule": "data/sip/universe/rth/<day>.parquet exists",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "universe_sha256": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "per-day full-roster checkpoint file sha",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    }
+   },
+   "grain": [
+    "day"
+   ],
+   "n_rows_expected": 1066,
+   "partitioning": null,
+   "primary_key": [
+    "day"
+   ],
+   "sort": [
+    "day"
+   ],
+   "storage_class": "canonical_observation"
+  },
+  "memberships": {
+   "fields": {
+    "block": {
+     "coordinate_only": true,
+     "dtype": "str",
+     "namespace": "audit_coordinate",
+     "observable_asof_rule": "dev block",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "day": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "key",
+     "observable_asof_rule": "session date",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "entry_et": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "key",
+     "observable_asof_rule": "anatomy fill minute",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "entry_px": {
+     "coordinate_only": false,
+     "dtype": "float64",
+     "namespace": "state_price",
+     "observable_asof_rule": "anatomy fill price",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "entry_rank": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "key",
+     "observable_asof_rule": "fill rank 1..3",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "family": {
+     "coordinate_only": true,
+     "dtype": "str",
+     "namespace": "key",
+     "observable_asof_rule": "A_pm | B600",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "member_bar_count": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "coverage",
+     "observable_asof_rule": "panel rows tracked for the member (fill bar to session end)",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "member_id": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "key",
+     "observable_asof_rule": "day|family|ticker|entry_et|entry_rank",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "month": {
+     "coordinate_only": true,
+     "dtype": "str",
+     "namespace": "audit_coordinate",
+     "observable_asof_rule": "calendar month",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "panel_sha256": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "parent panel.parquet sha",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "path_id": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "key",
+     "observable_asof_rule": "day|ticker",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "session_end": {
+     "coordinate_only": true,
+     "dtype": "int32",
+     "namespace": "calendar",
+     "observable_asof_rule": "session end for the day",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "ticker": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "key",
+     "observable_asof_rule": "instrument symbol",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    }
+   },
+   "grain": [
+    "member_id"
+   ],
+   "n_rows_expected": 6160,
+   "partitioning": null,
+   "primary_key": [
+    "member_id"
+   ],
+   "sort": [
+    "day",
+    "family",
+    "entry_rank",
+    "ticker"
+   ],
+   "storage_class": "canonical_observation"
+  },
+  "paths": {
+   "fields": {
+    "block": {
+     "coordinate_only": true,
+     "dtype": "str",
+     "namespace": "audit_coordinate",
+     "observable_asof_rule": "dev block",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "coverage_class": {
+     "coordinate_only": true,
+     "dtype": "str",
+     "namespace": "coverage",
+     "observable_asof_rule": "complete_to_session_end | ends_early | no_prints | not_acquired (retrospective audit field)",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "day": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "key",
+     "observable_asof_rule": "session date",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "families": {
+     "coordinate_only": true,
+     "dtype": "list[str]",
+     "namespace": "identity",
+     "observable_asof_rule": "panel families holding this path (collapse keeps one row) | RETROSPECTIVE ONLY: whole-day membership aggregate over ALL memberships; a later re-entry changes it, so it can never be read prospectively",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "first_entry_et": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "identity",
+     "observable_asof_rule": "earliest member entry_et",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "last_entry_et": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "identity",
+     "observable_asof_rule": "latest member entry_et | RETROSPECTIVE ONLY: whole-day membership aggregate over ALL memberships; a later re-entry changes it, so it can never be read prospectively",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "max_entry_rank": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "identity",
+     "observable_asof_rule": "worst member entry_rank | RETROSPECTIVE ONLY: whole-day membership aggregate over ALL memberships; a later re-entry changes it, so it can never be read prospectively",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "membership_ids": {
+     "coordinate_only": false,
+     "dtype": "list[str]",
+     "namespace": "identity",
+     "observable_asof_rule": "member ids anchored on this path | RETROSPECTIVE ONLY: whole-day membership aggregate over ALL memberships; a later re-entry changes it, so it can never be read prospectively",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "min_entry_rank": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "identity",
+     "observable_asof_rule": "best member entry_rank",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "month": {
+     "coordinate_only": true,
+     "dtype": "str",
+     "namespace": "audit_coordinate",
+     "observable_asof_rule": "calendar month",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "n_memberships": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "coverage",
+     "observable_asof_rule": "membership anchors sharing this path | RETROSPECTIVE ONLY: whole-day membership aggregate over ALL memberships; a later re-entry changes it, so it can never be read prospectively",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "n_print_rows": {
+     "coordinate_only": false,
+     "dtype": "int64",
+     "namespace": "coverage",
+     "observable_asof_rule": "raw print rows projected for the path",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "panel_sha256": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "parent panel.parquet sha",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "path_id": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "key",
+     "observable_asof_rule": "day|ticker",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "session_end": {
+     "coordinate_only": true,
+     "dtype": "int32",
+     "namespace": "calendar",
+     "observable_asof_rule": "session end for the day",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "source_span_first_et": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "tape",
+     "observable_asof_rule": "first raw print minute of the path (09:25-16:05 window)",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "source_span_last_et": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "tape",
+     "observable_asof_rule": "last raw print minute of the path",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "terminal_censored": {
+     "coordinate_only": false,
+     "dtype": "bool",
+     "namespace": "censor",
+     "observable_asof_rule": "last print et < session_end",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "ticker": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "key",
+     "observable_asof_rule": "instrument symbol as stored in the panel",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    }
+   },
+   "grain": [
+    "path_id"
+   ],
+   "n_rows_expected": 5905,
+   "partitioning": null,
+   "primary_key": [
+    "path_id"
+   ],
+   "sort": [
+    "day",
+    "ticker"
+   ],
+   "storage_class": "canonical_observation"
+  },
+  "quote_rosters": {
+   "fields": {
+    "block": {
+     "coordinate_only": true,
+     "dtype": "str",
+     "namespace": "audit_coordinate",
+     "observable_asof_rule": "dev block",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "day": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "key",
+     "observable_asof_rule": "session date",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "day_union_first_selectable_et": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "roster",
+     "observable_asof_rule": "min selectable_asof_et over the rules that place the symbol in the day union",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "existing_quote_lane_present": {
+     "coordinate_only": false,
+     "dtype": "bool",
+     "namespace": "coverage",
+     "observable_asof_rule": "symbol appears in the existing rank-selected quote lane (metadata only)",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "existing_quote_lane_rows": {
+     "coordinate_only": false,
+     "dtype": "int64",
+     "namespace": "coverage",
+     "observable_asof_rule": "rows the existing quote lane stores for the symbol-day (metadata only)",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "month": {
+     "coordinate_only": true,
+     "dtype": "str",
+     "namespace": "audit_coordinate",
+     "observable_asof_rule": "calendar month",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "rank": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "key",
+     "observable_asof_rule": "rank inside the snapshot top list",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "roster_rule": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "key",
+     "observable_asof_rule": "quote_roster_v0_top10_B_union_top3_A",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "score": {
+     "coordinate_only": false,
+     "dtype": "float64",
+     "namespace": "roster",
+     "observable_asof_rule": "frozen snapshot score",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "selectable_asof_et": {
+     "coordinate_only": true,
+     "dtype": "int32",
+     "namespace": "roster",
+     "observable_asof_rule": "T for B and A_pm; T+1 for A_open (o570 bar closes at 571)",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "snapshot_T": {
+     "coordinate_only": true,
+     "dtype": "int32",
+     "namespace": "key",
+     "observable_asof_rule": "frozen snapshot clock",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "snapshot_asof_et": {
+     "coordinate_only": true,
+     "dtype": "int32",
+     "namespace": "roster",
+     "observable_asof_rule": "frozen snapshot clock (== snapshot_T)",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "snapshot_pop": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "key",
+     "observable_asof_rule": "B | A_open | A_pm",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "source_path": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "candidates/<day>.json",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "source_sha256": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "sha256 of the candidate snapshot file",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "symbol": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "roster",
+     "observable_asof_rule": "roster symbol",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "union_member": {
+     "coordinate_only": false,
+     "dtype": "bool",
+     "namespace": "roster",
+     "observable_asof_rule": "always true: the table is the union roster by construction",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    }
+   },
+   "grain": [
+    "day",
+    "roster_rule",
+    "snapshot_pop",
+    "snapshot_T",
+    "rank"
+   ],
+   "n_rows_expected": "12 B checkpoints x 10 ranks + (A_open + A_pm) x 3 ranks per day",
+   "partitioning": null,
+   "primary_key": [
+    "day",
+    "roster_rule",
+    "snapshot_pop",
+    "snapshot_T",
+    "rank"
+   ],
+   "sort": [
+    "day",
+    "snapshot_pop",
+    "snapshot_T",
+    "rank"
+   ],
+   "storage_class": "canonical_observation"
+  },
+  "race_candidate_net": {
+   "fields": {
+    "age_min": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "state_price",
+     "observable_asof_rule": "t - px_et",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "block": {
+     "coordinate_only": true,
+     "dtype": "str",
+     "namespace": "audit_coordinate",
+     "observable_asof_rule": "dev block",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "day": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "key",
+     "observable_asof_rule": "session date",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "day_last_et": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "coverage",
+     "observable_asof_rule": "last SIP bar minute of the name",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "day_n_bars": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "coverage",
+     "observable_asof_rule": "SIP bar count of the name",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "in_net_full_day": {
+     "coordinate_only": false,
+     "dtype": "bool",
+     "namespace": "roster",
+     "observable_asof_rule": "name is in the full-day candidate net (future-selected)",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "in_prospective_roster": {
+     "coordinate_only": false,
+     "dtype": "bool",
+     "namespace": "roster",
+     "observable_asof_rule": "ticker in R(day,t): a snapshot top/margin list with selectable_asof_et <= t",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "in_winners_open": {
+     "coordinate_only": false,
+     "dtype": "bool",
+     "namespace": "roster",
+     "observable_asof_rule": "name is in winners_open (future-selected)",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "in_winners_prev": {
+     "coordinate_only": false,
+     "dtype": "bool",
+     "namespace": "roster",
+     "observable_asof_rule": "name is in winners_prev (future-selected)",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "known_by_t": {
+     "coordinate_only": false,
+     "dtype": "bool",
+     "namespace": "state_price",
+     "observable_asof_rule": "a completed bar with et <= t-1 exists",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "month": {
+     "coordinate_only": true,
+     "dtype": "str",
+     "namespace": "audit_coordinate",
+     "observable_asof_rule": "calendar month",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "net_coverage_class": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "coverage",
+     "observable_asof_rule": "healthy_raw | provider_only | unresolved | not_acquired (from net/coverage) | RETROSPECTIVE ONLY: whole-day coverage class over the merged day; it reflects the completed session",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "px": {
+     "coordinate_only": false,
+     "dtype": "float64",
+     "namespace": "state_price",
+     "observable_asof_rule": "close of the last completed SIP bar with et <= t-1",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "px_et": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "state_price",
+     "observable_asof_rule": "et of that bar",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "roster_first_selectable_et": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "roster",
+     "observable_asof_rule": "first selectable_asof_et at which the name enters R",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "roster_rules": {
+     "coordinate_only": false,
+     "dtype": "list[str]",
+     "namespace": "roster",
+     "observable_asof_rule": "the roster rules SELECTABLE AT THIS ROW'S OWN t: only snapshots whose selectable_asof_et <= t. Adding a later snapshot cannot alter an earlier row",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "session_end": {
+     "coordinate_only": true,
+     "dtype": "int32",
+     "namespace": "calendar",
+     "observable_asof_rule": "session end for the day",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "source": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "sip_net_bars",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "source_sha256": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "sha256 of the net bar day file",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "t": {
+     "coordinate_only": true,
+     "dtype": "int32",
+     "namespace": "key",
+     "observable_asof_rule": "decision minute in [570, session_end]",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "ticker": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "key",
+     "observable_asof_rule": "instrument symbol",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    }
+   },
+   "grain": [
+    "day",
+    "t",
+    "ticker"
+   ],
+   "n_rows_expected": "candidate-name union x decision minutes",
+   "partitioning": "month=YYYY-MM",
+   "primary_key": [
+    "day",
+    "t",
+    "ticker"
+   ],
+   "sort": [
+    "day",
+    "t",
+    "ticker"
+   ],
+   "storage_class": "canonical_observation"
+  },
+  "race_checkpoint_full": {
+   "fields": {
+    "T": {
+     "coordinate_only": true,
+     "dtype": "int32",
+     "namespace": "key",
+     "observable_asof_rule": "decision clock in {575,580,585,590,595,600,615,630,645,660,690,720}",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "age_min": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "state_price",
+     "observable_asof_rule": "T - px_T_et",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "block": {
+     "coordinate_only": true,
+     "dtype": "str",
+     "namespace": "audit_coordinate",
+     "observable_asof_rule": "dev block",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "c_last": {
+     "coordinate_only": false,
+     "dtype": "float64",
+     "namespace": "tape",
+     "observable_asof_rule": "last close of the day",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "day": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "key",
+     "observable_asof_rule": "session date",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "delayed_open": {
+     "coordinate_only": false,
+     "dtype": "bool",
+     "namespace": "tape",
+     "observable_asof_rule": "provider delayed-open flag",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "first_et": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "tape",
+     "observable_asof_rule": "first bar minute",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "hi": {
+     "coordinate_only": false,
+     "dtype": "float64",
+     "namespace": "tape",
+     "observable_asof_rule": "whole-day high (checkpoint file)",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "known_by_t": {
+     "coordinate_only": false,
+     "dtype": "bool",
+     "namespace": "state_price",
+     "observable_asof_rule": "px_T is not null",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "last_et": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "tape",
+     "observable_asof_rule": "last bar minute",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "lo": {
+     "coordinate_only": false,
+     "dtype": "float64",
+     "namespace": "tape",
+     "observable_asof_rule": "whole-day low",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "month": {
+     "coordinate_only": true,
+     "dtype": "str",
+     "namespace": "audit_coordinate",
+     "observable_asof_rule": "calendar month",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "n_bars": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "tape",
+     "observable_asof_rule": "whole-day bar count",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "n_eligible_open": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "race",
+     "observable_asof_rule": "size of that population",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "n_eligible_retro": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "race",
+     "observable_asof_rule": "size of the retrospective population",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "o570": {
+     "coordinate_only": false,
+     "dtype": "float64",
+     "namespace": "state_price",
+     "observable_asof_rule": "SIP 09:30 open bar close; selectable from T=571",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "order_slot_open": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "race",
+     "observable_asof_rule": "deterministic ordinal from (score_open desc, symbol asc)",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "pit_listed": {
+     "coordinate_only": false,
+     "dtype": "bool",
+     "namespace": "roster",
+     "observable_asof_rule": "name is in the latest PIT vintage <= day",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "population_def": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "race",
+     "observable_asof_rule": "frozen population definition id",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "px_T": {
+     "coordinate_only": false,
+     "dtype": "float64",
+     "namespace": "state_price",
+     "observable_asof_rule": "close of the last completed SIP bar with et <= T-1; null when none",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "px_T_et": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "state_price",
+     "observable_asof_rule": "et of that bar",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "rank_hi_open": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "race",
+     "observable_asof_rule": "competition rank of ret_hi_open over the retrospective eligible population",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "rank_open": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "race",
+     "observable_asof_rule": "competition rank of score_open among rank-eligible known names at (day,T)",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "ret_clast_open": {
+     "coordinate_only": false,
+     "dtype": "float64",
+     "namespace": "tape",
+     "observable_asof_rule": "c_last / o570 - 1",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "ret_hi_open": {
+     "coordinate_only": false,
+     "dtype": "float64",
+     "namespace": "tape",
+     "observable_asof_rule": "hi / o570 - 1 (winners_open score anchor)",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "roster_state": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "roster",
+     "observable_asof_rule": "observed_by_t | not_observed_by_t | pit_unobserved",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "row_present": {
+     "coordinate_only": false,
+     "dtype": "bool",
+     "namespace": "roster",
+     "observable_asof_rule": "the name has a row in the checkpoint file (row presence is not a prospective feature)",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "score_open": {
+     "coordinate_only": false,
+     "dtype": "float64",
+     "namespace": "state_price",
+     "observable_asof_rule": "px_T / o570 - 1 (frozen B snapshot score anchor)",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "session_end": {
+     "coordinate_only": true,
+     "dtype": "int32",
+     "namespace": "calendar",
+     "observable_asof_rule": "session end for the day",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "source": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "sip_universe_rth",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "source_sha256": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "sha256 of the checkpoint day file",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "symbol": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "key",
+     "observable_asof_rule": "instrument symbol",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "vol": {
+     "coordinate_only": false,
+     "dtype": "float64",
+     "namespace": "tape",
+     "observable_asof_rule": "whole-day volume",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    }
+   },
+   "grain": [
+    "day",
+    "T",
+    "symbol"
+   ],
+   "n_rows_expected": "12 checkpoints x PIT roster",
+   "partitioning": "month=YYYY-MM",
+   "primary_key": [
+    "day",
+    "T",
+    "symbol"
+   ],
+   "sort": [
+    "day",
+    "T",
+    "symbol"
+   ],
+   "storage_class": "canonical_observation"
+  },
+  "race_minute_full": {
+   "fields": {
+    "acquisition_manifest_sha256": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "sha256 of the admitted acquisition day manifest; null when no acquisition contributed",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "acquisition_used": {
+     "coordinate_only": false,
+     "dtype": "bool",
+     "namespace": "provenance",
+     "observable_asof_rule": "true when an admitted acquisition day file contributed to this day's raw lane",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "age_min": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "state_price",
+     "observable_asof_rule": "t - px_et (staleness of the last completed bar in minutes)",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "alias_map_sha256": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "sha256 of the explicit alias map applied to raw spellings; null when no alias map exists",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "block": {
+     "coordinate_only": true,
+     "dtype": "str",
+     "namespace": "audit_coordinate",
+     "observable_asof_rule": "dev block",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "day": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "key",
+     "observable_asof_rule": "session date",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "day_envelope_warning": {
+     "coordinate_only": false,
+     "dtype": "bool",
+     "namespace": "quality",
+     "observable_asof_rule": "ratio outside [0.5, 2.0]",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "day_high_raw": {
+     "coordinate_only": false,
+     "dtype": "float64",
+     "namespace": "quality",
+     "observable_asof_rule": "max high of the day's raw RTH bars (name-day constant)",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "day_high_vs_sip_high_ratio": {
+     "coordinate_only": true,
+     "dtype": "float64",
+     "namespace": "quality",
+     "observable_asof_rule": "day_high_raw / sip_high_day",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "feed_era": {
+     "coordinate_only": true,
+     "dtype": "str",
+     "namespace": "audit_coordinate",
+     "observable_asof_rule": "hf_era | hf_resume_era | alpaca_sip_era | floor_fallback | sip_acquired_era | seed",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "flag_extreme_gain": {
+     "coordinate_only": false,
+     "dtype": "bool",
+     "namespace": "quality",
+     "observable_asof_rule": "gain > 50.0 or gain < -0.95 (split/bad-print suspect)",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "flag_nonpositive_px": {
+     "coordinate_only": false,
+     "dtype": "bool",
+     "namespace": "quality",
+     "observable_asof_rule": "px <= 0 or prev_close <= 0",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "flag_prevclose_discrepancy": {
+     "coordinate_only": false,
+     "dtype": "bool",
+     "namespace": "quality",
+     "observable_asof_rule": "true when the stored previous close is confirmed to differ from the provider's prior-session close by more than the 10% hard warning; known BEFORE the session opens, so it is a causal rank filter",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "broad_minute",
+      "checkpoint"
+     ]
+    },
+    "fresh_2m": {
+     "coordinate_only": false,
+     "dtype": "bool",
+     "namespace": "state_price",
+     "observable_asof_rule": "age_min <= 2",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "gain": {
+     "coordinate_only": false,
+     "dtype": "float64",
+     "namespace": "state_price",
+     "observable_asof_rule": "px / prev_close - 1; null when either is null",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "in_universe_file": {
+     "coordinate_only": false,
+     "dtype": "bool",
+     "namespace": "roster",
+     "observable_asof_rule": "name has a row in the SIP checkpoint file for the day",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "known_by_t": {
+     "coordinate_only": false,
+     "dtype": "bool",
+     "namespace": "state_price",
+     "observable_asof_rule": "a completed filled bar with et <= t-1 exists",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "month": {
+     "coordinate_only": true,
+     "dtype": "str",
+     "namespace": "audit_coordinate",
+     "observable_asof_rule": "calendar month",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "n_eligible": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "race",
+     "observable_asof_rule": "size of the quality-filtered rank population at (day, t): the rank_known population, i.e. rank_eligible rows. It is NOT the fresh_2m count.",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "broad_minute"
+     ]
+    },
+    "n_fresh_2m": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "race",
+     "observable_asof_rule": "published n_eligible of the fresh_2m rank population at (day,t)",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "n_known": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "race",
+     "observable_asof_rule": "published n_eligible of the all_known rank population at (day,t)",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "n_unfiltered": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "race",
+     "observable_asof_rule": "size of the unfiltered rank population at (day, t)",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "order_slot": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "race",
+     "observable_asof_rule": "deterministic ordinal from (gain desc, ticker asc) inside the known population; null when not eligible",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "pit_listed": {
+     "coordinate_only": false,
+     "dtype": "bool",
+     "namespace": "roster",
+     "observable_asof_rule": "name is in the latest PIT vintage <= day",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "population_def": {
+     "coordinate_only": false,
+     "dtype": "list[str]",
+     "namespace": "race",
+     "observable_asof_rule": "rank families this row's ranks belong to: all_known (rank_known) and/or fresh_2m (rank_fresh_2m)",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "broad_minute"
+     ]
+    },
+    "prev_close": {
+     "coordinate_only": false,
+     "dtype": "float64",
+     "namespace": "state_price",
+     "observable_asof_rule": "close of the last RTH bar of the prior stored session; null when unavailable",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "prev_close_acquired": {
+     "coordinate_only": false,
+     "dtype": "bool",
+     "namespace": "provenance",
+     "observable_asof_rule": "true when the previous close came from an admitted acquisition day",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "prev_close_age_sessions": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "provenance",
+     "observable_asof_rule": "index distance in the stored session sequence",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "prev_close_day": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "session date the previous close came from",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "prev_close_et": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "provenance",
+     "observable_asof_rule": "the et of THIS NAME's last prior-session RTH bar (per name, not a cross-sectional maximum)",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "prev_close_floor_qualified": {
+     "coordinate_only": false,
+     "dtype": "bool",
+     "namespace": "quality",
+     "observable_asof_rule": "denominator came from a floor-qualified source",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "prev_close_gap_days": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "provenance",
+     "observable_asof_rule": "calendar-day gap between the previous-close session and the day",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "prev_close_lane_kind": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "raw lane kind(s) that supplied the previous close; null when none",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "prev_close_lane_sha256": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "combined sha256 of every raw lane file that supplied the previous close, plus the alias map",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "prev_close_sealed_prior": {
+     "coordinate_only": false,
+     "dtype": "bool",
+     "namespace": "quality",
+     "observable_asof_rule": "the true prior session falls in sealed/reserved tape",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "prev_close_source": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "raw_prior_session | seed_2021-01-29 | block_gap_last_stored | none",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "prev_close_stale": {
+     "coordinate_only": false,
+     "dtype": "bool",
+     "namespace": "quality",
+     "observable_asof_rule": "prev_close_gap_days > 4",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "prevclose_vs_sip_clast_ratio": {
+     "coordinate_only": false,
+     "dtype": "float64",
+     "namespace": "quality",
+     "observable_asof_rule": "prev_close / SIP c_last of the prior session",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "prevclose_warning": {
+     "coordinate_only": false,
+     "dtype": "bool",
+     "namespace": "quality",
+     "observable_asof_rule": "abs(ratio - 1) > 0.10",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "px": {
+     "coordinate_only": false,
+     "dtype": "float64",
+     "namespace": "state_price",
+     "observable_asof_rule": "close of the last completed bar with et <= t-1; null when none",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "px_et": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "state_price",
+     "observable_asof_rule": "et of that bar; null when none",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "qualified_floor_source": {
+     "coordinate_only": false,
+     "dtype": "bool",
+     "namespace": "coverage",
+     "observable_asof_rule": "the day's lane is the 2025-02 clean fallback",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "quality_flags": {
+     "coordinate_only": false,
+     "dtype": "list[str]",
+     "namespace": "quality",
+     "observable_asof_rule": "nonpositive_px | extreme_gain",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "rank_eligible": {
+     "coordinate_only": false,
+     "dtype": "bool",
+     "namespace": "race",
+     "observable_asof_rule": "a name is rank-eligible at t only if it is known_by_t, its price and previous close are positive, its gain is outside the suspect split/bad-print band, its previous close is NOT a confirmed >10% discrepancy against the prior session, AND its previous close is a QUALIFIED REFERENCE - not stale and not floor-qualified. Only session-past facts may enter this mask: the whole-day envelope is retrospective and never filters a rank",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "rank_fresh_2m": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "race",
+     "observable_asof_rule": "competition rank over the fresh_2m population; null when not eligible",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "rank_known": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "race",
+     "observable_asof_rule": "competition rank over the known population; null when not eligible",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "rank_unfiltered": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "race",
+     "observable_asof_rule": "competition rank over EVERY name with a known price and a positive denominator, ignoring ALL quality filters INCLUDING an unqualified previous-close reference. Reference-only: on a day whose prior reference is stale or floor-qualified (2025-02-03 references 2023-12-29 because 2025-01-31 is sealed and never read) the raw px/gain and this rank remain stored as a REFERENCE and cannot support a rank-trajectory or era-stability claim",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "roster_state": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "roster",
+     "observable_asof_rule": "observed_in_raw | pit_unobserved",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "session_end": {
+     "coordinate_only": true,
+     "dtype": "int32",
+     "namespace": "calendar",
+     "observable_asof_rule": "session end for the day",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "sip_high_day": {
+     "coordinate_only": false,
+     "dtype": "float64",
+     "namespace": "quality",
+     "observable_asof_rule": "the provider lane's MAXIMUM RTH bar high for the ticker that day (day max, not the last minute's high), so the envelope compares like with like",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "source": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "ohlcv_raw | clean_fallback | backfill_raw | acquired_day | seed, joined with '+' when an admitted acquisition day supplements the baseline lane",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "source_sha256": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "combined sha256 over EVERY raw lane file that contributed to the day plus the explicit alias map, so one column proves the whole lane set",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "t": {
+     "coordinate_only": true,
+     "dtype": "int32",
+     "namespace": "key",
+     "observable_asof_rule": "decision minute label in [570, session_end]",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "ticker": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "key",
+     "observable_asof_rule": "instrument symbol",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    }
+   },
+   "grain": [
+    "day",
+    "t",
+    "ticker"
+   ],
+   "n_rows_expected": "sum over built days of (raw-observed PIT names x decision minutes in [570, session_end])",
+   "partitioning": "month=YYYY-MM",
+   "primary_key": [
+    "day",
+    "t",
+    "ticker"
+   ],
+   "sort": [
+    "day",
+    "t",
+    "rank_eligible desc",
+    "gain desc",
+    "ticker asc"
+   ],
+   "storage_class": "canonical_of_proxy_observation"
+  },
+  "selected_path_grid": {
+   "fields": {
+    "bar_close": {
+     "coordinate_only": false,
+     "dtype": "float64",
+     "namespace": "tape",
+     "observable_asof_rule": "bar close",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "bar_high": {
+     "coordinate_only": false,
+     "dtype": "float64",
+     "namespace": "tape",
+     "observable_asof_rule": "bar high",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "bar_low": {
+     "coordinate_only": false,
+     "dtype": "float64",
+     "namespace": "tape",
+     "observable_asof_rule": "bar low",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "bar_open": {
+     "coordinate_only": false,
+     "dtype": "float64",
+     "namespace": "tape",
+     "observable_asof_rule": "bar open of the SIP bar lane; null when no bar",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "bar_src": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "derived | provider | null",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "bar_state": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "tape",
+     "observable_asof_rule": "raw | provider | none (SIP bar lane presence and source)",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "bar_volume": {
+     "coordinate_only": false,
+     "dtype": "float64",
+     "namespace": "tape",
+     "observable_asof_rule": "bar volume",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "coverage_class": {
+     "coordinate_only": true,
+     "dtype": "str",
+     "namespace": "coverage",
+     "observable_asof_rule": "complete_to_session_end | ends_early | no_prints | not_acquired (retrospective audit field)",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "day": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "key",
+     "observable_asof_rule": "session date",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "et": {
+     "coordinate_only": true,
+     "dtype": "int32",
+     "namespace": "key",
+     "observable_asof_rule": "bar-start minute label in [565,965]",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "first_entry_et": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "roster",
+     "observable_asof_rule": "the path's FIRST panel entry et: rows before it are pre-entry and are NOT selectable prospectively (a prospective read filters et >= first_entry_et); the rows are still stored for the retrospective audit and are never deleted",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "n_auction_prints": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "print",
+     "observable_asof_rule": "prints carrying official open/close or MC auction codes",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "n_bar_eligible_prints": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "print",
+     "observable_asof_rule": "prints with a price-axis condition update",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "n_excluded_prints": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "print",
+     "observable_asof_rule": "prints with no price-axis condition update",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "n_prints": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "print",
+     "observable_asof_rule": "raw prints in the minute",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "parent_bar_sha256": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "sha256 of the SIP bar day file",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "parent_print_sha256": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "sha256 of the RAW print day file the projection was read from",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "path_id": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "key",
+     "observable_asof_rule": "day|ticker",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "print_first_ts_us": {
+     "coordinate_only": false,
+     "dtype": "int64",
+     "namespace": "print",
+     "observable_asof_rule": "epoch microseconds UTC of the first print in the minute",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "print_last_px": {
+     "coordinate_only": false,
+     "dtype": "float64",
+     "namespace": "print",
+     "observable_asof_rule": "price of the last print in the minute",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "print_last_ts_us": {
+     "coordinate_only": false,
+     "dtype": "int64",
+     "namespace": "print",
+     "observable_asof_rule": "epoch microseconds UTC of the last print in the minute",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "print_state": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "print",
+     "observable_asof_rule": "path_print | excluded_prints_only | no_print",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "projection_sha256": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "sha256 of this row's selected_path_prints payload (projection identity, not the raw parent)",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "selected_paths"
+     ]
+    },
+    "session_end": {
+     "coordinate_only": true,
+     "dtype": "int32",
+     "namespace": "calendar",
+     "observable_asof_rule": "session end for the day",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "terminal_censored": {
+     "coordinate_only": false,
+     "dtype": "bool",
+     "namespace": "censor",
+     "observable_asof_rule": "path last print et < session_end",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "ticker": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "key",
+     "observable_asof_rule": "instrument symbol",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "within_observed_span": {
+     "coordinate_only": false,
+     "dtype": "bool",
+     "namespace": "coverage",
+     "observable_asof_rule": "570 <= et <= session_end",
+     "prospective_allowed": false,
+     "retrospective_only": true,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "within_session": {
+     "coordinate_only": false,
+     "dtype": "bool",
+     "namespace": "coverage",
+     "observable_asof_rule": "the et lies inside the RTH session window [RTH_LO, session_end]; a prospective read requires it, so pre-open and after-hours cells are excluded prospectively but retained for audit",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    }
+   },
+   "grain": [
+    "day",
+    "ticker",
+    "et"
+   ],
+   "n_rows_expected": "paths x 401 minutes (et 565..965)",
+   "partitioning": "month=YYYY-MM",
+   "primary_key": [
+    "day",
+    "ticker",
+    "et"
+   ],
+   "sort": [
+    "day",
+    "ticker",
+    "et"
+   ],
+   "storage_class": "canonical_observation"
+  },
+  "selected_path_prints": {
+   "fields": {
+    "conditions": {
+     "coordinate_only": false,
+     "dtype": "list[str]",
+     "namespace": "tape",
+     "observable_asof_rule": "raw SIP condition codes",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "day": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "key",
+     "observable_asof_rule": "session date",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "et_min": {
+     "coordinate_only": true,
+     "dtype": "int32",
+     "namespace": "tape",
+     "observable_asof_rule": "bar-start minute label of ts_et",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "exchange": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "tape",
+     "observable_asof_rule": "raw print exchange code",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "first_entry_et": {
+     "coordinate_only": false,
+     "dtype": "int32",
+     "namespace": "roster",
+     "observable_asof_rule": "the path's FIRST panel entry et: rows before it are pre-entry and are NOT selectable prospectively (a prospective read filters et >= first_entry_et); the rows are still stored for the retrospective audit and are never deleted",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "in_projection_window": {
+     "coordinate_only": false,
+     "dtype": "bool",
+     "namespace": "coverage",
+     "observable_asof_rule": "et_min in [565, 965]",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "parent_day_sha256": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "sha256 of the raw day file the row was read from",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "path_id": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "key",
+     "observable_asof_rule": "day|ticker",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "price": {
+     "coordinate_only": false,
+     "dtype": "float64",
+     "namespace": "tape",
+     "observable_asof_rule": "raw print price",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "size": {
+     "coordinate_only": false,
+     "dtype": "float64",
+     "namespace": "tape",
+     "observable_asof_rule": "raw print size",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "source_path": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "provenance",
+     "observable_asof_rule": "raw file path",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "source_row_ordinal": {
+     "coordinate_only": false,
+     "dtype": "int64",
+     "namespace": "key",
+     "observable_asof_rule": "0-based row ordinal in the stored source file order",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "tape": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "tape",
+     "observable_asof_rule": "raw tape code (A/B/C)",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "ticker": {
+     "coordinate_only": false,
+     "dtype": "str",
+     "namespace": "key",
+     "observable_asof_rule": "instrument symbol",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "trade_id": {
+     "coordinate_only": false,
+     "dtype": "int64",
+     "namespace": "tape",
+     "observable_asof_rule": "provider trade id",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "ts_et": {
+     "coordinate_only": false,
+     "dtype": "datetime[us, America/New_York]",
+     "namespace": "tape",
+     "observable_asof_rule": "DST-aware ET conversion of ts_utc; known at this instant",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "ts_utc": {
+     "coordinate_only": false,
+     "dtype": "datetime[us, UTC]",
+     "namespace": "tape",
+     "observable_asof_rule": "print instant as stored (UTC); known at this instant",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    },
+    "within_session": {
+     "coordinate_only": false,
+     "dtype": "bool",
+     "namespace": "coverage",
+     "observable_asof_rule": "et_min in [570, session_end]",
+     "prospective_allowed": true,
+     "retrospective_only": false,
+     "supportable_by_tier": [
+      "all"
+     ]
+    }
+   },
+   "grain": [
+    "day",
+    "ticker",
+    "source_row_ordinal"
+   ],
+   "n_rows_expected": "sum of raw prints for the selected paths inside the 09:25-16:05 window",
+   "partitioning": "month=YYYY-MM",
+   "primary_key": [
+    "day",
+    "ticker",
+    "source_row_ordinal"
+   ],
+   "sort": [
+    "day",
+    "ticker",
+    "source_row_ordinal"
+   ],
+   "storage_class": "canonical_observation"
+  }
+ },
+ "unobserved_classes": {
+  "cross_feed_witnessed_no_sip_bar": "a non-SIP source preserved the bar the SIP pull did not reproduce; retrospective proxy only, never a SIP rank input",
+  "missing_confirmed_same_feed_bar": "the ONLY class counted as a hole: no declared source explains the missing bar",
+  "precedence": "tested in this order: verified_no_bar_in_declared_sources, then cross_feed_witnessed_no_sip_bar, then verified_no_sip_bar, then missing_confirmed_same_feed_bar. The witnessed test MUST precede the generic API-zero test because every witnessed name is also an API zero; reversing the order makes the cross-feed class unreachable and its count always 0",
+  "rule": "an absent bar never licenses a 'did not trade' inference; the four classes are statements about observation, not about the market",
+  "verified_no_bar_in_declared_sources": "no bar observed in the declared stored bar sources, or the spelling is unrequestable; NOT a claim that the name did not trade",
+  "verified_no_sip_bar": "SIP accepted the spelling and returned no minute bar; a request/coverage fact"
+ }
+}

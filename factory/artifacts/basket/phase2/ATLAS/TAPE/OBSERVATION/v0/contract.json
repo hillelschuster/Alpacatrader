@@ -1,0 +1,663 @@
+{
+ "acquisition_interface": {
+  "admission_union": "evidence/acquisition_admission.json is a UNION (schema atlas.acquisition.admission-union.v0) rebuilt from per-scope attestation files, so BOTH blocker ids are ALWAYS present as keys and key presence proves NOTHING. A blocker resolves only when union.all_scopes_ready is true AND missing_scopes == [] AND stale_scopes == [] AND that scope's own scopes[<scope>].state == 'ready'. A scope in not_ready/stale/unverified contributes NO admitted day, even if its day list is populated.",
+  "alias_map": "explicit and the ONLY rename path: factory/artifacts/.../OBSERVATION/v0/acquisition/alias_map.json, keyed canonical name -> {provider_symbol, basis, evidence[]}; this producer applies its INVERSE to raw spellings and refuses a non-injective map, a chain, or any name the map declares not aliased. Nothing is ever fuzzy-matched",
+  "asof": "source.asof / source.asof_semantics are recorded provenance: each request pins symbol resolution to the session date so a renamed entity's tape cannot be remapped onto a PIT name",
+  "bars_manifest": "<data>/atlas/acquisition/v0/bars/<day>.manifest.json: day, scope, status, file, sha256, schema, source{feed=sip, adjustment=raw}, requested_symbols, symbols_with_data, symbols_zero_bars, symbols_invalid, aliases, errors, roster/input/code/config sha256. Admitted only when status == 'complete' AND the parquet re-hashes to the declared sha256 AND the declared columns are timestamp Datetime(ns,UTC) + 5x Float64 + ticker + provider_symbol",
+  "collision_rule": "a canonical name arriving from more than one raw lane file REFUSES the day: the two sources disagree about the tape and no merge rule can settle it",
+  "contradiction_vocabulary": "evidence_crosscheck.same_feed_contradictory_zeros is HARD and blocks admission; cross_feed_disagreements is DIAGNOSTIC and non-blocking",
+  "cross_feed_witnesses": "legacy HF/Finnhub conflicts live in a separate directory <root>/cross_feed_witnesses/<day>.parquet, never under bars/. They are a RETROSPECTIVE PROXY SIBLING with witness_role 'legacy_cross_feed_proxy_not_sip': RECORDED and RE-HASHED like any other parent (the declared sha and the bytes on disk must agree), entered into the manifest parents as cross_feed_witness:<day> with rank_input=false. Never read as a SIP rank input, never part of the lane digest, never relabelled as SIP or called a non-trader. A B1 obligated name may be covered by the witness instead of the SIP payload; cross-feed names live in roster cross_feed_witness_names + manifest evidence_crosscheck, never in the roster's `unavailable`",
+  "declared_obligation": "obligation.baseline_standing is DECLARED ('replaced_by_this_acquisition' for feb2025, 'supplemented' for aprmay2026) and is CROSS-CHECKED against the scope-derived mode; a disagreement refuses the day rather than being inferred from one another",
+  "exact_day_set": "`all_scopes_ready` plus a NONEMPTY admitted list is NOT coverage: a one-day per-scope canary union carries both. The consumer recomputes the required day set from the guarded dev calendar itself - all 19 dev days of 2025-02 for B1, all 41 dev days of 2026-04/05 for B2 - and requires the admitted set to COVER it, then re-hashes every admitted day's parquet and manifest locally. A union admitting a subset fails with the uncovered count and first uncovered days named. The required set is never taken from the evidence.",
+  "guard": "guard_day runs before any acquisition path is opened; a sealed (2024-, 2025-01) or reserved (2026-06..08) day is never admitted and no sealed file is ever read",
+  "joint_scope_evidence": "the SINGLE authority for which acquisition root supplies each day: factory/artifacts/.../OBSERVATION/v0/acquisition/evidence/acquisition_admission.json (override ATLAS_ACQ_JOINT_EVIDENCE), schema atlas.acquisition.admission-union.v0. EVERY day is resolved through day_roots[<day>] -> acquisition_root + payload/manifest/roster paths; the ambient ATLAS_ACQ_ROOT is NEVER consulted for day resolution, so a per-blocker root set (B1 v4, B2 v3) cannot be half-honoured",
+  "mode_B1": "a B1 admission REPLACES the floor-qualified 2025-02 clean fallback, so the day is no longer qualified_floor_source",
+  "mode_B2": "a B2 admission SUPPLEMENTS the baseline 2026-04/05 month file; the union is canonicalised through the alias map before the collision check",
+  "net_reconciliation": "factory/artifacts/.../OBSERVATION/v0/acquisition/net_reconciliation.json (schema atlas/net_reconciliation/v0): per-day bars/trades/quotes/coverage file shas, per-day coverage/trades/quotes manifest shas, derived-index rows before/after, and the rebuilt derived-index sha. A day counts as reconciled only when its files AND manifests re-hash locally, its index row is present after, and the derived index on disk matches derived_index.sha256_after",
+  "net_reconciliation_state": "net_reconciliation.json EXISTS and verifies BOTH 2026-05-21 and 2026-05-29 end to end (status ok, 2/2 target days, derived index matching sha256_after). The B6 unreconciled-day set is therefore EMPTY on current data - net_manifest_status is 'ok' for both days and net_unreconciled_days(dev) returns []. The set stays measured, so a regression re-fills it",
+  "no_cli_exit_inference": "readiness is NEVER inferred from a producer exit code. A subset run that verified correctly exits 0 and reports days_verified_ok - a successful VERIFICATION, not a discharged blocker. Scope-wide readiness is all_scopes_ready, and it is false for a subset run",
+  "no_fabrication": "an absent, incomplete or unverifiable acquisition day is simply NOT admitted: the baseline lane is used and the blocker stays open. A legitimate zero-bar day is recorded, never fabricated as bars, and never encoded as a zero price",
+  "origin_producer_proof": "per blocker the joint evidence pins producer{snapshot_path, snapshot_sha256, code_sha256_at_capture}. A day's manifest.code_sha256 is compared against that PINNED capture hash, NEVER against the currently-installed tool. This proof is DEFAULT-DENY and FAIL-CLOSED: a missing pin, a missing snapshot_path/snapshot_sha256, an absent snapshot file, a snapshot whose bytes do not hash to the declared value, or a manifest whose producer hash differs from the pin all REFUSE the day. There is no 'unpinned therefore allowed' path. Payload/manifest/roster re-hashing and the manifest's baseline_lane input-sha pin are unchanged",
+  "owed_not_absent": "roster unavailable.baseline_only_observed names PIT names the REPLACED fallback carried that the compact source never saw. Under a replace scope the payload alone must still cover them, so they are OWED, not verified absent - classifying them as absent is exactly how they silently disappeared behind a status=complete day",
+  "per_blocker_roots": "B1_raw_2025_02 -> <data>/atlas/acquisition/v4; B2_raw_roster_2026_04_05 -> <data>/atlas/acquisition/v3, reusing the verified 41 days as published. The binding lives INSIDE the joint evidence (blockers[bid].root_rel + day_roots), never in a filename convention",
+  "preserved_captures": "acquisition v0 and v1 are preserved untouched and both hold one-day canaries; neither can ever be ready under the exact-day-set rule. The full repair will use a fresh v2 selected explicitly with ATLAS_ACQ_ROOT",
+  "previous_close": "the previous-session denominator PREFERS the admitted previous day when one exists; the first block2 session (2025-02-03) has no admitted prior session (2025-01-31 is sealed) and keeps its declared block-gap/stale provenance with no sealed look-back",
+  "request_failed_blocks_admission": "symbols_request_failed names a symbol whose request never completed. We therefore know NOTHING about whether it traded, so the day is NOT admissible - this is disjoint from symbols_zero_bars (the provider accepted the spelling and the name genuinely did not trade)",
+  "root": "<data>/atlas/acquisition/v1 (gitignored, outside the repo; override with ATLAS_ACQ_ROOT). v1 is the FIRST ADMITTED ROOT: v0 is a deliberately failed canary whose one fetched day honestly records status=incomplete, it is kept as evidence, and nothing here falls back to it. If no admissible root is configured the correct behaviour is to report the blocker OPEN, never to admit from a failed root.",
+  "roots": "v0/v1/v2 are preserved and non-admissible by construction; the per-blocker roots above are bound by the joint evidence, so there is no ambient fallback between versions",
+  "roster": "<data>/atlas/acquisition/v0/rosters/<day>.json classifies PIT names: expected_universe_present, raw_existing, alias_existing, and an `unavailable` group (absent_all_sources / no_rth_in_baseline / no_verified_provider_spelling). Names in a verified-absent class are a MARKET FACT and are removed from the missing-confirmed-trader count; anything absent from every source and unclassified stays an unresolved hole",
+  "scope_states": "five states, only `ready` admits: ready (parents match, own checks passed, EVERY required day admitted, rehash clean), verified_subset (own checks passed but coverage is partial - admits NOTHING, the escalation hole a one-day canary would otherwise open), not_ready (own checks failed or a day no longer hashes), stale (different root/code/contract/PIT/alias identity), unverified (no attestation exists). A full gate additionally requires scopes[<scope>].is_full_scope is true and rehash.mismatches == []",
+  "scope_values": "the per-day manifest `scope` and the admission union's scope key are the SAME vocabulary: 'feb2025' (the SIP day file REPLACES the floor-qualified 2025-02 clean fallback) and 'aprmay2026' (the SIP day file SUPPLEMENTS the 2026-04/05 baseline month file). Any other scope is a hard refusal, never a default, so a day file can never be silently attached to the wrong lane",
+  "unchanged_semantics": "scope stays feb2025|aprmay2026 and obligation.baseline_standing stays replaced_by_this_acquisition|supplemented (still cross-checked, never inferred); symbols_request_failed still blocks, symbols_zero_bars is still a legitimate zero, and unavailable.baseline_only_observed is still OWED rather than verified-absent",
+  "window_bounds": "the projection window [565, 965] ET is a CLOSED interval: a bar stamped exactly 16:05:00 ET is IN window. The producer's manifest carries source.window_et_bounds plus window_bounds_inclusive, and the consumer's grid builds range(565, 966), so an exclusive upper bound would make a good day disagree with the baseline lane it supplements"
+ },
+ "adaptive_choice_ledger": {
+  "blind": true,
+  "contract_locked": true,
+  "outcome_columns_read": [],
+  "path": "factory/artifacts/basket/phase2/ATLAS/TAPE/OBSERVATION/v0/adaptive_choice_ledger.json"
+ },
+ "allowed_blind_summaries": [
+  "row/support/coverage/null counts",
+  "path/window length and magnitude distributions",
+  "per-block/family/era/channel quantiles",
+  "duplicate/overlap and roster-census facts",
+  "no-outcome distance, density, neighbour, perturbation and surrogate statistics",
+  "resource/cost measurements"
+ ],
+ "contract_id": "freeze-o.observation",
+ "contract_version": "v0",
+ "coverage_missingness_semantics": {
+  "full_day_fields": "whole-day coverage class and terminal censoring support retrospective audits/exclusions only",
+  "principles": [
+   "missing/absent is never silently equal to zero or to 'no tape'",
+   "tape silence, condition-excluded prints, tape end and provider absence never collapse",
+   "a null from a non-supporting tier never enters a cross-tier comparison",
+   "a month or name that was never acquired is 'not acquired', never 'no prints'"
+  ],
+  "states": {
+   "bar_state": [
+    "raw",
+    "provider",
+    "none"
+   ],
+   "blame": [
+    "not_acquired: the raw lane never requested/stored this name-day (e.g. net-manifest partial days)",
+    "no_prints: the name traded in the day but printed no print in the minute",
+    "excluded_prints_only: prints exist in the minute but none is bar-eligible",
+    "provider_absent: the provider lane has no bar and the raw lane has no usable print",
+    "tape_end: the path's last print precedes the session end (terminal censor; retrospective only)",
+    "raw_roster_missing: a PIT-eligible name has zero raw rows and no source VERIFIED it absent - a genuine missing confirmed trader. A name the acquisition verified absent (zero bars / no RTH / invalid symbol) is a market fact and is NOT this class; it is counted separately as raw_roster_verified_absent_n and never inflates the hole",
+    "qualified_floor_source: the day's raw lane still contains the 2025-02 clean fallback, whose $2/100-share floors truncate the universe. An admitted B1 day REPLACES that lane, so the flag clears for that day",
+    "net_manifest_missing: the day's net files and per-day manifests verify locally but the derived manifest index has no verified row for it (measured, not a hardcoded date pair)",
+    "storage_headroom: the output filesystem cannot hold the projected corpus (full-build gate B5)"
+   ],
+   "coverage_class": [
+    "complete_to_session_end",
+    "ends_early",
+    "no_prints"
+   ],
+   "net_manifest_status": [
+    "ok",
+    "partial",
+    "missing",
+    "unreconciled"
+   ],
+   "net_manifest_status_rule": "ok = the net reconciliation verified the day end to end, or the index row is present and complete; partial = a trades/quotes index record declares symbols lost; missing = no index row and no per-day file; unreconciled = the per-day files exist and verify locally but the derived-index row is absent or stale. Never a hardcoded date pair.",
+   "print_eligibility": "a print is bar-eligible when at least one of its condition-derived axis rules updates price (oc>=1) or high/low (hl==2), per the frozen sip_bars.py alpaca table; condition-excluded prints update volume only or nothing",
+   "print_state": [
+    "path_print",
+    "excluded_prints_only",
+    "no_print"
+   ],
+   "raw_source_kind": [
+    "ohlcv_raw",
+    "clean_fallback",
+    "backfill_raw",
+    "acquired_day",
+    "seed",
+    "joined with '+' when an admitted acquisition day supplements the baseline lane"
+   ],
+   "roster_state": [
+    "observed_in_raw",
+    "pit_unobserved"
+   ]
+  },
+  "terminal_censor": "terminal_censored = last print et < session_end; retrospective_only, never a prospective input"
+ },
+ "data_roots": {
+  "large_outputs": "/home/hillel/projects/Alpacatrader/data/atlas/observation/v0 (gitignored; market rows never committed)",
+  "tracked_evidence": "factory/artifacts/basket/phase2/ATLAS/TAPE/OBSERVATION/v0 (contracts, lock, canary evidence: hashes/census only)"
+ },
+ "day_guard": {
+  "block_gap_rule": "a calendar gap > 30 days between consecutive dev days is a dev-block boundary (block1 2021-02..2023-12, block2 2025-02..2026-05); cross-block previous closes are marked prev_close_sealed_prior/prev_close_stale and never silently bridged",
+  "calendar_source": "basket_sim.dev_days() (factory/scripts/basket_sim.py), = sorted date stems of factory/artifacts/basket/sip/anatomy/*.jsonl",
+  "guard": "basket_sim.guard_day(day) is called before any path is opened for a day; builders never glob a store for the research calendar",
+  "reserved_months": [
+   "2026-06",
+   "2026-07",
+   "2026-08"
+  ],
+  "sealed_prefixes": [
+   "2024-",
+   "2025-01"
+  ],
+  "seed_exception": {
+   "allowed_use": "previous-close seed only (rows of that session read solely to derive the 2021-02-01 previous close)",
+   "day": "2021-01-29",
+   "forbidden_use": "never a dev day, never a board/grid path day, never a print projection day"
+  }
+ },
+ "day_registry_semantics": {
+  "build_status": "full_built | canary_built | registry_only, derived from the BUILT set, never the canary list",
+  "built": "true when THIS stage wrote and hashed the day; drives raw_inputs_hashed and build_status",
+  "canary_member": "true when the day is in the frozen 20-day canary selection - a selection fact, independent of this stage",
+  "why": "a full run builds 1,066 days of which 20 are canary members; conflating the two would record every full-build day as registry_only and derive core_full_ready from a registry that denies what was built"
+ },
+ "freeze": "O",
+ "full_build_blockers": [
+  {
+   "affects": [
+    "race.minute_full"
+   ],
+   "blocker_class": "core",
+   "blocker_id": "B1_raw_2025_02",
+   "detail": "2025-02 has no unfiltered raw source; only the clean fallback with $2/100-share floors exists. An admitted B1 SIP acquisition day REPLACES that fallback, after which the day is no longer floor-qualified. Resolved only when the acquisition admission evidence exists, re-hashes to its declared sha256, and every admitted day verifies locally (manifest status=complete, feed=sip, adjustment=raw, errors empty, bars re-hashing to the declared sha256) with no residual confirmed-trading gap."
+  },
+  {
+   "affects": [
+    "race.minute_full"
+   ],
+   "blocker_class": "core",
+   "blocker_id": "B2_raw_roster_2026_04_05",
+   "detail": "A measured 245-373 PIT-name/day hole (mean 318) exists across the 41 dev days of 2026-04/05 in the backfill raw lane. An admitted B2 acquisition day SUPPLEMENTS that month file. Resolved only when the admission evidence verifies and no confirmed-trading pair is left unclassified: names the acquisition verified absent (zero bars / no RTH / invalid symbol) are market facts and are NOT holes, so the blocker is decided by the count of PIT names with zero raw rows that no source verified absent, which must be zero."
+  },
+  {
+   "affects": [
+    "prospective quote channel",
+    "quote_rosters coverage"
+   ],
+   "blocker_class": "quote",
+   "blocker_id": "B3_quote_lane",
+   "detail": "QUOTE-SIBLING blocker: it gates only the prospective quote channel and never the core bar/print/race corpus. Existing quotes are a rank-selected future-membership lane; a causal quote acquisition for the frozen quote roster (approx. 39 names/day) is required before any prospective quote feature exists. The core corpus still builds the quote ROSTER/provenance table; no quote data is acquired or materialized here, and a null/missing quote for a causal-roster name is 'not acquired', never market information."
+  },
+  {
+   "affects": [
+    "all"
+   ],
+   "blocker_class": "canary",
+   "blocker_id": "B4_canary_only",
+   "detail": "This build stage is a 20-day canary. core_full_ready / v0 readiness is NOT claimed from a canary; the full 1,066-day build is a separate later stage. This marker never refuses the full stage."
+  },
+  {
+   "affects": [
+    "full build",
+    "all layers"
+   ],
+   "blocker_class": "core",
+   "blocker_id": "B5_storage_headroom",
+   "detail": "The full corpus projects 45-50 GiB (broad board 37.7 GiB / 1.95B rows) plus same-directory atomic-write transients, so the planning headroom band is 70-80 GiB and the reviewed INITIAL budget is the frozen 75 GiB reserve (80,530,636,800 bytes). This is an ENTRY gate, measured before the build writes a byte. On a RESUME the requirement is max(10 GiB operating reserve, 75 GiB - payload bytes that re-verify against the previous manifest); an absent or sha-mismatched payload contributes nothing. The physical mount check never relaxes: the gate measures the output mount's backing volume, and a virtual/unidentifiable local block disk must stack to a declared storage_host_volume reading (volume/free_bytes/measured_at/method/evidence_sha256) in the tracked resolved-state file, or it measures 0 and refuses. Resolved only by physical-disk evidence that is not the acquisition evidence and declares a positive measured free_bytes. Measured capacity readings are run-varying and live in costs.json only."
+  },
+  {
+   "affects": [
+    "selected_path_prints",
+    "race.candidate_net",
+    "coverage"
+   ],
+   "blocker_class": "core",
+   "blocker_id": "B6_unreconciled_net_manifest",
+   "detail": "The derived net manifest index has no record for 2026-05-21 and 2026-05-29 although the trades/quotes/bars files exist, so provider-side completeness is not claimable for those days. The set of blocked days is MEASURED, never hardcoded: any dev day whose net files and per-day manifests verify locally but whose derived-index row is absent or stale carries a net_manifest_missing coverage state. A day the net reconciliation verified end to end (files + manifests re-hash, index row present after the rebuild, derived index matching sha256_after) drops out of the set on its own and a day that regresses re-enters it."
+  }
+ ],
+ "full_build_gate": {
+  "canary": "unaffected",
+  "core_blockers": [
+   "B1_raw_2025_02",
+   "B2_raw_roster_2026_04_05",
+   "B5_storage_headroom",
+   "B6_unreconciled_net_manifest"
+  ],
+  "quote_channel_blockers": [
+   "B3_quote_lane"
+  ],
+  "quote_channel_rule": "B3_quote_lane gates ONLY the prospective quote channel (quote_channel_ready); it never refuses the core full build, and the core gate never admits a prospective quote feature",
+  "requirement": "the full core build refuses unless (a) the tracked resolved-state manifest declares every core blocker (B1,B2,B5,B6) resolved with an evidence_path AND an evidence_sha256 that RE-HASHES, AND the evidence CONTENTS attest that blocker - B1/B2 require a verifiable acquisition admission with no residual confirmed-trading gap, B5 requires physical-disk evidence distinct from the acquisition file with a positive measured free_bytes, B6 requires a net reconciliation that verifies at least one day end to end; AND (b) the output mount's backing volume holds at least the reviewed 75 GiB of conservatively measured free space (planning band 70-80 GiB; a virtual or unknown local block disk must stack to its declared storage_host_volume reading with evidence), or, on a resume, at least max(10 GiB operating reserve, 75 GiB minus the payload bytes that re-verify against the previous manifest). no flag bypasses this gate, and no acknowledgement flag or status override substitutes for a verified evidence file. B3_quote_lane is a quote-sibling blocker and is never part of it; any quote-specific materialization gates on B3 instead.",
+  "resolved_state_manifest": "factory/artifacts/basket/phase2/ATLAS/TAPE/OBSERVATION/v0/blockers_resolved.json"
+ },
+ "identity": {
+  "collapse_rule": "The A_pm/B600 shared paths collapse before raw-tape fitting/index/support counting: paths is keyed by (day, ticker) only. Membership views remain separate and carry their own anchors; support reports both independent-path and membership counts.",
+  "expected_panel_census": {
+   "block1_days": 734,
+   "block2_days": 332,
+   "days": 1066,
+   "families": {
+    "A_pm": 3188,
+    "B600": 2972
+   },
+   "memberships": 6160,
+   "panel_sha256": "2a021eda878cdbe53e41d4cc88e2d8ba3b14d9a3a819723d9f679c8aca7c3488",
+   "paths": 5905,
+   "rows": 1900432,
+   "shared_paths": 255
+  },
+  "keys": {
+   "coverage": [
+    "layer",
+    "day",
+    "scope"
+   ],
+   "day_registry": [
+    "day"
+   ],
+   "memberships": [
+    "member_id"
+   ],
+   "paths": [
+    "path_id"
+   ],
+   "quote_rosters": [
+    "day",
+    "roster_rule",
+    "snapshot_pop",
+    "snapshot_T",
+    "rank"
+   ],
+   "race_candidate_net": [
+    "day",
+    "t",
+    "ticker"
+   ],
+   "race_checkpoint_full": [
+    "day",
+    "T",
+    "symbol"
+   ],
+   "race_minute_full": [
+    "day",
+    "t",
+    "ticker"
+   ],
+   "selected_path_grid": [
+    "day",
+    "ticker",
+    "et"
+   ],
+   "selected_path_prints": [
+    "day",
+    "ticker",
+    "source_row_ordinal"
+   ]
+  },
+  "member_id": "(day, family, ticker, entry_et, entry_rank) - one fill/reference context",
+  "member_id_encoding": "day|family|ticker|entry_et|entry_rank",
+  "path_id": "(day, ticker) - one market tape",
+  "path_id_encoding": "day + '|' + ticker",
+  "sort_orders": {
+   "coverage": [
+    "layer",
+    "day",
+    "scope"
+   ],
+   "day_registry": [
+    "day"
+   ],
+   "memberships": [
+    "day",
+    "family",
+    "entry_rank",
+    "ticker"
+   ],
+   "paths": [
+    "day",
+    "ticker"
+   ],
+   "quote_rosters": [
+    "day",
+    "snapshot_pop",
+    "snapshot_T",
+    "rank"
+   ],
+   "race_candidate_net": [
+    "day",
+    "t",
+    "ticker"
+   ],
+   "race_checkpoint_full": [
+    "day",
+    "T",
+    "symbol"
+   ],
+   "race_minute_full": [
+    "day",
+    "t",
+    "rank_eligible desc",
+    "gain desc",
+    "ticker asc"
+   ],
+   "selected_path_grid": [
+    "day",
+    "ticker",
+    "et"
+   ],
+   "selected_path_prints": [
+    "day",
+    "ticker",
+    "source_row_ordinal"
+   ]
+  }
+ },
+ "no_representation": {
+  "augmentation": false,
+  "distance_fields": false,
+  "learned_parameters": false,
+  "metric_or_weights": false,
+  "note": "Freeze O declares no distance eligibility; Freeze R declares each view's channel tuple.",
+  "scale_ladder": false,
+  "segmentation": false
+ },
+ "occurrence_detection_clocks": {
+  "anatomy_start": "after end_et for completed-morphology questions; after detected_asof_et for prospective-action questions",
+  "field_groups": "every anatomy field group carries first_available_bar_index and supportable_by_tier",
+  "first_legal_anatomy_row": "the next member bar by bar identity, not et+1",
+  "normal_cut": "the close of the completed bar, (et_cut+1)*60 seconds after ET midnight",
+  "print_anchored_event": "stores its exact print timestamp as the exception",
+  "prospective_object": "usable only at detected_asof_et",
+  "retrospective_object": "complete at end_et",
+  "separation": "retrospective and prospective anatomy are separate tables and are never averaged"
+ },
+ "parent_sha_rules": {
+  "node_manifest_fields": [
+   "adaptive_choice_ledger_sha256",
+   "code_sha256",
+   "config_sha256",
+   "coverage_classes",
+   "input_shas",
+   "keys",
+   "n_eligible_rule",
+   "node_id",
+   "parent_ids",
+   "parent_shas",
+   "payload_sha256",
+   "schema_sha256",
+   "selection_classes",
+   "sort_order",
+   "status",
+   "supersedes",
+   "version",
+   "withdraws"
+  ],
+  "parent_shas": {
+   "acquisition admission + net reconciliation": "sha256 of both evidence files, recorded in the manifest parents (acquisition_admission, acquisition_alias_map, net_reconciliation) and re-verified from the files at build and verify time",
+   "acquisition day files": "per-day sha256 of the baseline lane file AND the admitted acquisition day parquet, recorded in day_registry raw_baseline_sha256 / acq_bars_sha256 / acq_manifest_sha256 / acq_roster_sha256; raw_source_sha256 is the combined digest over every contributing lane file plus the alias map, so one column proves the whole lane set",
+   "alias map": "sha256 of the explicit alias map, recorded in day_registry.alias_map_sha256 and race.minute_full.alias_map_sha256",
+   "contract.json": "sha256 recorded in contract_lock.json",
+   "panel.parquet": "2a021eda878cdbe53e41d4cc88e2d8ba3b14d9a3a819723d9f679c8aca7c3488",
+   "phase2_session_calendar.json": "sha256 recorded per day registry row (calendar_sha256)",
+   "raw day files": "per-day sha256 recorded in day_registry raw/net/universe/candidates sha columns; selected_path_prints and grid rows carry their day sha; race.minute_full rows carry the combined lane sha256"
+  },
+  "payload_sha256": "sha256 of the deterministic payload bytes; deterministic tables must be byte-identical across reruns with identical inputs",
+  "rule": "every immutable node manifest carries the fields above; parent-sha drift makes a node stale and creates a new version, never an in-place repair",
+  "run_varying": "elapsed seconds, peak RSS, host, worker count, git HEAD and free-space measurements live in costs.json only and never enter a payload or manifest core hash",
+  "verification": "parent shas are re-verified from the files at build and verify time; a corrupted parent sha in a scratch manifest must fail the check (negative control)"
+ },
+ "projections": {
+  "broad_board_gib": 37.7,
+  "broad_board_rows": 1950000000.0,
+  "canary_min_free_bytes": 2147483648,
+  "full_build_gate_gib": 75,
+  "full_build_min_free_bytes": 80530636800,
+  "full_corpus_gib_high": 50,
+  "full_corpus_gib_low": 45,
+  "measurements": "measured capacity readings (guest free, mount facts, declared host volume, conservative free, margin) are run-varying and live in costs.json storage only; this contract carries planning numbers, never a capacity reading",
+  "memory_hard_gib": 30,
+  "memory_soft_gib": 15,
+  "operating_reserve_gib": 10,
+  "planning_headroom_gib_high": 80,
+  "planning_headroom_gib_low": 70,
+  "resume_rule": "max(10 GiB operating reserve, 75 GiB - verified completed payload bytes); the 75 GiB figure is the reviewed conservative initial budget and is never reduced by a projection or an estimate",
+  "source": "researches/PLAN-TAPE-ATLAS.md (reviewed 2026-09-30)"
+ },
+ "prospective_rules": {
+  "candidate_roster": {
+   "exclusions": "winners_open and winners_prev are excluded by construction and counted",
+   "retrospective": "the full-day candidate net (future-selected) is retrospective-only and never a prospective input",
+   "rule": "R(day,t) = union of candidates/<day>.json snapshot top and margin lists whose selectable_asof_et <= t"
+  },
+  "previous_close": {
+   "discrepancy_rule": "prev_close vs the prior session's provider close off by more than 10% is a confirmed bad denominator: it nulls the quality-filtered rank family and sets quality flag prevclose_denominator_discrepancy, while raw px/gain and rank_unfiltered are preserved. The first block2 session (2025-02-03) still has no admitted prior session (2025-01-31 is sealed) and keeps prev_close_sealed_prior/stale with no sealed look-back",
+   "floor_rule": "a floor-qualified denominator (2025-02 fallback source) OR a stale denominator cannot support rank-trajectory or era-stability claims. The quality-filtered rank family is NULL for such rows; the raw px/gain and rank_unfiltered are PRESERVED as REFERENCE-ONLY so the reference value remains inspectable without licensing a trajectory claim. 2025-02-03 is the live case: its prior reference is 2023-12-29 because 2025-01-31 is sealed and is never read, so the reference is a known-stale cross-block stand-in. No row is dropped and no sealed file is fetched",
+   "gap_rule": "the true prior session of the first dev day of block2 (2025-02-03) is sealed (2025-01-31); the row carries the last stored block1 session (2023-12-29) with sealed_prior=true, stale=true",
+   "provenance_fields": [
+    "prev_close",
+    "prev_close_day",
+    "prev_close_et",
+    "prev_close_age_sessions",
+    "prev_close_gap_days",
+    "prev_close_source",
+    "prev_close_floor_qualified",
+    "prev_close_stale",
+    "prev_close_sealed_prior"
+   ],
+   "rule": "close of the last RTH bar of the immediately prior STORED session in the same raw lane; stored sessions exclude sealed/reserved tape"
+  },
+  "quote_roster": {
+   "causality": "a snapshot list is selectable at selectable_asof_et: T for B and A_pm, T+1 for A_open (o570 bar closes at 571)",
+   "exclusions": "winners_open, winners_prev and the full-day candidate net are never roster sources",
+   "materialization_gate": "the roster is CORE and always built; the prospective quote CHANNEL it feeds is gated separately on B3_quote_lane (quote_channel_ready) and is never part of the core full-build gate",
+   "null_rule": "a null/missing quote for a roster name means 'not acquired', never 'no quote': until the quote gate passes the absence supports no feature and enters no prospective representation",
+   "rule": "union of the causal top-10 of each of the twelve B checkpoints (T=575,580,585,590,595,600,615,630,645,660,690,720) plus the causal A_open top-3 and A_pm top-3 (T=570)",
+   "table": "quote_rosters stores one row per (day, roster_rule, snapshot_pop, snapshot_T, rank) with score and provenance; no quote data is acquired"
+  },
+  "rank_rule": {
+   "competition_rank": "1 + count(gain_j > gain_i); ties share the rank",
+   "envelope_ratio": "day_high_vs_sip_high_ratio compares the raw lane's DAY high against the provider lane's DAY max bar high (a per-ticker maximum, not the last minute's high, so the two sides are the same statistic); it is retrospective_only and never a rank filter",
+   "families_stored": [
+    "known",
+    "fresh_2m"
+   ],
+   "no_top_k": "the board is built over the full available cross-section; top-30/50/100/300 are query views, never builds",
+   "null_rule": "known_by_t=false implies null px/gain/rank; rank_eligible=false nulls the quality-filtered rank family while preserving raw rows/values",
+   "order_slot": "deterministic ordinal from (gain desc, ticker asc); not a second rank definition",
+   "population": "rank_eligible rows with known_by_t (family 'known') and age_min <= 2 (family 'fresh_2m') within (day, t)",
+   "rank_eligible": "finite px and prev_close > 0, quality_flags empty, AND the previous close is not a CONFIRMED >10% discrepancy against the prior session's provider close (a prior-session fact, so causal). Only session-past facts may enter this mask: the whole-day envelope is retrospective and never filters a rank",
+   "unfiltered_rank": "rank_unfiltered is the competition rank over every name with a known price and a positive denominator, ignoring the quality filters, so a quality decision never destroys the ordering; n_eligible is the size of the quality-filtered (rank_known) population, NOT the fresh_2m count"
+  },
+  "row_level_selectability": "row-level roster selectability is checked before column access: a row's selectable_asof_et must be <= the decision instant"
+ },
+ "purpose": "Freeze what the tape IS and what may be read before any corpus build: identity, calendar, raw provenance, physical observation-only schemas, multi-axis coverage, prospective roster/rank rules, occurrence/detection clocks, storage/materialization contracts, per-tier supportability and the permitted outcome-blind summaries. No distance metric, channel weighting, scale ladder, segmentation penalty, augmentation or learned-model parameter is frozen here (that is Freeze R).",
+ "readiness": {
+  "canary": "a canary run claims neither state (core_full_ready=false, quote_channel_ready=false); the readiness block of summary.json records both with their outstanding blockers",
+  "core_full_ready": {
+   "blockers": [
+    "B1_raw_2025_02",
+    "B2_raw_roster_2026_04_05",
+    "B5_storage_headroom",
+    "B6_unreconciled_net_manifest"
+   ],
+   "definition": "the full 1,066-day core observation corpus (prints, grid, bar/print/race lanes and the quote ROSTER/provenance table) is built with every core blocker resolved by a verified evidence file, the complete dev day set present, a manifest whose payload shas re-verify, and parents with no sha drift. It means COMPLETE DECLARED SIP RESPONSES + HASHED OUTPUTS + ALL CATALOGUED PROXY WITNESSES. It does NOT mean every feed agrees: a cross-feed disagreement is a recorded, re-hashed stratum, not a failure, and core readiness never asserts that the feeds concur",
+   "evidence_rule": "a declared resolution counts only when its evidence file exists, re-hashes to the declared sha256, and its contents attest the blocker; a nonempty sha string alone resolves nothing",
+   "gate": "full_build_gate.core_blockers + storage headroom at entry + a complete/verified manifest, parents and day set at completion",
+   "quote_dependency": "none: B3_quote_lane never appears in this state and quote perfection does not block core observation construction",
+   "source_agreement": "cross-feed disagreements are CATALOGUED, not resolved: a day may be ready while a non-SIP proxy supplies bars the SIP pull did not reproduce. Readiness is bounded by what the declared sources returned, never by a claim of universal feed agreement"
+  },
+  "independence": "core_full_ready and quote_channel_ready are separate states: neither implies the other, and no run may claim one from the other's evidence",
+  "null_rule": "a null/missing quote for a newly causal roster name is NOT market information: it means 'not acquired'. Separating the gates never admits that absence into prospective data, and no quote absence may be encoded as a zero, a spread, or a 'no quote' market state",
+  "quote_channel_ready": {
+   "blockers": [
+    "B3_quote_lane"
+   ],
+   "definition": "causal quote acquisition has landed with evidence for the frozen quote roster; only then may a prospective quote feature be materialized as a versioned sibling table",
+   "gate": "B3_quote_lane resolution with evidence shas",
+   "materialization_rule": "until this state is true no prospective quote feature may be materialized anywhere: schema.json declares no quote feature field and written frames deny the registry quote-value/absence vocabulary and any quote_ name the frozen schema does not itself declare as roster provenance; the core corpus materializes only the causal quote ROSTER/provenance table (quote_rosters), whose rows carry B3_quote_lane as a quote-sibling coverage state and whose declared quote_roster_* provenance/count columns are bookkeeping about the roster ARTIFACT, never quote alpha"
+  },
+  "recorded_in": "summary.json readiness (build evidence); never as an observation table column",
+  "states": [
+   "core_full_ready",
+   "quote_channel_ready"
+  ]
+ },
+ "reconciliation_guards": {
+  "canary_days": 20,
+  "day_registry_rows": 1066,
+  "minute_grid_rows_per_path": "one row per (day,ticker,et) for et in [565,965]",
+  "no_forbidden_column_in_observation_tables": true,
+  "no_sealed_or_reserved_day": true,
+  "panel_memberships": 6160,
+  "panel_paths": 5905,
+  "panel_shared_paths": 255,
+  "raw_board_rows": "one row per (day,t,ticker) for every raw-observed PIT-eligible name and t in [570,session_end]"
+ },
+ "resource_policy": {
+  "autosize": "workers = clamp(1, floor(soft_rss_gib / measured_or_declared_day_rss_gib), requested_workers) with a printed soft warning when reduced",
+  "canary_allowed": true,
+  "detected_limit_gib_at_freeze": 11.57,
+  "effective_at_freeze": {
+   "autosized_workers": 1,
+   "hard_gib": 10.412,
+   "measured_day_rss_gib_range": [
+    4.102,
+    4.747
+   ],
+   "soft_gib": 8.097
+  },
+  "hard_abort": "a worker day whose measured peak RSS exceeds hard_rss_gib aborts the build with a measured report (no silent narrowing)",
+  "hard_rss_gib": 30,
+  "hard_rule": "hard = min(30 GiB, 90% of the detected host/container memory limit)",
+  "measured_day_rss_gib_range": [
+   4.28,
+   4.93
+  ],
+  "oom_handling": "a BrokenProcessPool/OOM event aborts with a resource-policy error naming the measured facts, never a raw traceback",
+  "pit_cache_bound": "the PIT archive is loaded once (vintage order + per-vintage symbol lists); the per-vintage frozenset is cached in a map hard-bounded to PIT_VINTAGE_CACHE_MAX (4) entries, and the day registry uses the COUNT-only path that materializes no set at all. Walking all 1,066 dev days therefore retains at most 4 vintage sets, not 1,066 (~920 MB measured for the unbounded case)",
+  "soft_rss_gib": 15,
+  "soft_rule": "soft = min(15 GiB, 70% of the detected host/container memory limit)",
+  "worker_sizing": "effective workers = floor((soft RSS limit - the parent's MEASURED resident set) / per-day worker cost), floored at 1. The parent is subtracted because it is resident concurrently with every worker; on an 11.56 GiB host with a ~5.6 GB parent and ~5.0 GB/worker, a 2-worker request needs ~15.6 GB and is refused rather than started. costs.json records `workers` = what actually ran and `workers_requested` = the request, so a clamped run can never be read as more parallelism than executed"
+ },
+ "selftests": [
+  "deterministic schema/contract hashes",
+  "byte-identical second canary run for deterministic payloads",
+  "1066 guarded day-registry rows; no sealed/reserved day",
+  "physical absence of every blocked panel family/column",
+  "255 shared-path rule on the full panel and correct collapse within the canary",
+  "source-row pointer spot checks reproduce raw print fields",
+  "minute-state accounting distinguishes raw/provider/no-bar-with-excluded-prints/no-prints/tape-end; no fabricated prices",
+  "broad rank recomputation on sampled (day,t) rows; known=false -> null rank; competition rank + order_slot; fresh2 population counts",
+  "previous-close source/date/age/floor flags; 2025-02 and 2026-04/05 full-build blockers visible",
+  "candidate prospective roster excludes winners_* and uses snapshots with selectable_asof_et <= t",
+  "quote roster is the causal top10-B-union + A_open/A_pm top3 rule with full provenance",
+  "parent shas and output shas verify; corrupt/forbidden-column negative controls fail loudly",
+  "parent shas verified against current panel/calendar/raw parents; corrupted scratch manifest fails",
+  "forbidden names derived from the full panel registry (outcome_columns + future_only_columns) and asserted before every per-day write",
+  "coverage blocker branches B1..B6 present per affected day/layer with matching missingness_class",
+  "gate split enforced: B3_quote_lane is quote-class only, full_build_gate.core_blockers == the core class (B1,B2,B5,B6), a canary never claims core_full_ready, and no quote_ feature field may exist while the quote gate is unresolved",
+  "canary branch coverage: terminal_censored/ends_early, provider bar, excluded_prints_only, no_print, quote not_acquired all exercised",
+  "declared dtypes enforced: every payload parquet schema matches schema.json names and dtypes",
+  "2022-03-10 bad-print sentinel recomputed from the raw lane (13 symbols with raw trade max above the RTH bar max)",
+  "adaptive choice ledger present, contract-locked, blind, no outcome columns read",
+  "n_eligible published on race.minute_full and recomputed in the rank check",
+  "canary branch claims corrected: observation ends_early asserted only where measured (2021-02-09)",
+  "acquisition admission negative controls: only status=complete admits; sha/feed/adjustment/day/scope/errors violations refuse loudly; an absent or incomplete day is simply not admitted",
+  "a B1 scope replaces the floor-qualified fallback and a B2 scope supplements the baseline lane; a canonical name arriving from two lanes refuses the day",
+  "the explicit alias map is the only rename path, is applied as its inverse, and refuses a chain or a non-injective map",
+  "resume disk demand subtracts only verified completed payload bytes, never drops below the 10 GiB operating reserve, and an unbacked virtual disk still measures 0",
+  "core_full_ready derives from the complete day set, a payload-sha-verified manifest and drift-free parents - not from the initial disk reserve still being free",
+  "a declared blocker resolution is refused when its evidence file is absent, re-hashes differently, or its contents do not attest that blocker (B1/B2 admission, B5 physical disk, B6 reconciliation)",
+  "B6 coverage rows are exactly the dev days that measure as unreconciled; a reconciliation-verified day carries none",
+  "a verified-absent roster name (zero bars / no RTH / invalid symbol) is never counted as a missing confirmed trader",
+  "previous-close provenance names the lane that supplied the denominator and prefers the admitted previous day, while 2025-02-03 keeps its declared block-gap with no sealed look-back",
+  "the provider day high is a per-ticker DAY MAX, not the last minute's high, so the envelope ratio compares like with like",
+  "a previous close confirmed off the prior session by more than the 10% hard warning removes the row from the quality-filtered rank while raw px/gain and the unfiltered rank survive",
+  "n_eligible equals the quality-filtered rank population and is not the fresh_2m count",
+  "the whole-day envelope never filters a rank (retrospective diagnostic only)",
+  "a blocker key present in the admission union proves nothing: an unverified, not_ready or stale scope refuses and admits no day; only scopes[<scope>].state == 'ready' with all_scopes_ready and no missing/stale scope resolves it",
+  "the declared acquisition scope vocabulary is exactly {feb2025, aprmay2026} and any other scope refuses",
+  "the acquisition day set is recomputed from the guarded dev calendar (19 dev days for B1, 41 for B2) and enforced exactly: a one-day-per-scope union with both scopes ready and all_scopes_ready true is still refused, naming the uncovered count",
+  "a verified_subset scope admits nothing and keeps the blocker open even though its own day checks passed",
+  "a ready scope that is not a full-scope attestation, or that reports a rehash mismatch, is refused",
+  "the worker budget subtracts the parent's measured resident set, so a fat parent forces one worker and a thin parent never exceeds the naive cap",
+  "content hashes are memoized by path+size+mtime: stable across calls, re-hashed when a file changes, and None for a missing file",
+  "a crashed run's per-day progress earns resume credit only for payloads that RE-hash; a corrupted or absent payload earns nothing",
+  "the recorded raw-lane value is the combined lane-set digest, which differs from a bare file sha and changes when a lane is added, the alias map changes, or the lanes are reordered",
+  "day_registry separates `built` (this stage) from `canary_member` (frozen selection), so a full run cannot record its days as registry_only",
+  "a per-day acquisition manifest carrying symbols_request_failed is NOT admitted, while a genuine zero-bar name is",
+  "roster unavailable.baseline_only_observed names are owed, never counted as verified absent",
+  "a declared obligation.baseline_standing that contradicts the scope refuses the day",
+  "every acquisition day is resolved through the joint evidence day_roots binding, never from an ambient acquisition root",
+  "a day's manifest producer hash is compared against the blocker-PINNED capture hash, not the currently-installed producer code",
+  "a cross-feed witness is recorded as provenance only: never a rank input and never part of the lane digest",
+  "origin proof is fail-closed: a missing producer pin, a missing snapshot, an absent snapshot file, a snapshot whose bytes do not hash to the declared value, or a manifest producer hash that differs from the pin all refuse the day",
+  "a cross-feed witness is re-hashed locally and recorded as a manifest parent with rank_input=false, never as a rank input",
+  "a name that is both an API zero and cross-feed witnessed is classified as WITNESSED, while the SIP request accounting still counts it and the overlap is published; the cross-feed class is reachable rather than permanently 0",
+  "a stale or floor-qualified previous close cannot become a quality-filtered rank: an otherwise-clean row under a stale reference is excluded and flagged, a qualified reference stays eligible, and the exclusion is specifically the reference rather than a discrepancy or envelope excuse"
+ ],
+ "stage": "stage-0-observation",
+ "status": "frozen",
+ "storage_classes": {
+  "canonical_observation": "deterministic, reversible projection with parent-row identity and hashes (day_registry, paths, memberships, prints.selected_paths, grid.selected_paths, race.checkpoint_full, race.candidate_net, quote_rosters, coverage)",
+  "canonical_of_proxy_observation": "deterministic projection of a qualified third-party substrate; completeness claimed only inside its named population/source (race.minute_full: provider minute bars, source-qualified per day)",
+  "raw_archive": "provider/raw bytes, immutable and authoritative (data/ohlcv_*.parquet, data/backfill/ohlcv_*.parquet, data/sip/net/trades, data/sip/net/quotes, data/sip/net/bars, data/sip/universe/rth, data/sip/candidates)",
+  "rebuildable_cache": "quote-minute aggregates, tensors, embeddings, ANN indexes (none materialized in v0)"
+ },
+ "storage_policy": {
+  "canary_allowed": "the canary is allowed at >= 2 GiB of conservatively measured free space (payload ~0.77 GiB); the full build requires >= 75 GiB on the backing volume of the actual output mount or cloud storage",
+  "canary_min_free_bytes": 2147483648,
+  "conservative_measurement": "the gate probes the ACTUAL resolved output mount: a foreign/WSL-interop mount (9p/drvfs, cifs, nfs, fuse) reports its backing host volume's free space directly, while a local block filesystem reports its own capacity and may be virtual (WSL2 VHDX). A virtual or unidentifiable local backing disk must stack to the declared storage_host_volume reading in the tracked resolved-state file and refuses when that declaration is missing or incomplete; guest free space is never trusted for it",
+  "full_build_gate": "the full CORE build refuses at ENTRY unless the output mount's backing volume holds >= 75 GiB (80,530,636,800 bytes) of conservatively measured free space (planning headroom band 70-80 GiB) - the reviewed conservative budget, unchanged by any projection or estimate. On a RESUME the requirement becomes max(10 GiB operating reserve, 75 GiB minus the payload bytes that re-verify against the previous manifest); a payload that is absent or whose bytes no longer match its recorded sha contributes nothing. The physical mount check itself never relaxes. There is NO command-line bypass. The quote channel gates separately on B3_quote_lane and never refuses the core build",
+  "full_build_min_free_bytes": 80530636800,
+  "host_volume_declaration": "tracked resolved-state key 'storage_host_volume' with fields volume, free_bytes, measured_at, method, evidence_sha256; required only when the output mount is a virtual/unknown local block disk",
+  "lane_digest": "the recorded raw-lane value is the COMBINED lane-set digest over every contributing file plus the alias map - never a bare file sha of one path - so a two-lane (B2 supplement) day is verifiable and parent-sha drift on ANY contributing lane is detected",
+  "large_outputs_root": "/home/hillel/projects/Alpacatrader/data/atlas/observation/v0 (gitignored; no market rows committed; resolves onto Windows C: through 9p - one corpus, no duplicate copy)",
+  "no_cloud_implementation": "no cloud/object-store output path is implemented in v0; the corpus is written to the gitignored local data root and the only lever the operator has is verified local headroom on the backing volume",
+  "operating_reserve_bytes": 10737418240,
+  "planning_headroom_bytes": [
+   75161927680,
+   85899345920
+  ],
+  "readings_only_in_costs": "per-run storage readings (guest free, mount source/fstype/device/model, virtual flag, declared host volume, conservative free, margin) are written to costs.json storage only",
+  "resume_credit_sources": "verified completed payload bytes come from the completed manifest AND, when a run crashed before any manifest existed, from the incremental _progress.json. Every candidate is re-hashed against its recorded sha256; a payload that is absent or mismatched earns NOTHING",
+  "resume_rule": "a resumed build subtracts only VERIFIED completed payload bytes from the estimated remaining-space demand and always preserves >= 10 GiB of operating reserve; the completed-payload accounting is recorded per run in costs.json storage.completed_payload"
+ },
+ "tier_support_matrix": {
+  "broad_provider_minute": {
+   "activity_prints": "bar volume only",
+   "learned_minute_sequence": "bar-only variant",
+   "magnitude_shape_duration": "source-qualified",
+   "quotes": false
+  },
+  "candidate_net_minute": {
+   "activity_prints": "raw prints",
+   "learned_minute_sequence": "bar/print sibling versions",
+   "magnitude_shape_duration": true,
+   "quotes": "only roster-covered"
+  },
+  "full_checkpoint": {
+   "activity_prints": false,
+   "learned_minute_sequence": false,
+   "magnitude_shape_duration": "twelve-point morning only",
+   "quotes": false
+  },
+  "selected_paths": {
+   "activity_prints": true,
+   "learned_minute_sequence": true,
+   "magnitude_shape_duration": true,
+   "quotes": "rank-selected where acquired"
+  }
+ },
+ "time_convention": {
+  "ast_decision_rule": "decision t uses only bars with et <= t-1 (px at t = close of the last completed bar); age_min = t - px_et",
+  "conversion": "dst-aware tz conversion of every raw timestamp to America/New_York (UTC instants are unambiguous); no local-time parsing",
+  "decision_close_rule": "a decision at completed bar et_cut is taken at (et_cut+1)*60 seconds after ET midnight; no later print/quote enters a prospective representation or its anatomy",
+  "early_close_days": [
+   "2021-11-26",
+   "2022-11-25",
+   "2023-07-03",
+   "2023-11-24",
+   "2025-07-03",
+   "2025-11-28",
+   "2025-12-24"
+  ],
+  "first_rth_decision": "t=570 has no completed RTH bar (bars with et<=569 are excluded by the RTH restriction); known_by_t is false there",
+  "minute_label": "et = 60*hour + minute of the BAR-START instant in America/New_York (570 = 09:30 ET bar covering [09:30,09:31))",
+  "print_clock": "a print is known at its own ts_et (tape print time); the containing minute et is the bar-start label",
+  "projection_window": "[565, 965] (09:25-16:05 ET) for the selected-path print projection and its grid",
+  "rth_span": "[570, session_end] inclusive",
+  "session_end_rule": "phase2_session_calendar.json session_end_by_day; 959 normal, 779 early close (detected by the frozen mechanical volume-falloff rule)",
+  "session_timezone": "America/New_York",
+  "source_timezone": "UTC"
+ },
+ "unobserved_class_semantics": {
+  "classes": [
+   "verified_no_bar_in_declared_sources",
+   "verified_no_sip_bar",
+   "cross_feed_witnessed_no_sip_bar",
+   "missing_confirmed_same_feed_bar"
+  ],
+  "cross_feed_witnessed_no_sip_bar": "a NON-SIP source preserved the bar the SIP pull did not reproduce. RETROSPECTIVE proxy evidence, catalogued and re-hashed, never a SIP rank input and never in the lane digest",
+  "missing_confirmed_same_feed_bar": "the ONLY class counted as a hole",
+  "no_market_inference": "NONE of these classes is a claim about the market. An absent bar is not evidence of an absent trade. On 2025-02-03 DXR printed 24 times / 501 shares on the SIP TRADE endpoint while the SIP minute-BAR pull returned zero, and the non-SIP witness holds exactly one bar (7.78, vol 124) - data was uncaptured, not silent. Nothing in the corpus may report such a name as a non-trader or as not having traded",
+  "precedence": "tested in this order: verified_no_bar_in_declared_sources, cross_feed_witnessed_no_sip_bar, verified_no_sip_bar, missing_confirmed_same_feed_bar. Every witnessed name is ALSO an API zero - the missing SIP bar is exactly why it was witnessed - so the witnessed test MUST come first; reversing it makes the cross-feed class unreachable and its count permanently 0, which would hide the very stratum that exists to preserve the disagreement",
+  "request_accounting_is_separate": "the SIP REQUEST axis is counted by SET MEMBERSHIP, not by class: raw_roster_verified_no_sip_bar_n counts every unobserved name that is an API zero, including witnessed ones, and raw_roster_no_sip_bar_also_witnessed_n publishes the overlap",
+  "verified_no_bar_in_declared_sources": "means only that the DECLARED STORED BAR SOURCES carry no bar for the name, or that its spelling is unrequestable. It does NOT mean the name did not trade; a syntax-unrequestable spelling is tracked as a separate concern",
+  "verified_no_sip_bar": "a REQUEST/COVERAGE fact from the manifest's sip_coverage.symbols_zero_bars: the provider accepted the spelling and returned no minute bar"
+ }
+}

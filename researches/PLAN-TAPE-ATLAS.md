@@ -1,8 +1,12 @@
 # PLAN (DRAFT) — Tape Pattern Atlas / Empirical Grammar
 
-**Status: final targeted architecture revision; still DRAFT.**
+**Status: DRAFT. Freeze R is NOT frozen and nothing here depends on it.**
 The observation contract below is intended to become Freeze O. No future anatomy, economic label or
-P&L is permitted in construction of the observation corpus or discovery geometry.
+P&L is permitted in construction of the observation corpus or discovery geometry. §4.3 now states
+the observation acquisition semantics explicitly (admission interface, replace/supplement,
+alias-only renaming, collision refusal, verified-absent versus missing-trader, measured net
+status, evidence-file gate); §8 Freeze R remains a bounded proposal until the outcome-blind corpus
+report exists and is deliberately left unfrozen.
 
 ## 1. Purpose and evidence order
 
@@ -116,23 +120,79 @@ they are not deleted.
 
 ### 4.3 Broad minute race board — build now, source-qualified
 
-Unfiltered provider bars exist for 50 of 51 dev months:
+Unfiltered provider bars exist for 50 of 51 dev months, and the admitted acquisition below
+supplies the 51st. `data/atlas/acquisition/v0` carries the admitted B1/B2 SIP acquisition outside
+the repo, and the builder CONSUMES it. The admission interface is explicit:
 
-* HF/Finnhub-lineage `data/ohlcv_YYYY-MM.parquet` for 2021-02..2023-12 and 2025-03..2026-02;
-* Alpaca SIP `data/backfill/ohlcv_YYYY-MM.parquet` for 2026-03..05.
+* `bars/<day>.parquet` — `timestamp` (ns, UTC), 5×`Float64` OHLCV, `ticker` = **canonical PIT
+  spelling**, `provider_symbol` (audit only, never a join key);
+* `bars/<day>.manifest.json` — `day, scope, status, file, sha256, schema, source{feed=sip,
+  adjustment=raw}, requested_symbols, symbols_with_data, symbols_zero_bars, symbols_invalid,
+  aliases, errors` plus roster/input/code/config shas;
+* `rosters/<day>.json` — PIT vintage, canonical→provider mapping, `expected_universe_present`,
+  `raw_existing`, `alias_existing`, and an `unavailable` group (absent from all sources / no RTH in
+  baseline / no verified provider spelling);
+* `evidence/acquisition_admission.json` — per-blocker B1/B2 entries with the admitted day list,
+  each day's file+manifest shas, requested-outcome accounting, and the residual confirmed-trading
+  gaps.
 
-The 50 raw month files contain about 1.45B all-hours rows; the current estimate is about 1.35B RTH
-name-minutes. Freeze O pins the actual convention: timestamps are UTC, converted DST-aware to
-`America/New_York`, then restricted to `570..session_end`. Only 2025-02 lacks an unfiltered source;
-its clean fallback contains 20.5M rows but embeds `$2`/100-share bar floors. A one-month raw SIP
-reacquisition is required before the full v0 build; a canary may use the fallback only with a visible
-`qualified_floor_source` flag.
+Consumption rules, all measured rather than assumed:
+
+* an admitted day **must** declare `status=complete`, `feed=sip`, `adjustment=raw` and no errors,
+  and its parquet must **re-hash locally** to the manifest's `sha256`; the builder re-verifies all
+  of this and never trusts the admission file's own hashes;
+* a **B1** admission *replaces* the floor-qualified 2025-02 clean fallback — the day stops being
+  `qualified_floor_source`; a **B2** admission *supplements* the 2026-04/05 baseline month file;
+* an alias is honoured **only** through the explicit frozen map (applied as its inverse, injective,
+  chain-free); nothing is ever fuzzy-matched, and a name the map declares not-aliased is never
+  renamed;
+* a canonical name arriving from **two** raw lane files refuses the day: the sources disagree and
+  no merge rule can settle it;
+* the previous-session denominator **prefers the admitted previous day**; 2025-02-03 still has no
+  admitted prior session (2025-01-31 is sealed) and keeps its declared block-gap/stale provenance
+  with no sealed look-back;
+* a name the acquisition **verified absent** (zero bars / no RTH / invalid symbol) is a market
+  fact, not a data hole: it is counted as `raw_roster_verified_absent_n` and never inflates
+  `raw_roster_missing_unresolved_n`, which is the number B2 is decided by;
+* an absent or incomplete acquisition day is simply **not admitted** — the baseline lane is used
+  and the blocker stays open. No bar, zero price or roster row is ever fabricated to close a hole;
+* per-row provenance carries the **combined** lane sha256 (every contributing raw file plus the
+  alias map), so one column proves the whole lane set a row was built from;
+* the acquisition root is explicit and `v1` is the first admitted root. `v0` is a deliberately
+  failed canary kept as evidence, and there is no fallback to it: with no admissible root the
+  blocker is simply reported open;
+* the declared scope vocabulary is exactly `feb2025` (replaces the floor-qualified fallback) and
+  `aprmay2026` (supplements the baseline month file); any other scope refuses rather than defaulting;
+* `evidence/acquisition_admission.json` is a **union** rebuilt from per-scope attestations, so both
+  blocker ids are always present as keys and key presence proves nothing. A blocker resolves only on
+  `all_scopes_ready` with no missing or stale scope AND that scope's own `state == "ready"`; a
+  `not_ready`/`stale`/`unverified` scope admits no day even if its day list is populated;
+* `all_scopes_ready` and a non-empty list are **not** coverage — a one-day-per-scope canary union
+  carries both. The consumer recomputes the required day set from the guarded dev calendar (all 19
+  dev days of 2025-02 for B1, all 41 of 2026-04/05 for B2), requires the admitted set to cover it,
+  and re-hashes every admitted day's parquet and manifest. The required set never comes from the
+  evidence;
+* the projection window `[565, 965]` ET is a **closed** interval — a bar stamped exactly 16:05:00 ET
+  is in window. An exclusive upper bound would make a good day disagree with the baseline lane it
+  supplements, which already carries 16:05 bars.
+
+The net lane follows the same discipline. `net_manifest_status` comes from the validated per-day
+manifests and the derived index, refined by
+`factory/artifacts/.../OBSERVATION/v0/acquisition/net_reconciliation.json`; a day counts as
+reconciled only when its files and per-day manifests re-hash locally, its index row is present
+after the rebuild, and the derived index on disk matches `derived_index.sha256_after`. The set of
+days carrying a `net_manifest_missing` state is therefore **measured**, not the hardcoded
+2026-05-21/29 pair: a verified day drops out on its own and a regressing day re-enters.
+
+Every core blocker is resolved only by an evidence **file** that exists, re-hashes to its declared
+`sha256`, and whose contents attest the repair: B1/B2 require a verifiable acquisition admission
+with no residual confirmed-trading gap, B5 requires physical-disk evidence distinct from the
+acquisition file with a positive measured `free_bytes`, B6 requires a reconciliation that verifies
+at least one day end to end. A nonempty sha string alone resolves nothing.
 
 The raw lane recovers the sub-$2 slice the clean files removed. It is still mixed-source evidence:
-HF feed conditions/as-of revision are unknown, while 2026-03..05 is Alpaca SIP. A completed audit
-found a systematic 145–235 PIT-name/day hole across the 41 dev days of 2026-04/05; targeted
-reacquisition of those names is required before the full v0 board, while canaries carry a
-`raw_roster_missing` coverage state. Feed/source/era, staleness and quality remain first-class strata.
+HF feed conditions/as-of revision are unknown, 2026-03..05 is Alpaca SIP, and an admitted day is
+fresh SIP. Feed/source/era, staleness and quality remain first-class strata.
 
 The board is built over the full available cross-section, not top-K:
 
@@ -157,11 +217,20 @@ Rules:
 * `rank_eligible=false` nulls the quality-filtered rank family while preserving raw rows/ranks;
 * previous-close session/date/age/source travel with every gain; floor-qualified or stale
   denominators cannot support rank-trajectory or era-stability claims;
-* suspect split/bad-print rows are flagged, never silently deleted.
+* suspect split/bad-print rows are flagged, never silently deleted;
+* `day_high_vs_sip_high_ratio` compares the raw lane's **day high** against the provider lane's
+  **day max** bar high (a per-ticker maximum, never the last minute's high) — it is a retrospective
+  diagnostic and never a rank filter;
+* a previous close confirmed off the prior session's provider close by more than the declared 10%
+  hard warning is a bad denominator: it nulls the quality-filtered rank family and raises a
+  `prevclose_denominator_discrepancy` flag, while raw px/gain and the unfiltered `rank_unfiltered`
+  are preserved so the ordering is never destroyed;
+* `n_eligible` is the size of the quality-filtered (`rank_known`) population, not the `fresh_2m`
+  count.
 
-The raw full board is expected to hold roughly 1.35B RTH name-minutes and occupy approximately
-15–17 GB with preserved floating prices/ranks/provenance. The measured clean-board pilot was
-12.2 hours serial; raw scale implies roughly 3.5–7 hours at safe 2–4 worker concurrency.
+The source is expected to contain roughly 1.35B observed RTH name-minutes. The dense race board also
+emits explicit not-known/stale population rows; the 20-day canary projects about 1.95B rows /
+37.7 GiB for the full board. Build time remains roughly 3.5–7 hours at safe concurrency.
 
 This board can observe trajectories such as #30→#12→#5→#2 throughout the session. Existing SIP
 checkpoints provide an independent, full-roster morning ruler at twelve clocks. Legacy
@@ -188,6 +257,19 @@ causal roster table `R(day,t)`; future-selected quote presence/absence is metada
 Until causal acquisition lands, the stored lane serves only a median 57% of `R(day,t)` at 09:35
 and 38% at 12:00. Missing quotes for newly added causal-roster names mean **not acquired**, never
 “no quote”; no prospective quote channel is materialized from that absence.
+
+The quote channel is a versioned **sibling**, not a prerequisite: quote perfection does not block
+core observation construction. Freeze O therefore splits its blockers into gate classes — core
+(`B1` raw 2025-02, `B2` 2026-04/05 missing names, `B5` storage, `B6` missing net manifests) and the
+quote-sibling `B3_quote_lane` — and defines two independent readiness states: `core_full_ready`
+(core bar/print/race corpus built) and `quote_channel_ready` (causal acquisition landed). The core
+corpus always materializes the causal quote **roster** (`quote_rosters`); no prospective quote
+feature may be materialized before `quote_channel_ready`, so the split cannot leak a null as a quote
+state. The deny is registry-derived (the `prospective_quote_channel` value/absence vocabulary) with
+the `quote_` prefix only as a frame-level fast path: a `quote_` field the frozen schema itself
+declares as roster provenance (membership, source path/sha, row counts, sibling-gate state) is
+bookkeeping about the roster artifact and stays legal — no prefix guard may reject existing roster
+provenance. A future-selected quote absence or value is never a feature.
 
 The recommended expansion is one bounded later acquisition:
 
@@ -254,8 +336,8 @@ views remain separate, and support reports both independent-path and membership 
    * `within_observed_span`, `session_end`, full-day coverage class and terminal-censor metadata.
    Prospective readers cannot use full-day/censor fields. Tape silence, condition-excluded prints,
    tape end and provider absence never collapse.
-5. **`race.minute_full`** — full raw/provider broad minute board, canonical-of-proxy, approximately
-   15–17 GB.
+5. **`race.minute_full`** — full raw/provider broad minute board, canonical-of-proxy; the canary
+   projects about 1.95B dense population-minute rows / 37–40 GiB.
 6. **`race.checkpoint_full`** — causal and retrospective full-roster checkpoint views
    (~73M clock rows / ~0.55 GB).
 7. **`race.candidate_net`** — retrospective full-day and prospective snapshot-as-of-t views
@@ -267,8 +349,16 @@ Selected-path prints are materialized because they preserve raw evidence, make m
 retrieval cheap and avoid re-implementing the condition/window join. Raw day files and row pointers
 remain authoritative. Raw quotes are not copied; minute aggregates are caches with raw spans.
 
-Expected initial canonical corpus: roughly 22–25 GB, inside the new 50–150 GB headroom.
-Representations/indexes are additional rebuildable nodes, not observation truth.
+Expected initial canonical corpus: roughly 45–50 GiB including the dense board, plus same-directory
+atomic-write transients. Planning headroom is conservatively **70–80 GiB**; the frozen gate reserves
+**75 GiB** on the backing volume of the actual output mount (or direct cloud/object-store output).
+The gate is measured conservatively, never from one guest number: `data/atlas` resolves onto Windows
+C: through 9p, so its reading is the host volume itself, while the ext4 root on a WSL VHDX reports a
+virtual capacity (≈895 GiB guest against ≈112 GiB host free) and must stack to a declared
+`storage_host_volume` reading with evidence in the tracked resolved-state file — an unverifiable
+virtual/unknown local backing refuses the full build. Measured capacity readings are per-run costs and
+live in `costs.json` only, never inside the deterministic contracts. Representations/indexes are
+additional rebuildable nodes.
 
 ### 5.3 Provenance and calendar
 
@@ -491,8 +581,46 @@ Build deterministically and resumably:
 8. selftests/reconciliation/costs.
 
 Build the broad race board in one pass for all ranks; no arbitrary K defines observation. Before the
-full v0 build, reacquire raw 2025-02 and the measured missing-name slice on 2026-04/05. If acquisition
-fails, the affected source/coverage strata remain explicit and cannot support universal rank claims.
+full v0 build: reacquire raw 2025-02 and the measured missing-name slice on 2026-04/05; repair or
+explicitly block the unreconciled net-lane manifests (2026-05-21/29); fix all canary audit
+defects; and verify at least 75 GiB of conservatively measured free space on the output mount's
+backing volume (planning band 70–80 GiB; declare `storage_host_volume` when that mount is a
+virtual/unknown local disk) or a cloud target. No acknowledgement flag may bypass these evidence
+gates.
+
+The causal quote lane is **not** on this list. `B3_quote_lane` is a versioned SIBLING: it gates
+only the prospective quote channel (`quote_channel_ready`) and never the core bar/print/race
+corpus (`core_full_ready`). The core corpus always materializes the causal quote **roster** and
+its provenance; quote perfection is not a core prerequisite, and no prospective quote feature may
+be materialized before the quote gate passes.
+
+#### 10.1 Resume and proof chain (single heavy owner)
+
+The order is fixed, and every step is a gate on the next:
+
+1. `factory/scripts/basket_tape_atlas_observation.py --selftest` — pure checks only. **Necessary
+   but not sufficient**: a pure check cannot prove runtime, so a green suite has twice hidden a
+   defect that only an actual `build_one_day` surfaced. Treat pure green as a precondition, never
+   as runtime proof.
+2. `--stage contract` after any *contract-file* change (re-freezes `contract_lock.json` over
+   contract/schema/causal_registry/canary_days/adaptive_choice_ledger). It does **not** cover the
+   producer script: that is recorded separately as `code_sha256` in the manifest at build time, so
+   a source fix needs no re-lock, only a rebuild.
+3. `--stage canary`, then `--stage verify-canary` on the built corpus.
+4. `--stage full --resolved-state .../blockers_resolved.json` is the only accepted full entry; any
+   other resolved-state path is refused, and no acknowledgement flag substitutes for a verified
+   evidence file.
+
+Supporting lanes: net `atlas_net_index_reconcile.py --stage inspect|verify`; acquisition
+`atlas_acquire_sip_bars.py --stage verify --scope feb2025|aprmay2026`.
+
+**One heavy owner.** Only one agent runs a build. A 20-day canary is not complete merely because
+the day loop finished: it is complete when `verify.json` exists, the tracked canary evidence is
+regenerated (a stale `summary.json` carrying an old blocker id, `full_v0_ready` false, or null
+determinism is a pre-repair artifact and must be rejected), and a second run is byte-identical.
+Resumes must be validated per day, not assumed. Aborts from here are global-memory events, never
+an agent decision to stop, and the operating rule is no signals, no kills, no WSL restart: require
+headroom above the parent+child target before starting a run rather than intervening mid-run.
 
 ### Stage 0C — Blind corpus report and Freeze R
 
@@ -530,7 +658,23 @@ Only now formulate exits, adds, re-entry, jump-ship, basket or execution rules.
 3. run a 20-day stratified canary;
 4. independently audit identities, multi-axis minute coverage, broad-race ranks, parent shas and
    sealed/reserved refusal;
-5. run the full 1,066-day corpus build;
-6. only then inspect blind corpus geometry and freeze R.
+5. remove every audit blocker and rerun the canary twice;
+6. run the full 1,066-day corpus only after acquisition and storage gates pass;
+7. only then inspect blind corpus geometry and freeze R.
+
+Resource policy: memory is not a 6-GiB design constraint, but it is the binding one. Report peak
+RSS; warn/autosize at 15 GiB and hard-abort at 30 GiB. Worker count is sized as
+`floor((soft limit - the producer's own measured resident set) / per-day worker cost)`, because the
+producer is resident concurrently with every worker — a request that does not fit is refused, not
+clamped into an OOM. Costs record the workers that actually ran alongside the request. The
+per-vintage PIT roster is cached in a hard-bounded map and the day registry uses a count-only path,
+so walking all 1,066 dev days cannot grow the resident set.
+
+Resuming a crashed full build credits disk space only for payload bytes that RE-hash against a
+recorded digest, taken from the completed manifest or, when no manifest exists yet, from the
+incremental per-day progress file. Absent or mismatched payloads earn nothing.
+
+Raw-lane provenance is the combined lane-set digest over every contributing file plus the alias map,
+never a bare single-file hash, so a two-lane day verifies and drift on any one lane is detected. Disk gating follows the output filesystem/cloud target above.
 
 Architecture work stops here. The next deliverable is the observation substrate.

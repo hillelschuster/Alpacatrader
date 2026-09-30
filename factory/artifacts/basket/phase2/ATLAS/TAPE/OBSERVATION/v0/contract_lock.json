@@ -1,0 +1,12 @@
+{
+ "contract_version": "freeze-o-v0",
+ "hashes": {
+  "adaptive_choice_ledger.json": "8d981a857998df9ebc8c9393acb7aae84cb6c1f7ee078d046169d80858a62075",
+  "canary_days.json": "5b3d16a2f2aa03bd53309063c9fe7faa99048afb52738dad0ca71836b2964dcf",
+  "causal_registry.json": "0858e2f26388322f2b1a8e1acd50fdb3114dd95b3671fd7ec8bc8a521eefe39d",
+  "contract.json": "9c2d629f973c7bc89c993780153adc697672f4c0906f78c97cc930bb95aeeae9",
+  "schema.json": "990542110104377db1349d9602829080fd561e99014d04a095e9b1acd613f2c4"
+ },
+ "lock_id": "freeze-o.contract-lock",
+ "status": "frozen"
+}

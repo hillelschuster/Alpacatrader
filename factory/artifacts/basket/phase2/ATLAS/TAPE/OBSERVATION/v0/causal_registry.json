@@ -1,0 +1,250 @@
+{
+ "acquisition_semantics": {
+  "alias_is_the_only_rename": "a raw/provider spelling becomes a canonical PIT ticker only through the explicit alias map; nothing is fuzzy-matched and a name the map declares not-aliased is never renamed",
+  "collision_refuses": "a canonical name arriving from two raw lane files refuses the day rather than merging two disagreeing sources",
+  "denial_note": "acquisition provenance is BOOKKEEPING about which raw files a row was read from, in the provenance/coverage namespaces already allowed above; it is not a value, not a quote feature, and never a prospective channel",
+  "net_status_is_measured": "net_manifest_status comes from the validated per-day manifests and the derived index, refined by the verified reconciliation; it is never a hardcoded pair of dates",
+  "no_fabrication": "an absent or incomplete acquisition day is not admitted and the baseline lane is used; no bar, zero price or roster row is ever invented to close a hole",
+  "verified_absent_is_a_market_fact": "a PIT name the acquisition verified did not trade (zero bars / no RTH / invalid symbol) is not an observation gap and never enters raw_roster_missing; an unclassified absent name remains one"
+ },
+ "allowed_namespaces": {
+  "audit_coordinate": "month, block, feed_era, dow, canary flags - split/audit coordinates only, never distance channels",
+  "calendar": "session_end, is_early_close - known ex ante from phase2_session_calendar.json",
+  "coverage": "coverage classes, counters, missingness blame, blockers - including the split between a PIT name VERIFIED absent by the acquisition (a market fact) and a PIT name that is a genuine missing confirmed trader",
+  "identity": "path/member identity and anchors",
+  "key": "identity/sort keys (day, ticker, family, entry_et, entry_rank, et, t, T, symbol, source_row_ordinal, member_id, path_id)",
+  "print": "print projection fields and print_state counters",
+  "provenance": "source paths, sha256 hashes, parser/rule ids, and the full raw-lane provenance of a row: the raw source kind(s) that supplied it, the COMBINED lane-set digest covering every contributing raw file plus the explicit alias map (never a bare single-file sha, so a two-lane supplement day is verifiable and drift on any contributing lane is caught), the acquisition scope/baseline standing/asof, the admitted acquisition manifest sha, the alias map sha, and which lane supplied the previous close",
+  "quality": "quality flags and provider-vs-SIP audit ratios (retrospective)",
+  "race": "population definitions, competition ranks, order_slot, counts",
+  "roster": "prospective roster membership and selectable_asof_et columns",
+  "state_price": "px, px_et, age_min, prev_close and its provenance, gain",
+  "tape": "bar OHLCV, bar_state, print rows (ts, price, size, exchange, conditions, tape, trade_id)"
+ },
+ "blocked_families": [
+  {
+   "examples": [
+    "v_hold_flat",
+    "v_forced_flat",
+    "v_giveback_5",
+    "v_giveback_10",
+    "v_giveback_15",
+    "v_giveback_20",
+    "v_sell",
+    "level_ret"
+   ],
+   "family": "outcome_level",
+   "reason": "panel outcome; labels the future"
+  },
+  {
+   "examples": [
+    "giveback_fired_5",
+    "giveback_fired_10",
+    "giveback_fired_15",
+    "giveback_fired_20",
+    "giveback_condition_after_forced_flat_5",
+    "giveback_condition_after_forced_flat_10",
+    "giveback_condition_after_forced_flat_15",
+    "giveback_condition_after_forced_flat_20"
+   ],
+   "family": "outcome_continuation",
+   "reason": "panel outcome; executed continuation value"
+  },
+  {
+   "examples": [
+    "final_high_flag",
+    "remaining_run",
+    "cost_of_waiting",
+    "bars_to_next_high",
+    "dd_before_next_high",
+    "bars_to_peak",
+    "peak_et_after_t",
+    "tail_class_50",
+    "tail_class_100",
+    "tail_class_300"
+   ],
+   "family": "outcome_path",
+   "reason": "panel outcome; describes the path after t"
+  },
+  {
+   "examples": [
+    "next_open",
+    "next_et"
+   ],
+   "family": "future_execution",
+   "reason": "next-bar execution price/time"
+  },
+  {
+   "examples": [
+    "session_peak_et",
+    "session_peak_ret_from_entry",
+    "session_peak_bars_from_entry",
+    "session_close_ret_from_entry"
+   ],
+   "family": "ticket_constant",
+   "reason": "whole-ticket constants known only at the close"
+  },
+  {
+   "examples": [
+    "future_member_last_et",
+    "future_forced_flat_px"
+   ],
+   "family": "future_meta",
+   "reason": "future metadata"
+  },
+  {
+   "examples": [
+    "terminal_censored",
+    "path_complete_to_session_end"
+   ],
+   "family": "censor",
+   "reason": "terminal censoring flags"
+  },
+  {
+   "examples": [
+    "winners_open",
+    "winners_prev",
+    "candidate net list",
+    "hi",
+    "lo",
+    "c_last",
+    "vol",
+    "n_bars",
+    "first_et",
+    "last_et",
+    "delayed_open"
+   ],
+   "family": "raw_whole_day_roster",
+   "prospective_use": "forbidden; may appear only as retrospective_only audit columns with prospective_allowed=false",
+   "reason": "leaks the whole day or future-selected membership; retrospective only"
+  },
+  {
+   "examples": [
+    "storage_headroom",
+    "net_manifest_missing"
+   ],
+   "family": "coverage_blockers",
+   "prospective_use": "forbidden",
+   "reason": "storage headroom (B5) and missing net manifest days (B6) are coverage states, never market features; B3_quote_lane is the same kind of state and additionally gates the prospective quote channel (quote_channel_ready) without ever gating the core-bar/print/race build"
+  },
+  {
+   "examples": [
+    "quote_mid",
+    "quote_spread",
+    "quote_imbalance",
+    "quote_minute_aggregate"
+   ],
+   "family": "prospective_quote_channel",
+   "prospective_use": "forbidden",
+   "provenance_exception": "a quote_ name is legal only when schema.json declares it with a provenance namespace (key/roster/provenance/coverage/audit_coordinate) for the core quote ROSTER table; roster provenance/counts describe the roster ARTIFACT, never quote alpha, and no prefix guard may reject them",
+   "reason": "the quote channel is a versioned sibling: no prospective quote feature may be materialized until causal quote acquisition (B3_quote_lane) passes, the registry value/absence vocabulary and any undeclared quote_ name are denied on write, and a null/missing quote for a causal-roster name is 'not acquired', never market information"
+  }
+ ],
+ "default_deny": true,
+ "denied_exact_columns": [
+  "next_open",
+  "next_et",
+  "terminal_censored",
+  "path_complete_to_session_end",
+  "mfe_after_t",
+  "mae_after_t"
+ ],
+ "denied_prefixes": [
+  "outcome_",
+  "future_",
+  "v_",
+  "giveback_",
+  "tail_class_",
+  "session_peak_",
+  "session_close_",
+  "quote_"
+ ],
+ "derived_from_panel_registry": {
+  "future_only_columns": [
+   "session_peak_et",
+   "session_peak_ret_from_entry",
+   "session_peak_bars_from_entry",
+   "session_close_ret_from_entry",
+   "future_member_last_et",
+   "future_forced_flat_px",
+   "path_complete_to_session_end",
+   "terminal_censored"
+  ],
+  "outcome_columns": [
+   "next_open",
+   "next_et",
+   "v_hold_flat",
+   "v_forced_flat",
+   "v_giveback_5",
+   "v_giveback_10",
+   "v_giveback_15",
+   "v_giveback_20",
+   "giveback_fired_5",
+   "giveback_fired_10",
+   "giveback_fired_15",
+   "giveback_fired_20",
+   "giveback_condition_after_forced_flat_5",
+   "giveback_condition_after_forced_flat_10",
+   "giveback_condition_after_forced_flat_15",
+   "giveback_condition_after_forced_flat_20",
+   "v_sell",
+   "level_ret",
+   "final_high_flag",
+   "remaining_run",
+   "cost_of_waiting",
+   "bars_to_next_high",
+   "dd_before_next_high",
+   "bars_to_peak",
+   "peak_et_after_t",
+   "tail_class_50",
+   "tail_class_100",
+   "tail_class_300"
+  ],
+  "rule": "the producer loads this registry at build time and asserts every per-day payload BEFORE write",
+  "source": "factory/artifacts/basket/phase2/ATLAS/coverage.json"
+ },
+ "explicitly_allowed_exceptions": {
+  "day_high_raw/sip_high_day/ratios": "retrospective audit only; prospective_allowed=false",
+  "mfe_so_far": "causal running MFE from the member's state; allowed only as state, never as a future statistic",
+  "o570": "allowed from T=571 onward (the 09:30 bar closes at 571); at T=570 the A_open snapshot is not yet selectable",
+  "px_T": "causal at T (close of the last completed bar et<=T-1); its et travels in px_T_et",
+  "row_present/in_universe_file": "row presence is not a prospective feature (plan 4.2)"
+ },
+ "leakage_negative_controls": [
+  {
+   "control_id": "forbidden_column",
+   "rule": "a frame containing any denied column must fail loudly before write"
+  },
+  {
+   "control_id": "whole_day_prospective",
+   "rule": "a retrospective_only column with prospective_allowed=true must fail validation"
+  },
+  {
+   "control_id": "sealed_day",
+   "rule": "guard_day must raise for 2024-*, 2025-01, 2026-06..08"
+  },
+  {
+   "control_id": "future_roster",
+   "rule": "winners_open/winners_prev/net must never enter a prospective roster table"
+  },
+  {
+   "control_id": "forward_fill",
+   "rule": "known_by_t=false must carry null price/gain/rank, never a forward-filled future value"
+  }
+ ],
+ "physical_separation": {
+  "enforcement": "the producer builds every observation frame from an explicit column allowlist and asserts the written parquet schema contains no denied column name",
+  "rule": "observation tables physically exclude outcome_*, ticket_constant, future_meta and censor columns; the exclusion is enforced by construction and by a post-write physical schema audit"
+ },
+ "policy": "positive allowlist with default deny; a column is readable only if it is declared here or in schema.json with matching flags",
+ "registry_id": "freeze-o.causal-allowlist",
+ "registry_version": "v0",
+ "resource_and_resume": {
+  "bounded_vintage_cache": "the per-vintage PIT frozenset cache is hard-bounded; the day registry uses a count-only path, so walking the dev calendar cannot grow the resident set",
+  "built_is_not_canary": "`built` records what this stage produced; `canary_member` records the frozen selection. They are different facts and neither substitutes for the other",
+  "lane_digest_not_file_digest": "the recorded raw-lane provenance is the combined lane-set digest, so verifying it means recomputing that same quantity over the same lane set",
+  "parent_resident_set_is_subtracted": "the producer's own resident set is measured and subtracted from the soft RSS budget before workers are sized, and costs.json records the effective (not requested) worker count",
+  "resume_credit_must_rehash": "a crashed run's per-day progress earns disk credit only for payloads whose bytes re-hash to the recorded sha256; absent or mismatched payloads earn nothing"
+ },
+ "row_level_gate": "roster selectability is checked before column access: a row's selectable_asof_et must be <= the decision instant; whole-day and censor fields are retrospective only"
+}

@@ -1,0 +1,316 @@
+{
+  "template_id": "freeze-r.representation-matrix.template",
+  "template_version": "v0",
+  "template_only": true,
+  "status": "DRAFT-NOT-RUN",
+  "frozen": false,
+  "freeze": "R",
+  "freeze_rule": "This file is a template. A field is frozen only when a non-null value AND its evidence binding are recorded after the outcome-blind corpus report exists; JSON null means UNBOUND, never a default and never a finding. No partial freeze, no in-place repair of a frozen record (a change creates a sibling version). Nothing here may be read as a claim of learned structure.",
+  "intended_consumer": "Stage 0C (blind corpus report and Freeze R) in researches/PLAN-TAPE-ATLAS.md; then Stage 1 within-name geometry",
+  "lineage": {
+    "immutable_graph": "raw.index -> observations -> representation -> geometry -> optional lexicon -> human overlay -> anatomy -> hypothesis",
+    "predecessor_node": "freeze-o.observation@v0",
+    "predecessor_contract": "factory/artifacts/basket/phase2/ATLAS/TAPE/OBSERVATION/v0/contract.json",
+    "predecessor_schema": "factory/artifacts/basket/phase2/ATLAS/TAPE/OBSERVATION/v0/schema.json",
+    "predecessor_declares_no_distance_eligible": true,
+    "representation_node_id": null,
+    "pre_anatomy_boundary": "Freeze R sits strictly between observations and geometry. It may read no outcome_*, censor, future_, ticket_constant or anatomy column, and no outcome/artifact label. anatomy@vN may attach only to occurrences whose representation and geometry carry a non-withdrawn Freeze-R record.",
+    "allowed_evidence": "only the permitted outcome-blind summaries of PLAN-TAPE-ATLAS.md section 2 (counts; length/magnitude distributions; per-block/family/era/channel quantiles; duplicate/overlap and roster-census facts; no-outcome distance/density/neighbour/perturbation/surrogate statistics; resource/cost measurements)",
+    "adaptive_choice_ledger_required": true,
+    "closed_prior_methods": [
+      {
+        "method": "flattened / z-scored 30-60 minute all-minutes k-means",
+        "record": "researches/PRE-REG-PATTERN-01.md (v1 and Amendment A1 v2)",
+        "closure": "EXHAUSTED: v1 silhouette 0.0058, v2 0.0206 below the frozen 0.05 stopping rule; the all-minutes flattened-Euclidean / z-scored-shape class is closed"
+      },
+      {
+        "method": "event-anchored flattened z-scored shape clustering (E1 flush touch, E2 thrust, E3 volume spike)",
+        "record": "researches/PRE-REG-PATTERN-02.md",
+        "closure": "E1 EXHAUSTED 0.0411, E3 EXHAUSTED 0.0433, E2 INCONCLUSIVE_POWER (<2000 windows); the entire shape-clustering family is closed"
+      },
+      {
+        "method": "DTW as a predictor",
+        "record": "H018; PRE-REG-PATTERN-01/02 retain DTW as illustration only",
+        "closure": "closed; not resurrected here"
+      }
+    ],
+    "no_resurrection": [
+      "no all-minutes or event-anchored flattened shape k-means",
+      "no DTW predictor",
+      "no silhouette-selected partition presented as structure",
+      "no supervised outcome target inside the representation",
+      "no H12 scalar / 5-minute snapshot reframing"
+    ]
+  },
+  "binding_slots": {
+    "corpus": {
+      "node_id": null,
+      "version": null,
+      "manifest_sha256": null,
+      "day_count": null,
+      "built": false
+    },
+    "blind_report": {
+      "node_id": null,
+      "path": null,
+      "sha256": null,
+      "complete": false,
+      "permitted_summaries_only": true
+    },
+    "transform_training_blocks": {
+      "split_key": null,
+      "fit_blocks": null,
+      "eval_blocks": null,
+      "no_overlapping_source_interval_crosses_split": true,
+      "normalization_and_model_params_fit_on_fit_blocks_only": true,
+      "frozen": null
+    },
+    "scale_choice": {
+      "scale_ladder": null,
+      "scale_unit": null,
+      "frozen": null
+    },
+    "segmentation": {
+      "segment_rules": null,
+      "change_point_budget": null,
+      "frozen": null
+    },
+    "metric_weights": {
+      "per_view_weights": null,
+      "balanced_reference_aggregation": "fixed equal weight across standardized view distances",
+      "balanced_reference_tuned_to_best_geometry": false
+    },
+    "radius": {
+      "neighbour_radius": null,
+      "radius_units": null,
+      "radius_per_view": null
+    },
+    "ann_sparse_recall": {
+      "index_build": null,
+      "density_decile_definition": null,
+      "exact_search_strata": null,
+      "sparse_exact_recall_floor": null
+    },
+    "augmentation_displacement": {
+      "per_view_measured_neighbour_displacement": null,
+      "per_view_permitted_bound": null,
+      "bound_frozen_before_training": false
+    },
+    "integer_seed": null,
+    "numeric_one_shot_gates": {
+      "recurrence": null,
+      "mutual_neighbour_support": null,
+      "block_stability": null,
+      "coordinate_leakage": null,
+      "family_leakage": null,
+      "magnitude_preservation": null,
+      "sparse_exact_recall": null,
+      "ssl_over_random_improvement": null,
+      "measured_runtime": null,
+      "note": "numeric one-shot gates are committed once, before any training run; they replace silhouette and do not require clusters"
+    }
+  },
+  "hand_views_meta": {
+    "view_count": 5,
+    "declaration_rule": "exactly five principled hand views; no view is declared primary after seeing outcomes; neighbour overlap and pairwise distance agreement are published"
+  },
+  "hand_views": {
+    "magnitude_dominant": {
+      "role": "level, return/depth, raw attention intensity and duration",
+      "geometry_channels": null,
+      "audit_coordinates_in_scope": null,
+      "transforms": null,
+      "scale_reference": null,
+      "metric": null,
+      "metric_weights": null,
+      "radius": null,
+      "tier_availability": {
+        "selected_paths": null,
+        "candidate_net_minute": null,
+        "broad_provider_minute": null,
+        "full_checkpoint": null
+      }
+    },
+    "normalized_shape_dominant": {
+      "role": "declared scale-free path geometry; reference levels retained only as audit coordinates",
+      "geometry_channels": null,
+      "audit_coordinates_in_scope": null,
+      "transforms": null,
+      "scale_reference": null,
+      "metric": null,
+      "metric_weights": null,
+      "radius": null,
+      "tier_availability": {
+        "selected_paths": null,
+        "candidate_net_minute": null,
+        "broad_provider_minute": null,
+        "full_checkpoint": null
+      }
+    },
+    "duration_event_dominant": {
+      "role": "wall time, printed-bar duration, gaps/holes and change points",
+      "geometry_channels": null,
+      "audit_coordinates_in_scope": null,
+      "transforms": null,
+      "scale_reference": null,
+      "metric": null,
+      "metric_weights": null,
+      "radius": null,
+      "tier_availability": {
+        "selected_paths": null,
+        "candidate_net_minute": null,
+        "broad_provider_minute": null,
+        "full_checkpoint": null
+      }
+    },
+    "activity_microstructure_dominant": {
+      "role": "print/bar arrival, size/count/notional, condition and available quote geometry",
+      "geometry_channels": null,
+      "audit_coordinates_in_scope": null,
+      "transforms": null,
+      "scale_reference": null,
+      "metric": null,
+      "metric_weights": null,
+      "radius": null,
+      "tier_availability": {
+        "selected_paths": null,
+        "candidate_net_minute": null,
+        "broad_provider_minute": null,
+        "full_checkpoint": null
+      }
+    },
+    "balanced_multichannel_reference": {
+      "role": "fixed equal-weight combination of standardized view distances; never tuned into the best-looking geometry",
+      "geometry_channels": null,
+      "audit_coordinates_in_scope": null,
+      "transforms": null,
+      "scale_reference": null,
+      "metric": null,
+      "metric_weights": null,
+      "radius": null,
+      "tier_availability": {
+        "selected_paths": null,
+        "candidate_net_minute": null,
+        "broad_provider_minute": null,
+        "full_checkpoint": null
+      }
+    }
+  },
+  "learned_family": {
+    "family_count": 1,
+    "architecture": "small masked-sequence temporal convolutional encoder (masked TCN)",
+    "many_families_forbidden": true,
+    "objective": "masked-span reconstruction only",
+    "invalid_padded_positions_contribute_zero_loss": true,
+    "forbidden_objectives": [
+      "future-return prediction",
+      "contrastive outcome proxy",
+      "cluster loss",
+      "policy loss"
+    ],
+    "inputs": null,
+    "input_rule": "selected raw/reference-relative minute channels plus explicit validity/coverage masks",
+    "forbidden_inputs": [
+      "clock",
+      "block",
+      "family",
+      "entry_rank",
+      "future",
+      "censor"
+    ],
+    "modes": {
+      "causal": {
+        "receptive_field": "left-only",
+        "garbage_suffix_invariance_required": true,
+        "prospective_live_use": true,
+        "config": null
+      },
+      "retrospective": {
+        "labelled": true,
+        "prospective_live_use": false,
+        "out_of_window_junk_insensitive_required": true,
+        "config": null
+      }
+    },
+    "normalization_fit_block": null,
+    "eval_block": null,
+    "frozen_random_weights_comparator": "same architecture with frozen random weights",
+    "configurations_per_fold": 1,
+    "runs_per_fold": 1,
+    "architecture_or_hyperparameter_retry": false,
+    "gate_failure_consequence": "retires this learned family for v0 only; it does not retire the Atlas"
+  },
+  "augmentation": {
+    "frozen_set": null,
+    "per_view_measured_neighbour_displacement": null,
+    "per_view_permitted_bound": null,
+    "bound_frozen_before_training": false,
+    "shape_benign_crop_is_auto_allowed_for_magnitude_or_activity": false,
+    "masking_across": {
+      "silence": false,
+      "halts": false,
+      "provider_gaps": false,
+      "censor_boundaries": false
+    }
+  },
+  "tier_availability": {
+    "rule": "every result publishes which geometry the tier actually supports; a missing channel is never encoded as a market zero, and a null from a non-supporting tier can never enter a cross-tier mode gate",
+    "declared_class_matrix_from_freeze_o": "factory/artifacts/basket/phase2/ATLAS/TAPE/OBSERVATION/v0/contract.json#tier_support_matrix",
+    "per_view_per_tier_cells": null,
+    "tiers": [
+      "selected_paths",
+      "candidate_net_minute",
+      "broad_provider_minute",
+      "full_checkpoint"
+    ]
+  },
+  "geometry_gates": {
+    "outcome_blind_only": true,
+    "neighbour_distance_and_identity_vs_matched_surrogates": null,
+    "recurrence_and_mutual_neighbour_support_on_independent_units": null,
+    "block_era_stability_within_population_and_source_stratum": null,
+    "exact_vs_ann_recall_by_density_decile": null,
+    "magnitude_rank_preservation": null,
+    "prefix_determinism_and_detection_delay": null,
+    "view_agreement_and_disagreement": null,
+    "augmentation_displacement": null,
+    "recurring_uncertain_low_density_and_unique_mass_all_published": true,
+    "cross_family_transfer_is_not_a_universal_kill_condition": true
+  },
+  "invariance_registry": null,
+  "tier_specific_nulls": null,
+  "first_retrieval_proof": {
+    "node_id": null,
+    "status": "NOT-RUN",
+    "ask": "nearest-100 retrieval on the canonical observation corpus",
+    "independent_units": "(day,ticker,source_interval); neighbours must not share the query's own overlapping source interval",
+    "independent_day_spread_required": true,
+    "path_interval_disagreement_preserved": true,
+    "reports": {
+      "nearest100_neighbours": null,
+      "normalized_vs_magnitude_view_disagreement": null,
+      "rare_path_references": null,
+      "density": null,
+      "recurrence": null,
+      "unique_mass": null
+    },
+    "rare_path_reference_rule": "rare/unique occurrences keep their own path/segment/clock/bar references whether or not they have neighbours; no neighbour fabrication",
+    "no_outcome_labels_read": true
+  },
+  "coordinate_deny": {
+    "reference": "factory/artifacts/basket/phase2/ATLAS/TAPE/OBSERVATION/v0/schema.json#field_attributes.coordinate_only_rule",
+    "never_distance_channels": [
+      "month",
+      "block",
+      "feed_era",
+      "dow",
+      "canary flags",
+      "clock labels",
+      "minute_index",
+      "coverage classes",
+      "family",
+      "entry_rank"
+    ],
+    "row_level_roster_selectability_checked_before_column_access": true
+  }
+}

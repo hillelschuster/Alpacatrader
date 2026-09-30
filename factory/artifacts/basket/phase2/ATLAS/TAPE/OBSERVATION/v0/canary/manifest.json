@@ -1,0 +1,2123 @@
+{
+ "adaptive_choice_ledger_sha256": "8d981a857998df9ebc8c9393acb7aae84cb6c1f7ee078d046169d80858a62075",
+ "canary_days": [
+  "2021-02-09",
+  "2021-11-26",
+  "2022-03-10",
+  "2022-05-19",
+  "2022-06-23",
+  "2022-06-27",
+  "2022-11-25",
+  "2023-05-25",
+  "2023-06-28",
+  "2023-07-03",
+  "2023-07-05",
+  "2023-11-24",
+  "2025-02-03",
+  "2025-03-03",
+  "2025-07-03",
+  "2025-11-28",
+  "2025-12-24",
+  "2026-03-04",
+  "2026-04-01",
+  "2026-05-01"
+ ],
+ "canary_days_sha256": "5b3d16a2f2aa03bd53309063c9fe7faa99048afb52738dad0ca71836b2964dcf",
+ "causal_registry_sha256": "0858e2f26388322f2b1a8e1acd50fdb3114dd95b3671fd7ec8bc8a521eefe39d",
+ "code_sha256": "f9346e6b0a3f7d33bacdb381951aa058a7afd398162db3982499f87f4c1ecdb0",
+ "config_sha256": "0bb5f66cd7f5fc79442abd22129ef755b94a075c23dbc30debe3efe7e55a4f00",
+ "contract": "freeze-o-v0",
+ "contract_sha256": "9c2d629f973c7bc89c993780153adc697672f4c0906f78c97cc930bb95aeeae9",
+ "core_hash": "ffd513ce06e1201877f99d56767455fb8b8f4ff10fa3db80a6cd09c0b593d55e",
+ "coverage_classes": [
+  "complete_to_session_end",
+  "ends_early",
+  "no_prints",
+  "not_acquired",
+  "excluded_prints_only",
+  "provider_absent",
+  "tape_end",
+  "raw_roster_missing",
+  "qualified_floor_source",
+  "net_manifest_partial",
+  "net_manifest_missing",
+  "storage_headroom",
+  "none"
+ ],
+ "day_stats": {
+  "2021-02-09": {
+   "acq_bars_sha256": null,
+   "acq_manifest_sha256": null,
+   "acq_mode": null,
+   "acq_roster_sha256": null,
+   "acq_scope": null,
+   "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+   "board_minutes": 390,
+   "candidate_names": 53,
+   "candidate_prospective_names": 51,
+   "day": "2021-02-09",
+   "feed_era": "hf_era",
+   "n_reference_unqualified_excluded": 0,
+   "n_selected_paths": 6,
+   "net_manifest_status": "ok",
+   "net_reconciled": false,
+   "pit_n": 5404,
+   "prev_close_reference_unqualified": false,
+   "qualified_floor_source": false,
+   "quote_roster_union_n": 42,
+   "raw_baseline_sha256": "69eabad61a23912575f139f1e93a54edb11387bad942a7ece38ae94bdc7393a0",
+   "raw_n_pit_offhours_only": 4,
+   "raw_n_pit_symbols": 5335,
+   "raw_n_pit_symbols_full_window": 5339,
+   "raw_n_symbols": 17032,
+   "raw_roster_absent_classes": {},
+   "raw_roster_cross_feed_witnessed_n": 0,
+   "raw_roster_missing_n": 65,
+   "raw_roster_missing_unresolved_n": 65,
+   "raw_roster_no_sip_bar_also_witnessed_n": 0,
+   "raw_roster_unobserved_classes": {
+    "missing_confirmed_same_feed_bar": 65
+   },
+   "raw_roster_verified_absent_n": 0,
+   "raw_roster_verified_no_sip_bar_n": 0,
+   "raw_source_sha256": "6d0a261d1489c870c7be3b1332ce58ce5a5c14299372aeedd12b3914b52c56e0",
+   "session_end": 959,
+   "source_kind": "ohlcv_raw"
+  },
+  "2021-11-26": {
+   "acq_bars_sha256": null,
+   "acq_manifest_sha256": null,
+   "acq_mode": null,
+   "acq_roster_sha256": null,
+   "acq_scope": null,
+   "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+   "board_minutes": 210,
+   "candidate_names": 72,
+   "candidate_prospective_names": 67,
+   "day": "2021-11-26",
+   "feed_era": "hf_era",
+   "n_reference_unqualified_excluded": 0,
+   "n_selected_paths": 5,
+   "net_manifest_status": "ok",
+   "net_reconciled": false,
+   "pit_n": 6116,
+   "prev_close_reference_unqualified": false,
+   "qualified_floor_source": false,
+   "quote_roster_union_n": 42,
+   "raw_baseline_sha256": "cf95fa9b6b959a4ada5604f9583d0e23ea932fa1b33b2278405aa59a55163160",
+   "raw_n_pit_offhours_only": 5,
+   "raw_n_pit_symbols": 5911,
+   "raw_n_pit_symbols_full_window": 5916,
+   "raw_n_symbols": 14960,
+   "raw_roster_absent_classes": {},
+   "raw_roster_cross_feed_witnessed_n": 0,
+   "raw_roster_missing_n": 200,
+   "raw_roster_missing_unresolved_n": 200,
+   "raw_roster_no_sip_bar_also_witnessed_n": 0,
+   "raw_roster_unobserved_classes": {
+    "missing_confirmed_same_feed_bar": 200
+   },
+   "raw_roster_verified_absent_n": 0,
+   "raw_roster_verified_no_sip_bar_n": 0,
+   "raw_source_sha256": "96c2fffcafc70d6b3dfec70892ae12832f48c316fcc5153426bf32e22524d3ea",
+   "session_end": 779,
+   "source_kind": "ohlcv_raw"
+  },
+  "2022-03-10": {
+   "acq_bars_sha256": null,
+   "acq_manifest_sha256": null,
+   "acq_mode": null,
+   "acq_roster_sha256": null,
+   "acq_scope": null,
+   "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+   "board_minutes": 390,
+   "candidate_names": 64,
+   "candidate_prospective_names": 58,
+   "day": "2022-03-10",
+   "feed_era": "hf_era",
+   "n_reference_unqualified_excluded": 0,
+   "n_selected_paths": 6,
+   "net_manifest_status": "ok",
+   "net_reconciled": false,
+   "pit_n": 6289,
+   "prev_close_reference_unqualified": false,
+   "qualified_floor_source": false,
+   "quote_roster_union_n": 35,
+   "raw_baseline_sha256": "23270e48dcdd5c7216b63b668cc88e6568936832f6b57b4ee12005f0b68147a7",
+   "raw_n_pit_offhours_only": 18,
+   "raw_n_pit_symbols": 6007,
+   "raw_n_pit_symbols_full_window": 6025,
+   "raw_n_symbols": 15976,
+   "raw_roster_absent_classes": {},
+   "raw_roster_cross_feed_witnessed_n": 0,
+   "raw_roster_missing_n": 264,
+   "raw_roster_missing_unresolved_n": 264,
+   "raw_roster_no_sip_bar_also_witnessed_n": 0,
+   "raw_roster_unobserved_classes": {
+    "missing_confirmed_same_feed_bar": 264
+   },
+   "raw_roster_verified_absent_n": 0,
+   "raw_roster_verified_no_sip_bar_n": 0,
+   "raw_source_sha256": "ee615861a5a5f97e2fc8106fe20d3c50adcae99d22e046f4876495b409c765c8",
+   "session_end": 959,
+   "source_kind": "ohlcv_raw"
+  },
+  "2022-05-19": {
+   "acq_bars_sha256": null,
+   "acq_manifest_sha256": null,
+   "acq_mode": null,
+   "acq_roster_sha256": null,
+   "acq_scope": null,
+   "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+   "board_minutes": 390,
+   "candidate_names": 67,
+   "candidate_prospective_names": 61,
+   "day": "2022-05-19",
+   "feed_era": "hf_era",
+   "n_reference_unqualified_excluded": 0,
+   "n_selected_paths": 6,
+   "net_manifest_status": "ok",
+   "net_reconciled": false,
+   "pit_n": 6287,
+   "prev_close_reference_unqualified": false,
+   "qualified_floor_source": false,
+   "quote_roster_union_n": 38,
+   "raw_baseline_sha256": "fb55dd8780255311ed0736eaaf947b61069cb1668e9fc6afa213d1e3b8eb8115",
+   "raw_n_pit_offhours_only": 6,
+   "raw_n_pit_symbols": 5927,
+   "raw_n_pit_symbols_full_window": 5933,
+   "raw_n_symbols": 15688,
+   "raw_roster_absent_classes": {},
+   "raw_roster_cross_feed_witnessed_n": 0,
+   "raw_roster_missing_n": 354,
+   "raw_roster_missing_unresolved_n": 354,
+   "raw_roster_no_sip_bar_also_witnessed_n": 0,
+   "raw_roster_unobserved_classes": {
+    "missing_confirmed_same_feed_bar": 354
+   },
+   "raw_roster_verified_absent_n": 0,
+   "raw_roster_verified_no_sip_bar_n": 0,
+   "raw_source_sha256": "96c93caa6950b1d8954e7a53124ec35e46e114f65aa9dbb782e438f644e246ec",
+   "session_end": 959,
+   "source_kind": "ohlcv_raw"
+  },
+  "2022-06-23": {
+   "acq_bars_sha256": null,
+   "acq_manifest_sha256": null,
+   "acq_mode": null,
+   "acq_roster_sha256": null,
+   "acq_scope": null,
+   "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+   "board_minutes": 390,
+   "candidate_names": 92,
+   "candidate_prospective_names": 83,
+   "day": "2022-06-23",
+   "feed_era": "hf_era",
+   "n_reference_unqualified_excluded": 0,
+   "n_selected_paths": 6,
+   "net_manifest_status": "ok",
+   "net_reconciled": false,
+   "pit_n": 6295,
+   "prev_close_reference_unqualified": false,
+   "qualified_floor_source": false,
+   "quote_roster_union_n": 50,
+   "raw_baseline_sha256": "2fcdd641984a2fbac537fb52feb4cf2f26befd1ca52b24afc28da7d0729cdbbf",
+   "raw_n_pit_offhours_only": 35,
+   "raw_n_pit_symbols": 5944,
+   "raw_n_pit_symbols_full_window": 5979,
+   "raw_n_symbols": 14762,
+   "raw_roster_absent_classes": {},
+   "raw_roster_cross_feed_witnessed_n": 0,
+   "raw_roster_missing_n": 316,
+   "raw_roster_missing_unresolved_n": 316,
+   "raw_roster_no_sip_bar_also_witnessed_n": 0,
+   "raw_roster_unobserved_classes": {
+    "missing_confirmed_same_feed_bar": 316
+   },
+   "raw_roster_verified_absent_n": 0,
+   "raw_roster_verified_no_sip_bar_n": 0,
+   "raw_source_sha256": "75b4f34402f206a5b8d88039fbf0ba58f6965da8d70a3281a36ba148c5252def",
+   "session_end": 959,
+   "source_kind": "ohlcv_raw"
+  },
+  "2022-06-27": {
+   "acq_bars_sha256": null,
+   "acq_manifest_sha256": null,
+   "acq_mode": null,
+   "acq_roster_sha256": null,
+   "acq_scope": null,
+   "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+   "board_minutes": 390,
+   "candidate_names": 82,
+   "candidate_prospective_names": 76,
+   "day": "2022-06-27",
+   "feed_era": "hf_era",
+   "n_reference_unqualified_excluded": 0,
+   "n_selected_paths": 6,
+   "net_manifest_status": "ok",
+   "net_reconciled": false,
+   "pit_n": 6292,
+   "prev_close_reference_unqualified": false,
+   "qualified_floor_source": false,
+   "quote_roster_union_n": 47,
+   "raw_baseline_sha256": "2fcdd641984a2fbac537fb52feb4cf2f26befd1ca52b24afc28da7d0729cdbbf",
+   "raw_n_pit_offhours_only": 14,
+   "raw_n_pit_symbols": 5968,
+   "raw_n_pit_symbols_full_window": 5982,
+   "raw_n_symbols": 14771,
+   "raw_roster_absent_classes": {},
+   "raw_roster_cross_feed_witnessed_n": 0,
+   "raw_roster_missing_n": 310,
+   "raw_roster_missing_unresolved_n": 310,
+   "raw_roster_no_sip_bar_also_witnessed_n": 0,
+   "raw_roster_unobserved_classes": {
+    "missing_confirmed_same_feed_bar": 310
+   },
+   "raw_roster_verified_absent_n": 0,
+   "raw_roster_verified_no_sip_bar_n": 0,
+   "raw_source_sha256": "95ad0c2f7a53168de57e506a2375a7e04b44bc724d0418a68dc49090278ecc72",
+   "session_end": 959,
+   "source_kind": "ohlcv_raw"
+  },
+  "2022-11-25": {
+   "acq_bars_sha256": null,
+   "acq_manifest_sha256": null,
+   "acq_mode": null,
+   "acq_roster_sha256": null,
+   "acq_scope": null,
+   "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+   "board_minutes": 210,
+   "candidate_names": 76,
+   "candidate_prospective_names": 68,
+   "day": "2022-11-25",
+   "feed_era": "hf_era",
+   "n_reference_unqualified_excluded": 0,
+   "n_selected_paths": 6,
+   "net_manifest_status": "ok",
+   "net_reconciled": false,
+   "pit_n": 6220,
+   "prev_close_reference_unqualified": false,
+   "qualified_floor_source": false,
+   "quote_roster_union_n": 41,
+   "raw_baseline_sha256": "d2253146601ab99023b006d767ef3e2c1581e6722cbc75a90efebb95561c11e8",
+   "raw_n_pit_offhours_only": 29,
+   "raw_n_pit_symbols": 5785,
+   "raw_n_pit_symbols_full_window": 5814,
+   "raw_n_symbols": 13056,
+   "raw_roster_absent_classes": {},
+   "raw_roster_cross_feed_witnessed_n": 0,
+   "raw_roster_missing_n": 406,
+   "raw_roster_missing_unresolved_n": 406,
+   "raw_roster_no_sip_bar_also_witnessed_n": 0,
+   "raw_roster_unobserved_classes": {
+    "missing_confirmed_same_feed_bar": 406
+   },
+   "raw_roster_verified_absent_n": 0,
+   "raw_roster_verified_no_sip_bar_n": 0,
+   "raw_source_sha256": "11dad6f0dcafac6b813eef2e32f5473f720c752c07097cf9fa50c2d0e6cdca15",
+   "session_end": 779,
+   "source_kind": "ohlcv_raw"
+  },
+  "2023-05-25": {
+   "acq_bars_sha256": null,
+   "acq_manifest_sha256": null,
+   "acq_mode": null,
+   "acq_roster_sha256": null,
+   "acq_scope": null,
+   "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+   "board_minutes": 390,
+   "candidate_names": 71,
+   "candidate_prospective_names": 63,
+   "day": "2023-05-25",
+   "feed_era": "hf_era",
+   "n_reference_unqualified_excluded": 0,
+   "n_selected_paths": 6,
+   "net_manifest_status": "ok",
+   "net_reconciled": false,
+   "pit_n": 5942,
+   "prev_close_reference_unqualified": false,
+   "qualified_floor_source": false,
+   "quote_roster_union_n": 40,
+   "raw_baseline_sha256": "fa915072f6b157c3de650d91f206d61b55cfdfc3b9a231e81ced0ed2ad669cef",
+   "raw_n_pit_offhours_only": 35,
+   "raw_n_pit_symbols": 5719,
+   "raw_n_pit_symbols_full_window": 5754,
+   "raw_n_symbols": 14036,
+   "raw_roster_absent_classes": {},
+   "raw_roster_cross_feed_witnessed_n": 0,
+   "raw_roster_missing_n": 188,
+   "raw_roster_missing_unresolved_n": 188,
+   "raw_roster_no_sip_bar_also_witnessed_n": 0,
+   "raw_roster_unobserved_classes": {
+    "missing_confirmed_same_feed_bar": 188
+   },
+   "raw_roster_verified_absent_n": 0,
+   "raw_roster_verified_no_sip_bar_n": 0,
+   "raw_source_sha256": "5764c3d446a07fe48b38255dc87b2f1597253cc895eaac47f5af8644a1f94d45",
+   "session_end": 959,
+   "source_kind": "ohlcv_raw"
+  },
+  "2023-06-28": {
+   "acq_bars_sha256": null,
+   "acq_manifest_sha256": null,
+   "acq_mode": null,
+   "acq_roster_sha256": null,
+   "acq_scope": null,
+   "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+   "board_minutes": 390,
+   "candidate_names": 66,
+   "candidate_prospective_names": 59,
+   "day": "2023-06-28",
+   "feed_era": "hf_era",
+   "n_reference_unqualified_excluded": 0,
+   "n_selected_paths": 6,
+   "net_manifest_status": "ok",
+   "net_reconciled": false,
+   "pit_n": 5907,
+   "prev_close_reference_unqualified": false,
+   "qualified_floor_source": false,
+   "quote_roster_union_n": 40,
+   "raw_baseline_sha256": "fef946f15a7a7159cda0bf59b3f92e244464fa96a976f57d5b43b55b757c5a9b",
+   "raw_n_pit_offhours_only": 22,
+   "raw_n_pit_symbols": 5690,
+   "raw_n_pit_symbols_full_window": 5712,
+   "raw_n_symbols": 13935,
+   "raw_roster_absent_classes": {},
+   "raw_roster_cross_feed_witnessed_n": 0,
+   "raw_roster_missing_n": 195,
+   "raw_roster_missing_unresolved_n": 195,
+   "raw_roster_no_sip_bar_also_witnessed_n": 0,
+   "raw_roster_unobserved_classes": {
+    "missing_confirmed_same_feed_bar": 195
+   },
+   "raw_roster_verified_absent_n": 0,
+   "raw_roster_verified_no_sip_bar_n": 0,
+   "raw_source_sha256": "332761c47c2c502e4b6e4e5b479cee91672c407ce8e3b1c8452f5d502c9fb68a",
+   "session_end": 959,
+   "source_kind": "ohlcv_raw"
+  },
+  "2023-07-03": {
+   "acq_bars_sha256": null,
+   "acq_manifest_sha256": null,
+   "acq_mode": null,
+   "acq_roster_sha256": null,
+   "acq_scope": null,
+   "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+   "board_minutes": 210,
+   "candidate_names": 81,
+   "candidate_prospective_names": 71,
+   "day": "2023-07-03",
+   "feed_era": "hf_era",
+   "n_reference_unqualified_excluded": 0,
+   "n_selected_paths": 5,
+   "net_manifest_status": "ok",
+   "net_reconciled": false,
+   "pit_n": 5907,
+   "prev_close_reference_unqualified": false,
+   "qualified_floor_source": false,
+   "quote_roster_union_n": 41,
+   "raw_baseline_sha256": "f5f26c9a3dc2a806987c0f02d9820cb9b6e8761eb971b18ca3e5a3343397fa06",
+   "raw_n_pit_offhours_only": 14,
+   "raw_n_pit_symbols": 5612,
+   "raw_n_pit_symbols_full_window": 5626,
+   "raw_n_symbols": 13122,
+   "raw_roster_absent_classes": {},
+   "raw_roster_cross_feed_witnessed_n": 0,
+   "raw_roster_missing_n": 281,
+   "raw_roster_missing_unresolved_n": 281,
+   "raw_roster_no_sip_bar_also_witnessed_n": 0,
+   "raw_roster_unobserved_classes": {
+    "missing_confirmed_same_feed_bar": 281
+   },
+   "raw_roster_verified_absent_n": 0,
+   "raw_roster_verified_no_sip_bar_n": 0,
+   "raw_source_sha256": "3cea46d23e49fbac2e1c62b0676c83fa3236069ec298a4f5a76db233250e6011",
+   "session_end": 779,
+   "source_kind": "ohlcv_raw"
+  },
+  "2023-07-05": {
+   "acq_bars_sha256": null,
+   "acq_manifest_sha256": null,
+   "acq_mode": null,
+   "acq_roster_sha256": null,
+   "acq_scope": null,
+   "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+   "board_minutes": 390,
+   "candidate_names": 74,
+   "candidate_prospective_names": 69,
+   "day": "2023-07-05",
+   "feed_era": "hf_era",
+   "n_reference_unqualified_excluded": 0,
+   "n_selected_paths": 6,
+   "net_manifest_status": "ok",
+   "net_reconciled": false,
+   "pit_n": 5891,
+   "prev_close_reference_unqualified": false,
+   "qualified_floor_source": false,
+   "quote_roster_union_n": 40,
+   "raw_baseline_sha256": "f5f26c9a3dc2a806987c0f02d9820cb9b6e8761eb971b18ca3e5a3343397fa06",
+   "raw_n_pit_offhours_only": 11,
+   "raw_n_pit_symbols": 5669,
+   "raw_n_pit_symbols_full_window": 5680,
+   "raw_n_symbols": 14290,
+   "raw_roster_absent_classes": {},
+   "raw_roster_cross_feed_witnessed_n": 0,
+   "raw_roster_missing_n": 211,
+   "raw_roster_missing_unresolved_n": 211,
+   "raw_roster_no_sip_bar_also_witnessed_n": 0,
+   "raw_roster_unobserved_classes": {
+    "missing_confirmed_same_feed_bar": 211
+   },
+   "raw_roster_verified_absent_n": 0,
+   "raw_roster_verified_no_sip_bar_n": 0,
+   "raw_source_sha256": "55550d6532ac4f8b8f84accbd9b370453043e9bb37c1157f849cddd7d4468471",
+   "session_end": 959,
+   "source_kind": "ohlcv_raw"
+  },
+  "2023-11-24": {
+   "acq_bars_sha256": null,
+   "acq_manifest_sha256": null,
+   "acq_mode": null,
+   "acq_roster_sha256": null,
+   "acq_scope": null,
+   "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+   "board_minutes": 210,
+   "candidate_names": 68,
+   "candidate_prospective_names": 60,
+   "day": "2023-11-24",
+   "feed_era": "hf_era",
+   "n_reference_unqualified_excluded": 0,
+   "n_selected_paths": 6,
+   "net_manifest_status": "ok",
+   "net_reconciled": false,
+   "pit_n": 5835,
+   "prev_close_reference_unqualified": false,
+   "qualified_floor_source": false,
+   "quote_roster_union_n": 39,
+   "raw_baseline_sha256": "1c6ffe70c6d52c9278b4f053c4368bd8a11b118937f7841b0fbdbed5a6436fbb",
+   "raw_n_pit_offhours_only": 13,
+   "raw_n_pit_symbols": 5523,
+   "raw_n_pit_symbols_full_window": 5536,
+   "raw_n_symbols": 12627,
+   "raw_roster_absent_classes": {},
+   "raw_roster_cross_feed_witnessed_n": 0,
+   "raw_roster_missing_n": 299,
+   "raw_roster_missing_unresolved_n": 299,
+   "raw_roster_no_sip_bar_also_witnessed_n": 0,
+   "raw_roster_unobserved_classes": {
+    "missing_confirmed_same_feed_bar": 299
+   },
+   "raw_roster_verified_absent_n": 0,
+   "raw_roster_verified_no_sip_bar_n": 0,
+   "raw_source_sha256": "2c91089741cf459eae52c0e413ef3abfc723b7be9abfbc6d1a26ac320254a736",
+   "session_end": 779,
+   "source_kind": "ohlcv_raw"
+  },
+  "2025-02-03": {
+   "acq_bars_sha256": "df0b2c851dfc148dea0fbf58f46ae32899f70a3e443379f95a5d8a6120e3cafc",
+   "acq_manifest_sha256": "6b418242694caafae542be787217dc2ed0782076ae3ccb19a778e5f7b6a40974",
+   "acq_mode": "replace_baseline",
+   "acq_roster_sha256": "653bbddf50c5490f1c8fcc0acc6e245445d3813bd24ac6b4ecf8ead01df8ef07",
+   "acq_scope": "feb2025",
+   "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+   "board_minutes": 390,
+   "candidate_names": 67,
+   "candidate_prospective_names": 60,
+   "day": "2025-02-03",
+   "feed_era": "sip_acquired_era",
+   "n_reference_unqualified_excluded": 2131740,
+   "n_selected_paths": 6,
+   "net_manifest_status": "ok",
+   "net_reconciled": false,
+   "pit_n": 5535,
+   "prev_close_reference_unqualified": true,
+   "qualified_floor_source": false,
+   "quote_roster_union_n": 45,
+   "raw_baseline_sha256": "df0b2c851dfc148dea0fbf58f46ae32899f70a3e443379f95a5d8a6120e3cafc",
+   "raw_n_pit_offhours_only": 1,
+   "raw_n_pit_symbols": 5466,
+   "raw_n_pit_symbols_full_window": 5467,
+   "raw_n_symbols": 5466,
+   "raw_roster_absent_classes": {
+    "unavailable.no_verified_provider_spelling": 17
+   },
+   "raw_roster_cross_feed_witnessed_n": 1,
+   "raw_roster_missing_n": 68,
+   "raw_roster_missing_unresolved_n": 0,
+   "raw_roster_no_sip_bar_also_witnessed_n": 1,
+   "raw_roster_unobserved_classes": {
+    "cross_feed_witnessed_no_sip_bar": 1,
+    "verified_no_bar_in_declared_sources": 17,
+    "verified_no_sip_bar": 50
+   },
+   "raw_roster_verified_absent_n": 17,
+   "raw_roster_verified_no_sip_bar_n": 51,
+   "raw_source_sha256": "608b9b549df9ab4c4af35c53761153bb67ff769f9cf8e701b002b7fd027e62a5",
+   "session_end": 959,
+   "source_kind": "acquired_day"
+  },
+  "2025-03-03": {
+   "acq_bars_sha256": null,
+   "acq_manifest_sha256": null,
+   "acq_mode": null,
+   "acq_roster_sha256": null,
+   "acq_scope": null,
+   "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+   "board_minutes": 390,
+   "candidate_names": 53,
+   "candidate_prospective_names": 44,
+   "day": "2025-03-03",
+   "feed_era": "hf_resume_era",
+   "n_reference_unqualified_excluded": 0,
+   "n_selected_paths": 6,
+   "net_manifest_status": "ok",
+   "net_reconciled": false,
+   "pit_n": 5529,
+   "prev_close_reference_unqualified": false,
+   "qualified_floor_source": false,
+   "quote_roster_union_n": 34,
+   "raw_baseline_sha256": "dd5e8076b43391f9917b082a4461fb4229b270b89611305c1c619eaf128fe03b",
+   "raw_n_pit_offhours_only": 7,
+   "raw_n_pit_symbols": 5433,
+   "raw_n_pit_symbols_full_window": 5440,
+   "raw_n_symbols": 14684,
+   "raw_roster_absent_classes": {},
+   "raw_roster_cross_feed_witnessed_n": 0,
+   "raw_roster_missing_n": 89,
+   "raw_roster_missing_unresolved_n": 89,
+   "raw_roster_no_sip_bar_also_witnessed_n": 0,
+   "raw_roster_unobserved_classes": {
+    "missing_confirmed_same_feed_bar": 89
+   },
+   "raw_roster_verified_absent_n": 0,
+   "raw_roster_verified_no_sip_bar_n": 0,
+   "raw_source_sha256": "55a9c154df56ecf2ddce80ebde6adabc1fdcdd911bf6868d46be57d6bd191a55",
+   "session_end": 959,
+   "source_kind": "ohlcv_raw"
+  },
+  "2025-07-03": {
+   "acq_bars_sha256": null,
+   "acq_manifest_sha256": null,
+   "acq_mode": null,
+   "acq_roster_sha256": null,
+   "acq_scope": null,
+   "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+   "board_minutes": 210,
+   "candidate_names": 61,
+   "candidate_prospective_names": 53,
+   "day": "2025-07-03",
+   "feed_era": "hf_resume_era",
+   "n_reference_unqualified_excluded": 0,
+   "n_selected_paths": 6,
+   "net_manifest_status": "ok",
+   "net_reconciled": false,
+   "pit_n": 5538,
+   "prev_close_reference_unqualified": false,
+   "qualified_floor_source": false,
+   "quote_roster_union_n": 38,
+   "raw_baseline_sha256": "90971731bcc3fe9ad465b82f3fc33b481a25f632b6f65f996b7ae91f0d0c9e29",
+   "raw_n_pit_offhours_only": 33,
+   "raw_n_pit_symbols": 5390,
+   "raw_n_pit_symbols_full_window": 5423,
+   "raw_n_symbols": 13825,
+   "raw_roster_absent_classes": {},
+   "raw_roster_cross_feed_witnessed_n": 0,
+   "raw_roster_missing_n": 115,
+   "raw_roster_missing_unresolved_n": 115,
+   "raw_roster_no_sip_bar_also_witnessed_n": 0,
+   "raw_roster_unobserved_classes": {
+    "missing_confirmed_same_feed_bar": 115
+   },
+   "raw_roster_verified_absent_n": 0,
+   "raw_roster_verified_no_sip_bar_n": 0,
+   "raw_source_sha256": "7245c24b68cf8cd9053a660c61a946d7728c5050a80b3ecb2482b6e7b46a9c6f",
+   "session_end": 779,
+   "source_kind": "ohlcv_raw"
+  },
+  "2025-11-28": {
+   "acq_bars_sha256": null,
+   "acq_manifest_sha256": null,
+   "acq_mode": null,
+   "acq_roster_sha256": null,
+   "acq_scope": null,
+   "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+   "board_minutes": 210,
+   "candidate_names": 54,
+   "candidate_prospective_names": 51,
+   "day": "2025-11-28",
+   "feed_era": "hf_resume_era",
+   "n_reference_unqualified_excluded": 0,
+   "n_selected_paths": 5,
+   "net_manifest_status": "ok",
+   "net_reconciled": false,
+   "pit_n": 5579,
+   "prev_close_reference_unqualified": false,
+   "qualified_floor_source": false,
+   "quote_roster_union_n": 38,
+   "raw_baseline_sha256": "a67c05128543ddc10404768499f77890f12ecce3b71d9e7e66c3b8d3115ece5b",
+   "raw_n_pit_offhours_only": 50,
+   "raw_n_pit_symbols": 5418,
+   "raw_n_pit_symbols_full_window": 5468,
+   "raw_n_symbols": 14738,
+   "raw_roster_absent_classes": {},
+   "raw_roster_cross_feed_witnessed_n": 0,
+   "raw_roster_missing_n": 111,
+   "raw_roster_missing_unresolved_n": 111,
+   "raw_roster_no_sip_bar_also_witnessed_n": 0,
+   "raw_roster_unobserved_classes": {
+    "missing_confirmed_same_feed_bar": 111
+   },
+   "raw_roster_verified_absent_n": 0,
+   "raw_roster_verified_no_sip_bar_n": 0,
+   "raw_source_sha256": "a07b6744db873c0ec0ad54022470c01016fb2528451b99a224c61bdca90a926a",
+   "session_end": 779,
+   "source_kind": "ohlcv_raw"
+  },
+  "2025-12-24": {
+   "acq_bars_sha256": null,
+   "acq_manifest_sha256": null,
+   "acq_mode": null,
+   "acq_roster_sha256": null,
+   "acq_scope": null,
+   "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+   "board_minutes": 210,
+   "candidate_names": 58,
+   "candidate_prospective_names": 50,
+   "day": "2025-12-24",
+   "feed_era": "hf_resume_era",
+   "n_reference_unqualified_excluded": 0,
+   "n_selected_paths": 6,
+   "net_manifest_status": "ok",
+   "net_reconciled": false,
+   "pit_n": 5567,
+   "prev_close_reference_unqualified": false,
+   "qualified_floor_source": false,
+   "quote_roster_union_n": 37,
+   "raw_baseline_sha256": "ba34c61ac54a782f17d7d2fb3fa9ef98ff5e38ec2e1f83a95b0ff8a41b8d4df2",
+   "raw_n_pit_offhours_only": 23,
+   "raw_n_pit_symbols": 5406,
+   "raw_n_pit_symbols_full_window": 5429,
+   "raw_n_symbols": 14870,
+   "raw_roster_absent_classes": {},
+   "raw_roster_cross_feed_witnessed_n": 0,
+   "raw_roster_missing_n": 138,
+   "raw_roster_missing_unresolved_n": 138,
+   "raw_roster_no_sip_bar_also_witnessed_n": 0,
+   "raw_roster_unobserved_classes": {
+    "missing_confirmed_same_feed_bar": 138
+   },
+   "raw_roster_verified_absent_n": 0,
+   "raw_roster_verified_no_sip_bar_n": 0,
+   "raw_source_sha256": "978e93693eb58368cecd9b25105b53a19b505095844a203542cd61e945f3416b",
+   "session_end": 779,
+   "source_kind": "ohlcv_raw"
+  },
+  "2026-03-04": {
+   "acq_bars_sha256": null,
+   "acq_manifest_sha256": null,
+   "acq_mode": null,
+   "acq_roster_sha256": null,
+   "acq_scope": null,
+   "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+   "board_minutes": 390,
+   "candidate_names": 56,
+   "candidate_prospective_names": 50,
+   "day": "2026-03-04",
+   "feed_era": "alpaca_sip_era",
+   "n_reference_unqualified_excluded": 0,
+   "n_selected_paths": 6,
+   "net_manifest_status": "ok",
+   "net_reconciled": false,
+   "pit_n": 5555,
+   "prev_close_reference_unqualified": false,
+   "qualified_floor_source": false,
+   "quote_roster_union_n": 34,
+   "raw_baseline_sha256": "df0020f1e84972cda8726a993d76c1a4b187859c834c58aa40373d049e1eb28d",
+   "raw_n_pit_offhours_only": 13,
+   "raw_n_pit_symbols": 5184,
+   "raw_n_pit_symbols_full_window": 5197,
+   "raw_n_symbols": 10031,
+   "raw_roster_absent_classes": {},
+   "raw_roster_cross_feed_witnessed_n": 0,
+   "raw_roster_missing_n": 358,
+   "raw_roster_missing_unresolved_n": 358,
+   "raw_roster_no_sip_bar_also_witnessed_n": 0,
+   "raw_roster_unobserved_classes": {
+    "missing_confirmed_same_feed_bar": 358
+   },
+   "raw_roster_verified_absent_n": 0,
+   "raw_roster_verified_no_sip_bar_n": 0,
+   "raw_source_sha256": "c483ecb0f20b4854d27d664a30f273a267aacb53c5a87c612681377e9d523313",
+   "session_end": 959,
+   "source_kind": "backfill_raw"
+  },
+  "2026-04-01": {
+   "acq_bars_sha256": "14c98a8e8d969ae0fcb5fe5b50d29a907e5889decda18fe15dfcfec256855ab9",
+   "acq_manifest_sha256": "b328bd57fbf403a9543206b91bd3e07ee1753f10f9da96d06185a1ac913c7d04",
+   "acq_mode": "supplement_baseline",
+   "acq_roster_sha256": "d82200e3cd48358f7b4c43d93a0fb49829e9c2ad8c2487fe93d9a60f35f372d2",
+   "acq_scope": "aprmay2026",
+   "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+   "board_minutes": 390,
+   "candidate_names": 58,
+   "candidate_prospective_names": 52,
+   "day": "2026-04-01",
+   "feed_era": "alpaca_sip_era",
+   "n_reference_unqualified_excluded": 0,
+   "n_selected_paths": 6,
+   "net_manifest_status": "ok",
+   "net_reconciled": false,
+   "pit_n": 5573,
+   "prev_close_reference_unqualified": false,
+   "qualified_floor_source": false,
+   "quote_roster_union_n": 34,
+   "raw_baseline_sha256": "21f252ba48c4feea837a9d8f3bd7c1ef4056a1a1d6d2db30667e1a4d0fd25bfb",
+   "raw_n_pit_offhours_only": 4,
+   "raw_n_pit_symbols": 5459,
+   "raw_n_pit_symbols_full_window": 5463,
+   "raw_n_symbols": 10327,
+   "raw_roster_absent_classes": {
+    "unavailable.absent_all_sources": 88,
+    "unavailable.no_rth_in_baseline": 4,
+    "unavailable.no_verified_provider_spelling": 14
+   },
+   "raw_roster_cross_feed_witnessed_n": 0,
+   "raw_roster_missing_n": 110,
+   "raw_roster_missing_unresolved_n": 0,
+   "raw_roster_no_sip_bar_also_witnessed_n": 0,
+   "raw_roster_unobserved_classes": {
+    "verified_no_bar_in_declared_sources": 106,
+    "verified_no_sip_bar": 4
+   },
+   "raw_roster_verified_absent_n": 106,
+   "raw_roster_verified_no_sip_bar_n": 4,
+   "raw_source_sha256": "17dcf9cb743e5bb7197e716dc8110d6b78ecca5dfb7a4ab5325565d66f6a7ace",
+   "session_end": 959,
+   "source_kind": "backfill_raw+acquired_day"
+  },
+  "2026-05-01": {
+   "acq_bars_sha256": "8f2036efe7766c4c5cc00c43d401bbe4f756dfec780ea3418f4250770dfc2f9b",
+   "acq_manifest_sha256": "1d621b22f5d171fffdbea95a2fa09850efbaf95fe96d4645335846eac442e8c3",
+   "acq_mode": "supplement_baseline",
+   "acq_roster_sha256": "bb5977959c48b3206fe7bf6ca766e32c5997b1462c265f04b25cf2b7031c3262",
+   "acq_scope": "aprmay2026",
+   "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+   "board_minutes": 390,
+   "candidate_names": 53,
+   "candidate_prospective_names": 50,
+   "day": "2026-05-01",
+   "feed_era": "alpaca_sip_era",
+   "n_reference_unqualified_excluded": 0,
+   "n_selected_paths": 5,
+   "net_manifest_status": "ok",
+   "net_reconciled": false,
+   "pit_n": 5579,
+   "prev_close_reference_unqualified": false,
+   "qualified_floor_source": false,
+   "quote_roster_union_n": 31,
+   "raw_baseline_sha256": "0a6762194e5af002155e036e43e048e6406a9315e1ca083057400afec1474358",
+   "raw_n_pit_offhours_only": 0,
+   "raw_n_pit_symbols": 5443,
+   "raw_n_pit_symbols_full_window": 5443,
+   "raw_n_symbols": 10316,
+   "raw_roster_absent_classes": {
+    "unavailable.absent_all_sources": 114,
+    "unavailable.no_rth_in_baseline": 3,
+    "unavailable.no_verified_provider_spelling": 14
+   },
+   "raw_roster_cross_feed_witnessed_n": 0,
+   "raw_roster_missing_n": 136,
+   "raw_roster_missing_unresolved_n": 0,
+   "raw_roster_no_sip_bar_also_witnessed_n": 0,
+   "raw_roster_unobserved_classes": {
+    "verified_no_bar_in_declared_sources": 131,
+    "verified_no_sip_bar": 5
+   },
+   "raw_roster_verified_absent_n": 131,
+   "raw_roster_verified_no_sip_bar_n": 5,
+   "raw_source_sha256": "f7dd90e878df3f0320967507e5b465079ae75f56a7cb99eb2d0ad6742d7b6358",
+   "session_end": 959,
+   "source_kind": "backfill_raw+acquired_day"
+  }
+ },
+ "input_shas": {
+  "2021-02-09": {
+   "acq_bars_sha256": null,
+   "acq_manifest_sha256": null,
+   "acq_roster_sha256": null,
+   "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+   "anatomy_sha256": "8b5d787c1d6147e9d14b487e5cbe5090a732c8bceb45368ade74707245acb5a1",
+   "candidates_sha256": "f3455c50e9221bd18eb82356d6b24c4c3b30024fc6a50f5197ce48e9a304c5d7",
+   "net_bars_sha256": "5a57db3de5a36ad99222c9d5dced081d169c5dbd4c981169b063e4a8c5c74980",
+   "net_coverage_manifest_sha256": "458760ba7fcd21ced8531c2c47047b034e30e106963e2017a6777e342c07217d",
+   "net_coverage_sha256": "1b6f54a8dddaa6331cdf72dd9656611a0d2442076ad7745d05ebe32267f11103",
+   "net_trades_sha256": "e4c1e2c0d4400cff5a31cf05c45a21dd06692e64993217821fc2cbd06ccc6faa",
+   "raw_baseline_sha256": "69eabad61a23912575f139f1e93a54edb11387bad942a7ece38ae94bdc7393a0",
+   "raw_source_sha256": "6d0a261d1489c870c7be3b1332ce58ce5a5c14299372aeedd12b3914b52c56e0",
+   "universe_sha256": "470084c9fbc30595777e4e5c90699c5d30926876e4bf48013c0c1dc0a2121b12"
+  },
+  "2021-11-26": {
+   "acq_bars_sha256": null,
+   "acq_manifest_sha256": null,
+   "acq_roster_sha256": null,
+   "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+   "anatomy_sha256": "67c8585b050880dfa125b50daae674c2d29b15558f6c4c240129c5c31ee3f521",
+   "candidates_sha256": "f5c8c8d6be6c117bbc9d5e009145ec2020fd0ba9659a059d811da6020b51c427",
+   "net_bars_sha256": "0e213887f5ea125458d7ac812197a7c57eade00ce44f41d32ca098974c70de91",
+   "net_coverage_manifest_sha256": "72806f865a8851c92d24258b25a0fa239517543982d785ae711002969f91646e",
+   "net_coverage_sha256": "fd415558163af6c239a572017fd268bf0c4f3d639b924abe2a288f6ee3c47825",
+   "net_trades_sha256": "f329a18d37d83a5fe74e0cddc3959bf32a2e603b0e82a30902afc5b02fc21a60",
+   "raw_baseline_sha256": "cf95fa9b6b959a4ada5604f9583d0e23ea932fa1b33b2278405aa59a55163160",
+   "raw_source_sha256": "96c2fffcafc70d6b3dfec70892ae12832f48c316fcc5153426bf32e22524d3ea",
+   "universe_sha256": "02b31c51a318d128decb0621b7273f2c67e9bc8a08f79a0db8db056374c3299b"
+  },
+  "2022-03-10": {
+   "acq_bars_sha256": null,
+   "acq_manifest_sha256": null,
+   "acq_roster_sha256": null,
+   "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+   "anatomy_sha256": "beee49c65e77cf1ca79e23d9475539cce6a50dc256d699cf4667ccbeaa297401",
+   "candidates_sha256": "4607212b86997cfd8c8b8ff927b1304d737ade8b50ac20ce8f8e681edc947b10",
+   "net_bars_sha256": "34324cc2a9b466116663960b3113691d743dc3ec3fa3eaaa0f659941757c7918",
+   "net_coverage_manifest_sha256": "ae9872bd63d3187e7e065b7f3813b466aabe18e7feb454fd795b2a7ef2da0fe4",
+   "net_coverage_sha256": "bf6d0bc459f9c8cef4b95f9f3bc256944b8abffcad282bb64dac7ccd13769520",
+   "net_trades_sha256": "a056fe47736df1a8979a2fd98f08f744b3a4acfa03c78bf1e4619243d9e25902",
+   "raw_baseline_sha256": "23270e48dcdd5c7216b63b668cc88e6568936832f6b57b4ee12005f0b68147a7",
+   "raw_source_sha256": "ee615861a5a5f97e2fc8106fe20d3c50adcae99d22e046f4876495b409c765c8",
+   "universe_sha256": "3a9488d472fbc376827cc6171a2ce52ffd6c384479ddcf29caeb837f008e04c3"
+  },
+  "2022-05-19": {
+   "acq_bars_sha256": null,
+   "acq_manifest_sha256": null,
+   "acq_roster_sha256": null,
+   "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+   "anatomy_sha256": "07b52697217232eb408b4c3c2ddd3e18418f4abd2b8133e8e7c88ffa4a9d4a20",
+   "candidates_sha256": "2700dcf47df3aba2a8be7e87a7f793e4e284563f152058c7920e3640568f10a4",
+   "net_bars_sha256": "1d6af2f0c3bd67df21ccd20d2a2b42c26ef144a28a010b55d2396658e9d39a16",
+   "net_coverage_manifest_sha256": "3206c0cae42ba0d17145974b96c4711a5145a06e90b06f83ed6f23be7808f078",
+   "net_coverage_sha256": "88f332cf044a1c27d78dc2eae7ec13e6fc8eb6c8f7ef8e1f0bf426a9aa97f09d",
+   "net_trades_sha256": "6f20245a5e1fbf31b14c7de952aad6965b8ccd55be4ee9cface65e924d522f75",
+   "raw_baseline_sha256": "fb55dd8780255311ed0736eaaf947b61069cb1668e9fc6afa213d1e3b8eb8115",
+   "raw_source_sha256": "96c93caa6950b1d8954e7a53124ec35e46e114f65aa9dbb782e438f644e246ec",
+   "universe_sha256": "09eae5710ec3a3710fab7f6332c94f84c6acf4dddb13ad94cdb0376b4d0fc016"
+  },
+  "2022-06-23": {
+   "acq_bars_sha256": null,
+   "acq_manifest_sha256": null,
+   "acq_roster_sha256": null,
+   "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+   "anatomy_sha256": "464309516cdd7f34f9c431a5234a3c7fcffaa36c465007378a3b6b5adce89cb9",
+   "candidates_sha256": "331db94fefb15006dd36f33d909d5c2dc5ec08f80b46bd242a63809faaf446c0",
+   "net_bars_sha256": "ef7a36c8426a37c368d866c385685c821de6ddec8c3b44e7381fb19f3cf4f49b",
+   "net_coverage_manifest_sha256": "76276ebb089548e3b708b9945c87e9db893be0605ce788fa912ced99b9c80008",
+   "net_coverage_sha256": "a05ef9c7623010ddd834ca830d597e37c5704d9a78006a9793bd5048263b40d4",
+   "net_trades_sha256": "4a3016b05f2d62ec9d2d893fa86fa1329b288c6e43be57f425a46361a4529032",
+   "raw_baseline_sha256": "2fcdd641984a2fbac537fb52feb4cf2f26befd1ca52b24afc28da7d0729cdbbf",
+   "raw_source_sha256": "75b4f34402f206a5b8d88039fbf0ba58f6965da8d70a3281a36ba148c5252def",
+   "universe_sha256": "cb90b3e1b5cdf85f6ec7341048264d8ec990185448131b5854f497e38bcf8392"
+  },
+  "2022-06-27": {
+   "acq_bars_sha256": null,
+   "acq_manifest_sha256": null,
+   "acq_roster_sha256": null,
+   "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+   "anatomy_sha256": "fb6af2ae01d964257beda9ae89ecb9340112ed6f7e56527b076eb71193877daf",
+   "candidates_sha256": "65621cbcad7bf8299b0a145ad785a81666b8c4049f1daa740f049c3087bf7ff8",
+   "net_bars_sha256": "eb372c3be7909c3f9bd7d81627a78c3543657b26468ec2772c7ffb7ea23518d8",
+   "net_coverage_manifest_sha256": "b357592bff7b210bf8e6b5ab012e564f107b15fad3e621511546df1463924b0e",
+   "net_coverage_sha256": "64fc1438f099b1660bc321cddb4cb807d185055ef4d960d99243c48caf0045d4",
+   "net_trades_sha256": "96d11d08e02449b8701d244448d902d6000d8364b19bb67c0535e73cb95d5084",
+   "raw_baseline_sha256": "2fcdd641984a2fbac537fb52feb4cf2f26befd1ca52b24afc28da7d0729cdbbf",
+   "raw_source_sha256": "95ad0c2f7a53168de57e506a2375a7e04b44bc724d0418a68dc49090278ecc72",
+   "universe_sha256": "26b9dcacc973590e72c4e82cf44d34f9aa46fc266599179d0c0da14d8264c9d5"
+  },
+  "2022-11-25": {
+   "acq_bars_sha256": null,
+   "acq_manifest_sha256": null,
+   "acq_roster_sha256": null,
+   "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+   "anatomy_sha256": "b4596c70033da9784aea81c91983aab5e4e5c74f1c19adf89d0f978d80eb038f",
+   "candidates_sha256": "70706d4f21ec357ed7a0a442fd58f4fc7090b9f804c9b025276b2ca3fdbda5ba",
+   "net_bars_sha256": "055e13742137d8813b07f32316a9d71b9708ed56fc9b2de9eeed3a9a5193e0b8",
+   "net_coverage_manifest_sha256": "dc493be06e39d4e17e2099fee4116b1f241f4440e0e66d2532cda06d883a7fd5",
+   "net_coverage_sha256": "34f97b06989cfde6e197fb1b9a02dd133c632450c641021dd5143849363b8cd6",
+   "net_trades_sha256": "122e51a4e1f47bcb621e04de1224796aff7871c06d935d4cbfcddcf3e151a8de",
+   "raw_baseline_sha256": "d2253146601ab99023b006d767ef3e2c1581e6722cbc75a90efebb95561c11e8",
+   "raw_source_sha256": "11dad6f0dcafac6b813eef2e32f5473f720c752c07097cf9fa50c2d0e6cdca15",
+   "universe_sha256": "a5b31116a47d1f5fcd6b7bf96a0014b1af962329316ff6049d8295278ff9ec74"
+  },
+  "2023-05-25": {
+   "acq_bars_sha256": null,
+   "acq_manifest_sha256": null,
+   "acq_roster_sha256": null,
+   "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+   "anatomy_sha256": "252b5f4b27e21c4fd32bcfbf0e33155fbda6e12163f8204d44a8ba95c9d63866",
+   "candidates_sha256": "3621a3a92ede8c75fc7df42b60d50c18d1b97b34ac4034222001f725a716f901",
+   "net_bars_sha256": "6c2846d837bfa69fc9109454d2965a1cdcb08d2d4f2175826301cfda3a715de3",
+   "net_coverage_manifest_sha256": "1326537ce0d2a07d5fb3e09456f0bdeb9584da3763446768cc3d69d2491108bd",
+   "net_coverage_sha256": "d929dfcadb50c32b7c68883170dca3387b551a429589c9a389e7923ba2c15767",
+   "net_trades_sha256": "295aec6516b798ffa82326b78a9a2397926dab280cde1cd67d631353215de87c",
+   "raw_baseline_sha256": "fa915072f6b157c3de650d91f206d61b55cfdfc3b9a231e81ced0ed2ad669cef",
+   "raw_source_sha256": "5764c3d446a07fe48b38255dc87b2f1597253cc895eaac47f5af8644a1f94d45",
+   "universe_sha256": "6f7e3b07bc20c3c7b934727e8df6b3be6942ae957f86dc89432b82efe6683e14"
+  },
+  "2023-06-28": {
+   "acq_bars_sha256": null,
+   "acq_manifest_sha256": null,
+   "acq_roster_sha256": null,
+   "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+   "anatomy_sha256": "36ca327245dfdc09a595538eddf979161431b03e0023396d2677c3b054484bd2",
+   "candidates_sha256": "dca7823528a5e5dc4e7c6fe07aeda1be8372a4eed3a1330f4606d2eb67dc9b66",
+   "net_bars_sha256": "bc194e66217ce1facf598cb77128759e1579422385cc42565d285d57e2fcd6ea",
+   "net_coverage_manifest_sha256": "4b38b3cd6b9f0eb6ba6f04ff46f9b0522b6acdc70e06dc84844b610645d99ee2",
+   "net_coverage_sha256": "9d27342471848178e0b0955d47b39205c27b921a94f18b7c00190d6bca7d4e0e",
+   "net_trades_sha256": "5251faefee2814fbeb1d9ad0b6ee6d61bc044823a91688d56c6b6711ca8dc846",
+   "raw_baseline_sha256": "fef946f15a7a7159cda0bf59b3f92e244464fa96a976f57d5b43b55b757c5a9b",
+   "raw_source_sha256": "332761c47c2c502e4b6e4e5b479cee91672c407ce8e3b1c8452f5d502c9fb68a",
+   "universe_sha256": "e7cc9e3f01b150fc3c0a42e524ed486ad1410772e09428b988213df2c0a2fa48"
+  },
+  "2023-07-03": {
+   "acq_bars_sha256": null,
+   "acq_manifest_sha256": null,
+   "acq_roster_sha256": null,
+   "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+   "anatomy_sha256": "6743b7a7ae89cf938f8f27749aa5d0d3b97c63af1ad7b62e40cd3fe83a99b230",
+   "candidates_sha256": "5de4c1bbe5f45f7a4b4586bc5665d1df56be72b446e38ea5fa1105422f25f6ae",
+   "net_bars_sha256": "0d1e03b6f7d5df57148689b34294606eb5315cc5b3ab20c35b12c151e61fed67",
+   "net_coverage_manifest_sha256": "4199c3068ddba054d90d828346423d2c2d8683ebf829a3b4c2fcec6a80a05fde",
+   "net_coverage_sha256": "0aae0a6ae7d998913d61b6d239baf9b52ecd79024cab4a3f03bd018bfe5c1e93",
+   "net_trades_sha256": "5d98247154d12d7ce505280fa1eb89faa70959fcfe241bdf192bfa2f9fba7dd2",
+   "raw_baseline_sha256": "f5f26c9a3dc2a806987c0f02d9820cb9b6e8761eb971b18ca3e5a3343397fa06",
+   "raw_source_sha256": "3cea46d23e49fbac2e1c62b0676c83fa3236069ec298a4f5a76db233250e6011",
+   "universe_sha256": "a93a6c4656653d702efe93b3dd3baaa81f692c66b596a027afe2cb4a2e8fda18"
+  },
+  "2023-07-05": {
+   "acq_bars_sha256": null,
+   "acq_manifest_sha256": null,
+   "acq_roster_sha256": null,
+   "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+   "anatomy_sha256": "77e28993e595bf1a248aa266ad9991fb336a8891d269642e83774bdfb0abf067",
+   "candidates_sha256": "d1e50e78b4223eefbaddcade9bd585d51dc0700cd852af6a32005b939afa0bb5",
+   "net_bars_sha256": "d241b86c7f06a330f13b0a1fb6d2a69781072de8ac178f64e20aed9640f03b6f",
+   "net_coverage_manifest_sha256": "1e5fd96fb760d3fec330eede25b3a3118bc3bd35acfc1bb0517605e72f5523f1",
+   "net_coverage_sha256": "c718e8993253b53083e1680e24b05e7242f138b35a41d6dc110f5bb0adfee7a5",
+   "net_trades_sha256": "df8ce5b9c94868ee3e494e42f793f1f02a5c25cf78b3e092e02787290eae0ce1",
+   "raw_baseline_sha256": "f5f26c9a3dc2a806987c0f02d9820cb9b6e8761eb971b18ca3e5a3343397fa06",
+   "raw_source_sha256": "55550d6532ac4f8b8f84accbd9b370453043e9bb37c1157f849cddd7d4468471",
+   "universe_sha256": "96839bc646f023765f82ce25a1a28cf95fcbb037cbcc2ad572a723da5023b5bb"
+  },
+  "2023-11-24": {
+   "acq_bars_sha256": null,
+   "acq_manifest_sha256": null,
+   "acq_roster_sha256": null,
+   "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+   "anatomy_sha256": "e658e55efec695630ea17a353521c123ff1e04e6a0893a1db221888aa6c8d4e8",
+   "candidates_sha256": "335894b96536a57b869e0cbeb3fc0b984ad1f607357ffbdc711b48e7bf8e0f64",
+   "net_bars_sha256": "ff10b0fe57815de0e5f98bde11e91245dca1f3650d02dca351bf480fa50c33e5",
+   "net_coverage_manifest_sha256": "ff566176df329e5273ea36a6b1d48187b87f125449695754f01b8c060b927abc",
+   "net_coverage_sha256": "43451830cf2b4bb03a0ba0c324479ebc5fa81c1c9780f9aee405513719219e57",
+   "net_trades_sha256": "c1aa99f1f8e52ab8129ecc869c15459ac0e424f217c15255714b659fba721dc2",
+   "raw_baseline_sha256": "1c6ffe70c6d52c9278b4f053c4368bd8a11b118937f7841b0fbdbed5a6436fbb",
+   "raw_source_sha256": "2c91089741cf459eae52c0e413ef3abfc723b7be9abfbc6d1a26ac320254a736",
+   "universe_sha256": "acf0956584d75d071e19ab39b65a8a4fe2c1e7eb6509e135e0469832d08b0f50"
+  },
+  "2025-02-03": {
+   "acq_bars_sha256": "df0b2c851dfc148dea0fbf58f46ae32899f70a3e443379f95a5d8a6120e3cafc",
+   "acq_manifest_sha256": "6b418242694caafae542be787217dc2ed0782076ae3ccb19a778e5f7b6a40974",
+   "acq_roster_sha256": "653bbddf50c5490f1c8fcc0acc6e245445d3813bd24ac6b4ecf8ead01df8ef07",
+   "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+   "anatomy_sha256": "4c1278b957a997e77858a3e263137ebfb33d48fde7771157ab1f0719057f27e1",
+   "candidates_sha256": "90138e437aaef9cb77d58c0a2dc8ce25b01fc98ec593856fb03bf6b80423e5ba",
+   "net_bars_sha256": "e3b144459ec0517bd0e0eb3dab386332624fd696657f940ea663436cca31eaa4",
+   "net_coverage_manifest_sha256": "55d3f78a5c15c3cd8b17c9dab2af55efa563452d0ba7c5f2a106b685ec85f347",
+   "net_coverage_sha256": "b4e0c367f5debc2431f40c27428be403e118a43bc07fa7eb53bddfcead3ea2e7",
+   "net_trades_sha256": "e20f40b3645cef856787e7d07d720a28298c2931c7fb70f7983eebaab1164dd1",
+   "raw_baseline_sha256": "df0b2c851dfc148dea0fbf58f46ae32899f70a3e443379f95a5d8a6120e3cafc",
+   "raw_source_sha256": "608b9b549df9ab4c4af35c53761153bb67ff769f9cf8e701b002b7fd027e62a5",
+   "universe_sha256": "414e7a93f8a68b1970a437eee872c1fe72560ac9cb126f0e235a49e0745f5ba3"
+  },
+  "2025-03-03": {
+   "acq_bars_sha256": null,
+   "acq_manifest_sha256": null,
+   "acq_roster_sha256": null,
+   "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+   "anatomy_sha256": "5676f46a817dfd7566542ab7e463d03de6e5ef57cfa27f70bea21e31e3a58af9",
+   "candidates_sha256": "748b7942dc47e0a6e93d6077c976a9c7829512b9f72276870f3f4ade7f8fb9a4",
+   "net_bars_sha256": "251c0ad80074d208980fecc0b7a29777966eb26225b93bbabc0ca05a1f681dfd",
+   "net_coverage_manifest_sha256": "f4ef10652eb60ee654fbd9319ba07d8a446066567d8c47fe4af1874de53c244f",
+   "net_coverage_sha256": "216ab43bf7d1342799d529a8add175e4f0f7c9382f13ac5113c727a55d739435",
+   "net_trades_sha256": "528774e111931ea72def415979cafbed03eb9a80b5a5f87c9346450a4489c64f",
+   "raw_baseline_sha256": "dd5e8076b43391f9917b082a4461fb4229b270b89611305c1c619eaf128fe03b",
+   "raw_source_sha256": "55a9c154df56ecf2ddce80ebde6adabc1fdcdd911bf6868d46be57d6bd191a55",
+   "universe_sha256": "0146724c9325480d4fe67800353c9c1f524806c81c0c67511a9e129c4db23081"
+  },
+  "2025-07-03": {
+   "acq_bars_sha256": null,
+   "acq_manifest_sha256": null,
+   "acq_roster_sha256": null,
+   "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+   "anatomy_sha256": "28b26ecba037d73876e2028ed0b5e08470cc0d6acc00d9a12d60ed24967dec93",
+   "candidates_sha256": "643e4688e3b4fc4c6f49d7ea6696152f0acbb8310fddaac0d7f9627e18ce84cc",
+   "net_bars_sha256": "355e49548cb4c74411b92b07da6e712c2b8ba184aa34298d6488ee9230735ff7",
+   "net_coverage_manifest_sha256": "8275aadec3f41016a3bbe6d2fca7b9cd35543c2aa62cf10bc2a4dc183f40bd39",
+   "net_coverage_sha256": "ede50cfc2ee8151d34fb4147d635934db5acda8e24eec69efdf647ed37d79372",
+   "net_trades_sha256": "639a914985a02a9559eb7800c03703b76ebf46dfab836604e9067e7a4d5ee179",
+   "raw_baseline_sha256": "90971731bcc3fe9ad465b82f3fc33b481a25f632b6f65f996b7ae91f0d0c9e29",
+   "raw_source_sha256": "7245c24b68cf8cd9053a660c61a946d7728c5050a80b3ecb2482b6e7b46a9c6f",
+   "universe_sha256": "f35ad6756aef5ce5f31e0764b2c6332409af93b5b25380728fc9f712c663a4e4"
+  },
+  "2025-11-28": {
+   "acq_bars_sha256": null,
+   "acq_manifest_sha256": null,
+   "acq_roster_sha256": null,
+   "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+   "anatomy_sha256": "f469c1a1871bd7922a1618dc5d6ef6537c195ff648911da05de9605867129d69",
+   "candidates_sha256": "c4d74bdce4aa55e8431db95df5f92ef2a102b4604c719c5eac5a69909a727686",
+   "net_bars_sha256": "c613ec7bda77003d2102894643bf6fa71e717ccd2366de139933da4abf1f3706",
+   "net_coverage_manifest_sha256": "8431a4637bb0bbf6d7851156a9390a6b2b6483de72bec4bd463bbb56c1c64cde",
+   "net_coverage_sha256": "e37ce6edc360dfa40979fcef71cd3650414d45fbd288d8f29acadce2a5064e16",
+   "net_trades_sha256": "60d39aa088b45f4fdeb858f3ad62b1681b4fd29c49dbef25d62092f0b934eaa6",
+   "raw_baseline_sha256": "a67c05128543ddc10404768499f77890f12ecce3b71d9e7e66c3b8d3115ece5b",
+   "raw_source_sha256": "a07b6744db873c0ec0ad54022470c01016fb2528451b99a224c61bdca90a926a",
+   "universe_sha256": "652e381aa5b19ff514119e12b4e9533517e9f8895cada1a0b0bd3e52f7854821"
+  },
+  "2025-12-24": {
+   "acq_bars_sha256": null,
+   "acq_manifest_sha256": null,
+   "acq_roster_sha256": null,
+   "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+   "anatomy_sha256": "5c16c6b1242a4ce70401a2d2c9ccecaabc2e8e83215af82a2a643e0b4068e7c5",
+   "candidates_sha256": "52f11b5a0af1430cc637b45fc482ee8f581f428a96a3c1bdf0c7e5eb02619bf3",
+   "net_bars_sha256": "f1ca1b67e18d858546e2b752a9d11923219f4110a6f5fd14427298d1149820ce",
+   "net_coverage_manifest_sha256": "99afc9a0874c8b2da10ed28a8b1bdc3ef26487288f6f78f116a0570b6aed275e",
+   "net_coverage_sha256": "759144bbb06e78243f581ef659f540ee4ab0e692e4dd02a4c708b25e590635cc",
+   "net_trades_sha256": "56200f9c5ebad36541a54e5e93ae17bfabd8e750965c7aea97f668784877cf5c",
+   "raw_baseline_sha256": "ba34c61ac54a782f17d7d2fb3fa9ef98ff5e38ec2e1f83a95b0ff8a41b8d4df2",
+   "raw_source_sha256": "978e93693eb58368cecd9b25105b53a19b505095844a203542cd61e945f3416b",
+   "universe_sha256": "fad2e2d05c35f051e40346d6b5d035625ac2db8ba60d5956a0b00c119bca4101"
+  },
+  "2026-03-04": {
+   "acq_bars_sha256": null,
+   "acq_manifest_sha256": null,
+   "acq_roster_sha256": null,
+   "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+   "anatomy_sha256": "742a5d8faffe69bbce2fee6cf54bcdb1621b5aab1988decb54454267ae7d78da",
+   "candidates_sha256": "7bd2ba4695689f0d6b25d1746d03b1c63b0387a769850fe2fdda05cf4766fe2f",
+   "net_bars_sha256": "6d6f85ece4d7fba66488781fcfe2b3f60d7901e31f79e17db6322b0f789094dd",
+   "net_coverage_manifest_sha256": "c251a4418f28b64b93d6a74488ae53b70c085255756696e95aa60ebbcf4d9bbd",
+   "net_coverage_sha256": "0829c18bb578c2b1702ab4f733709da5920a6056aa99dd8fb9df1915a32b49ad",
+   "net_trades_sha256": "4c2d82d258e6cbcc3ec52e0ad9784358126a70b278c5892bc745266e00a79259",
+   "raw_baseline_sha256": "df0020f1e84972cda8726a993d76c1a4b187859c834c58aa40373d049e1eb28d",
+   "raw_source_sha256": "c483ecb0f20b4854d27d664a30f273a267aacb53c5a87c612681377e9d523313",
+   "universe_sha256": "19ef497b90e910a2043b00b6071f2c819d3b10253d0e07386121ddf366649c9c"
+  },
+  "2026-04-01": {
+   "acq_bars_sha256": "14c98a8e8d969ae0fcb5fe5b50d29a907e5889decda18fe15dfcfec256855ab9",
+   "acq_manifest_sha256": "b328bd57fbf403a9543206b91bd3e07ee1753f10f9da96d06185a1ac913c7d04",
+   "acq_roster_sha256": "d82200e3cd48358f7b4c43d93a0fb49829e9c2ad8c2487fe93d9a60f35f372d2",
+   "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+   "anatomy_sha256": "2c18a70b15f49d4e0c9f65501bb82b116be421afb3c520dd400a3e048a024df3",
+   "candidates_sha256": "5bfee929751e97258810d488e5f8eda5fdc805472f9a98c07d6f785bbc116c06",
+   "net_bars_sha256": "8a21905bf77d9fef12a43721face86e975f0619298ebd6d426b60084375639e0",
+   "net_coverage_manifest_sha256": "7ec829e9249acdb227c18fa74a54ffb88126074d777dd182503d416e818937c8",
+   "net_coverage_sha256": "313cad912c543ce4dde4dead99aac6b53610920433307116a6971142006bae5f",
+   "net_trades_sha256": "2bc1eef050587286d97360bebdbe4f0bcef82e63e9779cf5fe70a42b0c2a74ca",
+   "raw_baseline_sha256": "21f252ba48c4feea837a9d8f3bd7c1ef4056a1a1d6d2db30667e1a4d0fd25bfb",
+   "raw_source_sha256": "17dcf9cb743e5bb7197e716dc8110d6b78ecca5dfb7a4ab5325565d66f6a7ace",
+   "universe_sha256": "39ebed51404f68907e34a72438dce5c89c0d2fd43edc41ea6511a608246bdf06"
+  },
+  "2026-05-01": {
+   "acq_bars_sha256": "8f2036efe7766c4c5cc00c43d401bbe4f756dfec780ea3418f4250770dfc2f9b",
+   "acq_manifest_sha256": "1d621b22f5d171fffdbea95a2fa09850efbaf95fe96d4645335846eac442e8c3",
+   "acq_roster_sha256": "bb5977959c48b3206fe7bf6ca766e32c5997b1462c265f04b25cf2b7031c3262",
+   "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+   "anatomy_sha256": "8b2c946ef4f8b229650b375e1db92d62d3a35e50b0beb01bde895795726636ea",
+   "candidates_sha256": "d90ef92b141680c2d0483c1271fc1c0e946117c3a7037653311a388feb2af53a",
+   "net_bars_sha256": "3e56e60a0c07398a649cf19ff769ef707b1c6fd039962e7d3ef64fe09a003986",
+   "net_coverage_manifest_sha256": "acb75ea2d1468a3f3b441d6e38be006815c329bc7b31854fbd621e13dc909f75",
+   "net_coverage_sha256": "cb9715c4648d7d401aec34c59c046a2a412a1a0d4272971165ad509aa47f8d84",
+   "net_trades_sha256": "deda50634b4b3d102d19768ee9df8dc03ca37d0a70d95ccc1239be6b2e4e64fa",
+   "raw_baseline_sha256": "0a6762194e5af002155e036e43e048e6406a9315e1ca083057400afec1474358",
+   "raw_source_sha256": "f7dd90e878df3f0320967507e5b465079ae75f56a7cb99eb2d0ad6742d7b6358",
+   "universe_sha256": "ec26f8c5a68c0f5a7752fc2aabf09bb812dc3c2cd2fa83a85492542ecce36e2b"
+  }
+ },
+ "keys": {
+  "coverage": [
+   "layer",
+   "day",
+   "scope"
+  ],
+  "day_registry": [
+   "day"
+  ],
+  "memberships": [
+   "member_id"
+  ],
+  "paths": [
+   "path_id"
+  ],
+  "quote_rosters": [
+   "day",
+   "roster_rule",
+   "snapshot_pop",
+   "snapshot_T",
+   "rank"
+  ],
+  "race_candidate_net": [
+   "day",
+   "t",
+   "ticker"
+  ],
+  "race_checkpoint_full": [
+   "day",
+   "T",
+   "symbol"
+  ],
+  "race_minute_full": [
+   "day",
+   "t",
+   "ticker"
+  ],
+  "selected_path_grid": [
+   "day",
+   "ticker",
+   "et"
+  ],
+  "selected_path_prints": [
+   "day",
+   "ticker",
+   "source_row_ordinal"
+  ]
+ },
+ "node_id": "observations.tape_atlas",
+ "parent_ids": [
+  "panel.parquet",
+  "phase2_session_calendar.json",
+  "raw_lane:acquired_day",
+  "raw_lane:backfill_raw",
+  "raw_lane:backfill_raw+acquired_day",
+  "raw_lane:ohlcv_raw",
+  "raw_lane:2021-02-09:raw_baseline_path",
+  "raw_lane:2021-11-26:raw_baseline_path",
+  "raw_lane:2022-03-10:raw_baseline_path",
+  "raw_lane:2022-05-19:raw_baseline_path",
+  "raw_lane:2022-06-23:raw_baseline_path",
+  "raw_lane:2022-06-27:raw_baseline_path",
+  "raw_lane:2022-11-25:raw_baseline_path",
+  "raw_lane:2023-05-25:raw_baseline_path",
+  "raw_lane:2023-06-28:raw_baseline_path",
+  "raw_lane:2023-07-03:raw_baseline_path",
+  "raw_lane:2023-07-05:raw_baseline_path",
+  "raw_lane:2023-11-24:raw_baseline_path",
+  "raw_lane:2025-02-03:acq_bars_path",
+  "raw_lane:2025-02-03:raw_baseline_path",
+  "raw_lane:2025-03-03:raw_baseline_path",
+  "raw_lane:2025-07-03:raw_baseline_path",
+  "raw_lane:2025-11-28:raw_baseline_path",
+  "raw_lane:2025-12-24:raw_baseline_path",
+  "raw_lane:2026-03-04:raw_baseline_path",
+  "raw_lane:2026-04-01:acq_bars_path",
+  "raw_lane:2026-04-01:raw_baseline_path",
+  "raw_lane:2026-05-01:acq_bars_path",
+  "raw_lane:2026-05-01:raw_baseline_path",
+  "acquisition_admission",
+  "acquisition_alias_map",
+  "net_reconciliation"
+ ],
+ "parent_shas": {
+  "panel.parquet": "2a021eda878cdbe53e41d4cc88e2d8ba3b14d9a3a819723d9f679c8aca7c3488",
+  "phase2_session_calendar.json": "c209136c5b0f0d9d7436529dbe2ada8cb6f364a2f42b677f8554e9484ee414d0"
+ },
+ "parents": {
+  "acquisition_admission": {
+   "available": true,
+   "sha256": "eaf082436e00f5ab6eefefcbe5e106728502e874d625839b515bc86647dbf3ea",
+   "source_uri": "file:///home/hillel/algo%20projects/worktrees/Alpacatrader/basket-phase2-f1/factory/artifacts/basket/phase2/ATLAS/TAPE/OBSERVATION/v0/acquisition/evidence/acquisition_admission.json",
+   "tracked": false
+  },
+  "acquisition_alias_map": {
+   "available": true,
+   "sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+   "source_uri": "file:///home/hillel/algo%20projects/worktrees/Alpacatrader/basket-phase2-f1/factory/artifacts/basket/phase2/ATLAS/TAPE/OBSERVATION/v0/acquisition/alias_map.json",
+   "tracked": true
+  },
+  "cross_feed_witness:2025-02-03": {
+   "available": true,
+   "rank_input": false,
+   "role": "legacy_cross_feed_proxy_not_sip",
+   "sha256": "05c9017db2b4af23186e4c73a9b9809c2a13b9e6056b03ca4affb92558561a76",
+   "source_uri": "file:///mnt/c/Users/%D7%94%D7%9C%D7%9C/Desktop/algo%20projects/Alpacatrader/data/atlas/acquisition/v4/cross_feed_witnesses/2025-02-03.parquet",
+   "tracked": false
+  },
+  "net_reconciliation": {
+   "available": true,
+   "sha256": "a2e77e138637c758c7e39f52e0fec0f42e0aa16f1222ed5c5097aebf6737f996",
+   "source_uri": "file:///home/hillel/algo%20projects/worktrees/Alpacatrader/basket-phase2-f1/factory/artifacts/basket/phase2/ATLAS/TAPE/OBSERVATION/v0/acquisition/net_reconciliation.json",
+   "tracked": true
+  },
+  "panel.parquet": {
+   "available": true,
+   "sha256": "2a021eda878cdbe53e41d4cc88e2d8ba3b14d9a3a819723d9f679c8aca7c3488",
+   "source_uri": "file:///home/hillel/algo%20projects/worktrees/Alpacatrader/basket-phase2-f1/factory/artifacts/basket/phase2/ATLAS/panel.parquet",
+   "tracked": true
+  },
+  "phase2_session_calendar.json": {
+   "available": true,
+   "sha256": "c209136c5b0f0d9d7436529dbe2ada8cb6f364a2f42b677f8554e9484ee414d0",
+   "source_uri": "file:///home/hillel/algo%20projects/worktrees/Alpacatrader/basket-phase2-f1/factory/artifacts/basket/sip/phase2_session_calendar.json",
+   "tracked": true
+  },
+  "raw_lane:2021-02-09:raw_baseline_path": {
+   "available": true,
+   "sha256": "69eabad61a23912575f139f1e93a54edb11387bad942a7ece38ae94bdc7393a0",
+   "source_uri": "file:///home/hillel/projects/Alpacatrader/data/ohlcv_2021-02.parquet",
+   "tracked": false
+  },
+  "raw_lane:2021-11-26:raw_baseline_path": {
+   "available": true,
+   "sha256": "cf95fa9b6b959a4ada5604f9583d0e23ea932fa1b33b2278405aa59a55163160",
+   "source_uri": "file:///home/hillel/projects/Alpacatrader/data/ohlcv_2021-11.parquet",
+   "tracked": false
+  },
+  "raw_lane:2022-03-10:raw_baseline_path": {
+   "available": true,
+   "sha256": "23270e48dcdd5c7216b63b668cc88e6568936832f6b57b4ee12005f0b68147a7",
+   "source_uri": "file:///home/hillel/projects/Alpacatrader/data/ohlcv_2022-03.parquet",
+   "tracked": false
+  },
+  "raw_lane:2022-05-19:raw_baseline_path": {
+   "available": true,
+   "sha256": "fb55dd8780255311ed0736eaaf947b61069cb1668e9fc6afa213d1e3b8eb8115",
+   "source_uri": "file:///home/hillel/projects/Alpacatrader/data/ohlcv_2022-05.parquet",
+   "tracked": false
+  },
+  "raw_lane:2022-06-23:raw_baseline_path": {
+   "available": true,
+   "sha256": "2fcdd641984a2fbac537fb52feb4cf2f26befd1ca52b24afc28da7d0729cdbbf",
+   "source_uri": "file:///home/hillel/projects/Alpacatrader/data/ohlcv_2022-06.parquet",
+   "tracked": false
+  },
+  "raw_lane:2022-06-27:raw_baseline_path": {
+   "available": true,
+   "sha256": "2fcdd641984a2fbac537fb52feb4cf2f26befd1ca52b24afc28da7d0729cdbbf",
+   "source_uri": "file:///home/hillel/projects/Alpacatrader/data/ohlcv_2022-06.parquet",
+   "tracked": false
+  },
+  "raw_lane:2022-11-25:raw_baseline_path": {
+   "available": true,
+   "sha256": "d2253146601ab99023b006d767ef3e2c1581e6722cbc75a90efebb95561c11e8",
+   "source_uri": "file:///home/hillel/projects/Alpacatrader/data/ohlcv_2022-11.parquet",
+   "tracked": false
+  },
+  "raw_lane:2023-05-25:raw_baseline_path": {
+   "available": true,
+   "sha256": "fa915072f6b157c3de650d91f206d61b55cfdfc3b9a231e81ced0ed2ad669cef",
+   "source_uri": "file:///home/hillel/projects/Alpacatrader/data/ohlcv_2023-05.parquet",
+   "tracked": false
+  },
+  "raw_lane:2023-06-28:raw_baseline_path": {
+   "available": true,
+   "sha256": "fef946f15a7a7159cda0bf59b3f92e244464fa96a976f57d5b43b55b757c5a9b",
+   "source_uri": "file:///home/hillel/projects/Alpacatrader/data/ohlcv_2023-06.parquet",
+   "tracked": false
+  },
+  "raw_lane:2023-07-03:raw_baseline_path": {
+   "available": true,
+   "sha256": "f5f26c9a3dc2a806987c0f02d9820cb9b6e8761eb971b18ca3e5a3343397fa06",
+   "source_uri": "file:///home/hillel/projects/Alpacatrader/data/ohlcv_2023-07.parquet",
+   "tracked": false
+  },
+  "raw_lane:2023-07-05:raw_baseline_path": {
+   "available": true,
+   "sha256": "f5f26c9a3dc2a806987c0f02d9820cb9b6e8761eb971b18ca3e5a3343397fa06",
+   "source_uri": "file:///home/hillel/projects/Alpacatrader/data/ohlcv_2023-07.parquet",
+   "tracked": false
+  },
+  "raw_lane:2023-11-24:raw_baseline_path": {
+   "available": true,
+   "sha256": "1c6ffe70c6d52c9278b4f053c4368bd8a11b118937f7841b0fbdbed5a6436fbb",
+   "source_uri": "file:///home/hillel/projects/Alpacatrader/data/ohlcv_2023-11.parquet",
+   "tracked": false
+  },
+  "raw_lane:2025-02-03:acq_bars_path": {
+   "available": true,
+   "sha256": "df0b2c851dfc148dea0fbf58f46ae32899f70a3e443379f95a5d8a6120e3cafc",
+   "source_uri": "file:///mnt/c/Users/%D7%94%D7%9C%D7%9C/Desktop/algo%20projects/Alpacatrader/data/atlas/acquisition/v4/bars/2025-02-03.parquet",
+   "tracked": false
+  },
+  "raw_lane:2025-02-03:raw_baseline_path": {
+   "available": true,
+   "sha256": "df0b2c851dfc148dea0fbf58f46ae32899f70a3e443379f95a5d8a6120e3cafc",
+   "source_uri": "file:///mnt/c/Users/%D7%94%D7%9C%D7%9C/Desktop/algo%20projects/Alpacatrader/data/atlas/acquisition/v4/bars/2025-02-03.parquet",
+   "tracked": false
+  },
+  "raw_lane:2025-03-03:raw_baseline_path": {
+   "available": true,
+   "sha256": "dd5e8076b43391f9917b082a4461fb4229b270b89611305c1c619eaf128fe03b",
+   "source_uri": "file:///home/hillel/projects/Alpacatrader/data/ohlcv_2025-03.parquet",
+   "tracked": false
+  },
+  "raw_lane:2025-07-03:raw_baseline_path": {
+   "available": true,
+   "sha256": "90971731bcc3fe9ad465b82f3fc33b481a25f632b6f65f996b7ae91f0d0c9e29",
+   "source_uri": "file:///home/hillel/projects/Alpacatrader/data/ohlcv_2025-07.parquet",
+   "tracked": false
+  },
+  "raw_lane:2025-11-28:raw_baseline_path": {
+   "available": true,
+   "sha256": "a67c05128543ddc10404768499f77890f12ecce3b71d9e7e66c3b8d3115ece5b",
+   "source_uri": "file:///home/hillel/projects/Alpacatrader/data/ohlcv_2025-11.parquet",
+   "tracked": false
+  },
+  "raw_lane:2025-12-24:raw_baseline_path": {
+   "available": true,
+   "sha256": "ba34c61ac54a782f17d7d2fb3fa9ef98ff5e38ec2e1f83a95b0ff8a41b8d4df2",
+   "source_uri": "file:///home/hillel/projects/Alpacatrader/data/ohlcv_2025-12.parquet",
+   "tracked": false
+  },
+  "raw_lane:2026-03-04:raw_baseline_path": {
+   "available": true,
+   "sha256": "df0020f1e84972cda8726a993d76c1a4b187859c834c58aa40373d049e1eb28d",
+   "source_uri": "file:///home/hillel/projects/Alpacatrader/data/backfill/ohlcv_2026-03.parquet",
+   "tracked": false
+  },
+  "raw_lane:2026-04-01:acq_bars_path": {
+   "available": true,
+   "sha256": "14c98a8e8d969ae0fcb5fe5b50d29a907e5889decda18fe15dfcfec256855ab9",
+   "source_uri": "file:///mnt/c/Users/%D7%94%D7%9C%D7%9C/Desktop/algo%20projects/Alpacatrader/data/atlas/acquisition/v3/bars/2026-04-01.parquet",
+   "tracked": false
+  },
+  "raw_lane:2026-04-01:raw_baseline_path": {
+   "available": true,
+   "sha256": "21f252ba48c4feea837a9d8f3bd7c1ef4056a1a1d6d2db30667e1a4d0fd25bfb",
+   "source_uri": "file:///home/hillel/projects/Alpacatrader/data/backfill/ohlcv_2026-04.parquet",
+   "tracked": false
+  },
+  "raw_lane:2026-05-01:acq_bars_path": {
+   "available": true,
+   "sha256": "8f2036efe7766c4c5cc00c43d401bbe4f756dfec780ea3418f4250770dfc2f9b",
+   "source_uri": "file:///mnt/c/Users/%D7%94%D7%9C%D7%9C/Desktop/algo%20projects/Alpacatrader/data/atlas/acquisition/v3/bars/2026-05-01.parquet",
+   "tracked": false
+  },
+  "raw_lane:2026-05-01:raw_baseline_path": {
+   "available": true,
+   "sha256": "0a6762194e5af002155e036e43e048e6406a9315e1ca083057400afec1474358",
+   "source_uri": "file:///home/hillel/projects/Alpacatrader/data/backfill/ohlcv_2026-05.parquet",
+   "tracked": false
+  },
+  "raw_lane:backfill_raw": {
+   "available": true,
+   "sha256": null,
+   "source_uri": "file:///home/hillel/projects/Alpacatrader/data/backfill/ohlcv_*.parquet",
+   "tracked": false
+  },
+  "raw_lane:ohlcv_raw": {
+   "available": true,
+   "sha256": null,
+   "source_uri": "file:///home/hillel/projects/Alpacatrader/data/ohlcv_*.parquet",
+   "tracked": false
+  }
+ },
+ "payload_sha256": {
+  "coverage": {
+   "path": "coverage.parquet",
+   "rows": 1168,
+   "sha256": "fab993e448b54e44d24ee854a02a9724b18d2ae8b73cc97335e106bfa5acb4ac"
+  },
+  "day_registry": {
+   "path": "day_registry.parquet",
+   "rows": 1066,
+   "sha256": "c145a09f0e5c5691ff73170c07beaef48a22f24cda93678f832959d0cb55e2ff"
+  },
+  "memberships": {
+   "path": "memberships.parquet",
+   "rows": 118,
+   "sha256": "42d2203763ef0f3e335ac3d731036679a692a1ea53569041bde87f53dbe5235e"
+  },
+  "paths": {
+   "path": "paths.parquet",
+   "rows": 116,
+   "sha256": "168c3bf934d226117fd407c01c08de7efa6de550b13821f4037338850890e398"
+  },
+  "quote_rosters": {
+   "path": "quote_rosters.parquet",
+   "rows": 2520,
+   "sha256": "9ae951f45054a726dd92e3fd263094bef68a0bc65abee08377ba1eeb646655b9"
+  },
+  "quote_rosters/2021-02-09": {
+   "path": "quote_rosters/2021-02-09.parquet",
+   "rows": 126,
+   "sha256": "aee958e63477d9b6fd81389c6b102bb391b37cadb5bb1d3a368bf217c22fc684"
+  },
+  "quote_rosters/2021-11-26": {
+   "path": "quote_rosters/2021-11-26.parquet",
+   "rows": 126,
+   "sha256": "285258ddcf146a1d62620b32f757530c684bc5cd47e9ddc3434cf6b9268af574"
+  },
+  "quote_rosters/2022-03-10": {
+   "path": "quote_rosters/2022-03-10.parquet",
+   "rows": 126,
+   "sha256": "737d9b09a98cc17b86cc87d8610d1b404adad1caea7b35721b6a527b6cc83649"
+  },
+  "quote_rosters/2022-05-19": {
+   "path": "quote_rosters/2022-05-19.parquet",
+   "rows": 126,
+   "sha256": "f1668df6046cac246605205cc42b1ef8b7a98cd711441dfefb3840ce8234a524"
+  },
+  "quote_rosters/2022-06-23": {
+   "path": "quote_rosters/2022-06-23.parquet",
+   "rows": 126,
+   "sha256": "fcf245fa62212dc3a7825829f4f21425fa80377856cb07a06397b835e2e35bcd"
+  },
+  "quote_rosters/2022-06-27": {
+   "path": "quote_rosters/2022-06-27.parquet",
+   "rows": 126,
+   "sha256": "87c9c77512a97a505cba89dfdd0aa16e0f918c05ee98f02c7ee1ff896e1f1a46"
+  },
+  "quote_rosters/2022-11-25": {
+   "path": "quote_rosters/2022-11-25.parquet",
+   "rows": 126,
+   "sha256": "2df9608029fef54486f8ed739b54e5a8f0d856e5b15da03b1546851d093b1120"
+  },
+  "quote_rosters/2023-05-25": {
+   "path": "quote_rosters/2023-05-25.parquet",
+   "rows": 126,
+   "sha256": "5568d6cbf91de1a748df53efca3380e06d06b02e7f36ed422521cb58718ad977"
+  },
+  "quote_rosters/2023-06-28": {
+   "path": "quote_rosters/2023-06-28.parquet",
+   "rows": 126,
+   "sha256": "e3713eb8491fefaf83c621d526adc3248bd02bbee138a7bf0db58bcbe9d527c7"
+  },
+  "quote_rosters/2023-07-03": {
+   "path": "quote_rosters/2023-07-03.parquet",
+   "rows": 126,
+   "sha256": "44a3664c7f9b51a04cc931b085df31f21c078fa868faa223accf78f2899fec3a"
+  },
+  "quote_rosters/2023-07-05": {
+   "path": "quote_rosters/2023-07-05.parquet",
+   "rows": 126,
+   "sha256": "aec4cb63cfdf5408083d33d3b54c6d5202c5035a2c2ac70cc13636bdee1e0f47"
+  },
+  "quote_rosters/2023-11-24": {
+   "path": "quote_rosters/2023-11-24.parquet",
+   "rows": 126,
+   "sha256": "fcac220de900b1fc2fe5fdaccb96ee7f03bc87e6a2a8ee1a9949777ee7448ab6"
+  },
+  "quote_rosters/2025-02-03": {
+   "path": "quote_rosters/2025-02-03.parquet",
+   "rows": 126,
+   "sha256": "a4caa8a83fb689aeeea13d2a4bcbf5f345104df37edc71c46e8fcd54327bd67f"
+  },
+  "quote_rosters/2025-03-03": {
+   "path": "quote_rosters/2025-03-03.parquet",
+   "rows": 126,
+   "sha256": "c2d3f13dc611bce29722e7367c888e6bb46cbc41df90f230c545cb29708f77af"
+  },
+  "quote_rosters/2025-07-03": {
+   "path": "quote_rosters/2025-07-03.parquet",
+   "rows": 126,
+   "sha256": "617c7b587f84c09f327d7e0ca81245a122be3e0aba55cdeb60167e4b1e29826c"
+  },
+  "quote_rosters/2025-11-28": {
+   "path": "quote_rosters/2025-11-28.parquet",
+   "rows": 126,
+   "sha256": "ad95779aec277737235d6a8236647a784846dda68ab4d4dfd4a1b37e180df95f"
+  },
+  "quote_rosters/2025-12-24": {
+   "path": "quote_rosters/2025-12-24.parquet",
+   "rows": 126,
+   "sha256": "402f296b09e760782d46192e9d1211b6eef1a820a1af85d0ca35d582ca499758"
+  },
+  "quote_rosters/2026-03-04": {
+   "path": "quote_rosters/2026-03-04.parquet",
+   "rows": 126,
+   "sha256": "3001d30c8dcab8182ca91c6959f4e4f96333ef70d4e8289dbe0af192bc7c306b"
+  },
+  "quote_rosters/2026-04-01": {
+   "path": "quote_rosters/2026-04-01.parquet",
+   "rows": 126,
+   "sha256": "860f3009bec28e55fa3846ae779f53c32dd94a7752f9bc3cfc1e42e328893e8d"
+  },
+  "quote_rosters/2026-05-01": {
+   "path": "quote_rosters/2026-05-01.parquet",
+   "rows": 126,
+   "sha256": "e83a7cd04a1a344c663146677c6a355245307aba80165f4d9c92a37f11c35c03"
+  },
+  "race_candidate_net/2021-02-09": {
+   "path": "race.candidate_net/month=2021-02/2021-02-09.parquet",
+   "rows": 20670,
+   "sha256": "a9a716249691f1777a1d9bebe063aeac67a27803bfc187158bd9489defa15814"
+  },
+  "race_candidate_net/2021-11-26": {
+   "path": "race.candidate_net/month=2021-11/2021-11-26.parquet",
+   "rows": 15120,
+   "sha256": "5f108bf31e24a7ba66649f4ccae85ba728a0bfdd107bb4b59d639531701a85be"
+  },
+  "race_candidate_net/2022-03-10": {
+   "path": "race.candidate_net/month=2022-03/2022-03-10.parquet",
+   "rows": 24960,
+   "sha256": "776c11cb3572b03e1bc682868aa11823ea465fd165d797e95d2828d5a4c8f9f2"
+  },
+  "race_candidate_net/2022-05-19": {
+   "path": "race.candidate_net/month=2022-05/2022-05-19.parquet",
+   "rows": 26130,
+   "sha256": "1cadfa924f2ab27f21eaeee432a156863b0eb10ee35699866338d5e07a3e9f47"
+  },
+  "race_candidate_net/2022-06-23": {
+   "path": "race.candidate_net/month=2022-06/2022-06-23.parquet",
+   "rows": 35880,
+   "sha256": "4d8dc9554e015672c1d2ad12f00844480bd1e7724b7b9ed03fea2bb0ee8699b5"
+  },
+  "race_candidate_net/2022-06-27": {
+   "path": "race.candidate_net/month=2022-06/2022-06-27.parquet",
+   "rows": 31980,
+   "sha256": "b2b6735f5cfeade2cb2896806e93052059132fa823722cade386c3e259bd591b"
+  },
+  "race_candidate_net/2022-11-25": {
+   "path": "race.candidate_net/month=2022-11/2022-11-25.parquet",
+   "rows": 15960,
+   "sha256": "18bbf3aaff025ce815c8a750f9d7eb02e326b7099d747d05c7f6d1b8678e75b9"
+  },
+  "race_candidate_net/2023-05-25": {
+   "path": "race.candidate_net/month=2023-05/2023-05-25.parquet",
+   "rows": 27690,
+   "sha256": "af5c7f927edc1295df9da1ac9ae2bc35a06dc0547da275e35009a9963313990c"
+  },
+  "race_candidate_net/2023-06-28": {
+   "path": "race.candidate_net/month=2023-06/2023-06-28.parquet",
+   "rows": 25740,
+   "sha256": "444f1a383bec740835b5764d4d284950d73e978d15435fe063e6b75e26e293a1"
+  },
+  "race_candidate_net/2023-07-03": {
+   "path": "race.candidate_net/month=2023-07/2023-07-03.parquet",
+   "rows": 17010,
+   "sha256": "3b068f0c436022f988b79b85375db158d2663864b2aefac5d16a2a62e8b177be"
+  },
+  "race_candidate_net/2023-07-05": {
+   "path": "race.candidate_net/month=2023-07/2023-07-05.parquet",
+   "rows": 28860,
+   "sha256": "e0d72b77b99789bc0dc37d60c456094d0041668e75a7883191d44634b6bb85d5"
+  },
+  "race_candidate_net/2023-11-24": {
+   "path": "race.candidate_net/month=2023-11/2023-11-24.parquet",
+   "rows": 14280,
+   "sha256": "476df3d1b2446662676f62474627a6d5a8e7aec3518fea64c5b0ebb66e2d1962"
+  },
+  "race_candidate_net/2025-02-03": {
+   "path": "race.candidate_net/month=2025-02/2025-02-03.parquet",
+   "rows": 26130,
+   "sha256": "cee2ef3e929d2ce76bd7f582fbf113f93ce8e06328fc52282c7eff2f2fa83fc0"
+  },
+  "race_candidate_net/2025-03-03": {
+   "path": "race.candidate_net/month=2025-03/2025-03-03.parquet",
+   "rows": 20670,
+   "sha256": "c432b5d10b4b13794248f9cd823b9081e25b9ceb13368b29185ac43019d7c6c3"
+  },
+  "race_candidate_net/2025-07-03": {
+   "path": "race.candidate_net/month=2025-07/2025-07-03.parquet",
+   "rows": 12810,
+   "sha256": "b212b3b09d7fc1e8ff8351e593215f5589e9de967ed22b376143bb2a11730810"
+  },
+  "race_candidate_net/2025-11-28": {
+   "path": "race.candidate_net/month=2025-11/2025-11-28.parquet",
+   "rows": 11340,
+   "sha256": "e1264da1855f77d846fb4f88b45a00b821bf9750231f9d33571b552ba4f659fb"
+  },
+  "race_candidate_net/2025-12-24": {
+   "path": "race.candidate_net/month=2025-12/2025-12-24.parquet",
+   "rows": 12180,
+   "sha256": "8a8edea615dcc350fe970a8231ec2e463a5d5fb18c10ed791865cb97da47a0c0"
+  },
+  "race_candidate_net/2026-03-04": {
+   "path": "race.candidate_net/month=2026-03/2026-03-04.parquet",
+   "rows": 21840,
+   "sha256": "44893859a5517c1810c066dc7ede640a3b8478f752c9a1f53e2be0cfe4b89982"
+  },
+  "race_candidate_net/2026-04-01": {
+   "path": "race.candidate_net/month=2026-04/2026-04-01.parquet",
+   "rows": 22620,
+   "sha256": "4102ba07e9b85ad8757b33930c6afb84f33e2354f7c43b08fcc07d484813ce25"
+  },
+  "race_candidate_net/2026-05-01": {
+   "path": "race.candidate_net/month=2026-05/2026-05-01.parquet",
+   "rows": 20670,
+   "sha256": "0d8a9033264c8f1e0c86b11acb5be81fa640ef4d544344c02529c42e8f43928e"
+  },
+  "race_checkpoint_full/2021-02-09": {
+   "path": "race.checkpoint_full/month=2021-02/2021-02-09.parquet",
+   "rows": 64848,
+   "sha256": "a9e40cd67b16ec870b0415cbced818763e33be43bcb2c826a4cf74a491fed8ab"
+  },
+  "race_checkpoint_full/2021-11-26": {
+   "path": "race.checkpoint_full/month=2021-11/2021-11-26.parquet",
+   "rows": 73392,
+   "sha256": "00c3ba0c23a285fe51c01853cd321c10d7c37c8288cd21508f2b24088dfee184"
+  },
+  "race_checkpoint_full/2022-03-10": {
+   "path": "race.checkpoint_full/month=2022-03/2022-03-10.parquet",
+   "rows": 75468,
+   "sha256": "9582cd617984fed2f60c5489fddfb1276761942b7395cfda0650bb88885d06e4"
+  },
+  "race_checkpoint_full/2022-05-19": {
+   "path": "race.checkpoint_full/month=2022-05/2022-05-19.parquet",
+   "rows": 75444,
+   "sha256": "80b6e986df2b0a6e8afa5d3064d9d645182d17e40cd5c150174e5824ecc67816"
+  },
+  "race_checkpoint_full/2022-06-23": {
+   "path": "race.checkpoint_full/month=2022-06/2022-06-23.parquet",
+   "rows": 75540,
+   "sha256": "e4e31aa6ab12d301dd9c16cc794be0c5b5b7ca868abd886cd7c1d0931a31fce6"
+  },
+  "race_checkpoint_full/2022-06-27": {
+   "path": "race.checkpoint_full/month=2022-06/2022-06-27.parquet",
+   "rows": 75504,
+   "sha256": "40bb600ab27d01cb9cd9b791cc560efa03c0c9cb58483ed7c2fad8f75ba3f420"
+  },
+  "race_checkpoint_full/2022-11-25": {
+   "path": "race.checkpoint_full/month=2022-11/2022-11-25.parquet",
+   "rows": 74640,
+   "sha256": "aaeeeae57bf896f9e800b279d06b6e126d568bf05e9147c8076e44fb5ef81313"
+  },
+  "race_checkpoint_full/2023-05-25": {
+   "path": "race.checkpoint_full/month=2023-05/2023-05-25.parquet",
+   "rows": 71304,
+   "sha256": "e845302979c8309a52d565284a380ac458b033cb05a79c19c5a5ab666718c55c"
+  },
+  "race_checkpoint_full/2023-06-28": {
+   "path": "race.checkpoint_full/month=2023-06/2023-06-28.parquet",
+   "rows": 70884,
+   "sha256": "a5d1f9075d3b6a7f8ac0860f98d7f1d09d751d3191aa89934e485a2c8580842a"
+  },
+  "race_checkpoint_full/2023-07-03": {
+   "path": "race.checkpoint_full/month=2023-07/2023-07-03.parquet",
+   "rows": 70884,
+   "sha256": "da09f24aea095d5cda942ad828aa2131569eca9bb56ffb700eb2e3eafb3bf4e6"
+  },
+  "race_checkpoint_full/2023-07-05": {
+   "path": "race.checkpoint_full/month=2023-07/2023-07-05.parquet",
+   "rows": 70692,
+   "sha256": "c4c6baa0f4c19ca0a58eede2367380db8a174abe1b27efd7a3f6e2d6e8259b92"
+  },
+  "race_checkpoint_full/2023-11-24": {
+   "path": "race.checkpoint_full/month=2023-11/2023-11-24.parquet",
+   "rows": 70020,
+   "sha256": "91379113b4809b5884430f89081f382233e6a4500418a60ddb8c1c20e4a08523"
+  },
+  "race_checkpoint_full/2025-02-03": {
+   "path": "race.checkpoint_full/month=2025-02/2025-02-03.parquet",
+   "rows": 66420,
+   "sha256": "847dc5ab13d1aa6f8db772542118a41550697141441090e1d24e757ff17f5565"
+  },
+  "race_checkpoint_full/2025-03-03": {
+   "path": "race.checkpoint_full/month=2025-03/2025-03-03.parquet",
+   "rows": 66348,
+   "sha256": "20d0178c758dc28a493c6a3fac66baa31a52c9f75d42b39846228644b833f4b1"
+  },
+  "race_checkpoint_full/2025-07-03": {
+   "path": "race.checkpoint_full/month=2025-07/2025-07-03.parquet",
+   "rows": 66456,
+   "sha256": "2e619030c3b4b162338a6abed05cccb3d27264eaf5416ae4635a41ec75182a2d"
+  },
+  "race_checkpoint_full/2025-11-28": {
+   "path": "race.checkpoint_full/month=2025-11/2025-11-28.parquet",
+   "rows": 66948,
+   "sha256": "f1841a7be5296f7d5f6aca8be9c99b61bef6129a11dcbb43c3323f1cac0fdf6c"
+  },
+  "race_checkpoint_full/2025-12-24": {
+   "path": "race.checkpoint_full/month=2025-12/2025-12-24.parquet",
+   "rows": 66804,
+   "sha256": "bf3d96f6983d85657efb66779f5ee6fb1ba0f902b662b9dd39e47e296a85b7a5"
+  },
+  "race_checkpoint_full/2026-03-04": {
+   "path": "race.checkpoint_full/month=2026-03/2026-03-04.parquet",
+   "rows": 66660,
+   "sha256": "7466e5da57c1603ba8b212a72c2127b8beb0985daddff298a226afaaea125bd5"
+  },
+  "race_checkpoint_full/2026-04-01": {
+   "path": "race.checkpoint_full/month=2026-04/2026-04-01.parquet",
+   "rows": 66876,
+   "sha256": "cbb3523f98917ca71f6ccc8ca57e6ac6c348ad63ba1669445103c8c7c617c5ce"
+  },
+  "race_checkpoint_full/2026-05-01": {
+   "path": "race.checkpoint_full/month=2026-05/2026-05-01.parquet",
+   "rows": 66948,
+   "sha256": "d9e18c6f13e4b97d00d15a7b6623e68479e831c1e83de1ede050a4bee4bb140d"
+  },
+  "race_minute_full/2021-02-09": {
+   "path": "race.minute_full/month=2021-02/2021-02-09.parquet",
+   "rows": 2080650,
+   "sha256": "cc1c95c17b81c85043e7f8fc0cd5e0c784b8c5e162adbe4c697b5c6ab72b27db"
+  },
+  "race_minute_full/2021-11-26": {
+   "path": "race.minute_full/month=2021-11/2021-11-26.parquet",
+   "rows": 1241310,
+   "sha256": "f99186fdbdc84f16bea87f64513736da5887228c18c1e2551fc9d358fbb5c03b"
+  },
+  "race_minute_full/2022-03-10": {
+   "path": "race.minute_full/month=2022-03/2022-03-10.parquet",
+   "rows": 2342730,
+   "sha256": "d8a4ec1a4fde099caa4cd74318b8577fa633768f81fc95a1a357acd84c6e336e"
+  },
+  "race_minute_full/2022-05-19": {
+   "path": "race.minute_full/month=2022-05/2022-05-19.parquet",
+   "rows": 2311530,
+   "sha256": "988ba5c694fbafd8ea1de360b99ee20032e2b0fddbc669c1bcaf6e9d574fbb79"
+  },
+  "race_minute_full/2022-06-23": {
+   "path": "race.minute_full/month=2022-06/2022-06-23.parquet",
+   "rows": 2318160,
+   "sha256": "c0aca010a838f7bf68167e255bad92cb29b615c18c70eae2558811e10ed68f34"
+  },
+  "race_minute_full/2022-06-27": {
+   "path": "race.minute_full/month=2022-06/2022-06-27.parquet",
+   "rows": 2327520,
+   "sha256": "c8e65280f0dd061f620d7969b4d9c1783be0d5e775da90fc84fdd512704863d8"
+  },
+  "race_minute_full/2022-11-25": {
+   "path": "race.minute_full/month=2022-11/2022-11-25.parquet",
+   "rows": 1214850,
+   "sha256": "24c8d9bee6f650ddfec32a29ecf0231bce67f4e4e0631b5ab4f0672877e0e3ab"
+  },
+  "race_minute_full/2023-05-25": {
+   "path": "race.minute_full/month=2023-05/2023-05-25.parquet",
+   "rows": 2230410,
+   "sha256": "068bd87c2ee89cdaabe98586622fe38ede4d78f83949acb2ed71c0e3718b6a2a"
+  },
+  "race_minute_full/2023-06-28": {
+   "path": "race.minute_full/month=2023-06/2023-06-28.parquet",
+   "rows": 2219100,
+   "sha256": "3a12542b018de89ee9dee4e60b4f139f58881a8ded02199fa0f5730ba91093f3"
+  },
+  "race_minute_full/2023-07-03": {
+   "path": "race.minute_full/month=2023-07/2023-07-03.parquet",
+   "rows": 1178520,
+   "sha256": "7f4a2bb8553a368e976da4023b9d10b5492131191897b877c6b48a012b95536e"
+  },
+  "race_minute_full/2023-07-05": {
+   "path": "race.minute_full/month=2023-07/2023-07-05.parquet",
+   "rows": 2210910,
+   "sha256": "699336589a0e2d9396aa8c5244ede5a3adf15767d98ad2038f6fb5d14e98ad14"
+  },
+  "race_minute_full/2023-11-24": {
+   "path": "race.minute_full/month=2023-11/2023-11-24.parquet",
+   "rows": 1159830,
+   "sha256": "5d99a92ac63342ef58697e550c17614d604039e1a12324aa71a019642e281f51"
+  },
+  "race_minute_full/2025-02-03": {
+   "path": "race.minute_full/month=2025-02/2025-02-03.parquet",
+   "rows": 2131740,
+   "sha256": "260ebbeb8f7df7534850410744bd79ea7e18122671d3d22929519d385adad0ad"
+  },
+  "race_minute_full/2025-03-03": {
+   "path": "race.minute_full/month=2025-03/2025-03-03.parquet",
+   "rows": 2118870,
+   "sha256": "8150628aa1fe6fa6054f85d8a75158423792a1ba750f50090033cbdd07a9de90"
+  },
+  "race_minute_full/2025-07-03": {
+   "path": "race.minute_full/month=2025-07/2025-07-03.parquet",
+   "rows": 1131900,
+   "sha256": "30ec38b836fa4145d434a274fcbb35f45b68703b83ee32f9a998f7fbc8d2d5d4"
+  },
+  "race_minute_full/2025-11-28": {
+   "path": "race.minute_full/month=2025-11/2025-11-28.parquet",
+   "rows": 1137780,
+   "sha256": "4113a3c40edb8e98b549770d4d70e97f1dc6ff57a4525e228b0fc469f17d3bed"
+  },
+  "race_minute_full/2025-12-24": {
+   "path": "race.minute_full/month=2025-12/2025-12-24.parquet",
+   "rows": 1135260,
+   "sha256": "0a92ae56438cc3bc9e1330513cc9ca31558586742228b2a7c5f33a269792fd4e"
+  },
+  "race_minute_full/2026-03-04": {
+   "path": "race.minute_full/month=2026-03/2026-03-04.parquet",
+   "rows": 2021760,
+   "sha256": "80f232913b7d3b82d0ff5936dcb7b2c046ab67a99d0f46b5064b266831eb8708"
+  },
+  "race_minute_full/2026-04-01": {
+   "path": "race.minute_full/month=2026-04/2026-04-01.parquet",
+   "rows": 2129010,
+   "sha256": "ecf7698e633da198e7660564b86e86b9bd01683739307521cc569e8adfd9a763"
+  },
+  "race_minute_full/2026-05-01": {
+   "path": "race.minute_full/month=2026-05/2026-05-01.parquet",
+   "rows": 2122770,
+   "sha256": "0e5f21a0f35a79f9079f7cd749254298918eff489cf17b535ea280f046977c84"
+  },
+  "selected_path_grid/2021-02-09": {
+   "path": "grid.selected_paths/month=2021-02/2021-02-09.parquet",
+   "rows": 2406,
+   "sha256": "a5b6721e06a027d81a6513f49eb1eef93b203608c316f31e7b8f2b795cb24c90"
+  },
+  "selected_path_grid/2021-11-26": {
+   "path": "grid.selected_paths/month=2021-11/2021-11-26.parquet",
+   "rows": 2005,
+   "sha256": "c4575ddc69964c441cc0fe319941ed6a1aa705b6da1b978d7fbf9a597e3d138b"
+  },
+  "selected_path_grid/2022-03-10": {
+   "path": "grid.selected_paths/month=2022-03/2022-03-10.parquet",
+   "rows": 2406,
+   "sha256": "79f6c0a95d277ee78ad0ad3829770197d16d82598d9525b3b846fee970114958"
+  },
+  "selected_path_grid/2022-05-19": {
+   "path": "grid.selected_paths/month=2022-05/2022-05-19.parquet",
+   "rows": 2406,
+   "sha256": "e7b6a2997eddd3088007e33e83e7abdcdd7d16b9268fb034fcb81eb2a9e6a618"
+  },
+  "selected_path_grid/2022-06-23": {
+   "path": "grid.selected_paths/month=2022-06/2022-06-23.parquet",
+   "rows": 2406,
+   "sha256": "8a2df66e2e8f994b462cd2e7b5266fe2377474cbd777fa598828fdd3e646738d"
+  },
+  "selected_path_grid/2022-06-27": {
+   "path": "grid.selected_paths/month=2022-06/2022-06-27.parquet",
+   "rows": 2406,
+   "sha256": "49bab84f939e439703c12d460bc9d3053295f6cd37e1c9ed3a754919587e1d77"
+  },
+  "selected_path_grid/2022-11-25": {
+   "path": "grid.selected_paths/month=2022-11/2022-11-25.parquet",
+   "rows": 2406,
+   "sha256": "27a5bb5ef767ced4b69fadaee18fa1cfba1609e7d331536b686a8434be48e229"
+  },
+  "selected_path_grid/2023-05-25": {
+   "path": "grid.selected_paths/month=2023-05/2023-05-25.parquet",
+   "rows": 2406,
+   "sha256": "6fe4bcaeb05a260ebfef4d4a949f65c8a96d0e2290e1f52e4f5d0957f7908e35"
+  },
+  "selected_path_grid/2023-06-28": {
+   "path": "grid.selected_paths/month=2023-06/2023-06-28.parquet",
+   "rows": 2406,
+   "sha256": "8db94a4f2c6b49b49dd17c029997021b50655487b6d57b80df180b6e58f76c3e"
+  },
+  "selected_path_grid/2023-07-03": {
+   "path": "grid.selected_paths/month=2023-07/2023-07-03.parquet",
+   "rows": 2005,
+   "sha256": "b0b171fef4d6eee4d0b7c0383d82da6bd669cca4c0cc28993357ccc08dcfddbd"
+  },
+  "selected_path_grid/2023-07-05": {
+   "path": "grid.selected_paths/month=2023-07/2023-07-05.parquet",
+   "rows": 2406,
+   "sha256": "911087a57852fb42d8024736a7551fb735ae10be260de6a06c5f826c58c488af"
+  },
+  "selected_path_grid/2023-11-24": {
+   "path": "grid.selected_paths/month=2023-11/2023-11-24.parquet",
+   "rows": 2406,
+   "sha256": "501e140e3a6b3f0b07fc6c0520e0d0b7d7fe330b1756d56e0f220e80dc0cff14"
+  },
+  "selected_path_grid/2025-02-03": {
+   "path": "grid.selected_paths/month=2025-02/2025-02-03.parquet",
+   "rows": 2406,
+   "sha256": "ac6afd90fe4bb4f7523b162b5974692f63ed8eaf8ae8ed61209ba08c1a710c8f"
+  },
+  "selected_path_grid/2025-03-03": {
+   "path": "grid.selected_paths/month=2025-03/2025-03-03.parquet",
+   "rows": 2406,
+   "sha256": "377dca1834acd3cbf345e46ae3bf2eecb4fc3a334b3d09ae851e40d792b0e228"
+  },
+  "selected_path_grid/2025-07-03": {
+   "path": "grid.selected_paths/month=2025-07/2025-07-03.parquet",
+   "rows": 2406,
+   "sha256": "6560d22efcd695b95657f5e05346cd1cac127534308f7cff32d787856688aec1"
+  },
+  "selected_path_grid/2025-11-28": {
+   "path": "grid.selected_paths/month=2025-11/2025-11-28.parquet",
+   "rows": 2005,
+   "sha256": "b835c95936aa057516e50804354a0fd9db1f12dc6c59dad8741ae2686166dfaf"
+  },
+  "selected_path_grid/2025-12-24": {
+   "path": "grid.selected_paths/month=2025-12/2025-12-24.parquet",
+   "rows": 2406,
+   "sha256": "2e459915f66660478c7c148cb78eac54c0450dd07845cbce150d7bef9da32a1d"
+  },
+  "selected_path_grid/2026-03-04": {
+   "path": "grid.selected_paths/month=2026-03/2026-03-04.parquet",
+   "rows": 2406,
+   "sha256": "4c8af0692ba2c001016c26408f6dac7c6c51f03608497af7f6582ca92445369c"
+  },
+  "selected_path_grid/2026-04-01": {
+   "path": "grid.selected_paths/month=2026-04/2026-04-01.parquet",
+   "rows": 2406,
+   "sha256": "8fdd2072566dd52b05c70ee75d847b104b7edb3ca8d52ed006c1258eb4f7658f"
+  },
+  "selected_path_grid/2026-05-01": {
+   "path": "grid.selected_paths/month=2026-05/2026-05-01.parquet",
+   "rows": 2005,
+   "sha256": "c74c18b356f91dc2d9d74a63e69ab4cdeb50bab265ab73e37ffd760e1204aaaf"
+  },
+  "selected_path_prints/2021-02-09": {
+   "path": "prints.selected_paths/month=2021-02/2021-02-09.parquet",
+   "rows": 1442096,
+   "sha256": "0cac787696febd97503566eb782166c3f546dec60e70fa3e42a24bd9c2dc3dec"
+  },
+  "selected_path_prints/2021-11-26": {
+   "path": "prints.selected_paths/month=2021-11/2021-11-26.parquet",
+   "rows": 1125585,
+   "sha256": "236f511e807f2d5c76f1cc7b0ea51eeeb3a4b88f6c4c409ded3a53573df446e0"
+  },
+  "selected_path_prints/2022-03-10": {
+   "path": "prints.selected_paths/month=2022-03/2022-03-10.parquet",
+   "rows": 959832,
+   "sha256": "cf57f2cfc77e3aa6232d5b590d5162fd285726331af2a7ae222aea9ef3101c8a"
+  },
+  "selected_path_prints/2022-05-19": {
+   "path": "prints.selected_paths/month=2022-05/2022-05-19.parquet",
+   "rows": 513446,
+   "sha256": "df1c55a17292baf290e42b957b27d504df2830e1376a846ad7168fbba9d84bd5"
+  },
+  "selected_path_prints/2022-06-23": {
+   "path": "prints.selected_paths/month=2022-06/2022-06-23.parquet",
+   "rows": 955422,
+   "sha256": "2943fa702e8e4da1ad17d2c74ad495a038f807f4e163d24061613d46051779b7"
+  },
+  "selected_path_prints/2022-06-27": {
+   "path": "prints.selected_paths/month=2022-06/2022-06-27.parquet",
+   "rows": 606353,
+   "sha256": "5da0ad6b99716cf174f4eee5f9b095d5f156b1ba40171a58731dc9306716740d"
+  },
+  "selected_path_prints/2022-11-25": {
+   "path": "prints.selected_paths/month=2022-11/2022-11-25.parquet",
+   "rows": 75531,
+   "sha256": "c97cde600a4320ee6cc5ecb77a3d6ed81999493552d5e61c8c788569b53c655d"
+  },
+  "selected_path_prints/2023-05-25": {
+   "path": "prints.selected_paths/month=2023-05/2023-05-25.parquet",
+   "rows": 579708,
+   "sha256": "f499325a1c9fcc2ad5168fdadb10db876cd7dd7b448416964a51f0f91065bde1"
+  },
+  "selected_path_prints/2023-06-28": {
+   "path": "prints.selected_paths/month=2023-06/2023-06-28.parquet",
+   "rows": 723773,
+   "sha256": "078d5ab8a4adfde4cb0a18201c70503401653c67c971bf0f92d0f472f60a86ff"
+  },
+  "selected_path_prints/2023-07-03": {
+   "path": "prints.selected_paths/month=2023-07/2023-07-03.parquet",
+   "rows": 105012,
+   "sha256": "5f24431acb2b10499fb548c7db472773550608cb4e4c58201b157b7a53ec4991"
+  },
+  "selected_path_prints/2023-07-05": {
+   "path": "prints.selected_paths/month=2023-07/2023-07-05.parquet",
+   "rows": 198169,
+   "sha256": "c3e502dc83b38ad0946bebffb1c569ce96a9d10ac0c35e5f74160aa749534764"
+  },
+  "selected_path_prints/2023-11-24": {
+   "path": "prints.selected_paths/month=2023-11/2023-11-24.parquet",
+   "rows": 162424,
+   "sha256": "885aabe405c63811c52e190005eb5f22837786a2b34bcbf1d1a02d9fbb5126d8"
+  },
+  "selected_path_prints/2025-02-03": {
+   "path": "prints.selected_paths/month=2025-02/2025-02-03.parquet",
+   "rows": 641460,
+   "sha256": "8a9896966a25e4940d7a93811b67fed4ad44d61e4a122c46a53fb5df30dfdb4f"
+  },
+  "selected_path_prints/2025-03-03": {
+   "path": "prints.selected_paths/month=2025-03/2025-03-03.parquet",
+   "rows": 996706,
+   "sha256": "4d072956ff131e22dcc4bcca0884d80ca48c1f70b0a85e96c1b495e253196ae9"
+  },
+  "selected_path_prints/2025-07-03": {
+   "path": "prints.selected_paths/month=2025-07/2025-07-03.parquet",
+   "rows": 1376734,
+   "sha256": "7cccf8242ca389041aa99695cb9f6e9caef9f561f2057378742f2e43526ef083"
+  },
+  "selected_path_prints/2025-11-28": {
+   "path": "prints.selected_paths/month=2025-11/2025-11-28.parquet",
+   "rows": 627605,
+   "sha256": "0846b8339d84f3acd96e910f2ca6fbdcfdec5a82b99b2c63cfbeaaddbdb53df7"
+  },
+  "selected_path_prints/2025-12-24": {
+   "path": "prints.selected_paths/month=2025-12/2025-12-24.parquet",
+   "rows": 928806,
+   "sha256": "5462bf1a5d258a35a39b4c47cc2baa6bc04762b27a788180fa2ac91ae4a50965"
+  },
+  "selected_path_prints/2026-03-04": {
+   "path": "prints.selected_paths/month=2026-03/2026-03-04.parquet",
+   "rows": 773035,
+   "sha256": "c6722a513a2585d7b9b7d652cfb5d86387dd5f528b9c4be92772e8ce837f9c96"
+  },
+  "selected_path_prints/2026-04-01": {
+   "path": "prints.selected_paths/month=2026-04/2026-04-01.parquet",
+   "rows": 1213288,
+   "sha256": "a2879d3764d30cc44bf68cc60a7de322cd1d7a14cddd46a52afd1a33abc56b97"
+  },
+  "selected_path_prints/2026-05-01": {
+   "path": "prints.selected_paths/month=2026-05/2026-05-01.parquet",
+   "rows": 526465,
+   "sha256": "0cd30baa5716f5dd1e664816e6e7e2ed11aa5799dfc475304e07ca0079fb9149"
+  }
+ },
+ "schema_sha256": "990542110104377db1349d9602829080fd561e99014d04a095e9b1acd613f2c4",
+ "selection_classes": {
+  "acquisition_repaired": 3,
+  "acquisition_replace": 1,
+  "acquisition_supplement": 2,
+  "alpaca_sip_era": 3,
+  "block1": 12,
+  "block2": 8,
+  "early_close": 7,
+  "floor_fallback": 0,
+  "net_partial": 0,
+  "net_reconciled": 0,
+  "net_unreconciled": 0,
+  "raw_roster_month": 2,
+  "roster_missing_unresolved": 17,
+  "roster_verified_absent": 3
+ },
+ "sort_order": {
+  "coverage": [
+   "layer",
+   "day",
+   "scope"
+  ],
+  "day_registry": [
+   "day"
+  ],
+  "memberships": [
+   "day",
+   "family",
+   "entry_rank",
+   "ticker"
+  ],
+  "paths": [
+   "day",
+   "ticker"
+  ],
+  "quote_rosters": [
+   "day",
+   "snapshot_pop",
+   "snapshot_T",
+   "rank"
+  ],
+  "race_candidate_net": [
+   "day",
+   "t",
+   "ticker"
+  ],
+  "race_checkpoint_full": [
+   "day",
+   "T",
+   "symbol"
+  ],
+  "race_minute_full": [
+   "day",
+   "t",
+   "rank_eligible desc",
+   "gain desc",
+   "ticker asc"
+  ],
+  "selected_path_grid": [
+   "day",
+   "ticker",
+   "et"
+  ],
+  "selected_path_prints": [
+   "day",
+   "ticker",
+   "source_row_ordinal"
+  ]
+ },
+ "status": "canary_built",
+ "supersedes": null,
+ "version": "tape-atlas-observation-v0",
+ "withdraws": null
+}

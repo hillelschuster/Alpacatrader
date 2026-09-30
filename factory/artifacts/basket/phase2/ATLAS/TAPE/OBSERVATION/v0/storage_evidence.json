@@ -1,0 +1,43 @@
+{
+ "schema": "atlas/physical_storage_evidence/v0",
+ "measured_at_utc": "2026-09-30T07:15:39.105799+00:00",
+ "free_bytes": 112609935360,
+ "measurement": {
+  "mode": "full",
+  "planning_headroom_bytes": [
+   75161927680,
+   85899345920
+  ],
+  "reserve_bytes": 80530636800,
+  "reserve_gib": 75.0,
+  "reserve_basis": "initial budget: reviewed conservative 75 GiB, nothing verified",
+  "operating_reserve_bytes": 10737418240,
+  "completed_payload": {
+   "verified_bytes": 0,
+   "n_verified": 0,
+   "progress_days": [],
+   "from_manifest": false,
+   "mismatched": [],
+   "absent": []
+  },
+  "measured": {
+   "output_root": "/home/hillel/projects/Alpacatrader/data/atlas/observation/v0",
+   "measured_at": "/mnt/c/Users/\u05d4\u05dc\u05dc/Desktop/algo projects/Alpacatrader/data/atlas/observation/v0",
+   "mount_point": "/mnt/c",
+   "mount_source": "C:\\",
+   "mount_fstype": "9p",
+   "device": null,
+   "device_model": null,
+   "local_block_device": false,
+   "guest_free_bytes": 112609935360,
+   "guest_total_bytes": 493614002176,
+   "virtual_disk": null
+  },
+  "host_volume_declaration": null,
+  "conservative_free_bytes": 112609935360,
+  "conservative_free_source": "backing host volume reported directly through 9p (C:\\ on /mnt/c)",
+  "margin_bytes": 32079298560,
+  "ok": true,
+  "reasons": null
+ }
+}

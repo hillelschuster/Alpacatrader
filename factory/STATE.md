@@ -2648,3 +2648,71 @@ General feed-aware policy preserves four cross-feed disagreements (BYNO, DXR, FT
 original proxy witness rows under the acquisition root; none is invented or relabeled as SIP.
 The fresh API canaries and entire scopes verify; final observation canary and full corpus remain
 pending. No retrieval/discovery result or alpha claim has been produced.
+
+## 2026-09-30 (later) — observation corpus: repairs SOLID, canary NOT verified, aborts = kernel OOM
+
+Tape Atlas observation lane (centre `researches/PLAN-TAPE-ATLAS.md`; producer
+`basket_tape_atlas_observation.py`; evidence `TAPE/OBSERVATION/v0`). Commands: PLAN §10.1.
+
+**Verified and committed.** `8f2ff07` rebuilt the net manifest index from the per-day manifests
+(3,198 → 3,204; 6 restored, 40 stale dropped; sha256 `446090fd…`), repair+verify exit 0, no source
+mutated. `dcefbd5` published the joint acquisition admission (B1 19/19 Feb-2025 `v4`; B2 41/41
+Apr/May-2026 `v3`; sha256 `eaf08243…`): `all_scopes_ready`, both `state: ready`, zero missing/stale
+scopes, zero `residual_confirmed_trading_gaps`, rehash `mismatches: []`. Blockers B1/B2/B5/B6 bind to
+real evidence **files** (B5 = measured storage `ok: true`, 112,609,935,360 free bytes via 9p; B6 = net
+reconciliation `a2e77e13…`). B3 is a sibling quote lane; no quote feature ready.
+
+**Provisional / NOT verified.** No `verify.json`; the tracked `canary/summary.json` is the pre-repair
+artefact (old id `B6_missing_net_manifest_…`, `full_v0_ready` false, determinism null); bookkeeping is
+117/120 layers with 2025-03-03 not re-hashing, so a `--force` rebuild is required. Run 1 built all 20
+days then exited 1: `day_registry` built its 1,066 day dicts under polars' default 100-row inference,
+so acquisition strings inferred Null for the first ~1,006 dev days and the first acquisition day
+raised `ComputeError`; fixed with full-length inference (the registry builds and 60 acquisition days
+resolve). No signal/OOM (peak RSS 4.71 GiB, pre-pin ÷10⁶ conversion), no new
+manifest/summary/costs/selftest, and the source changed mid-run ⇒ **run 1 is smoke-only**. Producer
+re-frozen at `32a1d082…`; owner on hold. Next: lock re-freeze, then a fresh A/B run, `verify-canary`
+and audit.
+
+**Corrections this cycle (source-only).** PIT fixed-width padding of `ECC`/`ETX`/`SAND` corrected
+injectively (5,535 → 5,535 distinct, collision-refused) → Feb-3 closes at 0 unresolved (17
+roster-unavailable + 50 API zeros + 1 DXR witness); `entry_et` `agg(min)` emitted `entry_et` while the
+comprehension read a non-existent `first_entry_et` (green pure checks hid it) → explicit alias, proved
+by a real single-day build of six layers; B6 id is now `B6_unreconciled_net_manifest`; evidence must
+resolve under the tracked root, re-hash, and be the consumed file. **Lock NOT valid**: of its five
+hashed files only `schema.json` is stale (disk `990542110104…` vs locked `868fd1df…`); one
+`--stage contract --force` re-freeze is authorized. The schema edit adds exactly two `day_registry`
+coverage fields (`raw_n_pit_symbols_full_window`, `raw_n_pit_offhours_only`) and changes no market
+payload — only `day_registry.parquet`/`coverage.parquet` differ, so runs A/B must be identical.
+**`RTH_LO` CLOSED**: the board stays RTH-trimmed and no clock moved, but coverage now derives from the
+untrimmed declared `[565, 965]` window, after the real NTZ counterexample (2025-02-03: one bar at
+16:01, 137 shares, counted as missing; 54 B1 / 173 B2 off-hours-only name-days).
+
+**Open.** No full 1,066-day corpus; no outcome-blind inspection (PREPARED-NOT-RUN); Freeze R not frozen
+(DRAFT-NOT-RUN); no nearest-100 proof, no SSL run, no race tiers; geometry/sequence/race producers
+prepared-only. Nothing here is a retrieval, discovery or alpha result, and there is **no old
+`HistoricalBarsRepair` blocker** (that lane is closed).
+
+**Aborts = kernel global OOM** — three kernel kills of `python` at 11:01:07 / 12:02:46 / 13:25:03
+(anon RSS 9.05 / 10.35 / 7.58 GiB), no agent-initiated termination, victim command lines
+unrecoverable; forensics `local://wsl-interruption-investigation.md`. Child cgroup cap unproven/not
+adopted; `.wslconfig` now 16 GiB / 32 GiB swap.
+
+**Ops rule.** One heavy owner, strict serialization, cooperative stop only. Ops holds the `>= 10 GiB`
+cold start; the script gate is one shared calc — `cap = floor(min(8.0 − current parent VmRSS,
+MemAvailable − 2.0 GiB) / 5.0 GiB child)`, and cap 0 refuses (the 6.0 GiB figure is contract text
+only; the parent term is current VmRSS, not lifetime peak). Peak RSS now uses exact ÷2²⁰ GiB (was
+÷10⁶, a +4.86% over-report) ⇒ peak figures must not be differenced across that pin. Nothing committed
+this cycle; the H025 paper lane is untouched.
+
+## 2026-09-30 (night) — Freeze-O observation canary GREEN at adopted pin f9346e6b
+Chain closed after four full 20-day canary runs (strictly serial, no signals; A3 run was smoke-only
+against a superseded predecessor). B3 vs A3 (same generation 58bbbf0c): 50/50, 125/125 payloads
+byte-identical. Throughput patch adopted (UTC physical-timestamp row-group pruning conjunct inside
+read_raw_days; admitted-row set provably identical): C and D both 50/50 at f9346e6b, 0 differing
+payloads of 125 vs B3 (CROSS-generation identity) and C vs D (two same-generation runs); `--stage
+verify-canary` exit 0, 43/43, core_hash ffd513ce…; source pin constant 21/21 samples in C and D.
+Measured effect: wall per 20-day canary 35:00 → 17:15–18:45 (~2x), peak child RSS ~5.07 → ~3.2 GiB.
+Coverage defects closed on real data (NTZ 2025-02-03 etm 961/16:01 observed; 54 B1 + 173 B2
+off-hours-only name-days → 0 unresolved; no spurious B2 append). Independent audit: coverage,
+negative controls, lock PASS; provenance items closed by C+D+verify (documented gap: verify.json
+carries core_hash but no explicit code pin). Full 1,066-day corpus launched after commit.
