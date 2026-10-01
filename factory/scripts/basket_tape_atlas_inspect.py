@@ -31,8 +31,9 @@ Usage
 Exit codes
 ----------
   0  corpus inspected, no integrity refusal
-  2  contract refusal (illegal allowlist, evidence-hash mismatch, denied physical column,
-     sealed/reserved day): nothing is read and no report is written
+  2  contract refusal (missing --manifest, inspection contract not frozen, illegal allowlist,
+     evidence-hash mismatch, denied physical column, sealed/reserved day): nothing is read and
+     no report is written
   3  integrity refusal (declared payload absent, sha256 mismatch, rows != manifest, parent
      drift, day set != dev_days): the report IS written with status REFUSED and every problem
   1  selftest failure
@@ -62,6 +63,8 @@ DEFAULT_ROOT = Path("/home/hillel/projects/Alpacatrader/data/atlas/observation/v
 REPORT_NAME = "blind_corpus_report.json"
 Z95 = 1.959963984540054
 BLOCK1_MAX_DAY = "2023-12-31"  # contract.json day_guard.block_gap_rule
+# contract_lock.json convention; PLAN sections 2/8: the allowlist is frozen before the blind run
+FROZEN_CONTRACT_STATES = ("frozen",)
 try:  # canonical sealed/reserved-day guard (contract.json: day_guard)
     from factory.scripts.basket_sim import guard_day
 except ImportError:  # direct script execution
@@ -515,6 +518,23 @@ def scan_layer(scan, lid, spec, fields, files, shape, rules, rank_change) -> tup
 
 
 # ------------------------------------------------ evidence + orchestration - #
+def require_manifest(manifest_path: Path) -> None:
+    """Refuse a missing evidence manifest as a contract refusal, never a FileNotFoundError."""
+    if not manifest_path.is_file():
+        raise ContractRefusalError(f"manifest not found: {manifest_path}")
+
+
+def require_frozen_contract(insp: dict, path: Path = CONTRACT_PATH) -> None:
+    """PLAN sections 2/8: the Stage-0C allowlist must be frozen (and re-locked) before a run."""
+    status, frozen = insp.get("status"), insp.get("frozen")
+    if frozen is not True or status not in FROZEN_CONTRACT_STATES:
+        raise ContractRefusalError(
+            f"inspection contract {path} is not frozen: status={status!r}, frozen={frozen!r}; "
+            f"freeze it (frozen=true, status in {list(FROZEN_CONTRACT_STATES)}) and re-lock "
+            "the contract before the blind inspection runs"
+        )
+
+
 def inspect_corpus(
     root: Path,
     manifest_path: Path,
@@ -525,6 +545,8 @@ def inspect_corpus(
     evidence: Path | None = None,
 ) -> tuple[dict, list]:
     evidence = Path(evidence) if evidence is not None else OBS_EVIDENCE
+    require_manifest(Path(manifest_path))
+    require_frozen_contract(insp)
     problems: list[dict] = []
     manifest = load_json(manifest_path)
     validate_allowlists(schema, registry, insp)
@@ -890,6 +912,21 @@ def run_selftest() -> int:
         chk("refuses_sealed_day", False)
     except PermissionError:
         chk("refuses_sealed_day", True)
+    try:
+        require_frozen_contract(dict(insp, frozen=False, status="PREPARED-NOT-RUN"))
+        chk("refuses_unfrozen_contract", False, {"detail": "unfrozen contract accepted"})
+    except ContractRefusalError as exc:
+        msg = str(exc)
+        chk(
+            "refuses_unfrozen_contract",
+            "frozen=False" in msg and "PREPARED-NOT-RUN" in msg and str(CONTRACT_PATH) in msg,
+            {"detail": msg},
+        )
+    try:
+        require_frozen_contract(dict(insp, frozen=True, status="frozen"))
+        chk("accepts_frozen_contract", True)
+    except ContractRefusalError as exc:
+        chk("accepts_frozen_contract", False, {"detail": str(exc)})
 
     with tempfile.TemporaryDirectory() as td:
         root, ev = Path(td) / "data", Path(td) / "evidence"
@@ -1009,6 +1046,10 @@ def run_selftest() -> int:
         }
         mini["path_shape"] = [{"layer": "selected_path_grid", "key": "path_id", "span": "et"}]
         mini["rank_change"] = []
+        # fixture only: the shipped contract carries its real freeze state and is gated by
+        # require_frozen_contract, which the checks above exercise separately
+        mini["frozen"] = True
+        mini["status"] = "frozen"
 
         def run(contract=None, verify=True, write=None):
             if write is not None:
@@ -1072,6 +1113,28 @@ def run_selftest() -> int:
             s3["sampling_fraction"] < 1 and s3["exact_quantiles"] is False,
             s3,
         )
+        try:
+            run(contract=dict(mini, frozen=False, status="PREPARED-NOT-RUN"))
+            chk("inspection_refuses_unfrozen_contract", False, {"detail": "gate not wired"})
+        except ContractRefusalError:
+            chk("inspection_refuses_unfrozen_contract", True)
+        try:
+            inspect_corpus(
+                root,
+                ev / "absent_manifest.json",
+                mini,
+                schema,
+                registry,
+                verify_sha=False,
+                evidence=ev,
+            )
+            chk("inspection_refuses_missing_manifest", False, {"detail": "no refusal"})
+        except ContractRefusalError as exc:
+            chk(
+                "inspection_refuses_missing_manifest",
+                "manifest not found" in str(exc) and "absent_manifest.json" in str(exc),
+                {"detail": str(exc)},
+            )
         bad_sha = json.loads(json.dumps(manifest))
         bad_sha["payload_sha256"]["selected_path_grid/2021-02-09"]["sha256"] = "0" * 64
         bad_sha.pop("core_hash")

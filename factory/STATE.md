@@ -2716,3 +2716,14 @@ Coverage defects closed on real data (NTZ 2025-02-03 etm 961/16:01 observed; 54 
 off-hours-only name-days → 0 unresolved; no spurious B2 append). Independent audit: coverage,
 negative controls, lock PASS; provenance items closed by C+D+verify (documented gap: verify.json
 carries core_hash but no explicit code pin). Full 1,066-day corpus launched after commit.
+
+## 2026-10-01 (early) — FULL 1,066-day observation corpus GREEN (pin f9346e6b)
+`--stage full --workers 1` on producer f9346e6b finished 20:37→05:32 local (8h54m47s): 1,066/1,066 days
+(20 canary days resumed, 1,046 newly built; mean 27.65 s/day), payloads 50,127,241,317 B, manifest
+core_hash 1bda734b…, `full_v0_ready: true`, `core_full_ready: true`, selftest 50/50 (`all_ok true`),
+source pin constant in 824/824 boundary samples and re-hash-identical at the end. Peak worker RSS
+4.364 GiB (under the 4.5 line); MemAvailable min 8.64 GiB; swap untouched; physical free 59.58 GB
+after (10 GiB operating reserve held). Independent closure at full scale: B1 off-hours-only = 54,
+B2 = 248, `unresolved = 0` on all 60 acquisition days, zero B2 blocker appends, conservation exact.
+Emitter gaps to fix later (no source touch tonight): full manifest `status=canary_built` and
+`canary_days` listing all days; verify.json carries core_hash but no code pin.
