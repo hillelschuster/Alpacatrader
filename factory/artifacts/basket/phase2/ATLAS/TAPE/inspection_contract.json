@@ -1,199 +1,721 @@
 {
-  "contract_id": "freeze-o.blind-corpus-inspection",
-  "contract_version": "blind-corpus-inspection-v0",
-  "status": "PREPARED-NOT-RUN",
-  "frozen": false,
-  "purpose": "Freeze the positive per-column allowlist, strata and statistic plan used by factory/scripts/basket_tape_atlas_inspect.py to produce the outcome-blind corpus report of PLAN-TAPE-ATLAS.md section 2 (Stage 0C). It declares what may be READ and COUNTED; it freezes no representation, metric, weight, threshold, gate, distance or outcome, and it may not be read as a finding.",
-  "producer": "factory/scripts/basket_tape_atlas_inspect.py",
-  "output": {"filename": "blind_corpus_report.json", "deterministic": true,
-             "note": "counts are exact; numeric quantiles are estimated from a bounded deterministic subsample with a reported binomial CI"},
-  "read_inputs": {
-    "manifest": "--manifest: the immutable node manifest (payload_sha256 paths/sha256/rows, parents, core_hash). Payloads are resolved from it; nothing is globbed for reading, and rows are scanned one day-partition at a time.",
-    "schema": "factory/artifacts/basket/phase2/ATLAS/TAPE/OBSERVATION/v0/schema.json (declared fields, dtypes, namespaces, coordinate_only / prospective_allowed / retrospective_only, supportable_by_tier)",
-    "causal_registry": "factory/artifacts/basket/phase2/ATLAS/TAPE/OBSERVATION/v0/causal_registry.json (denied_prefixes, denied_exact_columns, blocked_families; default deny)",
-    "contract_lock": "factory/artifacts/basket/phase2/ATLAS/TAPE/OBSERVATION/v0/contract_lock.json (expected schema/contract/registry hashes)",
-    "observation_contract": "factory/artifacts/basket/phase2/ATLAS/TAPE/OBSERVATION/v0/contract.json (allowed_blind_summaries, identity.expected_panel_census, day_guard, tier_support_matrix)",
-    "guard_day": "factory/scripts/basket_sim.py:guard_day — every payload day is guarded before its path is opened",
-    "dev_days": "factory/scripts/basket_sim.py:dev_days — the manifest day set is compared with the canonical calendar (report only; no globbing)",
-    "no_legacy_panel": "no outcome panel, panel.parquet, basket_atlas_panel or outcome/censor namespace is imported, read or derived anywhere in this inspection"
-  },
-  "enforce": {
-    "default_deny": true,
-    "deny_namespace_all": ["provenance", "censor"],
-    "deny_namespace_numeric": ["provenance", "censor", "quality"],
-    "numeric_dtypes": ["int32", "int64", "float32", "float64"],
-    "numeric_rules": "a numeric-summary column must be prospective_allowed, not retrospective_only, not coordinate_only, not provenance/censor/quality; keys, coordinates and masks follow the same namespace and flag rules. Hash, provenance, censor and whole-day quality columns are excluded from every numeric summary.",
-    "physical_deny_audit": "each scanned payload's physical schema is checked against the causal registry deny vocabulary; a denied column name refuses the run before any row is read",
-    "path_rules": "payload paths must be relative, traversal-free, resolve inside --root, and carry a guard_day-clean day inside the manifest day set",
-    "refusals": {"contract": "illegal allowlist / hash mismatch / denied physical column / sealed day (no report is written)",
-                 "integrity": "declared payload absent, row-count or sha256 mismatch, parent drift (report is written with status REFUSED and exit code 3)"}
-  },
-  "sampling": {
-    "reservoir_rows": 200000,
-    "salt": "freeze-o.blind-corpus-inspection.v0",
-    "quantile_probs": [0.001, 0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.99, 0.999],
-    "quantile_ci": 0.95,
-    "method": "splitmix64 hash of (partition salt, row index) thresholded at reservoir_rows/declared_rows; a layer whose scanned rows are <= reservoir_rows is exact"
-  },
-  "derived_strata": {
-    "block": "day <= 2023-12-31 -> block1, else block2 (contract.json day_guard.block_gap_rule)",
-    "month": "day[:7]",
-    "feed_era": "day_registry.feed_era for that day (day map sourced from the day_registry payload)",
-    "note": "reported for every layer as by_strata; a physical block/month/feed_era coordinate is reported under by_coordinate and not duplicated"
-  },
-  "layers": {
-    "coverage": {
-      "table": "coverage", "tier": "all", "partition": "shared", "prefix": "coverage",
-      "keys": ["layer", "day", "scope"],
-      "coordinates": ["layer", "day", "scope", "status", "missingness_class", "blocker_id", "selectable_asof_et"],
-      "masks": [],
-      "counts": ["n_expected", "n_present", "n_missing"],
-      "derived": []
-    },
-    "day_registry": {
-      "table": "day_registry", "tier": "all", "partition": "shared", "prefix": "day_registry",
-      "day_meta": true,
-      "keys": ["day"],
-      "coordinates": ["month", "block", "feed_era", "dow", "session_end", "is_early_close", "canary_member", "build_status"],
-      "masks": ["raw_source_present", "net_trades_present", "net_bars_present", "net_coverage_present", "universe_present", "candidates_present", "anatomy_present", "raw_inputs_hashed", "qualified_floor_source"],
-      "counts": ["n_panel_members", "n_panel_paths", "pit_n"],
-      "derived": []
-    },
-    "memberships": {
-      "table": "memberships", "tier": "all", "partition": "shared", "prefix": "memberships",
-      "keys": ["member_id"],
-      "coordinates": ["day", "month", "block", "family", "session_end", "entry_rank", "entry_et"],
-      "masks": [],
-      "magnitude": ["entry_px"],
-      "rank": ["entry_rank"],
-      "counts": [],
-      "accumulate": ["path_id", "member_id"],
-      "derived": []
-    },
-    "paths": {
-      "table": "paths", "tier": "all", "partition": "shared", "prefix": "paths",
-      "keys": ["path_id"],
-      "coordinates": ["day", "month", "block", "session_end", "min_entry_rank"],
-      "masks": [],
-      "counts": ["first_entry_et"],
-      "derived": []
-    },
-    "quote_rosters_summary": {
-      "table": "quote_rosters", "tier": "quote_roster", "partition": "shared", "prefix": "quote_rosters",
-      "keys": ["day", "roster_rule", "snapshot_pop", "snapshot_T", "rank"],
-      "coordinates": ["roster_rule", "snapshot_pop", "snapshot_T", "selectable_asof_et", "snapshot_asof_et", "union_member", "day_union_first_selectable_et"],
-      "masks": [],
-      "magnitude": ["score"],
-      "rank": ["rank"],
-      "counts": [],
-      "derived": []
-    },
-    "quote_rosters_day": {
-      "table": "quote_rosters", "tier": "quote_roster", "partition": "day", "prefix": "quote_rosters",
-      "keys": ["day", "roster_rule", "snapshot_pop", "snapshot_T", "rank"],
-      "coordinates": ["roster_rule", "snapshot_pop", "snapshot_T", "selectable_asof_et", "snapshot_asof_et", "union_member", "day_union_first_selectable_et"],
-      "masks": [],
-      "magnitude": ["score"],
-      "rank": ["rank"],
-      "counts": [],
-      "derived": []
-    },
-    "race_candidate_net": {
-      "table": "race_candidate_net", "tier": "candidate_net", "partition": "day", "prefix": "race_candidate_net",
-      "keys": ["day", "t", "ticker"],
-      "coordinates": ["t", "session_end", "roster_rules"],
-      "masks": ["known_by_t", "in_prospective_roster"],
-      "magnitude": ["px"],
-      "staleness": ["age_min"],
-      "counts": ["px_et", "roster_first_selectable_et"],
-      "derived": []
-    },
-    "race_checkpoint_full": {
-      "table": "race_checkpoint_full", "tier": "checkpoint", "partition": "day", "prefix": "race_checkpoint_full",
-      "keys": ["day", "T", "symbol"],
-      "coordinates": ["T", "session_end", "population_def", "roster_state"],
-      "masks": ["known_by_t", "pit_listed"],
-      "magnitude": ["px_T", "o570"],
-      "staleness": ["age_min"],
-      "rank": ["rank_open"],
-      "counts": ["score_open", "n_eligible_open", "order_slot_open", "px_T_et"],
-      "derived": []
-    },
-    "race_minute_full": {
-      "table": "race_minute_full", "tier": "broad_minute", "partition": "day", "prefix": "race_minute_full",
-      "keys": ["day", "t", "ticker"],
-      "coordinates": ["t", "session_end", "population_def", "roster_state"],
-      "masks": ["known_by_t", "rank_eligible", "fresh_2m", "flag_nonpositive_px", "flag_extreme_gain", "flag_prevclose_discrepancy", "pit_listed"],
-      "magnitude": ["px", "gain", "prev_close"],
-      "staleness": ["age_min"],
-      "rank": ["rank_known", "rank_unfiltered", "rank_fresh_2m"],
-      "counts": ["n_known", "n_eligible", "n_unfiltered", "n_fresh_2m", "order_slot", "px_et"],
-      "derived": []
-    },
-    "selected_path_grid": {
-      "table": "selected_path_grid", "tier": "selected_paths", "partition": "day", "prefix": "selected_path_grid",
-      "keys": ["day", "ticker", "et"],
-      "coordinates": ["session_end", "bar_state", "print_state"],
-      "masks": ["within_session"],
-      "magnitude": ["bar_open", "bar_high", "bar_low", "bar_close", "print_last_px"],
-      "activity": ["bar_volume", "n_prints", "n_bar_eligible_prints", "n_excluded_prints", "n_auction_prints"],
-      "counts": ["first_entry_et", "print_first_ts_us", "print_last_ts_us"],
-      "derived": [
-        {"name": "bar_range_pct", "op": "range_pct", "inputs": ["bar_high", "bar_low", "bar_close"]},
-        {"name": "bar_ret_from_open", "op": "div_minus_1", "inputs": ["bar_close", "bar_open"]}
-      ]
-    },
-    "selected_path_prints": {
-      "table": "selected_path_prints", "tier": "selected_paths", "partition": "day", "prefix": "selected_path_prints",
-      "keys": ["day", "ticker", "source_row_ordinal"],
-      "coordinates": ["et_min", "exchange", "tape"],
-      "masks": ["within_session", "in_projection_window"],
-      "magnitude": ["price"],
-      "activity": ["size"],
-      "counts": ["first_entry_et", "trade_id"],
-      "derived": [
-        {"name": "n_conditions", "op": "list_len", "inputs": ["conditions"]},
-        {"name": "notional", "op": "mul", "inputs": ["price", "size"]}
-      ]
-    }
-  },
-  "path_shape": [
-    {"layer": "selected_path_grid", "key": "path_id", "span": "et"},
-    {"layer": "selected_path_prints", "key": "path_id", "span": "et_min"}
+ "contract_id": "freeze-o.blind-corpus-inspection",
+ "contract_version": "blind-corpus-inspection-v0",
+ "derived_strata": {
+  "block": "day <= 2023-12-31 -> block1, else block2 (contract.json day_guard.block_gap_rule)",
+  "feed_era": "day_registry.feed_era for that day (day map sourced from the day_registry payload)",
+  "month": "day[:7]",
+  "note": "reported for every layer as by_strata; a physical block/month/feed_era coordinate is reported under by_coordinate and not duplicated"
+ },
+ "enforce": {
+  "default_deny": true,
+  "deny_namespace_all": [
+   "provenance",
+   "censor"
   ],
-  "rank_change": [
-    {"layer": "race_minute_full", "key": "ticker", "time": "t", "column": "rank_known",
-     "note": "consecutive-minute rank change inside a name; population/staleness/change distributions only, no outcome"}
+  "deny_namespace_numeric": [
+   "provenance",
+   "censor",
+   "quality"
   ],
-  "rarity": {
-    "note": "rare/low-density candidate preservation counts: how many OBSERVED rows carry raw magnitude or raw activity at or above the frozen thresholds, by layer and block. No future tail label (tail_class_*, final_high_flag, remaining_run, cost_of_waiting, bars_to_*) is read or derived: these are density facts about the observed tape, not outcome strata.",
-    "rules": [
-      {"layer": "race_minute_full", "column": "gain", "kind": "magnitude", "thresholds": [0.25, 0.5, 1.0, 2.0, 5.0, 10.0]},
-      {"layer": "race_minute_full", "column": "px", "kind": "magnitude", "thresholds": [1, 5, 10, 50, 100]},
-      {"layer": "race_minute_full", "column": "n_eligible", "kind": "activity", "thresholds": [10, 50, 100, 200]},
-      {"layer": "race_checkpoint_full", "column": "px_T", "kind": "magnitude", "thresholds": [1, 5, 10, 50, 100]},
-      {"layer": "race_candidate_net", "column": "px", "kind": "magnitude", "thresholds": [1, 5, 10, 50, 100]},
-      {"layer": "selected_path_grid", "column": "bar_ret_from_open", "kind": "magnitude", "thresholds": [0.25, 0.5, 1.0, 2.0, 5.0]},
-      {"layer": "selected_path_grid", "column": "bar_close", "kind": "magnitude", "thresholds": [1, 5, 10, 50, 100]},
-      {"layer": "selected_path_grid", "column": "bar_volume", "kind": "activity", "thresholds": [10000, 100000, 1000000]},
-      {"layer": "selected_path_grid", "column": "n_prints", "kind": "activity", "thresholds": [10, 100, 1000]},
-      {"layer": "selected_path_prints", "column": "price", "kind": "magnitude", "thresholds": [1, 5, 10, 50, 100]},
-      {"layer": "selected_path_prints", "column": "size", "kind": "activity", "thresholds": [1000, 10000, 100000]},
-      {"layer": "selected_path_prints", "column": "notional", "kind": "activity", "thresholds": [100000, 1000000, 10000000]}
-    ]
-  },
-  "identity_derivation": {
-    "shared_vs_independent_paths": "derived from memberships.path_id (a prospective key): distinct path_ids = tape paths carrying at least one membership; a path with >1 membership is a shared path; memberships_on_shared_paths and max_memberships_per_path come from the same tally. The paths table's own whole-day aggregates (n_memberships, families, membership_ids, last_entry_et, max_entry_rank) are retrospective_only after the PrefixBoundaryAudit fix (a later re-entry changes them - exactly the shared-path disclosure) and are NOT read; the paths payload still contributes its exact row count and the prospective anchors day/ticker/first_entry_et/min_entry_rank/session_end.",
-    "declared_cross_check": "compared with contract.json identity.expected_panel_census (paths 5905, memberships 6160, shared_paths 255)"
-  },
-  "whole_day_aggregates_excluded": {
-    "rule": "schema.json is the flag source of truth: retrospective_only=true or prospective_allowed=false means whole-day/future-derived, so the column may not enter any stratum or numeric summary here; it is listed under unobservable with that reason.",
-    "columns": ["paths.n_memberships", "paths.families", "paths.membership_ids", "paths.last_entry_et", "paths.max_entry_rank", "race_candidate_net.net_coverage_class", "day_registry.raw_roster_missing_n", "day_registry.raw_roster_verified_absent_n", "day_registry.raw_roster_missing_unresolved_n", "day_registry.net_manifest_status", "day_registry.net_reconciled", "selected_path_grid.within_observed_span", "race_minute_full.day_high_raw", "race_minute_full.sip_high_day", "race_minute_full.day_high_vs_sip_high_ratio", "race_minute_full.day_envelope_warning", "race_minute_full.prevclose_warning", "race_minute_full.prevclose_vs_sip_clast_ratio", "race_minute_full.prev_close_stale", "race_minute_full.prev_close_sealed_prior", "race_minute_full.prev_close_floor_qualified", "race_minute_full.in_universe_file", "race_checkpoint_full.hi", "race_checkpoint_full.lo", "race_checkpoint_full.c_last", "race_checkpoint_full.vol", "race_checkpoint_full.n_bars", "race_checkpoint_full.first_et", "race_checkpoint_full.last_et", "race_checkpoint_full.delayed_open", "race_checkpoint_full.ret_hi_open", "race_checkpoint_full.ret_clast_open", "race_checkpoint_full.rank_hi_open", "race_checkpoint_full.n_eligible_retro", "race_checkpoint_full.row_present", "race_candidate_net.in_net_full_day", "race_candidate_net.in_winners_open", "race_candidate_net.in_winners_prev", "race_candidate_net.day_last_et", "race_candidate_net.day_n_bars", "paths.coverage_class", "paths.terminal_censored", "paths.source_span_first_et", "paths.source_span_last_et", "paths.n_print_rows"],
-    "note": "day_registry.built is provenance namespace and is likewise never read; canary_member (the frozen 20-day selection) is read only as an audit coordinate and is not a substitute for built."
-  },
-  "prohibited": {
-    "read": ["outcome_*", "future_*", "v_*", "giveback_*", "tail_class_*", "session_peak_*", "session_close_*", "quote_*", "next_open", "next_et", "terminal_censored", "path_complete_to_session_end", "mfe_after_t", "mae_after_t", "every provenance/hash column", "every retrospective_only whole-day quality/census column"],
-    "computed": ["embeddings", "distance/density/neighbour geometry", "surrogates", "outcome labels", "buying rules", "statistical kill gates", "any fitted parameter or one-shot numeric gate"],
-    "note": "the report is a census of the observed tape; it selects nothing and kills nothing"
+  "numeric_dtypes": [
+   "int32",
+   "int64",
+   "float32",
+   "float64"
+  ],
+  "numeric_rules": "a numeric-summary column must be prospective_allowed, not retrospective_only, not coordinate_only, not provenance/censor/quality; keys, coordinates and masks follow the same namespace and flag rules. Hash, provenance, censor and whole-day quality columns are excluded from every numeric summary.",
+  "path_rules": "payload paths must be relative, traversal-free, resolve inside --root, and carry a guard_day-clean day inside the manifest day set",
+  "physical_deny_audit": "each scanned payload's physical schema is checked against the causal registry deny vocabulary; a denied column name refuses the run before any row is read",
+  "refusals": {
+   "contract": "illegal allowlist / hash mismatch / denied physical column / sealed day (no report is written)",
+   "integrity": "declared payload absent, row-count or sha256 mismatch, parent drift (report is written with status REFUSED and exit code 3)"
   }
+ },
+ "frozen": true,
+ "identity_derivation": {
+  "declared_cross_check": "compared with contract.json identity.expected_panel_census (paths 5905, memberships 6160, shared_paths 255)",
+  "shared_vs_independent_paths": "derived from memberships.path_id (a prospective key): distinct path_ids = tape paths carrying at least one membership; a path with >1 membership is a shared path; memberships_on_shared_paths and max_memberships_per_path come from the same tally. The paths table's own whole-day aggregates (n_memberships, families, membership_ids, last_entry_et, max_entry_rank) are retrospective_only after the PrefixBoundaryAudit fix (a later re-entry changes them - exactly the shared-path disclosure) and are NOT read; the paths payload still contributes its exact row count and the prospective anchors day/ticker/first_entry_et/min_entry_rank/session_end."
+ },
+ "layers": {
+  "coverage": {
+   "coordinates": [
+    "layer",
+    "day",
+    "scope",
+    "status",
+    "missingness_class",
+    "blocker_id",
+    "selectable_asof_et"
+   ],
+   "counts": [
+    "n_expected",
+    "n_present",
+    "n_missing"
+   ],
+   "derived": [],
+   "keys": [
+    "layer",
+    "day",
+    "scope"
+   ],
+   "masks": [],
+   "partition": "shared",
+   "prefix": "coverage",
+   "table": "coverage",
+   "tier": "all"
+  },
+  "day_registry": {
+   "coordinates": [
+    "month",
+    "block",
+    "feed_era",
+    "dow",
+    "session_end",
+    "is_early_close",
+    "canary_member",
+    "build_status"
+   ],
+   "counts": [
+    "n_panel_members",
+    "n_panel_paths",
+    "pit_n"
+   ],
+   "day_meta": true,
+   "derived": [],
+   "keys": [
+    "day"
+   ],
+   "masks": [
+    "raw_source_present",
+    "net_trades_present",
+    "net_bars_present",
+    "net_coverage_present",
+    "universe_present",
+    "candidates_present",
+    "anatomy_present",
+    "raw_inputs_hashed",
+    "qualified_floor_source"
+   ],
+   "partition": "shared",
+   "prefix": "day_registry",
+   "table": "day_registry",
+   "tier": "all"
+  },
+  "memberships": {
+   "accumulate": [
+    "path_id",
+    "member_id"
+   ],
+   "coordinates": [
+    "day",
+    "month",
+    "block",
+    "family",
+    "session_end",
+    "entry_rank",
+    "entry_et"
+   ],
+   "counts": [],
+   "derived": [],
+   "keys": [
+    "member_id"
+   ],
+   "magnitude": [
+    "entry_px"
+   ],
+   "masks": [],
+   "partition": "shared",
+   "prefix": "memberships",
+   "rank": [
+    "entry_rank"
+   ],
+   "table": "memberships",
+   "tier": "all"
+  },
+  "paths": {
+   "coordinates": [
+    "day",
+    "month",
+    "block",
+    "session_end",
+    "min_entry_rank"
+   ],
+   "counts": [
+    "first_entry_et"
+   ],
+   "derived": [],
+   "keys": [
+    "path_id"
+   ],
+   "masks": [],
+   "partition": "shared",
+   "prefix": "paths",
+   "table": "paths",
+   "tier": "all"
+  },
+  "quote_rosters_day": {
+   "coordinates": [
+    "roster_rule",
+    "snapshot_pop",
+    "snapshot_T",
+    "selectable_asof_et",
+    "snapshot_asof_et",
+    "union_member",
+    "day_union_first_selectable_et"
+   ],
+   "counts": [],
+   "derived": [],
+   "keys": [
+    "day",
+    "roster_rule",
+    "snapshot_pop",
+    "snapshot_T",
+    "rank"
+   ],
+   "magnitude": [
+    "score"
+   ],
+   "masks": [],
+   "partition": "day",
+   "prefix": "quote_rosters",
+   "rank": [
+    "rank"
+   ],
+   "table": "quote_rosters",
+   "tier": "quote_roster"
+  },
+  "quote_rosters_summary": {
+   "coordinates": [
+    "roster_rule",
+    "snapshot_pop",
+    "snapshot_T",
+    "selectable_asof_et",
+    "snapshot_asof_et",
+    "union_member",
+    "day_union_first_selectable_et"
+   ],
+   "counts": [],
+   "derived": [],
+   "keys": [
+    "day",
+    "roster_rule",
+    "snapshot_pop",
+    "snapshot_T",
+    "rank"
+   ],
+   "magnitude": [
+    "score"
+   ],
+   "masks": [],
+   "partition": "shared",
+   "prefix": "quote_rosters",
+   "rank": [
+    "rank"
+   ],
+   "table": "quote_rosters",
+   "tier": "quote_roster"
+  },
+  "race_candidate_net": {
+   "coordinates": [
+    "t",
+    "session_end",
+    "roster_rules"
+   ],
+   "counts": [
+    "px_et",
+    "roster_first_selectable_et"
+   ],
+   "derived": [],
+   "keys": [
+    "day",
+    "t",
+    "ticker"
+   ],
+   "magnitude": [
+    "px"
+   ],
+   "masks": [
+    "known_by_t",
+    "in_prospective_roster"
+   ],
+   "partition": "day",
+   "prefix": "race_candidate_net",
+   "staleness": [
+    "age_min"
+   ],
+   "table": "race_candidate_net",
+   "tier": "candidate_net"
+  },
+  "race_checkpoint_full": {
+   "coordinates": [
+    "T",
+    "session_end",
+    "population_def",
+    "roster_state"
+   ],
+   "counts": [
+    "score_open",
+    "n_eligible_open",
+    "order_slot_open",
+    "px_T_et"
+   ],
+   "derived": [],
+   "keys": [
+    "day",
+    "T",
+    "symbol"
+   ],
+   "magnitude": [
+    "px_T",
+    "o570"
+   ],
+   "masks": [
+    "known_by_t",
+    "pit_listed"
+   ],
+   "partition": "day",
+   "prefix": "race_checkpoint_full",
+   "rank": [
+    "rank_open"
+   ],
+   "staleness": [
+    "age_min"
+   ],
+   "table": "race_checkpoint_full",
+   "tier": "checkpoint"
+  },
+  "race_minute_full": {
+   "coordinates": [
+    "t",
+    "session_end",
+    "population_def",
+    "roster_state"
+   ],
+   "counts": [
+    "n_known",
+    "n_eligible",
+    "n_unfiltered",
+    "n_fresh_2m",
+    "order_slot",
+    "px_et"
+   ],
+   "derived": [],
+   "keys": [
+    "day",
+    "t",
+    "ticker"
+   ],
+   "magnitude": [
+    "px",
+    "gain",
+    "prev_close"
+   ],
+   "masks": [
+    "known_by_t",
+    "rank_eligible",
+    "fresh_2m",
+    "flag_nonpositive_px",
+    "flag_extreme_gain",
+    "flag_prevclose_discrepancy",
+    "pit_listed"
+   ],
+   "partition": "day",
+   "prefix": "race_minute_full",
+   "rank": [
+    "rank_known",
+    "rank_unfiltered",
+    "rank_fresh_2m"
+   ],
+   "staleness": [
+    "age_min"
+   ],
+   "table": "race_minute_full",
+   "tier": "broad_minute"
+  },
+  "selected_path_grid": {
+   "activity": [
+    "bar_volume",
+    "n_prints",
+    "n_bar_eligible_prints",
+    "n_excluded_prints",
+    "n_auction_prints"
+   ],
+   "coordinates": [
+    "session_end",
+    "bar_state",
+    "print_state"
+   ],
+   "counts": [
+    "first_entry_et",
+    "print_first_ts_us",
+    "print_last_ts_us"
+   ],
+   "derived": [
+    {
+     "inputs": [
+      "bar_high",
+      "bar_low",
+      "bar_close"
+     ],
+     "name": "bar_range_pct",
+     "op": "range_pct"
+    },
+    {
+     "inputs": [
+      "bar_close",
+      "bar_open"
+     ],
+     "name": "bar_ret_from_open",
+     "op": "div_minus_1"
+    }
+   ],
+   "keys": [
+    "day",
+    "ticker",
+    "et"
+   ],
+   "magnitude": [
+    "bar_open",
+    "bar_high",
+    "bar_low",
+    "bar_close",
+    "print_last_px"
+   ],
+   "masks": [
+    "within_session"
+   ],
+   "partition": "day",
+   "prefix": "selected_path_grid",
+   "table": "selected_path_grid",
+   "tier": "selected_paths"
+  },
+  "selected_path_prints": {
+   "activity": [
+    "size"
+   ],
+   "coordinates": [
+    "et_min",
+    "exchange",
+    "tape"
+   ],
+   "counts": [
+    "first_entry_et",
+    "trade_id"
+   ],
+   "derived": [
+    {
+     "inputs": [
+      "conditions"
+     ],
+     "name": "n_conditions",
+     "op": "list_len"
+    },
+    {
+     "inputs": [
+      "price",
+      "size"
+     ],
+     "name": "notional",
+     "op": "mul"
+    }
+   ],
+   "keys": [
+    "day",
+    "ticker",
+    "source_row_ordinal"
+   ],
+   "magnitude": [
+    "price"
+   ],
+   "masks": [
+    "within_session",
+    "in_projection_window"
+   ],
+   "partition": "day",
+   "prefix": "selected_path_prints",
+   "table": "selected_path_prints",
+   "tier": "selected_paths"
+  }
+ },
+ "output": {
+  "deterministic": true,
+  "filename": "blind_corpus_report.json",
+  "note": "counts are exact; numeric quantiles are estimated from a bounded deterministic subsample with a reported binomial CI"
+ },
+ "path_shape": [
+  {
+   "key": "path_id",
+   "layer": "selected_path_grid",
+   "span": "et"
+  },
+  {
+   "key": "path_id",
+   "layer": "selected_path_prints",
+   "span": "et_min"
+  }
+ ],
+ "producer": "factory/scripts/basket_tape_atlas_inspect.py",
+ "prohibited": {
+  "computed": [
+   "embeddings",
+   "distance/density/neighbour geometry",
+   "surrogates",
+   "outcome labels",
+   "buying rules",
+   "statistical kill gates",
+   "any fitted parameter or one-shot numeric gate"
+  ],
+  "note": "the report is a census of the observed tape; it selects nothing and kills nothing",
+  "read": [
+   "outcome_*",
+   "future_*",
+   "v_*",
+   "giveback_*",
+   "tail_class_*",
+   "session_peak_*",
+   "session_close_*",
+   "quote_*",
+   "next_open",
+   "next_et",
+   "terminal_censored",
+   "path_complete_to_session_end",
+   "mfe_after_t",
+   "mae_after_t",
+   "every provenance/hash column",
+   "every retrospective_only whole-day quality/census column"
+  ]
+ },
+ "purpose": "Freeze the positive per-column allowlist, strata and statistic plan used by factory/scripts/basket_tape_atlas_inspect.py to produce the outcome-blind corpus report of PLAN-TAPE-ATLAS.md section 2 (Stage 0C). It declares what may be READ and COUNTED; it freezes no representation, metric, weight, threshold, gate, distance or outcome, and it may not be read as a finding.",
+ "rank_change": [
+  {
+   "column": "rank_known",
+   "key": "ticker",
+   "layer": "race_minute_full",
+   "note": "consecutive-minute rank change inside a name; population/staleness/change distributions only, no outcome",
+   "time": "t"
+  }
+ ],
+ "rarity": {
+  "note": "rare/low-density candidate preservation counts: how many OBSERVED rows carry raw magnitude or raw activity at or above the frozen thresholds, by layer and block. No future tail label (tail_class_*, final_high_flag, remaining_run, cost_of_waiting, bars_to_*) is read or derived: these are density facts about the observed tape, not outcome strata.",
+  "rules": [
+   {
+    "column": "gain",
+    "kind": "magnitude",
+    "layer": "race_minute_full",
+    "thresholds": [
+     0.25,
+     0.5,
+     1.0,
+     2.0,
+     5.0,
+     10.0
+    ]
+   },
+   {
+    "column": "px",
+    "kind": "magnitude",
+    "layer": "race_minute_full",
+    "thresholds": [
+     1,
+     5,
+     10,
+     50,
+     100
+    ]
+   },
+   {
+    "column": "n_eligible",
+    "kind": "activity",
+    "layer": "race_minute_full",
+    "thresholds": [
+     10,
+     50,
+     100,
+     200
+    ]
+   },
+   {
+    "column": "px_T",
+    "kind": "magnitude",
+    "layer": "race_checkpoint_full",
+    "thresholds": [
+     1,
+     5,
+     10,
+     50,
+     100
+    ]
+   },
+   {
+    "column": "px",
+    "kind": "magnitude",
+    "layer": "race_candidate_net",
+    "thresholds": [
+     1,
+     5,
+     10,
+     50,
+     100
+    ]
+   },
+   {
+    "column": "bar_ret_from_open",
+    "kind": "magnitude",
+    "layer": "selected_path_grid",
+    "thresholds": [
+     0.25,
+     0.5,
+     1.0,
+     2.0,
+     5.0
+    ]
+   },
+   {
+    "column": "bar_close",
+    "kind": "magnitude",
+    "layer": "selected_path_grid",
+    "thresholds": [
+     1,
+     5,
+     10,
+     50,
+     100
+    ]
+   },
+   {
+    "column": "bar_volume",
+    "kind": "activity",
+    "layer": "selected_path_grid",
+    "thresholds": [
+     10000,
+     100000,
+     1000000
+    ]
+   },
+   {
+    "column": "n_prints",
+    "kind": "activity",
+    "layer": "selected_path_grid",
+    "thresholds": [
+     10,
+     100,
+     1000
+    ]
+   },
+   {
+    "column": "price",
+    "kind": "magnitude",
+    "layer": "selected_path_prints",
+    "thresholds": [
+     1,
+     5,
+     10,
+     50,
+     100
+    ]
+   },
+   {
+    "column": "size",
+    "kind": "activity",
+    "layer": "selected_path_prints",
+    "thresholds": [
+     1000,
+     10000,
+     100000
+    ]
+   },
+   {
+    "column": "notional",
+    "kind": "activity",
+    "layer": "selected_path_prints",
+    "thresholds": [
+     100000,
+     1000000,
+     10000000
+    ]
+   }
+  ]
+ },
+ "read_inputs": {
+  "causal_registry": "factory/artifacts/basket/phase2/ATLAS/TAPE/OBSERVATION/v0/causal_registry.json (denied_prefixes, denied_exact_columns, blocked_families; default deny)",
+  "contract_lock": "factory/artifacts/basket/phase2/ATLAS/TAPE/OBSERVATION/v0/contract_lock.json (expected schema/contract/registry hashes)",
+  "dev_days": "factory/scripts/basket_sim.py:dev_days \u2014 the manifest day set is compared with the canonical calendar (report only; no globbing)",
+  "guard_day": "factory/scripts/basket_sim.py:guard_day \u2014 every payload day is guarded before its path is opened",
+  "manifest": "--manifest: the immutable node manifest (payload_sha256 paths/sha256/rows, parents, core_hash). Payloads are resolved from it; nothing is globbed for reading, and rows are scanned one day-partition at a time.",
+  "no_legacy_panel": "no outcome panel, panel.parquet, basket_atlas_panel or outcome/censor namespace is imported, read or derived anywhere in this inspection",
+  "observation_contract": "factory/artifacts/basket/phase2/ATLAS/TAPE/OBSERVATION/v0/contract.json (allowed_blind_summaries, identity.expected_panel_census, day_guard, tier_support_matrix)",
+  "schema": "factory/artifacts/basket/phase2/ATLAS/TAPE/OBSERVATION/v0/schema.json (declared fields, dtypes, namespaces, coordinate_only / prospective_allowed / retrospective_only, supportable_by_tier)"
+ },
+ "sampling": {
+  "method": "splitmix64 hash of (partition salt, row index) thresholded at reservoir_rows/declared_rows; a layer whose scanned rows are <= reservoir_rows is exact",
+  "quantile_ci": 0.95,
+  "quantile_probs": [
+   0.001,
+   0.01,
+   0.05,
+   0.1,
+   0.25,
+   0.5,
+   0.75,
+   0.9,
+   0.95,
+   0.99,
+   0.999
+  ],
+  "reservoir_rows": 200000,
+  "salt": "freeze-o.blind-corpus-inspection.v0"
+ },
+ "status": "frozen",
+ "whole_day_aggregates_excluded": {
+  "columns": [
+   "paths.n_memberships",
+   "paths.families",
+   "paths.membership_ids",
+   "paths.last_entry_et",
+   "paths.max_entry_rank",
+   "race_candidate_net.net_coverage_class",
+   "day_registry.raw_roster_missing_n",
+   "day_registry.raw_roster_verified_absent_n",
+   "day_registry.raw_roster_missing_unresolved_n",
+   "day_registry.net_manifest_status",
+   "day_registry.net_reconciled",
+   "selected_path_grid.within_observed_span",
+   "race_minute_full.day_high_raw",
+   "race_minute_full.sip_high_day",
+   "race_minute_full.day_high_vs_sip_high_ratio",
+   "race_minute_full.day_envelope_warning",
+   "race_minute_full.prevclose_warning",
+   "race_minute_full.prevclose_vs_sip_clast_ratio",
+   "race_minute_full.prev_close_stale",
+   "race_minute_full.prev_close_sealed_prior",
+   "race_minute_full.prev_close_floor_qualified",
+   "race_minute_full.in_universe_file",
+   "race_checkpoint_full.hi",
+   "race_checkpoint_full.lo",
+   "race_checkpoint_full.c_last",
+   "race_checkpoint_full.vol",
+   "race_checkpoint_full.n_bars",
+   "race_checkpoint_full.first_et",
+   "race_checkpoint_full.last_et",
+   "race_checkpoint_full.delayed_open",
+   "race_checkpoint_full.ret_hi_open",
+   "race_checkpoint_full.ret_clast_open",
+   "race_checkpoint_full.rank_hi_open",
+   "race_checkpoint_full.n_eligible_retro",
+   "race_checkpoint_full.row_present",
+   "race_candidate_net.in_net_full_day",
+   "race_candidate_net.in_winners_open",
+   "race_candidate_net.in_winners_prev",
+   "race_candidate_net.day_last_et",
+   "race_candidate_net.day_n_bars",
+   "paths.coverage_class",
+   "paths.terminal_censored",
+   "paths.source_span_first_et",
+   "paths.source_span_last_et",
+   "paths.n_print_rows"
+  ],
+  "note": "day_registry.built is provenance namespace and is likewise never read; canary_member (the frozen 20-day selection) is read only as an audit coordinate and is not a substitute for built.",
+  "rule": "schema.json is the flag source of truth: retrospective_only=true or prospective_allowed=false means whole-day/future-derived, so the column may not enter any stratum or numeric summary here; it is listed under unobservable with that reason."
+ }
 }
