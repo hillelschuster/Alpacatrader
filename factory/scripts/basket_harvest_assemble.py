@@ -20,6 +20,7 @@ import basket_pm_snapshots as bps  # noqa: E402
 SECTIONS = [
     ("Unmanaged basket money map (all clocks x N x exits)", "readout.md"),
     ("Containment / capture funnel / joint tail", "containment.md"),
+    ("Winner/failure personality anatomy", "anatomy.md"),
     ("Member management rules (12)", "mgmt.md"),
     ("Policy grid (36+ handling policies)", "policies.md"),
     ("Basket capital: release -> cash / survivors / leader / reserve / dip", "basket.md"),
