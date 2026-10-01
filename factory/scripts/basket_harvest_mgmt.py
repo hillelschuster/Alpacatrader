@@ -40,7 +40,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import basket_pm_snapshots as bps  # noqa: E402
 
 SIDE = {100: 0.005, 150: 0.0075}
-DELTA_ENDS_OFFSET = {600, 630, 660, 720}  # absolute et endpoints for delta scoring
+DELTA_ENDS_OFFSET = {600, 630, 660, 690, 720}  # absolute et endpoints for delta scoring
 DEFAULTS = {
     "gb10": 0.10,
     "dmg": 0.10,
@@ -155,6 +155,29 @@ def eval_rules(bars: dict, fill_idx: int, fill_px: float, session_end: int, cfg:
                     res["tstop30"]["fired"] = True
                     res["tstop30"]["fire_i"] = i
     return res, ets, o, fill_px
+
+
+def _null_schema() -> dict:
+    sch = {"day": pl.Utf8, "variant": pl.Utf8, "clock": pl.Int32, "rank": pl.Int32,
+           "ticker": pl.Utf8, "rule": pl.Utf8, "fired": pl.Boolean, "session_end": pl.Int32,
+           "fire_et": pl.Int32, "exec_et": pl.Int32, "exec_px": pl.Float64,
+           "mfe_after": pl.Float64, "monster_after": pl.Boolean,
+           "rebuy_et": pl.Int32, "rebuy_px": pl.Float64,
+           "cand_ticker": pl.Utf8, "cand_fill_et": pl.Int32, "cand_fill_px": pl.Float64}
+    for E in sorted(DELTA_ENDS_OFFSET | {959, 779}):
+        sch[f"delta100_{E}"] = pl.Float64
+        sch[f"delta150_{E}"] = pl.Float64
+    return sch
+
+
+def normalize(df: pl.DataFrame) -> pl.DataFrame:
+    sch = _null_schema()
+    for c, t in sch.items():
+        if c not in df.columns:
+            df = df.with_columns(pl.lit(None, dtype=t).alias(c))
+        else:
+            df = df.with_columns(pl.col(c).cast(t))
+    return df.select(list(sch.keys()))
 
 
 def process_day(day: str, data_root: Path, se: int, cfg: dict, force: bool) -> str:
@@ -358,6 +381,7 @@ def process_day(day: str, data_root: Path, se: int, cfg: dict, force: bool) -> s
                 row[f"delta150_{E}"] = None if (v150 is None or hv150 is None) else v150 - hv150
             rows.append(row)
     df = pl.DataFrame(rows) if rows else pl.DataFrame(schema={"day": pl.Utf8, "rule": pl.Utf8})
+    df = normalize(df)
     fp, tmp = outd / f"{day}.parquet", outd / f"{day}.parquet.tmp"
     df.write_parquet(tmp)
     os.replace(tmp, fp)

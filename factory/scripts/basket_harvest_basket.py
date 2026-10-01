@@ -40,7 +40,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import basket_pm_snapshots as bps  # noqa: E402
 from basket_harvest_policies import load_bars, trigger_fire  # noqa: E402
 
-ENDPOINTS = [600, 630, 660, 720]
+ENDPOINTS = [600, 630, 660, 690, 720]
 SIDE = 0.005
 TRIGGERS = {
     "gb10": {"type": "gb", "g": 0.10},
@@ -182,6 +182,87 @@ def simulate(members, bars, leaders, se):
             pos_s, cash_s, nf = run((trig, mode))
             outs[f"{trig}|{mode}"] = (nf, cash_s,
                                       {E: value_of(pos_s, cash_s, E) for E in all_ends})
+
+    # ---- scale-in / reserve family: deploy only f0 at entry, hold the rest back ----
+    f0 = 2 / 3
+    pos_r = {}
+    n_filled = sum(1 for m in members if m["status"] == "filled")
+    for m in members:
+        if m["status"] != "filled":
+            pos_r.setdefault(m["ticker"], [])
+        else:
+            sh = (f0 / len(members)) / (m["fill_px"] * (1 + SIDE))
+            pos_r[m["ticker"]] = [[m["fill_et"], m["fill_px"], sh]]
+    reserve = (1 - f0) * n_filled / len(members)
+
+    def first_trigger_bar(H):
+        best = None
+        for m in members:
+            if m["status"] != "filled":
+                continue
+            b = bars.get(m["ticker"])
+            if not b:
+                continue
+            fi = bisect.bisect_left(b["et"], m["fill_et"])
+            for j in range(fi, len(b["et"])):
+                if b["high"][j] >= m["fill_px"] * (1 + H):
+                    if best is None or (b["et"][j], m["rank"]) < (best[0], best[3]):
+                        best = (int(b["et"][j]), m["ticker"], float(m["fill_px"]), m["rank"])
+                    break
+        return best
+
+    def deploy_single(H):
+        pos_s = {t: [list(p) for p in ps] for t, ps in pos_r.items()}
+        cash_s = reserve
+        tg = first_trigger_bar(H)
+        if tg is not None:
+            _, tk, _, _ = tg
+            b = bars.get(tk)
+            j = bisect.bisect_left(b["et"], tg[0] + 1)
+            if j < len(b["et"]):
+                px = b["open"][j]
+                sh = cash_s / (px * (1 + SIDE))
+                pos_s[tk].append([int(b["et"][j]), float(px), sh])
+                cash_s = 0.0
+        return pos_s, cash_s
+
+    def deploy_split630():
+        pos_s = {t: [list(p) for p in ps] for t, ps in pos_r.items()}
+        cash_s = reserve
+        targets = []
+        for m in members:
+            if m["status"] != "filled":
+                continue
+            b = bars.get(m["ticker"])
+            if not b:
+                continue
+            fi = bisect.bisect_left(b["et"], m["fill_et"])
+            hi = 0.0
+            for j in range(fi, len(b["et"])):
+                if b["et"][j] >= 630:
+                    break
+                hi = max(hi, b["high"][j])
+            if hi >= m["fill_px"] * 1.20:
+                targets.append(m["ticker"])
+        if targets:
+            share = cash_s / len(targets)
+            for tk in targets:
+                b = bars.get(tk)
+                j = bisect.bisect_left(b["et"], 631)
+                if j < len(b["et"]):
+                    px = b["open"][j]
+                    sh = share / (px * (1 + SIDE))
+                    pos_s[tk].append([int(b["et"][j]), float(px), sh])
+                    cash_s -= share
+        return pos_s, cash_s
+
+    for name, fn in (("scale|reserve_cash", None), ("scale|single20", lambda: deploy_single(0.20)),
+                     ("scale|single50", lambda: deploy_single(0.50)), ("scale|split630", deploy_split630)):
+        if fn is None:
+            pos_s, cash_s = ({t: [list(p) for p in ps] for t, ps in pos_r.items()}, reserve)
+        else:
+            pos_s, cash_s = fn()
+        outs[name] = (0, cash_s, {E: value_of(pos_s, cash_s, E) for E in all_ends})
     return outs
 
 

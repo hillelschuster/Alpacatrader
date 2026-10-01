@@ -36,7 +36,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import basket_pm_snapshots as bps  # noqa: E402
 
-ENDPOINTS = [600, 630, 660, 720]
+ENDPOINTS = [600, 630, 660, 690, 720]
 SIDE = 0.005
 
 
