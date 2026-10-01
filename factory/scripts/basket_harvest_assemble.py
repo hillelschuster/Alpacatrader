@@ -29,7 +29,6 @@ SECTIONS = [
     ("Trades coverage of selected names (local archive)", "trades_coverage.md"),
 ]
 
-
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--data-root", default=None)
@@ -50,6 +49,10 @@ def main() -> int:
     for k, v in counts.items():
         out.append(f"| {k} | {v} |")
     out.append("")
+    synth = ROOT / "factory" / "artifacts" / "basket" / "phase2" / "HARVEST01" / "SYNTHESIS.md"
+    if synth.exists():
+        out.append("\n---\n\n# SYNTHESIS (read first)\n")
+        out.append(synth.read_text())
     for title, fname in SECTIONS:
         p = rep / fname
         if not p.exists():
