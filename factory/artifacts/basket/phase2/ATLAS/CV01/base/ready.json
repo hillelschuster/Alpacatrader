@@ -1,0 +1,123 @@
+{
+ "ready": true,
+ "version": "cv01-base-v0",
+ "generated_utc": "2026-10-01T19:09:10Z",
+ "base_root": "/home/hillel/projects/Alpacatrader/data/atlas/continuation/cv01/base",
+ "manifest": "/home/hillel/projects/Alpacatrader/data/atlas/continuation/cv01/base/manifest.json",
+ "manifest_sha256": "78f534a3d7617a81ff3cac415299e36572c218d3570d0fef87457737eb923398",
+ "files": {
+  "states": {
+   "sha256": "60c65d43c190ee5b12ee80e7617f5c69614f99434d940e044edd2c0786946984",
+   "rows": 1900432
+  },
+  "executions": {
+   "sha256": "211cfd0d4bd5eb2d93a01f6d51f6955f8f7f5f773c6b16ace359cdb7011401b1",
+   "rows": 1900432
+  },
+  "members": {
+   "sha256": "7d9fd196a158d0626e307593ac7753d1c937b03e3b0f9bbc7acdd8eed0969f75",
+   "rows": 6160
+  }
+ },
+ "schema": {
+  "states": {
+   "member_id": "String",
+   "sleeve_day": "String",
+   "family": "String",
+   "entry_rank": "Int32",
+   "ticker": "String",
+   "block": "String",
+   "month": "String",
+   "et": "Int32",
+   "bar_index": "Int32",
+   "decision_et": "Int32",
+   "entry_et": "Int32",
+   "session_end": "Int32",
+   "clock_eligible": "Boolean",
+   "decision_eligible": "Boolean",
+   "bar_close": "Float64",
+   "running_high": "Float64",
+   "dist_from_running_high": "Float64",
+   "ret_from_fill": "Float64",
+   "mfe_so_far": "Float64",
+   "mfe_surrendered": "Float64",
+   "bars_since_entry": "Int32",
+   "bars_since_new_high": "Int32",
+   "reclaim_count": "Int32",
+   "failed_reclaim_count": "Int32",
+   "ret_1": "Float64",
+   "ret_3": "Float64",
+   "ret_5": "Float64",
+   "up_close_streak": "Int32",
+   "volume_vs_own_median": "Float64",
+   "volume_accel": "Float64",
+   "ret_percentile_candidates": "Float64",
+   "peer_ret_median": "Float64",
+   "peer_new_high_5": "Int32"
+  },
+  "executions": {
+   "member_id": "String",
+   "sleeve_day": "String",
+   "family": "String",
+   "entry_rank": "Int32",
+   "ticker": "String",
+   "et": "Int32",
+   "bar_index": "Int32",
+   "bar_open": "Float64",
+   "next_open": "Float64",
+   "next_et": "Int32",
+   "has_next_open": "Boolean",
+   "next_et_ge_session_end": "Boolean",
+   "entry_et": "Int32",
+   "session_end": "Int32"
+  },
+  "members": {
+   "member_id": "String",
+   "sleeve_day": "String",
+   "family": "String",
+   "entry_rank": "Int32",
+   "ticker": "String",
+   "block": "String",
+   "month": "String",
+   "entry_et": "Int32",
+   "session_end": "Int32",
+   "past_entry_px": "Float64",
+   "n_bars": "Int32",
+   "observed_last_bar_index": "Int32",
+   "observed_last_et": "Int32",
+   "source_hash": "String",
+   "terminal_censored": "Boolean",
+   "path_complete_to_session_end": "Boolean",
+   "future_member_last_et": "Int32",
+   "future_forced_flat_px": "Float64",
+   "session_peak_et": "Int32",
+   "session_peak_ret_from_entry": "Float64",
+   "session_peak_bars_from_entry": "Int32",
+   "session_close_ret_from_entry": "Float64",
+   "tail_class_50": "Boolean",
+   "tail_class_100": "Boolean",
+   "tail_class_300": "Boolean",
+   "giveback_fired_10": "Boolean"
+  }
+ },
+ "audit_only_columns": {
+  "members": [
+   "terminal_censored",
+   "path_complete_to_session_end",
+   "future_member_last_et",
+   "future_forced_flat_px",
+   "session_peak_et",
+   "session_peak_ret_from_entry",
+   "session_peak_bars_from_entry",
+   "session_close_ret_from_entry",
+   "tail_class_50",
+   "tail_class_100",
+   "tail_class_300",
+   "giveback_fired_10"
+  ],
+  "states": [],
+  "executions": [],
+  "note": "future-derived; labels for cross-checks only, never a selection rule, filter or state"
+ },
+ "checks_passed": true
+}

@@ -1,0 +1,38 @@
+# CV01 current-dollar base — captured command report (real run, not asserted)
+generated_utc: 2026-10-01T19:09:13Z
+cwd: /home/hillel/algo projects/worktrees/Alpacatrader/basket-phase2-f1
+python: 3.11.15   polars: 1.44.1   pyarrow: 25.0.1
+
+BUILD : /home/hillel/projects/Alpacatrader/.venv/bin/python factory/scripts/basket_current_dollar_base.py --out /home/hillel/projects/Alpacatrader/data/atlas/continuation/cv01/base
+SMOKE : /home/hillel/projects/Alpacatrader/.venv/bin/python factory/scripts/basket_current_dollar_base.py --self-test --out /home/hillel/projects/Alpacatrader/data/atlas/continuation/cv01/base
+smoke_exit_status: 0
+
+artifacts (sha256):
+  states.parquet.parquet: 60c65d43c190ee5b12ee80e7617f5c69614f99434d940e044edd2c0786946984
+  executions.parquet.parquet: 211cfd0d4bd5eb2d93a01f6d51f6955f8f7f5f773c6b16ace359cdb7011401b1
+  members.parquet.parquet: 7d9fd196a158d0626e307593ac7753d1c937b03e3b0f9bbc7acdd8eed0969f75
+  manifest.json: 78f534a3d7617a81ff3cac415299e36572c218d3570d0fef87457737eb923398
+  base_smoke.json: 1feaacd845a29152e86512cf83fe852d7ac7b04391d8a6035a50b837118f9543
+
+smoke checks (expected vs actual):
+  [PASS] base_files_present: expected=True actual=True
+  [PASS] manifest_overall_pass: expected=True actual=True
+  [PASS] specimen_found_early_close_half_day: expected=True actual=True
+  [PASS] specimen_found_censored: expected=True actual=True
+  [PASS] specimen_found_weld_sale_at_session_end: expected=True actual=True
+  [PASS] specimen_found_gap: expected=True actual=True
+  [PASS] forced_flat_precedence_no_eligible_decision_at_or_after_se_minus_1: expected=0 actual=0
+  [PASS] executions_missing_next_open_only_at_tape_end: expected=0 actual=0
+  [PASS] case_D_preflat_weld_rows_are_decision_eligible: expected=0 actual=0
+  [PASS] specimens_states_match_panel_recompute: expected=True actual=True
+  [PASS] decision_eligible_equals_clock_eligible: expected=0 actual=0
+  [PASS] last_observed_bar_keeps_clock_eligibility: expected=0 actual=0
+  [PASS] future_tape_suffix_cannot_alter_earlier_states: expected=True actual=True
+  [PASS] future_perturbation_cannot_alter_states: expected=True actual=True
+  [PASS] weld_sale_executes_at_session_end_open: expected=True actual=True
+  [PASS] weld_sale_price_equals_audit_forced_flat: expected=True actual=True
+  [PASS] gap_has_no_imputed_minute: expected=True actual=True
+  [PASS] gap_horizon_is_elapsed_et_not_bar_count: expected=True actual=True
+  [PASS] censored_partial_rows_retained: expected=True actual=True
+  [PASS] censored_last_bar_eligible_by_clock: expected=True actual=True
+  [PASS] censored_has_no_terminal_bar: expected=False actual=False

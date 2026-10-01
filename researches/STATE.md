@@ -8,6 +8,10 @@ Canary closed: B3≡A3 (58bbbf0c) and C≡D (f9346e6b, +UTC-timestamp row-group 
 ffd513ce…). ~2x faster, RSS 5.07→3.2 GiB. Coverage defects closed (NTZ observed; 54 B1/173 B2
 off-hours-only → 0 unresolved). Full 1,066-day corpus launched after this commit.
 
+**CV01 (authorized 2026-10-01 late, after EV-01; A/B DONE, audit PASS).** Two dev-only diagnostics runs A/B (not TestC, not a model), parent contract `factory/artifacts/basket/phase2/ATLAS/CV01/contract.json`; primitive **CV = W_hold/W_exit − 1** on the current next-open liquidation-$ baseline (entry cost sunk, sell fees common/cancelling); arm B = first giveback-10 sell → completed close ≥ GROSS actual exit price → STRICTLY later next-open buy; one cycle, no outsiders/sizing/reserved months/sub-minute/models; states past-only, incomplete partial horizons UNKNOWN (never 0), giant attribution never state. Readout: `factory/artifacts/basket/phase2/ATLAS/CV01/report.md`.
+**Results (dev anatomy, not policy; h = ET minutes):** A balanced CV h60 −0.438% / h120 −0.560% / h240 −0.805% (occupancy −0.449 / −0.708 / −1.138%), h0 exact 0; B: retaining beats this re-entry rule over the reported horizons h1–h240 (B−A −0.74/−0.81/−0.73/−0.66pp at h1/30/60/120) and **both branches fall below cash from ~15 minutes on**; no claim beyond the reported horizons.
+**EV01 is RETROSPECTIVE ANATOMY, not causal alpha** — it reads 30/60/120 objects later than the +1/+5/+30 decisions plus the whole future-N universe, so its earlier PASS is statistical separation, not actionability. Owners: SharedValuationBuilder / ContinuationAnatomy / OwnershipContinuity / CurrentDollarAudit. No profitable claim; a failing management family does NOT kill Atlas or race admission.
+
 ## UPDATE 2026-09-30 — Tape Atlas (ATA) observation lane: repairs solid, canary NOT complete (SUPERSEDED by the night update above)
 Read together with `factory/STATE.md` "2026-09-30 (later)" (authoritative chronicle paragraph).
 - **Current lane**: `researches/PLAN-TAPE-ATLAS.md` (observation before geometry, geometry before

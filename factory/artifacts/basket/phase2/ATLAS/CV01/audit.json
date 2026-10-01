@@ -1,0 +1,29 @@
+{
+ "status": "PASS",
+ "reviewer": "CurrentDollarAudit",
+ "method": "Read-only source review plus inspection of executed producer smoke reports and published real-data outputs; reviewer ran no builds or tests",
+ "producer_sha256": {
+  "base": "64c477c8bbac430924f262f21992991adad733a18540f9897896951343ef9a32",
+  "A": "2089a7c36a863b551469d5d365a81b6ed230856ed4d71e5922975480c4fcb395",
+  "B": "1caf2986fe0c1fdf0e130b3b918118d728340db10956c6eb4dcf8f8614068f86"
+ },
+ "manifest_sha256": {
+  "base": "78f534a3d7617a81ff3cac415299e36572c218d3570d0fef87457737eb923398",
+  "A": "b7a6d97bdcfab729656c1ea2c11eadbc6e330ed127d4811f56f8c8ac20635a8d",
+  "B": "669fcbf1b3438e26e0d03565aedecd3485babf1bf82ffebbb3539c99aacf9ac7"
+ },
+ "verified": [
+  "Clock-only causal eligibility; deleting/appending future tape does not alter earlier state eligibility",
+  "315 pre-flat states whose next executable sale is the session-end open preserved; reentry at or after close prohibited",
+  "185 unknown immediate valuations retained in causal risk-set coverage; incomplete later endpoints unknown, not zero or last-print imputed",
+  "A current-dollar ratio uses next executable liquidation value, no sunk-entry fee recharge; h=0 is exactly zero",
+  "B retains existing shares versus sale-funded rebuy; one additional round trip with 0.995/1.005 factor",
+  "Gross-exit-price reclaim observed only on completed post-sale bars; reentry executes strictly later at next printed open",
+  "Full 6160-member B census retained including one unresolved sale with null delta",
+  "Equal-member within day/family aggregation distinguished from occupancy; published support counts retained",
+  "B uncertainty uses day/month residual scores for the published estimand; A separately labels its uncertainty estimands",
+  "Corrected A quantile horizon keys and B per-event support indexing verified against actual outputs",
+  "Untrimmed tail labels used only for retrospective attribution, never state or population selection"
+ ],
+ "limitations": "Dev-only descriptive anatomy under the stated next-open execution and friction model. Not live fill verification, a predictor, a policy, or unseen-period confirmation. Unknown values remain explicitly reported."
+}

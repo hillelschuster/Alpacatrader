@@ -2671,7 +2671,8 @@ raised `ComputeError`; fixed with full-length inference (the registry builds and
 resolve). No signal/OOM (peak RSS 4.71 GiB, pre-pin ÷10⁶ conversion), no new
 manifest/summary/costs/selftest, and the source changed mid-run ⇒ **run 1 is smoke-only**. Producer
 re-frozen at `32a1d082…`; owner on hold. Next: lock re-freeze, then a fresh A/B run, `verify-canary`
-and audit.
+and audit. *(All superseded by the two sections below: the canary went GREEN at pin `f9346e6b` and the
+full 1,066-day corpus went GREEN, `core_full_ready: true`; this paragraph records the pre-closure state.)*
 
 **Corrections this cycle (source-only).** PIT fixed-width padding of `ECC`/`ETX`/`SAND` corrected
 injectively (5,535 → 5,535 distinct, collision-refused) → Feb-3 closes at 0 unresolved (17
@@ -2690,7 +2691,7 @@ untrimmed declared `[565, 965]` window, after the real NTZ counterexample (2025-
 **Open.** No full 1,066-day corpus; no outcome-blind inspection (PREPARED-NOT-RUN); Freeze R not frozen
 (DRAFT-NOT-RUN); no nearest-100 proof, no SSL run, no race tiers; geometry/sequence/race producers
 prepared-only. Nothing here is a retrieval, discovery or alpha result, and there is **no old
-`HistoricalBarsRepair` blocker** (that lane is closed).
+`HistoricalBarsRepair` blocker** (that lane is closed). *(Also superseded: blind Stage-0C inspection, Freeze R binding, all three race tiers and EV-01 have since landed — see below and the 2026-10-01 commits.)*
 
 **Aborts = kernel global OOM** — three kernel kills of `python` at 11:01:07 / 12:02:46 / 13:25:03
 (anon RSS 9.05 / 10.35 / 7.58 GiB), no agent-initiated termination, victim command lines
@@ -2727,3 +2728,12 @@ after (10 GiB operating reserve held). Independent closure at full scale: B1 off
 B2 = 248, `unresolved = 0` on all 60 acquisition days, zero B2 blocker appends, conservation exact.
 Emitter gaps to fix later (no source touch tonight): full manifest `status=canary_built` and
 `canary_days` listing all days; verify.json carries core_hash but no code pin.
+
+## 2026-10-01 (late) — CV01: two dev-only A/B diagnostics AUTHORIZED (after EV-01; A/B DONE, audit PASS)
+
+User authorized TWO dev-only diagnostics runs A/B (not TestC, not a model); parent contract `factory/artifacts/basket/phase2/ATLAS/CV01/contract.json`. The authorization came **after EV-01**, never before it. Readable readout: `factory/artifacts/basket/phase2/ATLAS/CV01/report.md`.
+**Results (dev anatomy, not a policy; h = ET minutes):** A day × family balanced CV h60 −0.438% / h120 −0.560% / h240 −0.805% (occupancy −0.449 / −0.708 / −1.138%), h0 exact 0, 1,888,885 clock-eligible decisions + 185 unknown liquidations, worst bucket 09:30–10:00 (h60 −1.27%, easing to −0.25% at 11:00–11:30), no EOD primary horizon. B: 5,165 GB10 sales (4,946 complete + 219 censored), 4,793 re-entries, 1 unresolved; retaining beats this re-entry rule over the reported horizons h1–h240 (B−A −0.74 / −0.81 / −0.73 / −0.66pp at h1/30/60/120, ≈5–16 t) and **both branches fall below cash from ~15 minutes on**. No claim is made beyond the reported horizons (thin support late).
+New primitive CV = W_hold/W_exit − 1 over the current next-open liquidation-$ baseline (entry cost sunk; sell fees common, cancelling); arm B = first giveback-10 sell → completed close ≥ GROSS actual exit price → STRICTLY later next-open buy.
+One cycle only: no outsiders, no sizing, no reserved months, no sub-minute, no models; states past-only, incomplete partial horizons kept UNKNOWN (never 0), giant attribution never state.
+**EV01 is RETROSPECTIVE ANATOMY, not causal alpha** — it reads 30/60/120 objects later than the +1/+5/+30 decisions plus the whole future-N universe, so its earlier PASS is statistical separation, not actionability.
+Owners: SharedValuationBuilder / ContinuationAnatomy / OwnershipContinuity / CurrentDollarAudit. No profitable claim; a failing management family does NOT kill Atlas or race admission.
