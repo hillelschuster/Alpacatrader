@@ -39,7 +39,7 @@ def main() -> int:
     rep.mkdir(parents=True, exist_ok=True)
 
     b = pl.scan_parquet(str(data_root / "harvest01" / "basket" / "*.parquet"),
-                        glob=True, extra_columns="ignore").collect()
+                        glob=True, extra_columns="ignore", missing_columns="insert").collect()
     if b.height == 0:
         print("no basket rows")
         return 1

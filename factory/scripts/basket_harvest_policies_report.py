@@ -32,12 +32,12 @@ def main() -> int:
     rep.mkdir(parents=True, exist_ok=True)
 
     p = pl.scan_parquet(str(data_root / "harvest01" / "policies" / "*.parquet"),
-                        glob=True, extra_columns="ignore").collect()
+                        glob=True, extra_columns="ignore", missing_columns="insert").collect()
     if p.height == 0:
         print("no policy rows")
         return 1
     fills = pl.scan_parquet(str(data_root / "harvest01" / "sim" / "fills" / "*.parquet"),
-                            glob=True, extra_columns="ignore").collect().select(
+                            glob=True, extra_columns="ignore", missing_columns="insert").collect().select(
         ["day", "variant", "clock", "rank", "ticker", "mfe_adj", "status"])
     p = p.join(fills, on=["day", "variant", "clock", "rank", "ticker"], how="left")
     p = p.filter(pl.col("status") == "filled")

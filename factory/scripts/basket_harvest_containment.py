@@ -51,15 +51,15 @@ def main() -> int:
     if not ch_files:
         print("no champs yet (selection pass still running?); nothing to do")
         return 0
-    ch = pl.scan_parquet(str(base / "champs" / "*.parquet"), glob=True, extra_columns="ignore").collect()
+    ch = pl.scan_parquet(str(base / "champs" / "*.parquet"), glob=True, extra_columns="ignore", missing_columns="insert").collect()
     ch = ch.filter(pl.col("prev_close_adj") > 0).with_columns(
         (pl.col("px_max") / pl.col("prev_close_adj") - 1).alias("gain_max_adj"))
     # quality filter same spirit as selection primary
     chq = ch.filter((~pl.col("flag_discrepancy")) & (pl.col("px_max") >= 0.05)
                     & (pl.col("gain_max_adj") <= 10.0))
-    sel = pl.scan_parquet(str(base / "selected" / "*.parquet"), glob=True, extra_columns="ignore").collect()
+    sel = pl.scan_parquet(str(base / "selected" / "*.parquet"), glob=True, extra_columns="ignore", missing_columns="insert").collect()
     fills = pl.scan_parquet(str(data_root / "harvest01" / "sim" / "fills" / "*.parquet"),
-                            glob=True, extra_columns="ignore").collect()
+                            glob=True, extra_columns="ignore", missing_columns="insert").collect()
 
     # day champions by session max gain (quality universe)
     champ = (chq.sort(["gain_max_adj", "ticker"], descending=[True, False])

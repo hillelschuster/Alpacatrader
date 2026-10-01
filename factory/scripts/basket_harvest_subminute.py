@@ -43,7 +43,7 @@ def main() -> int:
     rep.mkdir(parents=True, exist_ok=True)
 
     fills = pl.scan_parquet(str(data_root / "harvest01" / "sim" / "fills" / "*.parquet"),
-                            glob=True, extra_columns="ignore").collect()
+                            glob=True, extra_columns="ignore", missing_columns="insert").collect()
     fills = fills.filter((pl.col("variant") == "primary") & (pl.col("status") == "filled")
                          & pl.col("mfe_adj").is_not_null())
     giants = fills.filter(pl.col("mfe_adj") >= 1.0).sort("mfe_adj", descending=True)

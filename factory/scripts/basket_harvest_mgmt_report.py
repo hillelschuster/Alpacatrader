@@ -37,7 +37,7 @@ def main() -> int:
     rep = data_root / "harvest01" / "report"
     rep.mkdir(parents=True, exist_ok=True)
 
-    m = pl.scan_parquet(str(data_root / "harvest01" / "mgmt" / "*.parquet"), glob=True, extra_columns="ignore").collect()
+    m = pl.scan_parquet(str(data_root / "harvest01" / "mgmt" / "*.parquet"), glob=True, extra_columns="ignore", missing_columns="insert").collect()
     if m.height == 0:
         print("no mgmt rows")
         return 1
@@ -89,7 +89,7 @@ def main() -> int:
         pl.len().alias("n_members")))
     # tail split: members whose own post-fill MFE was large
     fills = pl.scan_parquet(str(data_root / "harvest01" / "sim" / "fills" / "*.parquet"),
-                            glob=True, extra_columns="ignore").collect().select(["day", "variant", "clock", "rank",
+                            glob=True, extra_columns="ignore", missing_columns="insert").collect().select(["day", "variant", "clock", "rank",
                                                          "ticker", "mfe_adj"])
     mm = m.join(fills, on=["day", "variant", "clock", "rank", "ticker"], how="left")
     tail = []
