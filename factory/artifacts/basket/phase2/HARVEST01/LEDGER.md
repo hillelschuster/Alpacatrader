@@ -57,7 +57,11 @@ sub-minute execution probe (sample), and the consolidated morning report.
 ## 2026-10-02 (~04:40) — PM acquisition CLOSED, causality audit applied
 
 - Broad PM snapshots complete: 1,066/1,066 days, index built (2,657 s wall, 3 workers,
-  zero errors on the final day log). Lane-completeness audit (PMAudit) running.
+  zero errors on the final day log). Lane-completeness audit (PMAudit): PASS on all 5
+  items — 1,066/1,066 manifests ok, 0 sha256 mismatches, index exact, 160/160 provider
+  spot-checks exact (8 days incl. an early close), 0 sanity violations over 2.68M rows.
+  Coverage context: PM prints cover ~36–40% of the PIT universe in 2021–23 vs ~54–57%
+  in 2025–26 (early-year PM liquidity is thinner).
 - Independent causality review (AUDIT-CAUSALITY.md) verified the core conventions by
   full recomputation — 12,768 sim-cell comparisons and 5,472 mgmt chained-delta
   comparisons matched exactly, selection/PM reads causal, split normalization correct
