@@ -38,7 +38,7 @@ def main() -> int:
     rep = data_root / "harvest01" / "report"
     rep.mkdir(parents=True, exist_ok=True)
     w = pl.scan_parquet(str(data_root / "harvest01" / "window" / "*.parquet"),
-                        glob=True).collect()
+                        glob=True, extra_columns="ignore").collect()
     if w.height == 0:
         print("no window rows")
         return 1
@@ -103,7 +103,7 @@ def main() -> int:
 
     mp = data_root / "harvest01" / "window" / "members"
     if mp.exists():
-        m = pl.scan_parquet(str(mp / "*.parquet"), glob=True).collect()
+        m = pl.scan_parquet(str(mp / "*.parquet"), glob=True, extra_columns="ignore").collect()
         if m.height:
             lines.append("\n## Individual member peak minute by entry clock (median, N<=4 members)")
             lines.append("| clock | median member peak | median peak return % | median close-from-fill % | n |")

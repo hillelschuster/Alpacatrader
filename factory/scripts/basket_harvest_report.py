@@ -44,7 +44,7 @@ def main() -> int:
     rep.mkdir(parents=True, exist_ok=True)
 
     cells = pl.scan_parquet(str(sim / "cells" / "*.parquet"),
-                            glob=True).collect()
+                            glob=True, extra_columns="ignore").collect()
     if cells.height == 0:
         print("no cells")
         return 1
@@ -73,7 +73,7 @@ def main() -> int:
     g.write_parquet(rep / "cell_summary.parquet")
 
     # ---- fills texture ----
-    fills = pl.scan_parquet(str(sim / "fills" / "*.parquet"), glob=True).collect()
+    fills = pl.scan_parquet(str(sim / "fills" / "*.parquet"), glob=True, extra_columns="ignore").collect()
     fill_stats = fills.group_by(["variant", "clock"]).agg([
         pl.col("status").eq("filled").mean().alias("fill_rate"),
         pl.col("entry_gap_min").filter(pl.col("status") == "filled").mean().alias("mean_gap"),
