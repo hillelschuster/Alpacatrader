@@ -131,7 +131,8 @@ def main() -> int:
                      f"{pc(r['med_slip'])} | {pc(r['mean_mfe'])} | {pc(r['mean_mae'])} |")
 
     lines.append("\n## Unknown (censored) counts — where the tape cannot price an exit")
-    unk = (prim.group_by(["clock", "exit"]).agg(
+    unk = (cells.filter((pl.col("variant") == "primary") & (pl.col("N") == 3))
+           .group_by(["clock", "exit"]).agg(
         pl.col("n_unknown").sum().alias("unk_total"),
         pl.len().alias("rows")).sort("unk_total", descending=True).head(10))
     lines.append("| clock | exit | unknown slots | rows |")
