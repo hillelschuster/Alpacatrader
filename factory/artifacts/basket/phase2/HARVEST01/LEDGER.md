@@ -54,6 +54,24 @@ select_final -> leaders -> bars -> sim -> readouts -> containment -> mgmt -> pol
 -> basket -> window (+ reports). Then: independent audits of the full-run numbers,
 sub-minute execution probe (sample), and the consolidated morning report.
 
+## 2026-10-02 (~04:40) — PM acquisition CLOSED, causality audit applied
+
+- Broad PM snapshots complete: 1,066/1,066 days, index built (2,657 s wall, 3 workers,
+  zero errors on the final day log). Lane-completeness audit (PMAudit) running.
+- Independent causality review (AUDIT-CAUSALITY.md) verified the core conventions by
+  full recomputation — 12,768 sim-cell comparisons and 5,472 mgmt chained-delta
+  comparisons matched exactly, selection/PM reads causal, split normalization correct
+  once, EOD/UNKNOWN rules exact — and found 6 defects; all fixed in commit 1de982f:
+  (1) replace_gb10 exec metadata nulled by a duplicated base-rule mapping;
+  (2) prev_used_src provenance label always "panel";
+  (3) sim emitted degenerate exit<=entry cells (now skipped per contract valid_cells;
+      same filter added to mgmt/policies/basket endpoints and the readout);
+  (4) mgmt never froze its rule config (now writes mgmt/_config.json);
+  (5) select crashed on a day without a panel file (now degrades with full schema);
+  (6) mgmt readout silently dropped replace_gb10 (now included).
+- All stale canary-lane outputs were deleted so the gated chain regenerates every lane
+  uniformly with the fixed code (1,066-day single-pass).
+
 ## Next serious confirmation (to be filled once the full grid lands)
 
 Candidates will be ranked only if they are positive on the FULL dev span, in BOTH
