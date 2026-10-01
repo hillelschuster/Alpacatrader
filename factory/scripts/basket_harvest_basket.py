@@ -55,37 +55,50 @@ GAP_BLOCK = 5
 def simulate(members, bars, leaders, se, clock):
     """members: list of dicts (rank, ticker, status, fill_et, fill_px). Returns dict of
     policy -> (fires, cash_end, value_at(E) dict)."""
-    # position state per ticker
-    pos = {}      # ticker -> list of [buy_et, buy_px, shares]
+    # initial positions: ticker -> list of [buy_et, buy_px, shares]
+    init = {}
+    base_blocked = 0.0
     for m in members:
         if m["status"] != "filled":
-            pos.setdefault(m["ticker"], [])
-            m["_blocked_cash"] = 1.0 / len(members)
+            base_blocked += 1.0 / len(members)
         else:
             sh = (1.0 / len(members)) / (m["fill_px"] * (1 + SIDE))
-            pos[m["ticker"]] = [[m["fill_et"], m["fill_px"], sh]]
-            m["_blocked_cash"] = 0.0
-    base_blocked = sum(m["_blocked_cash"] for m in members)
+            init.setdefault(m["ticker"], []).append([m["fill_et"], m["fill_px"], sh])
     all_ends = sorted({e for e in ENDPOINTS if e > clock and e < se} | {se})
 
-    def value_of(pos_s, cash_s, E):
-        """Basket value at endpoint E for a position state; None if UNKNOWN."""
-        tot = base_blocked + cash_s
-        for t, ps in pos_s.items():
+    def _state_of(E, log, side=SIDE, init_state=None, cash0=None):
+        """(value, cash) at endpoint E: replay only events with et <= E, then mark open
+        positions at their first bar open >= max(E, last_buy+1). No post-endpoint pricing."""
+        cash = base_blocked if cash0 is None else cash0
+        positions = {t: [list(p) for p in ps]
+                     for t, ps in (init if init_state is None else init_state).items()}
+        for ev in log:
+            if ev[1] > E:
+                break
+            kind, et, tk, px, shares = ev
+            if kind == "sell":
+                ps = positions.get(tk) or []
+                cash += sum(p[2] for p in ps) * px * (1 - side)
+                positions[tk] = []
+            else:
+                cash -= shares
+                positions.setdefault(tk, []).append([et, px, shares])
+        tot = cash
+        for t, ps in positions.items():
             if not ps:
                 continue
             b = bars.get(t)
             if not b:
-                return None
+                return None, cash
             last_buy = max(p[0] for p in ps)
-            if E == se:
-                j = bisect.bisect_left(b["et"], se)
-            else:
-                j = bisect.bisect_left(b["et"], max(E, last_buy + 1))
+            j = bisect.bisect_left(b["et"], se if E == se else max(E, last_buy + 1))
             if j >= len(b["et"]):
-                return None
-            tot += sum(p[2] for p in ps) * b["open"][j] * (1 - SIDE)
-        return tot - 1
+                return None, cash
+            tot += sum(p[2] for p in ps) * b["open"][j] * (1 - side)
+        return tot - 1, cash
+
+    def value_of(E, log):
+        return _state_of(E, log)[0]
 
     def member_px(tk, et):
         b = bars.get(tk)
@@ -111,23 +124,26 @@ def simulate(members, bars, leaders, se, clock):
                 fires.setdefault(tname, []).append((int(b["et"][f_i + 1]), m["ticker"], float(b["open"][f_i + 1])))
 
     def run(policy):
+        """Execute the policy over the whole session; return (event_log, n_fires)."""
         trig, mode = policy
         ev = sorted(fires.get(trig, []))
-        pos_s = {t: [list(p) for p in ps] for t, ps in pos.items()}
+        positions = {t: [list(p) for p in ps] for t, ps in init.items()}
+        log = []
         cash_s = 0.0
         n_fires = 0
         for (xet, tk, xpx) in ev:
-            ps = pos_s.get(tk) or []
+            ps = positions.get(tk) or []
             if not ps:
                 continue
             proceeds = sum(p[2] * xpx * (1 - SIDE) for p in ps)
-            pos_s[tk] = []
+            positions[tk] = []
+            log.append(("sell", xet, tk, xpx, 0.0))
             cash_s += proceeds
             n_fires += 1
             # redeploy
             if mode == "cash" or cash_s <= 0:
                 continue
-            held = [t for t, q in pos_s.items() if q]
+            held = [t for t, q in positions.items() if q]
             if mode == "market_leader":
                 clks = [c for c in leaders if c >= xet]
                 target = None
@@ -140,7 +156,8 @@ def simulate(members, bars, leaders, se, clock):
                     if bp:
                         px, bet = bp
                         sh = cash_s / (px * (1 + SIDE))
-                        pos_s.setdefault(target, []).append([bet, px, sh])
+                        positions.setdefault(target, []).append([bet, px, sh])
+                        log.append(("buy", bet, target, px, sh))
                         cash_s = 0.0
                 continue
             if not held:
@@ -154,7 +171,7 @@ def simulate(members, bars, leaders, se, clock):
                     j = bisect.bisect_left(b["et"], xet - 1)
                     if j >= len(b["et"]):
                         j = len(b["et"]) - 1
-                    g = b["close"][j] / pos_s[t][0][1] - 1
+                    g = b["close"][j] / positions[t][0][1] - 1
                     if best is None or g > bestg:
                         best, bestg = t, g
                 targets = [best] if best else []
@@ -167,21 +184,23 @@ def simulate(members, bars, leaders, se, clock):
                 b = bars.get(t)
                 if not b:
                     continue
-                j = bisect.bisect_left(b["et"], max(xet, pos_s[t][-1][0] + 1))
+                j = bisect.bisect_left(b["et"], max(xet, positions[t][-1][0] + 1))
                 if j >= len(b["et"]):
                     continue
                 px, bet = b["open"][j], b["et"][j]
                 sh = share_cash / (px * (1 + SIDE))
-                pos_s[t].append([bet, px, sh])
+                positions[t].append([bet, px, sh])
+                log.append(("buy", bet, t, px, sh))
                 cash_s -= share_cash
-        return pos_s, cash_s, n_fires
+        return log, n_fires
 
-    outs = {"base_hold": (0, 0.0, {E: value_of(pos, 0.0, E) for E in all_ends})}
+    outs = {"base_hold": (0, 0.0, {E: value_of(E, []) for E in all_ends})}
     for trig in TRIGGERS:
         for mode in MODES:
-            pos_s, cash_s, nf = run((trig, mode))
-            outs[f"{trig}|{mode}"] = (nf, cash_s,
-                                      {E: value_of(pos_s, cash_s, E) for E in all_ends})
+            log, nf = run((trig, mode))
+            log = sorted(log, key=lambda e: (e[1], 0 if e[0] == "sell" else 1))
+            outs[f"{trig}|{mode}"] = (nf, _state_of(se, log)[1],
+                                      {E: value_of(E, log) for E in all_ends})
 
     # ---- scale-in / reserve family: deploy only f0 at entry, hold the rest back ----
     f0 = 2 / 3
@@ -212,23 +231,20 @@ def simulate(members, bars, leaders, se, clock):
         return best
 
     def deploy_single(H):
-        pos_s = {t: [list(p) for p in ps] for t, ps in pos_r.items()}
-        cash_s = reserve
         tg = first_trigger_bar(H)
+        log = []
         if tg is not None:
             _, tk, _, _ = tg
             b = bars.get(tk)
             j = bisect.bisect_left(b["et"], tg[0] + 1)
             if j < len(b["et"]):
                 px = b["open"][j]
-                sh = cash_s / (px * (1 + SIDE))
-                pos_s[tk].append([int(b["et"][j]), float(px), sh])
-                cash_s = 0.0
-        return pos_s, cash_s
+                sh = reserve / (px * (1 + SIDE))
+                log.append(("buy", int(b["et"][j]), tk, float(px), sh))
+        return log
 
     def deploy_split630():
-        pos_s = {t: [list(p) for p in ps] for t, ps in pos_r.items()}
-        cash_s = reserve
+        log = []
         targets = []
         for m in members:
             if m["status"] != "filled":
@@ -245,22 +261,19 @@ def simulate(members, bars, leaders, se, clock):
             if hi >= m["fill_px"] * 1.20:
                 targets.append(m["ticker"])
         if targets:
-            share = cash_s / len(targets)
+            share = reserve / len(targets)
             for tk in targets:
                 b = bars.get(tk)
                 j = bisect.bisect_left(b["et"], 631)
                 if j < len(b["et"]):
                     px = b["open"][j]
                     sh = share / (px * (1 + SIDE))
-                    pos_s[tk].append([int(b["et"][j]), float(px), sh])
-                    cash_s -= share
-        return pos_s, cash_s
+                    log.append(("buy", int(b["et"][j]), tk, float(px), sh))
+        return log
 
     def deploy_dip(D):
         """Deploy the reserve into the FIRST member that dips >= D from its running high
         after its fill (buying weakness), then hold to the endpoint."""
-        pos_s = {t: [list(p) for p in ps] for t, ps in pos_r.items()}
-        cash_s = reserve
         best = None
         for m in members:
             if m["status"] != "filled":
@@ -276,25 +289,25 @@ def simulate(members, bars, leaders, se, clock):
                     if best is None or (b["et"][j], m["rank"]) < (best[0], best[3]):
                         best = (int(b["et"][j]), m["ticker"], float(m["fill_px"]), m["rank"])
                     break
+        log = []
         if best is not None:
             _, tk, _, _ = best
             b = bars.get(tk)
             j = bisect.bisect_left(b["et"], best[0] + 1)
             if j < len(b["et"]):
                 px = b["open"][j]
-                sh = cash_s / (px * (1 + SIDE))
-                pos_s[tk].append([int(b["et"][j]), float(px), sh])
-                cash_s = 0.0
-        return pos_s, cash_s
+                sh = reserve / (px * (1 + SIDE))
+                log.append(("buy", int(b["et"][j]), tk, float(px), sh))
+        return log
 
     for name, fn in (("scale|reserve_cash", None), ("scale|single20", lambda: deploy_single(0.20)),
                      ("scale|single50", lambda: deploy_single(0.50)), ("scale|split630", deploy_split630),
                      ("scale|dip10", lambda: deploy_dip(0.10)), ("scale|dip15", lambda: deploy_dip(0.15))):
-        if fn is None:
-            pos_s, cash_s = ({t: [list(p) for p in ps] for t, ps in pos_r.items()}, reserve)
-        else:
-            pos_s, cash_s = fn()
-        outs[name] = (0, cash_s, {E: value_of(pos_s, cash_s, E) for E in all_ends})
+        log = [] if fn is None else fn()
+        log = sorted(log, key=lambda e: (e[1], 1))
+        cash0 = base_blocked + reserve
+        vals = {E: _state_of(E, log, init_state=pos_r, cash0=cash0)[0] for E in all_ends}
+        outs[name] = (0, _state_of(se, log, init_state=pos_r, cash0=cash0)[1], vals)
     return outs
 
 
