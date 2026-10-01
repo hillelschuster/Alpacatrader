@@ -49,6 +49,12 @@ def main() -> int:
     def pct(x):
         return "" if x is None else f"{x * 100:.2f}"
 
+    def cap(x):
+        if x is None:
+            return ""
+        x = max(-2.0, min(1.5, x))
+        return f"{x * 100:.1f}"
+
     for N in (2, 3, 4):
         lines.append(f"\n## N={N}: median peak time and mean mark (%) by entry clock")
         lines.append("| clock | median peak | p25 | p75 | peak % | r660 | r690 | r720 | r780 | cap@720 | cap@780 |")
@@ -63,8 +69,8 @@ def main() -> int:
                 pct(s["r690"].mean() if "r690" in s.columns else None),
                 pct(s["r720"].mean() if "r720" in s.columns else None),
                 pct(s["r780"].mean() if "r780" in s.columns else None),
-                pct(s["cap720"].mean() if "cap720" in s.columns else None),
-                pct(s["cap780"].mean() if "cap780" in s.columns else None)))
+                cap(s["cap720"].median() if "cap720" in s.columns else None),
+                cap(s["cap780"].median() if "cap780" in s.columns else None)))
 
     lines.append("\n## Distribution of the basket mark at key window clocks (N=3, all clocks pooled)")
     lines.append("| mark clock | p10 % | p25 % | median % | p75 % | p90 % | mean % | pos share |")
