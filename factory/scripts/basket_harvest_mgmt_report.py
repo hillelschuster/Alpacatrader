@@ -25,7 +25,8 @@ import basket_pm_snapshots as bps  # noqa: E402
 
 ENDS = [600, 630, 660, 720, 959, 779]
 RULES = ["hold", "gb10", "dmg_wait", "failrec_a3", "failrec_a5", "failrec_a8",
-         "decay_v", "decay_nh", "tstop30", "gb10_half", "failrec_a5_half", "reentry_gb10"]
+         "decay_v", "decay_nh", "tstop30", "gb10_half", "failrec_a5_half",
+         "reentry_gb10", "replace_gb10"]
 
 
 def main() -> int:

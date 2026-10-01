@@ -49,6 +49,7 @@ def main() -> int:
         print("no cells")
         return 1
     cells = cells.with_columns(pl.col("day").map_elements(block_of, return_dtype=pl.Utf8).alias("block"))
+    cells = cells.filter(pl.col("exit") > pl.col("clock"))  # contract valid_cells
 
     g = cells.group_by(["variant", "clock", "N", "exit"]).agg([
         pl.len().alias("n_days"),

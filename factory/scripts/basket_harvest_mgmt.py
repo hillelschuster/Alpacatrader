@@ -205,9 +205,9 @@ def process_day(day: str, data_root: Path, se: int, cfg: dict, force: bool) -> s
                 leaders[int(c)] = sub.to_dicts()[0]
     t0 = time.time()
     rows = []
-    ends = sorted(e for e in DELTA_ENDS_OFFSET if e < se) + [se]
     import bisect
     for f in fills.filter(pl.col("status") == "filled").iter_rows(named=True):
+        ends = sorted(e for e in DELTA_ENDS_OFFSET if e < se and e > f["clock"]) + [se]
         b = bars.get(f["ticker"])
         if not b:
             continue
@@ -338,8 +338,6 @@ def process_day(day: str, data_root: Path, se: int, cfg: dict, force: bool) -> s
             row = {"day": day, "variant": f["variant"], "clock": f["clock"], "rank": f["rank"],
                    "ticker": f["ticker"], "rule": rule, "fired": bool(r["fired"]),
                    "session_end": se}
-            base_rule = "gb10" if rule in ("gb10_half", "reentry_gb10") else (
-                "failrec_a5" if rule == "failrec_a5_half" else rule)
             if base_rule in exec_of:
                 xi, xpx, xet = exec_of[base_rule]
                 row["fire_et"] = int(ets2[xi - 1]) if xi - 1 >= 0 else None
@@ -411,6 +409,9 @@ def main() -> int:
     cfg = dict(DEFAULTS)
     if args.config:
         cfg.update(json.loads(Path(args.config).read_text()))
+    out_root = data_root / "harvest01" / "mgmt"
+    out_root.mkdir(parents=True, exist_ok=True)
+    (out_root / "_config.json").write_text(json.dumps(cfg, indent=1))
     cal = json.loads(bps.CALENDAR.read_text())["evidence"]
     sends = {d: int(v["session_end"]) for d, v in cal.items()}
     days = list(args.days)

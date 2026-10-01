@@ -52,7 +52,7 @@ MODES = ["cash", "equal_survivors", "best_survivor", "market_leader"]
 GAP_BLOCK = 5
 
 
-def simulate(members, bars, leaders, se):
+def simulate(members, bars, leaders, se, clock):
     """members: list of dicts (rank, ticker, status, fill_et, fill_px). Returns dict of
     policy -> (fires, cash_end, value_at(E) dict)."""
     # position state per ticker
@@ -66,7 +66,7 @@ def simulate(members, bars, leaders, se):
             pos[m["ticker"]] = [[m["fill_et"], m["fill_px"], sh]]
             m["_blocked_cash"] = 0.0
     base_blocked = sum(m["_blocked_cash"] for m in members)
-    all_ends = sorted(set(ENDPOINTS + [se]))
+    all_ends = sorted({e for e in ENDPOINTS if e > clock and e < se} | {se})
 
     def value_of(pos_s, cash_s, E):
         """Basket value at endpoint E for a position state; None if UNKNOWN."""
@@ -329,7 +329,7 @@ def process_day(day: str, data_root: Path, se: int, force: bool) -> str:
         allm = fv.to_dicts()
         for N in (1, 2, 3, 4):
             members = allm[:N]
-            outs = simulate(members, bars, leaders, se)
+            outs = simulate(members, bars, leaders, se, int(clock))
             for pol, (nf, cash_s, vals) in outs.items():
                 for E, v in vals.items():
                     rows.append({"day": day, "clock": int(clock), "N": N, "policy": pol,

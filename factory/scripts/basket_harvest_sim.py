@@ -158,6 +158,8 @@ def process_day(day: str, data_root: Path, sends: dict, force: bool) -> str:
 
             for N in N_LADDER:
                 for E in exit_clocks:
+                    if E <= int(clock):
+                        continue  # contract: valid_cells = exit > entry clock
                     tot100 = tot150 = tot_gross = 0.0
                     n_fill = n_block = n_unk = 0
                     for r in range(1, N + 1):

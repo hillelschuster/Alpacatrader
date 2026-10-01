@@ -20,12 +20,13 @@
   "cash_return": 0,
   "management": {
     "run_order": "unmanaged basket economics first, then named simple rule families; retain full grid including failures",
-    "benchmark_only": ["hold", "peak_giveback_10pct", "entry_damage_10pct", "entry_damage_15pct"],
-    "hypothesis_families": ["failed_recovery_then_renewed_low", "own_damage_plus_participation_decay", "own_damage_plus_broken_high_cadence", "clock_checkpoint_own_damage_plus_failed_repair"],
+    "benchmark_only": ["hold", "peak_giveback_10pct", "entry_damage_10pct"],
+    "hypothesis_families": ["failed_recovery_then_renewed_low", "own_damage_plus_participation_decay", "own_damage_plus_broken_high_cadence", "clock_checkpoint_own_damage_plus_failed_repair", "partial_scale_out", "reentry_same_name", "rotation_to_current_leader", "redistribute_to_survivors", "reserve_scale_in_strength_time_dip"],
     "maximum_new_variants_per_family": 3,
     "freeze_numerical_specs_before_policy_pnl": true,
     "exit_once": true,
-    "no_reentry_or_replacement": true,
+    "no_reentry_or_replacement": false,
+    "note_amended_2026_10_02": "re-entry, rotation, partials and reserve scale-in are explicitly authorized handling variants (owner directive); the frozen numbers live in each lane's _config.json / _grid.json written at run time",
     "controls": "same entry/end clocks, costs, supported prices; hold, cash and matched-time/exit-count member-release placebo to distinguish member information from merely less exposure",
     "prior_art": "Old R2 damage+wait and E1 fitted exhaustion are closed formulations, not novel candidates; their benchmarks do not reopen them. No model, threshold optimization, score fitting or rescue slices."
   },

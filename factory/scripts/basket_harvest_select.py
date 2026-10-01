@@ -10,7 +10,9 @@ RTH close, split-normalized (the displayed-change convention a market screener s
 
 Sources and causal reads:
   * RTH clocks:  data/atlas/observation/v0/race.minute_full (full broad 1-min board).
-    Decision row t = clock-1 (last completed minute known at the clock), known_by_t true.
+    Decision row t = C (the panel's px at row t is the close of the last completed bar
+    with et <= t-1, so row C carries exactly the information complete at the clock),
+    known_by_t true.
     prev_close/flags come from the panel itself (it carries prev_close_day/source and
     quality flags; its raw denominator is split-unadjusted, which we normalize).
   * PM clocks:   data/sip/pm_snapshots (this lane's acquisition). Decision px = close of
@@ -112,13 +114,18 @@ def build_universe(day: str, prev_day: str, splits: pl.DataFrame, data_root: Pat
     u = panel_universe(day, data_root)
     cp = compact_prev(data_root, prev_day)
     if u is None:
-        u = pl.DataFrame({"ticker": []}, schema={"ticker": pl.Utf8})
+        u = pl.DataFrame(schema={"ticker": pl.Utf8, "prev_close_panel": pl.Float64,
+                                 "prev_close_day": pl.Utf8, "prev_close_source": pl.Utf8,
+                                 "flag_discrepancy": pl.Boolean, "flag_nonpos": pl.Boolean,
+                                 "pit_listed": pl.Boolean, "session_end": pl.Int32})
     if cp is not None:
         u = u.join(cp, on="ticker", how="full", coalesce=True)
+        u = u.with_columns(
+            pl.when(pl.col("prev_close_panel").is_not_null()).then(pl.lit("panel"))
+              .otherwise(pl.lit("compact")).alias("prev_used_src"))
         u = u.with_columns(pl.col("prev_close_panel").fill_null(pl.col("prev_close_compact")))
-    u = u.with_columns(
-        pl.when(pl.col("prev_close_panel").is_not_null()).then(pl.lit("panel"))
-          .otherwise(pl.lit("compact")).alias("prev_used_src"))
+    else:
+        u = u.with_columns(pl.lit("panel").alias("prev_used_src"))
     u = u.with_columns(pl.col("prev_close_panel").alias("prev_close_raw"))
     sf = split_map_for_day(day, prev_day, splits).rename({"symbol": "ticker"})
     u = u.join(sf, on="ticker", how="left").with_columns(

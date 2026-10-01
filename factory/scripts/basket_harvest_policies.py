@@ -269,9 +269,9 @@ def process_day(day: str, data_root: Path, se: int, grid: list[dict], force: boo
             if sub.height:
                 leaders[int(c)] = sub.to_dicts()[0]
     t0 = time.time()
-    ends = sorted(e for e in ENDPOINTS if e < se) + [se]
     rows = []
     for f in fills.filter(pl.col("status") == "filled").iter_rows(named=True):
+        ends = sorted(e for e in ENDPOINTS if e < se and e > f["clock"]) + [se]
         b = bars.get(f["ticker"])
         if not b:
             continue
