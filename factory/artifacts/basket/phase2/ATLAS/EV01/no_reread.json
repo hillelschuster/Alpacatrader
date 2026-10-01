@@ -1,0 +1,7 @@
+{
+ "pre_registration_sha256": "ce61fcaf8ffcb575c3359b2a3801b227fc2e3af8cae9575fa118b5ae0d2e7d85",
+ "executed_once": true,
+ "statement": "The outcome-touching read of PRE-REG-TAPE-ATLAS-EV01 was executed exactly once. No horizon re-selection, no re-run, no peek before the descriptor freeze; every result including nulls is published. Descriptors were published (descriptors.parquet, sha 534fdb7afe8ecc50472e088f13ec457b1d5ba337ad101e231357c54e0effafe5) before this step opened the panel.",
+ "n_bootstrap_draws": 10000,
+ "seed": 20260922
+}

@@ -1,0 +1,20 @@
+# EV-01 verdicts (K1..K7 verbatim apply)
+
+d_density_balanced|N1: PASS  fired=[]
+    S1_pooled=-0.233598 bonf_ci=[-0.269708183866011, -0.19690478721525423] S2_spread=-0.089056
+d_density_balanced|N5: PASS  fired=[]
+    S1_pooled=-0.248302 bonf_ci=[-0.28493817694142776, -0.21156164803813712] S2_spread=-0.097445
+d_density_balanced|N30: PASS  fired=[]
+    S1_pooled=-0.224771 bonf_ci=[-0.2616982796043948, -0.1893335431362468] S2_spread=-0.089758
+d_rare|N1: DISMISS  fired=['K1', 'K2', 'K4']
+    S1_pooled=-0.003827 bonf_ci=[-0.04043113694398923, 0.030515397639436] S2_spread=-0.017897  K3_voided=['block1', 'block2']
+d_rare|N5: DISMISS  fired=['K1', 'K2', 'K4']
+    S1_pooled=0.006716 bonf_ci=[-0.029774246528722025, 0.042109286757943] S2_spread=-0.008586  K3_voided=['block1', 'block2']
+d_rare|N30: DISMISS  fired=['K4']
+    S1_pooled=0.045983 bonf_ci=[0.007897291682700862, 0.08354245312085438] S2_spread=0.003278  K3_voided=['block1', 'block2']
+d_learned_nn|N1: DISMISS  fired=['K3']
+    S1_pooled=-0.042602 bonf_ci=[-0.06790122334324435, -0.017176757269954115] S2_spread=0.035666
+d_learned_nn|N5: PASS  fired=[]
+    S1_pooled=-0.055196 bonf_ci=[-0.08158150644096629, -0.029465490646912486] S2_spread=0.018538
+d_learned_nn|N30: DISMISS  fired=['K4']
+    S1_pooled=-0.063615 bonf_ci=[-0.09393164700721543, -0.035409651804569765] S2_spread=-0.009932

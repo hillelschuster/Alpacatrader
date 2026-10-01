@@ -1,0 +1,333 @@
+{
+  "rule": {
+    "cli": "hold_flat",
+    "kind": "hold",
+    "state_columns": [],
+    "panel_columns": [],
+    "params": {}
+  },
+  "friction_bps_total": 100.0,
+  "friction_side": 0.005,
+  "friction_convention": "per side side=bps_total/2/10000; a committed dollar buys 1/(1+side) of exposure and returns (1+gross)*(1-side) on exit; entry friction is identical on both legs, so delta = k*(gross_rule - gross_hold) with k=(1-side)/(1+side)",
+  "n_members_total": 6160,
+  "n_members_judged": 5887,
+  "n_members_unresolved_censored": 273,
+  "by_family_total": {
+    "A_pm": {
+      "n_members": 3042,
+      "n_members_unresolved_censored": 146,
+      "n_early_exits": 0,
+      "failure_tax_avoided": 0.0,
+      "dollars_destroyed": 0.0,
+      "net_dollar_ledger": 0.0
+    },
+    "B600": {
+      "n_members": 2845,
+      "n_members_unresolved_censored": 127,
+      "n_early_exits": 0,
+      "failure_tax_avoided": 0.0,
+      "dollars_destroyed": 0.0,
+      "net_dollar_ledger": 0.0
+    }
+  },
+  "accounting_views": {
+    "sleeve_accounting": {
+      "n_members": 5887,
+      "failure_tax_avoided": 0.0,
+      "dollars_destroyed": 0.0,
+      "net_dollar_ledger": 0.0,
+      "n_giants_cut": 0,
+      "n_giants_cut_300": 0,
+      "n_reentry_candidates": 0,
+      "n_early_exits": 0,
+      "note": "one row per filled sleeve member: the same (day,ticker) path can be held by more than one sleeve, so these totals are NOT independent-path inference",
+      "n_paths": 5640,
+      "n_shared_paths": 247,
+      "n_members_on_shared_paths": 494,
+      "shared_path_net_sum": 0.0,
+      "n_paths_all_members": 5905,
+      "n_shared_paths_all_members": 255,
+      "n_members_on_shared_paths_all_members": 510
+    },
+    "independent_path_accounting": {
+      "n_members": 5640,
+      "failure_tax_avoided": 0.0,
+      "dollars_destroyed": 0.0,
+      "net_dollar_ledger": 0.0,
+      "n_giants_cut": 0,
+      "n_giants_cut_300": 0,
+      "n_reentry_candidates": 0,
+      "n_early_exits": 0,
+      "note": "one row per (day,ticker) market path: duplicates collapsed by the declared deterministic rule, so this view is free of sleeve double counting",
+      "rule": "keep A_pm over B600, then the lower entry_rank, then the alphabetically first family",
+      "n_paths": 5640,
+      "n_shared_paths": 247,
+      "n_members_dropped_by_dedup": 247
+    },
+    "priority_sensitivity": {
+      "note": "the duplicate rule is a choice, so both priority orders are reported; a small delta means the sleeve totals are not driven by which sleeve is kept",
+      "net_B600_first": 0.0,
+      "net_A_pm_first": 0.0,
+      "delta": 0.0
+    }
+  },
+  "reconciliation_drift_n": 0,
+  "reconciliation_clean": true,
+  "blocks": {
+    "block1": {
+      "n_members": 4053,
+      "n_members_total": 4218,
+      "n_members_unresolved_censored": 165,
+      "n_members_unscored_other": 0,
+      "n_early_exits": 0,
+      "n_hold_like": 4053,
+      "n_triggered_after_forced_flat": 0,
+      "n_giveback_after_forced_flat": 0,
+      "failure_tax_avoided": 0.0,
+      "dollars_destroyed": 0.0,
+      "net_dollar_ledger": 0.0,
+      "giant_dollars_destroyed_100": 0,
+      "giant_dollars_destroyed_300": 0,
+      "n_giants_cut": 0,
+      "n_giants_cut_300": 0,
+      "n_giants_cut_any_delta_sign": 0,
+      "oracle_forward_mfe_ratio_sum_100": 0,
+      "oracle_forward_mfe_ratio_sum_300": 0,
+      "oracle_entry_scaled_forward_mfe_100": 0,
+      "oracle_entry_scaled_forward_mfe_300": 0,
+      "n_reentry_candidates": 0,
+      "n_reentry_candidates_giants": 0,
+      "unresolved_censored": {
+        "n_members": 165,
+        "delta_status": "unresolved for every censored member: the forced-flat baseline does not exist on a tape without a terminal print, so no net and no delta is formed (null is never read as zero or as the last print)",
+        "observed_exits": {
+          "note": "SEPARATE PARTITION \u2014 an observed rule-side exit on the causal tape (known trigger plus an executable next open). These are observations only: they carry no baseline, are never combined with a fabricated one, and are excluded from failure_tax_avoided / dollars_destroyed / net_dollar_ledger.",
+          "source": "hold_flat takes no exit, so no observed rule-side dollars exist",
+          "n_exits": 0,
+          "n_members_without_executable_exit": 165,
+          "rule_side_net_sum": 0,
+          "mean_rule_side_net": null
+        }
+      },
+      "close_reference_baseline": {
+        "note": "LABELLED DIAGNOSTIC ONLY \u2014 the same per-member differences computed against the close-only reference `v_hold_flat` (close of the session-end bar). This is NOT the executable baseline and is never used in failure_tax_avoided, dollars_destroyed or net_dollar_ledger.",
+        "net_dollar_ledger": 3.955828491081001,
+        "n_members": 4053
+      },
+      "mean_delta": 0.0,
+      "worst_delta": 0.0,
+      "best_delta": 0.0,
+      "fwd_mfe_check_n": 0,
+      "fwd_mfe_mismatch_n": 0,
+      "forced_flat_check_n": 4053,
+      "forced_flat_mismatch_n": 0,
+      "level_ret_check_n": 0,
+      "level_ret_mismatch_n": 0,
+      "tail_class_100_check_n": 0,
+      "tail_class_100_mismatch_n": 0,
+      "tail_class_300_mismatch_n": 0,
+      "giveback_locator_check_n": 0,
+      "giveback_locator_mismatch_n": 0,
+      "giants_cut": [],
+      "reentry_candidates": [],
+      "by_family": {
+        "A_pm": {
+          "n_members": 2114,
+          "failure_tax_avoided": 0.0,
+          "dollars_destroyed": 0.0,
+          "net_dollar_ledger": 0.0,
+          "n_early_exits": 0,
+          "n_members_unresolved_censored": 80
+        },
+        "B600": {
+          "n_members": 1939,
+          "failure_tax_avoided": 0.0,
+          "dollars_destroyed": 0.0,
+          "net_dollar_ledger": 0.0,
+          "n_early_exits": 0,
+          "n_members_unresolved_censored": 85
+        }
+      },
+      "accounting_views": {
+        "sleeve_accounting": {
+          "n_members": 4053,
+          "failure_tax_avoided": 0.0,
+          "dollars_destroyed": 0.0,
+          "net_dollar_ledger": 0.0,
+          "n_giants_cut": 0,
+          "n_giants_cut_300": 0,
+          "n_reentry_candidates": 0,
+          "n_early_exits": 0,
+          "note": "one row per filled sleeve member: the same (day,ticker) path can be held by more than one sleeve, so these totals are NOT independent-path inference",
+          "n_paths": 3865,
+          "n_shared_paths": 188,
+          "n_members_on_shared_paths": 376,
+          "shared_path_net_sum": 0.0,
+          "n_paths_all_members": 4025,
+          "n_shared_paths_all_members": 193,
+          "n_members_on_shared_paths_all_members": 386
+        },
+        "independent_path_accounting": {
+          "n_members": 3865,
+          "failure_tax_avoided": 0.0,
+          "dollars_destroyed": 0.0,
+          "net_dollar_ledger": 0.0,
+          "n_giants_cut": 0,
+          "n_giants_cut_300": 0,
+          "n_reentry_candidates": 0,
+          "n_early_exits": 0,
+          "note": "one row per (day,ticker) market path: duplicates collapsed by the declared deterministic rule, so this view is free of sleeve double counting",
+          "rule": "keep A_pm over B600, then the lower entry_rank, then the alphabetically first family",
+          "n_paths": 3865,
+          "n_shared_paths": 188,
+          "n_members_dropped_by_dedup": 188
+        },
+        "priority_sensitivity": {
+          "note": "the duplicate rule is a choice, so both priority orders are reported; a small delta means the sleeve totals are not driven by which sleeve is kept",
+          "net_B600_first": 0.0,
+          "net_A_pm_first": 0.0,
+          "delta": 0.0
+        }
+      },
+      "checks": {
+        "net_identity": true,
+        "giants_100_subset_of_destroyed": true,
+        "giants_300_subset_of_100": true,
+        "no_censored_in_executable_aggregates": true
+      }
+    },
+    "block2": {
+      "n_members": 1834,
+      "n_members_total": 1942,
+      "n_members_unresolved_censored": 108,
+      "n_members_unscored_other": 0,
+      "n_early_exits": 0,
+      "n_hold_like": 1834,
+      "n_triggered_after_forced_flat": 0,
+      "n_giveback_after_forced_flat": 0,
+      "failure_tax_avoided": 0.0,
+      "dollars_destroyed": 0.0,
+      "net_dollar_ledger": 0.0,
+      "giant_dollars_destroyed_100": 0,
+      "giant_dollars_destroyed_300": 0,
+      "n_giants_cut": 0,
+      "n_giants_cut_300": 0,
+      "n_giants_cut_any_delta_sign": 0,
+      "oracle_forward_mfe_ratio_sum_100": 0,
+      "oracle_forward_mfe_ratio_sum_300": 0,
+      "oracle_entry_scaled_forward_mfe_100": 0,
+      "oracle_entry_scaled_forward_mfe_300": 0,
+      "n_reentry_candidates": 0,
+      "n_reentry_candidates_giants": 0,
+      "unresolved_censored": {
+        "n_members": 108,
+        "delta_status": "unresolved for every censored member: the forced-flat baseline does not exist on a tape without a terminal print, so no net and no delta is formed (null is never read as zero or as the last print)",
+        "observed_exits": {
+          "note": "SEPARATE PARTITION \u2014 an observed rule-side exit on the causal tape (known trigger plus an executable next open). These are observations only: they carry no baseline, are never combined with a fabricated one, and are excluded from failure_tax_avoided / dollars_destroyed / net_dollar_ledger.",
+          "source": "hold_flat takes no exit, so no observed rule-side dollars exist",
+          "n_exits": 0,
+          "n_members_without_executable_exit": 108,
+          "rule_side_net_sum": 0,
+          "mean_rule_side_net": null
+        }
+      },
+      "close_reference_baseline": {
+        "note": "LABELLED DIAGNOSTIC ONLY \u2014 the same per-member differences computed against the close-only reference `v_hold_flat` (close of the session-end bar). This is NOT the executable baseline and is never used in failure_tax_avoided, dollars_destroyed or net_dollar_ledger.",
+        "net_dollar_ledger": 2.145593262047382,
+        "n_members": 1834
+      },
+      "mean_delta": 0.0,
+      "worst_delta": 0.0,
+      "best_delta": 0.0,
+      "fwd_mfe_check_n": 0,
+      "fwd_mfe_mismatch_n": 0,
+      "forced_flat_check_n": 1834,
+      "forced_flat_mismatch_n": 0,
+      "level_ret_check_n": 0,
+      "level_ret_mismatch_n": 0,
+      "tail_class_100_check_n": 0,
+      "tail_class_100_mismatch_n": 0,
+      "tail_class_300_mismatch_n": 0,
+      "giveback_locator_check_n": 0,
+      "giveback_locator_mismatch_n": 0,
+      "giants_cut": [],
+      "reentry_candidates": [],
+      "by_family": {
+        "A_pm": {
+          "n_members": 928,
+          "failure_tax_avoided": 0.0,
+          "dollars_destroyed": 0.0,
+          "net_dollar_ledger": 0.0,
+          "n_early_exits": 0,
+          "n_members_unresolved_censored": 66
+        },
+        "B600": {
+          "n_members": 906,
+          "failure_tax_avoided": 0.0,
+          "dollars_destroyed": 0.0,
+          "net_dollar_ledger": 0.0,
+          "n_early_exits": 0,
+          "n_members_unresolved_censored": 42
+        }
+      },
+      "accounting_views": {
+        "sleeve_accounting": {
+          "n_members": 1834,
+          "failure_tax_avoided": 0.0,
+          "dollars_destroyed": 0.0,
+          "net_dollar_ledger": 0.0,
+          "n_giants_cut": 0,
+          "n_giants_cut_300": 0,
+          "n_reentry_candidates": 0,
+          "n_early_exits": 0,
+          "note": "one row per filled sleeve member: the same (day,ticker) path can be held by more than one sleeve, so these totals are NOT independent-path inference",
+          "n_paths": 1775,
+          "n_shared_paths": 59,
+          "n_members_on_shared_paths": 118,
+          "shared_path_net_sum": 0.0,
+          "n_paths_all_members": 1880,
+          "n_shared_paths_all_members": 62,
+          "n_members_on_shared_paths_all_members": 124
+        },
+        "independent_path_accounting": {
+          "n_members": 1775,
+          "failure_tax_avoided": 0.0,
+          "dollars_destroyed": 0.0,
+          "net_dollar_ledger": 0.0,
+          "n_giants_cut": 0,
+          "n_giants_cut_300": 0,
+          "n_reentry_candidates": 0,
+          "n_early_exits": 0,
+          "note": "one row per (day,ticker) market path: duplicates collapsed by the declared deterministic rule, so this view is free of sleeve double counting",
+          "rule": "keep A_pm over B600, then the lower entry_rank, then the alphabetically first family",
+          "n_paths": 1775,
+          "n_shared_paths": 59,
+          "n_members_dropped_by_dedup": 59
+        },
+        "priority_sensitivity": {
+          "note": "the duplicate rule is a choice, so both priority orders are reported; a small delta means the sleeve totals are not driven by which sleeve is kept",
+          "net_B600_first": 0.0,
+          "net_A_pm_first": 0.0,
+          "delta": 0.0
+        }
+      },
+      "checks": {
+        "net_identity": true,
+        "giants_100_subset_of_destroyed": true,
+        "giants_300_subset_of_100": true,
+        "no_censored_in_executable_aggregates": true
+      }
+    }
+  },
+  "continuation_crosscheck": {
+    "column": "v_forced_flat",
+    "n_compared": 5887,
+    "n_skipped": 273,
+    "mean_abs_diff": 1.3125789453696431e-17,
+    "max_abs_diff": 4.440892098500626e-16,
+    "n_within_1e-12": 5887
+  },
+  "panel": "/home/hillel/.config/opencode/worktrees/Alpacatrader/basket-phase2-f1/factory/artifacts/basket/phase2/ATLAS/panel.parquet",
+  "panel_rows": 1900432,
+  "guard_source": "column_registry.json v2 + coverage.json v2"
+}

@@ -1,0 +1,91 @@
+{
+ "artifact": "EV-01",
+ "pre_registration": {
+  "path": "researches/PRE-REG-TAPE-ATLAS-EV01.md",
+  "sha256": "ce61fcaf8ffcb575c3359b2a3801b227fc2e3af8cae9575fa118b5ae0d2e7d85"
+ },
+ "executed_once": true,
+ "no_reread_statement": "no_reread.json",
+ "coverage": "coverage.json",
+ "inputs": {
+  "factory/artifacts/basket/phase2/ATLAS/panel.parquet": "2a021eda878cdbe53e41d4cc88e2d8ba3b14d9a3a819723d9f679c8aca7c3488",
+  "data/atlas/geometry/v1/objects.parquet": "6c0f655ba76cdd176f8a7857df4895e25aeb5c711cd8d1294a4564954e26f30f",
+  "data/atlas/geometry/v1/rare_refs.parquet": "e7ae275c74576d653c1195eeb1efd04d5d154cb062aa8e1274e6410ad42f7423",
+  "data/atlas/observation/v0/memberships.parquet": "d461c926321ac5730e01570a0eee16ba90fb4baa7d367b72ea9ac020fb1563d5",
+  "factory/artifacts/basket/phase2/ATLAS/TAPE/GEOMETRY/v1/retrieval_report.json": "5673570180dc327024d96975c880be681d2dcf3ec5b39866ab4616f87425f47e",
+  "factory/artifacts/basket/phase2/ATLAS/TAPE/representation_matrix_v1.json": "9720d0ef27ce7272b52c7cc30522d4271b776e6fe30783bfb93a78c8ffb8a2d9",
+  "data/atlas/sequence/v1/runs/causal/block/embeddings.npz": "e1cacdd613c429cd59b359607e09e30dd8486774792057d7ef08af931e359c6b",
+  "data/atlas/sequence/v1/runs/retrospective/block/embeddings.npz": "1a67fc8cd352139919f07af8e4f3892c14110716efd61f3e40a49830156ddf18",
+  "factory/artifacts/basket/phase2/ATLAS/TAPE/SEQUENCE/v1/sequence_reports_by_mode.json": "1e30bab430bf75e008421b4531cca330d73a8fd9cd0f7279092ff142cb2151f1",
+  "data/atlas/geometry/v1/view_magnitude_dominant.nn.npz": "77621f4d215b87029cce5abee02f53600673b93f77a644dd7e6eca274d90cfb7",
+  "data/atlas/geometry/v1/view_normalized_shape_dominant.nn.npz": "b02a8eede705f2db8a5e9e423454202c4c27e3daeb1dd6a3683d668fed3a0662",
+  "data/atlas/geometry/v1/view_duration_event_dominant.nn.npz": "5aa271aea21806378ebe27fe0645e375bf188975b32d1f0492acf9df85e8745c",
+  "data/atlas/geometry/v1/view_activity_microstructure_dominant.nn.npz": "0936ee112c3ed6ad3a5b36cbc29abe74a17537430ac650487dc62b778b48d589",
+  "data/atlas/geometry/v1/view_balanced_multichannel_reference.nn.npz": "45ff98838f235f64b852c5ad81ef5744d4a396b6729a0c9f2d3ca2bb4ee86d66"
+ },
+ "code": {
+  "factory/artifacts/basket/phase2/ATLAS/EV01/code/ev01_descriptors.py": "2c148f90d22431a0666aaa2331d5d3d246d364a00d15bb53b0c6d7c6f490e5a5",
+  "factory/artifacts/basket/phase2/ATLAS/EV01/code/ev01_stats.py": "f527032efaad37842b32ef353480ef6ee6e7cb49e78422ddc5b8145a3dc9cd49",
+  "factory/artifacts/basket/phase2/ATLAS/EV01/code/ev01_publish.py": "bdfeab512379d0f561b18ab731480fe997f6b90e704341c3b89e34aabe494d7f"
+ },
+ "outputs": {
+  "bootstrap_distributions.npz": "08a65232affec2ec8fa34a275cbc0cc19ba22557ba5a6eb16f9b3e0371edba20",
+  "code/ev01_descriptors.py": "2c148f90d22431a0666aaa2331d5d3d246d364a00d15bb53b0c6d7c6f490e5a5",
+  "code/ev01_publish.py": "bdfeab512379d0f561b18ab731480fe997f6b90e704341c3b89e34aabe494d7f",
+  "code/ev01_stats.py": "f527032efaad37842b32ef353480ef6ee6e7cb49e78422ddc5b8145a3dc9cd49",
+  "coverage.json": "03c5c12e4bb58b92cdd47415678623a1bc1d28ded0691e46fd598f886b4298ed",
+  "descriptors.parquet": "534fdb7afe8ecc50472e088f13ec457b1d5ba337ad101e231357c54e0effafe5",
+  "descriptors.sha256": "3a257f681cb098bd1d07a349269e58f6854286f947680f738546dbd7a3351d22",
+  "descriptors_attestation.json": "2775a9fedc01ac8c8f6fdde4dbe1527f447dd2c0e0a3cd09c6c321a51d1eeb2b",
+  "ledger_exit1.json": "f44fc53356d6898e34a97b3bf332d9a2afa3b768afeead7b26be946297077c35",
+  "ledger_exit30.json": "8683164383467e6b714a779ff86a1d94f67f90039df56010f5b938d5c905d930",
+  "ledger_exit5.json": "5a2d42aa03eb777e9b3a01786fe5293bd61d38bfeab53a77f76aeb218bf766d8",
+  "ledger_hold.json": "7bf5ec2b2a4dc5c27cf052e736568dd38f961d17bd0111fbe3bdb0b40150ee09",
+  "logs/ledger_exit1.log": "d8a944c2d6117e42966be544ab0d6843c0c50c87eb1664dee7c7df1e8d5242db",
+  "logs/ledger_exit30.log": "0203a9aacdee6bb4e1b5ff7e136e92888f29d4bc87f4b52cf8ce24486e6a265d",
+  "logs/ledger_exit5.log": "c1daa8e85ffef2306ba62842d1d2e96760926efa3f1d3187d555464575a0616b",
+  "logs/ledger_hold.log": "e3b37e62edbd365a2d7528dabe19f3fd530f5957882cb0e4bf8dbcde44168320",
+  "no_reread.json": "acc43932e694f4bfe98a7698ebe098a60494db51d179be367c5b2e6bcae34cec",
+  "object_descriptors.parquet": "5ba83ac6143c8b7816a00370fd6356cca4be1ddf3d6ed16ccb882769b8c8b91a",
+  "outcomes.parquet": "e7654b5194ae55670951af2b136f4c6c4f3d9664f4e4cb34e27316956c208c3f",
+  "outcomes.sha256": "708882243affae26cdc509b991345ba977ef5398fcf707c3e99051acd4dc04dc",
+  "report.md": "475d6d1b93953e5511aa20768101fa9edc48ff6e66a9489970fa543a9504c527",
+  "results.json": "1c2b91820bec16b797acdd9e6e520f8267f4cbe933e532ee2532d5db096f4ba9",
+  "results_read_once.json": "736ada5747ed5d77e84cf4c482545afe6f59ee52bb20ac8dc9cdf989434af61c",
+  "verdicts.txt": "f381c3c2c6de8cf4a95d566cbbe15132e98fbbfd7774ab8fa273828a9eaf4d22"
+ },
+ "results": {
+  "bps_total": 100.0,
+  "k": 0.9900497512437811,
+  "boot_draws": 10000,
+  "boot_seed": 20260922,
+  "censored_census": {
+   "block1": 165,
+   "block2": 108,
+   "total": 273
+  },
+  "resolved_any_finite_delta": {
+   "N1": 5887,
+   "N5": 5887,
+   "N30": 5887
+  },
+  "verdicts": {
+   "d_density_balanced|N1": "PASS",
+   "d_density_balanced|N5": "PASS",
+   "d_density_balanced|N30": "PASS",
+   "d_rare|N1": "DISMISS",
+   "d_rare|N5": "DISMISS",
+   "d_rare|N30": "DISMISS",
+   "d_learned_nn|N1": "DISMISS",
+   "d_learned_nn|N5": "PASS",
+   "d_learned_nn|N30": "DISMISS"
+  }
+ },
+ "note": "manifest.json excludes its own sha256; every other file in this directory is listed with its sha256.",
+ "read_once": {
+  "statement": "no_reread.json",
+  "raw_results_of_the_single_read": "results_read_once.json",
+  "superseded_by": "results.json",
+  "correction": "the single read's first pass labelled a K6-voided K3 as a kill; the verdicts were recomputed from outcomes.parquet (no panel access). Every S1/S2/CI number is identical between the two files (verified field-by-field); only the d_rare K3 labels and meta.stats_source / meta.peak_rss_mb differ. results_read_once.json is the raw read output with non-finite values rendered as JSON null (strict JSON)."
+ }
+}

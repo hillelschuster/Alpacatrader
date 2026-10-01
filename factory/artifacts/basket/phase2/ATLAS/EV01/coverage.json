@@ -1,0 +1,44 @@
+{
+ "panel_sha256": "2a021eda878cdbe53e41d4cc88e2d8ba3b14d9a3a819723d9f679c8aca7c3488",
+ "descriptors_sha256": "534fdb7afe8ecc50472e088f13ec457b1d5ba337ad101e231357c54e0effafe5",
+ "outcomes_sha256": "e7654b5194ae55670951af2b136f4c6c4f3d9664f4e4cb34e27316956c208c3f",
+ "members_by_block": {
+  "block1": 4218,
+  "block2": 1942
+ },
+ "days_by_block": {
+  "block1": 734,
+  "block2": 332
+ },
+ "month_counts": {
+  "block1": 35,
+  "block2": 16,
+  "pooled": 51
+ },
+ "censored_census": {
+  "block1": 165,
+  "block2": 108,
+  "total": 273
+ },
+ "censored_share": {
+  "block1": 0.03911806543385491,
+  "block2": 0.055612770339855816,
+  "pooled": 0.04431818181818182
+ },
+ "blocked_slots": {
+  "block1": 186,
+  "block2": 49,
+  "total": 235
+ },
+ "resolved_any_finite_delta": {
+  "N1": 5887,
+  "N5": 5887,
+  "N30": 5887
+ },
+ "K5_power_floor": {
+  "block_min": 200,
+  "pooled_min": 500
+ },
+ "K7_coverage_floor": 0.1,
+ "note": "blocked slots are cash, retained in the denominator and never given a member row or a fabricated Delta; the member ratio is computed on the filled, non-censored population only (K7: censored share measured, not mixed in)"
+}

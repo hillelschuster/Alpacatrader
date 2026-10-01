@@ -1,0 +1,249 @@
+{
+ "artifact": "descriptors.parquet",
+ "sha256": "534fdb7afe8ecc50472e088f13ec457b1d5ba337ad101e231357c54e0effafe5",
+ "rows": 6160,
+ "columns": [
+  "member_id",
+  "sleeve_day",
+  "family",
+  "entry_rank",
+  "ticker",
+  "path_id",
+  "block",
+  "month",
+  "d_density_balanced",
+  "d_rare",
+  "d_learned_nn"
+ ],
+ "outcome_read": false,
+ "statement": "No outcome column was read. This step read only the five frozen view_*.nn.npz density arrays, objects.parquet, rare_refs.parquet, memberships.parquet and the frozen causal embedding archive. panel.parquet and the ledger module were not opened.",
+ "descriptors": {
+  "a_density_balanced": "unweighted mean of balanced-view per-object density over the member's three scale objects",
+  "b_rare": "1 iff ANY of the member's three objects has density==0 in ANY of the five published views (frozen rare_refs rule); verified set-identical to rare_refs.parquet (8,577 objects)",
+  "c_learned_nn": "unweighted mean over the member's three objects of the smallest finite masked squared-L2 distance in the frozen causal learned view (embedding_gram + masked_sq_dists, same-tape exclusion, k=100, chunk_rows=512)"
+ },
+ "learned_view_fit": {
+  "fit_blocks": [
+   "block1"
+  ],
+  "k": 100,
+  "chunk_rows": 512,
+  "channel_stats": [
+   {
+    "channel": 0,
+    "mean": 0.9448451000871756,
+    "std": 0.5291919833318175,
+    "n_fit": 786358
+   },
+   {
+    "channel": 1,
+    "mean": 2.732395574048477,
+    "std": 1.2744319816548841,
+    "n_fit": 786358
+   },
+   {
+    "channel": 2,
+    "mean": -2.7074448222474645,
+    "std": 0.6062305708257502,
+    "n_fit": 786358
+   },
+   {
+    "channel": 3,
+    "mean": -0.516102093562958,
+    "std": 1.2859626759727292,
+    "n_fit": 786358
+   },
+   {
+    "channel": 4,
+    "mean": 0.3283860240143818,
+    "std": 1.540743721123286,
+    "n_fit": 786358
+   },
+   {
+    "channel": 5,
+    "mean": 2.924100567204135,
+    "std": 1.0475309052959987,
+    "n_fit": 786358
+   },
+   {
+    "channel": 6,
+    "mean": 1.147116659981843,
+    "std": 1.1017648448934985,
+    "n_fit": 786358
+   },
+   {
+    "channel": 7,
+    "mean": 2.074004883557926,
+    "std": 0.7306579670000602,
+    "n_fit": 786358
+   },
+   {
+    "channel": 8,
+    "mean": -1.5188507508047808,
+    "std": 1.958397031312541,
+    "n_fit": 786358
+   },
+   {
+    "channel": 9,
+    "mean": -1.0901928553968048,
+    "std": 2.0465710092301705,
+    "n_fit": 786358
+   },
+   {
+    "channel": 10,
+    "mean": -0.40413548144998945,
+    "std": 1.1557352897280646,
+    "n_fit": 786358
+   },
+   {
+    "channel": 11,
+    "mean": 1.023145140781187,
+    "std": 1.8818421783030268,
+    "n_fit": 786358
+   },
+   {
+    "channel": 12,
+    "mean": -0.5471097863802635,
+    "std": 1.60878874665572,
+    "n_fit": 786358
+   },
+   {
+    "channel": 13,
+    "mean": -1.2828433439425342,
+    "std": 1.071419821961971,
+    "n_fit": 786358
+   },
+   {
+    "channel": 14,
+    "mean": 0.40385843398795324,
+    "std": 1.1659318285475744,
+    "n_fit": 786358
+   },
+   {
+    "channel": 15,
+    "mean": 1.53867126224719,
+    "std": 0.4587321786773006,
+    "n_fit": 786358
+   },
+   {
+    "channel": 16,
+    "mean": -1.7614288188659994,
+    "std": 0.9115738484643549,
+    "n_fit": 786358
+   },
+   {
+    "channel": 17,
+    "mean": -1.7977531395821005,
+    "std": 1.4995428812443239,
+    "n_fit": 786358
+   },
+   {
+    "channel": 18,
+    "mean": -0.6328395274738149,
+    "std": 1.2520975515212873,
+    "n_fit": 786358
+   },
+   {
+    "channel": 19,
+    "mean": -1.575929802584663,
+    "std": 1.6239547854930014,
+    "n_fit": 786358
+   },
+   {
+    "channel": 20,
+    "mean": 0.01574353005779151,
+    "std": 1.4467945244215834,
+    "n_fit": 786358
+   },
+   {
+    "channel": 21,
+    "mean": -0.8913718509325658,
+    "std": 0.5141741605822754,
+    "n_fit": 786358
+   },
+   {
+    "channel": 22,
+    "mean": 0.9514029196399881,
+    "std": 1.9284425987151474,
+    "n_fit": 786358
+   },
+   {
+    "channel": 23,
+    "mean": 0.6839188310648997,
+    "std": 1.6334187024969598,
+    "n_fit": 786358
+   },
+   {
+    "channel": 24,
+    "mean": 1.1915480178060025,
+    "std": 1.2636758275599405,
+    "n_fit": 786358
+   },
+   {
+    "channel": 25,
+    "mean": -1.0445816465816342,
+    "std": 1.800995729423919,
+    "n_fit": 786358
+   },
+   {
+    "channel": 26,
+    "mean": 0.27432454907277726,
+    "std": 3.1075587374579285,
+    "n_fit": 786358
+   },
+   {
+    "channel": 27,
+    "mean": 1.0458287265188158,
+    "std": 2.015766317641849,
+    "n_fit": 786358
+   },
+   {
+    "channel": 28,
+    "mean": -0.08614481852300325,
+    "std": 0.6139834679711915,
+    "n_fit": 786358
+   },
+   {
+    "channel": 29,
+    "mean": 0.33146527818506544,
+    "std": 1.777462230834185,
+    "n_fit": 786358
+   },
+   {
+    "channel": 30,
+    "mean": -0.279381981440831,
+    "std": 1.493504919692065,
+    "n_fit": 786358
+   },
+   {
+    "channel": 31,
+    "mean": -0.09488897071338788,
+    "std": 0.7541640763185482,
+    "n_fit": 786358
+   }
+  ]
+ },
+ "cross_checks": {
+  "rare_refs_rule_set_equal": true,
+  "median_density_balanced_block1": 100.0,
+  "median_density_balanced_block2": 47.0,
+  "learned_nn_nonfinite_objects": 0
+ },
+ "inputs": {
+  "objects.parquet": "6c0f655ba76cdd176f8a7857df4895e25aeb5c711cd8d1294a4564954e26f30f",
+  "rare_refs.parquet": "e7ae275c74576d653c1195eeb1efd04d5d154cb062aa8e1274e6410ad42f7423",
+  "memberships.parquet": "d461c926321ac5730e01570a0eee16ba90fb4baa7d367b72ea9ac020fb1563d5",
+  "embeddings_causal.npz": "e1cacdd613c429cd59b359607e09e30dd8486774792057d7ef08af931e359c6b",
+  "view_*.nn.npz": {
+   "magnitude_dominant": "77621f4d215b87029cce5abee02f53600673b93f77a644dd7e6eca274d90cfb7",
+   "normalized_shape_dominant": "b02a8eede705f2db8a5e9e423454202c4c27e3daeb1dd6a3683d668fed3a0662",
+   "duration_event_dominant": "5aa271aea21806378ebe27fe0645e375bf188975b32d1f0492acf9df85e8745c",
+   "activity_microstructure_dominant": "0936ee112c3ed6ad3a5b36cbc29abe74a17537430ac650487dc62b778b48d589",
+   "balanced_multichannel_reference": "45ff98838f235f64b852c5ad81ef5744d4a396b6729a0c9f2d3ca2bb4ee86d66"
+  }
+ },
+ "code": {
+  "ev01_descriptors.py": "2c148f90d22431a0666aaa2331d5d3d246d364a00d15bb53b0c6d7c6f490e5a5"
+ },
+ "peak_rss_mb": 2319.6640625
+}
