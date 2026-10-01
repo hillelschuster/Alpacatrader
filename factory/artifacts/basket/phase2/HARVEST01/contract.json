@@ -1,0 +1,42 @@
+{
+  "experiment": "HARVEST01",
+  "status": "dev-only discovery; no promoted strategy or unseen inspection",
+  "authorization": "2026-10-02 user requests many thesis-connected PM/RTH basket and management runs, path understanding, and recovery of earlier 30-40 percent containment evidence",
+  "worktree": "/home/hillel/.config/opencode/worktrees/Alpacatrader/basket-phase2-f1",
+  "data_root": "/home/hillel/projects/Alpacatrader/data",
+  "output_root": "/home/hillel/projects/Alpacatrader/data/harvest01",
+  "evidence_root": "factory/artifacts/basket/phase2/HARVEST01",
+  "calendar": "factory/artifacts/basket/sip/phase2_session_calendar.json",
+  "dev_days": "calendar.evidence keys only; exclude 2024-*, 2025-01-*, 2026-06..08; do not substitute a recent-only sample",
+  "entry_clocks_et": [510, 540, 550, 555, 560, 565, 570, 575, 585, 600, 615, 630, 660],
+  "primary_entry_et": 560,
+  "exit_clocks_et": [540, 550, 555, 560, 565, 570, 575, 585, 600, 615, 630, 660, 690, 720, 780, 840, 900, 955],
+  "valid_cells": "exit_et > entry_et and exit_et <= calendar session_end; additionally report calendar session_end as secondary forced-flat endpoint",
+  "ranking": "US PIT listed common-stock universe, same universe at PM/RTH clocks, gain versus immediately previous trading session RTH close. No price/volume/mcap/gain/freshness floor. Last completed bar et<=clock-1; missing anchor unrankable and counted. Ascending ticker deterministic ties. Do not use future winners, Atlas roster or B(T) gain-from-open as admission.",
+  "corporate_actions": "Do not claim actual gain ranking from a reverse-split-contaminated RAW prior-close ratio. Resolve a causal same-day reference-price normalization from provider evidence; record raw and normalized rank fields and action provenance. Future common rescaling factors may cancel in a ratio but may never affect eligibility. If normalization cannot be established, label RAW ranking explicitly and publish action-uncertain sensitivity, not pretend TV-equivalence.",
+  "allocation": "capital=1 per independent basket day/entry clock; 3 fixed original slots each allocated 1/3 including entry fee. Equal initial dollars, shares fixed until exit. No rebalancing, replacement, adding, borrowing or reinvestment of released cash.",
+  "execution": "decision at clock based on completed bars; buy first observed bar open with et>=entry_clock, no same-bar close fill. For fixed-clock sell, first observed bar open et>=exit_clock. Voluntary rule fired on bar et becomes known et+1; sell first observed open at or after et+1. Entry not filled before endpoint remains known cash; held position with missing liquidation is UNKNOWN, never zero or cash. No invented bars or prints; record actual fill and exit ET, delays, session and censoring. Do not call next printed open proven NBBO sellability.",
+  "costs": [{"roundtrip_bps_label":100,"buy_fee":0.005,"sell_fee":0.005},{"roundtrip_bps_label":150,"buy_fee":0.0075,"sell_fee":0.0075}],
+  "cash_return": 0,
+  "management": {
+    "run_order": "unmanaged basket economics first, then named simple rule families; retain full grid including failures",
+    "benchmark_only": ["hold", "peak_giveback_10pct", "entry_damage_10pct", "entry_damage_15pct"],
+    "hypothesis_families": ["failed_recovery_then_renewed_low", "own_damage_plus_participation_decay", "own_damage_plus_broken_high_cadence", "clock_checkpoint_own_damage_plus_failed_repair"],
+    "maximum_new_variants_per_family": 3,
+    "freeze_numerical_specs_before_policy_pnl": true,
+    "exit_once": true,
+    "no_reentry_or_replacement": true,
+    "controls": "same entry/end clocks, costs, supported prices; hold, cash and matched-time/exit-count member-release placebo to distinguish member information from merely less exposure",
+    "prior_art": "Old R2 damage+wait and E1 fitted exhaustion are closed formulations, not novel candidates; their benchmarks do not reopen them. No model, threshold optimization, score fitting or rescue slices."
+  },
+  "schemas": {
+    "snapshots": "per-day broad price-asof records + coverage manifest sufficient to reproduce top3; producer chooses compact layout and documents schema",
+    "selected": ["day:string", "entry_et:int", "entry_rank:int(1..3)", "ticker:string", "decision_price:float", "decision_price_et:int", "prev_close:float", "rank_gain:float", "raw_rank_gain:float|null", "normalization_status:string", "session_end:int"],
+    "bars": ["day:string", "ticker:string", "et:int(start-label ET)", "open:float", "high:float", "low:float", "close:float", "volume:float", "trade_count:float|null"],
+    "storage": "output_root/base/{snapshots,selected,bars}/YYYY-MM-DD.parquet with manifest per day and atomic ready markers. Preserve per-day resume, contract and source hashes. Write full aggregate selected.parquet/bars.parquet only if memory-safe; consumers must support per-day inputs."
+  },
+  "path_anatomy": "basket and each original member by wall clock and elapsed ET since actual fill; damage, recoveries, high cadence, volume/print decay; future MFE and winner/failure classes audit-only. Existing Atlas peer percentile is not market-wide rank. Print silence is not a certified halt. Member paths must be rebuilt for new selected tickers.",
+  "containment": "Recover earlier 30-40 percent artifact and denominator; separately measure eventual session-max #1 membership, any eventual session-max top3 membership, terminal top3, joint multiple winners and remaining post-fill accessible move. Containment is not net profitability.",
+  "reporting": "basket-day original-capital net means/medians, monthly and two chronological dev blocks; gross vs 100/150 bps; unknown counts and fill delays, member dollar attribution, time exposed, all untrimmed tails, top5-day-removed sensitivity not primary. Management delta = avoided fixed-endpoint losses minus foregone fixed-endpoint gains, not an optimal future-exit target. No inference from overlapping state count as independent trades.",
+  "operations": "one network acquisition owner, max4 concurrent low-memory HTTP workers only after measuring canary RSS; max2GiB acquisition working memory target; economic/anatomy consumers per-day incremental max2GiB each. No signals/kills. Store new active output on Linux workspace filesystem if Windows volume approaches 15GiB free. Existing market rows remain gitignored, evidence aggregates and producer scripts committed."
+}
