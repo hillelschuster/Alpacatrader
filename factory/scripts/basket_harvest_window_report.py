@@ -60,6 +60,32 @@ def main() -> int:
                 s["r780"].mean() * 100, s["cap720"].mean() * 100 if "cap720" in s.columns else float("nan"),
                 s["cap780"].mean() * 100 if "cap780" in s.columns else float("nan")))
 
+    lines.append("\n## Distribution of the basket mark at key window clocks (N=3, all clocks pooled)")
+    lines.append("| mark clock | p10 % | p25 % | median % | p75 % | p90 % | mean % | pos share |")
+    lines.append("|---|---|---|---|---|---|---|---|")
+    s3 = w.filter(pl.col("N") == 3)
+    for E in (600, 630, 660, 690, 720, 750, 780):
+        c = f"r{E}"
+        if c not in s3.columns:
+            continue
+        v = s3[c].drop_nulls()
+        if not v.len():
+            continue
+        lines.append(f"| {et_label(E)} | {v.quantile(0.10)*100:.2f} | {v.quantile(0.25)*100:.2f} | "
+                     f"{v.median()*100:.2f} | {v.quantile(0.75)*100:.2f} | {v.quantile(0.90)*100:.2f} | "
+                     f"{v.mean()*100:.2f} | {(v > 0).mean():.2f} |")
+
+    lines.append("\n## Peak timing relative to entry (N=3): share of days peaking 30–90 min after entry")
+    lines.append("| clock | n | share peak in [entry+30, entry+90] | share peak before entry+30 | share peak after entry+90 |")
+    lines.append("|---|---|---|---|---|")
+    for clock in sorted(s3["clock"].unique().to_list()):
+        s = s3.filter(pl.col("clock") == clock)
+        if not s.height:
+            continue
+        rel = s["peak_et"] - clock
+        lines.append(f"| {clock} | {s.height} | {((rel >= 30) & (rel <= 90)).mean():.2f} | "
+                     f"{(rel < 30).mean():.2f} | {(rel > 90).mean():.2f} |")
+
     lines.append("\n## Peak-minute histogram (N=3, pooled, 30-min bins)")
     s3 = w.filter(pl.col("N") == 3).with_columns(
         ((pl.col("peak_et") // 30) * 30).alias("bin"))
