@@ -446,7 +446,36 @@ def validate_predicate(
         if "value" in spec:
             raise ContractRefusalError(f"{where}.value is not allowed with op {op!r}")
     else:
-        _req(spec, "value", (str, int, float, bool), where)
+        value = _req(spec, "value", (str, int, float, bool), where)
+        # a comparison op must be definable on the column's frozen dtype: a scalar comparison
+        # against a list/other dtype cannot be evaluated at all, so refuse here instead of
+        # crashing mid-run (polars refuses List vs String with InvalidOperationError)
+        dtype = str(fields[column].get("dtype") or "")
+        numeric = ("int32", "int64", "float64")
+        if dtype in ("list[str]", "list[int]", "list[float]") or dtype.startswith("list"):
+            raise ContractRefusalError(
+                f"{where}: op {op!r} on the list column {column!r} (dtype {dtype!r}) has no "
+                "scalar comparison semantics; declare is_null/is_not_null, or use a scalar "
+                "column for the population/label gate"
+            )
+        if dtype == "str" and not isinstance(value, str):
+            raise ContractRefusalError(
+                f"{where}: op {op!r} on the string column {column!r} needs a string value"
+            )
+        if dtype == "bool" and (not isinstance(value, bool) or op not in ("eq", "neq")):
+            raise ContractRefusalError(
+                f"{where}: a bool column {column!r} supports only eq/neq against true|false"
+            )
+        if dtype in numeric and (isinstance(value, bool) or not isinstance(value, (int, float))):
+            raise ContractRefusalError(
+                f"{where}: op {op!r} on the numeric column {column!r} needs an int/float value "
+                f"(found {type(value).__name__})"
+            )
+        if dtype not in ("str", "bool") + numeric:
+            raise ContractRefusalError(
+                f"{where}: op {op!r} on column {column!r} of dtype {dtype!r} is not supported; "
+                "only is_null/is_not_null are defined for that dtype"
+            )
     if _is_denied(column, registry, is_predicate=True):
         raise ContractRefusalError(
             f"{where}.column {column!r} is denied by the frozen causal registry "
@@ -599,6 +628,22 @@ def validate_feature(
         raise ContractRefusalError(
             f"{where}.reference is only allowed with transform log_ratio_to_reference"
         )
+    if ref is not None and ref["of"] == column:
+        same_statistic = (
+            (aggregate == "quantile" and float(position) == 0.5
+             and ref["rule"] == "cross_section_median_at_same_t")
+            or (aggregate == "mean" and ref["rule"] == "cross_section_mean_at_same_t")
+        )
+        if same_statistic:
+            raise ContractRefusalError(
+                f"{where}: feature {fid!r} aggregates {aggregate} on {column!r} and then divides "
+                f"by {ref['rule']} on the SAME column - that ratio is 1 by construction, so the "
+                "channel is constant and carries no geometry (it would refuse at fit time with "
+                "zero variance). Use a different ruler position than the reference statistic "
+                "(e.g. quantile 0.1/0.25/0.75/0.9 against the median), a different aggregate "
+                "(mean against the median, or quantile 0.5 against the mean), or a different "
+                "reference column, so the ratio measures cross-sectional shape"
+            )
     if vw is not None:
         vw = validate_predicate(
             vw, f"{where}.valid_when", fields=fields, registry=registry, mode=mode, tier=tier,
@@ -1599,8 +1644,10 @@ def footprint_estimate(n_obj: int, n_feat: int, t_max: int, cfg: dict, tier: str
 # --------------------------------------------------------------------------- #
 # metric + retrieval (reuses the within-name exact helpers)
 # --------------------------------------------------------------------------- #
-def fit_feature_stats(tensors: dict, fit_mask: np.ndarray) -> dict:
+def fit_feature_stats(tensors: dict, fit_mask: np.ndarray,
+                      specs: dict | None = None) -> dict:
     values, valid = tensors["values"], tensors["valid"]
+    specs = specs or {}
     stats = {}
     for ci, cid in enumerate(tensors["channel_ids"]):
         m = valid[:, ci, :] & fit_mask[:, None]
@@ -1612,9 +1659,20 @@ def fit_feature_stats(tensors: dict, fit_mask: np.ndarray) -> dict:
             )
         mu, sd = float(np.mean(vals)), float(np.std(vals))
         if not np.isfinite(sd) or sd <= 0:
+            spec = specs.get(cid) or {}
+            detail = {"kind": "feature_fit_zero_variance", "feature": cid,
+                      "variant": float(mu)}
+            for key in ("kind", "column", "aggregate", "position", "transform", "of"):
+                if spec.get(key) is not None:
+                    detail[f"spec_{key}"] = spec[key]
+            if spec.get("reference") is not None:
+                detail["spec_reference"] = spec["reference"]
             raise IntegrityRefusalError(
-                f"feature {cid!r} has zero variance over the fit block",
-                [{"kind": "feature_fit_zero_variance", "feature": cid}],
+                f"feature {cid!r} has zero variance over the fit block - the channel is constant "
+                f"({detail.get('spec_transform')} of {detail.get('spec_aggregate')} "
+                f"{detail.get('spec_column')} against {detail.get('spec_reference')}); a constant "
+                "channel carries no geometry",
+                [detail],
             )
         stats[cid] = {"mean": mu, "std": sd, "n_fit": int(vals.size)}
     return {"channels": stats}
@@ -2166,7 +2224,8 @@ def run_tier(cfg: dict, tier: str, corpus: dict, *, root: Path, out_dir: Path,
         )
     tensors = {"values": extract["values"], "valid": extract["valid"],
                "channel_ids": extract["channel_ids"]}
-    norm = fit_feature_stats(tensors, fit_mask)
+    norm = fit_feature_stats(tensors, fit_mask,
+                             specs={f["id"]: f for f in extract["reg"]["all"]})
     same_day = _same_day_columns(objects)
     prim = cfg["views"][tier]["primitive"]
     results: dict[str, dict] = {}
@@ -2839,6 +2898,38 @@ def run_selftest() -> int:
             feature_level("pos_null", "px", "quantile", None)]})
         chk("unbound_ruler_refused", msg is not None and "UNBOUND" in msg)
 
+        msg = refuses_cfg({"views.checkpoint.normalized_shape_dominant.features": [
+            {"id": "px_t_shape", "kind": "level", "of": None, "column": "px_T",
+             "aggregate": "quantile", "position": 0.5, "transform": "log_ratio_to_reference",
+             "reference": {"of": "px_T", "rule": "cross_section_median_at_same_t"},
+             "valid_when": {"column": "px_T", "op": "is_not_null"}}]})
+        chk("self_referential_shape_feature_refused",
+            msg is not None and "1 by construction" in msg, {"m": str(msg)[:90]})
+        msg = refuses_cfg({"views.broad_minute.magnitude_dominant.features": [
+            {"id": "px_mean_rel", "kind": "level", "of": None, "column": "px",
+             "aggregate": "mean", "position": None, "transform": "log_ratio_to_reference",
+             "reference": {"of": "px", "rule": "cross_section_mean_at_same_t"},
+             "valid_when": {"column": "px", "op": "is_not_null"}}]})
+        chk("self_referential_mean_feature_refused",
+            msg is not None and "1 by construction" in msg)
+        msg = refuses_cfg({"views.checkpoint.normalized_shape_dominant.features": [
+            {"id": "px_t_spread", "kind": "level", "of": None, "column": "px_T",
+             "aggregate": "quantile", "position": 0.25, "transform": "log_ratio_to_reference",
+             "reference": {"of": "px_T", "rule": "cross_section_median_at_same_t"},
+             "valid_when": {"column": "px_T", "op": "is_not_null"}}],
+            "views.checkpoint.normalized_shape_dominant.metric_weights": {"px_t_spread": 1.0}})
+        chk("non_degenerate_shape_feature_accepted", msg is None, {"m": str(msg)[:90]})
+        msg = refuses_cfg({"tiers.broad_minute.population.predicates": [
+            {"column": "population_def", "op": "neq", "value": ""}]})
+        chk("list_scalar_comparison_refused",
+            msg is not None and "no scalar comparison" in msg, {"m": str(msg)[:90]})
+        msg = refuses_cfg({"tiers.broad_minute.population.predicates": [
+            {"column": "known_by_t", "op": "gt", "value": True}]})
+        chk("bad_bool_comparison_refused", msg is not None and "bool column" in msg)
+        msg = refuses_cfg({"tiers.broad_minute.quality.predicates": [
+            {"column": "px", "op": "eq", "value": "1.0"}]})
+        chk("string_value_on_numeric_refused",
+            msg is not None and "needs a string value" not in msg)
         msg = refuses_cfg({"tiers.checkpoint.cells.quotes": "materialized"})
         chk("materialized_quote_cell_refused", msg is not None and "quote" in msg.lower())
 

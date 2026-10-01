@@ -1,0 +1,1318 @@
+{
+  "matrix_version": "v2",
+  "template_only": false,
+  "frozen": true,
+  "status": "FROZEN",
+  "freeze": "R",
+  "binding_slots": {
+    "corpus": {
+      "node_id": "observations.tape_atlas",
+      "version": "tape-atlas-observation-v0",
+      "manifest_sha256": "04ac4c351570e098a9bcc44c30dea4d905a95f9707931c0e6eec04a7782834c0",
+      "day_count": 1066,
+      "built": true,
+      "scope": "full",
+      "day_set_sha256": "7ac7a3fd60782a874de67d7d11e1d9c6f8b6813c7742818781a62ca18aa1b285"
+    },
+    "blind_report": {
+      "node_id": "observations.tape_atlas.blind-corpus-report",
+      "path": "factory/artifacts/basket/phase2/ATLAS/TAPE/OBSERVATION/v0/full/blind_corpus_report.json",
+      "sha256": "144f2018aec83a21c19899199c15905739dea3e8625bcfdfcda7cdace756b06f",
+      "complete": true,
+      "permitted_summaries_only": true
+    },
+    "transform_training_blocks": {
+      "split_key": "block",
+      "fit_blocks": [
+        "block1"
+      ],
+      "eval_blocks": [
+        "block2"
+      ],
+      "no_overlapping_source_interval_crosses_split": true,
+      "normalization_and_model_params_fit_on_fit_blocks_only": true,
+      "frozen": true
+    },
+    "scale_choice": {
+      "scale_ladder": [
+        30,
+        60,
+        120
+      ],
+      "scale_unit": "minute",
+      "scale_anchor": "path_first_valid",
+      "anchor_channel": "close",
+      "alignment": "left",
+      "frozen": true
+    },
+    "segmentation": {
+      "segment_rules": {
+        "mode": "whole_source_interval",
+        "crop": null
+      },
+      "change_point_budget": 0,
+      "frozen": true
+    },
+    "metric_weights": {
+      "per_view_weights": {
+        "magnitude_dominant": 1.0,
+        "normalized_shape_dominant": 1.0,
+        "duration_event_dominant": 1.0,
+        "activity_microstructure_dominant": 1.0
+      },
+      "balanced_reference_aggregation": "fixed equal weight across standardized view distances",
+      "balanced_reference_tuned_to_best_geometry": false,
+      "min_common_views": 4
+    },
+    "radius": {
+      "neighbour_radius": null,
+      "radius_units": "standardized_channel_l2",
+      "radius_per_view": {
+        "magnitude_dominant": 5.396159852396423,
+        "normalized_shape_dominant": 0.003134696780160387,
+        "duration_event_dominant": 3.685071361484269,
+        "activity_microstructure_dominant": 4.222759274332091,
+        "balanced_multichannel_reference": 83.03286591124858
+      },
+      "radius_basis": {
+        "rule": "radius_v := alpha_v x scale_v with alpha_v = 1.0 for every view (pre-declared, outcome-blind); scale_v is the fitted median k-th (k = 20) neighbour distance over FIT-BLOCK objects with same-tape exclusion - the per-view value the v0 engine already published",
+        "alpha": 1.0,
+        "k": 20,
+        "source_per_view": {
+          "magnitude_dominant": "GEOMETRY/v0/retrieval_report.json input_contract.fitted_view_scales.magnitude_dominant.scale (fit_objects 12075)",
+          "normalized_shape_dominant": "...fitted_view_scales.normalized_shape_dominant.scale (fit_objects 12075)",
+          "duration_event_dominant": "...fitted_view_scales.duration_event_dominant.scale (fit_objects 12075)",
+          "activity_microstructure_dominant": "...fitted_view_scales.activity_microstructure_dominant.scale (fit_objects 12075)",
+          "balanced_multichannel_reference": "views.balanced_multichannel_reference.by_block.block1.median_kth_dist (block1 = fit block; NB the v0 engine published no fitted balanced scale and this median is computed against all candidates, not fit-block-only - the only published fit-block figure for that view)"
+        },
+        "alpha_is_not_outcome_tuned": true,
+        "what_changed_versus_v0": "radius_per_view only; every other field is identical to v0"
+      }
+    },
+    "ann_sparse_recall": {
+      "index_build": "exact_bruteforce_no_ann",
+      "density_decile_definition": "exact_deciles_of_object_population_size",
+      "exact_search_strata": "all",
+      "sparse_exact_recall_floor": 1.0
+    },
+    "integer_seed": 7,
+    "geometric_units": {
+      "distance_units": "standardized_channel_l2",
+      "balanced_units": "standardized_view_distance"
+    },
+    "numeric_one_shot_gates": {
+      "recurrence": 0.05,
+      "mutual_neighbour_support": 0.05,
+      "block_stability": 0.2,
+      "coordinate_leakage": 0.0,
+      "family_leakage": 0.0,
+      "magnitude_preservation": 0.3,
+      "sparse_exact_recall": 1.0,
+      "ssl_over_random_improvement": 0.02,
+      "measured_runtime": 3600.0
+    }
+  },
+  "hand_views_meta": {
+    "view_count": 5
+  },
+  "hand_views": {
+    "magnitude_dominant": {
+      "geometry_channels": [
+        {
+          "id": "close",
+          "source": "grid",
+          "column": "bar_close",
+          "aggregate": null,
+          "derive": null,
+          "of": null,
+          "transform": "identity",
+          "reference": null,
+          "valid_when": {
+            "column": "bar_state",
+            "op": "neq",
+            "value": "none"
+          }
+        },
+        {
+          "id": "vol",
+          "source": "grid",
+          "column": "bar_volume",
+          "aggregate": null,
+          "derive": null,
+          "of": null,
+          "transform": "log1p",
+          "reference": null,
+          "valid_when": {
+            "column": "bar_volume",
+            "op": "is_not_null"
+          }
+        },
+        {
+          "id": "nprints",
+          "source": "grid",
+          "column": "n_prints",
+          "aggregate": null,
+          "derive": null,
+          "of": null,
+          "transform": "log1p",
+          "reference": null,
+          "valid_when": {
+            "column": "print_state",
+            "op": "neq",
+            "value": "no_print"
+          }
+        }
+      ],
+      "transforms": [
+        "identity",
+        "log1p"
+      ],
+      "metric": "masked_euclidean_zscore_fitblock",
+      "metric_weights": {
+        "close": 1.0,
+        "vol": 1.0,
+        "nprints": 1.0
+      },
+      "scale_reference": {
+        "statistic": "median_fit_kth_neighbour_distance",
+        "k": 20
+      },
+      "radius": 3.0,
+      "tier_availability": {
+        "selected_paths": "materialized",
+        "candidate_net_minute": "delegated",
+        "broad_provider_minute": "delegated",
+        "full_checkpoint": "delegated"
+      }
+    },
+    "normalized_shape_dominant": {
+      "geometry_channels": [
+        {
+          "id": "rclose",
+          "source": "grid",
+          "column": "bar_close",
+          "aggregate": null,
+          "derive": null,
+          "of": null,
+          "transform": "log_ratio_to_reference",
+          "reference": {
+            "of": "close",
+            "rule": "first_valid"
+          },
+          "valid_when": {
+            "column": "bar_state",
+            "op": "neq",
+            "value": "none"
+          }
+        }
+      ],
+      "transforms": [
+        "log_ratio_to_reference"
+      ],
+      "metric": "masked_euclidean_zscore_fitblock",
+      "metric_weights": {
+        "rclose": 1.0
+      },
+      "scale_reference": {
+        "statistic": "median_fit_kth_neighbour_distance",
+        "k": 20
+      },
+      "radius": 1.0,
+      "tier_availability": {
+        "selected_paths": "materialized",
+        "candidate_net_minute": "delegated",
+        "broad_provider_minute": "delegated",
+        "full_checkpoint": "delegated"
+      }
+    },
+    "duration_event_dominant": {
+      "geometry_channels": [
+        {
+          "id": "bpresence",
+          "source": "grid",
+          "column": "bar_close",
+          "aggregate": null,
+          "derive": "presence",
+          "of": "close",
+          "transform": "identity",
+          "reference": null,
+          "valid_when": null
+        },
+        {
+          "id": "gap",
+          "source": "grid",
+          "column": "bar_close",
+          "aggregate": null,
+          "derive": "gap_minutes",
+          "of": "close",
+          "transform": "log1p",
+          "reference": null,
+          "valid_when": null
+        },
+        {
+          "id": "pgap",
+          "source": "grid",
+          "column": "n_prints",
+          "aggregate": null,
+          "derive": "gap_minutes",
+          "of": "nprints",
+          "transform": "log1p",
+          "reference": null,
+          "valid_when": null
+        },
+        {
+          "id": "nprints",
+          "source": "grid",
+          "column": "n_prints",
+          "aggregate": null,
+          "derive": null,
+          "of": null,
+          "transform": "log1p",
+          "reference": null,
+          "valid_when": {
+            "column": "print_state",
+            "op": "neq",
+            "value": "no_print"
+          }
+        }
+      ],
+      "transforms": [
+        "presence",
+        "log1p_gap_minutes",
+        "log1p_print_gap_minutes",
+        "log1p_print_count"
+      ],
+      "metric": "masked_euclidean_zscore_fitblock",
+      "metric_weights": {
+        "bpresence": 1.0,
+        "gap": 1.0,
+        "pgap": 1.0,
+        "nprints": 1.0
+      },
+      "scale_reference": {
+        "statistic": "median_fit_kth_neighbour_distance",
+        "k": 20
+      },
+      "radius": 2.0,
+      "tier_availability": {
+        "selected_paths": "materialized",
+        "candidate_net_minute": "delegated",
+        "broad_provider_minute": "delegated",
+        "full_checkpoint": "delegated"
+      }
+    },
+    "activity_microstructure_dominant": {
+      "geometry_channels": [
+        {
+          "id": "nprints",
+          "source": "grid",
+          "column": "n_prints",
+          "aggregate": null,
+          "derive": null,
+          "of": null,
+          "transform": "log1p",
+          "reference": null,
+          "valid_when": {
+            "column": "print_state",
+            "op": "neq",
+            "value": "no_print"
+          }
+        },
+        {
+          "id": "psize",
+          "source": "prints",
+          "column": "size",
+          "aggregate": "size_sum",
+          "derive": null,
+          "of": null,
+          "transform": "log1p",
+          "reference": null,
+          "valid_when": {
+            "column": "within_session",
+            "op": "eq",
+            "value": true
+          }
+        }
+      ],
+      "transforms": [
+        "log1p",
+        "log1p"
+      ],
+      "metric": "masked_euclidean_zscore_fitblock",
+      "metric_weights": {
+        "nprints": 1.0,
+        "psize": 1.0
+      },
+      "scale_reference": {
+        "statistic": "median_fit_kth_neighbour_distance",
+        "k": 20
+      },
+      "radius": 2.0,
+      "tier_availability": {
+        "selected_paths": "materialized",
+        "candidate_net_minute": "delegated",
+        "broad_provider_minute": "delegated",
+        "full_checkpoint": "delegated"
+      }
+    },
+    "balanced_multichannel_reference": {
+      "geometry_channels": null,
+      "aggregation": "equal_weight_mean_standardized_view_distances",
+      "tier_availability": {
+        "selected_paths": "materialized",
+        "candidate_net_minute": "delegated",
+        "broad_provider_minute": "delegated",
+        "full_checkpoint": "delegated"
+      }
+    }
+  },
+  "learned_family": {
+    "family_count": 1,
+    "architecture": "small masked-sequence temporal convolutional encoder (masked TCN)",
+    "invalid_padded_positions_contribute_zero_loss": true,
+    "inputs": [
+      {
+        "id": "close",
+        "source": "grid",
+        "column": "bar_close",
+        "aggregate": null,
+        "derive": null,
+        "of": null,
+        "transform": "identity",
+        "reference": null,
+        "valid_when": {
+          "column": "bar_state",
+          "op": "neq",
+          "value": "none"
+        }
+      },
+      {
+        "id": "vol",
+        "source": "grid",
+        "column": "bar_volume",
+        "aggregate": null,
+        "derive": null,
+        "of": null,
+        "transform": "log1p",
+        "reference": null,
+        "valid_when": {
+          "column": "bar_volume",
+          "op": "is_not_null"
+        }
+      },
+      {
+        "id": "nprints",
+        "source": "grid",
+        "column": "n_prints",
+        "aggregate": null,
+        "derive": null,
+        "of": null,
+        "transform": "log1p",
+        "reference": null,
+        "valid_when": {
+          "column": "print_state",
+          "op": "neq",
+          "value": "no_print"
+        }
+      }
+    ],
+    "modes": {
+      "causal": {
+        "receptive_field": "left-only",
+        "garbage_suffix_invariance_required": true,
+        "prospective_live_use": true,
+        "labelled": false,
+        "config": {
+          "config_version": "v0",
+          "family": "masked_tcn",
+          "mode": "causal",
+          "labelled": false,
+          "label": null,
+          "objective": "masked_span_reconstruction",
+          "width": 64,
+          "depth": 4,
+          "kernel_size": 3,
+          "embedding_dim": 32,
+          "dilation_growth": 2,
+          "activation": "gelu",
+          "norm": "layer_norm",
+          "dropout": 0.1,
+          "optimizer": {
+            "name": "adamw",
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "betas": [
+              0.9,
+              0.999
+            ],
+            "eps": 1e-08
+          },
+          "epochs": 30,
+          "batch_size": 64,
+          "mask_span": {
+            "min_len": 4,
+            "max_len": 16
+          },
+          "mask_fraction": 0.25,
+          "seed": 7,
+          "fold": "block",
+          "input_planes": [
+            "value",
+            "valid"
+          ],
+          "hparams": {
+            "weight_init": "kaiming_uniform",
+            "residual": true,
+            "grad_clip_norm": 1.0,
+            "eval_every": 5
+          }
+        }
+      },
+      "retrospective": {
+        "labelled": true,
+        "prospective_live_use": false,
+        "out_of_window_junk_insensitive_required": true,
+        "config": {
+          "config_version": "v0",
+          "family": "masked_tcn",
+          "mode": "retrospective",
+          "labelled": true,
+          "label": "completed_whole_span",
+          "objective": "masked_span_reconstruction",
+          "width": 64,
+          "depth": 4,
+          "kernel_size": 3,
+          "embedding_dim": 32,
+          "dilation_growth": 2,
+          "activation": "gelu",
+          "norm": "layer_norm",
+          "dropout": 0.1,
+          "optimizer": {
+            "name": "adamw",
+            "lr": 0.001,
+            "weight_decay": 0.0001,
+            "betas": [
+              0.9,
+              0.999
+            ],
+            "eps": 1e-08
+          },
+          "epochs": 30,
+          "batch_size": 64,
+          "mask_span": {
+            "min_len": 4,
+            "max_len": 16
+          },
+          "mask_fraction": 0.25,
+          "seed": 7,
+          "fold": "block",
+          "input_planes": [
+            "value",
+            "valid"
+          ],
+          "hparams": {
+            "weight_init": "kaiming_uniform",
+            "residual": true,
+            "grad_clip_norm": 1.0,
+            "eval_every": 5
+          }
+        }
+      }
+    }
+  },
+  "first_retrieval_proof": {
+    "neighbours_k": 100,
+    "independent_day_spread_required": true,
+    "path_interval_disagreement_preserved": true
+  },
+  "race_geometry": {
+    "race_matrix_version": "v0",
+    "frozen": true,
+    "tiers": {
+      "broad_minute": {
+        "table": "race_minute_full",
+        "keys": [
+          "day",
+          "t",
+          "ticker"
+        ],
+        "clock_axis": {
+          "column": "t",
+          "unit": "minute",
+          "step": 1,
+          "span": [
+            570,
+            959
+          ],
+          "frozen": true
+        },
+        "population": {
+          "label": "pit_eligible_board",
+          "predicates": [
+            {
+              "column": "known_by_t",
+              "op": "eq",
+              "value": true
+            }
+          ],
+          "frozen": true
+        },
+        "quality": {
+          "qualified_label": "known_by_t",
+          "reference_label": "raw_reference_only",
+          "predicates": [
+            {
+              "column": "known_by_t",
+              "op": "eq",
+              "value": true
+            }
+          ],
+          "frozen": true
+        },
+        "scale": {
+          "unit": "minute",
+          "ladder": [
+            30,
+            60,
+            120
+          ],
+          "anchor": "window_end_at_query",
+          "alignment": "right",
+          "anchor_stride": 14,
+          "frozen": true
+        },
+        "flow": {
+          "rule": "previous_axis_position_else_invalid",
+          "order": 1,
+          "frozen": true
+        },
+        "cells": {
+          "magnitude_shape_duration": "materialized",
+          "activity_prints": "unsupported",
+          "quotes": "unsupported",
+          "learned_minute_sequence": "delegated"
+        },
+        "surrogate": {
+          "matched_axes": [
+            "block",
+            "clock_bucket",
+            "population_decile"
+          ],
+          "clock_bucket_size": 15,
+          "draws": 200,
+          "density_decile_definition": "exact_deciles_of_object_population_size",
+          "frozen": true
+        }
+      },
+      "candidate_net": {
+        "table": "race_candidate_net",
+        "keys": [
+          "day",
+          "t",
+          "ticker"
+        ],
+        "clock_axis": {
+          "column": "t",
+          "unit": "minute",
+          "step": 1,
+          "span": [
+            570,
+            959
+          ],
+          "frozen": true
+        },
+        "population": {
+          "label": "candidate_roster_asof",
+          "predicates": [
+            {
+              "column": "known_by_t",
+              "op": "eq",
+              "value": true
+            }
+          ],
+          "frozen": true
+        },
+        "quality": {
+          "qualified_label": "known_by_t",
+          "reference_label": "raw_reference_only",
+          "predicates": [
+            {
+              "column": "known_by_t",
+              "op": "eq",
+              "value": true
+            }
+          ],
+          "frozen": true
+        },
+        "scale": {
+          "unit": "minute",
+          "ladder": [
+            30,
+            60,
+            120
+          ],
+          "anchor": "window_end_at_query",
+          "alignment": "right",
+          "anchor_stride": 8,
+          "frozen": true
+        },
+        "flow": {
+          "rule": "previous_axis_position_else_invalid",
+          "order": 1,
+          "frozen": true
+        },
+        "cells": {
+          "magnitude_shape_duration": "materialized",
+          "activity_prints": "unsupported",
+          "quotes": "unsupported",
+          "learned_minute_sequence": "delegated"
+        },
+        "surrogate": {
+          "matched_axes": [
+            "block",
+            "clock_bucket",
+            "population_decile"
+          ],
+          "clock_bucket_size": 15,
+          "draws": 200,
+          "density_decile_definition": "exact_deciles_of_object_population_size",
+          "frozen": true
+        }
+      },
+      "checkpoint": {
+        "table": "race_checkpoint_full",
+        "keys": [
+          "day",
+          "T",
+          "symbol"
+        ],
+        "clock_axis": {
+          "column": "T",
+          "unit": "minute",
+          "axis_values": [
+            575,
+            580,
+            585,
+            590,
+            595,
+            600,
+            615,
+            630,
+            645,
+            660,
+            690,
+            720
+          ],
+          "frozen": true
+        },
+        "population": {
+          "label": "checkpoint_pit_listed",
+          "predicates": [
+            {
+              "column": "known_by_t",
+              "op": "eq",
+              "value": true
+            }
+          ],
+          "frozen": true
+        },
+        "quality": {
+          "qualified_label": "known_by_t",
+          "reference_label": "raw_reference_only",
+          "predicates": [
+            {
+              "column": "known_by_t",
+              "op": "eq",
+              "value": true
+            }
+          ],
+          "frozen": true
+        },
+        "scale": {
+          "unit": "checkpoint",
+          "ladder": [
+            1,
+            2,
+            4
+          ],
+          "anchor": "window_end_at_query",
+          "alignment": "right",
+          "anchor_stride": 1,
+          "frozen": true
+        },
+        "flow": {
+          "rule": "previous_axis_position_else_invalid",
+          "order": 1,
+          "frozen": true
+        },
+        "cells": {
+          "magnitude_shape_duration": "materialized",
+          "activity_prints": "unsupported",
+          "quotes": "unsupported",
+          "learned_minute_sequence": "delegated"
+        },
+        "surrogate": {
+          "matched_axes": [
+            "block",
+            "clock_bucket",
+            "population_decile"
+          ],
+          "clock_bucket_size": 2,
+          "draws": 200,
+          "density_decile_definition": "exact_deciles_of_object_population_size",
+          "frozen": true
+        }
+      }
+    },
+    "views": {
+      "broad_minute": {
+        "magnitude_dominant": {
+          "features": [
+            {
+              "id": "px_lvl",
+              "kind": "level",
+              "column": "px",
+              "aggregate": "quantile",
+              "position": 0.5,
+              "transform": "log_level",
+              "reference": null,
+              "valid_when": {
+                "column": "known_by_t",
+                "op": "eq",
+                "value": true
+              }
+            },
+            {
+              "id": "gain_lvl",
+              "kind": "level",
+              "column": "gain",
+              "aggregate": "max",
+              "transform": "identity",
+              "reference": null,
+              "valid_when": {
+                "column": "known_by_t",
+                "op": "eq",
+                "value": true
+              }
+            },
+            {
+              "id": "gain_flow",
+              "kind": "flow",
+              "of": "gain_lvl"
+            }
+          ],
+          "metric": "masked_euclidean_zscore_fitblock",
+          "metric_weights": {
+            "px_lvl": 1.0,
+            "gain_lvl": 1.0,
+            "gain_flow": 1.0
+          },
+          "scale_reference": {
+            "statistic": "median_fit_kth_neighbour_distance",
+            "k": 20
+          },
+          "radius": 3.0,
+          "low_density_max": 0,
+          "uncertain_kth_dist_min": 6.0
+        },
+        "activity_microstructure_dominant": {
+          "features": [
+            {
+              "id": "n_known_c",
+              "kind": "level",
+              "column": "n_known",
+              "aggregate": "mean",
+              "transform": "log1p",
+              "reference": null,
+              "valid_when": {
+                "column": "known_by_t",
+                "op": "eq",
+                "value": true
+              }
+            },
+            {
+              "id": "n_elig_c",
+              "kind": "level",
+              "column": "n_eligible",
+              "aggregate": "mean",
+              "transform": "log1p",
+              "reference": null,
+              "valid_when": {
+                "column": "known_by_t",
+                "op": "eq",
+                "value": true
+              }
+            }
+          ],
+          "metric": "masked_euclidean_zscore_fitblock",
+          "metric_weights": {
+            "n_known_c": 1.0,
+            "n_elig_c": 1.0
+          },
+          "scale_reference": {
+            "statistic": "median_fit_kth_neighbour_distance",
+            "k": 20
+          },
+          "radius": 2.0,
+          "low_density_max": 0,
+          "uncertain_kth_dist_min": 4.0
+        },
+        "balanced_multichannel_reference": {
+          "aggregation": "equal_weight_mean_standardized_view_distances",
+          "min_common_views": 2,
+          "radius": 5.0,
+          "low_density_max": 0,
+          "uncertain_kth_dist_min": 10.0,
+          "balanced_reference_tuned_to_best_geometry": false
+        },
+        "normalized_shape_dominant": {
+          "features": [
+            {
+              "id": "px_shape",
+              "kind": "level",
+              "column": "px",
+              "aggregate": "quantile",
+              "position": 0.25,
+              "transform": "log_ratio_to_reference",
+              "reference": {
+                "of": "px",
+                "rule": "cross_section_median_at_same_t"
+              },
+              "valid_when": {
+                "column": "known_by_t",
+                "op": "eq",
+                "value": true
+              }
+            }
+          ],
+          "metric": "masked_euclidean_zscore_fitblock",
+          "metric_weights": {
+            "px_shape": 1.0
+          },
+          "scale_reference": {
+            "statistic": "median_fit_kth_neighbour_distance",
+            "k": 20
+          },
+          "radius": 1.0,
+          "low_density_max": 0,
+          "uncertain_kth_dist_min": 2.0
+        }
+      },
+      "candidate_net": {
+        "magnitude_dominant": {
+          "features": [
+            {
+              "id": "px_lvl",
+              "kind": "level",
+              "column": "px",
+              "aggregate": "quantile",
+              "position": 0.5,
+              "transform": "log_level",
+              "reference": null,
+              "valid_when": {
+                "column": "known_by_t",
+                "op": "eq",
+                "value": true
+              }
+            },
+            {
+              "id": "age_lvl",
+              "kind": "level",
+              "column": "age_min",
+              "aggregate": "mean",
+              "transform": "log1p",
+              "reference": null,
+              "valid_when": {
+                "column": "known_by_t",
+                "op": "eq",
+                "value": true
+              }
+            }
+          ],
+          "metric": "masked_euclidean_zscore_fitblock",
+          "metric_weights": {
+            "px_lvl": 1.0,
+            "age_lvl": 1.0
+          },
+          "scale_reference": {
+            "statistic": "median_fit_kth_neighbour_distance",
+            "k": 20
+          },
+          "radius": 2.0,
+          "low_density_max": 0,
+          "uncertain_kth_dist_min": 4.0
+        },
+        "normalized_shape_dominant": {
+          "features": [
+            {
+              "id": "px_rel",
+              "kind": "level",
+              "column": "px",
+              "aggregate": "quantile",
+              "position": 0.25,
+              "transform": "log_ratio_to_reference",
+              "reference": {
+                "of": "px",
+                "rule": "cross_section_median_at_same_t"
+              },
+              "valid_when": {
+                "column": "known_by_t",
+                "op": "eq",
+                "value": true
+              }
+            }
+          ],
+          "metric": "masked_euclidean_zscore_fitblock",
+          "metric_weights": {
+            "px_rel": 1.0
+          },
+          "scale_reference": {
+            "statistic": "median_fit_kth_neighbour_distance",
+            "k": 20
+          },
+          "radius": 1.0,
+          "low_density_max": 0,
+          "uncertain_kth_dist_min": 2.0
+        },
+        "balanced_multichannel_reference": {
+          "aggregation": "equal_weight_mean_standardized_view_distances",
+          "min_common_views": 2,
+          "radius": 3.0,
+          "low_density_max": 0,
+          "uncertain_kth_dist_min": 6.0,
+          "balanced_reference_tuned_to_best_geometry": false
+        }
+      },
+      "checkpoint": {
+        "magnitude_dominant": {
+          "features": [
+            {
+              "id": "pxT_lvl",
+              "kind": "level",
+              "column": "px_T",
+              "aggregate": "quantile",
+              "position": 0.5,
+              "transform": "log_level",
+              "reference": null,
+              "valid_when": {
+                "column": "known_by_t",
+                "op": "eq",
+                "value": true
+              }
+            },
+            {
+              "id": "o570_lvl",
+              "kind": "level",
+              "column": "o570",
+              "aggregate": "mean",
+              "transform": "log_level",
+              "reference": null,
+              "valid_when": {
+                "column": "known_by_t",
+                "op": "eq",
+                "value": true
+              }
+            }
+          ],
+          "metric": "masked_euclidean_zscore_fitblock",
+          "metric_weights": {
+            "pxT_lvl": 1.0,
+            "o570_lvl": 1.0
+          },
+          "scale_reference": {
+            "statistic": "median_fit_kth_neighbour_distance",
+            "k": 20
+          },
+          "radius": 2.0,
+          "low_density_max": 0,
+          "uncertain_kth_dist_min": 4.0
+        },
+        "activity_microstructure_dominant": {
+          "features": [
+            {
+              "id": "rank_open_c",
+              "kind": "level",
+              "column": "rank_open",
+              "aggregate": "mean",
+              "transform": "identity",
+              "reference": null,
+              "valid_when": {
+                "column": "known_by_t",
+                "op": "eq",
+                "value": true
+              }
+            },
+            {
+              "id": "n_elig_open_c",
+              "kind": "level",
+              "column": "n_eligible_open",
+              "aggregate": "mean",
+              "transform": "log1p",
+              "reference": null,
+              "valid_when": {
+                "column": "known_by_t",
+                "op": "eq",
+                "value": true
+              }
+            }
+          ],
+          "metric": "masked_euclidean_zscore_fitblock",
+          "metric_weights": {
+            "rank_open_c": 1.0,
+            "n_elig_open_c": 1.0
+          },
+          "scale_reference": {
+            "statistic": "median_fit_kth_neighbour_distance",
+            "k": 20
+          },
+          "radius": 2.0,
+          "low_density_max": 0,
+          "uncertain_kth_dist_min": 4.0
+        },
+        "balanced_multichannel_reference": {
+          "aggregation": "equal_weight_mean_standardized_view_distances",
+          "min_common_views": 2,
+          "radius": 4.0,
+          "low_density_max": 0,
+          "uncertain_kth_dist_min": 8.0,
+          "balanced_reference_tuned_to_best_geometry": false
+        },
+        "normalized_shape_dominant": {
+          "features": [
+            {
+              "id": "px_t_shape",
+              "kind": "level",
+              "column": "px_T",
+              "aggregate": "quantile",
+              "position": 0.25,
+              "transform": "log_ratio_to_reference",
+              "reference": {
+                "of": "px_T",
+                "rule": "cross_section_median_at_same_t"
+              },
+              "valid_when": {
+                "column": "known_by_t",
+                "op": "eq",
+                "value": true
+              }
+            }
+          ],
+          "metric": "masked_euclidean_zscore_fitblock",
+          "metric_weights": {
+            "px_t_shape": 1.0
+          },
+          "scale_reference": {
+            "statistic": "median_fit_kth_neighbour_distance",
+            "k": 20
+          },
+          "radius": 1.0,
+          "low_density_max": 0,
+          "uncertain_kth_dist_min": 2.0
+        }
+      }
+    },
+    "view_weights": {
+      "broad_minute": {
+        "magnitude_dominant": 1.0,
+        "activity_microstructure_dominant": 1.0,
+        "normalized_shape_dominant": 1.0
+      },
+      "candidate_net": {
+        "magnitude_dominant": 1.0,
+        "normalized_shape_dominant": 1.0
+      },
+      "checkpoint": {
+        "magnitude_dominant": 1.0,
+        "activity_microstructure_dominant": 1.0,
+        "normalized_shape_dominant": 1.0
+      }
+    },
+    "neighbours_k": 100,
+    "density_decile_definition": "exact_deciles_of_object_population_size",
+    "ann_sparse_recall": {
+      "index_build": "exact_bruteforce_no_ann",
+      "exact_search_strata": "all",
+      "sparse_exact_recall_floor": 1.0,
+      "frozen": true
+    },
+    "independence": {
+      "unit": "day",
+      "exclude_same_unit": true,
+      "frozen": true
+    },
+    "adaptive_choice_ledger": {
+      "path": "factory/artifacts/basket/phase2/ATLAS/TAPE/adaptive_choice_ledger_race_v1.json",
+      "sha256": "c2aa514922bca1d0cf16e936f53b6882eb96a021215d22d930790d7b838ff526",
+      "covers_race_choices": true
+    },
+    "geometry_gates": {
+      "note": "declared one-shot gates live in binding_slots.numeric_one_shot_gates; echoed here, never evaluated by the consumers",
+      "retirement_rule": "a missed gate retires the learned family for v0 (and the affected geometry), never the Atlas",
+      "cross_family_transfer_is_not_a_universal_kill_condition": true
+    }
+  },
+  "declared_provenance": {
+    "_rule": "provenance per bound value: declared_policy = a committed choice with no permitted corpus anchor (Freeze R exists so choices cannot be tuned to results); blind_report = anchored to an exact number in the Stage-0C report; manifest_pin = copied from the full-corpus manifest / contract lock.",
+    "binding_slots.corpus.manifest_sha256": {
+      "provenance": "manifest_pin",
+      "anchor": "full/manifest.json sha256"
+    },
+    "binding_slots.corpus.day_set_sha256": {
+      "provenance": "manifest_pin",
+      "anchor": "sha256 of the 1066 sorted selected_path_grid days in the manifest"
+    },
+    "binding_slots.blind_report.sha256": {
+      "provenance": "manifest_pin",
+      "anchor": "blind_corpus_report.json file sha256 144f2018\u2026, internal report_sha256 193a1b9e\u2026, status complete, refusals []"
+    },
+    "binding_slots.transform_training_blocks.fit_blocks": {
+      "provenance": "blind_report",
+      "anchor": "identity census block1_days 734 vs block2_days 332"
+    },
+    "binding_slots.scale_choice.scale_ladder": {
+      "provenance": "blind_report",
+      "anchor": "selected_path_prints path_shape.elapsed_minutes p0.001 = 354 min (ci_low 354.29) and the grid lattice is a fixed 401 minutes, so a 120-minute window stays inside essentially every observed span"
+    },
+    "binding_slots.scale_choice.crop": {
+      "provenance": "declared_policy",
+      "anchor": "no summary indicates a sub-window; the projection lattice is already [565,965]"
+    },
+    "binding_slots.scale_choice.anchor_channel": {
+      "provenance": "blind_report",
+      "anchor": "grid field_presence bar_close present 1,885,637 / null 482,268 equals by_coordinate bar_state.none 482,268 (presence coincides with a physical bar)"
+    },
+    "binding_slots.metric_weights.min_common_views": {
+      "provenance": "declared_policy",
+      "anchor": "a balanced distance requires all four primitive views to be commonly valid"
+    },
+    "binding_slots.radius.radius_per_view": {
+      "provenance": "declared_policy",
+      "anchor": "radius = number of eligible channels in the view, in standardized-sigma^2 units: magnitude 3 channels, shape 1, duration 2, activity 2, balanced 4 in standardized_view_distance units"
+    },
+    "binding_slots.ann_sparse_recall": {
+      "provenance": "declared_policy",
+      "anchor": "exact brute force only, so the sparse exact-recall floor is 1.0 by construction and no ANN is built"
+    },
+    "binding_slots.integer_seed": {
+      "provenance": "declared_policy",
+      "anchor": "reproducibility constant, shared by the learned-family configs"
+    },
+    "binding_slots.numeric_one_shot_gates": {
+      "provenance": "declared_policy",
+      "anchor": "committed once: recurrence>=0.05, mutual_neighbour_support>=0.05, block_stability Jaccard>=0.20, coordinate_leakage and family_leakage tolerance 0, magnitude_preservation Spearman>=0.30, sparse_exact_recall=1.0, ssl_over_random_improvement>=0.02 relative held-out masked-span loss improvement, measured_runtime<=3600 s; a missed gate retires the learned family for v0, never the Atlas"
+    },
+    "hand_views.magnitude_dominant.geometry_channels": {
+      "provenance": "blind_report",
+      "anchor": "grid quantiles bar_close p50 4.05-4.10 / p99 105.6-111.8 / p999 374 (positive heavy right tail, role magnitude), bar_volume p50 1.70e4-1.75e4 / p99 1.37e6-1.44e6, n_prints p50 46-48 / p99 4,418-4,630 with print_state path_print 1,924,728 vs no_print 207,566"
+    },
+    "hand_views.normalized_shape_dominant.geometry_channels": {
+      "provenance": "blind_report",
+      "anchor": "cross-path level spread: grid bar_close p0.001 ~0.59 vs p0.999 ~380 and prints price p50 5.29 / p99 127.1, so the level must be divided out for shape"
+    },
+    "hand_views.duration_event_dominant.geometry_channels": {
+      "provenance": "blind_report",
+      "anchor": "482,268 bar-absent lattice minutes (20.4% of 2,367,905) and 207,566 no_print minutes make hole/gap structure a first-class channel. The 10-day PARTIAL smoke measured the view degenerate with presence+gap alone (96/162 duplicate vectors) and still degenerate with a print-gap channel added, because continuously-printing selected paths have constant presence/gap: the print-count channel (log1p n_prints, the printed-bar intensity the role names) is therefore included and the fitted view scale became positive, so the smoke completed."
+    },
+    "hand_views.activity_microstructure_dominant.geometry_channels": {
+      "provenance": "blind_report",
+      "anchor": "prints layer 799,771,664 rows; notional p50 416 / p99 2.08e4 with 475,523 prints >=1e5 and 11,239 >=1e6; n_prints as above"
+    },
+    "hand_views.*.scale_reference.k": {
+      "provenance": "declared_policy",
+      "anchor": "20, well below the published neighbours_k of 100"
+    },
+    "learned_family.inputs": {
+      "provenance": "blind_report",
+      "anchor": "the same three anchored channels (close, vol, nprints)"
+    },
+    "learned_family.modes.*.config": {
+      "provenance": "declared_policy",
+      "anchor": "small masked TCN: width 64, depth 4, kernel 3, dilation growth 2, embedding 32, gelu, layer_norm, dropout 0.1, adamw lr 1e-3 wd 1e-4, 30 epochs, batch 64, mask span 4..16, mask fraction 0.25, seed 7, fold block, planes value+valid"
+    },
+    "race_geometry.tiers.broad_minute.clock_axis.span": {
+      "provenance": "blind_report",
+      "anchor": "race_minute_full by_coordinate.t has exactly 390 values, min 570 max 959"
+    },
+    "race_geometry.tiers.candidate_net.clock_axis.span": {
+      "provenance": "blind_report",
+      "anchor": "race_candidate_net by_coordinate.t has exactly 390 values, min 570 max 959"
+    },
+    "race_geometry.tiers.checkpoint.clock_axis.axis_values": {
+      "provenance": "blind_report",
+      "anchor": "race_checkpoint_full by_coordinate.T = the twelve declared clocks 575..720"
+    },
+    "race_geometry.tiers.*.population": {
+      "provenance": "declared_policy",
+      "anchor": "population columns are those the report lists as eligible and already tallied (population_def, known_by_t); thresholds are committed choices"
+    },
+    "race_geometry.tiers.*.quality": {
+      "provenance": "declared_policy",
+      "anchor": "known_by_t is the eligible prospective quality column tallied in the report (checkpoint 69,232,384 true / 5,792,348 false)"
+    },
+    "race_geometry.tiers.*.surrogate": {
+      "provenance": "declared_policy",
+      "anchor": "axes restricted to the coordinate the contract allows (block, clock_bucket, population_decile); bucket size 15 minutes and 200 draws committed once"
+    },
+    "race_geometry.views.*": {
+      "provenance": "blind_report",
+      "anchor": "features are restricted to the report's eligible-column lists per tier: broad_minute 17 columns (incl. px, gain, n_known, n_eligible), candidate_net 4 (age_min, known_by_t, px, px_et), checkpoint 10 (incl. px_T, o570, rank_open, n_eligible_open)"
+    },
+    "race_geometry.view_weights": {
+      "provenance": "declared_policy",
+      "anchor": "fixed equal weight across the primitive views of each tier"
+    },
+    "race_geometry.neighbours_k": {
+      "provenance": "declared_policy",
+      "anchor": "the published nearest-100 retrieval"
+    },
+    "race_geometry.independence": {
+      "provenance": "declared_policy",
+      "anchor": "same-day objects are never each other's neighbours"
+    },
+    "binding_slots.radius.radius_per_view.magnitude_dominant": {
+      "provenance": "fit_block_measurement",
+      "anchor": "Radius re-derived for v1 by the pre-declared outcome-blind rule (alpha = 1.0 x the fitted median k-th (k=20) fit-block neighbour distance): radius 5.396159852396423 - GEOMETRY/v0/retrieval_report.json input_contract.fitted_view_scales.magnitude_dominant.scale (fit_objects 12075)"
+    },
+    "binding_slots.radius.radius_per_view.normalized_shape_dominant": {
+      "provenance": "fit_block_measurement",
+      "anchor": "Radius re-derived for v1 by the pre-declared outcome-blind rule (alpha = 1.0 x the fitted median k-th (k=20) fit-block neighbour distance): radius 0.003134696780160387 - ...fitted_view_scales.normalized_shape_dominant.scale (fit_objects 12075)"
+    },
+    "binding_slots.radius.radius_per_view.duration_event_dominant": {
+      "provenance": "fit_block_measurement",
+      "anchor": "Radius re-derived for v1 by the pre-declared outcome-blind rule (alpha = 1.0 x the fitted median k-th (k=20) fit-block neighbour distance): radius 3.685071361484269 - ...fitted_view_scales.duration_event_dominant.scale (fit_objects 12075)"
+    },
+    "binding_slots.radius.radius_per_view.activity_microstructure_dominant": {
+      "provenance": "fit_block_measurement",
+      "anchor": "Radius re-derived for v1 by the pre-declared outcome-blind rule (alpha = 1.0 x the fitted median k-th (k=20) fit-block neighbour distance): radius 4.222759274332091 - ...fitted_view_scales.activity_microstructure_dominant.scale (fit_objects 12075)"
+    },
+    "binding_slots.radius.radius_per_view.balanced_multichannel_reference": {
+      "provenance": "fit_block_measurement",
+      "anchor": "Radius re-derived for v1 by the pre-declared outcome-blind rule (alpha = 1.0 x the fitted median k-th (k=20) fit-block neighbour distance): radius 83.03286591124858 - views.balanced_multichannel_reference.by_block.block1.median_kth_dist (block1 = fit block; NB the v0 engine published no fitted balanced scale and this median is computed against all candidates, not fit-block-only - the only published fit-block figure for that view)"
+    },
+    "binding_slots.radius.radius_basis": {
+      "provenance": "declared_policy",
+      "anchor": "alpha_v = 1.0 for every view, fixed before the v1 run; no outcome, censor, label or corpus-outcome statistic enters"
+    },
+    "race_geometry.views.*.normalized_shape_dominant.features[].position": {
+      "provenance": "declared_policy",
+      "anchor": "0.25 (q25/median): the 0.5/median form is identically 1 by construction and was refused as zero-variance; dispersion is measurable (checkpoint 11-12/12 clocks, candidate 333-356/389, broad 285-315/389; exactly 1.0 never observed)"
+    },
+    "race_geometry.tiers.broad_minute.population.predicates": {
+      "provenance": "declared_policy",
+      "anchor": "known_by_t == true: population_def is list[str] (no scalar comparison) and is empty on 2025-02-03; known_by_t matches every broad_minute view's valid_when (2.11M/2.04M/2.26M rows on the three measured days)"
+    }
+  },
+  "v1_statement": {
+    "purpose": "v1 exists solely to make the ruler interpretable: v0's radii were declared policy constants with no permitted anchor and mixed units (primitives in standardized-channel sigma^2, balanced in standardized_view_distance), which is why the v0 balanced view reported unique-within-radius 0.98 and the shape view 0.0",
+    "retirement_semantics": "unchanged: a missed one-shot gate still retires the learned family for v0/v1 and the affected geometry, never the Atlas; all nine gate numbers are exactly those declared in v0 and are re-declared unchanged",
+    "not_a_gate_chase": "v1 is NOT a re-run of v0 to move a gate; if a gate still misses under v1 the retirement stands. No threshold was, or may be, relaxed or reinterpreted after seeing v0's results",
+    "v0_evidence": "representation_matrix_v0.json and the GEOMETRY/v0 outputs stay on disk byte-identical as the published v0 evidence"
+  },
+  "v2_statement": {
+    "purpose": "v2 exists to fix two record-side defects that the race node refuses at load: a self-referential shape feature and a population predicate with no scalar semantics",
+    "changes_versus_v1": "EXACTLY two: (1) every tier's normalized_shape_dominant feature position 0.5 -> 0.25 (ids, columns, transforms, reference rule and valid_when unchanged); (2) broad_minute population predicate -> known_by_t == true (label unchanged). Plus the ledger pin now points at the sibling race ledger v1 and the provenance entries recording both rationales.",
+    "gate_semantics": "all nine one-shot gate numbers are unchanged from v0/v1; a missed gate still retires the learned family for v0/v1/v2 and the affected geometry, never the Atlas",
+    "evidence": "measured by the race owner on real per-clock data (12 checkpoint clocks and 389 minute clocks on 2021-02-01, 2023-06-28, 2025-02-03); no outcome, censor, future or anatomy column was read",
+    "v0_v1_evidence": "v0 and v1 records and their outputs stay on disk byte-identical as published evidence"
+  }
+}
