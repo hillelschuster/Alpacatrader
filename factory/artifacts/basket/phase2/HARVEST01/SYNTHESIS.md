@@ -56,9 +56,9 @@ enough to reach zero.
 ## 4. What deserves the next serious confirmation
 
 1. The containment/tail facts (53% of session-max leaders in the 09:20 top-3; 54% of
-   days with a +30% touch) — these are the strongest empirical assets found; a
-   pre-registered measurement on reserved months should confirm them before any
-   strategy work builds on them.
+   days with a +30% touch; giants realize +53% by 10:30 when held) — these are the
+   strongest empirical assets found; a pre-registered measurement on reserved months
+   should confirm them before any strategy work builds on them.
 2. The "spare-the-monster" release family (tstop30/decay/failrec at −15/−20% damage
    thresholds rather than −10%) combined with exits into strength (partials at +50/+100)
    — the policies grid quantifies the parts; the combination is the open question.
@@ -66,11 +66,37 @@ enough to reach zero.
    gross ≈ +0.9% before friction) — adjacent to the live H025 flush-bid mechanism, not
    to the basket thesis; they do not justify 100 bps friction as tested here.
 NOT to be resurrected: raw (unfiltered) selection (43% of PM raw rows are broken
-prev-closes), re-entry, replacement, hold-all-day.
+prev-closes), re-entry, replacement, hold-all-day, release-into-survivor redistribution
+(positive deltas only through de-leveraging; absolute stays negative).
 
-## 5. Pending at draft time
+## 5. Final lane status (all corrected and complete)
 
-- Policy grid (36 rules incl. sell-into-strength partials + trails) — running.
-- Basket capital lane (release→cash / survivors / leader / reserve / dip) — running.
-- Golden-window birds-eye readout — running.
-- Pass 2 (compact-anchored variant across all lanes) — auto-starts after pass 1.
+- Basket capital lane (release → cash / equal survivors / best survivor / market
+  leader; reserve scale-in strength/time/dip): best absolute −0.53% (reserve scale-in,
+  11:00 → 12:00, N=1). Deltas vs hold are positive (+1…3 pp, block-stable) but the
+  absolute never crosses zero. Two engine defects were found and fixed during the
+  night by hand-verification (post-endpoint pricing; share-vs-dollar debit in the
+  replay), and the corrected engine matches an independent recomputation exactly
+  (2021-02-02, clock 630, N=4: +27.52% both ways).
+- Golden-window birds-eye: the basket's median mark peak is 09:43–09:50 for PM entries
+  (12:07 for 11:00 entries, 13:02 for 12:00 entries); the MEAN peak is +10–17% but is
+  tail-dominated, and the mean mark at noon is −4.5%. The money appears early and is
+  given back; the giants' own median peak is 13:18.
+- Execution probe (sampled member-days, local print tape): entry/exit print-vs-bar-open
+  differences and print-silence stats — see subminute_probe.md.
+- Pass 2 (compact-anchored variant across every lane) auto-starts after pass 1; the
+  anchor-sensitivity audit already showed the panel-anchor + discrepancy filter
+  (primary) is the defensible ranking anchor.
+
+## 6. Bottom line
+
+The top-gainer basket, entered causally at PM/RTH clocks with equal dollars and handled
+by any of 12 member rules / 36 policies / 6 capital-reallocation schemes, has NO
+positive-EV configuration on 1,066 dev days at 100 bps (150 bps strictly worse). The
+inefficiency is real and large (containment 53%, mean post-fill MFE +24.5%, 3.7% of
+members reaching +100% and realizing +65% by noon) but the accessible extraction
+fails on (a) the dud bleed (~50% of tickets averaging −11.6% by noon), (b) the giants'
+give-back, and (c) 100 bps friction on 2–4-hour holds. The best handling rules are
+loss-mitigators, not edge. What survives as assets: the containment/tail measurements
+and the giant-preserving release family — both worth pre-registered confirmation, but
+neither currently monetizable as a strategy.
