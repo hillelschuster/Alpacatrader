@@ -35,5 +35,9 @@ run report         $PY factory/scripts/basket_harvest_report.py
 run containment    $PY factory/scripts/basket_harvest_containment.py
 run mgmt_full      $PY factory/scripts/basket_harvest_mgmt.py --dev-days --workers 3
 run mgmt_report    $PY factory/scripts/basket_harvest_mgmt_report.py
-echo "== counts: selected=$(ls "$D"/harvest01/base/selected/*.parquet 2>/dev/null | wc -l) champs=$(ls "$D"/harvest01/base/champs/*.parquet 2>/dev/null | wc -l) bars=$(ls "$D"/harvest01/base/bars/*.parquet 2>/dev/null | wc -l) sim=$(ls "$D"/harvest01/sim/cells/*.parquet 2>/dev/null | wc -l) mgmt=$(ls "$D"/harvest01/mgmt/*.parquet 2>/dev/null | wc -l)"
+run policies_full  $PY factory/scripts/basket_harvest_policies.py --dev-days --workers 3
+run policies_rep   $PY factory/scripts/basket_harvest_policies_report.py
+run basket_full    $PY factory/scripts/basket_harvest_basket.py --dev-days --workers 3
+run basket_rep     $PY factory/scripts/basket_harvest_basket_report.py
+echo "== counts: selected=$(ls "$D"/harvest01/base/selected/*.parquet 2>/dev/null | wc -l) champs=$(ls "$D"/harvest01/base/champs/*.parquet 2>/dev/null | wc -l) bars=$(ls "$D"/harvest01/base/bars/*.parquet 2>/dev/null | wc -l) leaders=$(ls "$D"/harvest01/base/leaders/*.parquet 2>/dev/null | wc -l) sim=$(ls "$D"/harvest01/sim/cells/*.parquet 2>/dev/null | wc -l) mgmt=$(ls "$D"/harvest01/mgmt/*.parquet 2>/dev/null | wc -l) policies=$(ls "$D"/harvest01/policies/*.parquet 2>/dev/null | wc -l) basket=$(ls "$D"/harvest01/basket/*.parquet 2>/dev/null | wc -l)"
 echo "== chain done $(date -Is)"
