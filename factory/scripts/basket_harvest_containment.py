@@ -72,29 +72,28 @@ def main() -> int:
             sv = sel.filter((pl.col("variant") == variant) & (pl.col("clock") == clock))
             if sv.height == 0:
                 continue
-            top = {n: set(sv.filter(pl.col("rank") <= n)["ticker"].to_list())
-                   for n in (1, 2, 3, 4)}
+            pairs = {n: sv.filter(pl.col("rank") <= n).select(["day", "ticker"]).unique()
+                     for n in (1, 2, 3, 4)}
             days = sv["day"].unique().to_list()
             for N in (1, 2, 3, 4):
-                mem = top[N]
+                mem = pairs[N]
                 day_rows = champ.filter(pl.col("day").is_in(days))
                 c1 = day_rows.filter(pl.col("champ_rank") == 1)
                 c3 = day_rows.filter(pl.col("champ_rank") <= 3)
                 n_days = len(days)
-                in1 = c1.filter(pl.col("ticker").is_in(mem)).height
-                in3 = c3.filter(pl.col("ticker").is_in(mem)).height
+                in1 = c1.join(mem, on=["day", "ticker"], how="inner").height
+                in3 = c3.join(mem, on=["day", "ticker"], how="inner").height
                 # funnel per ruler
                 funnel = {}
                 for H in RULERS:
                     hit = chq.filter(pl.col("day").is_in(days) & (pl.col("gain_max_adj") >= H))
-                    captured = hit.filter(pl.col("ticker").is_in(mem)).height
+                    captured = hit.join(mem, on=["day", "ticker"], how="inner")
                     funnel[f"cross_H{int(H*100)}"] = hit.height
-                    funnel[f"captured_H{int(H*100)}"] = captured
+                    funnel[f"captured_H{int(H*100)}"] = captured.height
                     # of captured, remaining share of the move at the decision price
-                    if captured:
-                        cc = (hit.filter(pl.col("ticker").is_in(mem))
-                              .join(sv.select(["day", "ticker", "decision_px"]),
-                                    on=["day", "ticker"], how="inner"))
+                    if captured.height:
+                        cc = captured.join(sv.select(["day", "ticker", "decision_px"]),
+                                           on=["day", "ticker"], how="inner")
                         rem = ((cc["px_max"] - cc["decision_px"])
                                / (cc["px_max"] - cc["prev_close_adj"]))
                         funnel[f"remain_p50_H{int(H*100)}"] = float(rem.median())
@@ -147,10 +146,20 @@ def main() -> int:
                  "touching +H post-fill (variant=primary)\n")
     lines.append("| clock | N | +30 k>=1 | +50 k>=1 | +100 k>=1 | days |")
     lines.append("|---|---|---|---|---|---|")
-    for r in jt.filter((pl.col("variant") == "primary") & (pl.col("N") == 3)).sort("clock").iter_rows(named=True):
-        lines.append(f"| {r['clock']} | 3 | {r['share_k_ge1']:.3f} | "
-                     f"{(jt.filter((pl.col('variant')=='primary')&(pl.col('clock')==r['clock'])&(pl.col('N')==3)&(pl.col('H')==50))['share_k_ge1']).item():.3f} | "
-                     f"{(jt.filter((pl.col('variant')=='primary')&(pl.col('clock')==r['clock'])&(pl.col('N')==3)&(pl.col('H')==100))['share_k_ge1']).item():.3f} | {r['days']} |")
+    jp = jt.filter(pl.col("variant") == "primary")
+    for clock in sorted(jp["clock"].unique().to_list()):
+        s = jp.filter(pl.col("clock") == clock)
+        for N in (1, 2, 3, 4):
+            row = {}
+            for H in (30, 50, 100):
+                v = s.filter((pl.col("N") == N) & (pl.col("H") == H))
+                if v.height == 0:
+                    continue
+                row[H] = float(v["share_k_ge1"][0])
+                row["days"] = int(v["days"][0])
+            if row:
+                lines.append(f"| {clock} | {N} | {row.get(30, float('nan')):.3f} | "
+                             f"{row.get(50, float('nan')):.3f} | {row.get(100, float('nan')):.3f} | {row['days']} |")
     lines.append("\n_Remaining-move medians are in containment_summary.parquet "
                  "(remain_p50_Hxx columns)._\n")
     (rep / "containment.md").write_text("\n".join(lines) + "\n")
