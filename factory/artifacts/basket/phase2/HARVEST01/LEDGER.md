@@ -90,7 +90,26 @@ anchor comparison is uniform. Independent audits: PM lane PASS (5/5); causality
 review applied (6 fixes); selection audit running (incl. an anchor-sensitivity
 section).
 
-## Next serious confirmation (to be filled once the full grid lands)
+## 2026-10-02 (~02:15) — first full-grid read: the money structure (dev, 1,066 days)
+
+Unmanaged grid (primary variant; 6,324 cells, net-100): **every cell negative**. Best
+cell −0.08% (09:29→09:31 scalp, t≈−0.3); PM entries held to the close −7…−9%;
+10:00→noon exits −1…−5%. N=1 beats N=3 almost everywhere; rank1 is the WORST member
+at 09:20 (mean −3.4% at 10:00 vs −2.1% for rank4) but the best at 11:00 — the
+morning chases the most extended name and pays for it.
+Member-level (78,349 filled members): mean post-fill MFE +24.5% vs mean realized
+−2.7% (10:00) / −4.6% (noon) — the excursion exists, the hold gives it back.
+The tail is enormous and real: 2,883 members (3.7%) with MFE ≥ +100% average +173%
+MFE and realize +64.9% at noon; their summed contribution (+1,872 per-slot dollars)
+dwarfs the all-member total (−2,747). Half the tickets (50.4%) never make +10% and
+average −11.6% at noon — the bleed is the duds.
+Release-tradeoff (whole-day damage association): P(MFE≥100% | touched −10%) = 2.0%
+vs 6.9% if never damaged; damaged members average −9.9% at noon vs +9.4% for the
+never-damaged. Damage separates winners from losers, but ≈1,045 members that touch
+−10% still become giants — the release rule's core tradeoff.
+Joint tail after the actual fill (primary, N=3): PM clocks ~53–55% of days have ≥1
+member touching +30%; ~13% have ≥1 touching +100%. (Phase-1's 39–44% was on the
+older candidate universes; the market-wide PM selection is stronger.)
 
 Candidates will be ranked only if they are positive on the FULL dev span, in BOTH
 blocks, at 150bps stress, with the giant tail preserved — and only then pre-registered
