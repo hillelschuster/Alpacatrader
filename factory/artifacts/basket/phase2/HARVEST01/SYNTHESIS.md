@@ -45,9 +45,13 @@ The giant-kill accounting explains the ranking: gb10 fires on 99.9% of the 2,883
 dmg_wait fires on 20.4% (−10.6%), failrec_a3 16.4% (−8.7%), decay_v 14.2% (−6.1%),
 tstop30 10.1% (−3.2%). The new families genuinely "spare the monster" — but they also
 cut fewer duds, so their net increment is smaller.
-Best absolute combination after member management: 11:00 → 12:00, N=1, dmg_wait =
-−0.74%. Everything else ≤ −0.85%. The increments are real and block-stable; they are
-not enough to reach zero.
+The 36-policy grid agrees: sell-into-strength partials are negligible (touch30_33
++0.07 pp, touch50_33 +0.05 pp, touch100_33 +0.05 pp, touch50g10 +0.01 pp pooled at
+noon) — the giants keep running past the partial exits; gb10 remains the single best
+rule at every endpoint (+4.0 pp at the close). Best absolute combination anywhere in
+the grid: 11:00 → 12:00, N=1, damage+wait = −0.80% (member rules: −0.74%).
+Everything else ≤ −0.85%. The increments are real and block-stable; they are not
+enough to reach zero.
 
 ## 4. What deserves the next serious confirmation
 
