@@ -69,11 +69,15 @@ def main() -> int:
                         mean = float(valid["bd"].mean())
                         sd = float(valid["bd"].std() or 0.0)
                         t = mean / (sd / max(n, 1) ** 0.5) if sd > 0 else 0.0
+                        b1 = valid.filter(pl.col("day") <= "2023-12-31")["bd"]
+                        b2 = valid.filter(pl.col("day") >= "2025-02-01")["bd"]
                         rows.append({
                             "variant": variant, "clock": clock, "N": N, "rule": rule, "end": E,
                             "n_days": n, "mean_delta": mean, "t": t,
                             "pos_share": float((valid["bd"] > 0).mean()),
                             "median_delta": float(valid["bd"].median()),
+                            "B1": float(b1.mean()) if b1.len() else None,
+                            "B2": float(b2.mean()) if b2.len() else None,
                         })
     agg = pl.DataFrame(rows)
     agg.write_parquet(rep / "mgmt_summary.parquet")
@@ -104,13 +108,15 @@ def main() -> int:
     lines.append("deltas are per-dollar vs hold-to-same-endpoint, ×100 (pp), averaged over slots; "
                  "positive = rule beat holding.\n")
     lines.append("## Primary variant, N=3, mean delta at each endpoint (pp)")
-    lines.append("| clock | rule | end | mean pp | t | pos days | n |")
-    lines.append("|---|---|---|---|---|---|---|")
+    lines.append("| clock | rule | end | mean pp | t | pos days | B1 | B2 | n |")
+    lines.append("|---|---|---|---|---|---|---|---|---|")
     sel = agg.filter((pl.col("variant") == "primary") & (pl.col("N") == 3)).sort(
         ["clock", "end", "rule"])
     for r in sel.iter_rows(named=True):
+        def g(x):
+            return "" if x is None else f"{x*100:+.2f}"
         lines.append(f"| {r['clock']} | {r['rule']} | {r['end']} | {r['mean_delta']*100:.2f} | "
-                     f"{r['t']:.1f} | {r['pos_share']:.2f} | {r['n_days']} |")
+                     f"{r['t']:.1f} | {r['pos_share']:.2f} | {g(r.get('B1'))} | {g(r.get('B2'))} | {r['n_days']} |")
     lines.append("\n## Fire rates and future monsters sold (all clocks/variants pooled)")
     lines.append("| variant | rule | fire_rate | monsters_after_fire | n |")
     lines.append("|---|---|---|---|---|")

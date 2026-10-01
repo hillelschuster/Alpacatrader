@@ -73,6 +73,31 @@ def main() -> int:
                             "fire_rate": float(sp["fired"].mean()),
                         })
     agg = pl.DataFrame(rows)
+    # block splits
+    p = p.with_columns(pl.col("day").map_elements(
+        lambda d: "B1" if d <= "2023-12-31" else ("B2" if d >= "2025-02-01" else "other"),
+        return_dtype=pl.Utf8).alias("block"))
+    bl = []
+    for variant in ("primary",):
+        pv = p.filter(pl.col("variant") == variant)
+        for clock in sorted(pv["clock"].unique().to_list()):
+            for N in (1, 2, 3, 4):
+                sub = pv.filter((pl.col("clock") == clock) & (pl.col("rank") <= N))
+                for pol in sorted(sub["policy"].unique().to_list()):
+                    sp = sub.filter(pl.col("policy") == pol)
+                    for E in ends:
+                        dc = f"d100_{E}"
+                        per = sp.group_by(["day", "block"]).agg(pl.col(dc).mean().alias("bd"))
+                        for blk in ("B1", "B2"):
+                            v = per.filter(pl.col("block") == blk)["bd"].drop_nulls()
+                            if v.len():
+                                bl.append({"variant": variant, "clock": clock, "N": N,
+                                           "policy": pol, "end": E, "block": blk,
+                                           "m": float(v.mean())})
+    bldf = pl.DataFrame(bl).pivot(values="m", index=["variant", "clock", "N", "policy", "end"],
+                                  on="block") if bl else pl.DataFrame()
+    if bldf.height:
+        agg = agg.join(bldf, on=["variant", "clock", "N", "policy", "end"], how="left")
     agg.write_parquet(rep / "policies_summary.parquet")
 
     tail = (p.filter(pl.col("mfe_adj") >= 1.0).group_by("policy").agg(
@@ -86,12 +111,14 @@ def main() -> int:
     for E in (720, ends[-1]):
         top = (agg.filter((pl.col("N") == 3) & (pl.col("end") == E))
                .sort("mean_delta", descending=True).head(12))
-        lines.append(f"\n## Top policies, N=3, end={E} (all clocks pooled per policy? no — per clock)")
-        lines.append("| clock | policy | mean Δ pp | t | pos | fire | n |")
-        lines.append("|---|---|---|---|---|---|---|")
+        lines.append(f"\n## Top policies, N=3, end={E} (per clock)")
+        lines.append("| clock | policy | mean Δ pp | t | pos | fire | B1 | B2 | n |")
+        lines.append("|---|---|---|---|---|---|---|---|---|")
         for r in top.iter_rows(named=True):
-            lines.append(f"| {r['clock']} | {r['policy']} | {r['mean_delta']*100:.2f} | {r['t']:.1f} | "
-                         f"{r['pos_share']:.2f} | {r['fire_rate']:.2f} | {r['n_days']} |")
+            def g(x):
+                return "" if x is None else f"{x*100:+.2f}"
+            lines.append(f"| {r['clock']} | {r['policy']} | {r['mean_delta']*100:+.2f} | {r['t']:.1f} | "
+                         f"{r['pos_share']:.2f} | {r['fire_rate']:.2f} | {g(r.get('B1'))} | {g(r.get('B2'))} | {r['n_days']} |")
     lines.append("\n## Policy average across clocks (N=3, end=720): mean of cell means")
     piv = (agg.filter((pl.col("N") == 3) & (pl.col("end") == 720))
            .group_by("policy").agg(pl.col("mean_delta").mean().alias("avg"), pl.len().alias("cells"))
