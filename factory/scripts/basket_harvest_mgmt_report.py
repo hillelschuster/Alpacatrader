@@ -80,7 +80,7 @@ def main() -> int:
                             "B1": float(b1.mean()) if b1.len() else None,
                             "B2": float(b2.mean()) if b2.len() else None,
                         })
-    agg = pl.DataFrame(rows)
+    agg = pl.DataFrame(rows, infer_schema_length=None)
     agg.write_parquet(rep / "mgmt_summary.parquet")
 
     fire = (m.group_by(["variant", "rule"]).agg(

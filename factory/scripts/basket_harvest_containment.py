@@ -104,7 +104,7 @@ def main() -> int:
                              "champ3_in": in3, "champ3_share": in3 / max(3 * n_days, 1),
                              **funnel})
 
-    cs = pl.DataFrame(rows)
+    cs = pl.DataFrame(rows, infer_schema_length=None)
     cs.write_parquet(rep / "containment_summary.parquet")
 
     # joint tail: share of basket-days with >=1/2/3 members touching +H after fill
@@ -130,7 +130,7 @@ def main() -> int:
                                "share_k_ge1": float((k["k"] >= 1).mean()),
                                "share_k_ge2": float((k["k"] >= 2).mean()),
                                "share_k_ge3": float((k["k"] >= 3).mean())})
-    jt = pl.DataFrame(fj)
+    jt = pl.DataFrame(fj, infer_schema_length=None)
     jt.write_parquet(rep / "joint_tail.parquet")
 
     lines = ["# HARVEST01 — containment / funnel / joint tail (dev only)\n"]

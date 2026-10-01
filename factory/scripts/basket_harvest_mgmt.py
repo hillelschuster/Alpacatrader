@@ -378,7 +378,7 @@ def process_day(day: str, data_root: Path, se: int, cfg: dict, force: bool) -> s
                 row[f"delta100_{E}"] = None if (v is None or hv is None) else v - hv
                 row[f"delta150_{E}"] = None if (v150 is None or hv150 is None) else v150 - hv150
             rows.append(row)
-    df = pl.DataFrame(rows) if rows else pl.DataFrame(schema={"day": pl.Utf8, "rule": pl.Utf8})
+    df = pl.DataFrame(rows, infer_schema_length=None) if rows else pl.DataFrame(schema={"day": pl.Utf8, "rule": pl.Utf8})
     df = normalize(df)
     fp, tmp = outd / f"{day}.parquet", outd / f"{day}.parquet.tmp"
     df.write_parquet(tmp)

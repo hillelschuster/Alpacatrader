@@ -379,7 +379,7 @@ def process_day(day: str, data_root: Path, se: int, grid: list[dict], force: boo
                     v = w_sell * ((cb["open"][jE] * (1 - side)) / (cpx * (1 + side)))
                     row[f"d{tag}_{E}"] = v - hE
             rows.append(row)
-    df = pl.DataFrame(rows) if rows else pl.DataFrame(schema={"day": pl.Utf8, "policy": pl.Utf8})
+    df = pl.DataFrame(rows, infer_schema_length=None) if rows else pl.DataFrame(schema={"day": pl.Utf8, "policy": pl.Utf8})
     df = normalize(df)
     fp, tmp = outd / f"{day}.parquet", outd / f"{day}.parquet.tmp"
     df.write_parquet(tmp)

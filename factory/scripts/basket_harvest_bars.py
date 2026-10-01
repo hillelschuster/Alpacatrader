@@ -149,7 +149,7 @@ def process_day(day: str, data_root: Path, sends: dict, force: bool) -> str:
     session_end = int(sends.get(day, 959))
     t0 = time.time()
     rows, errors, raw_n = fetch(day, tickers, session_end)
-    df = (pl.DataFrame(rows).sort(["ticker", "et"])
+    df = (pl.DataFrame(rows, infer_schema_length=None).sort(["ticker", "et"])
           if rows else pl.DataFrame(schema={"day": pl.Utf8, "ticker": pl.Utf8, "et": pl.Int32,
                                             "open": pl.Float64, "high": pl.Float64,
                                             "low": pl.Float64, "close": pl.Float64,

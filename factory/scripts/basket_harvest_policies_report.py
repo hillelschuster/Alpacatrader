@@ -72,7 +72,7 @@ def main() -> int:
                             "pos_share": float((v["bd"] > 0).mean()),
                             "fire_rate": float(sp["fired"].mean()),
                         })
-    agg = pl.DataFrame(rows)
+    agg = pl.DataFrame(rows, infer_schema_length=None)
     # block splits
     p = p.with_columns(pl.col("day").map_elements(
         lambda d: "B1" if d <= "2023-12-31" else ("B2" if d >= "2025-02-01" else "other"),

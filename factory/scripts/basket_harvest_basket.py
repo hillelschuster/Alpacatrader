@@ -335,7 +335,7 @@ def process_day(day: str, data_root: Path, se: int, force: bool) -> str:
                     rows.append({"day": day, "clock": int(clock), "N": N, "policy": pol,
                                  "end": int(E), "ret": v, "n_fires": nf,
                                  "cash_end": cash_s})
-    df = pl.DataFrame(rows) if rows else pl.DataFrame(schema={"day": pl.Utf8, "policy": pl.Utf8})
+    df = pl.DataFrame(rows, infer_schema_length=None) if rows else pl.DataFrame(schema={"day": pl.Utf8, "policy": pl.Utf8})
     fp, tmp = outd / f"{day}.parquet", outd / f"{day}.parquet.tmp"
     df.write_parquet(tmp)
     os.replace(tmp, fp)

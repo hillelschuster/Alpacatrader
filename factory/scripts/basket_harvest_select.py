@@ -132,6 +132,10 @@ def build_universe(day: str, prev_day: str, splits: pl.DataFrame, data_root: Pat
         pl.col("split_factor").fill_null(1.0),
         pl.col("split_events").fill_null(0).cast(pl.Int32))
     u = u.with_columns((pl.col("prev_close_raw") * pl.col("split_factor")).alias("prev_close_adj"))
+    if "prev_close_compact" in u.columns:
+        u = u.with_columns((pl.col("prev_close_compact") * pl.col("split_factor")).alias("prev_close_compact_adj"))
+    else:
+        u = u.with_columns(pl.lit(None, dtype=pl.Float64).alias("prev_close_compact_adj"))
     for c in ("flag_discrepancy", "flag_nonpos"):
         if c in u.columns:
             u = u.with_columns(pl.col(c).fill_null(False))
@@ -178,9 +182,9 @@ def _rows_for(day, clock, source, df, variant, extra):
 def select_pm(day: str, snap: pl.DataFrame, u: pl.DataFrame) -> list[dict]:
     rows = []
     j = (snap.rename({"symbol": "ticker"})
-         .join(u.select(["ticker", "prev_close_raw", "prev_close_adj", "prev_used_src",
-                         "split_factor", "split_events", "flag_discrepancy", "flag_nonpos",
-                         "pit_listed"]), on="ticker", how="inner"))
+         .join(u.select(["ticker", "prev_close_raw", "prev_close_adj", "prev_close_compact_adj",
+                         "prev_used_src", "split_factor", "split_events", "flag_discrepancy",
+                         "flag_nonpos", "pit_listed"]), on="ticker", how="inner"))
     for C in PM_CLOCKS:
         sub = j.filter(pl.col(f"px_{C}").is_not_null()).with_columns(
             pl.col(f"px_{C}").alias("decision_px"),
@@ -191,6 +195,14 @@ def select_pm(day: str, snap: pl.DataFrame, u: pl.DataFrame) -> list[dict]:
         for variant, frame in _variants(sub).items():
             if frame.height:
                 rows += _rows_for(day, C, "pm_snapshot", frame, variant, {})
+        # compact-anchored variant: previous session's rth-compact c_last (same lane the
+        # legacy A_pm used), split-normalized; quality = gain<=10x and px>=$0.05
+        subc = sub.filter((pl.col("prev_close_compact_adj") > 0)).with_columns(
+            (pl.col("decision_px") / pl.col("prev_close_compact_adj") - 1).alias("gain_adj"))
+        subc = subc.filter((pl.col("gain_adj") <= GAIN_CEIL) & (pl.col("decision_px") >= PX_FLOOR))
+        if subc.height:
+            rows += _rows_for(day, C, "pm_snapshot", subc, "compact",
+                              {"prev_used_src": "compact"})
     return rows
 
 
@@ -201,8 +213,8 @@ def select_rth(day: str, panel: pl.DataFrame, u: pl.DataFrame) -> tuple[list[dic
     stats = {"n_panel_rows": int(panel.height)}
     at = panel.filter(pl.col("t").is_in(list(RTH_CLOCKS)) & pl.col("known_by_t")
                       & pl.col("px").is_not_null())
-    base = at.join(u.select(["ticker", "prev_close_raw", "prev_close_adj", "prev_used_src",
-                             "split_factor", "split_events", "flag_discrepancy",
+    base = at.join(u.select(["ticker", "prev_close_raw", "prev_close_adj", "prev_close_compact_adj",
+                             "prev_used_src", "split_factor", "split_events", "flag_discrepancy",
                              "flag_nonpos", "pit_listed"]),
                    on="ticker", how="inner")
     for C in RTH_CLOCKS:
@@ -214,6 +226,12 @@ def select_rth(day: str, panel: pl.DataFrame, u: pl.DataFrame) -> tuple[list[dic
         for variant, frame in _variants(sub).items():
             if frame.height:
                 rows += _rows_for(day, C, "minute_full", frame, variant, {})
+        subc = sub.filter((pl.col("prev_close_compact_adj") > 0)).with_columns(
+            (pl.col("decision_px") / pl.col("prev_close_compact_adj") - 1).alias("gain_adj"))
+        subc = subc.filter((pl.col("gain_adj") <= GAIN_CEIL) & (pl.col("decision_px") >= PX_FLOOR))
+        if subc.height:
+            rows += _rows_for(day, C, "minute_full", subc, "compact",
+                              {"prev_used_src": "compact"})
     return rows, stats
 
 
@@ -284,7 +302,7 @@ def process_day(day: str, data_root: Path, sessions: dict, splits: pl.DataFrame,
         stats["n_panel_rows"] = None
     stats["champs_rows"] = champs_rows
 
-    df = pl.DataFrame(rows) if rows else pl.DataFrame(
+    df = pl.DataFrame(rows, infer_schema_length=None) if rows else pl.DataFrame(
         schema={"day": pl.Utf8, "clock": pl.Int32, "source": pl.Utf8, "variant": pl.Utf8,
                 "rank": pl.Int32, "ticker": pl.Utf8})
     fp, tmp = outd / f"{day}.parquet", outd / f"{day}.parquet.tmp"

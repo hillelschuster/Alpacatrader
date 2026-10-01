@@ -119,7 +119,7 @@ def main() -> int:
             gaps = max((ets[k + 1] - ets[k] for k in range(max(i, 0), max(len(ets) - 1, 0))), default=0)
             row["max_print_gap_min"] = int(gaps)
             rows.append(row)
-    df = pl.DataFrame(rows)
+    df = pl.DataFrame(rows, infer_schema_length=None)
     out = rep / "subminute_probe.parquet"
     df.write_parquet(out)
     ok = df.filter(pl.col("status") == "ok")

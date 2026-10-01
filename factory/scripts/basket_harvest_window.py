@@ -99,7 +99,7 @@ def process_day(day: str, data_root: Path, se: int, force: bool) -> str:
                               "ticker": m["ticker"], "m_peak_et": int(b["et"][fi + j]),
                               "m_peak_ret": float(seg[j] / m["fill_px"] - 1),
                               "m_close_ret": float(seg[-1] / m["fill_px"] - 1)})
-    df = pl.DataFrame(rows)
+    df = pl.DataFrame(rows, infer_schema_length=None)
     mdf = pl.DataFrame(mrows)
     fp, tmp = outd / f"{day}.parquet", outd / f"{day}.parquet.tmp"
     df.write_parquet(tmp)
