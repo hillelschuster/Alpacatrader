@@ -256,8 +256,40 @@ def simulate(members, bars, leaders, se):
                     cash_s -= share
         return pos_s, cash_s
 
+    def deploy_dip(D):
+        """Deploy the reserve into the FIRST member that dips >= D from its running high
+        after its fill (buying weakness), then hold to the endpoint."""
+        pos_s = {t: [list(p) for p in ps] for t, ps in pos_r.items()}
+        cash_s = reserve
+        best = None
+        for m in members:
+            if m["status"] != "filled":
+                continue
+            b = bars.get(m["ticker"])
+            if not b:
+                continue
+            fi = bisect.bisect_left(b["et"], m["fill_et"])
+            peak = -1.0
+            for j in range(fi, len(b["et"])):
+                peak = max(peak, b["high"][j])
+                if b["low"][j] <= peak * (1 - D):
+                    if best is None or (b["et"][j], m["rank"]) < (best[0], best[3]):
+                        best = (int(b["et"][j]), m["ticker"], float(m["fill_px"]), m["rank"])
+                    break
+        if best is not None:
+            _, tk, _, _ = best
+            b = bars.get(tk)
+            j = bisect.bisect_left(b["et"], best[0] + 1)
+            if j < len(b["et"]):
+                px = b["open"][j]
+                sh = cash_s / (px * (1 + SIDE))
+                pos_s[tk].append([int(b["et"][j]), float(px), sh])
+                cash_s = 0.0
+        return pos_s, cash_s
+
     for name, fn in (("scale|reserve_cash", None), ("scale|single20", lambda: deploy_single(0.20)),
-                     ("scale|single50", lambda: deploy_single(0.50)), ("scale|split630", deploy_split630)):
+                     ("scale|single50", lambda: deploy_single(0.50)), ("scale|split630", deploy_split630),
+                     ("scale|dip10", lambda: deploy_dip(0.10)), ("scale|dip15", lambda: deploy_dip(0.15))):
         if fn is None:
             pos_s, cash_s = ({t: [list(p) for p in ps] for t, ps in pos_r.items()}, reserve)
         else:
