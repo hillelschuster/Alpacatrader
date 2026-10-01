@@ -138,7 +138,12 @@ def process_day(day: str, data_root: Path, sends: dict, force: bool) -> str:
     if not sel_p.exists():
         return f"{day}: no selection"
     sel = pl.read_parquet(sel_p, columns=["ticker"])
-    tickers = sorted(set(sel["ticker"].to_list()))
+    tickers = set(sel["ticker"].to_list())
+    lead_p = data_root / "harvest01" / "base" / "leaders" / f"{day}.parquet"
+    if lead_p.exists():
+        lead = pl.read_parquet(lead_p, columns=["ticker", "rank"])
+        tickers |= set(lead.filter(pl.col("rank") == 1)["ticker"].to_list())
+    tickers = sorted(tickers)
     if not tickers:
         return f"{day}: empty selection"
     session_end = int(sends.get(day, 959))
@@ -197,7 +202,7 @@ def main() -> int:
     else:
         import multiprocessing as mp
         tasks = [(d, str(data_root), int(sends.get(d, 959)), args.force) for d in days]
-        with mp.Pool(processes=args.workers) as pool:
+        with mp.get_context("spawn").Pool(processes=args.workers) as pool:
             for line in pool.imap_unordered(_worker, tasks):
                 print(line, flush=True)
     print(f"done {len(days)} days in {round(time.time() - t0, 1)}s")

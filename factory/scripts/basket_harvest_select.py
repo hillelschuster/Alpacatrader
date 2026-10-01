@@ -292,7 +292,7 @@ def process_day(day: str, data_root: Path, sessions: dict, splits: pl.DataFrame,
 
 def _worker(a):
     day, data_root, prev_day, splits_path, force = a
-    splits = pl.read_parquet(splits_path)
+    splits = split_factor_frame(Path(data_root))
     return process_day(day, Path(data_root), {day: prev_day}, splits, force)
 
 
@@ -404,7 +404,7 @@ def main() -> int:
     else:
         import multiprocessing as mp
         tasks = [(d, str(data_root), sessions.get(d), str(splits_path), args.force) for d in days]
-        with mp.Pool(processes=args.workers) as pool:
+        with mp.get_context("spawn").Pool(processes=args.workers) as pool:
             for line in pool.imap_unordered(_worker, tasks):
                 print(line, flush=True)
     print(f"done {len(days)} days in {round(time.time() - t0, 1)}s")

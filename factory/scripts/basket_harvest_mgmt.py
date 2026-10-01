@@ -55,7 +55,8 @@ DEFAULTS = {
     "tstop_reclaim": 0.05,
 }
 RULE_NAMES = ["hold", "gb10", "dmg_wait", "failrec_a3", "failrec_a5", "failrec_a8",
-              "decay_v", "decay_nh", "tstop30", "gb10_half", "failrec_a5_half", "reentry_gb10"]
+              "decay_v", "decay_nh", "tstop30", "gb10_half", "failrec_a5_half",
+              "reentry_gb10", "replace_gb10"]
 
 
 def load_bars_cols(path: Path) -> dict:
@@ -171,6 +172,14 @@ def process_day(day: str, data_root: Path, se: int, cfg: dict, force: bool) -> s
         return f"{day}: no fills"
     fills = pl.read_parquet(fl_p)
     bars = load_bars_cols(data_root / "harvest01" / "base" / "bars" / f"{day}.parquet")
+    leaders = {}
+    lead_p = data_root / "harvest01" / "base" / "leaders" / f"{day}.parquet"
+    if lead_p.exists():
+        ld = pl.read_parquet(lead_p)
+        for c in ld["clock"].unique().to_list():
+            sub = ld.filter((pl.col("clock") == c) & (pl.col("rank") == 1))
+            if sub.height:
+                leaders[int(c)] = sub.to_dicts()[0]
     t0 = time.time()
     rows = []
     ends = sorted(e for e in DELTA_ENDS_OFFSET if e < se) + [se]
@@ -254,8 +263,53 @@ def process_day(day: str, data_root: Path, se: int, cfg: dict, force: bool) -> s
                 return None
             return w_sell * ((o[jE] * (1 - side)) / (bpx * (1 + side)))
 
+        # replacement candidate: current rank-1 leader at the first 5-min clock >= sell exec
+        cand = None
+        if "gb10" in exec_of and leaders:
+            _, _, xet = exec_of["gb10"]
+            clks = [c for c in leaders if c >= xet]
+            if clks:
+                L = min(clks)
+                lt = leaders[L]
+                if lt["ticker"] != f["ticker"]:
+                    cb = bars.get(lt["ticker"])
+                    if cb:
+                        ci = bisect.bisect_left(cb["et"], L)
+                        if ci < len(cb["et"]):
+                            cand = (lt["ticker"], cb["et"][ci], cb["open"][ci], L)
+        if cand is not None:
+            ctk, cet, cpx, L = cand
+            cb = bars[ctk]
+            cexitb = {}
+            for E in ends:
+                if E == se:
+                    j = bisect.bisect_left(cb["et"], se, bisect.bisect_left(cb["et"], cet) + 1)
+                else:
+                    j = bisect.bisect_left(cb["et"], max(E, cet + 1), bisect.bisect_left(cb["et"], cet) + 1)
+                cexitb[E] = j if j < len(cb["et"]) else -1
+
+        def value_replace(E, side):
+            if "gb10" not in exec_of:
+                return hold_value(E, side)
+            _, xpx, xet = exec_of["gb10"]
+            hv = hold_value(E, side)
+            if hv is None:
+                return None
+            if xet > E:
+                return hv
+            w_sell = (xpx * (1 - side)) / (fpx * (1 + side))
+            if cand is None:
+                return w_sell
+            ctk, cet, cpx, _ = cand
+            if cet > E:
+                return w_sell
+            jE = cexitb[E]
+            if jE < 0:
+                return None
+            return w_sell * ((bars[ctk]["open"][jE] * (1 - side)) / (cpx * (1 + side)))
+
         for rule in RULE_NAMES:
-            base_rule = "gb10" if rule in ("gb10_half", "reentry_gb10") else (
+            base_rule = "gb10" if rule in ("gb10_half", "reentry_gb10", "replace_gb10") else (
                 "failrec_a5" if rule == "failrec_a5_half" else rule)
             r = res.get(base_rule, {"fired": False, "fire_i": None})
             row = {"day": day, "variant": f["variant"], "clock": f["clock"], "rank": f["rank"],
@@ -278,6 +332,11 @@ def process_day(day: str, data_root: Path, se: int, cfg: dict, force: bool) -> s
                 row["rebuy_et"], row["rebuy_px"] = int(rebuy[2]), float(rebuy[1])
             else:
                 row["rebuy_et"], row["rebuy_px"] = None, None
+            if rule == "replace_gb10" and cand is not None:
+                row["cand_ticker"], row["cand_fill_et"], row["cand_fill_px"] = (
+                    cand[0], int(cand[1]), float(cand[2]))
+            else:
+                row["cand_ticker"], row["cand_fill_et"], row["cand_fill_px"] = None, None, None
             for E in ends:
                 hv = hold_value(E, 0.005)
                 if rule in ("gb10", "dmg_wait", "failrec_a3", "failrec_a5", "failrec_a8",
@@ -288,6 +347,9 @@ def process_day(day: str, data_root: Path, se: int, cfg: dict, force: bool) -> s
                 elif rule in ("gb10_half", "failrec_a5_half"):
                     v = value_half(base_rule, E, 0.005)
                     v150 = value_half(base_rule, E, 0.0075)
+                elif rule == "replace_gb10":
+                    v = value_replace(E, 0.005)
+                    v150 = value_replace(E, 0.0075)
                 else:  # reentry_gb10
                     v = value_reentry(E, 0.005)
                     v150 = value_reentry(E, 0.0075)
@@ -344,7 +406,7 @@ def main() -> int:
     else:
         import multiprocessing as mp
         tasks = [(d, str(data_root), int(sends.get(d, 959)), cfg, args.force) for d in days]
-        with mp.Pool(processes=args.workers) as pool:
+        with mp.get_context("spawn").Pool(processes=args.workers) as pool:
             for line in pool.imap_unordered(_worker, tasks):
                 print(line, flush=True)
     print(f"done {len(days)} days in {round(time.time() - t0, 1)}s")

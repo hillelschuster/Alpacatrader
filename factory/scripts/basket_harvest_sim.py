@@ -249,7 +249,7 @@ def main() -> int:
     else:
         import multiprocessing as mp
         tasks = [(d, str(data_root), int(sends.get(d, 959)), args.force) for d in days]
-        with mp.Pool(processes=args.workers) as pool:
+        with mp.get_context("spawn").Pool(processes=args.workers) as pool:
             for line in pool.imap_unordered(_worker, tasks):
                 print(line, flush=True)
     print(f"done {len(days)} days in {round(time.time() - t0, 1)}s")

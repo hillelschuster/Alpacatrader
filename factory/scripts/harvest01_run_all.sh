@@ -28,6 +28,7 @@ run () {
 }
 
 run select_final   $PY factory/scripts/basket_harvest_select.py --dev-days --force-missing-pm --workers 3
+run leaders_full   $PY factory/scripts/basket_harvest_leaders.py --dev-days --workers 3
 run bars_full      $PY factory/scripts/basket_harvest_bars.py --dev-days --workers 3
 run sim_full       $PY factory/scripts/basket_harvest_sim.py --dev-days --workers 3
 run report         $PY factory/scripts/basket_harvest_report.py
