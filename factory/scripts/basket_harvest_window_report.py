@@ -46,6 +46,9 @@ def main() -> int:
     lines.append("mark = basket value using each member's last known close; peak = max over "
                  "the session path. capture@E = mark@E / peak mark.\n")
 
+    def pct(x):
+        return "" if x is None else f"{x * 100:.2f}"
+
     for N in (2, 3, 4):
         lines.append(f"\n## N={N}: median peak time and mean mark (%) by entry clock")
         lines.append("| clock | median peak | p25 | p75 | peak % | r660 | r690 | r720 | r780 | cap@720 | cap@780 |")
@@ -53,12 +56,15 @@ def main() -> int:
         sub = w.filter(pl.col("N") == N)
         for clock in sorted(sub["clock"].unique().to_list()):
             s = sub.filter(pl.col("clock") == clock)
-            lines.append("| {} | {} | {} | {} | {:.2f} | {:.2f} | {:.2f} | {:.2f} | {:.2f} | {:.2f} | {:.2f} |".format(
+            lines.append("| {} | {} | {} | {} | {} | {} | {} | {} | {} | {} | {} |".format(
                 clock, et_label(s["peak_et"].median()), et_label(s["peak_et"].quantile(0.25)),
-                et_label(s["peak_et"].quantile(0.75)), s["peak_ret"].mean() * 100,
-                s["r660"].mean() * 100, s["r690"].mean() * 100, s["r720"].mean() * 100,
-                s["r780"].mean() * 100, s["cap720"].mean() * 100 if "cap720" in s.columns else float("nan"),
-                s["cap780"].mean() * 100 if "cap780" in s.columns else float("nan")))
+                et_label(s["peak_et"].quantile(0.75)), pct(s["peak_ret"].mean()),
+                pct(s["r660"].mean() if "r660" in s.columns else None),
+                pct(s["r690"].mean() if "r690" in s.columns else None),
+                pct(s["r720"].mean() if "r720" in s.columns else None),
+                pct(s["r780"].mean() if "r780" in s.columns else None),
+                pct(s["cap720"].mean() if "cap720" in s.columns else None),
+                pct(s["cap780"].mean() if "cap780" in s.columns else None)))
 
     lines.append("\n## Distribution of the basket mark at key window clocks (N=3, all clocks pooled)")
     lines.append("| mark clock | p10 % | p25 % | median % | p75 % | p90 % | mean % | pos share |")
@@ -71,9 +77,9 @@ def main() -> int:
         v = s3[c].drop_nulls()
         if not v.len():
             continue
-        lines.append(f"| {et_label(E)} | {v.quantile(0.10)*100:.2f} | {v.quantile(0.25)*100:.2f} | "
-                     f"{v.median()*100:.2f} | {v.quantile(0.75)*100:.2f} | {v.quantile(0.90)*100:.2f} | "
-                     f"{v.mean()*100:.2f} | {(v > 0).mean():.2f} |")
+        lines.append(f"| {et_label(E)} | {pct(v.quantile(0.10))} | {pct(v.quantile(0.25))} | "
+                     f"{pct(v.median())} | {pct(v.quantile(0.75))} | {pct(v.quantile(0.90))} | "
+                     f"{pct(v.mean())} | {(v > 0).mean():.2f} |")
 
     lines.append("\n## Peak timing relative to entry (N=3): share of days peaking 30–90 min after entry")
     lines.append("| clock | n | share peak in [entry+30, entry+90] | share peak before entry+30 | share peak after entry+90 |")
@@ -105,7 +111,7 @@ def main() -> int:
             for clock in sorted(m["clock"].unique().to_list()):
                 s = m.filter(pl.col("clock") == clock)
                 lines.append(f"| {clock} | {et_label(s['m_peak_et'].median())} | "
-                             f"{s['m_peak_ret'].median()*100:.2f} | {s['m_close_ret'].median()*100:.2f} | {s.height} |")
+                             f"{pct(s['m_peak_ret'].median())} | {pct(s['m_close_ret'].median())} | {s.height} |")
     (rep / "window.md").write_text("\n".join(lines) + "\n")
     print(f"window.md written; rows={w.height}")
     return 0
