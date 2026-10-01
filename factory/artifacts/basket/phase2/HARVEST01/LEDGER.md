@@ -76,6 +76,20 @@ sub-minute execution probe (sample), and the consolidated morning report.
 - All stale canary-lane outputs were deleted so the gated chain regenerates every lane
   uniformly with the fixed code (1,066-day single-pass).
 
+## 2026-10-02 (~02:20) — anchor-provenance finding and the compact variant
+
+Raw PM top-4 lists are heavily polluted by prev-close mismatches: of 81,016 raw
+selection rows, 13,501 (16.7%) carry a quality flag — 12,990 discrepancy-flagged
+(12,729 of them at PM clocks, ≈43% of PM raw rows), 1,199 gain>10x, 305 sub-nickel.
+The `primary` variant removes these; `raw` is retained for sensitivity only.
+Because the legacy A_pm lane anchored on the rth-compact c_last (not the panel's
+prev_close), a fourth variant `compact` (same lane anchor, split-normalized,
+gain<=10x, px>=$0.05) was added to selection; pass 1 (running) covers
+raw/primary/listed, and the auto-gated pass 2 regenerates every lane forced so the
+anchor comparison is uniform. Independent audits: PM lane PASS (5/5); causality
+review applied (6 fixes); selection audit running (incl. an anchor-sensitivity
+section).
+
 ## Next serious confirmation (to be filled once the full grid lands)
 
 Candidates will be ranked only if they are positive on the FULL dev span, in BOTH
