@@ -114,3 +114,19 @@ older candidate universes; the market-wide PM selection is stronger.)
 Candidates will be ranked only if they are positive on the FULL dev span, in BOTH
 blocks, at 150bps stress, with the giant tail preserved — and only then pre-registered
 against reserved months.
+
+## 2026-10-02 (~03:10) — pass 1 closed; two engine bugs fixed by hand-verification
+
+Pass 1 (15 stages) completed exit 0 and REPORT.md assembled. Hand-verification of the
+basket capital lane caught two defects that had inflated the scale/release results:
+(1) endpoint valuation priced trades that executed AFTER the endpoint at later bars
+(post-endpoint look-ahead), and (2) the event replay debited share COUNTS instead of
+dollars on buys (free money: a day verified at +110% collapsed to +27.5% and then
+matched an independent recomputation exactly). Both fixed; the basket lane was re-run
+for all 1,066 days. Corrected best absolute in the basket lane: −0.53% (reserve
+scale-in 2/3, 11:00→12:00, N=1); release→cash / survivors / leader deltas stay
+positive (+1…3 pp, block-stable) but never reach zero. Across all four engines the
+best absolute cells are: unmanaged −0.08% (09:29→09:31 scalp), member rules −0.74%
+(dmg_wait 11:00→12:00 N=1), policies −0.80% (same family), basket capital −0.53%.
+Final lane numbers and the bottom line are in SYNTHESIS.md §4–6. Pass 2 (compact
+anchor variant, every lane forced) is running; push up to date.
