@@ -1,0 +1,282 @@
+{
+  "ledger_id": "freeze-r.race-choices.v0",
+  "ledger_version": "v0",
+  "stage": "Freeze R (race geometry choices)",
+  "frozen": true,
+  "purpose": "Records the RACE-geometry choices that are committed at Freeze-R time (radii, density/uncertainty thresholds, surrogate bucket/draw counts and matched axes, anchor stride, view weights, population/quality predicate choices, scale ladders, tier cell declarations). It exists so the certified Freeze-O observation chain and its contract_lock are NOT touched: race choices live here, in the Freeze-R stage, exactly as the R template's race_geometry.adaptive_choice_ledger slot intends.",
+  "versioning_rule": "This file is immutable once bound by a freeze: no in-place repair. Any change to a committed choice creates a sibling version (v1, v2, ...) and a new binding in the R record; the earlier version stays byte-identical.",
+  "bound_by": "factory/artifacts/basket/phase2/ATLAS/TAPE/representation_matrix_v0.json (race_geometry.adaptive_choice_ledger.path/sha256)",
+  "blind_flag": true,
+  "columns_read": [],
+  "columns_read_note": "no outcome, censor, future or anatomy column was read to produce any entry; every entry is a committed choice (declared_policy) or an exact fact from the Stage-0C corpus census",
+  "race_node_ids": [
+    "geometry.tape_atlas.race_broad_minute",
+    "geometry.tape_atlas.race_candidate_net",
+    "geometry.tape_atlas.race_checkpoint"
+  ],
+  "entries": [
+    {
+      "choice_id": "race.neighbours_k",
+      "affected_node": "geometry.tape_atlas.race_broad_minute",
+      "decision": {
+        "neighbours_k": 100
+      },
+      "provenance": "declared_policy",
+      "rationale": "The published race geometry retrieves exactly nearest-100; it must equal binding_slots.first_retrieval_proof.neighbours_k, and no ANN index is built.",
+      "status": "committed"
+    },
+    {
+      "choice_id": "race.scale_ladder",
+      "affected_node": "geometry.tape_atlas.race_broad_minute",
+      "decision": {
+        "broad_minute": [
+          30,
+          60,
+          120
+        ],
+        "candidate_net": [
+          30,
+          60,
+          120
+        ],
+        "checkpoint": [
+          1,
+          2,
+          4
+        ]
+      },
+      "provenance": "declared_policy",
+      "rationale": "Minute tiers use the same three windows as the within-name geometry; the checkpoint tier is measured in axis steps (twelve clocks) so its ladder is 1/2/4 positions.",
+      "status": "committed"
+    },
+    {
+      "choice_id": "race.radius_per_view",
+      "affected_node": "geometry.tape_atlas.race_broad_minute",
+      "decision": {
+        "broad_minute": {
+          "magnitude": 3.0,
+          "activity": 2.0,
+          "balanced_multichannel_reference": 5.0
+        },
+        "candidate_net": {
+          "magnitude": 2.0,
+          "shape": 1.0,
+          "balanced_multichannel_reference": 3.0
+        },
+        "checkpoint": {
+          "magnitude": 2.0,
+          "rank_activity": 2.0,
+          "balanced_multichannel_reference": 4.0
+        }
+      },
+      "provenance": "declared_policy",
+      "rationale": "Same coherence rule as the within-name views: a primitive view's radius equals the number of eligible channels it carries, expressed in standardized-sigma^2 units, and the balanced view sits one channel above the widest primitive so it never becomes trivially sparse.",
+      "status": "committed"
+    },
+    {
+      "choice_id": "race.low_density_and_uncertainty",
+      "affected_node": "geometry.tape_atlas.race_broad_minute",
+      "decision": {
+        "low_density_max": 0,
+        "uncertain_kth_dist_min": "2 x that view's radius"
+      },
+      "provenance": "declared_policy",
+      "rationale": "Low density means zero neighbours inside the frozen radius; uncertainty is declared at twice the radius so the two labels can never overlap.",
+      "status": "committed"
+    },
+    {
+      "choice_id": "race.surrogate",
+      "affected_node": "geometry.tape_atlas.race_broad_minute",
+      "decision": {
+        "matched_axes": [
+          "block",
+          "clock_bucket",
+          "population_decile"
+        ],
+        "clock_bucket_size": 15,
+        "draws": 200,
+        "checkpoint_clock_bucket_size": 2
+      },
+      "provenance": "declared_policy",
+      "rationale": "Matched axes are restricted to the coordinates the contract already allows; 15-minute buckets give ~26 buckets over the 390-minute session and 200 draws keep the surrogate measurement cheap, while the checkpoint tier uses 2-position buckets over its twelve clocks.",
+      "status": "committed"
+    },
+    {
+      "choice_id": "race.anchor_stride",
+      "affected_node": "geometry.tape_atlas.race_broad_minute",
+      "decision": {
+        "anchor_stride": {
+          "broad_minute": 14,
+          "candidate_net": 8,
+          "checkpoint": 1
+        },
+        "anchor": "window_end_at_query",
+        "alignment": "right",
+        "rule": "smallest stride whose footprint estimate by the race node's OWN formula leaves >= ~0.4 GiB margin under the 3 GiB per-tier budget",
+        "estimator": "the race node's fingerprint formula, printed by its --plan-only BEFORE any payload value is read (that is also what its budget refusal uses)"
+      },
+      "provenance": "declared_policy",
+      "rationale": "Resource-driven, not outcome-driven. The race owner corrected a defect in its own footprint formula (view Gram 33 B/channel-minute, neighbour arrays 76 B/neighbour/primitive view, axis-label array included, and two hidden costs removed: the materialized same-day exclusion list and the per-neighbour reference strings) and re-derived the table: broad_minute stride 1 -> 35.23 GiB, 12 -> 3.000, 14 -> 2.561; candidate_net 1 -> 19.44, 8 -> 2.463; checkpoint (12-clock axis) 1 -> 0.311. Committed 14 / 8 / 1 keeps every tier under 2.6 GiB with >=0.4 GiB margin on this host (~11.56 GiB) and preserves temporal resolution (70 / 130 / 32 windows per day). The earlier 7 / 5 / 28 was based on the pre-correction formula: 7 and 5 would now REFUSE (5.09 and 3.94 GiB) and 28 would collapse the twelve-point checkpoint ruler to three windows per day.",
+      "status": "committed"
+    },
+    {
+      "choice_id": "race.view_weights",
+      "affected_node": "geometry.tape_atlas.race_broad_minute",
+      "decision": {
+        "broad_minute": {
+          "magnitude": 1.0,
+          "activity": 1.0
+        },
+        "candidate_net": {
+          "magnitude": 1.0,
+          "shape": 1.0
+        },
+        "checkpoint": {
+          "magnitude": 1.0,
+          "rank_activity": 1.0
+        }
+      },
+      "provenance": "declared_policy",
+      "rationale": "Fixed equal weight across the primitive views of each tier, so the balanced reference can never be tuned into the best-looking geometry.",
+      "status": "committed"
+    },
+    {
+      "choice_id": "race.population_and_quality",
+      "affected_node": "geometry.tape_atlas.race_broad_minute",
+      "decision": {
+        "broad_minute": {
+          "population": "population_def != ''",
+          "quality": "known_by_t == true",
+          "reference_label": "raw_reference_only"
+        },
+        "candidate_net": {
+          "population": "known_by_t == true",
+          "quality": "known_by_t == true",
+          "reference_label": "raw_reference_only"
+        },
+        "checkpoint": {
+          "population": "known_by_t == true",
+          "quality": "known_by_t == true",
+          "reference_label": "raw_reference_only"
+        }
+      },
+      "provenance": "declared_policy",
+      "rationale": "Predicate columns are exactly those the Stage-0C report lists as eligible and already tallies for each tier; unqualified rows are kept and labelled raw_reference_only, never dropped for being stale.",
+      "status": "committed"
+    },
+    {
+      "choice_id": "race.tier_cells",
+      "affected_node": "geometry.tape_atlas.race_broad_minute",
+      "decision": {
+        "magnitude_shape_duration": "materialized",
+        "activity_prints": "unsupported",
+        "quotes": "unsupported",
+        "learned_minute_sequence": "delegated"
+      },
+      "provenance": "declared_policy",
+      "rationale": "The race tables carry no raw print channel and no acquired quotes, so those cells are declared unsupported rather than encoded as zeros; the learned minute sequence is delegated to the sequence-archive sibling.",
+      "status": "committed"
+    },
+    {
+      "choice_id": "race.independence_and_index",
+      "affected_node": "geometry.tape_atlas.race_broad_minute",
+      "decision": {
+        "independence": {
+          "unit": "day",
+          "exclude_same_unit": true
+        },
+        "index_build": "exact_bruteforce_no_ann",
+        "density_decile_definition": "exact_deciles_of_object_population_size",
+        "sparse_exact_recall_floor": 1.0
+      },
+      "provenance": "declared_policy",
+      "rationale": "Objects sharing a day are never each other's neighbours; search is exact brute force with no ANN, so the sparse exact-recall floor is 1.0 by construction.",
+      "status": "committed"
+    },
+    {
+      "choice_id": "race.metric_and_view_reference",
+      "affected_node": "geometry.tape_atlas.race_broad_minute",
+      "decision": {
+        "metric": "masked_euclidean_zscore_fitblock",
+        "scale_reference": {
+          "statistic": "median_fit_kth_neighbour_distance",
+          "k": 20
+        }
+      },
+      "provenance": "declared_policy",
+      "rationale": "One metric and one fitted view-scale statistic across all tiers, so per-view distances are standardized the same way as the within-name geometry; k=20 sits well below neighbours_k=100.",
+      "status": "committed"
+    },
+    {
+      "choice_id": "race.clock_axis",
+      "affected_node": "geometry.tape_atlas.race_checkpoint",
+      "decision": {
+        "broad_minute": {
+          "column": "t",
+          "unit": "minute",
+          "step": 1,
+          "span": [
+            570,
+            959
+          ]
+        },
+        "candidate_net": {
+          "column": "t",
+          "unit": "minute",
+          "step": 1,
+          "span": [
+            570,
+            959
+          ]
+        },
+        "checkpoint": {
+          "column": "T",
+          "unit": "minute",
+          "axis_values": [
+            575,
+            580,
+            585,
+            590,
+            595,
+            600,
+            615,
+            630,
+            645,
+            660,
+            690,
+            720
+          ]
+        }
+      },
+      "provenance": "blind_report",
+      "rationale": "Exact Stage-0C coordinate tallies: race_minute_full and race_candidate_net each carry 390 distinct t values spanning 570..959, and race_checkpoint_full carries exactly the twelve declared clocks.",
+      "status": "committed"
+    },
+    {
+      "choice_id": "race.view_set_shape",
+      "affected_node": "geometry.tape_atlas.race_broad_minute",
+      "decision": {
+        "broad_minute": [
+          "magnitude_dominant",
+          "normalized_shape_dominant",
+          "activity_microstructure_dominant",
+          "balanced_multichannel_reference"
+        ],
+        "candidate_net": [
+          "magnitude_dominant",
+          "normalized_shape_dominant",
+          "balanced_multichannel_reference"
+        ],
+        "checkpoint": [
+          "magnitude_dominant",
+          "normalized_shape_dominant",
+          "activity_microstructure_dominant",
+          "balanced_multichannel_reference"
+        ]
+      },
+      "provenance": "declared_policy",
+      "rationale": "All three tiers now declare magnitude and normalized-shape so the published magnitude-vs-shape disagreement is measurable on every tier (the shape view is scale-free by construction: log ratio to the cross-section median at the same clock, never a level channel).",
+      "status": "committed"
+    }
+  ]
+}

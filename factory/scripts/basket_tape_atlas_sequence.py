@@ -97,6 +97,18 @@ produced anywhere. The published embedding archive is ``values (N,E,T)`` / ``val
 ``object_ids`` (== the ``episode_id`` values, every scale of one mode, padded to T_max with
 ``valid=False``) plus the ``.npz.meta.json`` provenance sidecar that ``load_embeddings`` requires.
 
+Masking policy (published, never tuned). Masked spans are drawn per episode from that episode's
+``span_allowed`` runs, of length in the frozen ``mask_span`` ``[min_len, max_len]``, targeting the
+frozen ``mask_fraction`` of the episode's maskable cells. Because a span can never be shorter than
+``min_len`` and the final span may overshoot the remaining budget by up to ``max_len - 1`` cells,
+the REALIZED rate can exceed the declared fraction - bound ``masked <= sum_i target_i +
+(max_len - 1) * K`` with K = episodes receiving at least one span - and it falls short only where
+an episode has no contiguous room for a legal span. The plan and the run metrics both publish the
+declared fraction, the realized rate, the mask span, and that bound (``mask_plan``). The metric
+``known_zero_cells`` counts observed cells whose value is exactly 0.0: it is live but can
+legitimately read 0 for a channel set whose validity rules require activity, and it never implies
+that missing coverage was treated as zero (unknown coverage is always a computational pad).
+
 Frozen-R input contract (exact required fields)
 -----------------------------------------------
 The record must be non-template, frozen and NOT a draft (``template_only`` false, ``frozen`` true,
@@ -1399,11 +1411,61 @@ def run_identity(r: dict, cfg: dict, loaded: dict, code_sha: str, tier: str) -> 
 # --------------------------------------------------------------------------- #
 # pipeline
 # --------------------------------------------------------------------------- #
+def mask_plan_stats(archives, cfg: dict, mode: str, *, seed: int, stream: int = 0,
+                    epoch: int = 0) -> dict:
+    """REALIZED masking statistics for the canonical plan, plus the quantization bound.
+
+    Reporting only - this never influences training (the training loop uses its own per-epoch
+    stream). It records what the frozen ``mask_fraction``/``mask_span`` policy actually produces:
+    spans are drawn per episode from that episode's ``span_allowed`` runs, of length in
+    ``[min_len, max_len]``. A span cannot be shorter than ``min_len`` and the final span may
+    overshoot the remaining budget by up to ``max_len - 1`` cells, so the realized rate can exceed
+    the declared fraction (bound ``masked <= sum_i target_i + (max_len - 1) * K`` with K = episodes
+    receiving at least one span); it can fall short only where an episode has no contiguous room for
+    a legal span.
+    """
+    spans = masked = maskable = observed = row_targets = rows_with_spans = 0
+    for arch in archives:
+        allowed = arch["span_allowed"] & asof_prefix_mask(arch, mode)
+        o = observed_mask(arch, mode)
+        plan = episode_plan(arch, mask_span=cfg["mask_span"], mask_fraction=cfg["mask_fraction"],
+                            seed=seed, stream=stream, epoch=epoch, mode=mode)
+        maskable += int(allowed.sum())
+        observed += int(o.sum())
+        for i in range(allowed.shape[0]):
+            a_i = int(allowed[i].sum())
+            if a_i:
+                row_targets += max(1, int(round(cfg["mask_fraction"] * a_i)))
+            rows_with_spans += 1 if plan[i] else 0
+            spans += len(plan[i])
+            masked += sum(hi - lo for lo, hi in plan[i])
+    mx = int(cfg["mask_span"]["max_len"])
+    bound = row_targets + (mx - 1) * rows_with_spans
+    return {
+        "spans": spans,
+        "masked_cells": masked,
+        "maskable_cells": maskable,
+        "observed_cells": observed,
+        "mask_fraction_declared": cfg["mask_fraction"],
+        "mask_fraction_measured": (masked / maskable) if maskable else None,
+        "mask_span": dict(cfg["mask_span"]),
+        "mask_fraction_bound": {
+            "rule": "masked_total <= sum_i target_i + (max_len - 1) * K, with K = episodes "
+                    "receiving at least one span (spans are quantized by min_len/max_len)",
+            "target_sum": row_targets,
+            "rows_with_spans": rows_with_spans,
+            "per_row_overshoot_max_cells": mx - 1,
+            "worst_case_fraction": (bound / maskable) if maskable else None,
+            "note": "the realized rate may exceed the declared fraction because a span cannot be "
+                    "shorter than min_len and the final span may overshoot the remaining budget by "
+                    "up to max_len - 1 cells; it falls short only where an episode has no "
+                    "contiguous room for a legal span",
+        },
+    }
+
+
 def plan_only(r: dict, cfg: dict, loaded: dict, split: dict, norm: dict, *, mode: str) -> dict:
-    spans = 0
-    masked = 0
-    observed = 0
-    maskable = 0
+    stats = mask_plan_stats(loaded["archives"], cfg, mode, seed=cfg["seed"])
     known_zeros = 0
     observed_outside_spans = 0
     for arch in loaded["archives"]:
@@ -1411,13 +1473,8 @@ def plan_only(r: dict, cfg: dict, loaded: dict, split: dict, norm: dict, *, mode
         plan = episode_plan(arch, mask_span=cfg["mask_span"], mask_fraction=cfg["mask_fraction"],
                             seed=cfg["seed"], stream=0, epoch=0, mode=mode)
         hidden = mask_matrix(arch["span_allowed"].shape[0], arch["span_allowed"].shape[1], plan)
-        observed += int(o.sum())
-        maskable += int((arch["span_allowed"] & asof_prefix_mask(arch, mode)).sum())
         known_zeros += int(((arch["values"] == 0.0) & arch["valid"]).sum())
         observed_outside_spans += int((o & ~hidden).sum())
-        for i in range(o.shape[0]):
-            spans += len(plan[i])
-            masked += sum(hi - lo for lo, hi in plan[i])
     per_channel = plane_channels(cfg["input_planes"], len(r["input_ids"]))
     return {"status": "PLAN-ONLY (no model trained, no embedding written)",
             "mode": mode, "fold": r["fold"], "tier": None,
@@ -1436,16 +1493,19 @@ def plan_only(r: dict, cfg: dict, loaded: dict, split: dict, norm: dict, *, mode
                         "sha256": a["sha256"]} for a in loaded["archives"]],
             "normalization": norm["stats"],
             "regions": {
-                "observed_cells": observed,
+                "observed_cells": stats["observed_cells"],
                 "known_zero_cells": known_zeros,
-                "maskable_cells": maskable,
+                "maskable_cells": stats["maskable_cells"],
                 "observed_outside_mask_spans": observed_outside_spans,
                 "rule": "observed = encoder/embedding region (valid, in-window; known zeros and "
                         "post-gap resumed observations included, so the giant tail is preserved); "
                         "maskable = span_allowed barrier map only",
+                "known_zero_cells_note": "counts observed cells whose value is exactly 0.0; it can "
+                                         "legitimately be 0 for a channel set whose validity rules "
+                                         "require activity, and it never implies that missing "
+                                         "coverage was treated as zero",
             },
-            "mask_plan": {"spans": spans, "masked_cells": masked, "maskable_cells": maskable,
-                          "mask_fraction_measured": (masked / maskable) if maskable else None},
+            "mask_plan": stats,
             "input_bytes": loaded["bytes"]}
 
 
@@ -1652,6 +1712,7 @@ def train_and_publish(r: dict, cfg: dict, loaded: dict, split: dict, *, mode: st
                      for a in loaded["archives"]],
         "seed_rule": "exactly one seed, one configuration and one run per fold; resumed runs "
                      "reuse the identical identity",
+        "mask_plan": mask_plan_stats(loaded["archives"], cfg, mode, seed=cfg["seed"]),
         "scope_rule": {
             "encoder_and_embedding": "valid AND inside [start_t, end_t] AND (causal: position < "
                                      "prefix_len) - the ASOF cutoff is applied INDEPENDENTLY, "

@@ -110,6 +110,9 @@ outcome-blind corpus report exists::
                             "sparse_exact_recall_floor": 1.0, "frozen": true},
       "independence": {"unit": "day", "exclude_same_unit": true, "frozen": true},
       "adaptive_choice_ledger": {"path": str, "sha256": hex64, "covers_race_choices": true},
+          # the Freeze-R RACE ledger named here (e.g. ATLAS/TAPE/adaptive_choice_ledger_race_v0
+          # .json); the certified Freeze-O observation ledger is never consulted and is refused
+          # outright as a target, because race choices are Freeze-R choices.
       "geometry_gates": {<echoed verbatim, never evaluated here>}}}
 
 ``predicate`` = ``{"column": str, "op": "eq"|"neq"|"gt"|"ge"|"lt"|"le"|"is_null"|"is_not_null",
@@ -152,6 +155,12 @@ CLI
       --out /home/hillel/projects/Alpacatrader/data/atlas/geometry/v0/race \\
       --out-evidence factory/artifacts/basket/phase2/ATLAS/TAPE/GEOMETRY/v0/race
 
+``--plan-only`` validates the inputs and reports the per-tier plan (upper-bound object count and
+the footprint estimate) and then STOPS: it reads no payload value column (the plan needs only the
+manifest's recorded day lengths, or one projected clock column per day) and writes nothing.  The
+same preflight estimate runs at the head of every real run and refuses an over-budget request
+before the extraction I/O is paid, not after it.
+
 Exit codes: 0 complete, 2 contract refusal (nothing written), 3 integrity refusal (REFUSED
 manifest/report written), 1 selftest failure.
 """
@@ -178,6 +187,9 @@ SCHEMA_PATH = OBS_EVIDENCE / "schema.json"
 REGISTRY_PATH = OBS_EVIDENCE / "causal_registry.json"
 LOCK_PATH = OBS_EVIDENCE / "contract_lock.json"
 OBS_CONTRACT_PATH = OBS_EVIDENCE / "contract.json"
+# the certified Freeze-O observation ledger: race choices belong to Freeze R, so this exact file
+# is a REFUSED ledger target for the race record (it is never read as race-choice evidence)
+OBS_LEDGER_PATH = OBS_EVIDENCE / "adaptive_choice_ledger.json"
 CANARY_PATH = OBS_EVIDENCE / "canary_days.json"
 DEFAULT_ROOT = Path("/home/hillel/projects/Alpacatrader/data/atlas/observation/v0")
 DEFAULT_OUT_BASE = Path("/home/hillel/projects/Alpacatrader/data/atlas/geometry/v0/race")
@@ -906,31 +918,39 @@ def load_race_config(raw: dict, r: dict, *, schema: dict, registry: dict, mode: 
     led_path = Path(_req(ledger, "path", str, "race_geometry.adaptive_choice_ledger"))
     if not led_path.is_absolute():
         led_path = ROOT / led_path
+    if led_path.resolve() == OBS_LEDGER_PATH.resolve():
+        raise ContractRefusalError(
+            f"race_geometry.adaptive_choice_ledger.path points at the certified Freeze-O "
+            f"observation ledger ({OBS_LEDGER_PATH.name}): race choices are Freeze-R choices and "
+            "must live in the Freeze-R race ledger this record names, never inside the locked "
+            "observation chain"
+        )
     if not led_path.is_file():
         raise ContractRefusalError(
-            f"the Freeze-R adaptive-choice ledger is missing: {led_path}"
+            f"the Freeze-R adaptive-choice ledger named by the record is missing: {led_path}"
         )
     if geo.sha256_file(led_path) != _req_hex(
         ledger, "sha256", "race_geometry.adaptive_choice_ledger"
     ):
         raise ContractRefusalError(
-            "the Freeze-R adaptive-choice ledger sha256 does not match the record - stale"
+            f"the Freeze-R adaptive-choice ledger {led_path} does not hash to the sha256 the "
+            "record declares - the record is stale"
         )
     if _req_true(ledger, "covers_race_choices", "race_geometry.adaptive_choice_ledger"):
         led = geo.load_json(led_path)
         entries = led.get("entries") if isinstance(led, dict) else None
         if not isinstance(entries, list) or not entries:
             raise ContractRefusalError(
-                "the Freeze-R adaptive-choice ledger carries no entries - race choices are "
-                "unrecorded"
+                f"the Freeze-R adaptive-choice ledger {led_path} carries no entries - race "
+                "choices are unrecorded"
             )
         if not any(
             isinstance(e, dict) and "race" in str(e.get("affected_node", "")).lower()
             for e in entries
         ):
             raise ContractRefusalError(
-                "no adaptive-choice ledger entry names a race node - the race choices are not "
-                "recorded"
+                f"no entry of the Freeze-R adaptive-choice ledger {led_path} names a race node - "
+                "the race choices are not recorded"
             )
     gates = _req(rg, "geometry_gates", dict, "race_geometry")
 
@@ -1345,6 +1365,81 @@ def _population_digests(vals: pl.DataFrame, clock: str, labels: np.ndarray,
     return out
 
 
+def _check_budget(est: dict, budget_gib: float, tier: str, where: str) -> None:
+    if est["peak_bytes"] > budget_gib * (1024 ** 3):
+        raise ContractRefusalError(
+            f"{tier}: the estimated peak footprint {est['peak_gib']:.2f} GiB ({where}) exceeds the "
+            f"declared memory budget {budget_gib:.2f} GiB - the request is refused, not clamped"
+        )
+
+
+def _axis_lengths(cfg: dict, tier: str, corpus: dict, days: list, *, root: Path,
+                  problems: list) -> dict:
+    """Per-day clock-axis length for the PLAN, reading no value column.
+
+    Preference order per day: (a) the checkpoint tier's declared ``axis_values`` count, (b) the
+    manifest's recorded ``day_stats[<day>].board_minutes`` (zero payload data read), (c) one
+    projected clock-column unique count.  Payload existence and the physical directory are still
+    checked for every day, and the result is an UPPER BOUND: a day with an interior clock hole
+    yields fewer windows than the contiguous count, so only the extraction-time plan is
+    authoritative.
+    """
+    block = cfg["tiers"][tier]
+    clock = block["clock"]
+    stats = ((corpus.get("manifest") or {}).get("day_stats") or {})
+    lengths: dict = {}
+    for day in days:
+        if block["clock_kind"] == "checkpoint":
+            lengths[day] = {"n": len(block["axis_values"] or ()), "source": "declared_axis_values"}
+            continue
+        if _day_payload(corpus, tier, day, root=root, verify=False, problems=problems) is None:
+            continue
+        board_minutes = (stats.get(day) or {}).get("board_minutes")
+        if isinstance(board_minutes, int) and board_minutes > 0:
+            lengths[day] = {"n": int(board_minutes), "source": "manifest_day_stats"}
+            continue
+        path = _day_payload(corpus, tier, day, root=root, verify=False, problems=problems)
+        if path is None:
+            continue
+        n_unique = int(
+            pl.scan_parquet(str(path)).select(pl.col(clock).n_unique()).collect().item()
+        )
+        lengths[day] = {"n": n_unique, "source": "clock_column_projection"}
+    return lengths
+
+
+def preflight_plan(cfg: dict, tier: str, corpus: dict, days: list, *, root: Path,
+                   budget_gib: float, problems: list) -> dict:
+    """Per-tier object plan + footprint estimate, REFUSED over budget before any payload value is
+    read.  This is the check that makes ``--plan-only`` cheap and stops a configuration that cannot
+    fit from paying the extraction I/O at all."""
+    lengths = _axis_lengths(cfg, tier, corpus, days, root=root, problems=problems)
+    if problems:
+        raise IntegrityRefusalError(f"{tier}: race payload plan integrity", problems)
+    ladder = cfg["tiers"][tier]["scale"]["ladder"]
+    stride = cfg["tiers"][tier]["scale"]["stride"]
+    objects = 0
+    for info in lengths.values():
+        axis = int(info["n"])
+        for scale in ladder:
+            if axis >= scale:
+                objects += (axis - scale) // stride + 1
+    if objects == 0:
+        raise IntegrityRefusalError(
+            f"{tier}: no window can satisfy the frozen scale ladder over the frozen day set",
+            [{"kind": "no_objects", "tier": tier}],
+        )
+    registry = tier_feature_registry(cfg, tier)
+    t_max = max(ladder)
+    est = footprint_estimate(objects, len(registry["all"]), t_max, cfg, tier)
+    _check_budget(est, budget_gib, tier, "preflight, before any payload value is read")
+    sources: dict = {}
+    for info in lengths.values():
+        sources[info["source"]] = sources.get(info["source"], 0) + 1
+    return {"objects_upper_bound": objects, "footprint": est, "axis_length_sources": sources,
+            "days_planned": len(lengths)}
+
+
 def extract_tier(cfg: dict, tier: str, corpus: dict, days: list, *, root: Path, verify: bool,
                  problems: list, budget_gib: float) -> dict:
     """Stream every day of the tier and assemble the object tensors."""
@@ -1382,11 +1477,7 @@ def extract_tier(cfg: dict, tier: str, corpus: dict, days: list, *, root: Path, 
     n_feat = len(reg["all"])
     t_max = max(cfg["tiers"][tier]["scale"]["ladder"])
     est = footprint_estimate(n_obj, n_feat, t_max, cfg, tier)
-    if est["peak_bytes"] > budget_gib * (1024 ** 3):
-        raise ContractRefusalError(
-            f"{tier}: the estimated peak footprint {est['peak_gib']:.2f} GiB exceeds the "
-            f"declared memory budget {budget_gib:.2f} GiB - the request is refused, not clamped"
-        )
+    _check_budget(est, budget_gib, tier, "measured extraction plan")
 
     values = np.zeros((n_obj, n_feat, t_max), dtype=np.float32)
     valid = np.zeros((n_obj, n_feat, t_max), dtype=bool)
@@ -1474,21 +1565,34 @@ def _valid_prefix(valid_arr: np.ndarray) -> int:
 
 
 def footprint_estimate(n_obj: int, n_feat: int, t_max: int, cfg: dict, tier: str) -> dict:
+    """Peak-footprint estimate over the arrays this node actually materializes.
+
+    Terms, all linear in the object count: the shared feature tensor (values float32 + valid bool
+    + axis labels int32), every primitive view's Gram (``view_gram`` peaks at z float64 + m bool +
+    U/Q/M float64 = 33 bytes per channel-minute, and the three U/Q/M arrays stay resident), each
+    view's published neighbour arrays (nn_idx int32, nn_dist/density/kth/n_comparable/
+    n_common_views float64-or-int64, mutual/day-spread int32 = 76 bytes per neighbour at k
+    neighbours, plus 48 bytes per object), the objects table, and one lazily-rebuilt same-day index
+    array (never the quadratic per-object list).  Neighbour references are NOT stored: they are
+    resolved through objects.parquet[nn_idx], so no per-neighbour string array is counted.
+    """
     prim = cfg["views"][tier]["primitive"]
-    view_widths = [
-        sum(1 for f in cfg["views"][tier]["views"][v]["features"]) for v in prim
-    ]
+    view_widths = [sum(1 for f in cfg["views"][tier]["views"][v]["features"]) for v in prim]
     k = cfg["k"]
-    tensor = n_obj * n_feat * t_max * 4 + n_obj * n_feat * t_max
-    grams = sum(3 * n_obj * w * t_max * 8 for w in view_widths)
-    nn = n_obj * k * (4 + 8 + 8 + 8 + 4 + 4)
+    tensor = n_obj * n_feat * t_max * (4 + 1) + n_obj * t_max * 4
+    grams = sum(33 * n_obj * w * t_max for w in view_widths)
+    per_view_nn = n_obj * k * (4 + 8 + 8 + 8) + n_obj * (8 + 8 + 8 + 4 + 4)
+    nn = per_view_nn * max(1, len(prim))
     objects = n_obj * 512
-    peak = tensor + grams + nn + objects
+    same_day = min(n_obj, 4096) * 8
+    peak = tensor + grams + nn + objects + same_day
     return {
-        "objects": n_obj, "features": n_feat, "t_max": t_max,
+        "objects": n_obj, "features": n_feat, "t_max": t_max, "views": len(prim), "k": k,
         "tensor_bytes": tensor, "gram_bytes": grams, "neighbour_bytes": nn,
+        "objects_bytes": objects, "same_day_index_bytes": same_day,
         "peak_bytes": peak, "peak_gib": peak / (1024 ** 3),
-        "basis": "values+valid+one neighbour index per view, all view grams resident, objects",
+        "basis": "values+valid+axis labels, all primitive-view Grams resident, every view's "
+                 "published neighbour arrays, objects table, one lazy same-day index",
     }
 
 
@@ -1516,11 +1620,36 @@ def fit_feature_stats(tensors: dict, fit_mask: np.ndarray) -> dict:
     return {"channels": stats}
 
 
-def _same_day_columns(objects: pl.DataFrame) -> list:
-    by_day: dict[str, list] = {}
-    for i, day in enumerate(objects["day"].to_list()):
-        by_day.setdefault(day, []).append(i)
-    return [np.asarray(by_day[day], dtype=np.int64) for day in objects["day"].to_list()]
+class _SameDayIndex:
+    """Lazy same-day exclusion index.
+
+    A materialized list of per-object index arrays costs sum(day size^2) int64 entries (about 8 GB
+    at a million objects); the search helpers only ever index it row by row, so this mapping
+    rebuilds (and caches) one day's array on demand instead.  Semantics are identical to the
+    materialized list.
+    """
+
+    def __init__(self, objects: pl.DataFrame):
+        self._day_of = np.asarray(objects["day"].to_list(), dtype=object)
+        by_day: dict[str, np.ndarray] = {}
+        for i, day in enumerate(self._day_of):
+            by_day.setdefault(str(day), []).append(i)
+        self._by_day = {day: np.asarray(idx, dtype=np.int64) for day, idx in by_day.items()}
+        self._cache_day: str | None = None
+        self._cache: np.ndarray | None = None
+
+    def __len__(self) -> int:
+        return int(self._day_of.size)
+
+    def __getitem__(self, i) -> np.ndarray:
+        day = str(self._day_of[int(i)])
+        if day != self._cache_day:
+            self._cache_day, self._cache = day, self._by_day[day]
+        return self._cache
+
+
+def _same_day_columns(objects: pl.DataFrame) -> _SameDayIndex:
+    return _SameDayIndex(objects)
 
 
 def _view_gram(tensors: dict, norm: dict, view_cfg: dict) -> tuple:
@@ -1594,19 +1723,26 @@ def recurrence_stats(nn_idx: np.ndarray, days: np.ndarray, labels: np.ndarray) -
     return {"mutual_count": mutual, "neighbour_day_spread": day_spread}
 
 
-def neighbouring_own_refs(nn_idx: np.ndarray, objects: pl.DataFrame) -> np.ndarray:
-    """Each neighbour resolved to its OWN day / clock interval / scale (never the query's)."""
-    day = np.asarray(objects["day"].to_list())
-    scale = np.asarray(objects["scale"].to_list())
-    start = np.asarray(objects["window_start_t"].to_list())
-    end = np.asarray(objects["window_end_t"].to_list())
-    refs = np.full(nn_idx.shape, "", dtype="U64")
-    for i in range(nn_idx.shape[0]):
-        for jj in range(nn_idx.shape[1]):
-            j = int(nn_idx[i, jj])
-            if j >= 0:
-                refs[i, jj] = f"{day[j]}|{start[j]}-{end[j]}|s{scale[j]}"
-    return refs
+def assert_neighbour_refs_resolvable(nn_idx: np.ndarray, objects: pl.DataFrame) -> None:
+    """Every neighbour's OWN day / clock interval / scale must be resolvable from this node's own
+    objects table rather than stored as a per-neighbour string array (which would cost 64 bytes per
+    neighbour, ~6.6 GB at a million objects).  The columns are identity references: they are never
+    distance channels."""
+    required = ("day", "scale", "window_start_t", "window_end_t")
+    missing = [c for c in required if c not in objects.columns]
+    if missing:
+        raise IntegrityRefusalError(
+            "the objects table cannot resolve a neighbour's own references",
+            [{"kind": "neighbour_refs_unresolvable", "columns": missing}],
+        )
+    n_obj = objects.height
+    finite = nn_idx[nn_idx >= 0]
+    if finite.size and int(finite.max()) >= n_obj:
+        raise IntegrityRefusalError(
+            "a neighbour index points outside the objects table",
+            [{"kind": "neighbour_index_out_of_range", "objects": n_obj,
+              "max_index": int(finite.max())}],
+        )
 
 
 def disagreement_block(results: dict, prim: list, tensors: dict, chunk: int,
@@ -1812,7 +1948,7 @@ def write_tier_outputs(cfg: dict, tier: str, corpus: dict, extract: dict, result
         res = results[vname]
         rec = recurrence_stats(res["nn_idx"], np.asarray(extract["objects"]["day"].to_list()),
                                np.asarray(extract["objects"]["query_t"].to_list()))
-        refs = neighbouring_own_refs(res["nn_idx"], extract["objects"])
+        assert_neighbour_refs_resolvable(res["nn_idx"], extract["objects"])
         path = out_dir / f"view_{vname}.nn.npz"
         arrs = {
             "nn_idx": res["nn_idx"], "nn_dist": res["nn_dist"], "density": res["density"],
@@ -1820,7 +1956,6 @@ def write_tier_outputs(cfg: dict, tier: str, corpus: dict, extract: dict, result
             "n_common_views": res["n_common_views"],
             "mutual_count": rec["mutual_count"],
             "neighbour_day_spread": rec["neighbour_day_spread"],
-            "neighbour_refs": refs,
         }
         geo.deterministic_npz(path, arrs)
         reg(f"view_{vname}_nn", path, int(res["nn_idx"].shape[0]))
@@ -1836,6 +1971,10 @@ def write_tier_outputs(cfg: dict, tier: str, corpus: dict, extract: dict, result
             "nn_idx": "int32 (N,k) objects.parquet row indices, -1 = no such neighbour",
             "nn_dist": "float64 (N,k) squared distance in the view's own units, NaN = absent",
             "self_and_same_day_excluded": True,
+            "neighbour_own_refs": "resolve every neighbour row index through objects.parquet "
+                                  "(day, scale, window_start_t, window_end_t) - the references are "
+                                  "NOT stored per neighbour, they are derived from the query's own "
+                                  "objects table",
             "density": "count of objects at or below the frozen radius, self/day excluded",
             "low_density_share": float(low.mean()),
             "uncertain_share": float(uncertain.mean()),
@@ -1949,6 +2088,53 @@ def run_tier(cfg: dict, tier: str, corpus: dict, *, root: Path, out_dir: Path,
             geo.guard_day(day)  # sealed/reserved days are refused before any path is opened
         except PermissionError as exc:
             raise ContractRefusalError(str(exc)) from exc
+    plan_est = preflight_plan(cfg, tier, corpus, days, root=root, budget_gib=budget_gib,
+                              problems=problems)
+    if plan_only:
+        return {
+            "report_version": "freeze-r.race-geometry.v0",
+            "node_id": TIER_NODE[tier],
+            "tier": tier,
+            "status": "plan_only",
+            "claims": "plan/preflight only: no payload value read, no geometry materialized, no "
+                      "node or payload written",
+            "race_matrix_version": cfg["race_matrix_version"],
+            "mode": cfg["mode"],
+            "asof_cut": None if asof_cut is None else int(asof_cut),
+            "retrospective_only": cfg["mode"] == "retrospective",
+            "plan_only": True,
+            "objects": plan_est["objects_upper_bound"],
+            "objects_are_upper_bound": True,
+            "objects_basis": "contiguous clock axis per day; a day with an interior clock hole "
+                             "yields fewer windows, so the extraction-time plan is authoritative",
+            "axis_length_sources": plan_est["axis_length_sources"],
+            "days_planned": plan_est["days_planned"],
+            "scale_ladder": cfg["tiers"][tier]["scale"]["ladder"],
+            "anchor_stride": cfg["tiers"][tier]["scale"]["stride"],
+            "clock_axis": {"column": cfg["tiers"][tier]["clock"],
+                           "span": cfg["tiers"][tier]["span"],
+                           "axis_values": cfg["tiers"][tier]["axis_values"]},
+            "footprint": plan_est["footprint"],
+            "views": {},
+            "tier_cells": tier_cells(cfg, tier),
+            "exactness": {"search": "exact_masked_bruteforce_no_ann",
+                          "index_build": cfg["ann"]["index_build"],
+                          "exact_search_strata": cfg["ann"]["exact_search_strata"],
+                          "sparse_exact_recall_floor": cfg["ann"]["sparse_exact_recall_floor"]},
+            "memory": {"budget_gib": budget_gib, "peak_rss_gib": rss_gib(),
+                       "hard_abort_gib": MEMORY_HARD_GIB},
+            "adaptive_choice_ledger": cfg["ledger"],
+            "parents": corpus.get("parents", {}),
+            "selection_classes": {
+                "scope": corpus.get("scope", "frozen_corpus_days"),
+                "days": days if len(days) <= 32 else {"n": len(days),
+                                                      "sha256": geo.day_set_sha(days)},
+                "asof_cut": None if asof_cut is None else int(asof_cut),
+                "retrospective_only": cfg["mode"] == "retrospective",
+                "plan_only": True,
+            },
+            "runtime_s": round(time.time() - t0, 3),
+        }
     extract = extract_tier(cfg, tier, corpus, days, root=root, verify=verify, problems=problems,
                            budget_gib=budget_gib)
     objects = extract["objects"]
@@ -2293,7 +2479,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--no-verify-payload-sha", action="store_true",
                     help="skip only the per-day payload sha256 re-read")
     ap.add_argument("--plan-only", action="store_true",
-                    help="validate, extract and measure without writing payloads")
+                    help="validate inputs and report the plan (upper-bound objects + footprint "
+                         "estimate) without reading payload values or writing anything")
     ap.add_argument("--audit-physical", action="store_true",
                     help="audit the physical race payloads against the frozen schema")
     ap.add_argument("--print-config-skeleton", action="store_true")
@@ -2401,12 +2588,33 @@ def main(argv: list[str] | None = None) -> int:
             _write_refused(out_evidence, tier, cfg, exc.problems)
             first_bad = first_bad or 3
             continue
-        print(json.dumps({
-            "tier": tier, "status": report["status"], "objects": report["objects"],
-            "views": sorted(report["views"]), "exactness": report["exactness"]["search"],
-            "out": str(out_dir),
-        }, indent=1)[:2000])
+        print(json.dumps(summary_line(tier, report, out_dir), indent=1))
     return first_bad
+
+
+def summary_line(tier: str, report: dict, out_dir) -> dict:
+    """One-line-per-tier CLI summary.  A plan-only report carries the authoritative preflight
+    numbers (upper-bound objects, footprint estimate and its breakdown, the axis-length sources);
+    a real run carries the published view list and the exactness mode."""
+    if report.get("plan_only"):
+        return {
+            "tier": tier, "status": report["status"], "plan_only": True,
+            "objects": report["objects"],
+            "objects_are_upper_bound": report["objects_are_upper_bound"],
+            "objects_basis": report["objects_basis"],
+            "days_planned": report["days_planned"],
+            "axis_length_sources": report["axis_length_sources"],
+            "scale_ladder": report["scale_ladder"], "anchor_stride": report["anchor_stride"],
+            "footprint": report["footprint"],
+            "memory": report["memory"],
+            "out_written": False, "out_dir": str(out_dir),
+        }
+    return {
+        "tier": tier, "status": report["status"], "objects": report["objects"],
+        "views": sorted(report["views"]), "exactness": report["exactness"]["search"],
+        "footprint": report.get("footprint"),
+        "out": str(out_dir),
+    }
 
 
 def _race_payload_days(corpus: dict, tier: str) -> list:
@@ -2564,9 +2772,17 @@ def run_selftest() -> int:
         ledger_sha = geo.sha256_file(ledger)
 
         def race_sec(sec_over=None):
-            sec = race_section(**(sec_over or {}))
+            # defaults (a real temp race ledger with a race entry) first, then the caller's
+            # dotted overrides, so a test can point the gate at a missing/mismatched/entry-less
+            # ledger without the default clobbering it
+            sec = race_section()
             sec["adaptive_choice_ledger"]["path"] = str(ledger)
             sec["adaptive_choice_ledger"]["sha256"] = ledger_sha
+            for dotted, value in (sec_over or {}).items():
+                node, keys = sec, dotted.split(".")
+                for kk in keys[:-1]:
+                    node = node[kk]
+                node[keys[-1]] = value
             return sec
 
         # PRIVATE TEST DOUBLE of the shared loader's OUTPUT SHAPE.  It is not a record and it
@@ -2636,6 +2852,28 @@ def run_selftest() -> int:
             {"column": "day_high_raw", "op": "is_not_null"}]}, mode="prospective")
         chk("retrospective_quality_predicate_refused_prospective",
             msg is not None and "retrospective" in msg)
+
+        # ---- the Freeze-R race ledger gate (never the locked observation chain) -------- #
+        msg = refuses_cfg({"adaptive_choice_ledger.path": str(tmp / "no_ledger.json")})
+        chk("ledger_missing_refused", msg is not None and "missing" in msg)
+        msg = refuses_cfg({"adaptive_choice_ledger.sha256": "3" * 64})
+        chk("ledger_hash_mismatch_refused", msg is not None and "does not hash" in msg)
+        empty_led = tmp / "ledger_empty.json"
+        geo.write_json(empty_led, {"entries": []})
+        msg = refuses_cfg({"adaptive_choice_ledger.path": str(empty_led),
+                           "adaptive_choice_ledger.sha256": geo.sha256_file(empty_led)})
+        chk("ledger_entry_less_refused", msg is not None and "carries no entries" in msg)
+        no_race_led = tmp / "ledger_no_race.json"
+        geo.write_json(no_race_led, {"entries": [{"choice_id": "x",
+                                                  "affected_node": "geometry.tape_atlas.views"}]})
+        msg = refuses_cfg({"adaptive_choice_ledger.path": str(no_race_led),
+                           "adaptive_choice_ledger.sha256": geo.sha256_file(no_race_led)})
+        chk("ledger_without_race_entry_refused",
+            msg is not None and "names a race node" in msg)
+        msg = refuses_cfg({"adaptive_choice_ledger.path": str(OBS_LEDGER_PATH),
+                           "adaptive_choice_ledger.sha256": geo.sha256_file(OBS_LEDGER_PATH)})
+        chk("observation_ledger_path_refused",
+            msg is not None and "Freeze-O" in msg, {"m": str(msg)[:90]})
 
         # the private double DOES bind (synthetic choices, synthetic corpus) ------------ #
         sec_path = tmp / "race_section.json"
@@ -2757,11 +2995,21 @@ def run_selftest() -> int:
                 if j >= 0 and days_arr[int(j)] == days_arr[i]:
                     same_day += 1
         chk("same_day_neighbours_excluded", same_day == 0)
-        own = nn["neighbour_refs"]
-        chk("neighbour_own_refs_recorded",
-            all((ref == "" or "|" in ref) for ref in own.reshape(-1).tolist()))
+        chk("neighbour_refs_resolvable_not_stored",
+            "neighbour_refs" not in nn.files and
+            {"day", "scale", "window_start_t", "window_end_t"} <= set(objects.columns) and
+            set(nn.files) == {"nn_idx", "nn_dist", "density", "kth_dist", "n_comparable",
+                              "n_common_views", "mutual_count", "neighbour_day_spread"},
+            {"arrays": sorted(nn.files)})
         chk("nearest_100_published", nn["nn_idx"].shape[1] == PUBLISHED_K)
         rep_json = geo.load_json(ev_dir / REPORT_NAME)
+        written = sum((out_dir / f).stat().st_size
+                      for f in ("objects.parquet",) if (out_dir / f).exists())
+        written += sum(p.stat().st_size for p in out_dir.glob("view_*.npz"))
+        chk("estimator_dominates_written_bytes",
+            rep["footprint"]["peak_bytes"] >= written,
+            {"peak_bytes": rep["footprint"]["peak_bytes"], "written_bytes": written,
+             "peak_gib": round(rep["footprint"]["peak_gib"], 6)})
         chk("disagreement_published", bool(rep_json["disagreement"]))
         chk("surrogate_published", bool(rep_json["surrogate"]))
         chk("tier_cells_published",
@@ -2834,6 +3082,32 @@ def run_selftest() -> int:
                             asof_cut=None, plan_only=True, budget_gib=4.0)
         chk("plan_only_writes_nothing",
             not (tmp / "out" / "candidate_net").exists() and rep_plan["objects"] > 0)
+        chk("plan_only_is_preflight",
+            rep_plan["status"] == "plan_only" and rep_plan["plan_only"] is True and
+            rep_plan["objects_are_upper_bound"] is True and
+            bool(rep_plan["axis_length_sources"]) and "footprint" in rep_plan,
+            {"sources": rep_plan.get("axis_length_sources"),
+             "objects": rep_plan.get("objects"),
+             "peak_gib": round(rep_plan["footprint"]["peak_gib"], 4)})
+        # the preflight reads no value column: the payload whose value column is missing still
+        # plans cleanly, while the real run on that same corpus refuses (checked above)
+        try:
+            bad_plan = run_tier(cfg, "broad_minute", corpus_bad, root=root,
+                                out_dir=tmp / "out" / "bad_plan",
+                                out_evidence=tmp / "ev" / "bad_plan", verify=True, chunk=8,
+                                asof_cut=None, plan_only=True, budget_gib=4.0)
+            chk("preflight_reads_no_value_column", bad_plan["objects"] > 0)
+        except (ContractRefusalError, IntegrityRefusalError) as exc:
+            chk("preflight_reads_no_value_column", False, {"error": str(exc)[:110]})
+        plan_summary = summary_line("candidate_net", rep_plan, tmp / "out" / "candidate_net")
+        chk("cli_summary_reports_preflight_numbers",
+            {"footprint", "objects", "axis_length_sources", "scale_ladder",
+             "anchor_stride"} <= set(plan_summary) and
+            plan_summary["footprint"]["peak_gib"] > 0 and plan_summary["plan_only"] is True)
+        run_summary = summary_line("broad_minute", rep, out_dir)
+        chk("cli_summary_reports_run_numbers",
+            {"views", "objects", "exactness"} <= set(run_summary) and
+            run_summary.get("plan_only") is None and bool(run_summary["views"]))
 
         # budget refusal ------------------------------------------------------------ #
         try:

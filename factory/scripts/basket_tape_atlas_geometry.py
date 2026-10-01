@@ -194,6 +194,13 @@ CLI
 
 Exit codes: 0 complete, 2 contract refusal (nothing written), 3 integrity refusal
 (REFUSED manifest/report written), 1 selftest failure.
+
+``--days N`` is a PARTIAL smoke mode (a query parameter, never a Freeze-R choice): the canonical
+manifest/census/day-set validation runs unchanged, then only the first ``N`` canonical dev days are
+read.  Every artifact is stamped ``partial`` (report status ``partial``, manifest
+``geometries_built_partial``), the canonical ``--out``/``--out-evidence`` targets are refused, and
+writing a partial run beside an existing canonical manifest is refused, so a partial artifact can
+never be merged into or mistaken for the full-corpus geometry.
 """
 
 from __future__ import annotations
@@ -974,8 +981,46 @@ def load_freeze_r(path: Path, *, schema: dict, registry: dict) -> dict:
 # --------------------------------------------------------------------------- #
 # corpus inputs
 # --------------------------------------------------------------------------- #
-def load_corpus(root: Path, manifest_path: Path, r: dict, *, verify: bool) -> dict:
+def partial_day_subset(canonical_days: list, limit) -> tuple:
+    """PARTIAL selector: the deterministic PREFIX of the canonical dev day list.
+
+    ``--days N`` is a query parameter, never a frozen choice: it is not read from the Freeze-R
+    record and never changes any representation value.  It exists so a smoke run can exercise the
+    real path cheaply; ``N`` equal to or above the canonical day count is a full run.
+    """
+    days = list(canonical_days)
+    if limit is None:
+        return days, False
+    if int(limit) < 1:
+        raise ContractRefusalError("--days must be >= 1")
+    if int(limit) >= len(days):
+        return days, False
+    return days[: int(limit)], True
+
+
+def partial_target_refusal(out_dir: Path, out_evidence: Path, existing_manifest,
+                           partial: bool) -> str | None:
+    """A PARTIAL run may never write canonical targets or merge into a canonical artifact set."""
+    if not partial:
+        return None
+    if Path(out_dir) == Path(DEFAULT_OUT):
+        return (f"refusing to write PARTIAL geometry into the canonical data root {DEFAULT_OUT}; "
+                "pass a scratch --out for a partial run")
+    if Path(out_evidence) == Path(DEFAULT_OUT_EVIDENCE):
+        return (f"refusing to write a PARTIAL manifest/report into the canonical evidence dir "
+                f"{DEFAULT_OUT_EVIDENCE}; pass a scratch --out-evidence")
+    if isinstance(existing_manifest, dict) and existing_manifest.get("partial") is False:
+        return ("refusing to write PARTIAL artifacts beside an existing canonical full-corpus "
+                "manifest; use a fresh scratch evidence dir (PARTIAL is never merged into canon)")
+    return None
+
+
+def load_corpus(root: Path, manifest_path: Path, r: dict, *, verify: bool,
+                partial_days=None) -> dict:
     """Validate the observation manifest against the frozen record and list its payloads."""
+    # the manifest path travels into the lineage as a file URI, which requires an absolute path
+    # (a relative one raises "relative path can't be expressed as a file URI" at write time)
+    manifest_path = Path(manifest_path).resolve()
     if not manifest_path.is_file():
         raise ContractRefusalError(f"observation manifest not found: {manifest_path}")
     manifest = load_json(manifest_path)
@@ -1099,6 +1144,9 @@ def load_corpus(root: Path, manifest_path: Path, r: dict, *, verify: bool) -> di
                              "observed": paths_df.height})
     if problems:
         raise IntegrityRefusalError("paths/day_registry integrity", problems)
+    scope_days, partial = partial_day_subset(grid_days, partial_days)
+    if partial:
+        paths_df = paths_df.filter(pl.col("day").is_in(scope_days))
     return {
         "manifest": manifest,
         "manifest_path": str(manifest_path),
@@ -1106,7 +1154,10 @@ def load_corpus(root: Path, manifest_path: Path, r: dict, *, verify: bool) -> di
         "blind_path": str(blind_path),
         "blind_sha256": sha256_file(blind_path),
         "payloads": payloads,
-        "days": grid_days,
+        "days": scope_days,
+        "canonical_days": grid_days,
+        "partial": partial,
+        "partial_days": int(partial_days) if partial else None,
         "paths_df": paths_df,
         "era_of": era_of,
     }
@@ -1354,7 +1405,7 @@ def extract_base_tensors(root: Path, corpus: dict, r: dict, *, asof_cut, verify:
                           "fabricating a barrier map",
             })
             break
-        observed_axes = sorted(set(observed_axes) | set(act_axes))
+        observed_axes |= set(act_axes)
         exprs = []
         for cid, ch in grid_ch.items():
             vw = ch["valid_when"]
@@ -1978,11 +2029,20 @@ def run_geometry(corpus: dict, r: dict, *, root: Path, out_dir: Path, out_eviden
     eval_mask = np.isin(block, r["blocks"]["eval"])
     fit_days = set(day_of[fit_mask].tolist())
     eval_days = set(day_of[eval_mask].tolist())
-    if not fit_mask.any() or not eval_mask.any():
+    partial = bool(corpus.get("partial"))
+    if not fit_mask.any():
+        raise IntegrityRefusalError(
+            "the frozen fit block covers no object in this run",
+            [{"kind": "split_fit_block_uncovered",
+              "fit_objects": int(fit_mask.sum()), "eval_objects": int(eval_mask.sum())}])
+    if not eval_mask.any() and not partial:
         raise IntegrityRefusalError(
             "the frozen fit/eval blocks do not both cover the corpus days",
             [{"kind": "split_blocks_uncovered",
               "fit_objects": int(fit_mask.sum()), "eval_objects": int(eval_mask.sum())}])
+    # a PARTIAL run may cover only the fit block (e.g. a 10-day prefix that is all block1); the
+    # held-out block is then simply absent from this artifact, which is stamped partial and never
+    # treated as canonical evidence.
     norm = fit_normalization(tensors, r, fit_mask)
     same_tape = _same_tape_columns(tensors)
 
@@ -2226,7 +2286,14 @@ def run_geometry(corpus: dict, r: dict, *, root: Path, out_dir: Path, out_eviden
     report = {
         "report_version": "freeze-r.geometry.v0",
         "node_id": "geometry.tape_atlas.hand_views",
-        "status": "complete",
+        "status": "partial" if corpus.get("partial") else "complete",
+        "partial": bool(corpus.get("partial")),
+        "partial_days": corpus.get("partial_days"),
+        "partial_note": (
+            "PARTIAL run: only the first --days dev days of the canonical corpus were read. This "
+            "artifact is NOT the canonical full-corpus geometry, must never be merged into or "
+            "compared with a canonical run, and carries no claim about the full 1066-day corpus"
+            if corpus.get("partial") else None),
         "scope": r["corpus"]["scope"],
         "claims": "none: measurements of the observed tape under the frozen record only; no "
                   "finding, density gate or Freeze-R claim is made here",
@@ -2330,6 +2397,8 @@ def run_geometry(corpus: dict, r: dict, *, root: Path, out_dir: Path, out_eviden
         "adaptive_choice_ledger_required": True,
         "run_choices": {
             "asof_cut": None if asof_cut is None else int(asof_cut),
+            "partial_days": corpus.get("partial_days"),
+            "partial": bool(corpus.get("partial")),
             "top_k": k,
             "chunk_rows": int(chunk),
             "embeddings": None if embeddings_path is None else str(embeddings_path),
@@ -2356,6 +2425,7 @@ def _write_outputs(out_dir, out_evidence, corpus, r, tensors, objects_df, result
     reg("objects", objects_path, objects_df.height)
     write_json(out_dir / "objects.meta.json", {
         "keys": ["object_id"], "sort_order": ["day", "ticker", "scale"],
+        "partial": bool(corpus.get("partial")), "partial_days": corpus.get("partial_days"),
         "units": {"start_et": "et minute label", "end_et": "et minute label",
                   "anchor_et": "et minute label", "session_end": "et minute label"},
         "retrospective_only": report["retrospective_only"],
@@ -2418,6 +2488,7 @@ def _write_outputs(out_dir, out_evidence, corpus, r, tensors, objects_df, result
         reg(f"view_{vname}_nn", path, int(res["nn_idx"].shape[0]))
         write_json(out_dir / f"view_{vname}.nn.meta.json", {
             "view": vname, "k": k, "radius": r["radius"].get(vname),
+            "partial": bool(corpus.get("partial")), "partial_days": corpus.get("partial_days"),
             "density_status": ("published" if (vname in r["radius"])
                                else "not_published_no_frozen_radius (-1 sentinel)"),
             "units": ("standardized_channel_l2" if vname != BALANCED
@@ -2486,6 +2557,8 @@ def _write_outputs(out_dir, out_evidence, corpus, r, tensors, objects_df, result
                 reg(f"ssl_{scale}_{mode}", path, int(sel.size))
                 write_json(out_dir / "ssl" / f"{scale}_{mode}.meta.json", {
                     "scale": int(scale), "mode": mode,
+                    "partial": bool(corpus.get("partial")),
+                    "partial_days": corpus.get("partial_days"),
                     "layout":
                         {"values": "float32 (N,C,T) 0.0 at valid==False",
                          "valid": "bool (N,C,T) padding is a COMPUTATIONAL zero, never a "
@@ -2554,6 +2627,8 @@ def _write_outputs(out_dir, out_evidence, corpus, r, tensors, objects_df, result
         "node_id": "geometry.tape_atlas.hand_views",
         "version": r["matrix_version"],
         "contract": "freeze-r-v0",
+        "partial": bool(corpus.get("partial")),
+        "partial_days": corpus.get("partial_days"),
         "freeze_r": {"path": r["path"], "sha256": r["sha256"],
                      "matrix_version": r["matrix_version"]},
         "parents": {
@@ -2616,6 +2691,12 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--embeddings", default=None,
                     help="externally generated SSL embedding archive (.npz + .meta.json)")
     ap.add_argument("--chunk-rows", type=int, default=512, help="query chunk (bounded memory)")
+    ap.add_argument("--days", type=int, default=None,
+                    help="PARTIAL run: read only the first N canonical dev days (the full "
+                         "manifest/census validation is unchanged). Every artifact is stamped "
+                         "partial, canonical --out/--out-evidence targets are refused, and a "
+                         "partial artifact is never merged into canon. This is a query parameter, "
+                         "never a Freeze-R choice")
     ap.add_argument("--no-verify-payload-sha", action="store_true",
                     help="skip only the payload sha256 re-read (rows/days/parents still checked)")
     ap.add_argument("--plan-only", action="store_true",
@@ -2629,25 +2710,36 @@ def main(argv: list[str] | None = None) -> int:
               file=sys.stderr)
         return 2
     r = None
-    try:
-        schema = load_json(SCHEMA_PATH)
-        registry = load_json(REGISTRY_PATH)
-        r = load_freeze_r(Path(args.freeze_r), schema=schema, registry=registry)
-        corpus = load_corpus(Path(args.root), Path(args.manifest), r,
-                             verify=not args.no_verify_payload_sha)
-    except ContractRefusalError as exc:
-        print("geometry refusal (contract): " + str(exc), file=sys.stderr)
-        return 2
-    except IntegrityRefusalError as exc:
-        print("geometry refusal (integrity): " + str(exc), file=sys.stderr)
-        _write_refused(Path(args.out_evidence), r, exc.problems)
-        return 3
     out_dir = Path(args.out)
     out_evidence = Path(args.out_evidence)
     if not out_dir.is_absolute():
         out_dir = ROOT / out_dir
     if not out_evidence.is_absolute():
         out_evidence = ROOT / out_evidence
+    existing_manifest = None
+    manifest_probe = out_evidence / MANIFEST_NAME
+    if manifest_probe.is_file():
+        try:
+            existing_manifest = load_json(manifest_probe)
+        except Exception:  # an unreadable manifest is not a canonical marker
+            existing_manifest = None
+    try:
+        schema = load_json(SCHEMA_PATH)
+        registry = load_json(REGISTRY_PATH)
+        r = load_freeze_r(Path(args.freeze_r), schema=schema, registry=registry)
+        corpus = load_corpus(Path(args.root), Path(args.manifest), r,
+                             verify=not args.no_verify_payload_sha, partial_days=args.days)
+        refusal = partial_target_refusal(out_dir, out_evidence, existing_manifest,
+                                         bool(corpus["partial"]))
+        if refusal:
+            raise ContractRefusalError(refusal)
+    except ContractRefusalError as exc:
+        print("geometry refusal (contract): " + str(exc), file=sys.stderr)
+        return 2
+    except IntegrityRefusalError as exc:
+        print("geometry refusal (integrity): " + str(exc), file=sys.stderr)
+        _write_refused(out_evidence, r, exc.problems)
+        return 3
     try:
         report = run_geometry(corpus, r, root=Path(args.root), out_dir=out_dir,
                               out_evidence=out_evidence, asof_cut=args.asof_cut,
@@ -3077,6 +3169,27 @@ def run_selftest() -> int:
                        "all-False, span_allowed is all-False, the tensor keeps its fixed T shape "
                        "as padding, and query_t == start_t is the correct empty completion clock "
                        "- no forced one-bucket 'availability' fallback"})
+        chk("partial_days_prefix_and_full",
+            partial_day_subset(["a", "b", "c", "d"], 2) == (["a", "b"], True)
+            and partial_day_subset(["a", "b", "c"], 3) == (["a", "b", "c"], False)
+            and partial_day_subset(["a"], None) == (["a"], False),
+            {"detail": "--days N takes the deterministic prefix of the canonical day list; N >= "
+                       "the canonical count is a full run"})
+        chk("partial_refuses_canonical_and_merge",
+            partial_target_refusal(DEFAULT_OUT, Path("/tmp/scratch_ev"), None, True) is not None
+            and partial_target_refusal(Path("/tmp/scratch_out"), DEFAULT_OUT_EVIDENCE, None,
+                                       True) is not None
+            and partial_target_refusal(Path("/tmp/scratch_out"), Path("/tmp/scratch_ev"),
+                                       {"partial": False}, True) is not None
+            and partial_target_refusal(Path("/tmp/scratch_out"), Path("/tmp/scratch_ev"),
+                                       {"partial": True}, True) is None
+            and partial_target_refusal(DEFAULT_OUT, DEFAULT_OUT_EVIDENCE, None, False) is None,
+            {"detail": "a PARTIAL run refuses the canonical --out/--out-evidence targets and "
+                       "refuses to write beside an existing canonical manifest, while a full run "
+                       "is unaffected"})
+        chk("partial_is_not_a_record_field",
+            not any(k in loaded for k in ("days", "partial", "partial_days")),
+            {"detail": "--days/partial are query parameters, never Freeze-R choices"})
         valid3 = np.array([[[True, True, False, False], [False, True, False, False]],
                            [[True, False, False, False], [False, False, False, False]]])
         obs = valid3.any(axis=1)
