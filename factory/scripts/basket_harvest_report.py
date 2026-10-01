@@ -139,6 +139,37 @@ def main() -> int:
     for r in unk.iter_rows(named=True):
         lines.append(f"| {r['clock']} | {r['exit']} | {r['unk_total']} | {r['rows']} |")
 
+    # ---- rank contribution: where does the money come from ----
+    lines.append("\n## Member-rank contribution (primary; mean per-member net-100 at fixed exits, %)")
+    lines.append("| clock | exit | rank1 % | rank2 % | rank3 % | rank4 % | fill rate r1-r4 |")
+    lines.append("|---|---|---|---|---|---|---|")
+    for clock in (560, 600, 660):
+        for E in (600, 630, 720, 959):
+            fr = fills.filter((pl.col("variant") == "primary") & (pl.col("clock") == clock))
+            col = f"r{E}_100"
+            if col not in fr.columns:
+                continue
+            row = []
+            for rk in (1, 2, 3, 4):
+                s = fr.filter(pl.col("rank") == rk)
+                m = s[col].drop_nulls().mean()
+                row.append("" if m is None else f"{m*100:.2f}")
+            fills_rate = "/".join(
+                f"{(fr.filter(pl.col('rank') == rk)['status'] == 'filled').mean():.2f}" for rk in (1, 2, 3, 4))
+            if all(x == "" for x in row):
+                continue
+            lines.append(f"| {clock} | {E} | " + " | ".join(row) + f" | {fills_rate} |")
+
+    lines.append("\n## Monthly means for two headline cells (primary, N=3)")
+    for (clk, E) in ((560, 720), (600, 720)):
+        mm = (cells.filter((pl.col("variant") == "primary") & (pl.col("clock") == clk)
+                           & (pl.col("N") == 3) & (pl.col("exit") == E) &
+                           pl.col("ret_100").is_not_null())
+              .with_columns(pl.col("day").str.slice(0, 7).alias("mon"))
+              .group_by("mon").agg(pl.col("ret_100").mean().alias("m"), pl.len().alias("n")).sort("mon"))
+        lines.append(f"\nclock={clk} exit={E}: " +
+                     ", ".join(f"{r['mon']} {r['m']*100:+.2f} (n={r['n']})" for r in mm.iter_rows(named=True)))
+
     (rep / "readout.md").write_text("\n".join(lines) + "\n")
     print(f"cell_summary rows={g.height}; readout written to {rep/'readout.md'}")
     return 0

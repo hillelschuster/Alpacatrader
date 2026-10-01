@@ -47,6 +47,10 @@ def main() -> int:
     rep = data_root / "harvest01" / "report"
     rep.mkdir(parents=True, exist_ok=True)
 
+    ch_files = list((base / "champs").glob("*.parquet"))
+    if not ch_files:
+        print("no champs yet (selection pass still running?); nothing to do")
+        return 0
     ch = pl.scan_parquet(str(base / "champs" / "*.parquet"), glob=True).collect()
     ch = ch.filter(pl.col("prev_close_adj") > 0).with_columns(
         (pl.col("px_max") / pl.col("prev_close_adj") - 1).alias("gain_max_adj"))

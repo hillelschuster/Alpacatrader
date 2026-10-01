@@ -55,7 +55,7 @@ DEFAULTS = {
     "tstop_reclaim": 0.05,
 }
 RULE_NAMES = ["hold", "gb10", "dmg_wait", "failrec_a3", "failrec_a5", "failrec_a8",
-              "decay_v", "decay_nh", "tstop30"]
+              "decay_v", "decay_nh", "tstop30", "gb10_half", "failrec_a5_half", "reentry_gb10"]
 
 
 def load_bars_cols(path: Path) -> dict:
@@ -174,68 +174,126 @@ def process_day(day: str, data_root: Path, se: int, cfg: dict, force: bool) -> s
     t0 = time.time()
     rows = []
     ends = sorted(e for e in DELTA_ENDS_OFFSET if e < se) + [se]
+    import bisect
     for f in fills.filter(pl.col("status") == "filled").iter_rows(named=True):
         b = bars.get(f["ticker"])
         if not b:
             continue
         ets = b["et"]
-        import bisect
+        o = b["open"]
+        n = len(ets)
         fi = bisect.bisect_left(ets, f["fill_et"])
-        if fi >= len(ets):
+        if fi >= n:
             continue
         fpx = f["fill_px"]
-        res, ets2, o2, fpx2 = eval_rules(b, fi, fpx, se, cfg)
-        hold = {}
+        res, ets2, o2, _ = eval_rules(b, fi, fpx, se, cfg)
+        # endpoint exit bars (hold convention; must match the sim exactly)
+        exitb = {}
         for E in ends:
-            key = f"r{E}_100"
-            hold[E] = f.get(key)
+            if E == se:
+                j = bisect.bisect_left(ets, se, fi + 1)
+            else:
+                j = bisect.bisect_left(ets, max(E, ets[fi] + 1), fi + 1)
+            exitb[E] = j if j < n else -1
+
+        def hold_value(E, side):
+            j = exitb[E]
+            return None if j < 0 else (o[j] * (1 - side)) / (fpx * (1 + side))
+
+        exec_of = {}
         for rule, r in res.items():
+            if r["fired"] and r["fire_i"] is not None and r["fire_i"] + 1 < n:
+                xi = r["fire_i"] + 1
+                exec_of[rule] = (xi, o[xi], ets[xi])
+        rebuy = None
+        if "gb10" in exec_of:
+            xi, xpx, _ = exec_of["gb10"]
+            j = xi + 1
+            c = b["close"]
+            while j < n and c[j] < xpx:
+                j += 1
+            if j < n and j + 1 < n:
+                rebuy = (j + 1, o[j + 1], ets[j + 1])
+
+        def value_sell(rule, E, side):
+            if rule not in exec_of:
+                return hold_value(E, side)
+            _, xpx, xet = exec_of[rule]
+            if xet > E:
+                return hold_value(E, side)
+            return (xpx * (1 - side)) / (fpx * (1 + side))
+
+        def value_half(rule, E, side):
+            if rule not in exec_of:
+                return hold_value(E, side)
+            hv = hold_value(E, side)
+            if hv is None:
+                return None
+            _, xpx, xet = exec_of[rule]
+            if xet > E:
+                return hv
+            return 0.5 * ((xpx * (1 - side)) / (fpx * (1 + side))) + 0.5 * hv
+
+        def value_reentry(E, side):
+            if "gb10" not in exec_of:
+                return hold_value(E, side)
+            _, xpx, xet = exec_of["gb10"]
+            hv = hold_value(E, side)
+            if hv is None:
+                return None
+            if xet > E:
+                return hv
+            w_sell = (xpx * (1 - side)) / (fpx * (1 + side))
+            if rebuy is None:
+                return w_sell
+            _, bpx, bet = rebuy
+            if bet > E:
+                return w_sell
+            jE = exitb[E]
+            if jE < 0:
+                return None
+            return w_sell * ((o[jE] * (1 - side)) / (bpx * (1 + side)))
+
+        for rule in RULE_NAMES:
+            base_rule = "gb10" if rule in ("gb10_half", "reentry_gb10") else (
+                "failrec_a5" if rule == "failrec_a5_half" else rule)
+            r = res.get(base_rule, {"fired": False, "fire_i": None})
             row = {"day": day, "variant": f["variant"], "clock": f["clock"], "rank": f["rank"],
                    "ticker": f["ticker"], "rule": rule, "fired": bool(r["fired"]),
                    "session_end": se}
-            if r["fired"]:
-                f_i = r["fire_i"]
-                row["fire_et"] = int(ets2[f_i])
-                xi = f_i + 1
-                if xi < len(ets2):
-                    row["exec_et"] = int(ets2[xi])
-                    row["exec_px"] = float(o2[xi])
-                    post = b["high"][xi:]
-                    row["mfe_after"] = (max(post) / row["exec_px"] - 1) if post else None
-                    row["monster_after"] = bool(row["mfe_after"] is not None and row["mfe_after"] >= 0.30)
-                    w_r_100 = (row["exec_px"] * (1 - SIDE[100])) / (fpx * (1 + SIDE[100]))
-                    w_r_150 = (row["exec_px"] * (1 - SIDE[150])) / (fpx * (1 + SIDE[150]))
-                else:
-                    row["exec_et"] = None
-                    row["exec_px"] = None
-                    row["mfe_after"] = None
-                    row["monster_after"] = None
-                    w_r_100 = w_r_150 = None
+            base_rule = "gb10" if rule in ("gb10_half", "reentry_gb10") else (
+                "failrec_a5" if rule == "failrec_a5_half" else rule)
+            if base_rule in exec_of:
+                xi, xpx, xet = exec_of[base_rule]
+                row["fire_et"] = int(ets2[xi - 1]) if xi - 1 >= 0 else None
+                row["exec_et"] = int(xet)
+                row["exec_px"] = float(xpx)
+                post = b["high"][xi:]
+                row["mfe_after"] = (max(post) / xpx - 1) if post else None
+                row["monster_after"] = bool(row["mfe_after"] is not None and row["mfe_after"] >= 0.30)
             else:
-                row["fire_et"] = None
-                row["exec_et"] = None
-                row["exec_px"] = None
-                row["mfe_after"] = None
-                row["monster_after"] = None
-                w_r_100 = w_r_150 = None
+                row["fire_et"] = row["exec_et"] = row["exec_px"] = None
+                row["mfe_after"] = row["monster_after"] = None
+            if rule == "reentry_gb10" and rebuy is not None:
+                row["rebuy_et"], row["rebuy_px"] = int(rebuy[2]), float(rebuy[1])
+            else:
+                row["rebuy_et"], row["rebuy_px"] = None, None
             for E in ends:
-                h100 = hold.get(E)
-                if h100 is None:
-                    row[f"delta100_{E}"] = None
-                    row[f"delta150_{E}"] = None
-                    continue
-                w_hold_100 = 1 + h100
-                if w_r_100 is None or (row.get("exec_et") or 0) > E:
-                    w_use = w_hold_100
-                else:
-                    w_use = w_r_100
-                row[f"delta100_{E}"] = w_use - w_hold_100
-                # 150 bps: recompute proportionally from the same prices when available
-                if w_r_150 is None or (row.get("exec_et") or 0) > E:
-                    row[f"delta150_{E}"] = None
-                else:
-                    h150 = f.get(f"r{E}_150")
-                    row[f"delta150_{E}"] = None if h150 is None else w_r_150 - (1 + h150)
+                hv = hold_value(E, 0.005)
+                if rule in ("gb10", "dmg_wait", "failrec_a3", "failrec_a5", "failrec_a8",
+                            "decay_v", "decay_nh", "tstop30", "hold"):
+                    v = hv if rule == "hold" else value_sell(rule, E, 0.005)
+                    v150 = (hold_value(E, 0.0075) if rule == "hold"
+                            else value_sell(rule, E, 0.0075))
+                elif rule in ("gb10_half", "failrec_a5_half"):
+                    v = value_half(base_rule, E, 0.005)
+                    v150 = value_half(base_rule, E, 0.0075)
+                else:  # reentry_gb10
+                    v = value_reentry(E, 0.005)
+                    v150 = value_reentry(E, 0.0075)
+                hv150 = hold_value(E, 0.0075)
+                row[f"delta100_{E}"] = None if (v is None or hv is None) else v - hv
+                row[f"delta150_{E}"] = None if (v150 is None or hv150 is None) else v150 - hv150
             rows.append(row)
     df = pl.DataFrame(rows) if rows else pl.DataFrame(schema={"day": pl.Utf8, "rule": pl.Utf8})
     fp, tmp = outd / f"{day}.parquet", outd / f"{day}.parquet.tmp"

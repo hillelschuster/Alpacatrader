@@ -257,7 +257,6 @@ def process_day(day: str, data_root: Path, sessions: dict, splits: pl.DataFrame,
             pl.col("px_et").sort_by("t").last().alias("px_last_et"),
             pl.len().alias("n_known_min"),
             pl.col("t").min().alias("first_known_et"),
-            pl.col("gain").max().alias("gain_panel_max"),
             pl.col("session_end").max().alias("session_end"),
         )
         agg = agg.join(u.select(["ticker", "prev_close_raw", "prev_close_adj", "split_factor",
