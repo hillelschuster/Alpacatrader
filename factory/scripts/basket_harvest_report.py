@@ -170,6 +170,35 @@ def main() -> int:
         lines.append(f"\nclock={clk} exit={E}: " +
                      ", ".join(f"{r['mon']} {r['m']*100:+.2f} (n={r['n']})" for r in mm.iter_rows(named=True)))
 
+    # monthly x clock matrix at N=3 for the two golden-window exits
+    for E in (660, 720):
+        mm = (cells.filter((pl.col("variant") == "primary") & (pl.col("N") == 3)
+                           & (pl.col("exit") == E) & pl.col("ret_100").is_not_null())
+              .with_columns(pl.col("day").str.slice(0, 7).alias("mon"))
+              .group_by(["mon", "clock"]).agg(pl.col("ret_100").mean().alias("m")))
+        piv = mm.pivot(values="m", index="mon", on="clock").sort("mon")
+        lines.append(f"\n## Monthly x clock matrix — primary N=3, exit={E} (net-100 mean, %)")
+        cols = [c for c in piv.columns if c != "mon"]
+        lines.append("| month | " + " | ".join(cols) + " |")
+        lines.append("|" + "---|" * (len(cols) + 1))
+        for r in piv.iter_rows(named=True):
+            vals = ["{:.1f}".format(r[c] * 100) if r[c] is not None else "" for c in cols]
+            lines.append(f"| {r['mon']} | " + " | ".join(vals) + " |")
+
+    lines.append("\n## Block means for headline clocks (primary, N=3, exit=720)")
+    bb = (cells.filter((pl.col("variant") == "primary") & (pl.col("N") == 3)
+                       & (pl.col("exit") == 720) & pl.col("ret_100").is_not_null())
+          .with_columns(pl.when(pl.col("day") <= "2023-12-31").then(pl.lit("B1"))
+                        .when(pl.col("day") >= "2025-02-01").then(pl.lit("B2"))
+                        .otherwise(pl.lit("other")).alias("block"))
+          .group_by(["clock", "block"]).agg(pl.col("ret_100").mean().alias("m")).pivot(
+              values="m", index="clock", on="block").sort("clock"))
+    lines.append("| clock | B1 % | B2 % |")
+    lines.append("|---|---|---|")
+    for r in bb.iter_rows(named=True):
+        f = lambda x: "" if x is None else f"{x*100:.2f}"
+        lines.append(f"| {r['clock']} | {f(r.get('B1'))} | {f(r.get('B2'))} |")
+
     (rep / "readout.md").write_text("\n".join(lines) + "\n")
     print(f"cell_summary rows={g.height}; readout written to {rep/'readout.md'}")
     return 0
