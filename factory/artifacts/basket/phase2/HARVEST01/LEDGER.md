@@ -268,3 +268,36 @@ Full span, 40,508 basket-days, 100 bps ruler, next-open execution:
   print >= limit) to recover the ~1.5pp stop slippage; entry conditioning on PM state
   (decision_gain / price quintiles are weak, non-monotonic); tail preservation (half
   scale-out at the take, let the rest run).
+
+## 2026-10-02 (~13:00) — discovery pass: the rule is a friction-determined coin flip; regime split
+
+Follow-ups on the basket-level lane (all dev days, next-open execution):
+
+1. **Stop mechanics (peak4/peak6)**: a resting stop-limit (trigger -5%, limit at the breach
+   price, fill on first print >= limit) is WORSE everywhere (569/N1 -1.87 vs market stop
+   -0.29): the no-fill risk dominates. Stop-arming delays, wider stops, and a flush-bounce
+   release of the basket (hold through the dip, exit into the first +B% bounce off the low)
+   are all flat-to-worse (fb3 -0.80 vs ms6 -0.29). Scale-out ladders (half at +3%, rest
+   trailed/held) are all worse (half3_trail10_ms6 -1.49): the fade beats the tail.
+2. **Selection (select2)**: re-ranking the causal 569 roster by PM run-up (`pop` =
+   pm_hi/pm_first_px-1) or PM dollar volume is WORSE than the funnel's own rank order
+   (pop1 -0.74, dvol1 -1.15, sim_rank1 -0.30). The pop>=150% conditioning cell (+0.30,
+   n=258, both blocks +) is noise-level (SE 0.5) and does not survive as a selection rule.
+3. **Friction (measured)**: our rank-1 fills print AT THE ASK (pos-in-quote 1.00); the
+   quoted spread at the fill minute is median ~50 bps (rank1, n=5), 77-83 bps (rank2/3),
+   inside size $27-126 displayed for a $10k order. The 100 bps round-trip ruler is fair;
+   impact beyond the spread is the main unknown. The 09:30 auction prints at the same
+   price as the 09:29 print (mean gap +0.006%), so the sim's fill convention is executable.
+4. **Friction sensitivity** (peak3 at 25 bps/side): 569/N1 tp4_s6 = +0.18, tp3_s6 = +0.12;
+   at 50 bps/side: -0.29. Every 50 bps of round-trip friction costs ~0.4 pp of daily mean:
+   the strategy's gross is ~+0.7-0.8%/day and friction decides the sign.
+5. **Regime split (569/N1, tp3_s6, 100 bps)**: 2021 -0.80, 2022 -0.24, 2023 -0.82,
+   2025 +0.02, 2026 +1.39. At 25 bps: 2025 +0.49, 2026 +1.76. Monthly 2025-02..2026-05:
+   10/16 positive. BUT 2025+2026 mean +0.44 -> +0.14 with the 5 best days removed -> -0.09
+   with 10 removed: tail-dependent. No cell is positive in both chronological blocks at
+   100 bps; the older-regime best cells are ~-0.05 (569/N2 at 25 bps).
+6. Verdict so far: the mechanism (basket-mark bracket: take +3-4% / stop -6% / flat by noon)
+   converts a -7.5% hold into ~0 at realistic friction; it is a loss-cutting timing edge,
+   not yet an absolute edge. The only near-term positive expression is the recent regime
+   at 569/N1 with optimistic friction. Open question: whether the 2025-2026 regime effect is
+   real (broader clocks/params) or tail luck.

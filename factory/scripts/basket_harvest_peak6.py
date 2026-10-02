@@ -1,16 +1,25 @@
 #!/usr/bin/env python3
-"""HARVEST01 — basket-level rule DSL probe (profit-take / stop / trail / time-cap).
+"""HARVEST01 — stop variants: flush-bounce release vs market stop on the basket mark.
 
-Extends basket_harvest_peak.py: a basket-day is a path of marks (equal slots, last
-close). Rules act on the BASKET's own state, first-match wins, executed at the next
-minute's open (one-sided fee, conservative). Purpose: cut the never-pop left tail
-while keeping the early +5% pops, and get cash by a chosen time.
+The market stop (basket mark <= -6% -> sell at next open) realizes about -8.3% and 39%
+of stopped baskets later peak +16.7%: it whipsaws recoverers. The flush-bounce finding
+says a panic low is followed by a bounce; this probe releases the basket into the first
+bounce off its own low instead of selling into the panic, with a hard floor for the days
+that never bounce.
 
-Rule DSL: tp (profit take %), stop (loss cut %), trail (giveback from peak %),
-minpeak (trail only arms after peak >= minpeak %), cap (minutes-since-start cut).
+Rules:
+  tp3_ms6_c720        reference: take +3%, market stop -6%, flat by noon
+  tp3_ms6d10_c720     stop armed only 10 min after entry
+  tp3_ms6d20_c720     stop armed only 20 min after entry
+  tp3_ms8/m10_c720    wider market stop
+  tp3_fbB_c720        no stop: release into the first +B% bounce off the basket low,
+                      hard floor -12%, else flat by noon
+  tp3_fbB_floor_c720  same with floor -8%
+  tp3_ms6_fb3_c720    stop -6% BUT if it triggers, hold and release into the +3% bounce
+                      (floor -12%), else flat by noon
 
 Usage:
-    .venv/bin/python factory/scripts/basket_harvest_peak2.py --workers 3
+    .venv/bin/python factory/scripts/basket_harvest_peak6.py --workers 3
 """
 from __future__ import annotations
 
@@ -28,20 +37,23 @@ import basket_pm_snapshots as bps  # noqa: E402
 
 import os
 SIDE = float(os.environ.get('HARVEST_SIDE', '0.005'))
-CLOCKS = (510, 540, 555, 565, 569, 575, 600, 630, 660, 690, 720)
+CLOCKS = (510, 540, 555, 565, 569, 575, 600, 630, 660, 720)
 NS = (1, 2, 3)
-RULES: list[tuple[str, dict]] = [("hold", {})]
-for _tp in (3, 4, 5, 6, 8):
-    for _s in (2, 3, 4, 5, 6, 8, None):
-        _n = f"tp{_tp}_s{_s if _s is not None else 'off'}_t10_c720"
-        RULES.append((_n, {"tp": _tp, "stop": _s, "trail": 10, "cap": 720} if _s is not None
-                           else {"tp": _tp, "trail": 10, "cap": 720}))
-for _cap in (690, 750, 780):
-    RULES.append((f"tp5_s4_t10_c{_cap}", {"tp": 5, "stop": 4, "trail": 10, "cap": _cap}))
-for _tr in (None, 6, 8, 12, 15):
-    _n = f"tp5_s4_t{_tr if _tr is not None else 'off'}_c720"
-    RULES.append((_n, {"tp": 5, "stop": 4, "trail": _tr, "cap": 720} if _tr is not None
-                       else {"tp": 5, "stop": 4, "cap": 720}))
+RULES: list[tuple[str, dict]] = [
+    ("hold", {}),
+    ("tp3_ms6_c720", {"tp": 3, "ms": 6, "cap": 720}),
+    ("tp3_ms6d10_c720", {"tp": 3, "ms": 6, "arm": 10, "cap": 720}),
+    ("tp3_ms6d20_c720", {"tp": 3, "ms": 6, "arm": 20, "cap": 720}),
+    ("tp3_ms8_c720", {"tp": 3, "ms": 8, "cap": 720}),
+    ("tp3_ms10_c720", {"tp": 3, "ms": 10, "cap": 720}),
+    ("tp3_fb2_c720", {"tp": 3, "fb": 2, "floor": 12, "cap": 720}),
+    ("tp3_fb3_c720", {"tp": 3, "fb": 3, "floor": 12, "cap": 720}),
+    ("tp3_fb5_c720", {"tp": 3, "fb": 5, "floor": 12, "cap": 720}),
+    ("tp3_fb3_f8_c720", {"tp": 3, "fb": 3, "floor": 8, "cap": 720}),
+    ("tp3_fb3_f20_c720", {"tp": 3, "fb": 3, "floor": 20, "cap": 720}),
+    ("tp3_ms6fb3_c720", {"tp": 3, "ms": 6, "fb": 3, "floor": 12, "cap": 720}),
+    ("tp3_ms6fb3_c959", {"tp": 3, "ms": 6, "fb": 3, "floor": 12, "cap": 959}),
+]
 
 
 def load_bars(path: Path) -> dict:
@@ -95,47 +107,64 @@ def process_day(day: str, data_root: Path, se: int) -> list[dict]:
             if not path:
                 continue
 
-            def sell_value(t_dec: int | None):
-                if t_dec is None:
-                    t_dec = se
+            def sell_at(t_dec: int | None):
+                t_dec = se if t_dec is None else int(t_dec)
                 tot = blocked
                 for m in mem:
                     tk = m["ticker"]
                     b = bars[tk]
                     fi = bisect.bisect_left(b["et"], int(m["fill_et"]))
-                    target = max(t_dec, b["et"][fi] + 1) if fi < len(b["et"]) else t_dec
-                    j = bisect.bisect_left(b["et"], target, fi + 1)
+                    if fi >= len(b["et"]):
+                        return None
+                    j = bisect.bisect_left(b["et"], max(t_dec, b["et"][fi] + 1), fi + 1)
                     if j >= len(b["et"]):
                         return None
                     tot += slot_w[tk] * b["open"][j] * (1 - SIDE)
                 return tot - 1
 
             row = {"day": day, "clock": int(clock), "N": N, "session_end": se, "start_et": start}
-            peak = -1.0
-            peak_ret = -1.0
-            exits: dict[str, int | None] = {name: None for name, _ in RULES}
-            for (t, val) in path:
-                if val > peak:
-                    peak = val
-                peak_ret = max(peak_ret, val - 1)
-                for name, r in RULES:
-                    if exits[name] is not None or not r:
+            for name, r in RULES:
+                if not r:
+                    row[name] = sell_at(None)
+                    continue
+                peak = -1.0
+                low = 1e9
+                fired = None
+                hold_mode = False
+                for (t, val) in path:
+                    if val > peak:
+                        peak = val
+                    if val < low:
+                        low = val
+                    if fired is not None:
                         continue
-                    hit = False
                     if "tp" in r and val >= 1 + r["tp"] / 100.0:
-                        hit = True
-                    elif "stop" in r and val <= 1 - r["stop"] / 100.0:
-                        hit = True
-                    elif ("trail" in r and peak - 1 >= r.get("minpeak", 0) / 100.0
-                          and val <= peak * (1 - r["trail"] / 100.0)):
-                        hit = True
-                    elif "cap" in r and t >= r["cap"]:
-                        hit = True
-                    if hit:
-                        exits[name] = t
-            row["peak_ret"] = peak_ret
-            for name, _ in RULES:
-                row[name] = sell_value(exits[name])
+                        fired = t
+                        continue
+                    if hold_mode:
+                        if val >= low * (1 + r["fb"] / 100.0):
+                            fired = t
+                        elif val <= 1 - r["floor"] / 100.0:
+                            fired = t
+                        elif t >= r["cap"]:
+                            fired = t
+                        continue
+                    if "ms" in r and val <= 1 - r["ms"] / 100.0:
+                        if "fb" in r:
+                            hold_mode = True
+                            low = val
+                            continue
+                        if t - start >= r.get("arm", 0):
+                            fired = t
+                            continue
+                    if "fb" in r and val <= 1 - r.get("floor", 12) / 100.0:
+                        fired = t
+                        continue
+                    if t >= r["cap"]:
+                        fired = t
+                if fired is None:
+                    fired = se
+                row[name] = sell_at(fired)
             rows.append(row)
     return rows
 
@@ -168,8 +197,8 @@ def main() -> int:
         for d in days:
             rows += process_day(d, data_root, int(cal[d]["session_end"]))
     df = pl.DataFrame(rows, infer_schema_length=None)
-    df.write_parquet(rep / "peak3_exits.parquet")
-    lines = ["# HARVEST01 — basket rule DSL (tp / stop / trail / cap)\n",
+    df.write_parquet(rep / "peak6_exits.parquet")
+    lines = ["# HARVEST01 — stop variants: flush-bounce release vs market stop\n",
              f"basket-days: {df.height}\n",
              "| clock | N | rule | mean % | median % | B1 | B2 | pos | n |",
              "|---|---|---|---|---|---|---|---|---|"]
@@ -188,8 +217,8 @@ def main() -> int:
                 m2 = f"{b2.mean()*100:+.2f}" if b2.len() else "n/a"
                 lines.append(f"| {clock} | {N} | {name} | {v.mean()*100:+.2f} | {v.median()*100:+.2f} | "
                              f"{m1} | {m2} | {(v>0).mean():.2f} | {v.len()} |")
-    (rep / "peak3_exits.md").write_text("\n".join(lines) + "\n")
-    print(f"peak3 rows={df.height} -> {rep/'peak2_exits.md'}")
+    (rep / "peak6_exits.md").write_text("\n".join(lines) + "\n")
+    print(f"peak6 rows={df.height} -> {rep/'peak6_exits.md'}")
     return 0
 
 
