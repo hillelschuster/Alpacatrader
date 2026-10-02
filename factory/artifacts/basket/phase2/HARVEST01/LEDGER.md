@@ -245,3 +245,26 @@ Still no positive absolute cell: the mechanism improves loss-cutting and capture
 it does not flip the basket. Engine note: an initial mgmt-lane run valued the combined
 rules through the re-entry chain (dispatch omission) giving -0.44; fixed, hand-verified
 (+0.378512 on 2021-02-01/510/2/ASM matches manual arithmetic), re-run full span.
+
+## 2026-10-02 (~08:45) — basket-level state allocation: the big step (peak lane)
+
+Unexplored object: rules acting on the BASKET's own mark path (equal slots, last close),
+not on members. The basket mark peaks early (median 09:43-09:50 for PM entries, mean peak
++12..+24% for the N=1..3 baskets) and fades; member-level rules never exploited that.
+Full span, 40,508 basket-days, 100 bps ruler, next-open execution:
+
+* hold is -6..-9% (510-569 clocks, N=2/3); the basket fade is the bleed.
+* `tp5_s5_t10_c720` (take +5% / market-stop -5% / trail 10% / flat by noon):
+  510/N2 -1.59, 540/N2 -1.55, 565/N2 -1.40, **569/N1 -0.51**, 569/N2 -0.76, 630/N1 -1.13.
+* best cell in the (tp, stop) grid: **569/N1 tp3_s6 = -0.29** (median +2.5, 46% days >0,
+  B1 -0.6 / B2 +0.0). Flat landscape: params shuffle the same mass.
+* histogram 569/N1 tp5_s5: TP cluster ~+4.6% (~260 days), stop cluster realized ~-6.5%
+  (~560 days; the market stop slips ~1.5pp past its -5% trigger on gappy microcaps),
+  caps ~0. Mean is a knife-edge of tails (best 8 days +22..+28%, worst 5 -20..-29%).
+* real friction check (SIP quotes, local audit set, 09:25+): quoted spreads on the PM
+  names at 09:29 are ~80-140 bps with inside size ~2% of a $10k order -> the 100 bps
+  round-trip ruler is REALISTIC, not pessimistic. Friction is not the lever.
+* next: resting stop-limit (trigger basket -5%, limit at breach price, fill on first
+  print >= limit) to recover the ~1.5pp stop slippage; entry conditioning on PM state
+  (decision_gain / price quintiles are weak, non-monotonic); tail preservation (half
+  scale-out at the take, let the rest run).
