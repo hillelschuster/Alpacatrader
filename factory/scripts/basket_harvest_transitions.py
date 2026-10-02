@@ -40,6 +40,8 @@ EVENTS = {
     "stall10": lambda d: (pl.col("bars_since_high") >= 10) & (pl.col("tenure") >= 5),
     "nohigh15": lambda d: (pl.col("nh15") == 0) & (pl.col("tenure") >= 15),
     "rankworse10": lambda d: (pl.col("drank5") >= 10),
+    "basket5": lambda d: (pl.col("basket_ret") <= -0.05),
+    "rank101": lambda d: (pl.col("rank_known") >= 101),
 }
 HORIZONS = (5, 15, 30, 60, 120)
 
@@ -73,6 +75,28 @@ def process_day(day: str, data_root: Path, event: str, se: int) -> list[dict]:
     fillmap = {(r["variant"], r["clock"], r["rank"], r["ticker"]):
                (int(r["fill_et"]), float(r["fill_px"])) for r in fills.iter_rows(named=True)}
     rows = []
+
+    def path_stats(tk: str, t_ev: int, fill_px: float) -> dict:
+        b = bars.get(tk)
+        if b is None:
+            return {}
+        ets = b["et"]
+        i = bisect.bisect_left(ets, t_ev)
+        if i >= len(ets):
+            return {}
+        entry_px = b["open"][i]
+        seg_h, seg_l, seg_c = b["high"][i:], b["low"][i:], b["close"][i:]
+        peak_pre = max(b["high"][:i]) if i > 0 else None
+        out = {"entry_exec_px": entry_px,
+               "fwd_mfe": max(seg_h) / entry_px - 1 if seg_h else None,
+               "fwd_mae": min(seg_l) / entry_px - 1 if seg_l else None,
+               "min_to_new_high": next((ets[i + j] - t_ev for j, hh in enumerate(seg_h)
+                                        if peak_pre is not None and hh > peak_pre), None),
+               "min_to_fill": next((ets[i + j] - t_ev for j, cc in enumerate(seg_c)
+                                    if cc >= fill_px), None),
+               "close_vs_fill": seg_c[-1] / fill_px - 1 if seg_c else None}
+        return out
+
     for (variant, clock, rank, ticker), grp in d.group_by(["variant", "clock", "rank", "ticker"]):
         g = grp.sort("t")
         ev = g.filter(pl.col("_ev"))
@@ -83,7 +107,6 @@ def process_day(day: str, data_root: Path, event: str, se: int) -> list[dict]:
         if fm is None:
             continue
         fill_et, fill_px = fm
-        b = bars.get(ticker)
         row = {"day": day, "variant": variant, "clock": int(clock), "rank": int(rank),
                "ticker": ticker, "event": event, "ev_t": int(e["t"]),
                "tenure_at_ev": int(e["tenure"]), "dist_high_at_ev": e["dist_high"],
@@ -91,27 +114,7 @@ def process_day(day: str, data_root: Path, event: str, se: int) -> list[dict]:
                "fill_et": fill_et, "fill_px": fill_px}
         for h in HORIZONS:
             row[f"v{h}"] = e[f"v{h}"]
-        if b is not None:
-            ets = b["et"]
-            i = bisect.bisect_left(ets, int(e["t"]))
-            if i < len(ets):
-                entry_px = b["open"][i]
-                seg_h = b["high"][i:]
-                seg_l = b["low"][i:]
-                seg_c = b["close"][i:]
-                peak_pre = max(b["high"][:i]) if i > 0 else None
-                row["entry_exec_px"] = entry_px
-                row["fwd_mfe"] = max(seg_h) / entry_px - 1 if seg_h else None
-                row["fwd_mae"] = min(seg_l) / entry_px - 1 if seg_l else None
-                # time to a new running high beyond the pre-event peak
-                nh = next((ets[i + j] - int(e["t"]) for j, hh in enumerate(seg_h)
-                           if peak_pre is not None and hh > peak_pre), None)
-                row["min_to_new_high"] = nh
-                # time back to fill
-                rc = next((ets[i + j] - int(e["t"]) for j, cc in enumerate(seg_c)
-                           if cc >= fill_px), None)
-                row["min_to_fill"] = rc
-                row["close_vs_fill"] = seg_c[-1] / fill_px - 1 if seg_c else None
+        row.update(path_stats(ticker, int(e["t"]), fill_px))
         rows.append(row)
         # matched control: another member of the same day+clock, tenure within +/-5 minutes,
         # not in the event state at that minute; fall back to the same member's non-event
@@ -136,10 +139,16 @@ def process_day(day: str, data_root: Path, event: str, se: int) -> list[dict]:
     return rows
 
 
+def _day_worker(a):
+    day, data_root, event, se = a
+    return process_day(day, Path(data_root), event, se)
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--event", default="deep20", choices=sorted(EVENTS))
     ap.add_argument("--limit", type=int, default=0)
+    ap.add_argument("--workers", type=int, default=1)
     ap.add_argument("--data-root", default=None)
     args = ap.parse_args()
     data_root = bps.resolve_data_root(args.data_root)
@@ -150,8 +159,15 @@ def main() -> int:
     if args.limit:
         days = days[:args.limit]
     rows = []
-    for day in days:
-        rows += process_day(day, data_root, args.event, int(cal[day]["session_end"]))
+    if args.workers > 1:
+        import multiprocessing as mp
+        tasks = [(d, str(data_root), args.event, int(cal[d]["session_end"])) for d in days]
+        with mp.get_context("spawn").Pool(processes=args.workers) as pool:
+            for res in pool.imap_unordered(_day_worker, tasks):
+                rows += res
+    else:
+        for day in days:
+            rows += process_day(day, data_root, args.event, int(cal[day]["session_end"]))
     df = pl.DataFrame(rows, infer_schema_length=None)
     out = rep / f"transitions_{args.event}.parquet"
     df.write_parquet(out)
@@ -166,15 +182,25 @@ def main() -> int:
         if s.height == 0:
             continue
 
-        def m(c):
-            v = s[c].drop_nulls()
+        def m(c, ss=None):
+            v = (ss if ss is not None else s)[c].drop_nulls()
             return f"{v.median()*100:.2f}" if v.len() else ""
 
         def mins(c):
             v = s[c].drop_nulls()
             return f"{v.median():.0f}" if v.len() else ""
+        b1 = s.filter(pl.col("day") <= "2023-12-31")
+        b2 = s.filter(pl.col("day") >= "2025-02-01")
         lines.append(f"| {name} | {s.height} | {m('v5')} | {m('v15')} | {m('v30')} | {m('v60')} | {m('v120')} | "
-                     f"{m('fwd_mfe')} | {m('fwd_mae')} | {mins('min_to_new_high')} | {mins('min_to_fill')} | {m('close_vs_fill')} |")
+                     f"{m('fwd_mfe')} | {m('fwd_mae')} | {mins('min_to_new_high')} | {mins('min_to_fill')} | "
+                     f"{m('close_vs_fill')} | {m('v30', b1)} | {m('v30', b2)} | {m('v120', b1)} | {m('v120', b2)} |")
+    lines.insert(len(lines) - 1, "")  # spacer before the note
+    hdr = ("| group | n | V5 | V15 | V30 | V60 | V120 | fwd MFE | fwd MAE | min to new high | min to fill | "
+           "close vs fill | V30 B1 | V30 B2 | V120 B1 | V120 B2 |")
+    for i, ln in enumerate(lines):
+        if ln.startswith("| group |"):
+            lines[i] = hdr
+            break
     lines.append("\nMedians in %; min-to-* in minutes. Controls = same clock, tenure ±5, no event in the "
                  "preceding 5 minutes. A state is only a candidate if the event/control gap is material "
                  "AND positive in both blocks; then and only then does it earn a rule test.\n")
