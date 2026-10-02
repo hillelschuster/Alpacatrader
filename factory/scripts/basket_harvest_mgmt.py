@@ -56,7 +56,7 @@ DEFAULTS = {
 }
 RULE_NAMES = ["hold", "gb10", "dmg_wait", "failrec_a3", "failrec_a5", "failrec_a8",
               "decay_v", "decay_nh", "tstop30", "gb10_half", "failrec_a5_half",
-              "reentry_gb10", "replace_gb10"]
+              "reentry_gb10", "replace_gb10", "gb10_wait5_fix", "dmg_wait_fix"]
 
 
 def load_bars_cols(path: Path) -> dict:
@@ -89,6 +89,11 @@ def eval_rules(bars: dict, fill_idx: int, fill_px: float, session_end: int, cfg:
     fr = {A: {"armed": False, "ep_low": None, "bounced": False, "anchor": None}
           for A in cfg["failrec_A"]}
     tst_start_et = None
+    # combined rules: standing trigger -> 5-minute wait -> if a -20% flush develops during
+    # the wait, defer the sale to the first +3% bounce off the panic low (cap flush+30);
+    # otherwise sell at the end of the wait.
+    pend = {"gb10_wait5_fix": None, "dmg_wait_fix": None}
+    fl_state = {"gb10_wait5_fix": None, "dmg_wait_fix": None}  # (flush_et, flush_low)
     for i in range(fill_idx, n):
         px_h, px_l, px_c = h[i], lo[i], c[i]
         if px_h >= peak:
@@ -98,6 +103,23 @@ def eval_rules(bars: dict, fill_idx: int, fill_px: float, session_end: int, cfg:
         if not res["gb10"]["fired"] and px_c <= peak * (1 - gb):
             res["gb10"]["fired"] = True
             res["gb10"]["fire_i"] = i
+        # combined: gb10 trigger -> wait -> flushfix
+        if not res["gb10_wait5_fix"]["fired"]:
+            st = fl_state["gb10_wait5_fix"]
+            if pend["gb10_wait5_fix"] is None:
+                if px_c <= peak * (1 - gb):
+                    pend["gb10_wait5_fix"] = ets[i]
+            elif st is not None:
+                f_et, f_low = st
+                if px_h >= f_low * 1.03 or ets[i] >= f_et + 30:
+                    res["gb10_wait5_fix"]["fired"] = True
+                    res["gb10_wait5_fix"]["fire_i"] = i
+            else:
+                if px_c <= peak * 0.80:
+                    fl_state["gb10_wait5_fix"] = (ets[i], min(lo[i:min(i + 3, n)]))
+                elif ets[i] >= pend["gb10_wait5_fix"] + 5:
+                    res["gb10_wait5_fix"]["fired"] = True
+                    res["gb10_wait5_fix"]["fire_i"] = i
         # dmg_wait: first close < fill*(1-dmg); if still below w minutes later -> fire (re-arms)
         if not res["dmg_wait"]["fired"]:
             if breach_et is None and px_c < fill_px * (1 - dmg):
@@ -108,6 +130,25 @@ def eval_rules(bars: dict, fill_idx: int, fill_px: float, session_end: int, cfg:
                     res["dmg_wait"]["fire_i"] = i
                 else:
                     breach_et = None
+        # combined: dmg_wait trigger -> wait -> flushfix
+        if not res["dmg_wait_fix"]["fired"]:
+            st = fl_state["dmg_wait_fix"]
+            if pend["dmg_wait_fix"] is None:
+                if breach_et is not None and ets[i] >= breach_et + cfg["dmg_wait_min"] \
+                        and px_c < fill_px * (1 - dmg):
+                    pend["dmg_wait_fix"] = ets[i]
+                    breach_et = None  # consumed by the combined rule
+            elif st is not None:
+                f_et, f_low = st
+                if px_h >= f_low * 1.03 or ets[i] >= f_et + 30:
+                    res["dmg_wait_fix"]["fired"] = True
+                    res["dmg_wait_fix"]["fire_i"] = i
+            else:
+                if px_c <= peak * 0.80:
+                    fl_state["dmg_wait_fix"] = (ets[i], min(lo[i:min(i + 3, n)]))
+                elif ets[i] >= pend["dmg_wait_fix"] + 5:
+                    res["dmg_wait_fix"]["fired"] = True
+                    res["dmg_wait_fix"]["fire_i"] = i
         # failrec: damage -> bounce >= A% off the episode low -> close below episode low
         for A, st in fr.items():
             name = f"failrec_a{int(A*100)}"
@@ -361,7 +402,8 @@ def process_day(day: str, data_root: Path, se: int, cfg: dict, force: bool) -> s
             for E in ends:
                 hv = hold_value(E, 0.005)
                 if rule in ("gb10", "dmg_wait", "failrec_a3", "failrec_a5", "failrec_a8",
-                            "decay_v", "decay_nh", "tstop30", "hold"):
+                            "decay_v", "decay_nh", "tstop30", "hold",
+                            "gb10_wait5_fix", "dmg_wait_fix"):
                     v = hv if rule == "hold" else value_sell(rule, E, 0.005)
                     v150 = (hold_value(E, 0.0075) if rule == "hold"
                             else value_sell(rule, E, 0.0075))
