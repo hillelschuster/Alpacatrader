@@ -92,9 +92,64 @@ def bin_exprs() -> list:
     ]
 
 
+def process_file(fp: Path):
+    d = (pl.read_parquet(fp, columns=["day", "variant", "clock", "rank", "ticker", "t",
+                                      "tenure", "dist_high", "ret_fill", "bars_since_high",
+                                      "nh15", "vol_accel", "rank_known", "drank5", "n_fresh2",
+                                      "sib_above_fill", "basket_ret"]
+                           + [f"v{h}" for h in HORIZONS]
+                           + ["fmfe120"]))
+    if d.height == 0:
+        return None
+    d = d.with_columns(bin_exprs()).with_columns(
+        pl.when(pl.col("day") <= "2023-12-31").then(pl.lit("B1"))
+          .when(pl.col("day") >= "2025-02-01").then(pl.lit("B2"))
+          .otherwise(pl.lit("X")).alias("block"))
+    occ_parts, mem_parts, bd_parts = [], [], []
+    for coord in COORDS:
+        long = d.select(["day", "variant", "clock", "rank", "ticker", coord, "block",
+                         "fmfe120"] + [f"v{h}" for h in HORIZONS]).unpivot(
+            index=["day", "variant", "clock", "rank", "ticker", coord, "block", "fmfe120"],
+            on=[f"v{h}" for h in HORIZONS], variable_name="vh", value_name="v")
+        long = long.with_columns(pl.col("vh").str.replace("v", "").cast(pl.Int32).alias("h"))
+        long = long.with_columns(pl.col(coord).alias("bin"))
+        occ = long.group_by(["bin", "h"]).agg([
+            pl.col("v").sum().alias("sum_v"), pl.col("v").count().alias("n"),
+            pl.col("v").median().alias("med"),
+            (pl.col("fmfe120") >= 0.30).mean().alias("p_ge30"),
+            (pl.col("fmfe120") >= 0.50).mean().alias("p_ge50"),
+            (pl.col("fmfe120") >= 1.00).mean().alias("p_ge100"),
+            pl.col("v").filter(pl.col("fmfe120") >= 1.0).mean().alias("v_given_ge100"),
+        ]).with_columns(pl.lit(coord).alias("coord"))
+        b1 = long.filter(pl.col("block") == "B1").group_by(["bin", "h"]).agg(
+            pl.col("v").mean().alias("m_b1")).with_columns(pl.lit(coord).alias("coord"))
+        b2 = long.filter(pl.col("block") == "B2").group_by(["bin", "h"]).agg(
+            pl.col("v").mean().alias("m_b2")).with_columns(pl.lit(coord).alias("coord"))
+        occ = occ.join(b1, on=["coord", "bin", "h"], how="left").join(
+            b2, on=["coord", "bin", "h"], how="left")
+        occ_parts.append(occ)
+        mem = long.group_by(["day", "variant", "clock", "rank", "ticker", "bin", "h"]).agg(
+            pl.col("v").mean().alias("mv")).group_by(["bin", "h"]).agg(
+            pl.col("mv").sum().alias("sum_mv"), pl.len().alias("n_members")).with_columns(
+            pl.lit(coord).alias("coord"))
+        mem_parts.append(mem)
+        bd = long.group_by(["day", "variant", "clock", "rank", "ticker", "bin", "h"]).agg(
+            pl.col("v").mean().alias("mv")).group_by(["day", "variant", "clock", "bin", "h"]).agg(
+            pl.col("mv").mean().alias("bv")).group_by(["bin", "h"]).agg(
+            pl.col("bv").sum().alias("sum_bv"), pl.len().alias("n_bd")).with_columns(
+            pl.lit(coord).alias("coord"))
+        bd_parts.append(bd)
+    return pl.concat(occ_parts), pl.concat(mem_parts), pl.concat(bd_parts)
+
+
+def _report_worker(fp: str):
+    return process_file(Path(fp))
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--limit", type=int, default=0)
+    ap.add_argument("--workers", type=int, default=1)
     ap.add_argument("--data-root", default=None)
     args = ap.parse_args()
     data_root = bps.resolve_data_root(args.data_root)
@@ -108,54 +163,23 @@ def main() -> int:
         return 1
 
     occ_parts, mem_parts, bd_parts = [], [], []
-    for fp in files:
-        d = (pl.read_parquet(fp, columns=["day", "variant", "clock", "rank", "ticker", "t",
-                                          "tenure", "dist_high", "ret_fill", "bars_since_high",
-                                          "nh15", "vol_accel", "rank_known", "drank5", "n_fresh2",
-                                          "sib_above_fill", "basket_ret"]
-                               + [f"v{h}" for h in HORIZONS]
-                               + ["fmfe120"]))
-        if d.height == 0:
-            continue
-        d = d.with_columns(bin_exprs()).with_columns(
-            pl.when(pl.col("day") <= "2023-12-31").then(pl.lit("B1"))
-              .when(pl.col("day") >= "2025-02-01").then(pl.lit("B2"))
-              .otherwise(pl.lit("X")).alias("block"))
-        for coord in COORDS:
-            long = d.select(["day", "variant", "clock", "rank", "ticker", coord, "block",
-                             "fmfe120"] + [f"v{h}" for h in HORIZONS]).unpivot(
-                index=["day", "variant", "clock", "rank", "ticker", coord, "block", "fmfe120"],
-                on=[f"v{h}" for h in HORIZONS], variable_name="vh", value_name="v")
-            long = long.with_columns(pl.col("vh").str.replace("v", "").cast(pl.Int32).alias("h"))
-            long = long.with_columns(pl.col(coord).alias("bin"))
-            occ = long.group_by(["bin", "h"]).agg([
-                pl.col("v").sum().alias("sum_v"), pl.col("v").count().alias("n"),
-                pl.col("v").median().alias("med"),
-                (pl.col("fmfe120") >= 0.30).mean().alias("p_ge30"),
-                (pl.col("fmfe120") >= 0.50).mean().alias("p_ge50"),
-                (pl.col("fmfe120") >= 1.00).mean().alias("p_ge100"),
-                pl.col("v").filter(pl.col("fmfe120") >= 1.0).mean().alias("v_given_ge100"),
-            ]).with_columns(pl.lit(coord).alias("coord"))
-            b1 = long.filter(pl.col("block") == "B1").group_by(["bin", "h"]).agg(
-                pl.col("v").mean().alias("m_b1")).with_columns(pl.lit(coord).alias("coord"))
-            b2 = long.filter(pl.col("block") == "B2").group_by(["bin", "h"]).agg(
-                pl.col("v").mean().alias("m_b2")).with_columns(pl.lit(coord).alias("coord"))
-            occ = occ.join(b1, on=["coord", "bin", "h"], how="left").join(
-                b2, on=["coord", "bin", "h"], how="left")
-            occ_parts.append(occ)
-            # member-balanced: per member-day first
-            mem = long.group_by(["day", "variant", "clock", "rank", "ticker", "bin", "h"]).agg(
-                pl.col("v").mean().alias("mv")).group_by(["bin", "h"]).agg(
-                pl.col("mv").sum().alias("sum_mv"), pl.len().alias("n_members")).with_columns(
-                pl.lit(coord).alias("coord"))
-            mem_parts.append(mem)
-            # basket-day: per member-day then per basket-day
-            bd = long.group_by(["day", "variant", "clock", "rank", "ticker", "bin", "h"]).agg(
-                pl.col("v").mean().alias("mv")).group_by(["day", "variant", "clock", "bin", "h"]).agg(
-                pl.col("mv").mean().alias("bv")).group_by(["bin", "h"]).agg(
-                pl.col("bv").sum().alias("sum_bv"), pl.len().alias("n_bd")).with_columns(
-                pl.lit(coord).alias("coord"))
-            bd_parts.append(bd)
+    if args.workers > 1:
+        import multiprocessing as mp
+        with mp.get_context("spawn").Pool(processes=args.workers) as pool:
+            for res in pool.imap_unordered(_report_worker, [str(f) for f in files]):
+                if res is None:
+                    continue
+                occ_parts.append(res[0])
+                mem_parts.append(res[1])
+                bd_parts.append(res[2])
+    else:
+        for fp in files:
+            res = process_file(fp)
+            if res is None:
+                continue
+            occ_parts.append(res[0])
+            mem_parts.append(res[1])
+            bd_parts.append(res[2])
 
     occ = pl.concat(occ_parts).group_by(["coord", "bin", "h"]).agg([
         pl.col("sum_v").sum(), pl.col("n").sum(), pl.col("med").mean(),
