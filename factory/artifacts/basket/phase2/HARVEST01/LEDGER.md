@@ -201,3 +201,26 @@ absolute across every engine: −0.46% (policies), −0.53% (basket capital), �
 bps; nothing at all at 150 bps. Commits: 10997c8 (readouts), a3c4eb8 (cadence grid),
 51ee2b9/ee525d3 (basket engine fixes), 1de982f (audit fixes), 8dff0ed..21ce548
 (synthesis/ledger). All pushed to origin/basket-phase2-f1.
+
+## 2026-10-02 (~07:20) — flush-timing test: sell into the bounce, not at the flush
+
+Paired executable exits from the same 84,435 flush episodes (every variant sells once;
+fees identical across variants → friction-free timing differences vs selling at the
+flush open):
+
+| exit choice | mean | B1 | B2 | median |
+|---|---|---|---|---|
+| hold 5 min then sell | +0.43% | +0.46 | +0.38 | +0.39 |
+| hold 15 min then sell | +0.23% | +0.32 | +0.10 | +0.16 |
+| hold 30 min then sell | −0.16% | −0.11 | −0.24 | −0.32 |
+| sell on +1% bounce off the panic low | +0.28% | +0.32 | +0.24 | +0.38 |
+| sell on +2% bounce | +0.39% | +0.44 | +0.33 | +0.65 |
+| **sell on +3% bounce** | **+0.51%** | +0.54 | +0.49 | +0.95 |
+| **sell on +5% bounce** | **+0.71%** | +0.65 | +0.79 | +1.35 |
+
+All positive in both blocks; +0.5–0.7% mean / +0.95–1.35% median advantage per flushed
+member over selling at the flush minute. The rule shape to test at basket level:
+**defer any release that would fire at the flush; sell into the first +3–5% bounce off
+the panic low (cap 30 min).** Open question for the rule test: interaction with the
+standing −10% release rules (which fire earlier than −20%) and with the giants (which
+flush rarely and recover strongly).
