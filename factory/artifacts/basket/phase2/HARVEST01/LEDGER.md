@@ -131,6 +131,35 @@ best absolute cells are: unmanaged −0.08% (09:29→09:31 scalp), member rules 
 Final lane numbers and the bottom line are in SYNTHESIS.md §4–6. Pass 2 (compact
 anchor variant, every lane forced) is running; push up to date.
 
+## 2026-10-02 (~06:00) — discovery phase: state-conditioned V(t) at minute grain
+
+Built: minute panel for every actual basket member (causal state each minute; executable
+V_h labels h=5..120; forward tail flags) across all 1,066 dev days (59M+ member-minutes);
+discovery readout (11 coordinates, declared bins, three weightings, B1/B2, tail ledger);
+transition-anatomy tool with cross-member matched controls; measured-friction pass
+(entry/exit print-vs-bar-open, participation, auction attribution) — all committed.
+
+Results so far:
+- **No state bin is positive in both blocks on the occupancy (member-minute) view at
+  h=30 or h=120** with n ≥ 300. The closest occupancy cells hover at ±0.1%.
+- A handful of member-balanced positives in both blocks, all growing with horizon and all
+  containing the continuing giants: `basket_ret ≤ −5%` (whole basket flushed together)
+  +0.24→+1.33% across h5→h120 (mean V120 among in-state +100% members: +88%);
+  `drank5 ≥ +10` (rank collapses 10+ places in 5 min) +0.49→+1.51%; `rank_known ≥ 101`
+  +0.49→+1.01%. Occupancy is negative for all three — the wedge again, so the decisive
+  question is the ENTRY transition (first minute in state) vs matched controls, which is
+  what the transition tool measures. Guardrails are diagnostics, not kill switches: a
+  formulation that fails matched controls gets refined (sub-bins, conjunctions, timing),
+  not discarded; a state is parked only when no refinement keeps it positive in both
+  blocks net of friction with its tail intact.
+- **Transition anatomy (deep-damage entry) does not support the wedge as stated**: the
+  matched control path is better at every horizon (V60 −1.72% vs −0.47%; V120 −3.42% vs
+  −1.03%) — the duration/selection confound the advisor warned about. Full-span anatomies
+  for basket5 / rank101 / rankworse10 / stall10 / nohigh15 running; those decide whether
+  the three member-balanced candidates survive as entry states.
+- The never-used market-state coordinates (rank level, rank trajectory, breadth,
+  peer/basket) did not produce a positive occupancy separator at this univariate level.
+
 ## 2026-10-02 (~04:15) — pass 2 CLOSED; night complete
 
 Pass 2 (every lane forced, all four selection variants) finished exit 0; the assembled
