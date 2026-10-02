@@ -130,3 +130,19 @@ best absolute cells are: unmanaged −0.08% (09:29→09:31 scalp), member rules 
 (dmg_wait 11:00→12:00 N=1), policies −0.80% (same family), basket capital −0.53%.
 Final lane numbers and the bottom line are in SYNTHESIS.md §4–6. Pass 2 (compact
 anchor variant, every lane forced) is running; push up to date.
+
+## 2026-10-02 (~04:15) — pass 2 CLOSED; night complete
+
+Pass 2 (every lane forced, all four selection variants) finished exit 0; the assembled
+REPORT.md and all readouts are committed under
+`factory/artifacts/basket/phase2/HARVEST01/readouts/`. Anchor robustness: the
+compact-anchored selection is a little less bad at several cells (e.g. 11:00→12:00
+N=3: −1.06% vs primary −1.66%; 10:00→11:00: −1.63% vs −2.68%) and never positive —
+the conclusion does not depend on the anchor. Final cadence probe: stall10 is the
+best pooled delta of the night (+2.18 pp vs gb10 +1.71 pp) but fires on 99.9% of
+giants and its best absolute cell is −0.46% (nohigh10d0, 11:00→12:00, N=1). Best
+absolute across every engine: −0.46% (policies), −0.53% (basket capital), −0.74%
+(member rules), −0.08% (unmanaged 09:29→09:31 scalp). Nothing crosses zero at 100
+bps; nothing at all at 150 bps. Commits: 10997c8 (readouts), a3c4eb8 (cadence grid),
+51ee2b9/ee525d3 (basket engine fixes), 1de982f (audit fixes), 8dff0ed..21ce548
+(synthesis/ledger). All pushed to origin/basket-phase2-f1.
