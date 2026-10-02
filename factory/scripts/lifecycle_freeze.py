@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SUPERSEDED 2026-10-02 (owner reanchor): do not freeze or validate the
+# old-framing policy pipeline. See researches/LIFECYCLE-REANCHOR.md.
 """Freeze the entire lifecycle feature/model/action pipeline before second-half outcomes.
 
 The lock binds code, models, action specs, chronological split and constructed input
