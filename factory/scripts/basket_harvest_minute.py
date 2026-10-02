@@ -159,7 +159,6 @@ def process_day(day: str, data_root: Path, se: int, force: bool, variants: tuple
                 series[m["ticker"]] = s
         if not series:
             continue
-        N = len(members)
         for m in members:
             s = series.get(m["ticker"])
             if not s:
@@ -169,7 +168,6 @@ def process_day(day: str, data_root: Path, se: int, force: bool, variants: tuple
             b = bars[tk]
             ets = b["et"]
             fill_et = int(m["fill_et"])
-            fill_px = float(m["fill_px"])
             for i, t in enumerate(s["t"]):
                 r = rr.get(t)
                 row = {"day": day, "variant": variant, "clock": int(clock), "rank": int(m["rank"]),
