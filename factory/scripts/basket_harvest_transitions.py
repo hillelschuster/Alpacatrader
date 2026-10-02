@@ -64,7 +64,8 @@ def process_day(day: str, data_root: Path, event: str, se: int) -> list[dict]:
         return []
     d = pl.read_parquet(fp, columns=["variant", "clock", "rank", "ticker", "t", "tenure",
                                      "dist_high", "ret_fill", "bars_since_high", "nh15", "drank5",
-                                     "rank_known"] + [f"v{h}" for h in HORIZONS] + ["fmfe120"])
+                                     "rank_known", "basket_ret", "n_fresh2", "sib_above_fill"]
+                           + [f"v{h}" for h in HORIZONS] + ["fmfe120"])
     if d.height == 0:
         return []
     pred = EVENTS[event](d)
