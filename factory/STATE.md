@@ -2751,3 +2751,21 @@ Substrate built and validated this cycle (contract `factory/artifacts/basket/pha
 - Handling engines: `basket_harvest_mgmt.py` (12 causal member rules incl. failed-recovery, damage+participation-decay, time-stop, partial, re-entry, replacement), `basket_harvest_policies.py` (36-policy grid), `basket_harvest_basket.py` (release→cash/equal survivors/best survivor/market leader + 1/3-reserve scale-in: strength/time/dip-buy; base_hold reproduces sim ret_100 exactly, max diff 4.4e-16), `basket_harvest_window.py` (birds-eye: peak ET, capture ratios, per-member top-out).
 - Ops fixes: multiprocessing pools switched to `spawn` (fork+polars deadlock diagnosed via futex_wasait on hung workers); workers read the splits frame with its `factor` column.
 Full-grid numbers are pending the gated chain (PM repair → selection → leaders → bars → sim → readouts → containment → mgmt → policies → basket → window → sub-minute probe → assembled REPORT.md). Canary-only textures (NOT conclusions): release-to-cash and dip-buys looked least-bad; redeployment into survivors/leader worst; re-entry/rotation underperform plain sell; basket peaks clustered 10:00–11:00 on the sample days. No promoted claim; no reserved-month use.
+
+## 2026-10-02 — HARVEST01 discovery: basket-mark bracket is a friction-determined coin flip
+
+New lane: rules on the BASKET's own mark path (equal slots, last close) instead of member
+rules. Best causal strategy found: buy the funnel's rank-1 PM gainer at the 09:29 print,
+take +3-4% (basket mark), market-stop -6%, flat by noon (`tp3_s6_t10_c720`).
+
+* Hold bleeds -7.5%/day; the bracket realizes -0.29 (100 bps round trip) / +0.12 (measured
+  ~50 bps round trip) at 569/N1, n=1066. Gross ~+0.7-0.8%/day; friction decides the sign.
+* Exit decomposition (569/N1): tp 52% x +5.88 realized, stop 39% x -8.32, cap 8% x -1.15.
+* Dead in this lane: stop-limits (no-fill risk), flush-bounce release of the basket,
+  scale-out ladders (fade beats tail), pop/dvol re-ranking of the roster, day-volume
+  allocators, stop arming delays.
+* Regime split (100 bps): 2021 -0.80, 2022 -0.24, 2023 -0.82, 2025 +0.02, 2026 +1.39;
+  filters on the true news gap (decision_gain >= 150%) give +0.42 overall but B1 -0.40 /
+  B2 +1.17 -> no cell positive in both blocks at the conservative ruler.
+* Friction measured: rank-1 fills print at the ask; quoted spread median ~50 bps (rank1),
+  77-83 (rank2/3); inside size $27-126 for a $10k order; 09:30 auction = 09:29 print.
