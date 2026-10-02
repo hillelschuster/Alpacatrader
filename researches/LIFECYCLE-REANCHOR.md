@@ -1,0 +1,147 @@
+# LIFECYCLE-REANCHOR — the research statement (2026-10-02, owner-directed reset)
+
+This replaces the framing that produced the first LIFECYCLE-01 policy pipeline. The
+measurements stay; the mental model, the objective and the architecture are restated here
+and everything downstream is rebuilt from this text.
+
+## 1. The actual inefficiency
+
+At an early causal moment, **the actual top gainers contain a wildly disproportionate share
+of the day's future extreme winners.** On the corrected discovery half (533 days, clocks
+09:00/09:20/09:29/09:31, fixed top-5, same gain anchor): 42–47 members per clock reach
+MFE ≥ +100% and their **mean executable captured return is +109% to +119%** (day-block CI
++95%..+141%). That is the asset: an early, cheap claim on a fat tail that exists on roughly
+8–9% of days. Nothing about the average member is the inefficiency — the option on the tail is.
+
+## 2. Why the early basket exists
+
+Because at T we **cannot** tell which horse wins. Measured: monsters appear at ranks 1–5 —
+rank-4 members on the discovery half include AUVI (+152% captured), NRSN (+208%), KALA (+91%),
+VGFC (+70%), GRNV (+37%). The top-5 is therefore not "five picks"; it is an **optionality
+portfolio of competing claims**, and the uncertainty is exactly what gives the basket value.
+Corollary: any ownership architecture (how many names may hold capital simultaneously, with
+what weights, with what rotation) is a **discovery target to be proven economically**, not a
+constraint inherited from a simulator default. The earlier `max_holdings=3` and "top-3
+primary" are hypotheses, not truths.
+
+## 3. Why unconditional hold is nearly antithetical to the strategy
+
+The phenomenon is a **finite window of strength**: catalyst → climb → climax → relaxation.
+Measured on the discovery half, the continuation ruler is negative beyond ~3 minutes at every
+clock (−0.3% at 30 min, −0.5% at 60 min, −0.8/−0.9% at 120 min; occupancy and member-balanced
+agree), and the median member closes −6% to −7% from the entry. The afternoon fade is the
+**death of the phenomenon**, not evidence about the morning. Therefore:
+
+* "Hold" is a **ruler / counterfactual**, never the strategy. It exists to price the window
+  and to isolate what a release/re-entry action adds.
+* "Is continuation positive for 60 minutes?" is a **local measurement**, not the objective.
+* A fixed evaluation endpoint (noon, 13:00, close) must never silently define the economics.
+  Exit timing is part of the policy, and the window is the natural value horizon.
+
+## 4. What "personality / lifecycle" means
+
+Each member has a **latent character expressed through many changing observables**, not a
+single flag. The vocabulary we measure: gain level and acceleration; rank and rank velocity;
+relative strength versus peers and versus the emerging field; new-high cadence and failed
+pushes; recovery elasticity after damage; drawdown geometry; time spent above entry / below
+entry / away from the high; volume and dollar-volume acceleration; print activity, intensity
+and inter-arrival structure; liquidity and spread where the tape is trustworthy; breadth;
+sibling behavior; leadership changes; premarket personality; opening reaction; and the
+**state transitions** between all of these. "Exhaustion" is not `no new high in 10 min`;
+"healthy" is not `drawdown < X`. These are latent personalities, and the **route** — how the
+character evolves minute by minute — is the object of study. That is where sequence models,
+trajectory retrieval and latent-state clustering may earn their place; not as winner-pickers.
+
+## 5. How capital should dynamically follow evidence
+
+The decision at every minute is: **where should the next dollar of capital be?** Candidates
+are: this leader; another basket member; an emerging outsider; a partially realized position;
+full cash; a resurrecting former leader. The answer may change minute by minute. Some days
+justify 0 names, some 1, some 2, some 3, possibly more; a monster may deserve increasing
+capital; a deteriorating rank-1 may deserve zero. The objective is the **highest realistic
+executable EV of capital through the top-gainer window**, with two explicit obligations:
+**preserve the actual right tail**, and **measure the dud tax** — every action is judged by
+what it does to both. Classification accuracy, "winners identified", and benchmark deltas are
+not objectives.
+
+## 6. What the existing evidence genuinely teaches us (discovery half, corrected substrate)
+
+* **Tail**: 42–47 monsters per clock over 533 days; E[captured | monster] +109..+119%;
+  duds are 50–55% of members at −11..−13%. The tail is the only thing that can pay for the tax.
+* **Route**: the median monster is already +3.4% at 09:31 and +24.6% at 10:01, plateaus
+  +40..+66% through 10:20–11:20, takes a second leg into midday, peaks ~14:40 and closes +92%;
+  its drawdown from the high stays −10..−18% throughout. The median runner: +0.8% at 09:31,
+  +10.4% at 10:01, peak +35% around 11:31. The median dud: −10.8% captured, −19% max drawdown.
+* **Separation**: a future +30% leg is separated by a *combination* — recovery-from-low
+  (AUC 0.865), race gain (0.839), rank inverse (0.220), recent return (0.752), peak gain
+  (0.753), print intensity (0.70) — while single-threshold flags have failed repeatedly in
+  this project. The information exists; the naive rule shapes do not capture it.
+* **State-conditioned value** (first-visit states, 533 days): the only positive personalities
+  are **deep drawdown still actively repairing on expanding flow** (+0.44%/+0.57% at 30/60 min,
+  112 independent days, P(+30% within 60 min) = 22.5%) and **shallow pullback with a fresh
+  high** (+0.18–0.20% at 30 min, 500+ days). Everything else is negative. At a −15% drawdown
+  event, the level relative to entry separates healthy from terminal *immediately* (+2.2% vs
+  −3.2% at the event) and the gap widens to +17.8% vs −5.9% thirty minutes later.
+* **Chronological ML**: rank-IC 0.043 (price-only) / 0.050 (race+volume+peers) / **0.078**
+  (tape with spread and quote microstructure, on matched coverage) — weak, real, and the tape
+  adds the most.
+* **Friction**: measured spreads on the roster at entry are ~50–80 bps (rank 1–3) with round
+  trips near 100 bps; the conditional edges above are the same order of magnitude. Therefore
+  the policy must be brutally selective, and the tail must be preserved — harvesting the tail
+  early is how every previous formulation destroyed its own economics.
+
+## 7. Machinery that serves this objective (keep)
+
+* **Corrected causal substrate** (`lifecycle/v2`): fixed top-5 at 09:00/09:20/09:29/09:31,
+  minute state strictly completed-bar, executable next-open labels, UNKNOWN semantics,
+  8.49M member-minutes, split locked 533/533 — the measurement foundation.
+* **Tape layer**: 1-minute and genuine 5/10-second activity with explicit availability times,
+  round-lot units resolved, coverage stated per symbol-day — the microstructure ground truth.
+* **Behavior anatomy**: route by descriptor, separation timeline, pullback health,
+  event-aligned healthy/terminal curves, strongest-path name/day evidence.
+* **Replay engine**: cash/share conservation, delayed fills, partials, missing = UNKNOWN,
+  explicit fees — re-purposed as a general capital-allocation simulator.
+* **Leg/continuation maps**: state → continuation and tail probabilities — rulers.
+* **Audits**: money-conservation and causal-leakage reviews — the invariant set.
+
+## 8. Artifacts of the old framing (discard or redesign)
+
+* **"Hold EV" as the central question** → replaced by "next-dollar allocation across the full
+  action set", with hold retained only as a counterfactual.
+* **Mechanical `max_holdings=3` and "top-3 primary"** → ownership architecture (count,
+  identity, weights, rotation, re-entry) becomes a discovery dimension to be *proven*.
+* **Fixed endpoints as evaluation horizons** → exit timing is part of the policy; the window is
+  the value horizon and the fade is modeled explicitly as the phenomenon's death.
+* **The state-table + LightGBM EV pipeline as the driver** → demoted to *instruments* that
+  estimate the evolving personality; the strategy is the allocation policy over personalities.
+* **"One winner per day" / a frozen roster as the strategy** → the roster is the entry set; the
+  evolving opportunity set may include emerging outsiders and resurrected former leaders.
+* **Any policy run, freeze, or second-half evaluation built on the old framing** → cancelled;
+  the second half is spent once, on a mature thesis only.
+
+## The redesigned discovery program (first 533 days only)
+
+1. **Personality trajectories (A)**: for every member, build the minute-by-minute personality
+   vector plus route history (trailing 5/15/30-minute trajectory features), grouped by eventual
+   route type — monster, sustained runner, second-leg runner, transient spike, recoverable
+   flush, fake recovery, exhausted leader, slow death, immediate dud, resurrection. Deliverable:
+   for each route type, the **time-resolved separability curve** (when does it become
+   distinguishable from causal state, and by which combination), not a single threshold.
+2. **Next-dollar map (B)**: at each minute and each personality state, the marginal value of a
+   dollar in each candidate destination — this name, a sibling, an emerging outsider, cash —
+   including re-entry after release. Cross-name comparison (relative strength, leadership
+   rotation) is first-class.
+3. **Ownership architecture search (C)**: slot count, weights, release triggers, rotation,
+   re-entry, and window exit as search dimensions, evaluated with the replay engine at measured
+   friction; every candidate judged on executable EV, tail preservation, and dud tax together.
+4. **Freeze and test once (D)**: only after A–C produce an architecture worth the clean half.
+
+## Status of the superseded pipeline (cancelled, not deleted)
+
+* `lifecycle_policy.py` discovery selection, `lifecycle_freeze.py` freeze, and the
+  second-half validation path are **cancelled under the old framing**. The files stay on disk
+  as evidence and will be redesigned (the replay/accounting parts survive; the "hold-EV
+  driver" and the fixed 3-slot architecture do not).
+* No freeze exists, no second-half outcome has been read, and no policy number is a result.
+* Kept as rulers: the behavior anatomy, the leg/continuation maps, the chronological model
+  rank-ICs, the measured friction, the strongest-path name/day evidence, and the audits.
