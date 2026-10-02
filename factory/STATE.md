@@ -2769,3 +2769,60 @@ take +3-4% (basket mark), market-stop -6%, flat by noon (`tp3_s6_t10_c720`).
   B2 +1.17 -> no cell positive in both blocks at the conservative ruler.
 * Friction measured: rank-1 fills print at the ask; quoted spread median ~50 bps (rank1),
   77-83 (rank2/3); inside size $27-126 for a $10k order; 09:30 auction = 09:29 print.
+
+## 2026-10-02 — LIFECYCLE-01 causal rebuild + owner framing correction (window, not hold)
+
+Owner asks behavior-first PM/near-open top-gainer life cycles, then a frozen chronological
+evaluation. Corrected corpus: `data/harvest01/lifecycle/v2`, clocks 09:00/09:20/09:29/09:31,
+fixed top-5; top-3 economic primary, ranks4-5 comparisons (rank-4 produced monsters too:
+AUVI +152%, NRSN +208%, KALA +91% captured on the discovery half). Split locked: 533
+discovery days 2021-02-01..2023-03-14, then 533 evaluation days 2023-03-15..2026-05-29;
+2024/2025-01/2026-06..08 excluded. Panel 8,490,400 rows; tape (1-min + 5/10s) complete
+for 1,066 days; quotes/sizes are round lots x100 before 2025-11-03.
+
+The first lifecycle builder and its readouts are quarantined (wrong selection anchors,
+clean-bar dropouts, repeated stale volume, later PM summaries in early states, mis-signed
+drawdown, same-open observations, incomplete-horizon labels). Corrected producer
+`lifecycle_build.py` v2.7 SHA `30c32bb2...`; tape `lifecycle_tape.py` 2.0.1 SHA `b839de39...`.
+
+Discovery-half behavior map (533 days, corrected): monsters ~42-47 per clock at
+09:00..09:31 (E[captured|monster] +109..+119%), duds ~50-55% of names (-11..-13%).
+Continuation rulers are NEGATIVE beyond ~3 minutes at every clock (-0.3% at 30m, -0.5% at
+60m, -0.8/-0.9% at 120m; occupancy = member-balanced). The positive cells are states, not
+exposure: deep drawdown still actively repairing on expanding flow (+0.44/+0.57% at 30/60m,
+112 days, P(+30% within 60m)=22.5%), and shallow pullback with a fresh high (+0.18-0.20% at
+30m, 500+ days). Separation for a FUTURE +30% leg: recovery_from_low AUC 0.865, race_gain
+0.839, rank inverse 0.220; chronological LightGBM rank-IC 0.043 price / 0.050 full /
+0.078 tape (matched coverage).
+
+**Owner framing correction (applied in code and readouts):** unconditional holding of top
+gainers is a RULER, never a strategy; a session-long hold nearly contradicts the thesis.
+The asset is the early-session WINDOW; the close is the opposite side of the phenomenon.
+Action space is RELEASE / RETAIN-while-the-window-pays / RE-ENTER / CASH. All unconditional
+baselines are labelled `benchmark_unconditional_hold*`; leg-map column is `continuation_ev`.
+No second-half outcome evaluation until the full pipeline freeze; no profitable claim yet.
+
+## 2026-10-02 (later) — LIFECYCLE-01 REANCHORED by owner; old policy pipeline cancelled
+
+Owner reset the mental model (full text: `researches/LIFECYCLE-REANCHOR.md`, commit 87c205e).
+The inefficiency is the early **option on the day's extreme winners**, not the average
+member. The top-5 is an **optionality portfolio of competing claims** (rank-4 monsters are
+real: AUVI +152%, NRSN +208%, KALA +91% captured). Unconditional hold is a **ruler, never a
+strategy**; a session-long hold nearly contradicts the thesis; the asset is a finite
+**window**. The decision object is **"where does the next dollar go right now"** across this
+name / a sibling / an emerging outsider / partial cash / full cash / a resurrection — and
+the objective is executable EV through the window with the **tail preserved** and the **dud
+tax measured**. Ownership architecture (slots, weights, release, rotation, re-entry, window
+exit) is a **discovery target to be proven**, not a simulator default.
+
+Cancelled under the old framing: the `lifecycle_policy` discovery selection, the freeze, and
+any second-half evaluation (no freeze exists; no second-half outcome has been read; no policy
+number is a result). Kept: the corrected causal substrate, the tape layer, the behavior
+anatomy, the leg/continuation rulers, the chronological model rank-ICs, measured friction,
+strongest-path evidence, and the money/causal audits.
+
+Redesigned discovery (first 533 days only): (A) per-member **personality trajectories** with
+route types and **time-resolved separability** curves — when, and through which combination,
+routes become distinguishable; (B) a **next-dollar map** including siblings, outsiders and
+re-entry; (C) **ownership-architecture search** judged on EV + tail preservation + dud tax at
+measured friction; (D) freeze and spend the clean half once.
