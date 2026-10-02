@@ -83,3 +83,16 @@ fwd_MFE ≥ 30/50/100% indicators. UNKNOWN (no executable print) stays null, nev
 - The whole discovery is dead if no bin yields positive V_h in both blocks at any h with n ≥ 300
   and non-collapsed tails — that would say: on this roster, minute-conditioned continuation is
   uniformly ≤ cash, and the money question moves elsewhere (execution/order-level).
+
+## Advisor guardrails (binding, added 2026-10-02)
+
+1. **Do not promote the early "deep-damage positive per member" wedge.** It can easily be a
+   duration/selection-weighting artifact rather than a tradable separator: member-minutes in a
+   bin are not independent, and the members passing through deep damage are a selected set. Any
+   wedge-shaped finding must survive matched comparisons (same clock, tenure, and prior-state)
+   and a duration decomposition before it is even called a candidate.
+2. **h = 5/15/30/60/120 are rulers, not truths.** If a state looks valuable, the next step is its
+   **path/transition anatomy** — what actually happens minute-by-minute after a member enters the
+   state (P(new high), forward return profile, drawdown, death), and what the exit looks like —
+   before any rule is derived from it. A state becomes a rule only after its transition anatomy
+   is understood and its dollars are positive in both blocks.
