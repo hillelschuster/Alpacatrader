@@ -113,12 +113,18 @@ def process_day(day: str, data_root: Path, event: str, se: int) -> list[dict]:
                 row["min_to_fill"] = rc
                 row["close_vs_fill"] = seg_c[-1] / fill_px - 1 if seg_c else None
         rows.append(row)
-        # matched control: same clock + tenure bucket, no event in a +/- 5 min window
-        lo = int(e["t"]) - 5
-        ctrl = g.filter((~pl.col("_ev")) & (pl.col("tenure").is_between(
-            max(0, int(e["tenure"]) - 5), int(e["tenure"]) + 5)) & (pl.col("t") < lo))
+        # matched control: another member of the same day+clock, tenure within +/-5 minutes,
+        # not in the event state at that minute; fall back to the same member's non-event
+        # minutes (closest tenure). Cross-member first: member identity is what the
+        # matched comparison must control for.
+        t0 = int(e["tenure"])
+        others = d.filter((pl.col("clock") == clock) & (pl.col("ticker") != ticker))
+        ctrl = others.filter((~pl.col("_ev")) & (pl.col("tenure").is_between(t0 - 5, t0 + 5)))
+        if ctrl.height == 0:
+            ctrl = g.filter(~pl.col("_ev"))
         if ctrl.height:
-            c = ctrl.row(ctrl.height - 1, named=True)
+            c = (ctrl.with_columns((pl.col("tenure") - t0).abs().alias("_d"))
+                 .sort("_d").row(0, named=True))
             crow = {"day": day, "variant": variant, "clock": int(clock), "rank": int(rank),
                     "ticker": ticker, "event": event + "_control", "ev_t": int(c["t"]),
                     "tenure_at_ev": int(c["tenure"]), "dist_high_at_ev": c["dist_high"],
@@ -159,11 +165,16 @@ def main() -> int:
     for name, s in (("event", ev), ("control", ct)):
         if s.height == 0:
             continue
+
         def m(c):
             v = s[c].drop_nulls()
             return f"{v.median()*100:.2f}" if v.len() else ""
+
+        def mins(c):
+            v = s[c].drop_nulls()
+            return f"{v.median():.0f}" if v.len() else ""
         lines.append(f"| {name} | {s.height} | {m('v5')} | {m('v15')} | {m('v30')} | {m('v60')} | {m('v120')} | "
-                     f"{m('fwd_mfe')} | {m('fwd_mae')} | {m('min_to_new_high')} | {m('min_to_fill')} | {m('close_vs_fill')} |")
+                     f"{m('fwd_mfe')} | {m('fwd_mae')} | {mins('min_to_new_high')} | {mins('min_to_fill')} | {m('close_vs_fill')} |")
     lines.append("\nMedians in %; min-to-* in minutes. Controls = same clock, tenure ±5, no event in the "
                  "preceding 5 minutes. A state is only a candidate if the event/control gap is material "
                  "AND positive in both blocks; then and only then does it earn a rule test.\n")
