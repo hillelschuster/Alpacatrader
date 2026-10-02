@@ -81,7 +81,7 @@ def simulate(members, bars, leaders, se, clock):
                 cash += sum(p[2] for p in ps) * px * (1 - side)
                 positions[tk] = []
             else:
-                cash -= shares
+                cash -= shares * px * (1 + side)
                 positions.setdefault(tk, []).append([et, px, shares])
         tot = cash
         for t, ps in positions.items():
