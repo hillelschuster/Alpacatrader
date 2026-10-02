@@ -160,7 +160,33 @@ Results so far:
 - The never-used market-state coordinates (rank level, rank trajectory, breadth,
   peer/basket) did not produce a positive occupancy separator at this univariate level.
 
-## 2026-10-02 (~04:15) — pass 2 CLOSED; night complete
+## 2026-10-02 (~07:00) — FIRST MECHANISM CANDIDATE: the flush bounce (deep20 entry)
+
+Transition anatomy, full dev span, cross-member matched controls (same clock, tenure ±5,
+not in state): **first touch of −20% from the running high (n=84,435 episodes)**.
+
+| horizon | event mean | B1 | B2 | control | gap |
+|---|---|---|---|---|---|
+| h5 | **+0.43%** | +0.46 | +0.38 | −0.25% | +0.67 |
+| h15 | **+0.23%** | +0.32 | +0.10 | −0.48% | +0.70 |
+| h30 | −0.16% | −0.11 | −0.24 | −0.84% | +0.68 |
+| h60 | −0.37% | −0.33 | −0.43 | −1.12% | +0.75 |
+| h120 | −1.18% | −0.98 | −1.43 | −1.61% | +0.43 |
+
+- Positive absolute value at h5/h15 in BOTH blocks; gaps positive at every horizon.
+- Splits: strongest when flushed from the high but still above fill (h5/h15 = +0.63/+0.66,
+  n=20,476) and in all time-of-day buckets (<10:00 +0.50/+0.06; 10–11 +0.43/+0.39;
+  after 11:00 +0.38/+0.20); below-fill-by-20% names bounce +0.52/+0.29 (n=9,241).
+- Fades negative by h30–h120 — the bounce is a WINDOW, not a hold.
+- This is a HOLD-TIMING edge (sell-now vs hold 5–15 min: zero incremental friction) and
+  it inverts the tested release rules, which sold exactly at the flush minute.
+- `rank101` (fell out of top-100): positive only in B1 (B2 negative) — parked, not
+  both-block. `basket_ret ≤ −5%` / `drank5` / stall / nohigh anatomies: finishing.
+- NEXT: the flush-timing rule test — defer a release after a fresh −20% flush; sell into
+  the bounce (e.g., +X% off the flush low or after 15 min) vs the standing rules, basket-day
+  dollars at 720/close, both blocks, friction unchanged (one sale either way).
+
+
 
 Pass 2 (every lane forced, all four selection variants) finished exit 0; the assembled
 REPORT.md and all readouts are committed under
