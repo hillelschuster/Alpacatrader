@@ -59,6 +59,12 @@ def build_grid() -> list[dict]:
         add(f"decay_r{int(r*100)}_100", {"type": "decay", "D": 0.10, "r": r}, 1.0)
     add("nohigh20d10_100", {"type": "nohigh", "T": 20, "D": 0.10}, 1.0)
     add("tstop10_30_5_100", {"type": "tstop", "L": 0.10, "T": 30, "Lr": 0.05}, 1.0)
+    # pure cadence family: release when the member stops printing running highs
+    # (stall = no new high in T completed bars, no price condition;
+    #  nohigh*d0 = same but requiring the close at/below the fill price)
+    for T in (10, 15, 30):
+        add(f"stall{T}_100", {"type": "stall", "T": T}, 1.0)
+        add(f"nohigh{T}d0_100", {"type": "nohigh", "T": T, "D": 0.0}, 1.0)
     for H in (0.30, 0.50, 1.00):
         add(f"touch{int(H*100)}_33", {"type": "touch", "H": H}, 1 / 3)
     add("touch50g10_100", {"type": "touch_gb", "H": 0.50, "g": 0.10}, 1.0)
@@ -155,6 +161,17 @@ def trigger_fire(trig: dict, b: dict, fi: int, fill_px: float) -> int:
             ts[j] = j - last
         cond = (ts >= trig["T"]) & (cs <= fill_px * (1 - trig["D"]))
         j = first_true(cond)
+        return fi + j if j >= 0 else -1
+    if t == "stall":
+        last = 0
+        ts = np.zeros(n, dtype=np.int64)
+        peak = -1.0
+        for j in range(n):
+            if hs[j] >= peak:
+                peak = hs[j]
+                last = j
+            ts[j] = j - last
+        j = first_true(ts >= trig["T"])
         return fi + j if j >= 0 else -1
     if t == "tstop":
         start = -1
