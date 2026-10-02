@@ -52,6 +52,14 @@ rule at every endpoint (+4.0 pp at the close). Best absolute combination anywher
 the grid: 11:00 → 12:00, N=1, damage+wait = −0.80% (member rules: −0.74%).
 Everything else ≤ −0.85%. The increments are real and block-stable; they are not
 enough to reach zero.
+The final cadence probe (added after the anatomy showed giants print a new high every
+~2 min while duds print ~3 in two hours) makes the pure-stall rule the best pooled
+delta of the whole night — stall10 ("no new high in 10 completed bars") +2.18 pp,
+beating gb10's +1.71 pp — but it fires on 99.9% of giants just like gb10 (giants stall
+during their pullbacks), and its best absolute cell is still −0.46% (nohigh10d0:
+"stalled AND at/below fill", 11:00→12:00, N=1). Cadence alone is not a separator at
+release time; the giant-preserving exceptions remain tstop30 (fires on 10.1% of
+giants) and the reclaim-conditioned variants.
 
 ## 4. What deserves the next serious confirmation
 
