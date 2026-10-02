@@ -224,3 +224,24 @@ member over selling at the flush minute. The rule shape to test at basket level:
 the panic low (cap 30 min).** Open question for the rule test: interaction with the
 standing −10% release rules (which fire earlier than −20%) and with the giants (which
 flush rarely and recover strongly).
+
+## 2026-10-02 (~08:15) — combined rule confirmed: gb10 + flush-bounce (best rule of the project)
+
+`gb10_wait5_fix` = gb10 trigger -> wait 5 minutes -> if a -20% flush develops during the
+wait, sell into the first +3% bounce off the panic low (cap flush+30); else sell at the
+wait's end. Basket-day deltas vs hold (primary, N=3, pooled over clocks, both blocks):
+
+| rule | 660 | 720 | close |
+|---|---|---|---|
+| **gb10_wait5_fix** | **+1.77 (t=24.9)** | **+1.91 (t=22.6)** | **+4.17 (t=36.5)** |
+| gb10 | +1.58 (t=21.0) | +1.71 | +3.96 |
+| dmg_wait_fix | +0.66 | +0.74 | +1.96 |
+| dmg_wait | +0.63 | +0.58 | +1.89 |
+
+The flush-bounce timing stacks ~+0.2 pp onto the giveback ruler at every endpoint with
+very high t. Best ABSOLUTE cells after the fix: -0.79% (11:00->12:00, N=1, dmg_wait_fix),
+-1.20% (08:30->close, N=1, gb10_wait5_fix, was -1.40 for gb10), -1.22% (08:30->11:00, N=1).
+Still no positive absolute cell: the mechanism improves loss-cutting and capture timing,
+it does not flip the basket. Engine note: an initial mgmt-lane run valued the combined
+rules through the re-entry chain (dispatch omission) giving -0.44; fixed, hand-verified
+(+0.378512 on 2021-02-01/510/2/ASM matches manual arithmetic), re-run full span.
