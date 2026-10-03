@@ -211,3 +211,22 @@ not objectives.
     (the PM path from 04:00 exists in `pm_snapshots` at 7 clocks for the full PIT universe),
     or the destination set must widen to outsiders/rotation, or the basket must be entered
     only on days whose premarket signature justifies it. No freeze; second half untouched.
+
+## Discovery log — fourth pass: the entry-timing ladder (08:30 → 09:31)
+
+14. **The entry clock barely matters, and earlier is worse.** Top-5 rosters at eight PM clocks,
+    533 days, filled members, executable captured to the close:
+    | clock | monster share | monster mean captured | equal-weight captured | median |
+    |---|---|---|---|---|
+    | 08:30 | 2.8% | +79% | −4.87% | −7.9% |
+    | 09:00 | 3.1% | +78% | −4.21% | −7.4% |
+    | 09:15 | 2.8% | +80% | −4.17% | −7.0% |
+    | 09:29 | 2.4% | +92% | −3.64% | −5.8% |
+    | 09:31 | 2.6% | +85% | −3.50% | −5.9% |
+    The tail exists at every clock (2.4–3.1% monsters) but so does the tax, and the average
+    member loses ~4% from ANY PM entry to the close. **Conclusion: the pop accumulates before
+    08:30 (04:00–08:30 / overnight), so the entire 08:30–09:31 ladder is too late to own the
+    move — the entry problem is not timing within the ladder but the ladder itself.**
+    Next: select at an early premarket time (04:00–06:00) using the PM aggregates that already
+    exist in `pm_snapshots` (pm_first_et/px, pm_hi/lo, pm_vol, 7 clocks), which requires bars
+    for the premarket-selected names (a bounded Alpaca fetch).
