@@ -2,6 +2,27 @@
 # Hypothesis ranking + falsifiers: researches/HYPOTHESES.md (living).
 # History before 2026-09-04: researches/CANONICAL_STATE.md (superseded snapshot, kept for trust map).
 
+## UPDATE 2026-10-03 — research takeover: harvesting, not selection substitution
+
+Active research checkout: `basket-phase2-f1` (main ends at the September-22 freeze).
+Reanchor Stage F/G's “pop already complete / entry or selection is the problem”
+interpretations are withdrawn as unearned; their negative cashflows remain evidence
+about those implementations. Same-roster executable-open opportunities remain large.
+New discovery-only producer/readout: `lifecycle_harvestability.py` /
+`lifecycle_harvestability_read.py`; committed evidence
+`factory/artifacts/lifecycle_harvestability_discovery.json`, detailed day artifacts
+`data/harvest01/lifecycle/v2/harvestability/`. 533 days, 528 correlated reported cells,
+703,560 member cashflows and 27,608 first-push event records; every cell negative
+at 100/150bps. Before 13:00, +5% close signals occur on 48–51% of selected slots,
+next-open sale proxies average +6.9–7.5% gross; 09:00 fade sells 157/310 later
++30%-signal claims too early (50.6%, near-open 18.5–21.8%). Static banking shrinks
+the tail as well as tax. Next: learn trajectory-conditioned repair/terminal-decay
+and monetization/retention decisions, not another monster classifier.
+Shared replay's 5%-original-capital deadband was reproduced; new diagnostic uses
+exact shares. Route “captured” and “second leg” labels need correction before reuse;
+100bps remains modeled, not quote-certified. No freeze, no deployment, no new
+second-half outcome read; H025/bot and unrelated work unchanged.
+
 ## UPDATE 2026-09-30 (night) — canary GREEN at pin f9346e6b
 Canary closed: B3≡A3 (58bbbf0c) and C≡D (f9346e6b, +UTC-timestamp row-group pruning) all 50/50 with
 125/125 payloads byte-identical across generations; verify-canary exit 0 (43/43, core_hash

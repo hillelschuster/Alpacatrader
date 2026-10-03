@@ -4,6 +4,18 @@ This replaces the framing that produced the first LIFECYCLE-01 policy pipeline. 
 measurements stay; the mental model, the objective and the architecture are restated here
 and everything downstream is rebuilt from this text.
 
+**Interpretation correction (2026-10-03 takeover).** The later Stage F/G conclusions
+“entry is the binding problem,” “the pop completes before 08:30,” and “selection
+variable is the problem” are **unsupported interpretations**, not measured facts.
+Their negative fixed-endpoint cashflows falsify those implementations only. The
+same rosters' large forward excursions leave harvesting unresolved; a high touch
+also does not prove executable profit. Early-ramp selection remains a parallel
+hypothesis, not a replacement for top-gainer optionality. Preserve ranks 1–5.
+The window boundary remains a ruler: the monster anatomy contains later legs.
+`personality_routes_*` uses last-close `captured`, whereas the executable roster
+anatomy uses next-open outcomes; those quantities must not be pooled or relabelled.
+
+
 ## 1. The actual inefficiency
 
 At an early causal moment, **the actual top gainers contain a wildly disproportionate share

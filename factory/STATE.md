@@ -2857,3 +2857,23 @@ executable mechanism on the discovery half yet; no freeze; the second 533 days r
 Next candidates: (a) near-open 571 with full-market race features and leak-free folds;
 (b) outsiders/rotation (emerging leader outside the roster); (c) tail-riding formulations that
 pay one round trip for a monster held through the window.
+
+## 2026-10-03 — takeover: same-roster harvesting map; entry/selection drift rejected
+
+Current worktree `basket-phase2-f1`; three read-only audits (economics, leakage,
+friction). Stage F/G negative endpoints do not prove “past the pop” or justify
+replacing top-gainer selection. New producers `lifecycle_harvestability.py` and
+`lifecycle_harvestability_read.py`; artifact
+`factory/artifacts/lifecycle_harvestability_discovery.json`. Discovery ONLY:
+533 days, four clocks, all five ranks, 11 policies, 3 endpoint rulers, 100/150bps,
+3/5-slot reporting = 528 correlated cells, all negative. Next-open +5% first-push
+signals on 48–51% of selected slots before 13:00, mean sale +6.9–7.5% gross.
+At 09:00 fade releases 157/310 later +30%-signal claims (50.6%); other clocks
+18.5–21.8%. Best top-5 13:00 static-bank proxy −1.18..−1.74%/day; not an edge.
+Exact-share accounting avoids the shared replay's reproduced 5%-capital deadband;
+paired-day comparisons and window-only MFE attribution retained. Smoke proof:
+delayed partials/costs/UNKNOWN, 3-day ×4-clock fade parity, label mutation,
+all 281,424 portfolio-day cashflows conserve; source pin matches full run.
+Next discovery object: joint trajectories at release/profit decisions, dollar
+value of repair versus terminal decay and monetization versus retained optionality.
+No lifecycle freeze or protected-half outcome read; H025/bot unchanged.

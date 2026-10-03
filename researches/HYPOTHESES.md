@@ -1,16 +1,27 @@
 # HYPOTHESES — living source of truth (created 2026-09-06; rewritten 2026-09-08 post-H11-collision)
 
-## CURRENT 2026-10-02 — LIFECYCLE-01 (discovery running)
+## CURRENT 2026-10-03 — top-gainer optionality; harvesting remains unresolved
 
-Economic question, not assumed truth: early actual top-gainer claims may contain
-disproportionate future upside; route-dependent release/reinforcement/re-entry may
-preserve tails while making failed participation cheap. Fixed PM/near-open top-5
-rosters at 09:00/09:20/09:29/09:31, top-3 primary. Minute paths plus genuine 5/10-second
-tape where observed; descriptive behavior precedes rules/models.
-533 discovery days through 2023-03-14; full feature/model/action pipeline must freeze
-before the remaining 533 days are evaluated without refitting. Reserved months excluded.
-Corrected v2 corpus rebuilding; initial lifecycle outputs are quarantined for causal
-and source defects. No new EV verdict or promoted policy exists yet.
+Keep the actual causal top-5 roster, including ranks 4–5. Dynamic ownership and
+cash are the strategy question; fixed clocks, slot counts and endpoints are rulers.
+Negative terminal means and failed release/partial implementations do not establish
+that the roster is “past the pop.” Early-ramp selection is a parallel hypothesis.
+Discovery remains the first 533 days through 2023-03-14; no lifecycle freeze exists
+and this takeover read no protected second-half outcomes.
+
+New evidence: `factory/artifacts/lifecycle_harvestability_discovery.json`.
+Completed-close +5% signals occur on 48–51% of original selected slots before
+13:00; ensuing next-open sale proxies average +6.9–7.5% gross. Static partial
+banking plus crude fade stays negative in all 528 reported cells at 100/150bps.
+At 09:00, fade releases 157/310 claims before a later +30% close signal (50.6%);
+near-open clocks lose 18.5–21.8%. This is a measured recovery/tail-preservation
+failure, not selection-thesis falsification. Next discovery: trajectory-conditioned
+repair-versus-terminal-decay and push-monetization decisions, scored in dollars.
+The prior LightGBM is a baseline only; route labels and shared replay have audit
+defects (last-close “captured,” non-separated “legs,” 5%-capital trade deadband).
+The new diagnostic uses exact original shares, paired days, window-only attribution,
+and UNKNOWN outcomes. Quote/tape availability is incomplete; no executable edge
+or policy is promoted.
 
 STATUS HEADER (read this first): H11 failed collision 2026-09-08 and is RETIRED.
 No hypothesis below currently holds dev+collision support. Ranking below is by

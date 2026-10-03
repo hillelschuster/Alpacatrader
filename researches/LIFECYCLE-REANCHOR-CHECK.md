@@ -26,3 +26,7 @@ line below, it is drift.
    hold-vs-sell as the core question; fixed clocks/endpoints as truth; mechanical max-3;
    optimizing AUC/accuracy; benchmark-delta worship; complexity for its own sake; any
    architecture preserved because it exists.
+10. **Do not infer “past the pop” from negative returns to a fixed endpoint.** First
+    separate executable forward opportunities, subsequent giveback, and dud tax on
+    the same causal roster. Early-ramp selection is a parallel hypothesis, not a
+    silent substitution. Profitability must come from actual sale prices, not highs.
