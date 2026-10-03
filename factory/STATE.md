@@ -2877,3 +2877,24 @@ all 281,424 portfolio-day cashflows conserve; source pin matches full run.
 Next discovery object: joint trajectories at release/profit decisions, dollar
 value of repair versus terminal decay and monetization versus retained optionality.
 No lifecycle freeze or protected-half outcome read; H025/bot unchanged.
+
+## 2026-10-03 — owned-claim decision dollars: first chronological pass complete
+
+New producers owned_claim_events/value/replay/attribution/surfaces; discovery only
+533 days, 673,035 causal events, 156 past-state/history/tape features. Tape is gated
+by causal acquisition admission: the old raw net included future winners/later
+leaders, so availability could leak. No whole-day quality feature. Owned value
+is dollars on a fixed original-share basis; entry sunk, exit fee common. New buys
+use causal fixed quantities, 90% cash headroom and settled receipts, not lifetime
+profit; price-gap funding failures remain UNKNOWN.
+First model = eight-event fitted value iteration, three expanding chronological
+folds (383 test days), 3 feature views; stop / one repair re-entry / free-cash
+rotation-reinforcement, N3/N5 independently, 100/150bps. All176 reported cells
+negative. Best N3/569 tape:stop gross+0.477% fees0.985% net-0.508%; best N5 byclock
+net-1.33..-0.79%. Full533 ruler decomposition reconciles to <2.8e-13.
+First +5% clean pushes (540/N3, no prior damage) add +1.78% original-claim dollars
+over30m vs-0.27% after damage; both fade on longer horizons. These are descriptive
+surfaces, not rules. Next controlled correction: full future learned-policy
+cashflow targets, not an eight-event planning horizon (540 stop exits median09:10).
+Artifacts owned_claim_contract/attribution/policy_discovery/surfaces.json.
+No protected-half outcomes, freeze, bot change, or promoted executable edge.

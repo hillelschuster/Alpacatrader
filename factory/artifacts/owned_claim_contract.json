@@ -1,0 +1,85 @@
+{
+  "worktree": "/home/hillel/algo projects/worktrees/Alpacatrader/basket-phase2-f1",
+  "data_root": "/home/hillel/projects/Alpacatrader/data",
+  "event_root": "/home/hillel/projects/Alpacatrader/data/harvest01/lifecycle/v2/owned_claim",
+  "discovery": "lifecycle_study.discovery_days only, 533 days through 2023-03-14; no validation outcomes or FREEZE marker",
+  "clocks": [
+    540,
+    560,
+    569,
+    571
+  ],
+  "views": [
+    3,
+    5
+  ],
+  "events_schema": {
+    "keys": [
+      "day",
+      "clock",
+      "rank",
+      "ticker",
+      "t"
+    ],
+    "metadata": [
+      "event_kind",
+      "sequence",
+      "next_sequence",
+      "session_end",
+      "fill_et",
+      "fill_px",
+      "status"
+    ],
+    "features": "numeric feature_ prefixed explicit past-only variables. Include feature_t, feature_clock, feature_rank, feature_tenure, price/rank/volume/tape allowlists and trailing5/15/30 memory. Missing stays null/NaN. event types encoded as feature_event_<type> binary. No execution prices/outcomes enter features.",
+    "execution": [
+      "sell_px",
+      "sell_et",
+      "sell_volume"
+    ],
+    "labels": [
+      "next_sell_px",
+      "next_sell_et",
+      "next_sequence",
+      "V15",
+      "V30",
+      "V60",
+      "V120"
+    ],
+    "semantics": "Completed bar t-1 state -> first observed open at et>=t. Events only t>original fill_et. Final session_end row always included, terminal liquidation invalid beyond session_end = UNKNOWN. Retention labels need later actual sell_et>current sell_et, not multiple observations pointing to same delayed open."
+  },
+  "training_contract": {
+    "folds": [
+      [
+        0,
+        150,
+        150,
+        300
+      ],
+      [
+        0,
+        300,
+        300,
+        450
+      ],
+      [
+        0,
+        450,
+        450,
+        533
+      ]
+    ],
+    "objective": "Dollar value of optimal stopping from owned-claim decision. Selling now is value1. Entry fee sunk; common exit fee cancels in relative retention targets.",
+    "fitted_value_iteration": "y=(next_sell_px-sell_px)/original_fill_px + max(0,q_pred_at_next_event); q per original gross notional on fixed share basis. Terminal nextq=0. Three cumulative feature views, 3 chronological folds and 8 iterations/80 rounds unchanged; TRAIN only. Entry fee sunk, common exit fee scales realized dollars. Dataset bins reused, labels change. No clipping/tuning.",
+    "outputs": "scores/<day>.parquet with keys + pred_state,pred_history,pred_tape for test days only; metadata.json with explicit train/test sets, source pins, iteration configs and coverage; model diagnostic json. No protected-half access. No expensive runtime until parent gives ready message; parent owns serial compute."
+  },
+  "portfolio_contract": {
+    "parent_owner": true,
+    "actions": "Stop/retain, one repair reentry, and one cash rotation/reinforcement diagnostic using fresh same-roster observations with positive marginal value beyond fresh fee hurdle. N3/N5 candidate/ownership universes independent. New-buy shares fixed at completed mark: 90% of reserved settled budget/(mark*(1+side)); price gaps exceeding cash reservation are UNKNOWN, never resized or financed. Original equal-dollar admission remains a declared starting ruler. Sale receipts usable only exec_et+1, blocked admission funds only clock+5.",
+    "prediction_units": "Owned dollars q_actual*original_fill*(1-side)*pred_abs; fresh-dollar comparison pred_abs*original_fill/causal_mark versus2*side/(1-side)."
+  },
+  "attribution_contract": {
+    "independent_inputs": "existing harvestability days members/fills/daily, plus source discovery-only panel and roster as needed. Output standalone producer under factory/scripts/owned_claim_attribution.py and compact json under factory/artifacts/owned_claim_attribution.json. Parent runs it after implementation.",
+    "questions": "N3 vs N5 each clock, 13:00 ruler. Pair hold,fade,bank5_f75_fade on common known days. Split complete-window MFE classes(<10,10..30,30..100,>=100) from observed panel peak_gain<=780; NEVER roster mfe_day(afterhours) or personality routes. Entry friction, exit friction, gross move, realized lost option (fade vs hold and bank vs fade), residual shares/dollars at 09:45/10:30/11:30, rank and peer contributions, top5/top10 day/name contribution and worst5/worst10 losses. Contributions sum exactly to net portfolio EV. Separate low-excursion tax from terminal-return loss anatomy. Report timing and full-exit vs partials, release-before+5/+30 signals. Do not call unseen MFE an executable payoff; opportunity max sell_px may be measured as retrospective upper bound, explicitly unattainable."
+  },
+  "audit_contract": "Review contract and new model/event code for inherited-cost accounting, next-open clocks, feature leakage, chronology, UNKNOWN and cash conservation. No edits. Read known lifecycle inputs first. Parent will message when new files exist. No build/lint/tests/formatters mid-flight. Never touch other workstreams or pre-existing dirt."
+}

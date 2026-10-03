@@ -2,6 +2,20 @@
 # Hypothesis ranking + falsifiers: researches/HYPOTHESES.md (living).
 # History before 2026-09-04: researches/CANONICAL_STATE.md (superseded snapshot, kept for trust map).
 
+## UPDATE 2026-10-03 — owned-claim lifecycle dollars
+
+First chronological action-value pass completed on383 discovery-test days:
+all176 portfolio cases negative at100/150bps, N3/N5 reported separately.
+Best N3/09:29 tape stopping: gross+0.477% less modeled fees0.985% = net-0.508%.
+State-dependent stopping is substantially less bad than fade/hold, but not an edge.
+N5 does not repair the deficit; history/tape/reinvestment do not reliably pay.
+Full533-day event corpus (673,035 events), joint dollar surfaces and exact
+loss/fee/rank/concentration attribution are committed as owned_claim_* artifacts.
+Entry is sunk in owned-share decisions; fresh re-entry has a separate cost hurdle.
+Current eight-event value iteration dumps09:00 claims around09:10, before many
+claims mature; full learned-policy-return labels are the next controlled test.
+The topology/funding findings above are instrument findings, not roster falsification.
+
 ## UPDATE 2026-10-03 — research takeover: harvesting, not selection substitution
 
 Active research checkout: `basket-phase2-f1` (main ends at the September-22 freeze).

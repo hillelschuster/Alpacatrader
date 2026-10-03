@@ -1,5 +1,17 @@
 # HYPOTHESES — living source of truth (created 2026-09-06; rewritten 2026-09-08 post-H11-collision)
 
+## OWNED-CLAIM UPDATE 2026-10-03 — H040, dollar-value discovery
+
+673,035 causal events on first533 days; original N3/N5 ownership views separate.
+Owned retention is valued from the decision onward, with sunk entry and common
+exit fee; no classification objective. Exact-share OOF replay on383 days yields
+0/176 positive cases at100/150bps. Best N3/569 tape stopping is-0.508% net
+(gross+0.477%, fees0.985%). This is a failed harvesting instrument, not roster defeat.
+Clean first+5% pushes and damaged recoveries have different dollar horizons;
+expanding volume alone does not establish genuine repair. Eight-event continuation
+labels are a short planning ruler; next test uses full learned-policy cashflows.
+No protected-half test, freeze, or promoted edge. See owned_claim_* artifacts.
+
 ## CURRENT 2026-10-03 — top-gainer optionality; harvesting remains unresolved
 
 Keep the actual causal top-5 roster, including ranks 4–5. Dynamic ownership and
