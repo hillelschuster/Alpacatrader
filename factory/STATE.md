@@ -2826,3 +2826,34 @@ route types and **time-resolved separability** curves — when, and through whic
 routes become distinguishable; (B) a **next-dollar map** including siblings, outsiders and
 re-entry; (C) **ownership-architecture search** judged on EV + tail preservation + dud tax at
 measured friction; (D) freeze and spend the clean half once.
+
+## 2026-10-03 — LIFECYCLE-01 reanchored discovery: first honest results (second half untouched)
+
+Substrate complete and audited: 1,066 days, panel 8,490,400 member-minutes, tape 1-min + genuine
+5/10 s, split locked 533/533, reserved months excluded. Full reanchor text and the standing
+anti-drift checklist: `researches/LIFECYCLE-REANCHOR.md`, `researches/LIFECYCLE-REANCHOR-CHECK.md`.
+
+Discovery-half findings:
+* Route census (569): monster 2.4% (+77% captured median), second-leg 3.8% (+40%), sustained 2.0%
+  (+25%), recoverable flush 0.7% (+18%), resurrection 0.8%; fake_recovery 34.2% at −17.9% and
+  immediate_dud 21.2% = the tax. ~9.6% of members carry the money.
+* Route separability is high early but largely tautological (monster AUC 0.80 at +10 m vs best
+  single observable 0.84) — descriptive only, no classifier deployed.
+* Next-dollar ranking (leak-free two-segment chronological OOF, 383 days): real cross-sectional
+  skill (daily rank-IC +0.12/+0.10) but negative absolute level of fresh deployment; net of
+  100 bps the top-1 is −0.63% (540) / −0.77% (560) at +120 m.
+* RETRACTED (leakage): an earlier fold trained and tested on the same days, manufacturing
+  "+20.8% top-1%", "+1.5% top-1 net" and a "+1.16%/day architecture". Corrected OOF voids them.
+* Structural anatomy rules on clean data: deep-drawdown-repairing ≈ breakeven (+0.007%/+0.045%,
+  0.5 orders/day); shallow-pullback negative. Behavioural overrides add nothing.
+* Resting bid into a flush: fill rates 30–81%, every cell negative net (−0.57% to −4.84%).
+* Day level: entry gain correlates NEGATIVELY with outcome (−0.18); PM clocks carry no
+  market-wide breadth/rank (board starts 09:30).
+* Architecture: hysteresis and cost margins are decisive (no-hysteresis thrash −17.6%/day at
+  127 orders/day); 3 competing claims beat 1 in the leaked run — to be re-proven leak-free.
+
+Binding constraint: the 100 bps round trip versus edges of the same order. No positive-EV
+executable mechanism on the discovery half yet; no freeze; the second 533 days remain untouched.
+Next candidates: (a) near-open 571 with full-market race features and leak-free folds;
+(b) outsiders/rotation (emerging leader outside the roster); (c) tail-riding formulations that
+pay one round trip for a monster held through the window.
