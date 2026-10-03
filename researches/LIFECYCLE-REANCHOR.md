@@ -145,3 +145,31 @@ not objectives.
 * No freeze exists, no second-half outcome has been read, and no policy number is a result.
 * Kept as rulers: the behavior anatomy, the leg/continuation maps, the chronological model
   rank-ICs, the measured friction, the strongest-path name/day evidence, and the audits.
+
+## Discovery log — first pass results and the honest negatives (2026-10-02/03)
+
+1. **Route census (569, 533 days)**: monster 2.4% (+77% captured median), second-leg runner
+   3.8% (+40%), sustained 2.0% (+25%), recoverable flush 0.7% (+18%), resurrection 0.8%;
+   **fake_recovery 34.2% at −17.9%** and immediate_dud 21.2% — the tax. ~9.6% of members
+   carry the money.
+2. **Route separability is high early but largely tautological**: monster AUC 0.80 at +10 m
+   yet the best SINGLE observable is 0.84 — the labels are forward-defined rulers, so this
+   stays descriptive and no classifier is deployed.
+3. **Next-dollar ranking (chronological OOF)**: real cross-sectional skill (mean daily
+   rank-IC +0.12 at 09:00, +0.10 at 09:20) but the ABSOLUTE level of fresh deployment at the
+   PM clocks is negative (field −0.7% to −1.3% over 120 m). Net of 100 bps the top-1 is
+   −0.63% (09:00) / −0.77% (09:20) over 383 OOF days. **No net edge.**
+4. **RETRACTED — leakage**: an earlier fold definition trained and tested on the same days
+   (days 300:533), manufacturing "+20.8% top-1%", "+1.5% top-1 net" and a "+1.16%/day
+   architecture". With corrected two-segment OOF those numbers are void. The architecture
+   results built on them are void.
+5. **Architecture search (leak-free structural rules, 533 days, 100 bps)**: hysteresis is
+   decisive (no-hysteresis thrash: −17.6%/day, 127 orders/day); with dwell 30 m + a 2% cost
+   margin the *model* architecture was +0.8..+1.2%/day on the leaked scores — void. The
+   **structural** anatomy rules on clean data: deep-drawdown-repairing **+0.007% (540) /
+   +0.045% (560)** at 0.5 orders/day; shallow-pullback-with-fresh-high negative (−0.38% /
+   −0.80%). Behavioural overrides (dead-claim release, runner keep) add nothing.
+6. **Conclusion so far**: the tail is real and findable, but at a 100 bps round trip the
+   fresh-deployment EV of every personality tested is ≤ 0. The binding constraint is the
+   ENTRY COST. Next probe: earn the spread instead of paying it — a resting bid into a flush
+   (the H025 shape), measured on this corrected substrate.
