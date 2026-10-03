@@ -23,6 +23,14 @@ exact shares. Route “captured” and “second leg” labels need correction b
 100bps remains modeled, not quote-certified. No freeze, no deployment, no new
 second-half outcome read; H025/bot and unrelated work unchanged.
 
+Late economic-audit qualifications: `lifecycle_preramp.py:109-113` includes
+pre-entry bars in MFE/MAE; its “forward +22–28%” is quarantined. Descriptor monster
+counts also require >=50% terminal return; personality uses a different definition.
+Near-open +120m ranking reports contain +0.53/+0.60% net candidate-return averages
+over 233 days, **not portfolio P&L**; the historical blanket-negative claim is too broad.
+Prior HARVEST01 already viewed the wider 1,066-day calendar. Lifecycle scoring is
+held out, but it is not globally pristine economic evidence. No new half-read occurred.
+
 ## UPDATE 2026-09-30 (night) — canary GREEN at pin f9346e6b
 Canary closed: B3≡A3 (58bbbf0c) and C≡D (f9346e6b, +UTC-timestamp row-group pruning) all 50/50 with
 125/125 payloads byte-identical across generations; verify-canary exit 0 (43/43, core_hash

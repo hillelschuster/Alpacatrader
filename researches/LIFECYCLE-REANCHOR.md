@@ -267,3 +267,27 @@ not objectives.
     the first minutes of a move, before the gain is large — or a different mechanism entirely
     (the excursion structure, the flush-recovery bid, the leadership rotation). No freeze; the
     second half remains untouched.
+
+## Takeover audit addendum (2026-10-03; historical claims qualified)
+
+- `lifecycle_preramp.py:109-113` computes MFE/MAE from bars before the actual
+  entry too: it imposes the upper horizon but not `et >= entry_et`. Its reported
+  +22–28% numbers and monster shares are **not forward-only excursion evidence**
+  and are quarantined. Terminal-return negatives do not repair that defect.
+  The new first-push diagnostic uses post-fill completed states and next-open sales.
+- The 41–47 descriptor “monsters” require both MFE >=100% and terminal captured
+  return >=50% (`lifecycle_study.descriptor_table`), not MFE alone. The personality
+  taxonomy uses a different definition and close marks. Do not mix their counts,
+  returns or inferred day-level tail contributions.
+- PM ranking excerpts labelled −0.63%/−0.77% “net” in the historical log are
+  gross; the corresponding +120m net values are −1.63%/−1.77%. Conversely,
+  near-open `nextdollar_569.md`/`571.md` report +0.60%/+0.53% net at +120m on
+  233 days. These are averages of overlapping per-minute candidate returns, not
+  portfolio P&L or a promoted edge; blanket “every metric is negative” is wrong.
+- Existing `manage_attribution` never emits because replay member rows omit the
+  `route` column tested by its guard. Tail/dud attribution is supplied by the new
+  diagnostic, explicitly window-bounded and separate from deployed policy state.
+- Lifecycle evaluation is unrun and this takeover read no protected outcomes.
+  Earlier HARVEST01 work already reported economics across all 1,066 days; the
+  lifecycle scoring half must not be described as globally pristine market evidence.
+
