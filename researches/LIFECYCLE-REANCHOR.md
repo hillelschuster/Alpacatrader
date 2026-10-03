@@ -230,3 +230,28 @@ not objectives.
     Next: select at an early premarket time (04:00–06:00) using the PM aggregates that already
     exist in `pm_snapshots` (pm_first_et/px, pm_hi/lo, pm_vol, 7 clocks), which requires bars
     for the premarket-selected names (a bounded Alpaca fetch).
+
+## Discovery log — fifth pass (Stage G): the ramp is dead; the selection variable is the problem
+
+15. **The premarket ramp probe (discovery half, causal top-5 at 04:30→08:30, executable
+    entries, full-market PM bars)**:
+    | clock | mean captured to close | mean to 09:30 | mean MFE to 13:00 | monster share |
+    |---|---|---|---|---|
+    | 04:30 | −8.60% | −5.76% | +22.6% | 3.2% |
+    | 06:00 | −8.68% | −5.82% | +24.0% | 2.8% |
+    | 07:30 | −5.65% | −2.45% | +27.1% | 3.4% |
+    | 08:30 | −4.66% | −1.20% | +28.2% | 4.1% |
+16. **Earlier is monotonically WORSE.** Names that are top gainers at 04:30 lose ~5.8% into
+    the open and ~8.6% to the close; the same is true at every clock to 09:31. The monsters
+    are in the roster at every clock and the excursions are large (+22–28% mean MFE to 13:00),
+    but the roster as a BUY loses at every causally observable moment from 04:30 to 09:31.
+17. **Root cause, stated plainly**: the selection variable — the gain versus the prior close —
+    is itself the evidence that the move has already happened. Selecting "the biggest gainers
+    at T" selects names that are PAST their pop, and the roster's bleed (57% duds) is the
+    mean-reversion of a completed move. This does not contradict the phenomenon; it contradicts
+    the entry rule we have been using to rent it.
+18. **Consequence**: the frontier is no longer "which clock" or "how to manage". It is
+    **selection on the EARLY RAMP rather than the gain level** — acceleration, first new highs,
+    the first minutes of a move, before the gain is large — or a different mechanism entirely
+    (the excursion structure, the flush-recovery bid, the leadership rotation). No freeze; the
+    second half remains untouched.
