@@ -1,5 +1,17 @@
 # HYPOTHESES — living source of truth (created 2026-09-06; rewritten 2026-09-08 post-H11-collision)
 
+## CURRENT 2026-10-02 — LIFECYCLE-01 (discovery running)
+
+Economic question, not assumed truth: early actual top-gainer claims may contain
+disproportionate future upside; route-dependent release/reinforcement/re-entry may
+preserve tails while making failed participation cheap. Fixed PM/near-open top-5
+rosters at 09:00/09:20/09:29/09:31, top-3 primary. Minute paths plus genuine 5/10-second
+tape where observed; descriptive behavior precedes rules/models.
+533 discovery days through 2023-03-14; full feature/model/action pipeline must freeze
+before the remaining 533 days are evaluated without refitting. Reserved months excluded.
+Corrected v2 corpus rebuilding; initial lifecycle outputs are quarantined for causal
+and source defects. No new EV verdict or promoted policy exists yet.
+
 STATUS HEADER (read this first): H11 failed collision 2026-09-08 and is RETIRED.
 No hypothesis below currently holds dev+collision support. Ranking below is by
 next-test EV under the power constraint (see researches/STATE.md). H1-H7 were the
