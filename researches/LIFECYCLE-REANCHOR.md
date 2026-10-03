@@ -195,3 +195,19 @@ not objectives.
     (rank/velocity/breadth/leadership) and leak-free folds; (b) outsiders/rotation — the
     emerging leader outside the entry roster; (c) multi-day/tail-riding formulations that
     only pay a single round trip for a monster that must be held through the window.
+
+## Discovery log — third pass (Stage F): the release works, the entry is the problem
+
+11. **Own early, release the dead, ride the runners (533 days, 100 bps, window end 13:00)**:
+    the "fade" release (below entry AND >=15 min from the high AND losing over 5 m) beats
+    unconditional hold by **+1.7 to +2.5 pp at every clock** — 540 −1.61% vs −4.14% (hold k3),
+    560 −1.74% vs −3.54%, 569 −1.51% vs −3.56%, 571 −1.33% vs −3.26%. That is the dud tax
+    being cut, reliably and consistently. Trail-only and hold are worse.
+12. **But every absolute is still −1.3% to −1.7% per day.** The arithmetic: the equal-weight
+    top-5 held to 13:00 is −3.5% to −4.1%; even the best release cannot repair a losing entry.
+    The duds (57% of members, captured −11%) dominate; the monsters (2.4%, +118%) contribute
+    only ~+2 pp. The ENTRY is the binding problem, not the management.
+13. **Consequence for the program**: the entry must move EARLIER than the pop's completion
+    (the PM path from 04:00 exists in `pm_snapshots` at 7 clocks for the full PIT universe),
+    or the destination set must widen to outsiders/rotation, or the basket must be entered
+    only on days whose premarket signature justifies it. No freeze; second half untouched.
