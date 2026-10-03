@@ -173,3 +173,25 @@ not objectives.
    fresh-deployment EV of every personality tested is ≤ 0. The binding constraint is the
    ENTRY COST. Next probe: earn the spread instead of paying it — a resting bid into a flush
    (the H025 shape), measured on this corrected substrate.
+
+## Discovery log — second pass (Stage E + day level) and the session state
+
+7. **Resting bid into a flush (Stage E, 540, 533 days)**: fill rates 30–81% with median fill
+   delays 11–46 min, but EVERY cell is negative net: −0.57% to −4.84% at +60/+120 min and to
+   the window end (best: −30% flush depth, −8% discount, +60 m −0.57%). The flush keeps
+   flushing; passive entry does not fix it on this roster.
+8. **Day-level conditioning (540, first 200 days)**: the entry-gain level correlates
+   NEGATIVELY with the day's outcome (corr −0.18; high-gain days −5.9% mean captured vs
+   low-gain −3.3%). No "trade only the biggest" edge. Note: PM clocks carry NO market-wide
+   breadth/rank features — the board (`race.minute_full`) begins at 09:30, so a PM entry's
+   personality is limited to its own path, its PM history and its siblings.
+9. **Structural rules on the full discovery half**: deep-drawdown-repairing ≈ breakeven
+   (+0.007%/+0.045% at 540/560, 0.5 orders/day); shallow-pullback negative.
+10. **Session state**: the tail is real and measurable; every executable mechanism tested on
+    the discovery half (model ranking, structural personalities, flush bids, behavioural
+    overrides, day-level filters) is ≤ 0 net at a 100 bps round trip. The binding constraint
+    is the cost of a fresh round trip vs edges of the same order. Second half UNTOUCHED.
+    Next candidates, in order: (a) the near-open clock 571 with the full-market race features
+    (rank/velocity/breadth/leadership) and leak-free folds; (b) outsiders/rotation — the
+    emerging leader outside the entry roster; (c) multi-day/tail-riding formulations that
+    only pay a single round trip for a monster that must be held through the window.
