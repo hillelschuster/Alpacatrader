@@ -1,16 +1,76 @@
 # HYPOTHESES — living source of truth (created 2026-09-06; rewritten 2026-09-08 post-H11-collision)
 
-## OWNED-CLAIM UPDATE 2026-10-03 — H040, dollar-value discovery
+## OWNED-CLAIM UPDATE 2026-10-03 — H040, dollar-value discovery (corrected two-method replays + three exploratory diagnostics COMPLETE; declared source_correction_status NOT_VERIFIED — parent source/runtime checks observed PASS)
 
 673,035 causal events on first533 days; original N3/N5 ownership views separate.
 Owned retention is valued from the decision onward, with sunk entry and common
-exit fee; no classification objective. Exact-share OOF replay on383 days yields
-0/176 positive cases at100/150bps. Best N3/569 tape stopping is-0.508% net
-(gross+0.477%, fees0.985%). This is a failed harvesting instrument, not roster defeat.
+exit fee; no classification objective. **HISTORICAL first pass (INVALID-AS-CAUSAL)**
+on383 days yielded 0/176 positive cases at100/150bps; best N3/569 tape stopping
+-0.508% net (gross+0.477%, fees0.985%). **CORRECTED completed replays** on the same
+383 test days complete both methods: 0/176 net-positive cells in EACH of
+`value_iteration` (control) and `policy_return` (352 cells combined) at100/150bps —
+no positive-EV executable cell. Control least-negative 571/N3 `state:stop` net
+−0.5140% (gross+0.4475%, fees0.9615%); full `policy_return` best N3 stop 540
+`tape:stop` net−3.6058%, best N5 stop 560 `tape:stop` net−2.9706%; cash
+reconciliation max4.53e-14 over704 books. This is a failed harvesting
+instrument, not roster defeat.
 Clean first+5% pushes and damaged recoveries have different dollar horizons;
 expanding volume alone does not establish genuine repair. Eight-event continuation
-labels are a short planning ruler; next test uses full learned-policy cashflows.
+labels were a short planning ruler; the full learned-policy-cashflow method has since
+completed (the "next test" sentence is historical only — see corrected results above).
 No protected-half test, freeze, or promoted edge. See owned_claim_* artifacts.
+
+**THREE EXPLORATORY DIAGNOSTICS (EXP-85; bg_523 complete, source pins verified — UNITS DIFFER, none
+a validated policy or edge).** `push_legs` (NOT a portfolio-P&L surface — causal first-push dollar
+anatomy): 533 dates / 9,895 claims / 5,575 first pushes (2,791 clean, 2,784 damaged) / 63,424
+declared-leg events; pooled-clock N3 clean hold increment $/100 +0.4887 at 15m [CI −0.3885,
++1.3673], −0.5939 at 30m, −2.3122 at 60m, −3.8442 at 120m (distinct from the clock-540-only
+surface). `probe_reserve` (IS a modeled portfolio cash/wealth endpoint diagnostic): 48 frontier
+cells, early endpoint 0 positive; late endpoint 2 positive only (540/N3/100bps 15m +0.019334% SE
+0.120457%, 30m +0.102710% SE 0.200719%; break-even α 0.008657 / 0.044336); all 150bps and all N5
+late cells non-positive. `retrieval` (NOT a portfolio-P&L surface — held-out retrieval-scalar
+evidence): evidence true, 3 fixed folds, 32,514 anchors, 75,076 queries; pooled-focus
+expected-positive realised $/100 negative every horizon/N/mode; scalar TRAIN baseline lower/equal
+RMSE in 77/80 cells (all 16 focus); no classifier. Paired parent calc (EXACT same
+clock/N/cost/policy/date; no cross-clock causal comparison): 540/N3 `tape:stop` 367 dates control
+−1.2992% vs full −3.6058% (delta −2.3066pp); 571/N3 `state:stop` 359 dates −0.4241% vs −3.7461%
+(delta −3.3220pp). Producer lineage note: `owned_claim_attribution.json` producer_sha `bd6e1741`
+EXACT-matches archived git blob `76db4a1` (historical `owned_claim_attribution.py`), NOT the
+current formatted script `8942b8e7` — ARCHIVED lineage, not current-producer output; other current
+pins (events/helper/model/replay/surfaces/loss/probe/retrieval) verified.
+
+**DEFECTS CONFIRMED — first-pass numbers are INVALID AS CAUSAL; corrected rerun now COMPLETE.**
+The 0/176 and best-N3 numbers from the first FVI8 (eight-event fitted value
+iteration) and first `policy_return` passes are invalid AS CAUSAL: future-status
+peer/scanner leakage in the inherited predictors, the strict `next_sequence` pointer
+skipping same-open chronological releases, excessive unused-suffix censoring of the
+fit mask, and the `value_iteration` strict-control entry gate wrongly applied to
+`policy_return`. Source corrections (owned_claim_*.py) carry **8 passing regression
+proofs** (parent-exercised) in `factory/scripts/test_owned_claim_causality.py`; the
+corrected 533-event rebuild and the 383 test-day two-method (FVI8 + `policy_return`)
+replays are now **COMPLETE** — artifacts `owned_claim_policy_discovery.json` /
+`owned_claim_policy_full_discovery.json`, 0/176 net-positive in each method,
+reconcile 4.53e-14. Declared machine `source_correction_status: NOT_VERIFIED`
+(`owned_claim_findings.json` actual) — no structured source-correction verification record was
+published into the reader inputs. SEPARATELY OBSERVED: parent source/runtime checks passed (source
+pins observed, 8 financial regressions passed, EconomicAssumptionReview review PASS); do not
+conflate these observations with the declared status. Still no certified edge (no alpha validated,
+no quote certification, freeze, deployment or protected-half read). Old numbers are kept as
+historical INVALID-AS-CAUSAL evidence, not erased, and are not a roster falsification. N3/N5
+independent; original entry sunk vs fresh re-entry cost separate; causal quantities fixed-share and
+price-gap funding UNKNOWN; no protected-half read, freeze or deploy. **LOSS-READER RERUN DONE —
+quarantine superseded (asserted):** parent fixed both reader grouping bugs; the final formatted full
+rerun bg_531 completed 320.57s, its source pin and the 2,112 unique release keys were asserted in
+Eval, and `concentration` shows 352 N-separated cells matching the decomposition (release bounds
+re-asserted in the same cell next pass); max cash residual 4.53e-14; attribution may be published,
+historical warning retained. [An earlier revision labelled this status `VERIFIED / parent provenance
+recorded`; that overclaim is withdrawn.] First+5% moves and the dollar-window anatomy remain
+descriptively useful. The three exploratory diagnostics (push-legs / recovery-retrieval /
+probe-reserve, EXP-85) are COMPLETE (bg_523, 705.56s) as discovery anatomy/diagnostics only — no
+policy, classifier or promoted edge (units differ per diagnostic; probe is a modeled portfolio
+cash/wealth endpoint diagnostic). Bot: NOT closed — pending restart-to-existing OCO integration and
+final gates (obsolete T5 failure counts are not the latest boundary); no live
+code/flags touched.
 
 ## CURRENT 2026-10-03 — top-gainer optionality; harvesting remains unresolved
 

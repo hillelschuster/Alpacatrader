@@ -1,9 +1,10 @@
-# STATE — current truth (snapshot 2026-09-13). Full chronicle: factory/STATE.md (append-only log).
+# STATE — current truth (latest update 2026-10-03). Full chronicle: factory/STATE.md (append-only log).
 # Hypothesis ranking + falsifiers: researches/HYPOTHESES.md (living).
 # History before 2026-09-04: researches/CANONICAL_STATE.md (superseded snapshot, kept for trust map).
 
-## UPDATE 2026-10-03 — owned-claim lifecycle dollars
+## UPDATE 2026-10-03 — owned-claim lifecycle dollars (corrected two-method replays + three exploratory diagnostics COMPLETE; declared source_correction_status NOT_VERIFIED — parent source/runtime checks observed PASS)
 
+**HISTORICAL FIRST PASS (kept, INVALID-AS-CAUSAL — do not read as evidence).**
 First chronological action-value pass completed on383 discovery-test days:
 all176 portfolio cases negative at100/150bps, N3/N5 reported separately.
 Best N3/09:29 tape stopping: gross+0.477% less modeled fees0.985% = net-0.508%.
@@ -15,6 +16,94 @@ Entry is sunk in owned-share decisions; fresh re-entry has a separate cost hurdl
 Current eight-event value iteration dumps09:00 claims around09:10, before many
 claims mature; full learned-policy-return labels are the next controlled test.
 The topology/funding findings above are instrument findings, not roster falsification.
+These first-pass numbers (FVI8 and first `policy_return`) are now known defective:
+future-status peer/scanner leakage, a strict `next_sequence` pointer that skipped
+same-open chronological releases, excessive unused-suffix censoring of the fit mask,
+and the `value_iteration` strict-control entry gate misapplied to `policy_return`.
+
+**CORRECTED RESULTS (later same day — completed corrected runs; first-pass numbers above remain
+HISTORICAL / INVALID-AS-CAUSAL).** Corrected full-ruler rebuild completed on the discovery half
+only: 533 days 2021-02-01..2023-03-14, 673,035 causal events, 160 tape-view feature columns
+(state90 / history134 / tape160), 9,895 claims, 638,198 valid rows, 24,942 unknown rows, 0
+beyond-session; three expanding chronological folds (150→150→300→450→533) = 383 test days. Two
+methods completed: `value_iteration` (FVI control; `owned_claim_policy_discovery.json`) and
+`policy_return` (full learned-policy cashflows; `owned_claim_policy_full_discovery.json`), each
+176 cells at 100/150bps (352 cells combined): **0/176 net-positive in EACH method — no
+positive-EV executable cell.** Control least-negative cell: 571/N3/50bps `state:stop` net
+−0.5140% (gross +0.4475%, modeled fees 0.9615%; 380/383 known days); best N5 control 571
+`state:stop` −0.6631%. Full `policy_return` is materially worse: N3 least-negative 540 `fade`
+−2.4535%; best N3 stop cell 540 `tape:stop` net −3.6058%; best N5 stop cell 560 `tape:stop` net
+−2.9706%. Cash/fee reconciliation over 704 books: max |Σ member net − Σ daily ret| =
+4.529709940470639e-14 (common-day subset 4.263256414560601e-14). Eight financial regressions
+passed (parent-exercised) in `factory/scripts/test_owned_claim_causality.py`. Because no
+corrected cell is positive, the instrument remains a failed harvesting instrument — NOT a roster
+falsification. Declared machine `source_correction_status: NOT_VERIFIED`
+(`owned_claim_findings.json` actual value) — no structured source-correction verification record
+was published into the reader inputs. SEPARATELY OBSERVED (do not conflate with the declared
+status): parent source/runtime checks passed — source pins observed (push script
+`provenance.script_sha256` matches; top `source_sha256` composite), 8 financial regressions passed,
+EconomicAssumptionReview review PASS. Still NOT a certified edge: no alpha validated, no quote
+certification, freeze, deployment or protected-half read. [Earlier revision of this section labelled
+it `VERIFIED / parent provenance recorded`; that was an overclaim and is withdrawn — the machine
+status remains NOT_VERIFIED and the passed checks are observations, not a published verification
+record.]
+
+**THREE EXPLORATORY DIAGNOSTICS (EXP-85, same experiment; bg_523 full run 705.56s, source pins
+verified).** Discovery-only; UNITS DIFFER — none is a validated policy or edge:
+- `push_legs` (`owned_claim_push_legs.json`): NOT a portfolio-P&L surface — causal first-push
+  dollar anatomy. 533 dates / 9,895 claims / 5,575 first pushes (2,791 clean, 2,784 damaged) /
+  63,424 declared-leg events. Pooled-clock N3 clean hold increment $/100: 15m +0.4887
+  [CI −0.3885, +1.3673], 30m −0.5939, 60m −2.3122, 120m −3.8442 (distinct from the clock-540-only
+  surface).
+- `probe_reserve` (`owned_claim_probe_reserve.json`): IS a modeled portfolio cash/wealth endpoint
+  diagnostic (units = modeled portfolio cash/wealth, unlike the other two). 48 frontier cells —
+  early endpoint 0 positive; late endpoint only 2 positive, both 540/N3/100bps: 15m +0.019334%
+  portfolio (SE 0.120457%), 30m +0.102710% (SE 0.200719%); break-even α 0.008657 / 0.044336. All
+  150bps cells and all N5 late cells non-positive. Still a diagnostic, not a validated edge.
+- `retrieval` (`owned_claim_retrieval.json`): NOT a portfolio-P&L surface — held-out
+  retrieval-scalar evidence. evidence true; 3 fixed folds; 32,514 anchors and 75,076 queries;
+  pooled-focus expected-positive realised $/100 negative at each horizon/N/mode; scalar TRAIN
+  baseline lower/equal RMSE in 77/80 cells (all 16 focus cells); no classifier (claim boundary:
+  held-out scalar means are not a fill model).
+- Paired parent calc (EXACT same clock/N/cost/policy/date, so no cross-clock causal comparison):
+  540/N3 `tape:stop`, 367 dates — control −1.2992% vs full −3.6058%, delta −2.3066pp; 571/N3
+  `state:stop`, 359 dates — −0.4241% vs −3.7461%, delta −3.3220pp.
+- Producer lineage note: `owned_claim_attribution.json` producer_sha `bd6e1741` EXACT-matches the
+  archived git blob `76db4a1:factory/scripts/owned_claim_attribution.py`, NOT the current formatted
+  script `8942b8e7` — treat it as ARCHIVED lineage, not current-producer output (no rerun needed,
+  format only). Other current pins (events / helper / model / replay / surfaces / loss / probe /
+  retrieval) verified.
+
+**LOSS-READER RERUN DONE — earlier quarantine superseded (asserted).** Parent fixed two reader
+aggregation bugs (concentration merged N3/N5; `release_before` joined both N views inside each N
+loop → duplicate N3 keys / incorrect denominators). The final formatted full rerun bg_531
+completed in 320.57s; its source pin and the 2,112 unique release keys were asserted in Eval, and
+`concentration` reports 352 N-separated cells matching the decomposition (release bounds
+re-asserted in the same cell on the next pass); max cash residual 4.529709940470639e-14. The
+earlier "do not publish" quarantine is superseded; the historical warning is retained. Core policy
+results and cash reconciliation were never affected.
+
+**CAUSAL STATUS CORRECTION (same day, appended).** The FVI8 (eight-event fitted value
+iteration) and first `policy_return` numbers above are **PROVISIONAL and NOT a valid causal
+EV assessment**: (1) future-status peer/scanner leakage in the inherited predictors;
+(2) the strict `next_sequence` liquidation pointer skipped same-open chronological releases;
+(3) excessive unused-suffix censoring (outcome status frozen into the fit mask);
+(4) the `value_iteration` strict-control entry gate wrongly applied to `policy_return`.
+Corrections are landed in `owned_claim_*.py` source with **8 passing regression proofs**
+(`factory/scripts/test_owned_claim_causality.py`); the full corrected 533-event rebuild and
+the 383 test-day two-method (FVI8 + `policy_return`) replays are now **COMPLETE** — see
+CORRECTED RESULTS above: both artifacts exist, reconcile to 4.53e-14, and report 0/176
+net-positive cells in each method. Old numbers stay
+as historical INVALID-AS-CAUSAL observations, not erased, and are not a roster falsification.
+N3/N5 are independent economic views; original entry is sunk while fresh re-entry carries its
+own cost hurdle; causal quantities are fixed original-share/fixed-buy and price-gap funding is
+UNKNOWN; no protected-half read, freeze or deployment. First+5% push moves and the dollar-window
+anatomy remain descriptively useful. The exploratory push-legs / recovery-retrieval /
+probe-reserve scripts (EXP-85) are now COMPLETE (bg_523, 705.56s): three canaries passed and the
+full outcomes are reported above as discovery anatomy/diagnostics only — no policy, classifier or
+promoted edge; units differ per diagnostic. Bot: NOT closed — pending restart-to-existing OCO
+integration and final gates (obsolete T5 failure counts are not the latest boundary). No live
+code/flags touched (H025 constants/signals/sizing preserved).
 
 ## UPDATE 2026-10-03 — research takeover: harvesting, not selection substitution
 

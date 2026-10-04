@@ -1,6 +1,19 @@
 # STATE.md — Top-Gainer Research Factory
 
-**Last updated**: 2026-08-28
+> **Current status (2026-10-03)**: append-only chronicle — read the tail first. The latest lane
+> is the owned-claim / lifecycle discovery. Its first model numbers (the 8-event fitted value
+> iteration, "FVI8", and the first `policy_return` pass) were **PROVISIONAL / INVALID-AS-CAUSAL**
+> (future-status peer/scanner leakage, strict-pointer skipping of same-open releases,
+> over-censoring of the fit mask, misapplied strict-control entry gate). The corrected 533-event
+> rebuild and 383 test-day two-method replays are now **COMPLETE**: 0/176 net-positive cells in
+> each method (352 combined) at 100/150bps, cash reconciliation 4.53e-14, **no edge**.
+> Declared machine `source_correction_status: NOT_VERIFIED` (`owned_claim_findings.json`) — no
+> structured source-correction verification record published; separately observed parent
+> source/runtime checks passed (source pins, 8 financial regressions, review PASS). Three
+> exploratory diagnostics (push/probe/retrieval) also complete — anatomy only, no policy/P&L. See
+> the 2026-10-03 tail entries.
+
+**Last updated**: 2026-08-28 (initial snapshot; chronicle continues to 2026-10-03)
 **Phase**: 2025-06 AND 2025-05 CERTIFIED (both with microstructure adjudications),
 on Drive. H006 tail + H009 faithful replicated on May: NOT ROBUST (H006 edge →~0,
 H009 edge halved). H007/H010 killed. Next: download+certify 2025-07 as the true
@@ -2898,3 +2911,126 @@ surfaces, not rules. Next controlled correction: full future learned-policy
 cashflow targets, not an eight-event planning horizon (540 stop exits median09:10).
 Artifacts owned_claim_contract/attribution/policy_discovery/surfaces.json.
 No protected-half outcomes, freeze, bot change, or promoted executable edge.
+
+## 2026-10-03 (later) — owned-claim status correction: FVI8 / first policy_return are PROVISIONAL
+
+The FVI8 (eight-event fitted value iteration) and first `policy_return` model numbers in the
+entry above are **not a valid causal EV assessment** and must not be read as evidence about the
+roster or the thesis. Four defects invalidate them AS CAUSAL:
+
+1. **Future-status peer/scanner leakage** — the inherited peer/N3/N5 scanner predictors were
+   built from a peer's FINAL fill/block/missing status, so availability could move on future
+   information. Rebuilt as-of from observed `decision_px`/`px` only
+   (`owned_claim_observable_peers.py`).
+2. **Strict-pointer skipped chronological release** — the value-iteration walk used the strict
+   `next_sequence` liquidation pointer, which skips a release that reprints the same opening and
+   reports a later print instead of the correct zero incremental price.
+3. **Excessive unused-suffix censoring** — outcome `status` was frozen into the fit mask before
+   iteration, so an early finite stop ahead of an unused unknown/bad terminal was censored.
+4. **Adaptive entry-point control gate** — `policy_return` was forced through the strict-control
+   `classify`/`fold_weights` gate; it must enter on its own per-iteration chosen-exit support.
+
+Corrections are landed in source (`owned_claim_events/value/replay/attribution/surfaces.py`,
+`owned_claim_observable_peers.py`, `owned_claim_policy_targets.py`) with **8 passing regression
+proofs** in `factory/scripts/test_owned_claim_causality.py`: as-of context ignores future fill/
+status; a same-open reprint release is a known zero, not the strict later print; an early release
+stays known when an unused terminal is broken; an unavailable chosen exit is excluded, not zeroed;
+one settled-receipt-funded re-entry at the causal decision mark; an unaffordable execution gap is
+UNKNOWN, not resized; proceeds are spendable only after the execution minute; and `policy_return`
+enters without the strict-control gate.
+
+The **full corrected 533-event rebuild and the 383 test-day two-method (FVI8 + `policy_return`)
+replays are PENDING** — no corrected artifact exists, so no corrected result may be called
+"passed" yet. The old numbers (all-176 cells negative, best N3/569 tape net −0.508%, etc.) are
+preserved as **historical/provisional observations only**, not erased and not a roster
+falsification. Standing qualifications: N3 and N5 are independent economic views (neither repairs
+the other); original-claim entry is sunk while fresh re-entry carries a separate cost hurdle;
+causal quantities are fixed original-share/fixed-buy and price-gap funding is UNKNOWN; no
+protected-half read, no freeze, no deployment. Descriptively useful regardless of the causal
+verdict: the clean first+5% push/dollar-horizon anatomy and the before-13:00 next-open sale-proxy
+surface. The user authorizes the data-driven exploratory push-legs / recovery-retrieval /
+probe-reserve scripts as they are being implemented — that authorizes the implementation, not any
+outcome from it. No new IDs, no freeze, no protected-half outcome read.
+
+## 2026-10-03 (later still) — owned-claim corrected rebuild + two-method replays COMPLETE (no edge)
+
+The corrected full-ruler rebuild and both 383 test-day replays the entry above called PENDING are
+now **COMPLETE**; the FVI8 / first-`policy_return` numbers are **historical INVALID-AS-CAUSAL**
+only. This entry supersedes the "PENDING" wording above.
+
+Corrected evidence (discovery half only, 2021-02-01..2023-03-14): 533 days, 673,035 causal events,
+160 tape-view feature columns (state90 / history134 / tape160), 9,895 claims, 638,198 valid rows,
+24,942 unknown rows, 0 beyond-session; three expanding chronological folds = 383 test days. Two
+methods completed on 100/150bps: `value_iteration` (control) and `policy_return` (full
+learned-policy cashflows), each 176 cells — **0/176 net-positive in EACH method (352 cells
+combined), no positive-EV executable cell.**
+
+* Control (`owned_claim_policy_discovery.json`) least-negative cell: 571/N3/50bps `state:stop` net
+  −0.5140% (gross +0.4475%, modeled fees 0.9615%; 380/383 known days); best N5 control 571
+  `state:stop` −0.6631%.
+* Full policy (`owned_claim_policy_full_discovery.json`) is materially worse: N3 least-negative 540
+  `fade` −2.4535% (gross −1.5395%); best N3 stop 540 `tape:stop` net −3.6058%; best N5 stop 560
+  `tape:stop` net −2.9706%.
+* Cash/fee reconciliation over 704 books: max |Σ member net − Σ daily ret| =
+  4.529709940470639e-14 (common-day subset 4.263256414560601e-14).
+* Eight financial regressions passed (parent-exercised) in
+  `factory/scripts/test_owned_claim_causality.py`.
+
+Verdict unchanged and conservative: no positive-EV mechanism; a failed harvesting instrument, NOT
+a roster falsification. `source_correction_status: NOT_VERIFIED` **[binding status; an interim
+'VERIFIED' relabel in the 2026-10-03 (final) entry below was an overclaim and has been withdrawn —
+the declared status stays NOT_VERIFIED]** — the corrected artifacts exist
+and reconcile, but no structured source-correction verification record exists, so this is
+completed-run evidence, not a certified edge.
+
+**QUARANTINE [SUPERSEDED by the 2026-10-03 (final) entry below — loss reader reran; attribution now
+publishable, final pins/group-invariant assertions pending]:** the pre-rerun `owned_claim_loss_sources.json`'s `concentration` and `release_before`
+attribution were not publishable
+— parent fixed two reader grouping bugs after the full loss run (concentration merged N3/N5;
+release_before joined both N views inside each N loop → duplicate N3 keys / incorrect
+denominators); reader rerun pending. Standing qualifications: N3/N5 independent; original entry
+sunk vs fresh re-entry cost hurdle; fixed-share causal quantities and price-gap funding UNKNOWN; no
+protected-half read, freeze, deployment or quote certification. The exploratory push-legs /
+recovery-retrieval / probe-reserve scripts passed three actual canaries; their full outcomes remain
+PENDING (no outcome claimed). Bot offline: earlier fixes are NOT closed — latest review found six
+additional defects; no live code/flags touched.
+
+## 2026-10-03 (final) — exploratory diagnostics landed; loss-reader rerun closes quarantine [status correction: declared source_correction_status stays NOT_VERIFIED]
+
+Compact follow-up to the entry above (same EXP-85; no new hypothesis ID).
+
+* **Provenance [CORRECTED — original 'VERIFIED' phrasing was an overclaim, withdrawn].** The
+  declared machine `source_correction_status` remains **NOT_VERIFIED** (`owned_claim_findings.json`
+  actual value); no structured source-correction verification record was published into the reader
+  inputs. SEPARATELY OBSERVED (not the same claim): parent source/runtime checks passed — bg_523
+  source pins observed (push `provenance.script_sha256` matches; top `source_sha256` composite), 8
+  financial regressions passed, EconomicAssumptionReview review PASS. No alpha validated; still no
+  quote certification, freeze, deployment or protected-half read.
+* **Loss-reader quarantine superseded (asserted).** Both reader grouping bugs fixed; the final
+  formatted full rerun bg_531 completed 320.57s, its source pin and the 2,112 unique release keys
+  were asserted in Eval, and `concentration` shows 352 N-separated cells matching the decomposition
+  (release bounds re-asserted in the same cell next pass); max cash residual 4.529709940470639e-14.
+  Attribution may now be published; historical warning retained. Core policy results and cash
+  reconciliation were never affected.
+* **Three exploratory diagnostics complete (bg_523, 705.56s), discovery-only — none a validated
+  policy or edge; UNITS DIFFER.** `owned_claim_push_legs.json` (NOT a portfolio-P&L surface —
+  causal first-push dollar anatomy): 533 dates / 9,895
+  claims / 5,575 first pushes (2,791 clean, 2,784 damaged) / 63,424 declared-leg events;
+  pooled-clock N3 clean hold increment $/100 +0.4887 at 15m [CI −0.3885,+1.3673], −0.5939 at 30m,
+  −2.3122 at 60m, −3.8442 at 120m. `owned_claim_probe_reserve.json` (IS a modeled portfolio
+  cash/wealth endpoint diagnostic): 48 frontier cells, early
+  endpoint 0 positive; late endpoint 2 positive only (540/N3/100bps 15m +0.019334% SE 0.120457%,
+  30m +0.102710% SE 0.200719%; break-even α 0.008657 / 0.044336); all 150bps and all N5 late cells
+  non-positive. `owned_claim_retrieval.json` (NOT a portfolio-P&L surface — held-out
+  retrieval-scalar evidence): evidence true, 3 fixed folds, 32,514 anchors, 75,076
+  queries; pooled-focus expected-positive realised $/100 negative every horizon/N/mode; scalar
+  TRAIN baseline lower/equal RMSE in 77/80 cells (all 16 focus); no classifier. Paired parent calc
+  (EXACT same clock/N/cost/policy/date; no cross-clock causal comparison): 540/N3 `tape:stop` 367
+  dates control −1.2992% vs full −3.6058% (delta −2.3066pp); 571/N3 `state:stop` 359 dates
+  −0.4241% vs −3.7461% (delta −3.3220pp).
+* **Producer lineage note:** `owned_claim_attribution.json` producer_sha `bd6e1741` EXACT-matches
+  archived git blob `76db4a1` (historical `owned_claim_attribution.py`), NOT the current formatted
+  script `8942b8e7` — ARCHIVED lineage, not current-producer output (no rerun needed, format only);
+  other current pins (events/helper/model/replay/surfaces/loss/probe/retrieval) verified.
+* **Bot:** NOT closed — pending restart-to-existing OCO integration and final gates (obsolete T5
+  failure counts are not the latest boundary). No live code/flags touched.

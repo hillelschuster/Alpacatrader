@@ -1,6 +1,6 @@
 # HANDOFF — Flush-Bid Top-Gainer Mechanism
 
-**Written 2026-09-11, end of day-1 live paper session. For the active BASKET Phase-2 program, read §17 first; it supersedes this document's old research-roadmap framing while preserving the flush-bid/live-operational record.**
+**Written 2026-09-11; current research entry is §20 (2026-10-03 owned-claim discovery). It supersedes the older research entry points below. The frozen H025 specification and historical live-operational records remain separate; old account/process observations are not current broker truth.**
 
 **This file is the single project anchor.** Do not create parallel anchor documents; durable
 philosophy lives in `researches/INTENT.md` and is *pointed to* from here, not duplicated.
@@ -8,8 +8,8 @@ philosophy lives in `researches/INTENT.md` and is *pointed to* from here, not du
 **Durability split.** §0–§11 are the **durable core** (objective, the frozen flush-bid spec,
 the evidence base, live systems, environment, research discipline, key-file index). They change
 only by deliberate amendment. **§12 onward is live state**: dated research records, expected to
-change, superseded by later sections where they conflict; §17 is the BASKET research handoff and
-§19 is the current C1-era state.
+change, superseded by later sections where they conflict. §20 is the current research
+handoff; §17–§19 retain historical BASKET/C1 evidence.
 
 **Authority rule.** When a new verified result materially changes the thesis, the economic center,
 or the known evidence, update this file **immediately** — do not let contradictory context
@@ -407,7 +407,7 @@ negative (Study B + EXIT-01). Files: `factory/scripts/lb18_exit.py`,
 
 ---
 
-## 16. Latest state (2026-09-13...) — superseded by §16.1 for research; forward paper unchanged
+## 16. Latest state (2026-09-13...) — research superseded by §20; paper observations below are historical
 ### §16.1 UPDATE 2026-09-27 — BASKET Phase 1 (ATLAS measurement) CLOSED; Phase 2 = E1 execution test
 **§16.2 (2026-09-28): ATLAS Phase 2 also CLOSED** — E1 (management by exhaustion score) has no dollar
 increment over the trivial giveback:10 ruler (its conditional niche was a look-ahead artifact), and E3
@@ -1230,3 +1230,51 @@ de-leveraging explanation) are explicitly listed as things to interrogate.
 `researches/SWARM-SYNTHESIS-20260924.md` (with per-idea mechanism, supporting/contradicting
 evidence, what prior code actually tested, bugs found, and the smallest decisive experiment).
 No new large research branch is launched before that synthesis is reviewed.
+
+## 20. 2026-10-03 — corrected owned-claim discovery and dollar diagnostics
+
+**Checkout:** `basket-phase2-f1`; current truth in `researches/STATE.md` and
+`researches/HYPOTHESES.md`, chronicle in `factory/STATE.md`, experiment EXP-85 / H040.
+Discovery is exactly 533 dates (2021-02-01..2023-03-14), with three expanding folds
+and 383 test dates. No new protected-half outcome read, freeze, or deployment.
+
+**Objective unchanged:** monetize causal early top-gainer optionality, including
+damage/repair, push retention, cash and re-entry; not monster classification.
+Entry is sunk for owned-share comparisons. Fresh buys pay fresh costs, use
+causal fixed quantities and settled cash; unaffordable execution gaps stay UNKNOWN.
+Next-open prices and 100/150bps friction are proxies, not quote/capacity certification.
+
+**Corrected evidence:** 673,035 events / 160 features. Future-status peer leakage,
+chronological same-open release, chosen-exit censoring, and adaptive entry support
+were corrected; eight financial regressions pass. Both full model/replay runs
+completed: 0/176 positive portfolio cells each (352 correlated cells total).
+Control least-negative N3: 571/state:stop, net -0.5140%/day
+(gross +0.4475%, fees 0.9615%; 380/383 known dates).
+Full-policy best modeled N3 stop: 540/tape:stop, -3.6058%;
+N5 stop: 560/tape:stop, -2.9706%. These fail their implementations, not the roster.
+
+**Completed diagnostic extensions:** `owned_claim_push_legs.json`,
+`owned_claim_probe_reserve.json`, `owned_claim_retrieval.json`.
+Push anatomy: 5,575 first pushes / 63,424 declared leg events; pooled-clock
+N3 clean continuation per $100 original claim cash is +0.489 at 15m,
+-0.594 at 30m, -2.312 at 60m, -3.844 at 120m. These pooled estimates must not
+replace individual-clock surfaces or become a selected exit rule.
+Reserve frontier: only 2/48 late endpoints positive, both 540/N3/100bps
+(15m +0.0193% and 30m +0.1027% portfolio, SE 0.1205% and 0.2007%);
+no supported capital-timing edge. Retrieval: 32,514 anchors / 75,076 queries;
+all 16 pooled-focus dollar-forecast cells lose to the TRAIN-mean RMSE baseline,
+and their predicted-positive subsets have negative realized continuation dollars.
+No classifier, portfolio-profit, or universal repair/re-entry claim follows.
+
+**Attribution:** corrected reader completes all 383 dates, cash reconciliation
+<4.6e-14; 352 independent N-keyed concentration cells and 2,112 unique release
+cells. Earlier mixed-N concentration/duplicate-release readouts are superseded.
+Reader-declared `source_correction_status` remains `not_verified` because its
+inputs lack an explicit verification record; observed source-pin/runtime/review
+checks passed. Neither status establishes validated financial alpha.
+
+**Paper lane:** main bot/flags were not modified or restarted; KILL was present
+and no bot/supervisor process was observed in the operational check. Current
+broker exposure is unobserved. Offline worktree execution-safety corrections
+are undergoing asynchronous fill/cancel/exit regression and review closure.
+Keep research out of the frozen H025/A3b bot; do not arm from these diagnostics.
