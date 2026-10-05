@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+
 """Replay stopping-value decisions on the same original roster, exact dollars/shares.
 
 Predictions and event kinds are the ONLY learned action inputs. Future execution and
@@ -7,6 +8,17 @@ no fresh round-trip cost. Settled sale cash is reusable only after exec_et+1.
 Three action diagnostics: stopping only; one repair re-entry; cash redeployment into
 freshly observed positive-value original-roster claims (rotation/reinforcement).
 N3 and N5 are separate original ownership/candidate universes, never combined.
+
+``simulate`` also carries a second ADMISSION axis, keyword-only and defaulting to the
+original behaviour so every pre-existing caller is unchanged:
+
+* ``admission='upfront'`` -- the original roster's virtual fills are executed once each
+  for a reserved ``1/n`` slot.  This is the whole historical engine.
+* ``admission='cash'``   -- the SAME roster starts as pure cash: no initial order, no
+  reservation, no entry fee.  Each claim owns its own ``1/n`` slot and buys only when the
+  forecast clears the round-trip hurdle, because entry is not yet sunk.  A held position
+  is still sold on the sign of the forecast alone (cost hysteresis).  ``cycles`` bounds
+  how many fresh cycles a claim may take.  Reached only by the ``<view>:cash`` policy.
 """
 
 from __future__ import annotations
@@ -35,8 +47,50 @@ def finite(x):
     return x is not None and math.isfinite(float(x))
 
 
-def simulate(rows, roster, predictions, side, n, policy, notional=10000.0):
-    """One day/clock book. A pending sell never manufactures spendable cash."""
+def simulate(
+    rows,
+    roster,
+    predictions,
+    side,
+    n,
+    policy,
+    notional=10000.0,
+    *,
+    admission="upfront",
+    cycles="once",
+):
+    """One day/clock book. A pending sell never manufactures spendable cash.
+
+    ``admission='upfront'`` (the default) is the ORIGINAL roster admission and is
+    byte-identical to the historical engine: every filled claim is bought once at its
+    own ``fill_et``/``fill_px`` for a reserved ``1/n`` cash slot.
+
+    ``admission='cash'`` starts the SAME original roster with NO initial order, NO
+    reservation and NO entry fee: every claim simply owns its ``1/n`` cash slot, so the
+    account holds all cash until a fresh gate actually says buy. Because the roster can
+    hold fewer than ``n`` claims, the slots sum to ``len(roster)/n <= 1`` and the unused
+    remainder stays unassigned global cash -- it is never borrowed across claims and
+    never resized onto one.
+
+    The two thresholds differ because entry is SUNK once held: an owned position is sold
+    on the SIGN of the forecast (core's ``pred < 0`` rule), while a FRESH entry must clear
+    the round-trip hurdle ``2*s/(1-s)`` on the forecast's GROSS magnitude. That is cost
+    hysteresis, not a time or return-count heuristic.
+
+    ``cycles`` is the predeclared entry-count control and counts ACTUAL executed buys,
+    never attempts: ``'once'`` (default) allows each claim exactly one fresh cycle ever;
+    ``'repeat'`` lets a claim re-enter after a sale has actually settled, each re-entry
+    clearing the same hurdle. The first fresh buy is an ENTRY, not a re-entry.
+    """
+    if admission not in ("upfront", "cash"):
+        raise SystemExit(
+            f"unknown admission {admission!r}; only 'upfront' or 'cash' is an admitted mode"
+        )
+    if cycles not in ("once", "repeat"):
+        raise SystemExit(
+            f"unknown cycle control {cycles!r}; only 'once' or 'repeat' is an admitted mode"
+        )
+    cash_mode = admission == "cash"
     ros = {r["ticker"]: r for r in roster if r["rank"] <= n}
     if not ros:
         raise ValueError("empty roster without a known-empty selection contract")
@@ -51,17 +105,30 @@ def simulate(rows, roster, predictions, side, n, policy, notional=10000.0):
     cash = 1.0
     ready_cash = 1.0
     receipts = []
-    claim_cash = dict.fromkeys(ros, 0.0)
+    # In CASH admission each original claim simply owns 1/n of the account from t=0.
+    # With fewer than n claims the slots sum to len(ros)/n < 1 and the remainder stays
+    # unassigned global cash; no claim may borrow it and nothing is ever resized onto one.
+    claim_cash = dict.fromkeys(ros, 1 / n if cash_mode else 0.0)
     shares = dict.fromkeys(ros, 0.0)
     flow = dict.fromkeys(ros, 0.0)
     gross_flow = dict.fromkeys(ros, 0.0)
     fees = dict.fromkeys(ros, 0.0)
     pending = {}
-    entry_reserve = dict.fromkeys(ros, 1 / n)
+    # Nothing is reserved in CASH mode: no initial order exists, so there is no future
+    # commitment holding cash hostage, and reserving would silently forbid every fresh buy.
+    entry_reserve = dict.fromkeys(ros, 0.0 if cash_mode else 1 / n)
     last_release = dict.fromkeys(ros, None)
     reentries = dict.fromkeys(ros, 0)
+    fresh_entries = dict.fromkeys(ros, 0)
     marks = {tk: r["decision_px"] for tk, r in ros.items()}
-    missing = {tk for tk, r in ros.items() if r["status"] == "missing"}
+    # A roster row with no observable market data is a KNOWN cash fact in cash mode: no
+    # order was attempted, so nothing about the outcome is unresolved.  In UPFRONT mode
+    # the same row is an unresolved INITIAL admission, exactly as before.
+    missing = {tk for tk, r in ros.items() if r["status"] == "missing"} if not cash_mode else set()
+    # The original virtual fill is a shadow reference only once it has become PAST.
+    shadow_known = {
+        tk: bool(finite(r.get("fill_et")) and finite(r.get("fill_px"))) for tk, r in ros.items()
+    }
     attempted_unknown = set()
     affordability_unknown = set()
     unresolved_initial = False
@@ -69,6 +136,7 @@ def simulate(rows, roster, predictions, side, n, policy, notional=10000.0):
     snapshots = {}
     max_positions = 0
     exit_times = []
+    settled_receipt = dict.fromkeys(ros, 0.0)
 
     def reserve_total():
         return sum(entry_reserve.values()) + sum(
@@ -85,7 +153,9 @@ def simulate(rows, roster, predictions, side, n, policy, notional=10000.0):
         matured = [x for x in receipts if x[0] <= t]
         for _, owner, amount in matured:
             ready_cash += amount
+            # The ACTUAL net receipt lands in this claim's own slot and nowhere else.
             claim_cash[owner] += amount
+            settled_receipt[owner] += amount
         receipts[:] = [x for x in receipts if x[0] > t]
         for tk in sorted(pending, key=lambda x: pending[x]["side"] == "buy"):
             order = pending[tk]
@@ -107,7 +177,7 @@ def simulate(rows, roster, predictions, side, n, policy, notional=10000.0):
                     if (
                         cost > order["amount"] + 1e-10
                         or cost > ready_cash + 1e-10
-                        or (mode == "reentry" and cost > claim_cash[tk] + 1e-10)
+                        or ((mode == "reentry" or cash_mode) and cost > claim_cash[tk] + 1e-10)
                     ):
                         attempted_unknown.add(tk)
                         affordability_unknown.add(tk)
@@ -125,7 +195,9 @@ def simulate(rows, roster, predictions, side, n, policy, notional=10000.0):
                 if order["initial"]:
                     entry_reserve[tk] = 0.0
                 else:
-                    if mode == "reentry":
+                    if mode == "reentry" or cash_mode:
+                        # Segregated: the buy is funded from THIS claim's own settled slot
+                        # only.  A claim never borrows another claim's money.
                         claim_cash[tk] -= cost
                     else:
                         # Redeployed receipts lose their old segregated owner.
@@ -135,6 +207,7 @@ def simulate(rows, roster, predictions, side, n, policy, notional=10000.0):
                             claim_cash[owner] -= take
                             left -= take
                     reentries[tk] += 1
+                    fresh_entries[tk] += 1
             else:
                 q = min(shares[tk], order["amount"])
                 gross = q * px
@@ -151,26 +224,33 @@ def simulate(rows, roster, predictions, side, n, policy, notional=10000.0):
             fees[tk] += fee
             if q > 1e-12:
                 vol = order.get("volume")
-                fills.append(
-                    {
-                        "day": day,
-                        "clock": clock,
-                        "n": n,
-                        "side_cost": side,
-                        "policy": policy,
-                        "ticker": tk,
-                        "rank": ros[tk]["rank"],
-                        "side": order["side"],
-                        "decision_et": order["decision"],
-                        "exec_et": order["et"],
-                        "px": px,
-                        "shares_per_capital": q,
-                        "gross_fraction": gross,
-                        "fee_fraction": fee,
-                        "reason": order["reason"],
-                        "participation": q * notional / vol if finite(vol) and vol > 0 else None,
-                    }
-                )
+                fill = {
+                    "day": day,
+                    "clock": clock,
+                    "n": n,
+                    "side_cost": side,
+                    "policy": policy,
+                    "ticker": tk,
+                    "rank": ros[tk]["rank"],
+                    "side": order["side"],
+                    "decision_et": order["decision"],
+                    "exec_et": order["et"],
+                    "px": px,
+                    "shares_per_capital": q,
+                    "gross_fraction": gross,
+                    "fee_fraction": fee,
+                    "reason": order["reason"],
+                    "participation": q * notional / vol if finite(vol) and vol > 0 else None,
+                }
+                if cash_mode:
+                    # The two predeclared cycle controls share every other fill key, so
+                    # without this an execution leg cannot be attributed to the book that
+                    # produced it and a per-book fee/order reconciliation cannot join the
+                    # journal to the separately reported cycles cells.  Cash mode only:
+                    # upfront fills keep their historical schema.
+                    fill["admission"] = admission
+                    fill["cycles"] = cycles
+                fills.append(fill)
             del pending[tk]
         max_positions = max(max_positions, sum(q > 1e-12 for q in shares.values()))
         if cash < -1e-9 or ready_cash < -1e-9 or ready_cash > cash + 1e-9:
@@ -218,30 +298,47 @@ def simulate(rows, roster, predictions, side, n, policy, notional=10000.0):
             heapq.heappush(timeline, int(et))
             scheduled.add(int(et))
 
-    for tk, r in ros.items():
-        if r["status"] == "filled":
-            pending[tk] = {
-                "side": "buy",
-                "et": r["fill_et"],
-                "px": r["fill_px"],
-                "amount": 1 / n,
-                "decision": clock,
-                "reason": "initial",
-                "volume": r.get("fill_volume"),
-                "initial": True,
-            }
+    if not cash_mode:
+        # UPFRONT admission only: the original roster's own virtual fills are executed.
+        # In CASH mode there is no initial order at all, hence no reserve and no fee.
+        for tk, r in ros.items():
+            if r["status"] == "filled":
+                pending[tk] = {
+                    "side": "buy",
+                    "et": r["fill_et"],
+                    "px": r["fill_px"],
+                    "amount": 1 / n,
+                    "decision": clock,
+                    "reason": "initial",
+                    "volume": r.get("fill_volume"),
+                    "initial": True,
+                }
     parts = policy.split(":")
     is_model = len(parts) == 2
     view, mode = parts if is_model else (None, None)
+    if cash_mode and not (is_model and mode == "cash"):
+        raise SystemExit(
+            "cash admission is reached only through the '<view>:cash' policy; refusing to "
+            f"reinterpret {policy!r} as a cash-mode policy"
+        )
+    if not cash_mode and is_model and mode == "cash":
+        raise SystemExit(
+            "policy '<view>:cash' requires admission='cash'; it is not an upfront mode"
+        )
     # Stop/re-entry decisions exist only at causal events. Hold needs only fills,
     # snapshots and terminal. Fade retains its full-minute ruler clock.
     points = {clock, se, clock + 5, 585, 630, 690, 780}
-    points.update(int(r["fill_et"]) for r in ros.values() if r["status"] == "filled")
+    if not cash_mode:
+        points.update(int(r["fill_et"]) for r in ros.values() if r["status"] == "filled")
     if is_model:
         points.update(t for tk, t in predictions if tk in ros)
     elif policy == "fade":
         points.update(range(clock, se + 1))
     timeline = [t for t in points if clock <= t <= se]
+    # The fresh-entry hurdle is the round-trip cost of buying AND selling one account
+    # dollar at the modeled per-leg side cost: (1-s)/(1+s) > 1/(1+h)  =>  h = 2s/(1-s).
+    # It is derived from the fee alone -- not tuned, not a target return.
+    hurdle = 2 * side / (1 - side)
     heapq.heapify(timeline)
     scheduled = set(timeline)
     while timeline:
@@ -260,6 +357,27 @@ def simulate(rows, roster, predictions, side, n, policy, notional=10000.0):
         if t == se:
             # Terminal is the accounting boundary, not an assumed harvest time.
             unresolved_initial = any(o["side"] == "buy" and o["initial"] for o in pending.values())
+            # In CASH mode the only admission is a FRESH buy, so an unresolved fresh buy is
+            # the equivalent of the upfront engine's unresolved INITIAL order: a funding
+            # attempt whose outcome is unknown.  It must not be laundered into a known 0
+            # merely because nothing settled by the terminal boundary.
+            unresolved_fresh_tickers = (
+                {
+                    tk
+                    for tk, o in pending.items()
+                    if o["side"] == "buy" and not o["initial"] and finite(o["px"])
+                }
+                if cash_mode
+                else set()
+            )
+            unresolved_fresh = bool(unresolved_fresh_tickers)
+            if unresolved_fresh_tickers:
+                # A finite fresh buy whose execution falls outside the session is a real
+                # funding attempt with an unresolved outcome.  Naming the affected claims
+                # here -- BEFORE the orders are discarded -- is what stops that attempt
+                # being reported as known member cash: their net is null and they appear
+                # in unknown_tickers.  Claims that never traded stay known.
+                attempted_unknown |= unresolved_fresh_tickers
             pending = {tk: o for tk, o in pending.items() if o["side"] == "sell"}
             for tk, q in shares.items():
                 if q > 1e-12 and tk not in pending:
@@ -273,7 +391,19 @@ def simulate(rows, roster, predictions, side, n, policy, notional=10000.0):
             # label_status and sell_* never decide whether the claim deserves capital.
             value = pred.get(f"pred_{view}") if is_model else None
             kinds = pred.get("event_kind", "").split("|")
-            if finite(value) and finite(marks.get(tk)) and marks[tk] > 0:
+            # The original virtual fill price is a SHADOW reference: it exists only for a
+            # claim whose virtual fill actually happened, and it is readable only once that
+            # fill is PAST.  Without it there is no entry anchor, so the magnitude is
+            # undefined and no fresh capital may be committed on this forecast.  (For the
+            # historical upfront paths every predicted claim is a filled claim, so this
+            # guard never changes an action they could previously take.)
+            if (
+                finite(value)
+                and shadow_known[tk]
+                and t > int(ros[tk]["fill_et"])
+                and finite(marks.get(tk))
+                and marks[tk] > 0
+            ):
                 # Model predicts original-share dollar increment; new capital
                 # compares return per CURRENT causal marked dollar.
                 relative = value * ros[tk]["fill_px"] / marks[tk]
@@ -297,7 +427,6 @@ def simulate(rows, roster, predictions, side, n, policy, notional=10000.0):
                 submit(t, tk, "sell", q, row, "state_release" if is_model else "fade")
         # Allocation quantities are based only on cash already settled before this decision.
         free = max(0.0, ready_cash - reserve_total())
-        hurdle = 2 * side / (1 - side)
         if is_model and mode == "reentry":
             for tk, (value, kinds) in sorted(event_values.items(), key=lambda item: -item[1][0]):
                 if (
@@ -334,11 +463,34 @@ def simulate(rows, roster, predictions, side, n, policy, notional=10000.0):
                     current[tk],
                     "reinforce" if shares[tk] > 1e-12 else "rotate_reentry",
                 )
+        if cash_mode:
+            # COST HYSTERESIS, not a time or return-count rule: an owned position is sold
+            # above on the SIGN of the forecast, because its entry is already SUNK.  A
+            # FRESH entry has not paid anything yet, so it must additionally clear the
+            # round-trip hurdle on the forecast's GROSS magnitude.  The hurdle is the
+            # round-trip fee 2*s/(1-s) on a full account dollar, not a tuned threshold.
+            for tk, (value, _kinds) in sorted(event_values.items(), key=lambda item: -item[1][0]):
+                if (
+                    value > hurdle
+                    and shadow_known[tk]
+                    and t > int(ros[tk]["fill_et"])  # the virtual fill must be PAST
+                    and shares[tk] <= 1e-12
+                    and tk not in pending
+                    and (last_release[tk] is None or t > last_release[tk])
+                    and (cycles == "repeat" or fresh_entries[tk] == 0)
+                ):
+                    # Segregated: the buy can only spend THIS claim's own settled slot.
+                    # Its ACTUAL net receipt, never a lifetime-profit figure, and never
+                    # another claim's money.
+                    budget = max(0.0, claim_cash[tk])
+                    if budget > 1e-12:
+                        submit(t, tk, "buy", budget, current[tk], "fresh_entry")
         execute(t)
     unknown = bool(
         missing
         or attempted_unknown
         or unresolved_initial
+        or unresolved_fresh
         or any(q > 1e-10 for q in shares.values())
     )
     if not unknown and abs(sum(flow.values()) - (cash - 1)) > 1e-8:
@@ -383,6 +535,47 @@ def simulate(rows, roster, predictions, side, n, policy, notional=10000.0):
         }
         for tk, r in ros.items()
     ]
+    if cash_mode:
+        # Cash-ledger audit columns.  They are emitted ONLY in cash mode so that the
+        # upfront frames stay byte-identical to the historical engine's output.
+        # ``slot_total`` is the STRUCTURAL assignment at t=0: len(roster)/n, which is < 1
+        # whenever the roster holds fewer than n claims.  That remainder is
+        # ``unassigned_at_start``: unassigned global cash that is never borrowed across
+        # claims and never resized onto one.  ``slots_idle_end`` is what is still sitting
+        # undeployed in the per-claim slots when the book closes.
+        slot_total = len(ros) / n
+        daily.update(
+            {
+                "admission": admission,
+                "cycles": cycles,
+                "hurdle": hurdle,
+                "fresh_entries": sum(fresh_entries.values()),
+                "claims_with_entry": sum(1 for v in fresh_entries.values() if v > 0),
+                "roster_claims": len(ros),
+                "slot_total": slot_total,
+                "unassigned_at_start": 1.0 - slot_total,
+                "slots_idle_end": sum(claim_cash.values()),
+                "settled_receipts_total": sum(settled_receipt.values()),
+                "unresolved_fresh": bool(unresolved_fresh),
+                "unresolved_fresh_tickers": sorted(unresolved_fresh_tickers),
+            }
+        )
+        # ``fresh_entries`` counts EXECUTED fresh buys including the first one; the
+        # historical ``reentries`` column keeps its meaning, which is cycles AFTER the
+        # first.  In cash mode the two are DISTINCT metrics, not aliases: the first fresh
+        # buy is an ENTRY, so it must not inflate a re-entry count.  Upfront rows are
+        # untouched.
+        for member, tk in zip(members, ros, strict=True):
+            member["reentries"] = max(fresh_entries[tk] - 1, 0)
+            member.update(
+                {
+                    "admission": admission,
+                    "cycles": cycles,
+                    "fresh_entries": fresh_entries[tk],
+                    "settled_receipt": settled_receipt[tk],
+                    "cash_slot_end": claim_cash[tk],
+                }
+            )
     return daily, members, fills
 
 
