@@ -25,10 +25,14 @@ region fails multiplicity and measured cost:
 - No entry-state coordinate separates winners from losers within the admitted bands; the
   gating forecast does not order outcomes; `max` view loses.
 
-Verdict: H042 is closed as an extraction candidate; it stands as description. No
-protected-half read, no FREEZE, no deploy. Next: PRE-REG-ENTRY-EV-01 (conditional
-executable continuation surface + entry-location families on the first533; internally
-split; protected block sealed).
+Verdict (formulation-scoped): the tested cash-first implementations have not earned
+deployment (25/50bps under-prices measured crossing cost; 100/150bps survivors too
+weak/tail-dependent to promote). This is NOT a signal-absence or selectivity-negative
+claim — selective admission remains positive structure (gross/trade rises with the fee
+hurdle; economics differ materially from forced-upfront ownership), and entry mechanism
+is a formulation variable. No protected-half read, no FREEZE, no deploy. Next:
+PRE-REG-ENTRY-EV-01 (staged continuation shape → mechanism-specific net dollars + tail
+anatomy; first533 internally split; protected block sealed).
 
 ## OWNED-CLAIM UPDATE 2026-10-05 (later) — H042 cash-first fee-aware ownership, DISCOVERY-POSITIVE-MEANS-NOT-VALIDATED (EXP-87)
 

@@ -38,11 +38,19 @@ but the positive region fails selection-aware statistics and measured execution:
   gating forecast does not order outcomes (P(win>loss) 0.42/0.52); `max` takes 2–3× more
   entries and loses.
 
-**Verdict:** H042 stands as description (the gate does concentrate gross continuation;
-gross per trade rises with the hurdle), NOT as an extraction candidate. Nothing in the
-four-cost lane is promoted; no protected-day read; no FREEZE; bot untouched.
-**Next:** PRE-REG-ENTRY-EV-01 (conditional executable continuation surface + entry-location
-families on the first533; internally split; protected block sealed).
+**Verdict (formulation-scoped):** the tested cash-first implementations have NOT earned
+deployment — at 25/50bps because measured crossing costs (92–116bps RT) exceed the assumed
+friction for those repeated marketable trades, and at 100/150bps because the surviving
+cells are too weak/tail-dependent to promote. This is **not** a signal-absence or
+selectivity-negative conclusion: what stands positive is that selective admission changed
+the economics materially versus forced-upfront ownership (gross per trade rises with the
+derived fee hurdle; the same roster/scores produced a >0 region rather than a uniformly
+negative one), and entry mechanism (crossing vs passive) is a formulation variable, not an
+economic falsification. Nothing in the four-cost lane is promoted; no protected-day read;
+no FREEZE; bot untouched.
+**Next:** PRE-REG-ENTRY-EV-01 (staged: gross continuation shape → mechanism-specific net
+dollars with tail anatomy as real/executable vs artifact; first533 internally split;
+protected block sealed).
 
 ## CURRENT — completed 25/50/100/150bps cash-first discovery (H042 / EXP-87)
 
