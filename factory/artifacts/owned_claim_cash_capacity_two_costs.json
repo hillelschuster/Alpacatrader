@@ -5,7 +5,7 @@
   "non_evidence_notes": [],
   "reader": {
     "script": "/home/hillel/algo projects/worktrees/Alpacatrader/basket-phase2-f1/factory/scripts/owned_claim_cash_capacity.py",
-    "this_script_sha256": "35b8be3e06e305883a42a63a80ca3c3e7d38e402768abf95145fa33a8bf48f76",
+    "this_script_sha256": "c12fa8fd92d57e6bf62cb3727731bdfa76d2c758b99908e159eeb01c6d20997c",
     "lifecycle_study_sha256": "d247ce0788325e7696b152908bc7ef94977a12ec308215ce52ab3ab04022de2c",
     "reuses": "owned_claim_cash_execution.build_pairs, imported unchanged; that module's main() is never invoked and no other helper of it is used",
     "polars_version": "1.44.1",
@@ -84,8 +84,8 @@
       150
     ],
     "per_leg_cost_bps": [
-      50,
-      75
+      50.0,
+      75.0
     ],
     "fee_contract_declared": {
       "per_leg_side_costs": [
@@ -378,7 +378,7 @@
       "clock": 540,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h10:cash",
       "cycles": "once",
@@ -1437,7 +1437,7 @@
       "clock": 540,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h10:cash",
       "cycles": "repeat",
@@ -1486,9 +1486,9 @@
         "books_flagged_unresolved_fresh": 4,
         "named_unresolved_fresh_ticker_days": 4,
         "named_unresolved_fresh_tickers_top": {
-          "DPSI": 1,
-          "PHVS": 1,
           "MSGM": 1,
+          "PHVS": 1,
+          "DPSI": 1,
           "PHUN": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
@@ -2494,7 +2494,7 @@
       "clock": 540,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h120:cash",
       "cycles": "once",
@@ -2542,9 +2542,9 @@
         "books_flagged_unresolved_fresh": 3,
         "named_unresolved_fresh_ticker_days": 3,
         "named_unresolved_fresh_tickers_top": {
-          "ATIF": 1,
+          "MEGL": 1,
           "DWAC": 1,
-          "MEGL": 1
+          "ATIF": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -3549,7 +3549,7 @@
       "clock": 540,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h120:cash",
       "cycles": "repeat",
@@ -3597,9 +3597,9 @@
         "books_flagged_unresolved_fresh": 3,
         "named_unresolved_fresh_ticker_days": 3,
         "named_unresolved_fresh_tickers_top": {
-          "DWAC": 1,
+          "ATIF": 1,
           "MEGL": 1,
-          "ATIF": 1
+          "DWAC": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -4604,7 +4604,7 @@
       "clock": 540,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h15:cash",
       "cycles": "once",
@@ -4652,9 +4652,9 @@
         "books_flagged_unresolved_fresh": 3,
         "named_unresolved_fresh_ticker_days": 3,
         "named_unresolved_fresh_tickers_top": {
-          "PHVS": 1,
           "DPSI": 1,
-          "MSGM": 1
+          "MSGM": 1,
+          "PHVS": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -5659,7 +5659,7 @@
       "clock": 540,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h15:cash",
       "cycles": "repeat",
@@ -5708,10 +5708,10 @@
         "books_flagged_unresolved_fresh": 4,
         "named_unresolved_fresh_ticker_days": 4,
         "named_unresolved_fresh_tickers_top": {
-          "PHUN": 1,
-          "DPSI": 1,
           "PHVS": 1,
-          "MSGM": 1
+          "DPSI": 1,
+          "MSGM": 1,
+          "PHUN": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -6716,7 +6716,7 @@
       "clock": 540,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h1:cash",
       "cycles": "once",
@@ -7788,7 +7788,7 @@
       "clock": 540,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h1:cash",
       "cycles": "repeat",
@@ -7838,8 +7838,8 @@
         "books_flagged_unresolved_fresh": 3,
         "named_unresolved_fresh_ticker_days": 3,
         "named_unresolved_fresh_tickers_top": {
-          "SISI": 1,
           "PHUN": 1,
+          "SISI": 1,
           "ATIF": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
@@ -8845,7 +8845,7 @@
       "clock": 540,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h30:cash",
       "cycles": "once",
@@ -8892,8 +8892,8 @@
         "books_flagged_unresolved_fresh": 2,
         "named_unresolved_fresh_ticker_days": 2,
         "named_unresolved_fresh_tickers_top": {
-          "PHVS": 1,
-          "DWAC": 1
+          "DWAC": 1,
+          "PHVS": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -9898,7 +9898,7 @@
       "clock": 540,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h30:cash",
       "cycles": "repeat",
@@ -9948,9 +9948,9 @@
         "books_flagged_unresolved_fresh": 3,
         "named_unresolved_fresh_ticker_days": 3,
         "named_unresolved_fresh_tickers_top": {
-          "DWAC": 1,
+          "DPSI": 1,
           "PHVS": 1,
-          "DPSI": 1
+          "DWAC": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -10955,7 +10955,7 @@
       "clock": 540,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h3:cash",
       "cycles": "once",
@@ -12025,7 +12025,7 @@
       "clock": 540,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h3:cash",
       "cycles": "repeat",
@@ -12075,9 +12075,9 @@
         "books_flagged_unresolved_fresh": 4,
         "named_unresolved_fresh_ticker_days": 4,
         "named_unresolved_fresh_tickers_top": {
+          "MSGM": 1,
           "PHUN": 1,
           "DPSI": 1,
-          "MSGM": 1,
           "PHVS": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
@@ -13101,7 +13101,7 @@
       "clock": 540,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h5:cash",
       "cycles": "once",
@@ -13148,8 +13148,8 @@
         "books_flagged_unresolved_fresh": 2,
         "named_unresolved_fresh_ticker_days": 2,
         "named_unresolved_fresh_tickers_top": {
-          "PALT": 1,
-          "DPSI": 1
+          "DPSI": 1,
+          "PALT": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -14172,7 +14172,7 @@
       "clock": 540,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h5:cash",
       "cycles": "repeat",
@@ -14226,16 +14226,16 @@
         "books_flagged_unresolved_fresh": 9,
         "named_unresolved_fresh_ticker_days": 10,
         "named_unresolved_fresh_tickers_top": {
-          "PHVS": 1,
-          "GCT": 1,
-          "DWAC": 1,
+          "DPSI": 1,
+          "AMV": 1,
           "MEGL": 1,
+          "DWAC": 1,
+          "PHVS": 1,
+          "MSGM": 1,
+          "GCT": 1,
           "PHUN": 1,
           "JSPR": 1,
-          "AMV": 1,
-          "PALT": 1,
-          "DPSI": 1,
-          "MSGM": 1
+          "PALT": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -15240,7 +15240,7 @@
       "clock": 540,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h60:cash",
       "cycles": "once",
@@ -15288,8 +15288,8 @@
         "books_flagged_unresolved_fresh": 2,
         "named_unresolved_fresh_ticker_days": 2,
         "named_unresolved_fresh_tickers_top": {
-          "ABOS": 1,
-          "PHVS": 1
+          "PHVS": 1,
+          "ABOS": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -16294,7 +16294,7 @@
       "clock": 540,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h60:cash",
       "cycles": "repeat",
@@ -16343,9 +16343,9 @@
         "books_flagged_unresolved_fresh": 3,
         "named_unresolved_fresh_ticker_days": 3,
         "named_unresolved_fresh_tickers_top": {
-          "PHVS": 1,
           "ABOS": 1,
-          "MEGL": 1
+          "MEGL": 1,
+          "PHVS": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -17350,7 +17350,7 @@
       "clock": 540,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "max:cash",
       "cycles": "once",
@@ -17398,8 +17398,8 @@
         "books_flagged_unresolved_fresh": 2,
         "named_unresolved_fresh_ticker_days": 2,
         "named_unresolved_fresh_tickers_top": {
-          "PALT": 1,
-          "ATIF": 1
+          "ATIF": 1,
+          "PALT": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -18410,7 +18410,7 @@
       "clock": 540,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "max:cash",
       "cycles": "repeat",
@@ -18465,12 +18465,12 @@
         "books_flagged_unresolved_fresh": 6,
         "named_unresolved_fresh_ticker_days": 6,
         "named_unresolved_fresh_tickers_top": {
-          "ATIF": 1,
-          "PALT": 1,
           "ABOS": 1,
-          "MSGM": 1,
+          "PALT": 1,
+          "PHVS": 1,
           "DPSI": 1,
-          "PHVS": 1
+          "MSGM": 1,
+          "ATIF": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -19475,7 +19475,7 @@
       "clock": 540,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h10:cash",
       "cycles": "once",
@@ -19522,8 +19522,8 @@
         "books_flagged_unresolved_fresh": 2,
         "named_unresolved_fresh_ticker_days": 2,
         "named_unresolved_fresh_tickers_top": {
-          "PHVS": 1,
-          "DPSI": 1
+          "DPSI": 1,
+          "PHVS": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -20528,7 +20528,7 @@
       "clock": 540,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h10:cash",
       "cycles": "repeat",
@@ -20577,10 +20577,10 @@
         "books_flagged_unresolved_fresh": 4,
         "named_unresolved_fresh_ticker_days": 4,
         "named_unresolved_fresh_tickers_top": {
-          "PHVS": 1,
+          "DPSI": 1,
           "MSGM": 1,
-          "PHUN": 1,
-          "DPSI": 1
+          "PHVS": 1,
+          "PHUN": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -21585,7 +21585,7 @@
       "clock": 540,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h120:cash",
       "cycles": "once",
@@ -22640,7 +22640,7 @@
       "clock": 540,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h120:cash",
       "cycles": "repeat",
@@ -22688,8 +22688,8 @@
         "books_flagged_unresolved_fresh": 3,
         "named_unresolved_fresh_ticker_days": 3,
         "named_unresolved_fresh_tickers_top": {
-          "MEGL": 1,
           "DWAC": 1,
+          "MEGL": 1,
           "ATIF": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
@@ -23695,7 +23695,7 @@
       "clock": 540,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h15:cash",
       "cycles": "once",
@@ -24748,7 +24748,7 @@
       "clock": 540,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h15:cash",
       "cycles": "repeat",
@@ -25803,7 +25803,7 @@
       "clock": 540,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h1:cash",
       "cycles": "once",
@@ -26861,7 +26861,7 @@
       "clock": 540,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h1:cash",
       "cycles": "repeat",
@@ -27914,7 +27914,7 @@
       "clock": 540,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h30:cash",
       "cycles": "once",
@@ -28979,7 +28979,7 @@
       "clock": 540,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h30:cash",
       "cycles": "repeat",
@@ -30030,7 +30030,7 @@
       "clock": 540,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h3:cash",
       "cycles": "once",
@@ -31097,7 +31097,7 @@
       "clock": 540,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h3:cash",
       "cycles": "repeat",
@@ -31146,9 +31146,9 @@
         "books_flagged_unresolved_fresh": 3,
         "named_unresolved_fresh_ticker_days": 3,
         "named_unresolved_fresh_tickers_top": {
+          "MSGM": 1,
           "PHUN": 1,
-          "DPSI": 1,
-          "MSGM": 1
+          "DPSI": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -32171,7 +32171,7 @@
       "clock": 540,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h5:cash",
       "cycles": "once",
@@ -33240,7 +33240,7 @@
       "clock": 540,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h5:cash",
       "cycles": "repeat",
@@ -33291,13 +33291,13 @@
         "books_flagged_unresolved_fresh": 6,
         "named_unresolved_fresh_ticker_days": 7,
         "named_unresolved_fresh_tickers_top": {
-          "MEGL": 1,
-          "AMV": 1,
-          "MSGM": 1,
-          "PHUN": 1,
           "DWAC": 1,
+          "MEGL": 1,
           "JSPR": 1,
-          "DPSI": 1
+          "PHUN": 1,
+          "DPSI": 1,
+          "MSGM": 1,
+          "AMV": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -34302,7 +34302,7 @@
       "clock": 540,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h60:cash",
       "cycles": "once",
@@ -35354,7 +35354,7 @@
       "clock": 540,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h60:cash",
       "cycles": "repeat",
@@ -36406,7 +36406,7 @@
       "clock": 540,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "max:cash",
       "cycles": "once",
@@ -36454,8 +36454,8 @@
         "books_flagged_unresolved_fresh": 2,
         "named_unresolved_fresh_ticker_days": 2,
         "named_unresolved_fresh_tickers_top": {
-          "ATIF": 1,
-          "PHVS": 1
+          "PHVS": 1,
+          "ATIF": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -37460,7 +37460,7 @@
       "clock": 540,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "max:cash",
       "cycles": "repeat",
@@ -37513,9 +37513,9 @@
         "books_flagged_unresolved_fresh": 5,
         "named_unresolved_fresh_ticker_days": 5,
         "named_unresolved_fresh_tickers_top": {
+          "DPSI": 1,
           "ABOS": 1,
           "MSGM": 1,
-          "DPSI": 1,
           "ATIF": 1,
           "PHVS": 1
         },
@@ -38522,7 +38522,7 @@
       "clock": 540,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h10:cash",
       "cycles": "once",
@@ -38569,8 +38569,8 @@
         "books_flagged_unresolved_fresh": 2,
         "named_unresolved_fresh_ticker_days": 2,
         "named_unresolved_fresh_tickers_top": {
-          "PHVS": 1,
-          "PALT": 1
+          "PALT": 1,
+          "PHVS": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -39593,7 +39593,7 @@
       "clock": 540,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h10:cash",
       "cycles": "repeat",
@@ -39642,10 +39642,10 @@
         "books_flagged_unresolved_fresh": 4,
         "named_unresolved_fresh_ticker_days": 4,
         "named_unresolved_fresh_tickers_top": {
-          "PALT": 1,
+          "PHVS": 1,
           "FSRD": 1,
-          "PHUN": 1,
-          "PHVS": 1
+          "PALT": 1,
+          "PHUN": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -40650,7 +40650,7 @@
       "clock": 540,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h120:cash",
       "cycles": "once",
@@ -41701,7 +41701,7 @@
       "clock": 540,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h120:cash",
       "cycles": "repeat",
@@ -42752,7 +42752,7 @@
       "clock": 540,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h15:cash",
       "cycles": "once",
@@ -43803,7 +43803,7 @@
       "clock": 540,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h15:cash",
       "cycles": "repeat",
@@ -43850,8 +43850,8 @@
         "books_flagged_unresolved_fresh": 2,
         "named_unresolved_fresh_ticker_days": 2,
         "named_unresolved_fresh_tickers_top": {
-          "PHUN": 1,
-          "FSRD": 1
+          "FSRD": 1,
+          "PHUN": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -44856,7 +44856,7 @@
       "clock": 540,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h1:cash",
       "cycles": "once",
@@ -44906,11 +44906,11 @@
         "books_flagged_unresolved_fresh": 5,
         "named_unresolved_fresh_ticker_days": 5,
         "named_unresolved_fresh_tickers_top": {
-          "PHVS": 1,
-          "JSPR": 1,
-          "FSRD": 1,
           "PALT": 1,
-          "DWAC": 1
+          "DWAC": 1,
+          "JSPR": 1,
+          "PHVS": 1,
+          "FSRD": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -45933,7 +45933,7 @@
       "clock": 540,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h1:cash",
       "cycles": "repeat",
@@ -45984,12 +45984,12 @@
         "books_flagged_unresolved_fresh": 5,
         "named_unresolved_fresh_ticker_days": 6,
         "named_unresolved_fresh_tickers_top": {
+          "JSPR": 1,
+          "PHVS": 1,
+          "PALT": 1,
           "PHUN": 1,
           "DWAC": 1,
-          "PHVS": 1,
-          "FSRD": 1,
-          "PALT": 1,
-          "JSPR": 1
+          "FSRD": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -47012,7 +47012,7 @@
       "clock": 540,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h30:cash",
       "cycles": "once",
@@ -47059,8 +47059,8 @@
         "books_flagged_unresolved_fresh": 2,
         "named_unresolved_fresh_ticker_days": 2,
         "named_unresolved_fresh_tickers_top": {
-          "FSRD": 1,
-          "PHVS": 1
+          "PHVS": 1,
+          "FSRD": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -48083,7 +48083,7 @@
       "clock": 540,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h30:cash",
       "cycles": "repeat",
@@ -48132,10 +48132,10 @@
         "books_flagged_unresolved_fresh": 4,
         "named_unresolved_fresh_ticker_days": 4,
         "named_unresolved_fresh_tickers_top": {
-          "DPSI": 1,
+          "FSRD": 1,
           "PHVS": 1,
           "PHUN": 1,
-          "FSRD": 1
+          "DPSI": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -49140,7 +49140,7 @@
       "clock": 540,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h3:cash",
       "cycles": "once",
@@ -49190,11 +49190,11 @@
         "books_flagged_unresolved_fresh": 5,
         "named_unresolved_fresh_ticker_days": 5,
         "named_unresolved_fresh_tickers_top": {
-          "JSPR": 1,
+          "PHVS": 1,
+          "FSRD": 1,
           "DPSI": 1,
           "PALT": 1,
-          "FSRD": 1,
-          "PHVS": 1
+          "JSPR": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -50199,7 +50199,7 @@
       "clock": 540,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h3:cash",
       "cycles": "repeat",
@@ -50251,12 +50251,12 @@
         "books_flagged_unresolved_fresh": 6,
         "named_unresolved_fresh_ticker_days": 6,
         "named_unresolved_fresh_tickers_top": {
-          "PALT": 1,
-          "DPSI": 1,
-          "FSRD": 1,
-          "JSPR": 1,
           "PHUN": 1,
-          "PHVS": 1
+          "FSRD": 1,
+          "PALT": 1,
+          "JSPR": 1,
+          "PHVS": 1,
+          "DPSI": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -51261,7 +51261,7 @@
       "clock": 540,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h5:cash",
       "cycles": "once",
@@ -51309,9 +51309,9 @@
         "books_flagged_unresolved_fresh": 3,
         "named_unresolved_fresh_ticker_days": 3,
         "named_unresolved_fresh_tickers_top": {
-          "PHVS": 1,
+          "DPSI": 1,
           "FSRD": 1,
-          "DPSI": 1
+          "PHVS": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -52316,7 +52316,7 @@
       "clock": 540,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h5:cash",
       "cycles": "repeat",
@@ -52367,12 +52367,12 @@
         "books_flagged_unresolved_fresh": 6,
         "named_unresolved_fresh_ticker_days": 6,
         "named_unresolved_fresh_tickers_top": {
+          "JSPR": 1,
+          "PHUN": 1,
           "PHVS": 1,
           "DPSI": 1,
-          "AMV": 1,
-          "PHUN": 1,
-          "JSPR": 1,
-          "FSRD": 1
+          "FSRD": 1,
+          "AMV": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -53395,7 +53395,7 @@
       "clock": 540,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h60:cash",
       "cycles": "once",
@@ -54464,7 +54464,7 @@
       "clock": 540,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h60:cash",
       "cycles": "repeat",
@@ -55515,7 +55515,7 @@
       "clock": 540,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "max:cash",
       "cycles": "once",
@@ -55563,9 +55563,9 @@
         "books_flagged_unresolved_fresh": 3,
         "named_unresolved_fresh_ticker_days": 3,
         "named_unresolved_fresh_tickers_top": {
-          "PHVS": 1,
           "SISI": 1,
-          "PALT": 1
+          "PALT": 1,
+          "PHVS": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -56588,7 +56588,7 @@
       "clock": 540,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "max:cash",
       "cycles": "repeat",
@@ -56639,9 +56639,9 @@
         "books_flagged_unresolved_fresh": 3,
         "named_unresolved_fresh_ticker_days": 3,
         "named_unresolved_fresh_tickers_top": {
-          "SISI": 1,
           "PALT": 1,
-          "PHVS": 1
+          "PHVS": 1,
+          "SISI": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -57646,7 +57646,7 @@
       "clock": 540,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h10:cash",
       "cycles": "once",
@@ -58699,7 +58699,7 @@
       "clock": 540,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h10:cash",
       "cycles": "repeat",
@@ -58747,9 +58747,9 @@
         "books_flagged_unresolved_fresh": 3,
         "named_unresolved_fresh_ticker_days": 3,
         "named_unresolved_fresh_tickers_top": {
-          "FSRD": 1,
           "PHUN": 1,
-          "PHVS": 1
+          "PHVS": 1,
+          "FSRD": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -59754,7 +59754,7 @@
       "clock": 540,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h120:cash",
       "cycles": "once",
@@ -60805,7 +60805,7 @@
       "clock": 540,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h120:cash",
       "cycles": "repeat",
@@ -61856,7 +61856,7 @@
       "clock": 540,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h15:cash",
       "cycles": "once",
@@ -62903,7 +62903,7 @@
       "clock": 540,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h15:cash",
       "cycles": "repeat",
@@ -63954,7 +63954,7 @@
       "clock": 540,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h1:cash",
       "cycles": "once",
@@ -64002,9 +64002,9 @@
         "books_flagged_unresolved_fresh": 3,
         "named_unresolved_fresh_ticker_days": 3,
         "named_unresolved_fresh_tickers_top": {
-          "PALT": 1,
+          "FSRD": 1,
           "DWAC": 1,
-          "FSRD": 1
+          "PALT": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -65027,7 +65027,7 @@
       "clock": 540,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h1:cash",
       "cycles": "repeat",
@@ -65078,8 +65078,8 @@
         "named_unresolved_fresh_tickers_top": {
           "DWAC": 1,
           "PHUN": 1,
-          "FSRD": 1,
-          "PALT": 1
+          "PALT": 1,
+          "FSRD": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -66084,7 +66084,7 @@
       "clock": 540,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h30:cash",
       "cycles": "once",
@@ -66131,8 +66131,8 @@
         "books_flagged_unresolved_fresh": 2,
         "named_unresolved_fresh_ticker_days": 2,
         "named_unresolved_fresh_tickers_top": {
-          "FSRD": 1,
-          "DPSI": 1
+          "DPSI": 1,
+          "FSRD": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -67137,7 +67137,7 @@
       "clock": 540,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h30:cash",
       "cycles": "repeat",
@@ -67185,9 +67185,9 @@
         "books_flagged_unresolved_fresh": 3,
         "named_unresolved_fresh_ticker_days": 3,
         "named_unresolved_fresh_tickers_top": {
-          "DPSI": 1,
+          "PHUN": 1,
           "FSRD": 1,
-          "PHUN": 1
+          "DPSI": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -68192,7 +68192,7 @@
       "clock": 540,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h3:cash",
       "cycles": "once",
@@ -68241,10 +68241,10 @@
         "books_flagged_unresolved_fresh": 4,
         "named_unresolved_fresh_ticker_days": 4,
         "named_unresolved_fresh_tickers_top": {
-          "PALT": 1,
-          "JSPR": 1,
           "PHVS": 1,
-          "DPSI": 1
+          "JSPR": 1,
+          "DPSI": 1,
+          "PALT": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -69255,7 +69255,7 @@
       "clock": 540,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h3:cash",
       "cycles": "repeat",
@@ -69305,11 +69305,11 @@
         "books_flagged_unresolved_fresh": 5,
         "named_unresolved_fresh_ticker_days": 5,
         "named_unresolved_fresh_tickers_top": {
-          "PHUN": 1,
+          "PHVS": 1,
+          "JSPR": 1,
           "DPSI": 1,
           "PALT": 1,
-          "PHVS": 1,
-          "JSPR": 1
+          "PHUN": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -70314,7 +70314,7 @@
       "clock": 540,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h5:cash",
       "cycles": "once",
@@ -70362,9 +70362,9 @@
         "books_flagged_unresolved_fresh": 3,
         "named_unresolved_fresh_ticker_days": 3,
         "named_unresolved_fresh_tickers_top": {
+          "PHVS": 1,
           "DPSI": 1,
-          "FSRD": 1,
-          "PHVS": 1
+          "FSRD": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -71369,7 +71369,7 @@
       "clock": 540,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h5:cash",
       "cycles": "repeat",
@@ -71419,11 +71419,11 @@
         "books_flagged_unresolved_fresh": 5,
         "named_unresolved_fresh_ticker_days": 5,
         "named_unresolved_fresh_tickers_top": {
-          "JSPR": 1,
+          "DPSI": 1,
           "PHVS": 1,
           "FSRD": 1,
           "PHUN": 1,
-          "DPSI": 1
+          "JSPR": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -72434,7 +72434,7 @@
       "clock": 540,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h60:cash",
       "cycles": "once",
@@ -73499,7 +73499,7 @@
       "clock": 540,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h60:cash",
       "cycles": "repeat",
@@ -74546,7 +74546,7 @@
       "clock": 540,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "max:cash",
       "cycles": "once",
@@ -74594,9 +74594,9 @@
         "books_flagged_unresolved_fresh": 3,
         "named_unresolved_fresh_ticker_days": 3,
         "named_unresolved_fresh_tickers_top": {
+          "PALT": 1,
           "FSRD": 1,
-          "PHVS": 1,
-          "PALT": 1
+          "PHVS": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -75619,7 +75619,7 @@
       "clock": 540,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "max:cash",
       "cycles": "repeat",
@@ -75668,9 +75668,9 @@
         "books_flagged_unresolved_fresh": 3,
         "named_unresolved_fresh_ticker_days": 3,
         "named_unresolved_fresh_tickers_top": {
+          "PHVS": 1,
           "FSRD": 1,
-          "PALT": 1,
-          "PHVS": 1
+          "PALT": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -76675,7 +76675,7 @@
       "clock": 560,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h10:cash",
       "cycles": "once",
@@ -76724,10 +76724,10 @@
         "books_flagged_unresolved_fresh": 4,
         "named_unresolved_fresh_ticker_days": 4,
         "named_unresolved_fresh_tickers_top": {
+          "FSRD": 1,
           "DPSI": 1,
-          "PHVS": 1,
           "MSGM": 1,
-          "FSRD": 1
+          "PHVS": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -77725,7 +77725,7 @@
       "clock": 560,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h10:cash",
       "cycles": "repeat",
@@ -77776,10 +77776,10 @@
         "named_unresolved_fresh_ticker_days": 5,
         "named_unresolved_fresh_tickers_top": {
           "FSRD": 1,
-          "DPSI": 1,
-          "PHVS": 1,
+          "MSGM": 1,
           "PHUN": 1,
-          "MSGM": 1
+          "PHVS": 1,
+          "DPSI": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -78784,7 +78784,7 @@
       "clock": 560,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h120:cash",
       "cycles": "once",
@@ -79837,7 +79837,7 @@
       "clock": 560,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h120:cash",
       "cycles": "repeat",
@@ -80910,7 +80910,7 @@
       "clock": 560,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h15:cash",
       "cycles": "once",
@@ -80961,10 +80961,10 @@
         "named_unresolved_fresh_ticker_days": 5,
         "named_unresolved_fresh_tickers_top": {
           "FSRD": 1,
-          "DPSI": 1,
+          "SLNG": 1,
           "PHVS": 1,
-          "MSGM": 1,
-          "SLNG": 1
+          "DPSI": 1,
+          "MSGM": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -81969,7 +81969,7 @@
       "clock": 560,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h15:cash",
       "cycles": "repeat",
@@ -82019,11 +82019,11 @@
         "books_flagged_unresolved_fresh": 5,
         "named_unresolved_fresh_ticker_days": 5,
         "named_unresolved_fresh_tickers_top": {
-          "SLNG": 1,
           "DPSI": 1,
           "PHVS": 1,
-          "MSGM": 1,
-          "FSRD": 1
+          "SLNG": 1,
+          "FSRD": 1,
+          "MSGM": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -83028,7 +83028,7 @@
       "clock": 560,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h1:cash",
       "cycles": "once",
@@ -84099,7 +84099,7 @@
       "clock": 560,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h1:cash",
       "cycles": "repeat",
@@ -84150,11 +84150,11 @@
         "books_flagged_unresolved_fresh": 4,
         "named_unresolved_fresh_ticker_days": 5,
         "named_unresolved_fresh_tickers_top": {
+          "JSPR": 1,
+          "DPSI": 1,
           "FSRD": 1,
           "DWAC": 1,
-          "JSPR": 1,
-          "PHUN": 1,
-          "DPSI": 1
+          "PHUN": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -85159,7 +85159,7 @@
       "clock": 560,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h30:cash",
       "cycles": "once",
@@ -86213,7 +86213,7 @@
       "clock": 560,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h30:cash",
       "cycles": "repeat",
@@ -86264,10 +86264,10 @@
         "books_flagged_unresolved_fresh": 4,
         "named_unresolved_fresh_ticker_days": 4,
         "named_unresolved_fresh_tickers_top": {
-          "DPSI": 1,
           "PHUN": 1,
-          "FSRD": 1,
-          "PHVS": 1
+          "PHVS": 1,
+          "DPSI": 1,
+          "FSRD": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -87272,7 +87272,7 @@
       "clock": 560,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h3:cash",
       "cycles": "once",
@@ -87320,8 +87320,8 @@
         "books_flagged_unresolved_fresh": 3,
         "named_unresolved_fresh_ticker_days": 3,
         "named_unresolved_fresh_tickers_top": {
-          "PHVS": 1,
           "DPSI": 1,
+          "PHVS": 1,
           "JSPR": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
@@ -88345,7 +88345,7 @@
       "clock": 560,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h3:cash",
       "cycles": "repeat",
@@ -88397,11 +88397,11 @@
         "named_unresolved_fresh_ticker_days": 7,
         "named_unresolved_fresh_tickers_top": {
           "DPSI": 2,
-          "PHUN": 1,
           "MSGM": 1,
-          "DWAC": 1,
+          "PHUN": 1,
+          "PHVS": 1,
           "JSPR": 1,
-          "PHVS": 1
+          "DWAC": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -89424,7 +89424,7 @@
       "clock": 560,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h5:cash",
       "cycles": "once",
@@ -89473,8 +89473,8 @@
         "named_unresolved_fresh_ticker_days": 3,
         "named_unresolved_fresh_tickers_top": {
           "PALT": 1,
-          "SLNG": 1,
-          "DPSI": 1
+          "DPSI": 1,
+          "SLNG": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -90485,7 +90485,7 @@
       "clock": 560,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h5:cash",
       "cycles": "repeat",
@@ -90539,16 +90539,16 @@
         "books_flagged_unresolved_fresh": 9,
         "named_unresolved_fresh_ticker_days": 10,
         "named_unresolved_fresh_tickers_top": {
-          "DWAC": 1,
+          "PHVS": 1,
           "PALT": 1,
           "FSRD": 1,
+          "SLNG": 1,
           "MEGL": 1,
           "JSPR": 1,
-          "PHVS": 1,
-          "PHUN": 1,
-          "SLNG": 1,
           "MSGM": 1,
-          "DPSI": 1
+          "DWAC": 1,
+          "DPSI": 1,
+          "PHUN": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -91553,7 +91553,7 @@
       "clock": 560,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h60:cash",
       "cycles": "once",
@@ -92613,7 +92613,7 @@
       "clock": 560,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h60:cash",
       "cycles": "repeat",
@@ -92662,8 +92662,8 @@
         "books_flagged_unresolved_fresh": 3,
         "named_unresolved_fresh_ticker_days": 3,
         "named_unresolved_fresh_tickers_top": {
-          "MEGL": 1,
           "ABOS": 1,
+          "MEGL": 1,
           "FSRD": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
@@ -93675,7 +93675,7 @@
       "clock": 560,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "max:cash",
       "cycles": "once",
@@ -93722,8 +93722,8 @@
         "books_flagged_unresolved_fresh": 2,
         "named_unresolved_fresh_ticker_days": 2,
         "named_unresolved_fresh_tickers_top": {
-          "PALT": 1,
-          "ABOS": 1
+          "ABOS": 1,
+          "PALT": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -94746,7 +94746,7 @@
       "clock": 560,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "max:cash",
       "cycles": "repeat",
@@ -94800,11 +94800,11 @@
         "books_flagged_unresolved_fresh": 5,
         "named_unresolved_fresh_ticker_days": 5,
         "named_unresolved_fresh_tickers_top": {
+          "DPSI": 1,
+          "ABOS": 1,
           "MSGM": 1,
           "PHVS": 1,
-          "PALT": 1,
-          "ABOS": 1,
-          "DPSI": 1
+          "PALT": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -95809,7 +95809,7 @@
       "clock": 560,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h10:cash",
       "cycles": "once",
@@ -96855,7 +96855,7 @@
       "clock": 560,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h10:cash",
       "cycles": "repeat",
@@ -97901,7 +97901,7 @@
       "clock": 560,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h120:cash",
       "cycles": "once",
@@ -98952,7 +98952,7 @@
       "clock": 560,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h120:cash",
       "cycles": "repeat",
@@ -98999,8 +98999,8 @@
         "books_flagged_unresolved_fresh": 2,
         "named_unresolved_fresh_ticker_days": 2,
         "named_unresolved_fresh_tickers_top": {
-          "MEGL": 1,
-          "FSRD": 1
+          "FSRD": 1,
+          "MEGL": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -100005,7 +100005,7 @@
       "clock": 560,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h15:cash",
       "cycles": "once",
@@ -100055,11 +100055,11 @@
         "books_flagged_unresolved_fresh": 5,
         "named_unresolved_fresh_ticker_days": 5,
         "named_unresolved_fresh_tickers_top": {
-          "SLNG": 1,
-          "FSRD": 1,
           "PHVS": 1,
-          "PHUN": 1,
-          "MSGM": 1
+          "SLNG": 1,
+          "MSGM": 1,
+          "FSRD": 1,
+          "PHUN": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -101064,7 +101064,7 @@
       "clock": 560,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h15:cash",
       "cycles": "repeat",
@@ -101114,11 +101114,11 @@
         "books_flagged_unresolved_fresh": 5,
         "named_unresolved_fresh_ticker_days": 5,
         "named_unresolved_fresh_tickers_top": {
-          "FSRD": 1,
+          "PHUN": 1,
           "MSGM": 1,
-          "PHVS": 1,
           "SLNG": 1,
-          "PHUN": 1
+          "FSRD": 1,
+          "PHVS": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -102123,7 +102123,7 @@
       "clock": 560,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h1:cash",
       "cycles": "once",
@@ -103194,7 +103194,7 @@
       "clock": 560,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h1:cash",
       "cycles": "repeat",
@@ -103243,9 +103243,9 @@
         "books_flagged_unresolved_fresh": 3,
         "named_unresolved_fresh_ticker_days": 4,
         "named_unresolved_fresh_tickers_top": {
-          "FSRD": 1,
           "DPSI": 1,
           "DWAC": 1,
+          "FSRD": 1,
           "PHUN": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
@@ -104251,7 +104251,7 @@
       "clock": 560,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h30:cash",
       "cycles": "once",
@@ -105320,7 +105320,7 @@
       "clock": 560,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h30:cash",
       "cycles": "repeat",
@@ -106373,7 +106373,7 @@
       "clock": 560,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h3:cash",
       "cycles": "once",
@@ -106421,8 +106421,8 @@
         "books_flagged_unresolved_fresh": 3,
         "named_unresolved_fresh_ticker_days": 3,
         "named_unresolved_fresh_tickers_top": {
-          "JSPR": 1,
           "DPSI": 1,
+          "JSPR": 1,
           "PHVS": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
@@ -107446,7 +107446,7 @@
       "clock": 560,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h3:cash",
       "cycles": "repeat",
@@ -107499,12 +107499,12 @@
         "named_unresolved_fresh_ticker_days": 8,
         "named_unresolved_fresh_tickers_top": {
           "DPSI": 2,
-          "PHVS": 1,
           "FSRD": 1,
-          "DWAC": 1,
-          "MSGM": 1,
           "PHUN": 1,
-          "JSPR": 1
+          "JSPR": 1,
+          "PHVS": 1,
+          "MSGM": 1,
+          "DWAC": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -108509,7 +108509,7 @@
       "clock": 560,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h5:cash",
       "cycles": "once",
@@ -108556,8 +108556,8 @@
         "books_flagged_unresolved_fresh": 2,
         "named_unresolved_fresh_ticker_days": 2,
         "named_unresolved_fresh_tickers_top": {
-          "SLNG": 1,
-          "DPSI": 1
+          "DPSI": 1,
+          "SLNG": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -109562,7 +109562,7 @@
       "clock": 560,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h5:cash",
       "cycles": "repeat",
@@ -109614,13 +109614,13 @@
         "books_flagged_unresolved_fresh": 7,
         "named_unresolved_fresh_ticker_days": 8,
         "named_unresolved_fresh_tickers_top": {
-          "MSGM": 1,
-          "FSRD": 1,
-          "DWAC": 1,
           "SLNG": 1,
-          "MEGL": 1,
-          "DPSI": 1,
+          "FSRD": 1,
           "JSPR": 1,
+          "MSGM": 1,
+          "DPSI": 1,
+          "DWAC": 1,
+          "MEGL": 1,
           "PHUN": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
@@ -110626,7 +110626,7 @@
       "clock": 560,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h60:cash",
       "cycles": "once",
@@ -111686,7 +111686,7 @@
       "clock": 560,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h60:cash",
       "cycles": "repeat",
@@ -111734,8 +111734,8 @@
         "books_flagged_unresolved_fresh": 2,
         "named_unresolved_fresh_ticker_days": 2,
         "named_unresolved_fresh_tickers_top": {
-          "FSRD": 1,
-          "ABOS": 1
+          "ABOS": 1,
+          "FSRD": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -112746,7 +112746,7 @@
       "clock": 560,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "max:cash",
       "cycles": "once",
@@ -113805,7 +113805,7 @@
       "clock": 560,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "max:cash",
       "cycles": "repeat",
@@ -113856,10 +113856,10 @@
         "books_flagged_unresolved_fresh": 4,
         "named_unresolved_fresh_ticker_days": 4,
         "named_unresolved_fresh_tickers_top": {
+          "PHVS": 1,
           "ABOS": 1,
-          "DPSI": 1,
           "MSGM": 1,
-          "PHVS": 1
+          "DPSI": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -114864,7 +114864,7 @@
       "clock": 560,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h10:cash",
       "cycles": "once",
@@ -114915,11 +114915,11 @@
         "books_flagged_unresolved_fresh": 5,
         "named_unresolved_fresh_ticker_days": 5,
         "named_unresolved_fresh_tickers_top": {
-          "PHVS": 1,
+          "DWAC": 1,
+          "PALT": 1,
           "JSPR": 1,
           "FSRD": 1,
-          "DWAC": 1,
-          "PALT": 1
+          "PHVS": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -115935,7 +115935,7 @@
       "clock": 560,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h10:cash",
       "cycles": "repeat",
@@ -115986,11 +115986,11 @@
         "books_flagged_unresolved_fresh": 5,
         "named_unresolved_fresh_ticker_days": 5,
         "named_unresolved_fresh_tickers_top": {
-          "PALT": 1,
-          "DWAC": 1,
           "PHVS": 1,
-          "FSRD": 1,
-          "JSPR": 1
+          "DWAC": 1,
+          "JSPR": 1,
+          "PALT": 1,
+          "FSRD": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -116988,7 +116988,7 @@
       "clock": 560,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h120:cash",
       "cycles": "once",
@@ -117035,8 +117035,8 @@
         "books_flagged_unresolved_fresh": 2,
         "named_unresolved_fresh_ticker_days": 2,
         "named_unresolved_fresh_tickers_top": {
-          "DWAC": 1,
-          "ABOS": 1
+          "ABOS": 1,
+          "DWAC": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -118041,7 +118041,7 @@
       "clock": 560,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h120:cash",
       "cycles": "repeat",
@@ -118090,8 +118090,8 @@
         "named_unresolved_fresh_ticker_days": 3,
         "named_unresolved_fresh_tickers_top": {
           "SWVL": 1,
-          "DWAC": 1,
-          "ABOS": 1
+          "ABOS": 1,
+          "DWAC": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -119096,7 +119096,7 @@
       "clock": 560,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h15:cash",
       "cycles": "once",
@@ -119145,9 +119145,9 @@
         "books_flagged_unresolved_fresh": 3,
         "named_unresolved_fresh_ticker_days": 3,
         "named_unresolved_fresh_tickers_top": {
+          "FSRD": 1,
           "SWVL": 1,
-          "SLNG": 1,
-          "FSRD": 1
+          "SLNG": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -120152,7 +120152,7 @@
       "clock": 560,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h15:cash",
       "cycles": "repeat",
@@ -120201,8 +120201,8 @@
         "books_flagged_unresolved_fresh": 3,
         "named_unresolved_fresh_ticker_days": 3,
         "named_unresolved_fresh_tickers_top": {
-          "SWVL": 1,
           "SLNG": 1,
+          "SWVL": 1,
           "FSRD": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
@@ -121208,7 +121208,7 @@
       "clock": 560,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h1:cash",
       "cycles": "once",
@@ -121258,11 +121258,11 @@
         "books_flagged_unresolved_fresh": 5,
         "named_unresolved_fresh_ticker_days": 5,
         "named_unresolved_fresh_tickers_top": {
-          "DWAC": 1,
+          "PALT": 1,
           "FSRD": 1,
-          "PHVS": 1,
           "SLNG": 1,
-          "PALT": 1
+          "DWAC": 1,
+          "PHVS": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -122285,7 +122285,7 @@
       "clock": 560,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h1:cash",
       "cycles": "repeat",
@@ -122336,11 +122336,11 @@
         "books_flagged_unresolved_fresh": 5,
         "named_unresolved_fresh_ticker_days": 5,
         "named_unresolved_fresh_tickers_top": {
-          "SLNG": 1,
-          "DWAC": 1,
+          "FSRD": 1,
           "PALT": 1,
-          "PHVS": 1,
-          "FSRD": 1
+          "DWAC": 1,
+          "SLNG": 1,
+          "PHVS": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -123363,7 +123363,7 @@
       "clock": 560,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h30:cash",
       "cycles": "once",
@@ -123410,8 +123410,8 @@
         "books_flagged_unresolved_fresh": 2,
         "named_unresolved_fresh_ticker_days": 2,
         "named_unresolved_fresh_tickers_top": {
-          "FSRD": 1,
-          "SWVL": 1
+          "SWVL": 1,
+          "FSRD": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -124434,7 +124434,7 @@
       "clock": 560,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h30:cash",
       "cycles": "repeat",
@@ -124482,9 +124482,9 @@
         "books_flagged_unresolved_fresh": 3,
         "named_unresolved_fresh_ticker_days": 3,
         "named_unresolved_fresh_tickers_top": {
-          "FSRD": 1,
+          "DPSI": 1,
           "SWVL": 1,
-          "DPSI": 1
+          "FSRD": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -125489,7 +125489,7 @@
       "clock": 560,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h3:cash",
       "cycles": "once",
@@ -125541,13 +125541,13 @@
         "books_flagged_unresolved_fresh": 7,
         "named_unresolved_fresh_ticker_days": 7,
         "named_unresolved_fresh_tickers_top": {
-          "FSRD": 1,
           "SWVL": 1,
-          "DPSI": 1,
           "SLNG": 1,
+          "DPSI": 1,
           "PALT": 1,
-          "JSPR": 1,
-          "PHVS": 1
+          "FSRD": 1,
+          "PHVS": 1,
+          "JSPR": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -126552,7 +126552,7 @@
       "clock": 560,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h3:cash",
       "cycles": "repeat",
@@ -126605,14 +126605,14 @@
         "books_flagged_unresolved_fresh": 8,
         "named_unresolved_fresh_ticker_days": 8,
         "named_unresolved_fresh_tickers_top": {
-          "DPSI": 1,
-          "PALT": 1,
-          "PHUN": 1,
-          "SLNG": 1,
           "FSRD": 1,
+          "SLNG": 1,
           "JSPR": 1,
           "SWVL": 1,
-          "PHVS": 1
+          "PHUN": 1,
+          "PALT": 1,
+          "PHVS": 1,
+          "DPSI": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -127617,7 +127617,7 @@
       "clock": 560,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h5:cash",
       "cycles": "once",
@@ -127668,10 +127668,10 @@
         "named_unresolved_fresh_ticker_days": 5,
         "named_unresolved_fresh_tickers_top": {
           "SLNG": 1,
-          "PHVS": 1,
-          "DPSI": 1,
           "FSRD": 1,
-          "SWVL": 1
+          "SWVL": 1,
+          "PHVS": 1,
+          "DPSI": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -128676,7 +128676,7 @@
       "clock": 560,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h5:cash",
       "cycles": "repeat",
@@ -128728,12 +128728,12 @@
         "books_flagged_unresolved_fresh": 7,
         "named_unresolved_fresh_ticker_days": 7,
         "named_unresolved_fresh_tickers_top": {
+          "DPSI": 1,
+          "JSPR": 1,
           "PHVS": 1,
-          "FSRD": 1,
           "PHUN": 1,
           "SWVL": 1,
-          "JSPR": 1,
-          "DPSI": 1,
+          "FSRD": 1,
           "SLNG": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
@@ -129745,7 +129745,7 @@
       "clock": 560,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h60:cash",
       "cycles": "once",
@@ -130810,7 +130810,7 @@
       "clock": 560,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h60:cash",
       "cycles": "repeat",
@@ -131875,7 +131875,7 @@
       "clock": 560,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "max:cash",
       "cycles": "once",
@@ -131927,9 +131927,9 @@
         "named_unresolved_fresh_ticker_days": 5,
         "named_unresolved_fresh_tickers_top": {
           "FSRD": 1,
-          "PHVS": 1,
-          "ABOS": 1,
           "PALT": 1,
+          "ABOS": 1,
+          "PHVS": 1,
           "SLNG": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
@@ -132953,7 +132953,7 @@
       "clock": 560,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "max:cash",
       "cycles": "repeat",
@@ -133007,12 +133007,12 @@
         "books_flagged_unresolved_fresh": 6,
         "named_unresolved_fresh_ticker_days": 6,
         "named_unresolved_fresh_tickers_top": {
-          "FSRD": 1,
-          "ABOS": 1,
-          "PHVS": 1,
-          "PALT": 1,
           "SLNG": 1,
-          "SWVL": 1
+          "ABOS": 1,
+          "FSRD": 1,
+          "PHVS": 1,
+          "SWVL": 1,
+          "PALT": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -134017,7 +134017,7 @@
       "clock": 560,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h10:cash",
       "cycles": "once",
@@ -134064,8 +134064,8 @@
         "books_flagged_unresolved_fresh": 2,
         "named_unresolved_fresh_ticker_days": 2,
         "named_unresolved_fresh_tickers_top": {
-          "FSRD": 1,
-          "DWAC": 1
+          "DWAC": 1,
+          "FSRD": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -135063,7 +135063,7 @@
       "clock": 560,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h10:cash",
       "cycles": "repeat",
@@ -136109,7 +136109,7 @@
       "clock": 560,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h120:cash",
       "cycles": "once",
@@ -137160,7 +137160,7 @@
       "clock": 560,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h120:cash",
       "cycles": "repeat",
@@ -138211,7 +138211,7 @@
       "clock": 560,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h15:cash",
       "cycles": "once",
@@ -138259,8 +138259,8 @@
         "books_flagged_unresolved_fresh": 2,
         "named_unresolved_fresh_ticker_days": 2,
         "named_unresolved_fresh_tickers_top": {
-          "FSRD": 1,
-          "SWVL": 1
+          "SWVL": 1,
+          "FSRD": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -139271,7 +139271,7 @@
       "clock": 560,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h15:cash",
       "cycles": "repeat",
@@ -140325,7 +140325,7 @@
       "clock": 560,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h1:cash",
       "cycles": "once",
@@ -140373,9 +140373,9 @@
         "books_flagged_unresolved_fresh": 3,
         "named_unresolved_fresh_ticker_days": 3,
         "named_unresolved_fresh_tickers_top": {
-          "SLNG": 1,
           "DWAC": 1,
-          "PALT": 1
+          "PALT": 1,
+          "SLNG": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -141386,7 +141386,7 @@
       "clock": 560,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h1:cash",
       "cycles": "repeat",
@@ -141435,8 +141435,8 @@
         "books_flagged_unresolved_fresh": 3,
         "named_unresolved_fresh_ticker_days": 3,
         "named_unresolved_fresh_tickers_top": {
-          "DWAC": 1,
           "SLNG": 1,
+          "DWAC": 1,
           "PALT": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
@@ -142442,7 +142442,7 @@
       "clock": 560,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h30:cash",
       "cycles": "once",
@@ -142490,9 +142490,9 @@
         "books_flagged_unresolved_fresh": 3,
         "named_unresolved_fresh_ticker_days": 3,
         "named_unresolved_fresh_tickers_top": {
-          "SWVL": 1,
           "DPSI": 1,
-          "FSRD": 1
+          "FSRD": 1,
+          "SWVL": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -143497,7 +143497,7 @@
       "clock": 560,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h30:cash",
       "cycles": "repeat",
@@ -143545,9 +143545,9 @@
         "books_flagged_unresolved_fresh": 3,
         "named_unresolved_fresh_ticker_days": 3,
         "named_unresolved_fresh_tickers_top": {
-          "DPSI": 1,
           "SWVL": 1,
-          "FSRD": 1
+          "FSRD": 1,
+          "DPSI": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -144552,7 +144552,7 @@
       "clock": 560,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h3:cash",
       "cycles": "once",
@@ -144604,13 +144604,13 @@
         "books_flagged_unresolved_fresh": 7,
         "named_unresolved_fresh_ticker_days": 7,
         "named_unresolved_fresh_tickers_top": {
-          "SLNG": 1,
           "HTCR": 1,
-          "SWVL": 1,
           "PALT": 1,
           "PHVS": 1,
-          "JSPR": 1,
-          "DPSI": 1
+          "SWVL": 1,
+          "SLNG": 1,
+          "DPSI": 1,
+          "JSPR": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -145615,7 +145615,7 @@
       "clock": 560,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h3:cash",
       "cycles": "repeat",
@@ -145668,14 +145668,14 @@
         "books_flagged_unresolved_fresh": 8,
         "named_unresolved_fresh_ticker_days": 8,
         "named_unresolved_fresh_tickers_top": {
-          "PHVS": 1,
-          "SLNG": 1,
-          "PHUN": 1,
-          "JSPR": 1,
           "DPSI": 1,
-          "SWVL": 1,
+          "SLNG": 1,
+          "PHVS": 1,
+          "PALT": 1,
           "HTCR": 1,
-          "PALT": 1
+          "SWVL": 1,
+          "JSPR": 1,
+          "PHUN": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -146680,7 +146680,7 @@
       "clock": 560,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h5:cash",
       "cycles": "once",
@@ -146731,12 +146731,12 @@
         "books_flagged_unresolved_fresh": 6,
         "named_unresolved_fresh_ticker_days": 6,
         "named_unresolved_fresh_tickers_top": {
+          "SLNG": 1,
+          "HTCR": 1,
           "SWVL": 1,
           "PHVS": 1,
-          "SLNG": 1,
           "FSRD": 1,
-          "DPSI": 1,
-          "HTCR": 1
+          "DPSI": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -147741,7 +147741,7 @@
       "clock": 560,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h5:cash",
       "cycles": "repeat",
@@ -147796,9 +147796,9 @@
           "DPSI": 1,
           "HTCR": 1,
           "FSRD": 1,
-          "JSPR": 1,
-          "SLNG": 1,
           "PHVS": 1,
+          "SLNG": 1,
+          "JSPR": 1,
           "SWVL": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
@@ -148804,7 +148804,7 @@
       "clock": 560,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h60:cash",
       "cycles": "once",
@@ -149873,7 +149873,7 @@
       "clock": 560,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h60:cash",
       "cycles": "repeat",
@@ -150942,7 +150942,7 @@
       "clock": 560,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "max:cash",
       "cycles": "once",
@@ -150993,11 +150993,11 @@
         "books_flagged_unresolved_fresh": 5,
         "named_unresolved_fresh_ticker_days": 5,
         "named_unresolved_fresh_tickers_top": {
-          "DPSI": 1,
-          "SLNG": 1,
           "FSRD": 1,
+          "PALT": 1,
           "PHVS": 1,
-          "PALT": 1
+          "SLNG": 1,
+          "DPSI": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -152020,7 +152020,7 @@
       "clock": 560,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "max:cash",
       "cycles": "repeat",
@@ -152074,11 +152074,11 @@
         "books_flagged_unresolved_fresh": 6,
         "named_unresolved_fresh_ticker_days": 6,
         "named_unresolved_fresh_tickers_top": {
-          "DPSI": 1,
-          "PALT": 1,
           "FSRD": 1,
-          "SWVL": 1,
           "PHVS": 1,
+          "PALT": 1,
+          "SWVL": 1,
+          "DPSI": 1,
           "SLNG": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
@@ -153084,7 +153084,7 @@
       "clock": 569,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h10:cash",
       "cycles": "once",
@@ -153135,13 +153135,13 @@
         "books_flagged_unresolved_fresh": 6,
         "named_unresolved_fresh_ticker_days": 7,
         "named_unresolved_fresh_tickers_top": {
-          "PHUN": 1,
-          "DPSI": 1,
-          "JSPR": 1,
-          "DWAC": 1,
-          "PHVS": 1,
+          "APGN": 1,
           "SWVL": 1,
-          "APGN": 1
+          "DPSI": 1,
+          "PHVS": 1,
+          "JSPR": 1,
+          "PHUN": 1,
+          "DWAC": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -154146,7 +154146,7 @@
       "clock": 569,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h10:cash",
       "cycles": "repeat",
@@ -154197,13 +154197,13 @@
         "books_flagged_unresolved_fresh": 6,
         "named_unresolved_fresh_ticker_days": 7,
         "named_unresolved_fresh_tickers_top": {
-          "PHVS": 1,
-          "DWAC": 1,
           "SWVL": 1,
-          "APGN": 1,
+          "PHVS": 1,
+          "PHUN": 1,
           "DPSI": 1,
+          "DWAC": 1,
           "JSPR": 1,
-          "PHUN": 1
+          "APGN": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -155208,7 +155208,7 @@
       "clock": 569,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h120:cash",
       "cycles": "once",
@@ -156266,7 +156266,7 @@
       "clock": 569,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h120:cash",
       "cycles": "repeat",
@@ -157324,7 +157324,7 @@
       "clock": 569,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h15:cash",
       "cycles": "once",
@@ -157373,9 +157373,9 @@
         "books_flagged_unresolved_fresh": 4,
         "named_unresolved_fresh_ticker_days": 4,
         "named_unresolved_fresh_tickers_top": {
+          "SLNG": 1,
           "SWVL": 1,
           "DPSI": 1,
-          "SLNG": 1,
           "PHVS": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
@@ -158381,7 +158381,7 @@
       "clock": 569,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h15:cash",
       "cycles": "repeat",
@@ -158432,10 +158432,10 @@
         "named_unresolved_fresh_ticker_days": 5,
         "named_unresolved_fresh_tickers_top": {
           "DPSI": 1,
-          "MEGL": 1,
-          "SWVL": 1,
           "PHVS": 1,
-          "SLNG": 1
+          "SLNG": 1,
+          "MEGL": 1,
+          "SWVL": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -159440,7 +159440,7 @@
       "clock": 569,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h1:cash",
       "cycles": "once",
@@ -159492,12 +159492,12 @@
         "books_flagged_unresolved_fresh": 6,
         "named_unresolved_fresh_ticker_days": 6,
         "named_unresolved_fresh_tickers_top": {
-          "ATIF": 1,
-          "SISI": 1,
-          "APGN": 1,
           "JSPR": 1,
-          "DPSI": 1,
-          "ISIG": 1
+          "ISIG": 1,
+          "ATIF": 1,
+          "APGN": 1,
+          "SISI": 1,
+          "DPSI": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -160520,7 +160520,7 @@
       "clock": 569,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h1:cash",
       "cycles": "repeat",
@@ -160575,14 +160575,14 @@
         "books_flagged_unresolved_fresh": 8,
         "named_unresolved_fresh_ticker_days": 8,
         "named_unresolved_fresh_tickers_top": {
-          "JSPR": 1,
-          "PHUN": 1,
-          "DPSI": 1,
           "APGN": 1,
+          "JSPR": 1,
           "ISIG": 1,
-          "SISI": 1,
+          "SWVL": 1,
           "ATIF": 1,
-          "SWVL": 1
+          "PHUN": 1,
+          "SISI": 1,
+          "DPSI": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -161593,7 +161593,7 @@
       "clock": 569,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h30:cash",
       "cycles": "once",
@@ -161642,8 +161642,8 @@
         "books_flagged_unresolved_fresh": 3,
         "named_unresolved_fresh_ticker_days": 3,
         "named_unresolved_fresh_tickers_top": {
-          "OBLG": 1,
           "PHVS": 1,
+          "OBLG": 1,
           "SWVL": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
@@ -162649,7 +162649,7 @@
       "clock": 569,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h30:cash",
       "cycles": "repeat",
@@ -162701,11 +162701,11 @@
         "books_flagged_unresolved_fresh": 5,
         "named_unresolved_fresh_ticker_days": 5,
         "named_unresolved_fresh_tickers_top": {
-          "PHUN": 1,
-          "PHVS": 1,
           "SWVL": 1,
+          "PHVS": 1,
           "DPSI": 1,
-          "OBLG": 1
+          "OBLG": 1,
+          "PHUN": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -163710,7 +163710,7 @@
       "clock": 569,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h3:cash",
       "cycles": "once",
@@ -163761,12 +163761,12 @@
         "books_flagged_unresolved_fresh": 6,
         "named_unresolved_fresh_ticker_days": 6,
         "named_unresolved_fresh_tickers_top": {
-          "DWAC": 1,
+          "SWVL": 1,
           "PHVS": 1,
           "DPSI": 1,
           "APGN": 1,
-          "JSPR": 1,
-          "SWVL": 1
+          "DWAC": 1,
+          "JSPR": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -164789,7 +164789,7 @@
       "clock": 569,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h3:cash",
       "cycles": "repeat",
@@ -164843,13 +164843,13 @@
         "named_unresolved_fresh_ticker_days": 9,
         "named_unresolved_fresh_tickers_top": {
           "DPSI": 2,
-          "PHVS": 1,
-          "DWAC": 1,
-          "APGN": 1,
-          "PHUN": 1,
           "WETG": 1,
+          "DWAC": 1,
           "SWVL": 1,
-          "JSPR": 1
+          "JSPR": 1,
+          "PHUN": 1,
+          "APGN": 1,
+          "PHVS": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -165872,7 +165872,7 @@
       "clock": 569,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h5:cash",
       "cycles": "once",
@@ -165924,12 +165924,12 @@
         "books_flagged_unresolved_fresh": 7,
         "named_unresolved_fresh_ticker_days": 7,
         "named_unresolved_fresh_tickers_top": {
-          "SWVL": 1,
-          "JSPR": 1,
           "PALT": 1,
-          "SLNG": 1,
-          "ISIG": 1,
+          "JSPR": 1,
           "DPSI": 1,
+          "ISIG": 1,
+          "SLNG": 1,
+          "SWVL": 1,
           "DWAC": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
@@ -166953,7 +166953,7 @@
       "clock": 569,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h5:cash",
       "cycles": "repeat",
@@ -167010,17 +167010,17 @@
         "named_unresolved_fresh_ticker_days": 12,
         "named_unresolved_fresh_tickers_top": {
           "MEGL": 1,
-          "JSPR": 1,
-          "ISIG": 1,
-          "WETG": 1,
-          "PHVS": 1,
           "GCT": 1,
-          "SLNG": 1,
-          "SWVL": 1,
-          "DWAC": 1,
+          "ISIG": 1,
           "PHUN": 1,
+          "DWAC": 1,
+          "SLNG": 1,
+          "PHVS": 1,
           "PALT": 1,
-          "DPSI": 1
+          "DPSI": 1,
+          "SWVL": 1,
+          "WETG": 1,
+          "JSPR": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -168025,7 +168025,7 @@
       "clock": 569,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h60:cash",
       "cycles": "once",
@@ -168075,9 +168075,9 @@
         "books_flagged_unresolved_fresh": 3,
         "named_unresolved_fresh_ticker_days": 3,
         "named_unresolved_fresh_tickers_top": {
+          "SLNG": 1,
           "SISI": 1,
-          "ABOS": 1,
-          "SLNG": 1
+          "ABOS": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -169100,7 +169100,7 @@
       "clock": 569,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h60:cash",
       "cycles": "repeat",
@@ -169151,9 +169151,9 @@
         "books_flagged_unresolved_fresh": 4,
         "named_unresolved_fresh_ticker_days": 4,
         "named_unresolved_fresh_tickers_top": {
+          "MEGL": 1,
           "SISI": 1,
           "SLNG": 1,
-          "MEGL": 1,
           "ABOS": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
@@ -170165,7 +170165,7 @@
       "clock": 569,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "max:cash",
       "cycles": "once",
@@ -170220,13 +170220,13 @@
         "books_flagged_unresolved_fresh": 7,
         "named_unresolved_fresh_ticker_days": 7,
         "named_unresolved_fresh_tickers_top": {
-          "ATIF": 1,
-          "PALT": 1,
           "ABOS": 1,
           "DWAC": 1,
+          "PALT": 1,
+          "ATIF": 1,
+          "SISI": 1,
           "ISIG": 1,
-          "JSPR": 1,
-          "SISI": 1
+          "JSPR": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -171249,7 +171249,7 @@
       "clock": 569,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "max:cash",
       "cycles": "repeat",
@@ -171309,15 +171309,15 @@
         "books_flagged_unresolved_fresh": 9,
         "named_unresolved_fresh_ticker_days": 9,
         "named_unresolved_fresh_tickers_top": {
-          "ISIG": 1,
           "JSPR": 1,
-          "SISI": 1,
-          "ABOS": 1,
-          "DPSI": 1,
-          "DWAC": 1,
           "PHVS": 1,
           "ATIF": 1,
-          "PALT": 1
+          "PALT": 1,
+          "SISI": 1,
+          "DWAC": 1,
+          "ISIG": 1,
+          "DPSI": 1,
+          "ABOS": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -172322,7 +172322,7 @@
       "clock": 569,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h10:cash",
       "cycles": "once",
@@ -172369,8 +172369,8 @@
         "books_flagged_unresolved_fresh": 2,
         "named_unresolved_fresh_ticker_days": 2,
         "named_unresolved_fresh_tickers_top": {
-          "SWVL": 1,
-          "JSPR": 1
+          "JSPR": 1,
+          "SWVL": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -173375,7 +173375,7 @@
       "clock": 569,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h10:cash",
       "cycles": "repeat",
@@ -173423,9 +173423,9 @@
         "books_flagged_unresolved_fresh": 3,
         "named_unresolved_fresh_ticker_days": 3,
         "named_unresolved_fresh_tickers_top": {
-          "SWVL": 1,
+          "JSPR": 1,
           "MEGL": 1,
-          "JSPR": 1
+          "SWVL": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -174430,7 +174430,7 @@
       "clock": 569,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h120:cash",
       "cycles": "once",
@@ -175488,7 +175488,7 @@
       "clock": 569,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h120:cash",
       "cycles": "repeat",
@@ -176540,7 +176540,7 @@
       "clock": 569,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h15:cash",
       "cycles": "once",
@@ -176590,11 +176590,11 @@
         "books_flagged_unresolved_fresh": 5,
         "named_unresolved_fresh_ticker_days": 5,
         "named_unresolved_fresh_tickers_top": {
-          "APGN": 1,
           "SLNG": 1,
+          "PHUN": 1,
           "PHVS": 1,
-          "SWVL": 1,
-          "PHUN": 1
+          "APGN": 1,
+          "SWVL": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -177599,7 +177599,7 @@
       "clock": 569,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h15:cash",
       "cycles": "repeat",
@@ -177650,10 +177650,10 @@
         "named_unresolved_fresh_ticker_days": 5,
         "named_unresolved_fresh_tickers_top": {
           "SLNG": 1,
-          "PHVS": 1,
-          "PHUN": 1,
           "APGN": 1,
-          "SWVL": 1
+          "SWVL": 1,
+          "PHUN": 1,
+          "PHVS": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -178658,7 +178658,7 @@
       "clock": 569,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h1:cash",
       "cycles": "once",
@@ -179711,7 +179711,7 @@
       "clock": 569,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h1:cash",
       "cycles": "repeat",
@@ -179761,8 +179761,8 @@
         "named_unresolved_fresh_ticker_days": 3,
         "named_unresolved_fresh_tickers_top": {
           "SWVL": 1,
-          "DPSI": 1,
-          "PHUN": 1
+          "PHUN": 1,
+          "DPSI": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -180767,7 +180767,7 @@
       "clock": 569,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h30:cash",
       "cycles": "once",
@@ -180815,9 +180815,9 @@
         "books_flagged_unresolved_fresh": 3,
         "named_unresolved_fresh_ticker_days": 3,
         "named_unresolved_fresh_tickers_top": {
+          "SWVL": 1,
           "DPSI": 1,
-          "OBLG": 1,
-          "SWVL": 1
+          "OBLG": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -181822,7 +181822,7 @@
       "clock": 569,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h30:cash",
       "cycles": "repeat",
@@ -181870,9 +181870,9 @@
         "books_flagged_unresolved_fresh": 3,
         "named_unresolved_fresh_ticker_days": 3,
         "named_unresolved_fresh_tickers_top": {
-          "SWVL": 1,
           "DPSI": 1,
-          "OBLG": 1
+          "OBLG": 1,
+          "SWVL": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -182877,7 +182877,7 @@
       "clock": 569,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h3:cash",
       "cycles": "once",
@@ -182926,10 +182926,10 @@
         "books_flagged_unresolved_fresh": 4,
         "named_unresolved_fresh_ticker_days": 4,
         "named_unresolved_fresh_tickers_top": {
+          "DWAC": 1,
           "SWVL": 1,
           "JSPR": 1,
-          "APGN": 1,
-          "DWAC": 1
+          "APGN": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -183952,7 +183952,7 @@
       "clock": 569,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h3:cash",
       "cycles": "repeat",
@@ -184003,13 +184003,13 @@
         "books_flagged_unresolved_fresh": 6,
         "named_unresolved_fresh_ticker_days": 7,
         "named_unresolved_fresh_tickers_top": {
-          "JSPR": 1,
-          "DPSI": 1,
           "WETG": 1,
           "SWVL": 1,
           "PHUN": 1,
+          "DPSI": 1,
           "APGN": 1,
-          "DWAC": 1
+          "DWAC": 1,
+          "JSPR": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -185014,7 +185014,7 @@
       "clock": 569,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h5:cash",
       "cycles": "once",
@@ -185064,11 +185064,11 @@
         "books_flagged_unresolved_fresh": 5,
         "named_unresolved_fresh_ticker_days": 5,
         "named_unresolved_fresh_tickers_top": {
-          "DPSI": 1,
+          "JSPR": 1,
+          "WETG": 1,
           "DWAC": 1,
           "SLNG": 1,
-          "WETG": 1,
-          "JSPR": 1
+          "DPSI": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -186091,7 +186091,7 @@
       "clock": 569,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h5:cash",
       "cycles": "repeat",
@@ -186142,13 +186142,13 @@
         "books_flagged_unresolved_fresh": 6,
         "named_unresolved_fresh_ticker_days": 7,
         "named_unresolved_fresh_tickers_top": {
-          "DWAC": 1,
-          "DPSI": 1,
-          "MEGL": 1,
-          "SLNG": 1,
           "WETG": 1,
+          "DPSI": 1,
+          "DWAC": 1,
           "JSPR": 1,
-          "PHUN": 1
+          "PHUN": 1,
+          "MEGL": 1,
+          "SLNG": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -187153,7 +187153,7 @@
       "clock": 569,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h60:cash",
       "cycles": "once",
@@ -187202,8 +187202,8 @@
         "books_flagged_unresolved_fresh": 2,
         "named_unresolved_fresh_ticker_days": 2,
         "named_unresolved_fresh_tickers_top": {
-          "SISI": 1,
-          "ABOS": 1
+          "ABOS": 1,
+          "SISI": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -188208,7 +188208,7 @@
       "clock": 569,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h60:cash",
       "cycles": "repeat",
@@ -188257,8 +188257,8 @@
         "books_flagged_unresolved_fresh": 2,
         "named_unresolved_fresh_ticker_days": 2,
         "named_unresolved_fresh_tickers_top": {
-          "ABOS": 1,
-          "SISI": 1
+          "SISI": 1,
+          "ABOS": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -189263,7 +189263,7 @@
       "clock": 569,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "max:cash",
       "cycles": "once",
@@ -189315,10 +189315,10 @@
         "books_flagged_unresolved_fresh": 4,
         "named_unresolved_fresh_ticker_days": 4,
         "named_unresolved_fresh_tickers_top": {
-          "ABOS": 1,
+          "SISI": 1,
           "DWAC": 1,
           "JSPR": 1,
-          "SISI": 1
+          "ABOS": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -190329,7 +190329,7 @@
       "clock": 569,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "max:cash",
       "cycles": "repeat",
@@ -190385,11 +190385,11 @@
         "named_unresolved_fresh_ticker_days": 6,
         "named_unresolved_fresh_tickers_top": {
           "DWAC": 1,
-          "DPSI": 1,
-          "JSPR": 1,
           "SISI": 1,
           "PHVS": 1,
-          "ABOS": 1
+          "JSPR": 1,
+          "ABOS": 1,
+          "DPSI": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -191394,7 +191394,7 @@
       "clock": 569,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h10:cash",
       "cycles": "once",
@@ -191447,14 +191447,14 @@
         "books_flagged_unresolved_fresh": 8,
         "named_unresolved_fresh_ticker_days": 8,
         "named_unresolved_fresh_tickers_top": {
-          "PHVS": 1,
-          "NES": 1,
-          "JSPR": 1,
-          "ISPO": 1,
           "DCFC": 1,
+          "ISPO": 1,
+          "FSRD": 1,
+          "NES": 1,
           "DWAC": 1,
           "PALT": 1,
-          "FSRD": 1
+          "PHVS": 1,
+          "JSPR": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -192459,7 +192459,7 @@
       "clock": 569,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h10:cash",
       "cycles": "repeat",
@@ -192512,14 +192512,14 @@
         "books_flagged_unresolved_fresh": 8,
         "named_unresolved_fresh_ticker_days": 8,
         "named_unresolved_fresh_tickers_top": {
+          "DCFC": 1,
+          "FSRD": 1,
+          "PHVS": 1,
+          "DWAC": 1,
           "ISPO": 1,
           "PALT": 1,
-          "JSPR": 1,
-          "FSRD": 1,
           "NES": 1,
-          "DCFC": 1,
-          "PHVS": 1,
-          "DWAC": 1
+          "JSPR": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -193524,7 +193524,7 @@
       "clock": 569,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h120:cash",
       "cycles": "once",
@@ -193572,8 +193572,8 @@
         "books_flagged_unresolved_fresh": 2,
         "named_unresolved_fresh_ticker_days": 2,
         "named_unresolved_fresh_tickers_top": {
-          "ABOS": 1,
-          "DWAC": 1
+          "DWAC": 1,
+          "ABOS": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -194578,7 +194578,7 @@
       "clock": 569,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h120:cash",
       "cycles": "repeat",
@@ -194627,9 +194627,9 @@
         "books_flagged_unresolved_fresh": 3,
         "named_unresolved_fresh_ticker_days": 3,
         "named_unresolved_fresh_tickers_top": {
-          "ABOS": 1,
+          "SWVL": 1,
           "DWAC": 1,
-          "SWVL": 1
+          "ABOS": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -195634,7 +195634,7 @@
       "clock": 569,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h15:cash",
       "cycles": "once",
@@ -195687,13 +195687,13 @@
         "books_flagged_unresolved_fresh": 7,
         "named_unresolved_fresh_ticker_days": 7,
         "named_unresolved_fresh_tickers_top": {
-          "ISPO": 1,
-          "NES": 1,
-          "SLNG": 1,
           "FSRD": 1,
+          "NES": 1,
+          "ISPO": 1,
           "SWVL": 1,
-          "APGN": 1,
-          "DCFC": 1
+          "DCFC": 1,
+          "SLNG": 1,
+          "APGN": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -196698,7 +196698,7 @@
       "clock": 569,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h15:cash",
       "cycles": "repeat",
@@ -196752,12 +196752,12 @@
         "named_unresolved_fresh_ticker_days": 7,
         "named_unresolved_fresh_tickers_top": {
           "DCFC": 1,
-          "ISPO": 1,
-          "SWVL": 1,
-          "SLNG": 1,
           "NES": 1,
-          "APGN": 1,
-          "FSRD": 1
+          "SLNG": 1,
+          "FSRD": 1,
+          "SWVL": 1,
+          "ISPO": 1,
+          "APGN": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -197762,7 +197762,7 @@
       "clock": 569,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h1:cash",
       "cycles": "once",
@@ -197815,12 +197815,12 @@
         "books_flagged_unresolved_fresh": 6,
         "named_unresolved_fresh_ticker_days": 6,
         "named_unresolved_fresh_tickers_top": {
+          "DWAC": 1,
           "PALT": 1,
           "NES": 1,
           "SLNG": 1,
-          "FSRD": 1,
           "PHVS": 1,
-          "DWAC": 1
+          "FSRD": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -198843,7 +198843,7 @@
       "clock": 569,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h1:cash",
       "cycles": "repeat",
@@ -198899,12 +198899,12 @@
         "books_flagged_unresolved_fresh": 6,
         "named_unresolved_fresh_ticker_days": 6,
         "named_unresolved_fresh_tickers_top": {
-          "PALT": 1,
-          "DWAC": 1,
-          "SLNG": 1,
-          "PHVS": 1,
           "FSRD": 1,
-          "NES": 1
+          "PHVS": 1,
+          "NES": 1,
+          "PALT": 1,
+          "SLNG": 1,
+          "DWAC": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -199915,7 +199915,7 @@
       "clock": 569,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h30:cash",
       "cycles": "once",
@@ -199965,10 +199965,10 @@
         "books_flagged_unresolved_fresh": 4,
         "named_unresolved_fresh_ticker_days": 4,
         "named_unresolved_fresh_tickers_top": {
-          "FSRD": 1,
+          "APGN": 1,
           "NES": 1,
           "SWVL": 1,
-          "APGN": 1
+          "FSRD": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -200973,7 +200973,7 @@
       "clock": 569,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h30:cash",
       "cycles": "repeat",
@@ -201025,10 +201025,10 @@
         "named_unresolved_fresh_ticker_days": 5,
         "named_unresolved_fresh_tickers_top": {
           "DPSI": 1,
-          "FSRD": 1,
           "SWVL": 1,
-          "APGN": 1,
-          "NES": 1
+          "FSRD": 1,
+          "NES": 1,
+          "APGN": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -202033,7 +202033,7 @@
       "clock": 569,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h3:cash",
       "cycles": "once",
@@ -202089,15 +202089,15 @@
         "books_flagged_unresolved_fresh": 9,
         "named_unresolved_fresh_ticker_days": 9,
         "named_unresolved_fresh_tickers_top": {
-          "DPSI": 1,
-          "SLNG": 1,
-          "PHVS": 1,
-          "PALT": 1,
+          "NES": 1,
           "SWVL": 1,
           "JSPR": 1,
+          "PHVS": 1,
+          "FSRD": 1,
           "DWAC": 1,
-          "NES": 1,
-          "FSRD": 1
+          "PALT": 1,
+          "SLNG": 1,
+          "DPSI": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -203102,7 +203102,7 @@
       "clock": 569,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h3:cash",
       "cycles": "repeat",
@@ -203158,16 +203158,16 @@
         "books_flagged_unresolved_fresh": 9,
         "named_unresolved_fresh_ticker_days": 10,
         "named_unresolved_fresh_tickers_top": {
-          "PHVS": 1,
           "SWVL": 1,
-          "PHUN": 1,
-          "DPSI": 1,
-          "NES": 1,
-          "FSRD": 1,
-          "DWAC": 1,
           "JSPR": 1,
+          "PHUN": 1,
+          "SLNG": 1,
+          "NES": 1,
+          "PHVS": 1,
+          "FSRD": 1,
+          "DPSI": 1,
           "PALT": 1,
-          "SLNG": 1
+          "DWAC": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -204172,7 +204172,7 @@
       "clock": 569,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h5:cash",
       "cycles": "once",
@@ -204225,11 +204225,11 @@
         "books_flagged_unresolved_fresh": 7,
         "named_unresolved_fresh_ticker_days": 7,
         "named_unresolved_fresh_tickers_top": {
-          "FSRD": 1,
-          "SWVL": 1,
-          "DWAC": 1,
           "JSPR": 1,
+          "SWVL": 1,
           "DPSI": 1,
+          "DWAC": 1,
+          "FSRD": 1,
           "PHVS": 1,
           "SLNG": 1
         },
@@ -205236,7 +205236,7 @@
       "clock": 569,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h5:cash",
       "cycles": "repeat",
@@ -205289,14 +205289,14 @@
         "books_flagged_unresolved_fresh": 7,
         "named_unresolved_fresh_ticker_days": 8,
         "named_unresolved_fresh_tickers_top": {
-          "DPSI": 1,
-          "PHVS": 1,
+          "SLNG": 1,
           "PHUN": 1,
+          "PHVS": 1,
+          "DPSI": 1,
+          "SWVL": 1,
           "DWAC": 1,
           "FSRD": 1,
-          "SWVL": 1,
-          "JSPR": 1,
-          "SLNG": 1
+          "JSPR": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -206319,7 +206319,7 @@
       "clock": 569,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h60:cash",
       "cycles": "once",
@@ -207392,7 +207392,7 @@
       "clock": 569,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h60:cash",
       "cycles": "repeat",
@@ -208465,7 +208465,7 @@
       "clock": 569,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "max:cash",
       "cycles": "once",
@@ -208521,12 +208521,12 @@
         "books_flagged_unresolved_fresh": 6,
         "named_unresolved_fresh_ticker_days": 6,
         "named_unresolved_fresh_tickers_top": {
-          "FSRD": 1,
-          "PALT": 1,
-          "JSPR": 1,
+          "APGN": 1,
           "ABOS": 1,
-          "PHVS": 1,
-          "APGN": 1
+          "FSRD": 1,
+          "JSPR": 1,
+          "PALT": 1,
+          "PHVS": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -209531,7 +209531,7 @@
       "clock": 569,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "max:cash",
       "cycles": "repeat",
@@ -209593,13 +209593,13 @@
         "books_flagged_unresolved_fresh": 8,
         "named_unresolved_fresh_ticker_days": 8,
         "named_unresolved_fresh_tickers_top": {
-          "ABOS": 1,
-          "APGN": 1,
-          "JSPR": 1,
-          "FSRD": 1,
-          "PHVS": 1,
-          "SWVL": 1,
           "PALT": 1,
+          "SWVL": 1,
+          "ABOS": 1,
+          "PHVS": 1,
+          "FSRD": 1,
+          "JSPR": 1,
+          "APGN": 1,
           "SLNG": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
@@ -210605,7 +210605,7 @@
       "clock": 569,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h10:cash",
       "cycles": "once",
@@ -210655,10 +210655,10 @@
         "books_flagged_unresolved_fresh": 5,
         "named_unresolved_fresh_ticker_days": 5,
         "named_unresolved_fresh_tickers_top": {
-          "NES": 1,
-          "DWAC": 1,
           "FSRD": 1,
+          "NES": 1,
           "JSPR": 1,
+          "DWAC": 1,
           "DCFC": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
@@ -211664,7 +211664,7 @@
       "clock": 569,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h10:cash",
       "cycles": "repeat",
@@ -211714,11 +211714,11 @@
         "books_flagged_unresolved_fresh": 5,
         "named_unresolved_fresh_ticker_days": 5,
         "named_unresolved_fresh_tickers_top": {
-          "JSPR": 1,
-          "DWAC": 1,
+          "NES": 1,
           "FSRD": 1,
-          "DCFC": 1,
-          "NES": 1
+          "DWAC": 1,
+          "JSPR": 1,
+          "DCFC": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -212723,7 +212723,7 @@
       "clock": 569,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h120:cash",
       "cycles": "once",
@@ -213777,7 +213777,7 @@
       "clock": 569,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h120:cash",
       "cycles": "repeat",
@@ -214831,7 +214831,7 @@
       "clock": 569,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h15:cash",
       "cycles": "once",
@@ -214884,13 +214884,13 @@
         "books_flagged_unresolved_fresh": 7,
         "named_unresolved_fresh_ticker_days": 7,
         "named_unresolved_fresh_tickers_top": {
+          "FSRD": 1,
           "DCFC": 1,
-          "ISPO": 1,
-          "SWVL": 1,
-          "SLNG": 1,
-          "DWAC": 1,
           "NES": 1,
-          "FSRD": 1
+          "DWAC": 1,
+          "SWVL": 1,
+          "ISPO": 1,
+          "SLNG": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -215895,7 +215895,7 @@
       "clock": 569,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h15:cash",
       "cycles": "repeat",
@@ -215949,14 +215949,14 @@
         "books_flagged_unresolved_fresh": 8,
         "named_unresolved_fresh_ticker_days": 8,
         "named_unresolved_fresh_tickers_top": {
-          "DCFC": 1,
-          "SWVL": 1,
           "FSRD": 1,
+          "SLNG": 1,
+          "DCFC": 1,
           "MEGL": 1,
           "ISPO": 1,
+          "SWVL": 1,
           "NES": 1,
-          "DWAC": 1,
-          "SLNG": 1
+          "DWAC": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -216961,7 +216961,7 @@
       "clock": 569,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h1:cash",
       "cycles": "once",
@@ -217011,8 +217011,8 @@
         "books_flagged_unresolved_fresh": 3,
         "named_unresolved_fresh_ticker_days": 3,
         "named_unresolved_fresh_tickers_top": {
-          "SLNG": 1,
           "PALT": 1,
+          "SLNG": 1,
           "FSRD": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
@@ -218024,7 +218024,7 @@
       "clock": 569,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h1:cash",
       "cycles": "repeat",
@@ -218075,9 +218075,9 @@
         "books_flagged_unresolved_fresh": 3,
         "named_unresolved_fresh_ticker_days": 3,
         "named_unresolved_fresh_tickers_top": {
-          "SLNG": 1,
+          "FSRD": 1,
           "PALT": 1,
-          "FSRD": 1
+          "SLNG": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -219082,7 +219082,7 @@
       "clock": 569,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h30:cash",
       "cycles": "once",
@@ -219132,10 +219132,10 @@
         "books_flagged_unresolved_fresh": 4,
         "named_unresolved_fresh_ticker_days": 4,
         "named_unresolved_fresh_tickers_top": {
-          "DPSI": 1,
           "SWVL": 1,
           "NES": 1,
-          "FSRD": 1
+          "FSRD": 1,
+          "DPSI": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -220140,7 +220140,7 @@
       "clock": 569,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h30:cash",
       "cycles": "repeat",
@@ -221198,7 +221198,7 @@
       "clock": 569,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h3:cash",
       "cycles": "once",
@@ -221251,12 +221251,12 @@
         "books_flagged_unresolved_fresh": 6,
         "named_unresolved_fresh_ticker_days": 6,
         "named_unresolved_fresh_tickers_top": {
-          "DPSI": 1,
+          "SLNG": 1,
           "DWAC": 1,
           "PHVS": 1,
-          "SLNG": 1,
-          "JSPR": 1,
-          "SWVL": 1
+          "DPSI": 1,
+          "SWVL": 1,
+          "JSPR": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -222261,7 +222261,7 @@
       "clock": 569,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h3:cash",
       "cycles": "repeat",
@@ -222315,12 +222315,12 @@
         "named_unresolved_fresh_ticker_days": 7,
         "named_unresolved_fresh_tickers_top": {
           "SWVL": 1,
+          "DWAC": 1,
+          "SLNG": 1,
           "JSPR": 1,
           "DPSI": 1,
-          "PHVS": 1,
           "PHUN": 1,
-          "SLNG": 1,
-          "DWAC": 1
+          "PHVS": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -223325,7 +223325,7 @@
       "clock": 569,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h5:cash",
       "cycles": "once",
@@ -223380,13 +223380,13 @@
         "named_unresolved_fresh_ticker_days": 8,
         "named_unresolved_fresh_tickers_top": {
           "JSPR": 1,
-          "FSRD": 1,
           "PHVS": 1,
-          "DPSI": 1,
-          "DWAC": 1,
-          "NES": 1,
+          "FSRD": 1,
           "SLNG": 1,
-          "SWVL": 1
+          "SWVL": 1,
+          "DWAC": 1,
+          "DPSI": 1,
+          "NES": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -224391,7 +224391,7 @@
       "clock": 569,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h5:cash",
       "cycles": "repeat",
@@ -224445,14 +224445,14 @@
         "books_flagged_unresolved_fresh": 8,
         "named_unresolved_fresh_ticker_days": 8,
         "named_unresolved_fresh_tickers_top": {
-          "JSPR": 1,
-          "DWAC": 1,
-          "DPSI": 1,
-          "FSRD": 1,
           "SLNG": 1,
+          "DWAC": 1,
           "PHVS": 1,
+          "FSRD": 1,
           "SWVL": 1,
-          "NES": 1
+          "JSPR": 1,
+          "NES": 1,
+          "DPSI": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -225475,7 +225475,7 @@
       "clock": 569,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h60:cash",
       "cycles": "once",
@@ -226551,7 +226551,7 @@
       "clock": 569,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h60:cash",
       "cycles": "repeat",
@@ -227627,7 +227627,7 @@
       "clock": 569,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "max:cash",
       "cycles": "once",
@@ -227684,14 +227684,14 @@
         "books_flagged_unresolved_fresh": 8,
         "named_unresolved_fresh_ticker_days": 8,
         "named_unresolved_fresh_tickers_top": {
-          "PHVS": 1,
-          "DCFC": 1,
-          "FSRD": 1,
-          "DPSI": 1,
-          "JSPR": 1,
+          "DWAC": 1,
           "PALT": 1,
           "NES": 1,
-          "DWAC": 1
+          "DPSI": 1,
+          "JSPR": 1,
+          "DCFC": 1,
+          "PHVS": 1,
+          "FSRD": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -228696,7 +228696,7 @@
       "clock": 569,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "max:cash",
       "cycles": "repeat",
@@ -228757,16 +228757,16 @@
         "books_flagged_unresolved_fresh": 10,
         "named_unresolved_fresh_ticker_days": 10,
         "named_unresolved_fresh_tickers_top": {
-          "SWVL": 1,
-          "PALT": 1,
-          "NES": 1,
-          "DCFC": 1,
-          "JSPR": 1,
-          "DWAC": 1,
+          "FSRD": 1,
           "DPSI": 1,
           "SLNG": 1,
-          "FSRD": 1,
-          "PHVS": 1
+          "PALT": 1,
+          "JSPR": 1,
+          "DCFC": 1,
+          "SWVL": 1,
+          "DWAC": 1,
+          "PHVS": 1,
+          "NES": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -229771,7 +229771,7 @@
       "clock": 571,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h10:cash",
       "cycles": "once",
@@ -230826,7 +230826,7 @@
       "clock": 571,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h10:cash",
       "cycles": "repeat",
@@ -230874,8 +230874,8 @@
         "books_flagged_unresolved_fresh": 3,
         "named_unresolved_fresh_ticker_days": 3,
         "named_unresolved_fresh_tickers_top": {
-          "PHVS": 1,
           "PHUN": 1,
+          "PHVS": 1,
           "DPSI": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
@@ -231881,7 +231881,7 @@
       "clock": 571,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h120:cash",
       "cycles": "once",
@@ -232932,7 +232932,7 @@
       "clock": 571,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h120:cash",
       "cycles": "repeat",
@@ -233983,7 +233983,7 @@
       "clock": 571,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h15:cash",
       "cycles": "once",
@@ -235037,7 +235037,7 @@
       "clock": 571,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h15:cash",
       "cycles": "repeat",
@@ -235087,8 +235087,8 @@
         "named_unresolved_fresh_ticker_days": 3,
         "named_unresolved_fresh_tickers_top": {
           "PHVS": 1,
-          "MEGL": 1,
-          "DPSI": 1
+          "DPSI": 1,
+          "MEGL": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -236093,7 +236093,7 @@
       "clock": 571,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h1:cash",
       "cycles": "once",
@@ -236140,8 +236140,8 @@
         "books_flagged_unresolved_fresh": 1,
         "named_unresolved_fresh_ticker_days": 2,
         "named_unresolved_fresh_tickers_top": {
-          "DPSI": 1,
-          "IVDA": 1
+          "IVDA": 1,
+          "DPSI": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -237146,7 +237146,7 @@
       "clock": 571,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h1:cash",
       "cycles": "repeat",
@@ -237196,10 +237196,10 @@
         "books_flagged_unresolved_fresh": 3,
         "named_unresolved_fresh_ticker_days": 4,
         "named_unresolved_fresh_tickers_top": {
-          "DPSI": 1,
-          "TNON": 1,
           "PHUN": 1,
-          "IVDA": 1
+          "DPSI": 1,
+          "IVDA": 1,
+          "TNON": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -238204,7 +238204,7 @@
       "clock": 571,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h30:cash",
       "cycles": "once",
@@ -239257,7 +239257,7 @@
       "clock": 571,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h30:cash",
       "cycles": "repeat",
@@ -239308,9 +239308,9 @@
         "books_flagged_unresolved_fresh": 3,
         "named_unresolved_fresh_ticker_days": 3,
         "named_unresolved_fresh_tickers_top": {
-          "TNON": 1,
+          "PHVS": 1,
           "DPSI": 1,
-          "PHVS": 1
+          "TNON": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -240315,7 +240315,7 @@
       "clock": 571,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h3:cash",
       "cycles": "once",
@@ -241392,7 +241392,7 @@
       "clock": 571,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h3:cash",
       "cycles": "repeat",
@@ -241443,9 +241443,9 @@
         "named_unresolved_fresh_ticker_days": 5,
         "named_unresolved_fresh_tickers_top": {
           "DPSI": 2,
-          "WETG": 1,
+          "PHVS": 1,
           "PHUN": 1,
-          "PHVS": 1
+          "WETG": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -242456,7 +242456,7 @@
       "clock": 571,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h5:cash",
       "cycles": "once",
@@ -242503,8 +242503,8 @@
         "books_flagged_unresolved_fresh": 2,
         "named_unresolved_fresh_ticker_days": 2,
         "named_unresolved_fresh_tickers_top": {
-          "PALT": 1,
-          "DPSI": 1
+          "DPSI": 1,
+          "PALT": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -243527,7 +243527,7 @@
       "clock": 571,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h5:cash",
       "cycles": "repeat",
@@ -243580,13 +243580,13 @@
         "books_flagged_unresolved_fresh": 7,
         "named_unresolved_fresh_ticker_days": 7,
         "named_unresolved_fresh_tickers_top": {
-          "PHUN": 1,
-          "GCT": 1,
-          "PHVS": 1,
+          "PALT": 1,
           "DPSI": 1,
           "MEGL": 1,
+          "PHVS": 1,
+          "GCT": 1,
           "WETG": 1,
-          "PALT": 1
+          "PHUN": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -244591,7 +244591,7 @@
       "clock": 571,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h60:cash",
       "cycles": "once",
@@ -245658,7 +245658,7 @@
       "clock": 571,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h60:cash",
       "cycles": "repeat",
@@ -246710,7 +246710,7 @@
       "clock": 571,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "max:cash",
       "cycles": "once",
@@ -246759,9 +246759,9 @@
         "books_flagged_unresolved_fresh": 2,
         "named_unresolved_fresh_ticker_days": 3,
         "named_unresolved_fresh_tickers_top": {
-          "IVDA": 1,
+          "PALT": 1,
           "DPSI": 1,
-          "PALT": 1
+          "IVDA": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -247784,7 +247784,7 @@
       "clock": 571,
       "n": 3,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "max:cash",
       "cycles": "repeat",
@@ -247839,9 +247839,9 @@
         "named_unresolved_fresh_ticker_days": 5,
         "named_unresolved_fresh_tickers_top": {
           "DPSI": 2,
+          "PALT": 1,
           "IVDA": 1,
-          "PHVS": 1,
-          "PALT": 1
+          "PHVS": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -248846,7 +248846,7 @@
       "clock": 571,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h10:cash",
       "cycles": "once",
@@ -249897,7 +249897,7 @@
       "clock": 571,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h10:cash",
       "cycles": "repeat",
@@ -250950,7 +250950,7 @@
       "clock": 571,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h120:cash",
       "cycles": "once",
@@ -252001,7 +252001,7 @@
       "clock": 571,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h120:cash",
       "cycles": "repeat",
@@ -253052,7 +253052,7 @@
       "clock": 571,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h15:cash",
       "cycles": "once",
@@ -254105,7 +254105,7 @@
       "clock": 571,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h15:cash",
       "cycles": "repeat",
@@ -255158,7 +255158,7 @@
       "clock": 571,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h1:cash",
       "cycles": "once",
@@ -256209,7 +256209,7 @@
       "clock": 571,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h1:cash",
       "cycles": "repeat",
@@ -256257,8 +256257,8 @@
         "books_flagged_unresolved_fresh": 2,
         "named_unresolved_fresh_ticker_days": 2,
         "named_unresolved_fresh_tickers_top": {
-          "PHUN": 1,
-          "DPSI": 1
+          "DPSI": 1,
+          "PHUN": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -257263,7 +257263,7 @@
       "clock": 571,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h30:cash",
       "cycles": "once",
@@ -258314,7 +258314,7 @@
       "clock": 571,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h30:cash",
       "cycles": "repeat",
@@ -258361,8 +258361,8 @@
         "books_flagged_unresolved_fresh": 2,
         "named_unresolved_fresh_ticker_days": 2,
         "named_unresolved_fresh_tickers_top": {
-          "TNON": 1,
-          "DPSI": 1
+          "DPSI": 1,
+          "TNON": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -259367,7 +259367,7 @@
       "clock": 571,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h3:cash",
       "cycles": "once",
@@ -260442,7 +260442,7 @@
       "clock": 571,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h3:cash",
       "cycles": "repeat",
@@ -261499,7 +261499,7 @@
       "clock": 571,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h5:cash",
       "cycles": "once",
@@ -261546,8 +261546,8 @@
         "books_flagged_unresolved_fresh": 2,
         "named_unresolved_fresh_ticker_days": 2,
         "named_unresolved_fresh_tickers_top": {
-          "WETG": 1,
-          "DPSI": 1
+          "DPSI": 1,
+          "WETG": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -262570,7 +262570,7 @@
       "clock": 571,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h5:cash",
       "cycles": "repeat",
@@ -262619,10 +262619,10 @@
         "books_flagged_unresolved_fresh": 4,
         "named_unresolved_fresh_ticker_days": 4,
         "named_unresolved_fresh_tickers_top": {
-          "WETG": 1,
-          "MEGL": 1,
           "DPSI": 1,
-          "PHUN": 1
+          "WETG": 1,
+          "PHUN": 1,
+          "MEGL": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -263627,7 +263627,7 @@
       "clock": 571,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h60:cash",
       "cycles": "once",
@@ -264676,7 +264676,7 @@
       "clock": 571,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h60:cash",
       "cycles": "repeat",
@@ -265725,7 +265725,7 @@
       "clock": 571,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "max:cash",
       "cycles": "once",
@@ -266778,7 +266778,7 @@
       "clock": 571,
       "n": 3,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "max:cash",
       "cycles": "repeat",
@@ -267835,7 +267835,7 @@
       "clock": 571,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h10:cash",
       "cycles": "once",
@@ -268888,7 +268888,7 @@
       "clock": 571,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h10:cash",
       "cycles": "repeat",
@@ -268935,8 +268935,8 @@
         "books_flagged_unresolved_fresh": 2,
         "named_unresolved_fresh_ticker_days": 2,
         "named_unresolved_fresh_tickers_top": {
-          "FSRD": 1,
-          "PHVS": 1
+          "PHVS": 1,
+          "FSRD": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -269941,7 +269941,7 @@
       "clock": 571,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h120:cash",
       "cycles": "once",
@@ -270992,7 +270992,7 @@
       "clock": 571,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h120:cash",
       "cycles": "repeat",
@@ -272043,7 +272043,7 @@
       "clock": 571,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h15:cash",
       "cycles": "once",
@@ -272093,8 +272093,8 @@
         "books_flagged_unresolved_fresh": 2,
         "named_unresolved_fresh_ticker_days": 2,
         "named_unresolved_fresh_tickers_top": {
-          "SLNG": 1,
-          "FSRD": 1
+          "FSRD": 1,
+          "SLNG": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -273099,7 +273099,7 @@
       "clock": 571,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h15:cash",
       "cycles": "repeat",
@@ -274155,7 +274155,7 @@
       "clock": 571,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h1:cash",
       "cycles": "once",
@@ -274208,8 +274208,8 @@
         "named_unresolved_fresh_tickers_top": {
           "PALT": 1,
           "PHVS": 1,
-          "IVDA": 1,
           "SLNG": 1,
+          "IVDA": 1,
           "FSRD": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
@@ -275233,7 +275233,7 @@
       "clock": 571,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h1:cash",
       "cycles": "repeat",
@@ -275286,13 +275286,13 @@
         "books_flagged_unresolved_fresh": 7,
         "named_unresolved_fresh_ticker_days": 7,
         "named_unresolved_fresh_tickers_top": {
-          "SLNG": 1,
-          "PALT": 1,
-          "PHUN": 1,
-          "PHVS": 1,
-          "FSRD": 1,
           "IVDA": 1,
-          "ATXG": 1
+          "FSRD": 1,
+          "ATXG": 1,
+          "PHVS": 1,
+          "PHUN": 1,
+          "PALT": 1,
+          "SLNG": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -276303,7 +276303,7 @@
       "clock": 571,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h30:cash",
       "cycles": "once",
@@ -277355,7 +277355,7 @@
       "clock": 571,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h30:cash",
       "cycles": "repeat",
@@ -277403,8 +277403,8 @@
         "books_flagged_unresolved_fresh": 2,
         "named_unresolved_fresh_ticker_days": 2,
         "named_unresolved_fresh_tickers_top": {
-          "DPSI": 1,
-          "PHVS": 1
+          "PHVS": 1,
+          "DPSI": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -278409,7 +278409,7 @@
       "clock": 571,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h3:cash",
       "cycles": "once",
@@ -278463,11 +278463,11 @@
         "named_unresolved_fresh_ticker_days": 6,
         "named_unresolved_fresh_tickers_top": {
           "SLNG": 1,
-          "ECX": 1,
-          "PALT": 1,
-          "PHVS": 1,
           "FSRD": 1,
-          "DPSI": 1
+          "DPSI": 1,
+          "ECX": 1,
+          "PHVS": 1,
+          "PALT": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -279472,7 +279472,7 @@
       "clock": 571,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h3:cash",
       "cycles": "repeat",
@@ -279531,13 +279531,13 @@
         "named_unresolved_fresh_ticker_days": 8,
         "named_unresolved_fresh_tickers_top": {
           "PALT": 1,
-          "ECX": 1,
+          "DPSI": 1,
+          "FSRD": 1,
           "WETG": 1,
           "SLNG": 1,
-          "DPSI": 1,
+          "ECX": 1,
           "PHUN": 1,
-          "PHVS": 1,
-          "FSRD": 1
+          "PHVS": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -280542,7 +280542,7 @@
       "clock": 571,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h5:cash",
       "cycles": "once",
@@ -280592,9 +280592,9 @@
         "books_flagged_unresolved_fresh": 4,
         "named_unresolved_fresh_ticker_days": 4,
         "named_unresolved_fresh_tickers_top": {
-          "DPSI": 1,
-          "SLNG": 1,
           "FSRD": 1,
+          "SLNG": 1,
+          "DPSI": 1,
           "PHVS": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
@@ -281600,7 +281600,7 @@
       "clock": 571,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h5:cash",
       "cycles": "repeat",
@@ -281655,10 +281655,10 @@
         "named_unresolved_fresh_ticker_days": 5,
         "named_unresolved_fresh_tickers_top": {
           "PHVS": 1,
-          "DPSI": 1,
           "SLNG": 1,
-          "FSRD": 1,
-          "PHUN": 1
+          "PHUN": 1,
+          "DPSI": 1,
+          "FSRD": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -282663,7 +282663,7 @@
       "clock": 571,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h60:cash",
       "cycles": "once",
@@ -283738,7 +283738,7 @@
       "clock": 571,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "h60:cash",
       "cycles": "repeat",
@@ -284796,7 +284796,7 @@
       "clock": 571,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "max:cash",
       "cycles": "once",
@@ -284850,11 +284850,11 @@
         "books_flagged_unresolved_fresh": 4,
         "named_unresolved_fresh_ticker_days": 5,
         "named_unresolved_fresh_tickers_top": {
+          "FSRD": 1,
           "PHVS": 1,
           "DPSI": 1,
           "PALT": 1,
-          "IVDA": 1,
-          "FSRD": 1
+          "IVDA": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -285865,7 +285865,7 @@
       "clock": 571,
       "n": 5,
       "side_cost": 0.005,
-      "per_leg_cost_bps": 50,
+      "per_leg_cost_bps": 50.0,
       "round_trip_cost_bps": 100,
       "policy": "max:cash",
       "cycles": "repeat",
@@ -285925,10 +285925,10 @@
         "named_unresolved_fresh_ticker_days": 6,
         "named_unresolved_fresh_tickers_top": {
           "DPSI": 2,
-          "PHVS": 1,
           "PALT": 1,
           "FSRD": 1,
-          "IVDA": 1
+          "IVDA": 1,
+          "PHVS": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -286933,7 +286933,7 @@
       "clock": 571,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h10:cash",
       "cycles": "once",
@@ -286981,9 +286981,9 @@
         "books_flagged_unresolved_fresh": 3,
         "named_unresolved_fresh_ticker_days": 3,
         "named_unresolved_fresh_tickers_top": {
-          "FSRD": 1,
           "ECX": 1,
-          "PHVS": 1
+          "PHVS": 1,
+          "FSRD": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -287988,7 +287988,7 @@
       "clock": 571,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h10:cash",
       "cycles": "repeat",
@@ -288036,9 +288036,9 @@
         "books_flagged_unresolved_fresh": 3,
         "named_unresolved_fresh_ticker_days": 3,
         "named_unresolved_fresh_tickers_top": {
-          "FSRD": 1,
+          "PHVS": 1,
           "ECX": 1,
-          "PHVS": 1
+          "FSRD": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -289043,7 +289043,7 @@
       "clock": 571,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h120:cash",
       "cycles": "once",
@@ -290094,7 +290094,7 @@
       "clock": 571,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h120:cash",
       "cycles": "repeat",
@@ -291145,7 +291145,7 @@
       "clock": 571,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h15:cash",
       "cycles": "once",
@@ -291193,8 +291193,8 @@
         "books_flagged_unresolved_fresh": 2,
         "named_unresolved_fresh_ticker_days": 2,
         "named_unresolved_fresh_tickers_top": {
-          "SLNG": 1,
-          "FSRD": 1
+          "FSRD": 1,
+          "SLNG": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -292199,7 +292199,7 @@
       "clock": 571,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h15:cash",
       "cycles": "repeat",
@@ -293255,7 +293255,7 @@
       "clock": 571,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h1:cash",
       "cycles": "once",
@@ -294316,7 +294316,7 @@
       "clock": 571,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h1:cash",
       "cycles": "repeat",
@@ -294365,10 +294365,10 @@
         "books_flagged_unresolved_fresh": 4,
         "named_unresolved_fresh_ticker_days": 4,
         "named_unresolved_fresh_tickers_top": {
-          "ATXG": 1,
+          "SLNG": 1,
           "FSRD": 1,
           "PALT": 1,
-          "SLNG": 1
+          "ATXG": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -295379,7 +295379,7 @@
       "clock": 571,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h30:cash",
       "cycles": "once",
@@ -296430,7 +296430,7 @@
       "clock": 571,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h30:cash",
       "cycles": "repeat",
@@ -297481,7 +297481,7 @@
       "clock": 571,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h3:cash",
       "cycles": "once",
@@ -297530,10 +297530,10 @@
         "books_flagged_unresolved_fresh": 4,
         "named_unresolved_fresh_ticker_days": 4,
         "named_unresolved_fresh_tickers_top": {
-          "ECX": 1,
+          "PHVS": 1,
           "DPSI": 1,
           "SLNG": 1,
-          "PHVS": 1
+          "ECX": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -298538,7 +298538,7 @@
       "clock": 571,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h3:cash",
       "cycles": "repeat",
@@ -298589,11 +298589,11 @@
         "books_flagged_unresolved_fresh": 5,
         "named_unresolved_fresh_ticker_days": 5,
         "named_unresolved_fresh_tickers_top": {
-          "ECX": 1,
           "SLNG": 1,
+          "ECX": 1,
+          "PHUN": 1,
           "PHVS": 1,
-          "DPSI": 1,
-          "PHUN": 1
+          "DPSI": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -299598,7 +299598,7 @@
       "clock": 571,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h5:cash",
       "cycles": "once",
@@ -299648,10 +299648,10 @@
         "books_flagged_unresolved_fresh": 4,
         "named_unresolved_fresh_ticker_days": 4,
         "named_unresolved_fresh_tickers_top": {
-          "SLNG": 1,
           "FSRD": 1,
+          "PHVS": 1,
           "DPSI": 1,
-          "PHVS": 1
+          "SLNG": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -300656,7 +300656,7 @@
       "clock": 571,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h5:cash",
       "cycles": "repeat",
@@ -300709,9 +300709,9 @@
         "named_unresolved_fresh_ticker_days": 4,
         "named_unresolved_fresh_tickers_top": {
           "PHVS": 1,
-          "SLNG": 1,
+          "FSRD": 1,
           "DPSI": 1,
-          "FSRD": 1
+          "SLNG": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -301734,7 +301734,7 @@
       "clock": 571,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h60:cash",
       "cycles": "once",
@@ -302812,7 +302812,7 @@
       "clock": 571,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "h60:cash",
       "cycles": "repeat",
@@ -303872,7 +303872,7 @@
       "clock": 571,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "max:cash",
       "cycles": "once",
@@ -303928,9 +303928,9 @@
         "named_unresolved_fresh_ticker_days": 5,
         "named_unresolved_fresh_tickers_top": {
           "DPSI": 2,
-          "PHVS": 1,
           "FSRD": 1,
-          "PALT": 1
+          "PALT": 1,
+          "PHVS": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },
@@ -304941,7 +304941,7 @@
       "clock": 571,
       "n": 5,
       "side_cost": 0.0075,
-      "per_leg_cost_bps": 75,
+      "per_leg_cost_bps": 75.0,
       "round_trip_cost_bps": 150,
       "policy": "max:cash",
       "cycles": "repeat",
@@ -304999,10 +304999,10 @@
         "named_unresolved_fresh_ticker_days": 6,
         "named_unresolved_fresh_tickers_top": {
           "DPSI": 2,
-          "PALT": 1,
-          "FSRD": 1,
           "PHVS": 1,
-          "SLNG": 1
+          "SLNG": 1,
+          "FSRD": 1,
+          "PALT": 1
         },
         "rule": "a book is UNKNOWN as a whole: its pairs, legs, members, gross, fees and net all leave the money cohorts together. Keeping its otherwise-known siblings would attribute money to a book whose own total is unresolved."
       },

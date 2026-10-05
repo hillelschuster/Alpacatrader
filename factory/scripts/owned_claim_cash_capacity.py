@@ -1055,7 +1055,7 @@ def analyse_cell(
         "clock": int(key["clock"]),
         "n": int(key["n"]),
         "side_cost": f(key["side_cost"]),
-        "per_leg_cost_bps": int(round(float(key["side_cost"]) * 10000.0)),
+        "per_leg_cost_bps": f(float(key["side_cost"]) * 10000.0),
         "round_trip_cost_bps": bps_of(key["side_cost"]),
         "policy": key["policy"],
         "cycles": key["cycles"],
@@ -1689,7 +1689,7 @@ def main(argv: list[str] | None = None) -> int:
             "cycles_run": up["cycles_run"],
             "sides": declared_sides,
             "round_trip_cost_bps": riders,
-            "per_leg_cost_bps": [int(round(s * 10000.0)) for s in declared_sides],
+            "per_leg_cost_bps": [f(s * 10000.0) for s in declared_sides],
             "fee_contract_declared": up.get("fee_contract"),
             "cost_semantics": (
                 "each side_cost is a PER-LEG modelled cost charged on that leg's own actual "
