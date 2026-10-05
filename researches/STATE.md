@@ -2,7 +2,19 @@
 # Hypothesis ranking + falsifiers: researches/HYPOTHESES.md (living).
 # History before 2026-09-04: researches/CANONICAL_STATE.md (superseded snapshot, kept for trust map).
 
-## UPDATE 2026-10-05 (later) — cash-first fee-aware ownership (H042 / EXP-87; discovery-positive, NOT validated)
+## CURRENT — completed 25/50/100/150bps cash-first discovery (H042 / EXP-87)
+
+All four costs are TOTAL round-trip, equally split per leg. Full 383-date replay:
+608 cells = 576 active + 32 cash references; 257 active means positive.
+Full stability, execution and capacity readers complete; 68 financial regressions pass.
+Largest N3 means per 25/50/100/150bps: +0.905361/+0.529910/+0.268540/+0.079792% per known book date.
+Largest N5 means: +0.652119/+0.226767/+0.138254/+0.109992%. These select different development cells.
+Retain fee-sensitive cash/re-entry candidates, NOT validated edges: regime, quote, impact,
+funding and unseen-validation risk remain. No protected outcomes or bot deployment.
+Code/evidence published in `5bc7518` / `95d425b`; historical two-cost vintages remain separate.
+
+
+## Owned-claim detail — two-cost origin and completed four-cost updates
 
 First533 discovery dates only; no protected-half read, FREEZE or deploy. FULL evidence
 `factory/artifacts/owned_claim_cash_first_discovery.json` (bg71, 3788.04s, final 3-day smoke +
@@ -41,7 +53,8 @@ minute grid decides both entry and exit.
   twice and all reentries 0 — so the exec+1-minute proceeds-REUSE assumption is NOT a funding blocker
   for ONCE (broker price/order/qty still NOT certified). Settlement
   exec+1 minute is a SIMULATOR availability, NOT broker T+1-day certification. Cash-stability /
-  execution two producers are pending parent execution — no outcomes fabricated. Parent Ruff new cash
+  execution producers were pending parent execution at that point — no outcomes fabricated (both since
+  COMPLETE). Parent Ruff new cash
   driver/reader/test PASS; 38 fiscal PASS (13 cash + 25 old); historic real 3-day old UPFRONT parity
   528 daily / 2,112 members / 4,158 fills / 0 mismatch; current adapter/core hashes match.
 - **Cash-stability FINAL (bg96→bg102, 28.53s; Ruff + 5 regressions PASS 0.78s + full reader):**
@@ -72,15 +85,133 @@ minute grid decides both entry and exit.
   broker cert). FINAL union 59 fiscal tests PASS (6.56s); all 8 NEW source/test Ruff PASS and core F/E9
   PASS. Executed SHA MATCH (all 5): cash adapter `84bc4365`, core `52205b03`, minute-attr `4276fa56`,
   stability `5ecd323edd966afcbd78c098aaba08e765f75cd4b39bfa2b0fc0b353f285ba08`, execution
-  `7b0071919d4a7f95e6c7c4dea9f5a06ab10c5c01323695a7be07ecc9c28a0f47`. RECORDS READY IMMUTABLE for
-  the focused ARCHIVE commit BEFORE the cash-driver source cost extension (old producer `84bc`
-  git-preserved); no further changes until the parent 4-cost result.
-- **Cost-ladder extension (user priority; 4-cost PENDING).** Run total round-trip bps 25/50/100/150
+  `7b0071919d4a7f95e6c7c4dea9f5a06ab10c5c01323695a7be07ecc9c28a0f47`. RECORDS were held immutable at that
+  point for the focused ARCHIVE commit BEFORE the cash-driver source cost extension (old producer `84bc`
+  git-preserved); superseded by the completed 4-cost + 3-diagnostic + FINAL label-rerun results.
+- **Cost-ladder extension (user priority; 4-cost COMPLETE bg105 — see the block below).** Run total round-trip bps 25/50/100/150
   (per-leg 0.00125 / 0.0025 / 0.005 / 0.0075) on the SAME H042 / EXP-87 — **no new hypothesis ID**. The
   completed two-cost (100/150) proof is archived and must NOT be overwritten as the 4-cost outcome; the
-  4-cost run (576 active + 32 cash0 = 608 total; all controls unchanged) is PENDING. Preserve the
+  4-cost run (576 active + 32 cash0 = 608 total; all controls unchanged) is COMPLETE (bg105). Preserve the
   frozen publisher F = 0.995/1.005 forecast-unit conversion SEPARATE from the actual leg cost. NO core
-  SIDES / upfront model source changes.
+  SIDES / upfront model source changes so far. **ARCHIVAL (parent):** old two-cost producer/core/cash-
+  test/artifact ARCHIVED at commit `016056a`; all diagnostics/readers/tests/records/HANDOFF ARCHIVED at
+  `7b48fa6`, pushed `origin/basket-phase2-f1`; the new commit `5bc7518` holds the 4 executed current
+  sources. Old artifacts pin to `016056a`/`7b48fa6` and must NOT be
+  required to equal the new cash-driver HEAD. **4-cost run COMPLETE (bg105):** new cash adapter SIDES =
+  (0.00125, 0.0025, 0.005, 0.0075) explicit TOTAL 25/50/100/150, CORE unchanged `52205b03`, frozen
+  forecast F unchanged; new data root `owned_claim/replay_cash_first_four_costs`, NEW artifact
+  `owned_claim_cash_first_four_costs.json` (old 2-cost data/artifact NOT overwritten) — results in the
+  Four-cost FULL COMPLETE block below. The new latest curve awaits explicit user instruction (not a review/gate).
+- **Capacity two-cost diagnostic DONE (bg113, 24.81s; Ruff + 5 financial regressions PASS 1.13s before
+  a wording-only fix):** `factory/artifacts/owned_claim_cash_capacity_two_costs.json` (producer
+  `owned_claim_cash_capacity.py`, evidence true): 288 active + 16 cash0, 116,432 books, 208,544 legs,
+  104,225 closed, 6,910 legs > historical full bar volume, max identity 3.5083047578154947e-14,
+  failures []. Source bugfixes pre-run: a missing ONE-leg volume cycles UNKNOWN (never the max of the
+  other leg); all/part-missing executed day ⇒ `missing_volume` (NOT `no_leg`); NULL-member finite count
+  + unique-Ticker roster checks; whole unknown-book exclusion tests. Source bounded review later CLOSED
+  (final FourCostContractReview BOUNDED CORRECT, no findings; all 6 capacity areas closed — see the
+  bg114/FINAL blocks). Per-pair sums (initial-C0 units, within ONE alternative book across its KNOWN dates — never
+  added as a portfolio): N3 540 `h3:cash` once @100 381 known **+1.0231372677** (≤1% max
+  pair-participation 169 pairs +1.3703922045; >full-hist-vol 10 pairs −0.1304510902; all other measured
+  bands negative); @150 382 known **+0.1982947198** (≤1% 116 pairs +0.5736070229; >full 8 pairs
+  −0.1241966380). N5 569 `h60:cash` once @100 382 known **+0.5281298357** (≤1% 145 pairs +0.9026049593;
+  >full 13 pairs +0.0300011292); @150 381 known **+0.4190691316** (≤1% 124 pairs +0.6866690068; >full 8
+  pairs +0.0311025497). The empirical positive PnL is NOT driven by the large-printed-volume-share
+  cohort; future volume is DIAGNOSTIC only and cannot become an entry gate or retro-filter strategy EV.
+  PriceSizeRatio > 1 is NOT a physical impossibility (historical prints are NOT market depth; an
+  additional order could alter counterfactual volume; unpriced risk) — not a fillability certificate.
+  4-cost consumer smoke: 576 active + 32 zero + 432 adjacent-cost + 288 cycle = 608 books/combos over 3
+  days (1,824 books, 3,859 legs, 35 unknown, panel-gap read, max 4.09828e-16). Parent latest UNION **68
+  tests PASS 5.67s** — final, after the fractional display fix — (63 = 25 original financial + 17 cash + 2 lineage + 5 stability + 14 execution;
+  +5 new capacity), Ruff PASS on all 8 new files, old 100/150 exact 912 daily / 3,648 members / 1,066
+  fills. Full four-cost `bg105` COMPLETE (see the 4-cost FULL COMPLETE block below); the 3-diagnostic
+  FULL chain `bg114` is now also COMPLETE (see the bg114 block below).
+- **Four-cost FULL COMPLETE (bg105, 6050.60s; evidence true; current adapter SHA / engine `52205b03`
+  MATCH; frozen OOF unchanged):** `factory/artifacts/owned_claim_cash_first_four_costs.json` (new data
+  root `owned_claim/replay_cash_first_four_costs`; old 2-cost data/artifact preserved). 383 dates, 608
+  cells = 576 active + 32 cash0; 257/576 active mean-positive; costs TOTAL 25/50/100/150 (equal half-leg).
+  Best by cost & N (per KNOWN BOOK DATE %, exploratory — NOT selected/frozen): @25 N3 540 `h3:cash`
+  REPEAT **+0.9053613%** (SE 0.3265139, 377 known / 6 UNKNOWN, gross 1.3425845%, fees 0.4372232%,
+  11.13577 orders/day, ALL) and N5 560 `max:cash` REPEAT **+0.6521188%** (SE 0.3147229, 367 known / 16
+  UNKNOWN, 24.43081 orders); @50 N3 540 `h3` REPEAT **+0.5299096%** (SE 0.2504682, 376 known / 7
+  UNKNOWN, 5.527415 orders) and N5 560 `max` ONCE **+0.2267669%** (SE 0.2000620, 379 known / 4 UNKNOWN);
+  @100 N3 540 `h3` ONCE +0.2685400% (381/2), N5 569 `h60` ONCE +0.1382539% (382/1); @150 N3 569 `h5`
+  ONCE +0.0797915% (378/5), N5 569 `h60` ONCE +0.1099919% (381/2). Per-cost ONCE curves (same anchors):
+  N3 540 `h3` 25/50/100/150 = +0.2143284 / +0.2414981 / +0.2685400 / +0.0519096%; N5 569 `h60` =
+  +0.2219027 / +0.1641858 / +0.1382539 / +0.1099919% — lower cost CHANGES the entry hurdle/trades, NOT a
+  simple fee subtraction and NOT monotone. Low-cost REPEAT leaders are NEW simulator intraday
+  proceeds-reuse / turnover quote uncertainty — explicit NOT broker T+1 certification; funding/execution
+  proof still needed; NO deployment. ChildFourCostContractReview: cost source CORRECT, closed no findings;
+  EconomicAssumptionReview failed model callback; the replacement FourCost/capacity review later CLOSED
+  (BOUNDED CORRECT; all 6 areas — see the FINAL block). Parent FULL new stability/exec/capacity four chain `bg114` is now COMPLETE (372.74s)
+  — see the bg114 block below; the FINAL capacity label rerun `bg115` then closed the capacity review.
+  Records now current = FOUR-COST_FULL + 3-diagnostic + FINAL label rerun all COMPLETE; **READY
+  IMMUTABLE** for the parent's final artifacts/docs commit (commit hash not yet known).
+- **3-diagnostic FULL chain `bg114` COMPLETE (372.74s; all 3 current producer SHAs matched):** stability
+  383 dates / 576 active + 32 cash0 / 432 adjacent-cost + 288 cycle / 3,068 unknown alternative-book
+  dates, pins_verified TRUE, EV diff 0.0; execution 608 cells / 232,864 books / 802,985 legs / 3,068
+  unknown / max recon 1.90958e-14 / panel-gap read / evidence true; capacity 576 + 32 riders @25/50/100/150
+  (same 232,864 books / 802,985 legs / 401,318 closed / 29,303 legs > full historical volume / max ident
+  3.5083e-14, all True, evidence true). New stability breadth: 257 positive cells, 77 all-3-fold positive,
+  201 ≥ half-month positive; remove best 1/3/5/10 DATES → 179/108/73/31 positive cells (correlated, NOT
+  independent edges). **ROOT-CASE caveat:** @25 N3 best 540 `h3` REPEAT fold known means [%] −0.1968909 /
+  +0.8916134 / +2.9444727 ⇒ NOT 3-fold-positive; @50 same folds −0.0875390 / +0.6615214 / +1.4287076.
+  N5 560 `max` REPEAT @25 folds +0.5686249 / +0.4365793 / +1.2118038 (three+) but the SAME @50 pooled
+  +0.058044% (2 negative folds), @100 −0.106433%, @150 −0.213691%. N5 569 `h60` ONCE all-3-fold-positive
+  at ALL 4 costs; original N3 540 `h3` ONCE all-3-fold+ at 50/100, @25 first fold negative, @150 middle
+  fold negative. **No top mean is a validated strategy.** Capacity-review replacement: all 6 source areas
+  CLOSED. A numeric display bug rounded 12.5bps per leg to 12 without changing money;
+  both sites are fixed. Final `bg115` reruns match the current producer SHA for both
+  two-/four-cost artifacts; all monetary results are unchanged and half-leg costs exact.
+  All generic 4-diagnostic artifact paths are `*_four_costs.json`; no more RUNNING scaffold. Evidence commit `5bc7518` pushed source + full replay; final records + diag commit landed
+  after the label rerun (FINAL block below).
+
+**FINAL capacity label rerun `bg115` COMPLETE (81.55s; both 2-/4-cost capacity).** Producer SHA
+`c12fa8fd92d57e6bf62cb3727731bdfa76d2c758b99908e159eeb01c6d20997c` MATCH both; all 576 cells
+2×per-leg == declared total with per-leg [12.5, 25, 50, 75] (earlier 12 rounding fixed); all cell
+monetary results EXACT UNCHANGED. FourCostContractReview final BOUNDED CORRECT, no findings, all
+capacity areas closed; all 4 FULL artifacts complete TRUE / current pins match; NO RUNNING remaining.
+No alpha / no quote cert.
+
+**FINAL economic money/stability (bg115).** @25 N3 540 `h3` REPEAT +0.905361% folds
+−0.196891/+0.891613/+2.944473% (NOT 3-fold+), 12/19 months+, drop best 5 DATES +0.428531%, best 10
++0.219960%, 200 month-block descriptive p05 +0.192244% (NOT confidence); @50 same +0.529910% folds
+−0.087539/+0.661521/+1.428708%, 11/19 months+, drop5 +0.195499%, drop10 −0.017743%, block p05
++0.042439%. @25 N5 560 `max` REPEAT +0.652119%, folds +0.568625/+0.436579/+1.211804%, 13/19 months+,
+drop5 +0.255395%, drop10 +0.020482%, block p05 +0.170350%; SAME case @50 +0.058044%, @100 −0.106433%,
+@150 −0.213691%. N5 569 `h60` ONCE 3-fold+ ALL 4 costs (weak SE/tail); N3 540 `h3` ONCE 50/100 3-fold+,
+25/150 one fold negative. A lower-cost repeated wave-harvesting candidate appears, but high
+turnover / REUSE / actual 25bps fees are NOT certified. Candidates kept OPEN DISCOVERY positive; NO
+validated edge / FREEZE / new protected collision / deploy.
+
+**FINAL four-cost price/PnL capacity (per-pair, initial-C0 units — never added as a portfolio).** @25
+N3 REPEAT ≤1% 1,247 pairs net +3.017917, 1–5% 438 pairs +0.626299, >full-historical 65 pairs −0.082112
+(total known net +3.413212); @50 N3 ≤1% 654 pairs +1.865544, >full 30 pairs −0.090607 (total
++1.992460); @25 N5 `max` REPEAT ≤1% 2,403 pairs +4.296626, >full 260 pairs −0.197502 (other bands
+negative except 25–100% +0.260105, total +2.393276). Historical printed volume is NOT market depth;
+future volume is EX POST no-filter diagnostic. Positive profit is mostly small-volume-share trades;
+beyond-full volume is NOT the source of profits in the low-cost leaders (measured, NOT certified).
+UNKNOWN books fully excluded in all cohorts; the 3,068 alternative-book dates are NOT independent
+samples. NEW artifacts: `owned_claim_cash_stability_four_costs.json` (stability SHA
+`9df772a693f159a0bbd9e4d3b5889daef07beecdb2dff0c48a82c98261c6464a`),
+`owned_claim_cash_execution_four_costs.json` (reader SHA
+`8bbda7fd975f4718de66d9554ef31b91aca986c1bc00f55be08a62285924d1c1`),
+`owned_claim_cash_capacity_four_costs.json` (reader SHA `c12fa8fd…`); the existing two-cost snapshots
+stay separate. Source 68-test union 5.67s + FULL cash 6050s / 3-diag 372.74s / final capacity 81.55s;
+all source/model/raw roster/N-separation unchanged except friction. **READY IMMUTABLE** for the
+parent's final artifacts/docs commit (commit hash not yet known; record `5bc7518` already pushed
+source + full replay).
+
+**Publication (parent) — producers/artifacts landed.** `95d425b` holds the final `c12` capacity source +
+refreshed two-cost capacity + 3 FULL four-cost diagnostics; `5bc7518` holds the cash four driver/replay
+and the 4-cost consumer adaptation; engine core `52205b03` unchanged. Declared/current digests match
+(all 5): cash driver `4901fa99f80de3f16d21295ebcfd65e132b1b6fa509b66b6210c008b61eabda0`, stability
+`9df772a693f159a0bbd9e4d3b5889daef07beecdb2dff0c48a82c98261c6464a`, execution
+`8bbda7fd975f4718de66d9554ef31b91aca986c1bc00f55be08a62285924d1c1`, capacity
+`c12fa8fd92d57e6bf62cb3727731bdfa76d2c758b99908e159eeb01c6d20997c` — per-leg [12.5, 25, 50, 75]
+exact, 2×per-leg == declared total over 576 cells; stability/execution/capacity `evidence: true`. All
+status COMPLETE, bounded review CLOSED, **no RUNNING/PENDING**. Final source 68-union PASS 5.67s + Ruff
+PASS. Only the 6 doc/ledger paths + HANDOFF remain; parent commits them after this READY (hash unknown).
 - **Execution FULL (bg101) actual — reader only, NOT validated.** `factory/artifacts/owned_claim_cash_execution.json`
   (reader `owned_claim_cash_execution.py`, `evidence: true`, kind
   `CASH-FIRST-OWNED-CLAIM-OBSERVED-EXECUTION-READER-NOT-VALIDATED-EDGE`): COMPLETE 234.13s, Ruff + 14

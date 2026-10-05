@@ -1359,14 +1359,52 @@ with maximum residual <7.7e-15. Fifty-nine integrated financial regressions pass
 The $10,000 participation ruler exposes a capacity problem in some legs:
 N3/540/h3/once at 100bps has median 0.343% of its fill minute's volume but
 95th percentile 24.76%; N5/569/h60/once has median 0.323%, 95th percentile 63.75%.
-Some modeled sizes exceed the entire observed minute volume. This is not
-executable-price certification; profit dependence on those legs is not yet measured.
+Some modeled sizes exceed historical printed volume, which is not market depth
+or proof that an extra order could not fill. The two-cost capacity money reader
+reconciles all 383 dates: for N3/540/h3/once at 100bps, the 169 pairs at <=1%
+maximum leg participation contribute +1.370392 original-capital units; the ten
+pairs above full historical bar volume contribute -0.130451, within total
++1.023137 across its 381 known dates. Profit is not sourced by that large-size
+cohort. Future volume is retrospective attribution, not a causal entry filter.
 
-**Owner's new friction grid:** 25, 50, 100 and 150bps TOTAL round-trip, equally
-split between legs. The four-cost replay is pending, on unchanged forecasts,
-original roster, N3/N5 and once/repeat controls. Preserve the executed two-cost
-source vintage before expansion. No protected outcomes, selected freeze,
-promoted edge or paper deployment.
+**Owner's four-cost grid — FULL COMPLETE.** 25, 50, 100 and 150bps TOTAL
+round-trip, equally split between legs. Completed 6,050.60s on the same
+383 OOF dates, frozen forecasts, original roster, N3/N5 and once/repeat:
+608 cells = 576 active + 32 cash references; 257 active means positive.
+`factory/artifacts/owned_claim_cash_first_four_costs.json` carries the source
+and unchanged-core pins. Expanded code/full evidence are pushed as `5bc7518`;
+two-cost executed vintages remain `016056a` / `7b48fa6`.
+
+Exploratory largest known-date mean per cost, NOT selected or validated rules:
+
+| Total bps | N3 net/day | N3 cell | N5 net/day | N5 cell |
+|---|---:|---|---:|---|
+| 25 | +0.905361% | 540 / h3 / repeat | +0.652119% | 560 / max / repeat |
+| 50 | +0.529910% | 540 / h3 / repeat | +0.226767% | 560 / max / once |
+| 100 | +0.268540% | 540 / h3 / once | +0.138254% | 569 / h60 / once |
+| 150 | +0.079792% | 569 / h5 / once | +0.109992% | 569 / h60 / once |
+
+Lower-cost leaders trade/re-enter more; changing fees changes admission as well
+as transaction charges. REPEAT needs execution/funding validation beyond the
+simulator's minute-reuse convention. Sixty-eight integrated financial tests pass.
+All three four-cost readers are FULL COMPLETE: 232,864 alternative book dates,
+802,985 legs, source pins matched; execution residual <2e-14, capacity <3.6e-14.
+Exact per-leg costs are 12.5 / 25 / 50 / 75bps, never integer-rounded.
+
+Financial shape: 77/576 cells are positive in all three folds; removing each
+cell's ten best dates leaves 31 positive means. N3/540/h3/repeat at 25bps loses
+0.196891%/day in fold0 but gains 0.891613% / 2.944473% in folds1/2; removing its
+ten best dates still leaves +0.219960%. N5/560/max/repeat at 25bps is positive
+in all three folds and remains +0.020482% after removing ten best dates, but the
+SAME cell loses at 100/150bps. This is a fee-sensitive, regime-dependent candidate,
+not a universal cash/ownership rule or validated execution edge.
+
+The low-cost leaders' positive money is mostly in <=1% historical-volume-share
+pairs; their >full-historical-volume cohorts lose money. This is retrospective
+liquidity attribution, NOT a future-volume entry filter. Depth, impact, actual
+friction and repeated-order funding remain unverified. Retain discovery candidates;
+do not promote, deploy, or spend protected outcomes from these selected means.
+No protected outcomes, selected freeze, promoted edge or paper deployment.
 
 **Paper boundary:** offline restart/cancel/partial-fill/protection fixes are closed
 within the reviewed scope. Parent exercised 34 safety tests, legacy T1–T14 collection,
