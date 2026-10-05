@@ -1319,9 +1319,54 @@ fees (the former net-loss-plus-fees ladder double-counted fees). Its fixed-other
 outcome tail requirement is the cash deficit, not an oracle residual after
 zeroing all duds and fees. Full 383-date/352-cell output reconciles to <4.3e-14.
 Cross-case sums are not portfolio P&L; MFE classes remain retrospective rulers.
-The next hypothesis keeps the original roster but starts in cash: fresh admission
-must clear entry-and-exit friction, while already-owned retention has entry sunk.
-Cash-first cost-hysteretic ownership is planning/implementation, not a result.
+Final `owned_claim_minute_attribution.py` run completed in 277.18s on all 383 dates:
+176 cells, 352 own-ruler and 3,872 prior-book comparisons, reconciliation <4.5e-14.
+The reader verifies the consumed prior-ledger copy against its declared vintage;
+two relocated-ledger regressions pass. Current producer SHA matches the artifact.
+On the 345 dates common to all minute policies, N3/569/max:stop loses 0.538677%
+per date; median ownership is two minutes and 421/569 later-push claims were
+released before their push. This is retrospective attribution, not an entry rule
+or an isolated decision-frequency effect.
+
+**H042 / EXP-87: cash-first discovery completed; positive means, not a validated edge.**
+The same original roster and frozen minute OOF scores now start in cash. Fresh
+admission must clear both modeled entry-and-exit fees; held continuation has entry
+sunk. Nine views, once/repeat, four admission clocks, independent N3/N5 and
+100/150bps produce 288 active cells plus 16 cash-zero controls on 383 test dates.
+`owned_claim_cash_first_discovery.json` records 61 positive active means
+(N3: 19/11 at 100/150bps; N5: 20/11). Executed adapter/core SHA pins match;
+38 financial regressions passed. Original upfront replay parity was exercised
+on three real dates: 528 daily rows, 2,112 members and 4,158 fills, zero mismatches.
+
+Best modeled N3 is 540/h3:cash/once at 100bps: +0.268540%/day
+(SE 0.144797%, 381 known / 2 UNKNOWN). The SAME cell at 150bps is +0.051910%;
+its middle fold is negative. Best N5 is 569/h60:cash/once at both costs:
++0.138254% / +0.109992%, all three folds positive, but removing its three best
+dates makes both means negative. Rare-tail dependence is a measured sensitivity,
+not an automatic thesis rejection or a causal exclusion rule. These are
+correlated discovery alternatives, not 61 independent edges.
+
+Quantity is fixed from the causal mark with 90% owner-slot execution headroom;
+unaffordable next-open gaps remain UNKNOWN. Simulator proceeds become reusable
+at execution minute +1; this is NOT broker cash-account business-day settlement
+certification. Prices/friction remain execution proxies, not quote/capacity proof.
+The ONCE control never spends a sale receipt on another buy: parent checked
+55,152 active once books / 220,608 members, no repeat buys and zero reentries.
+The minute-reuse assumption is therefore relevant to REPEAT, not ONCE funding.
+Both two-cost readers are complete and source-reviewed: stability reconciles all
+288 active cells; execution reconciles 208,544 legs to 116,432 alternative books
+with maximum residual <7.7e-15. Fifty-nine integrated financial regressions pass.
+The $10,000 participation ruler exposes a capacity problem in some legs:
+N3/540/h3/once at 100bps has median 0.343% of its fill minute's volume but
+95th percentile 24.76%; N5/569/h60/once has median 0.323%, 95th percentile 63.75%.
+Some modeled sizes exceed the entire observed minute volume. This is not
+executable-price certification; profit dependence on those legs is not yet measured.
+
+**Owner's new friction grid:** 25, 50, 100 and 150bps TOTAL round-trip, equally
+split between legs. The four-cost replay is pending, on unchanged forecasts,
+original roster, N3/N5 and once/repeat controls. Preserve the executed two-cost
+source vintage before expansion. No protected outcomes, selected freeze,
+promoted edge or paper deployment.
 
 **Paper boundary:** offline restart/cancel/partial-fill/protection fixes are closed
 within the reviewed scope. Parent exercised 34 safety tests, legacy T1–T14 collection,

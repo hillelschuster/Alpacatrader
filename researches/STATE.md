@@ -2,6 +2,100 @@
 # Hypothesis ranking + falsifiers: researches/HYPOTHESES.md (living).
 # History before 2026-09-04: researches/CANONICAL_STATE.md (superseded snapshot, kept for trust map).
 
+## UPDATE 2026-10-05 (later) — cash-first fee-aware ownership (H042 / EXP-87; discovery-positive, NOT validated)
+
+First533 discovery dates only; no protected-half read, FREEZE or deploy. FULL evidence
+`factory/artifacts/owned_claim_cash_first_discovery.json` (bg71, 3788.04s, final 3-day smoke +
+383-day full). Hypothesis: start in CASH on the SAME original roster and pay the fresh entry fee
+only where the predicted marginal money clears the ACTUAL round-trip hurdle; entry is SUNK once held
+(held threshold = forecast sign) while the fresh threshold is the derived fee hurdle — distinct from
+the forced-upfront direct-minute ownership admission (H041 FAILED) and the earlier eight-event/EOD-PI
+formulation (H040), and from a static first+5 reserve; the same
+minute grid decides both entry and exit.
+
+- **Cells:** 304 = 288 active + 16 cash0; **61 active cells mean-positive** (N3/100 19, N3/150 11,
+  N5/100 20, N5/150 11). Same original roster / OOF 48 fits, 3 folds, 9 horizon views (max, h1, h3,
+  h5, h10, h15, h30, h60, h120), 4 clocks, N3/N5 separate, 100/150bps, once/repeat cycles; 383 test
+  days.
+- **Best N3:** 540 `h3:cash` once @100bps net **+0.268540%** (day SE 0.144797%, gross +0.469931%,
+  fees 0.201391%, 381 known / 2 UNKNOWN); SAME case @150 **+0.051910%** (382 known / 1 UNKNOWN).
+  Same-case folds @100 [+0.105451, +0.294920, +0.521704]; @150 [+0.000914, −0.047625, +0.327270].
+- **Best N5:** 569 `h60:cash` once @100 **+0.138254%** (SE 0.129523%, 382 known / 1 UNKNOWN);
+  @150 **+0.109992%** (SE 0.124643%, 381 known / 2 UNKNOWN); **3/3 fold-positive at both costs**.
+- **Conditional sensitivity (parent):** removing the best DATES — N3@100 remove best5 +0.086056%,
+  best10 −0.054881%; N5@100 remove best3 −0.013006%. Conditional sensitivity, NOT a kill-tail
+  strategy.
+- **INTERPRETATION QUALIFICATION (parent).** The new cash consumer enters at 90% owner-slot headroom
+  while the forced-upfront history sized 100% and used new timing, so admission, SIZE and exposure
+  all differ — there is **NO "one-factor pure entry-gate effect" causal claim** for the old-vs-new
+  portfolio (only roster/scores/fees are preserved factors). The forecast price hurdle uses the
+  current completed MARK vs a next-open expectation approximation, so the next-open proxy +100/150bps
+  fees are **NOT actionable quote proof**. Contract distinction: the upstream unit artifact's
+  SIGN-only text describes the H041 producer / old stop; the new cash consumer uses cash/F magnitude
+  with a fill-reference/current-mark fresh gate — distinct contracts, do not merge.
+- **Not validated:** dev multiplicity of 288 alternatives with uncertainty and tails; this is
+  discovery-positive conditional evidence, NOT validated profit, FREEZE, collision read or bot
+  deploy. Cash0 books are known zero (6,128 books, 0 nonzero, 0 orders). Cash gate qty = causal MARK
+  90% slot/(mark·(1+s)), no resizing, unaffordable gap UNKNOWN, own exit, entry sunk. **ONCE
+  invariant (parent actual):** 55,152 active once books / 220,608 members, no original claim bought
+  twice and all reentries 0 — so the exec+1-minute proceeds-REUSE assumption is NOT a funding blocker
+  for ONCE (broker price/order/qty still NOT certified). Settlement
+  exec+1 minute is a SIMULATOR availability, NOT broker T+1-day certification. Cash-stability /
+  execution two producers are pending parent execution — no outcomes fabricated. Parent Ruff new cash
+  driver/reader/test PASS; 38 fiscal PASS (13 cash + 25 old); historic real 3-day old UPFRONT parity
+  528 daily / 2,112 members / 4,158 fills / 0 mismatch; current adapter/core hashes match.
+- **Cash-stability FINAL (bg96→bg102, 28.53s; Ruff + 5 regressions PASS 0.78s + full reader):**
+  `factory/artifacts/owned_claim_cash_stability.json`, evidence true / `full_discovery_evidence`;
+  383 dates, 288 active + 16 cash0, 144 matched-cost + 144 cycle contrasts, 19 months, 3
+  score-metadata folds; pins_verified true (766 score partitions + 1,149 execution inputs rehashed),
+  producer SHA `5ecd323edd966afcbd78c098aaba08e765f75cd4b39bfa2b0fc0b353f285ba08` current MATCH, EV
+  reconciliation max 0.0. All 61 positive cells; 8 all-3-fold positive; 42 ≥ half-month positive;
+  remove best 1/3/5/10 DATES → 30/11/4/0 positive cells (alternative cell counts are NOT independent
+  samples/portfolio). N3 best 540 `h3` once: 10/19 positive months @100, 7/19 @150. N5 best 569 `h60`
+  once: 12/19 @100, 11/19 @150. Deterministic 200 MONTH-BLOCK draws are DESCRIPTIVE, NOT
+  confidence/p-value/significance: N3 best @100 p05 −0.008536% / p95 +0.610194% / 5.5% draws ≤0,
+  @150 −0.198343% / +0.280384% / 38% ≤0; N5 best @100 −0.058269% / +0.334986% / 15% ≤0, @150
+  −0.032536% / +0.265328% / 18.5% ≤0. Ledger unit = original PORTFOLIO CAPITAL; forecasts original
+  CLAIM-cash F units (distinct; a source-traced unit bug was fixed before the parent run). A top
+  fold/month source-lexicographic bug was fixed before the run; 3 permanent regressions correct
+  money-block rank / UNKNOWN-fee profit denominators / date-removal boundary. UNKNOWN hypothetical
+  per-unknown-DATE loss erases the known sum (not imputed returns): N3 best @100 51.156863% portfolio
+  (2 dates), @150 19.829472% (1 date); N5 best @100 52.812984% (1 date), @150 20.953457% (2 dates).
+  Reader bounded review CLOSED; **execution DONE (bg101)** — no validated edge, no protected read,
+  no FREEZE.
+
+  **Stability resolution (bg102, FINAL).** Two diagnostic bugs fixed: independent denominator recovery
+  correct (summary EV / fees / gross on the KNOWN SAME set, orders ALL; affordability counts UNKNOWN
+  DATES separately from affected CLAIMS). Corrected orders-denominator diff = 0.15186886527694377 /
+  all 0 ⇒ all-date-mean; **all 288 return means EXACT unchanged vs the old reader**; pins_verified TRUE,
+  EV diff 0.0, 61/288 means unchanged. Reviewer bounded findings ALL CLOSED correct (no alpha / no
+  broker cert). FINAL union 59 fiscal tests PASS (6.56s); all 8 NEW source/test Ruff PASS and core F/E9
+  PASS. Executed SHA MATCH (all 5): cash adapter `84bc4365`, core `52205b03`, minute-attr `4276fa56`,
+  stability `5ecd323edd966afcbd78c098aaba08e765f75cd4b39bfa2b0fc0b353f285ba08`, execution
+  `7b0071919d4a7f95e6c7c4dea9f5a06ab10c5c01323695a7be07ecc9c28a0f47`. RECORDS READY IMMUTABLE for
+  the focused ARCHIVE commit BEFORE the cash-driver source cost extension (old producer `84bc`
+  git-preserved); no further changes until the parent 4-cost result.
+- **Cost-ladder extension (user priority; 4-cost PENDING).** Run total round-trip bps 25/50/100/150
+  (per-leg 0.00125 / 0.0025 / 0.005 / 0.0075) on the SAME H042 / EXP-87 — **no new hypothesis ID**. The
+  completed two-cost (100/150) proof is archived and must NOT be overwritten as the 4-cost outcome; the
+  4-cost run (576 active + 32 cash0 = 608 total; all controls unchanged) is PENDING. Preserve the
+  frozen publisher F = 0.995/1.005 forecast-unit conversion SEPARATE from the actual leg cost. NO core
+  SIDES / upfront model source changes.
+- **Execution FULL (bg101) actual — reader only, NOT validated.** `factory/artifacts/owned_claim_cash_execution.json`
+  (reader `owned_claim_cash_execution.py`, `evidence: true`, kind
+  `CASH-FIRST-OWNED-CLAIM-OBSERVED-EXECUTION-READER-NOT-VALIDATED-EDGE`): COMPLETE 234.13s, Ruff + 14
+  tests PASS 1.11s + full source-panel read; 304 cells / 116,432 books / 465,728 members / 208,544 legs
+  / 1,245 unknown books / 1,270 unknown members / 94 held terminal; max recon 7.60503e-15; all known
+  support unique, complete, finite; pairs closed; qty PASS. Units = ORIGINAL PORTFOLIO cash (correct).
+  Actual N3 best 540 `h3:cash` once @100: median entry 09:37, exit 09:45, hold 3 min; size as a
+  bar-volume proxy 10k median 0.343367% of minute volume, p95 24.76345%, p99 ~1206%, max 4382% (!).
+  N5 best 569 `h60:cash` once @100: median entry 10:24, exit 11:29, hold 11 min; median 0.322671%, p95
+  63.7478%, max 6061%. These are bar-volume-proxy price-taking / capacity tails — NOT certified and NOT
+  an automatic profit kill (PnL dependence unmeasured). Successful entry mark→next-open: N3 p95
+  +2.41549%, N5 +1.75241%; known funding-failed attempts remain UNKNOWN. ONCE zero re-entry → no
+  intraday proceeds-reuse blocker (REPEAT caveat unchanged). Validates nothing (no gate/sizing/policy/
+  bot); no alpha / no broker cert.
+
 ## UPDATE 2026-10-05 — owned-claim clock windows + direct-minute ownership (FULL COMPLETE-NEGATIVE; discovery only)
 
 New discovery work on the first533 days (2021-02-01..2023-03-14) only; no protected-half read, no
@@ -33,6 +127,27 @@ missing horizons/Ns/clocks (pre-fix agent smokes INVALID); corrected bg43 smoke 
 `71fa3b67`; parent 25 financial regressions PASS (8 baseline + 9 minute + 8 cash levers); Ruff/syntax
 PASS.
 
+**Corrected money reader (bg76/bg86; `factory/artifacts/owned_claim_minute_attribution.json`, producer
+`owned_claim_minute_attribution.py`).** FINAL CURRENT MATCH: bg86 COMPLETE 277.18s, Ruff PASS, 383
+days / 176 cells, `evidence: true`, producer SHA
+`4276fa56c9e27490abd18b8a1053a324f772de152e9698a2208b4c98a00c9807` current, and the actual consumed
+FVI / `policy_return` vintage SHAs MATCH. Own paired 5,524 date keys, cross 5,418; max member-book
+residual 4.440892098500626e-14; all 176 cells compared to bg76 show no structural change, only
+floating-reduction differences ≤4.440892098500626e-16. Ownership all partitions clean (actual
+never-owned blocked slots kept separate from held). 352 own-ruler pairs, 3,872 prior-book pairs (11
+minute × 11 each prior book per clock/N/cost), 352 reference distributions; joins on
+(day, clock, N, side) ONLY with separate `minute_policy`/`reference_policy` — NEVER a policy-name
+inner join. Actual N3 `569 max:stop` @100 all-11-policy common 345 dates net **−0.538677%** / paired
+DAY (entry fee 1.699834, exit fee 1.707579, gross 1.548976, net −1.858437); median hold 2 min; 421/569
+later-push claims released before the push (ex post, NOT a rule). No pure-cadence-effect claim
+(labels/train density/history also differ). The N5 best COMMON all-policy-date cell is 560 `h30:stop`,
+which DIFFERS from the official unpaired best 571 `h1:stop` — official best NOT overwritten. A bounded
+source review closed one relocated prior-ledger defect (gate verified declared-root but consumed a
+data-root copy without compare; now an 11-line guard asserts the actual consumed daily SHA vs declared
+and rejects on mismatch; permanent `test_owned_claim_minute_attribution.py` 2 lineage cases PASS, Ruff
+PASS) with no open findings and unchanged money. This corrected artifact is the valid money reader —
+source pins now FINAL/CURRENT.
+
 **Money-gap consolidation (`factory/scripts/owned_claim_money_gap.py`).** Producer fixed a NET dud +
 fee double count (now GROSS price-loss with fees disjoint); baseline fixed other-outcome TAIL
 requirement = deficit; worst/best DATE sensitivities on the same population primary per BOOK DATE;
@@ -40,11 +155,10 @@ cross-case Σ is not portfolio. FULL money-gap (383 dates, 352 cells) actual rec
 4.263256414560601e-14 with source pin match; old counterfactual double-fee / denominator bugs
 corrected; parent 25 fiscal regressions passed.
 
-**NEXT (PLANNING ONLY — no new ID, no outcomes).** Parent's next target is a cash-first fee-aware
-admission hypothesis on the SAME original roster: direct-minute values used only where there is a
-clear fresh cost, with entry sunk and the owned exit treated differently. This is hypothesis
-PLANNING only; a new record ID and any producer/contract are withheld until the parent supplies
-them (no fabricated outcomes). Existing baseline `460b1d1` unchanged.
+**NEXT (now ACTUAL — superseded by the 2026-10-05 (later) cash-first section above).** The cash-first
+fee-aware admission hypothesis on the SAME original roster (direct-minute values used only where
+there is a clear fresh cost; entry sunk, owned exit different) is now H042 / EXP-87 with completed
+FULL evidence — see the section above. Existing baseline `460b1d1` unchanged.
 
 **Bot offline paper closure — parent-verified final (2026-10-05).** Latest 34 safety tests PASS +
 legacy T1–T14 module collection PASS; new Safety file Ruff PASS / source 3-file syntax / F-E9 PASS /
