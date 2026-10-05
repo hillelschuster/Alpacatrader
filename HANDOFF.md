@@ -1413,3 +1413,48 @@ Main bot code, LIVE/KILL flags and trading orders were not changed. Broker expos
 is unobserved. This is not deployment or broker certification: intrinsic OCO
 cancellation/double-fill races remain unproved. Frozen H025/A3b is unchanged;
 ordinary over-covering multiple families are not consolidated (pre-existing scope).
+
+## 22. 2026-10-06 — H042 verification + ENTRY-EV-01 Stage A (current entry point)
+
+**Checkout**: `basket-phase2-f1`. Latest commits: `e564c36` (H042 verification), `f7cdc5c`
+(pre-reg + scope), `ab79545` (Stage-A producer + lane verification), `ec05e96` (Stage-A
+result). Current truth: `researches/STATE.md` and `researches/HYPOTHESES.md` top two blocks;
+chronicle in `factory/STATE.md` tail.
+
+**H042/EXP-87 four-cost verification — DONE (formulation-scoped non-promotion).** Six-strand
+wave + parent analyses: causally clean (11-channel leak audit, 0 findings; future-perturbation
+byte-identical) and arithmetically exact, but NOT ESTABLISHED as an executable edge —
+family-wise Reality Check p=0.077/0.332/0.767/0.985 at 25/50/100/150bps; internal-forward
+select(folds0+1)→fold2 = −0.023%/day at 100bps; measured SIP spreads 46–58bps/leg re-cost the
+25bps repeat leader to −0.15…−0.67%/day (50bps to ≈−0.06% extrapolated); the 100/150bps ONCE
+cells are 1–3-date tail phenomena (top-10 dates carry 120–190% of net). Substrate defect found
+and now guarded: silent-NaN prev_close path (AMV 2022-09-28 verified false winner; 309/997
+traded claims lack prior-day universe rows). **Not** a signal-absence claim: selectivity/
+admission economics remain positive structure; entry mechanism is a formulation variable.
+Artifacts: `factory/artifacts/h042_verification_2026-10-06.json`,
+`h042_verification_selection_folds.json`, `factory/scripts/verify_h042_selection.py`.
+
+**ENTRY-EV-01 (pre-registered) Stage A — DONE, NEGATIVE, SCOPED.** Full top-10 causal minute
+board, 533/533 discovery days, 1,601,807 guarded events (guard = verified prev_close ≥ $1.00;
+468,146 drops, all `prev_close_lt_1`), gross next-open→next-open h∈{1..60} (coverage 99.35%→
+84.16%). Pooled negative at every horizon (h1 −0.011% → h60 −0.411%; halves agree). No
+conditional pocket clears cost: best eligible region +3.7bps (median 0.0) vs the 92–116bps
+measured round trip; momentum spikes / volume spikes / near-boundary rank state / at-day-high
+≈0 or negative. The one large positive region — `promo_age ∈ [−5,0)` (first top-5 crossing
+1–5 minutes AHEAD; n=18,904; 527 days; h1 +0.99%, h3 +2.38%, h5 **+3.09%**, h15 +2.62%; stable
+halves) — is **future-conditioned**: the crossing is the move itself; every causal proxy at t is
+≈0/negative; post-promotion (0–5 min) fades (−0.21% h5, −1.03% h30). Stage-B gate not triggered;
+(c) deferred to its own registration. Producers `factory/scripts/entry_ev/stage_a_build.py`
+(+15 tests), `stage_a_read.py`, `verify_lane_months.py`; artifacts `factory/artifacts/entry_ev/`
++ `READ_PACKET.md`. **Scope**: falsifies marketable next-open minute-level entries on the top-10
+board in this coordinate set at h≤60; does NOT falsify passive entries, other populations/states,
+longer holds, the funded/owned mechanisms, or H025.
+
+**Next object (proposed, not started — owner gate).** Passive/discount-entry fill realism on the
+H025-class extreme state: does the one OOS-passing mechanism survive an honest queue-adverse fill
+model, and what order placement captures it? Evidence to use: `lb18_fills_micro.*` (tape-through
+rate 0.983 at the bid; dwell med 15s; gap 2.6× clean at-bid volume), live fills (−259bps mean vs
+intended; 9/9 stopped), `data/sip/net/{trades,quotes}` around the 1,478 frozen fills.
+
+**Guardrails**: validation 533d / sealed 2024+2025-01 / reserved 2026-06..08 untouched. Paper bot
+stopped since 2026-09-16 (`data/KILL` present, no processes); not touched. No FREEZE exists.
