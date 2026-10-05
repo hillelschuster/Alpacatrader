@@ -1,0 +1,1318 @@
+{
+  "alias_map_path": "/home/hillel/algo projects/worktrees/Alpacatrader/basket-phase2-f1/factory/artifacts/basket/phase2/ATLAS/TAPE/OBSERVATION/v0/acquisition/alias_map.json",
+  "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+  "board_root": "/home/hillel/projects/Alpacatrader/data/atlas/observation/v0/race.minute_full",
+  "combined_lane_sha_recipe": "sha256(json.dumps({day, lanes: sorted([[kind, role, str(path), file_sha256], ...]), alias_map_sha256}, sort_keys=True, separators=(',',':')).encode()); digest function is the production basket_tape_atlas_observation.combined_lane_sha",
+  "discovery_block": {
+    "first_day": "2021-02-01",
+    "last_day": "2023-03-14"
+  },
+  "lane_rule": "baseline_raw_lane: month 2021-02..2023-12 -> data/ohlcv_<month>.parquet (kind ohlcv_raw, era hf_era)",
+  "months": [
+    {
+      "board_days_in_discovery_window": 19,
+      "days_checked": [
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "5c2c07d19d246a2cdb7bb7d01cb7d93ed8c92069d1687d2482a24e0a64658862",
+          "combined_lane_sha256": "5c2c07d19d246a2cdb7bb7d01cb7d93ed8c92069d1687d2482a24e0a64658862",
+          "day": "2021-02-01",
+          "match": true
+        },
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "740c0e7f93d7d5f4b3348303b314930c640ee0edcf274350ee81f5cc943d1555",
+          "combined_lane_sha256": "740c0e7f93d7d5f4b3348303b314930c640ee0edcf274350ee81f5cc943d1555",
+          "day": "2021-02-12",
+          "match": true
+        }
+      ],
+      "file_sha256": "69eabad61a23912575f139f1e93a54edb11387bad942a7ece38ae94bdc7393a0",
+      "lane_feed_era": "hf_era",
+      "lane_kind": "ohlcv_raw",
+      "lane_path": "/home/hillel/projects/Alpacatrader/data/ohlcv_2021-02.parquet",
+      "month": "2021-02",
+      "notes": "lane sha + 2 day digests verified; px exact on 15000/15000 sampled rows of 2021-02-12",
+      "px_day": "2021-02-12",
+      "px_detail": {
+        "max_abs_px_diff_known_both": 0.0,
+        "n_board_rows": 2081820,
+        "n_distinct_tickers": 5020,
+        "n_sampled": 15000,
+        "n_sampled_px_both_null": 222,
+        "n_sampled_px_known_both": 14778,
+        "n_sampled_px_null_board": 222,
+        "px_et_exact_match": 15000,
+        "px_et_match_rate": 1.0,
+        "px_exact_match": 15000,
+        "px_exact_rate": 1.0,
+        "px_within_tol_match": 15000,
+        "px_within_tol_rate": 1.0
+      },
+      "px_et_match_rate": 1.0,
+      "px_exact_rate": 1.0,
+      "px_session_end": 959,
+      "px_within_1e6_rate": 1.0,
+      "seconds": 13.19,
+      "sha_match": true,
+      "sha_mismatches": [],
+      "status": "ok"
+    },
+    {
+      "board_days_in_discovery_window": 23,
+      "days_checked": [
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "5aef040fbdac8aed36ffd0462e9795a9e556a8309f8c3b89c42f183d8d7559e8",
+          "combined_lane_sha256": "5aef040fbdac8aed36ffd0462e9795a9e556a8309f8c3b89c42f183d8d7559e8",
+          "day": "2021-03-01",
+          "match": true
+        },
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "ff1dcfcde5716617bd5e43ee8045d9589c7fbaa7dd8094e0d00482485859d14a",
+          "combined_lane_sha256": "ff1dcfcde5716617bd5e43ee8045d9589c7fbaa7dd8094e0d00482485859d14a",
+          "day": "2021-03-16",
+          "match": true
+        }
+      ],
+      "file_sha256": "231079fe371d7cc1b5db29b3fe76071f1f1aa465293d721decd05a42183bdf74",
+      "lane_feed_era": "hf_era",
+      "lane_kind": "ohlcv_raw",
+      "lane_path": "/home/hillel/projects/Alpacatrader/data/ohlcv_2021-03.parquet",
+      "month": "2021-03",
+      "notes": "lane sha + 2 day digests verified; px exact on 15000/15000 sampled rows of 2021-03-16",
+      "px_day": "2021-03-16",
+      "px_detail": {
+        "max_abs_px_diff_known_both": 0.0,
+        "n_board_rows": 2112240,
+        "n_distinct_tickers": 5073,
+        "n_sampled": 15000,
+        "n_sampled_px_both_null": 219,
+        "n_sampled_px_known_both": 14781,
+        "n_sampled_px_null_board": 219,
+        "px_et_exact_match": 15000,
+        "px_et_match_rate": 1.0,
+        "px_exact_match": 15000,
+        "px_exact_rate": 1.0,
+        "px_within_tol_match": 15000,
+        "px_within_tol_rate": 1.0
+      },
+      "px_et_match_rate": 1.0,
+      "px_exact_rate": 1.0,
+      "px_session_end": 959,
+      "px_within_1e6_rate": 1.0,
+      "seconds": 14.72,
+      "sha_match": true,
+      "sha_mismatches": [],
+      "status": "ok"
+    },
+    {
+      "board_days_in_discovery_window": 21,
+      "days_checked": [
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "865582e0eefb941a4abeda544fd1b3e6fb6b7f07a269f5579eb7a136fe79b74d",
+          "combined_lane_sha256": "865582e0eefb941a4abeda544fd1b3e6fb6b7f07a269f5579eb7a136fe79b74d",
+          "day": "2021-04-01",
+          "match": true
+        },
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "31466c258bc195a13b682358356774e09db2b2854316f0ff2b2cfd816fb1ddaa",
+          "combined_lane_sha256": "31466c258bc195a13b682358356774e09db2b2854316f0ff2b2cfd816fb1ddaa",
+          "day": "2021-04-16",
+          "match": true
+        }
+      ],
+      "file_sha256": "d7272652b853cd290c7b04fbb7c6cd9e03e5794eab7873fa0e7d42d31d8d34e2",
+      "lane_feed_era": "hf_era",
+      "lane_kind": "ohlcv_raw",
+      "lane_path": "/home/hillel/projects/Alpacatrader/data/ohlcv_2021-04.parquet",
+      "month": "2021-04",
+      "notes": "lane sha + 2 day digests verified; px exact on 15000/15000 sampled rows of 2021-04-16",
+      "px_day": "2021-04-16",
+      "px_detail": {
+        "max_abs_px_diff_known_both": 0.0,
+        "n_board_rows": 2150850,
+        "n_distinct_tickers": 5151,
+        "n_sampled": 15000,
+        "n_sampled_px_both_null": 230,
+        "n_sampled_px_known_both": 14770,
+        "n_sampled_px_null_board": 230,
+        "px_et_exact_match": 15000,
+        "px_et_match_rate": 1.0,
+        "px_exact_match": 15000,
+        "px_exact_rate": 1.0,
+        "px_within_tol_match": 15000,
+        "px_within_tol_rate": 1.0
+      },
+      "px_et_match_rate": 1.0,
+      "px_exact_rate": 1.0,
+      "px_session_end": 959,
+      "px_within_1e6_rate": 1.0,
+      "seconds": 10.15,
+      "sha_match": true,
+      "sha_mismatches": [],
+      "status": "ok"
+    },
+    {
+      "board_days_in_discovery_window": 20,
+      "days_checked": [
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "b128249edec311f3c2da4f397dc7e1e65a67b8b5d2a6757e37183c70b9b09ba1",
+          "combined_lane_sha256": "b128249edec311f3c2da4f397dc7e1e65a67b8b5d2a6757e37183c70b9b09ba1",
+          "day": "2021-05-03",
+          "match": true
+        },
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "ecbe8ca7907fd799733f87f2a8175c604845e18c1e806bcbace4e32235c4770e",
+          "combined_lane_sha256": "ecbe8ca7907fd799733f87f2a8175c604845e18c1e806bcbace4e32235c4770e",
+          "day": "2021-05-17",
+          "match": true
+        }
+      ],
+      "file_sha256": "6e6e6057d327fe41cea9d098d88ecdb31dd859595e54d4adf65f1d35ceca7b4b",
+      "lane_feed_era": "hf_era",
+      "lane_kind": "ohlcv_raw",
+      "lane_path": "/home/hillel/projects/Alpacatrader/data/ohlcv_2021-05.parquet",
+      "month": "2021-05",
+      "notes": "lane sha + 2 day digests verified; px exact on 15000/15000 sampled rows of 2021-05-17",
+      "px_day": "2021-05-17",
+      "px_detail": {
+        "max_abs_px_diff_known_both": 0.0,
+        "n_board_rows": 2184000,
+        "n_distinct_tickers": 5194,
+        "n_sampled": 15000,
+        "n_sampled_px_both_null": 389,
+        "n_sampled_px_known_both": 14611,
+        "n_sampled_px_null_board": 389,
+        "px_et_exact_match": 15000,
+        "px_et_match_rate": 1.0,
+        "px_exact_match": 15000,
+        "px_exact_rate": 1.0,
+        "px_within_tol_match": 15000,
+        "px_within_tol_rate": 1.0
+      },
+      "px_et_match_rate": 1.0,
+      "px_exact_rate": 1.0,
+      "px_session_end": 959,
+      "px_within_1e6_rate": 1.0,
+      "seconds": 11.69,
+      "sha_match": true,
+      "sha_mismatches": [],
+      "status": "ok"
+    },
+    {
+      "board_days_in_discovery_window": 22,
+      "days_checked": [
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "472cd578c618fcaaf16266e4594628c4d34c88cc85d68b3538d3d304cf5bba9d",
+          "combined_lane_sha256": "472cd578c618fcaaf16266e4594628c4d34c88cc85d68b3538d3d304cf5bba9d",
+          "day": "2021-06-01",
+          "match": true
+        },
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "0f5d92028e1f9d9acb0bc90dd44d3806e203aad2280815bb39622286593d35ae",
+          "combined_lane_sha256": "0f5d92028e1f9d9acb0bc90dd44d3806e203aad2280815bb39622286593d35ae",
+          "day": "2021-06-16",
+          "match": true
+        }
+      ],
+      "file_sha256": "311a261c724c25221155f5fcbcf825fecb5ac1cca82d545a315f1f97be7926e5",
+      "lane_feed_era": "hf_era",
+      "lane_kind": "ohlcv_raw",
+      "lane_path": "/home/hillel/projects/Alpacatrader/data/ohlcv_2021-06.parquet",
+      "month": "2021-06",
+      "notes": "lane sha + 2 day digests verified; px exact on 15000/15000 sampled rows of 2021-06-16",
+      "px_day": "2021-06-16",
+      "px_detail": {
+        "max_abs_px_diff_known_both": 0.0,
+        "n_board_rows": 2207400,
+        "n_distinct_tickers": 5299,
+        "n_sampled": 15000,
+        "n_sampled_px_both_null": 411,
+        "n_sampled_px_known_both": 14589,
+        "n_sampled_px_null_board": 411,
+        "px_et_exact_match": 15000,
+        "px_et_match_rate": 1.0,
+        "px_exact_match": 15000,
+        "px_exact_rate": 1.0,
+        "px_within_tol_match": 15000,
+        "px_within_tol_rate": 1.0
+      },
+      "px_et_match_rate": 1.0,
+      "px_exact_rate": 1.0,
+      "px_session_end": 959,
+      "px_within_1e6_rate": 1.0,
+      "seconds": 13.23,
+      "sha_match": true,
+      "sha_mismatches": [],
+      "status": "ok"
+    },
+    {
+      "board_days_in_discovery_window": 21,
+      "days_checked": [
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "45761449ca41b56596aab08c925348b55be89b01b7ff51241352c3a7fe86101f",
+          "combined_lane_sha256": "45761449ca41b56596aab08c925348b55be89b01b7ff51241352c3a7fe86101f",
+          "day": "2021-07-01",
+          "match": true
+        },
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "34fe91388139b225ec4f0b1a57a48839a8c3e27d38e6cb20e368dfb7b2960f56",
+          "combined_lane_sha256": "34fe91388139b225ec4f0b1a57a48839a8c3e27d38e6cb20e368dfb7b2960f56",
+          "day": "2021-07-16",
+          "match": true
+        }
+      ],
+      "file_sha256": "f459c839e9c97e12acfcf4d3596e4d5f2e2073462f235634bccf6ec5b8f907d2",
+      "lane_feed_era": "hf_era",
+      "lane_kind": "ohlcv_raw",
+      "lane_path": "/home/hillel/projects/Alpacatrader/data/ohlcv_2021-07.parquet",
+      "month": "2021-07",
+      "notes": "lane sha + 2 day digests verified; px exact on 15000/15000 sampled rows of 2021-07-16",
+      "px_day": "2021-07-16",
+      "px_detail": {
+        "max_abs_px_diff_known_both": 0.0,
+        "n_board_rows": 2224560,
+        "n_distinct_tickers": 5269,
+        "n_sampled": 15000,
+        "n_sampled_px_both_null": 366,
+        "n_sampled_px_known_both": 14634,
+        "n_sampled_px_null_board": 366,
+        "px_et_exact_match": 15000,
+        "px_et_match_rate": 1.0,
+        "px_exact_match": 15000,
+        "px_exact_rate": 1.0,
+        "px_within_tol_match": 15000,
+        "px_within_tol_rate": 1.0
+      },
+      "px_et_match_rate": 1.0,
+      "px_exact_rate": 1.0,
+      "px_session_end": 959,
+      "px_within_1e6_rate": 1.0,
+      "seconds": 9.65,
+      "sha_match": true,
+      "sha_mismatches": [],
+      "status": "ok"
+    },
+    {
+      "board_days_in_discovery_window": 22,
+      "days_checked": [
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "e3c31fd98a17c9e4d4cbc3025e03e31f007a619430d7bf4d1b4c49179faad4bf",
+          "combined_lane_sha256": "e3c31fd98a17c9e4d4cbc3025e03e31f007a619430d7bf4d1b4c49179faad4bf",
+          "day": "2021-08-02",
+          "match": true
+        },
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "11fca0593d711b4119d88acec141218dd11f4531a455bf6200ce419f8947b4f5",
+          "combined_lane_sha256": "11fca0593d711b4119d88acec141218dd11f4531a455bf6200ce419f8947b4f5",
+          "day": "2021-08-17",
+          "match": true
+        }
+      ],
+      "file_sha256": "4df0c6a66839b3f3239c221fb88bd8e29233401881cc36fd5cff8a3f80dfbc33",
+      "lane_feed_era": "hf_era",
+      "lane_kind": "ohlcv_raw",
+      "lane_path": "/home/hillel/projects/Alpacatrader/data/ohlcv_2021-08.parquet",
+      "month": "2021-08",
+      "notes": "lane sha + 2 day digests verified; px exact on 15000/15000 sampled rows of 2021-08-17",
+      "px_day": "2021-08-17",
+      "px_detail": {
+        "max_abs_px_diff_known_both": 0.0,
+        "n_board_rows": 2260050,
+        "n_distinct_tickers": 5369,
+        "n_sampled": 15000,
+        "n_sampled_px_both_null": 352,
+        "n_sampled_px_known_both": 14648,
+        "n_sampled_px_null_board": 352,
+        "px_et_exact_match": 15000,
+        "px_et_match_rate": 1.0,
+        "px_exact_match": 15000,
+        "px_exact_rate": 1.0,
+        "px_within_tol_match": 15000,
+        "px_within_tol_rate": 1.0
+      },
+      "px_et_match_rate": 1.0,
+      "px_exact_rate": 1.0,
+      "px_session_end": 959,
+      "px_within_1e6_rate": 1.0,
+      "seconds": 11.61,
+      "sha_match": true,
+      "sha_mismatches": [],
+      "status": "ok"
+    },
+    {
+      "board_days_in_discovery_window": 21,
+      "days_checked": [
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "1be4f96de9954f8131b869fb6918893bf6c4ba26783595dafec3d57126735c80",
+          "combined_lane_sha256": "1be4f96de9954f8131b869fb6918893bf6c4ba26783595dafec3d57126735c80",
+          "day": "2021-09-01",
+          "match": true
+        },
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "7b5b1e6ae72a9d42daba546b7d3bdf7262390d1caa15b82a2beee8d8284036b6",
+          "combined_lane_sha256": "7b5b1e6ae72a9d42daba546b7d3bdf7262390d1caa15b82a2beee8d8284036b6",
+          "day": "2021-09-16",
+          "match": true
+        }
+      ],
+      "file_sha256": "09dd96d74014bf73f2a30060cb97f9f07f843a21e9c535a93946d9481ee12024",
+      "lane_feed_era": "hf_era",
+      "lane_kind": "ohlcv_raw",
+      "lane_path": "/home/hillel/projects/Alpacatrader/data/ohlcv_2021-09.parquet",
+      "month": "2021-09",
+      "notes": "lane sha + 2 day digests verified; px exact on 15000/15000 sampled rows of 2021-09-16",
+      "px_day": "2021-09-16",
+      "px_detail": {
+        "max_abs_px_diff_known_both": 0.0,
+        "n_board_rows": 2276430,
+        "n_distinct_tickers": 5395,
+        "n_sampled": 15000,
+        "n_sampled_px_both_null": 444,
+        "n_sampled_px_known_both": 14556,
+        "n_sampled_px_null_board": 444,
+        "px_et_exact_match": 15000,
+        "px_et_match_rate": 1.0,
+        "px_exact_match": 15000,
+        "px_exact_rate": 1.0,
+        "px_within_tol_match": 15000,
+        "px_within_tol_rate": 1.0
+      },
+      "px_et_match_rate": 1.0,
+      "px_exact_rate": 1.0,
+      "px_session_end": 959,
+      "px_within_1e6_rate": 1.0,
+      "seconds": 12.97,
+      "sha_match": true,
+      "sha_mismatches": [],
+      "status": "ok"
+    },
+    {
+      "board_days_in_discovery_window": 21,
+      "days_checked": [
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "502f97b97150698b81ddebc248989626ed508460d43fa9b7a1260717aad5a465",
+          "combined_lane_sha256": "502f97b97150698b81ddebc248989626ed508460d43fa9b7a1260717aad5a465",
+          "day": "2021-10-01",
+          "match": true
+        },
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "5dd5ad1aa762a9e1c2eddd3b79c87f7b016c8cc852ed1b9e4cd8b8b90cb8bfc8",
+          "combined_lane_sha256": "5dd5ad1aa762a9e1c2eddd3b79c87f7b016c8cc852ed1b9e4cd8b8b90cb8bfc8",
+          "day": "2021-10-15",
+          "match": true
+        }
+      ],
+      "file_sha256": "a14daef1dd235daeb7b1df2525475a55489c745cb28c17184ede99dac3bcf774",
+      "lane_feed_era": "hf_era",
+      "lane_kind": "ohlcv_raw",
+      "lane_path": "/home/hillel/projects/Alpacatrader/data/ohlcv_2021-10.parquet",
+      "month": "2021-10",
+      "notes": "lane sha + 2 day digests verified; px exact on 15000/15000 sampled rows of 2021-10-15",
+      "px_day": "2021-10-15",
+      "px_detail": {
+        "max_abs_px_diff_known_both": 0.0,
+        "n_board_rows": 2267460,
+        "n_distinct_tickers": 5374,
+        "n_sampled": 15000,
+        "n_sampled_px_both_null": 356,
+        "n_sampled_px_known_both": 14644,
+        "n_sampled_px_null_board": 356,
+        "px_et_exact_match": 15000,
+        "px_et_match_rate": 1.0,
+        "px_exact_match": 15000,
+        "px_exact_rate": 1.0,
+        "px_within_tol_match": 15000,
+        "px_within_tol_rate": 1.0
+      },
+      "px_et_match_rate": 1.0,
+      "px_exact_rate": 1.0,
+      "px_session_end": 959,
+      "px_within_1e6_rate": 1.0,
+      "seconds": 9.42,
+      "sha_match": true,
+      "sha_mismatches": [],
+      "status": "ok"
+    },
+    {
+      "board_days_in_discovery_window": 21,
+      "days_checked": [
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "ff9d73ceb0d552044c8f9ad526bce33e706d8f4e03b1431494e35dfbea00701f",
+          "combined_lane_sha256": "ff9d73ceb0d552044c8f9ad526bce33e706d8f4e03b1431494e35dfbea00701f",
+          "day": "2021-11-01",
+          "match": true
+        },
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "160e0d552bec55f7630bc339d7f8ae427eb3a761bbb182ce647ef09f958a8a0d",
+          "combined_lane_sha256": "160e0d552bec55f7630bc339d7f8ae427eb3a761bbb182ce647ef09f958a8a0d",
+          "day": "2021-11-15",
+          "match": true
+        }
+      ],
+      "file_sha256": "cf95fa9b6b959a4ada5604f9583d0e23ea932fa1b33b2278405aa59a55163160",
+      "lane_feed_era": "hf_era",
+      "lane_kind": "ohlcv_raw",
+      "lane_path": "/home/hillel/projects/Alpacatrader/data/ohlcv_2021-11.parquet",
+      "month": "2021-11",
+      "notes": "lane sha + 2 day digests verified; px exact on 15000/15000 sampled rows of 2021-11-15",
+      "px_day": "2021-11-15",
+      "px_detail": {
+        "max_abs_px_diff_known_both": 0.0,
+        "n_board_rows": 2308020,
+        "n_distinct_tickers": 5437,
+        "n_sampled": 15000,
+        "n_sampled_px_both_null": 381,
+        "n_sampled_px_known_both": 14619,
+        "n_sampled_px_null_board": 381,
+        "px_et_exact_match": 15000,
+        "px_et_match_rate": 1.0,
+        "px_exact_match": 15000,
+        "px_exact_rate": 1.0,
+        "px_within_tol_match": 15000,
+        "px_within_tol_rate": 1.0
+      },
+      "px_et_match_rate": 1.0,
+      "px_exact_rate": 1.0,
+      "px_session_end": 959,
+      "px_within_1e6_rate": 1.0,
+      "seconds": 8.92,
+      "sha_match": true,
+      "sha_mismatches": [],
+      "status": "ok"
+    },
+    {
+      "board_days_in_discovery_window": 22,
+      "days_checked": [
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "f0aef6555cc565b7e45285bdf4ae6aa89f4707008d4b9e461d471284056fcdbc",
+          "combined_lane_sha256": "f0aef6555cc565b7e45285bdf4ae6aa89f4707008d4b9e461d471284056fcdbc",
+          "day": "2021-12-01",
+          "match": true
+        },
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "3d13664f45192820f148596668158a22bbf4a07d9f21ccfbb63cd95884df2168",
+          "combined_lane_sha256": "3d13664f45192820f148596668158a22bbf4a07d9f21ccfbb63cd95884df2168",
+          "day": "2021-12-16",
+          "match": true
+        }
+      ],
+      "file_sha256": "3187823475a271b33026558c0b18fd7f62db870742608df51b481045cc14c5c6",
+      "lane_feed_era": "hf_era",
+      "lane_kind": "ohlcv_raw",
+      "lane_path": "/home/hillel/projects/Alpacatrader/data/ohlcv_2021-12.parquet",
+      "month": "2021-12",
+      "notes": "lane sha + 2 day digests verified; px exact on 15000/15000 sampled rows of 2021-12-16",
+      "px_day": "2021-12-16",
+      "px_detail": {
+        "max_abs_px_diff_known_both": 0.0,
+        "n_board_rows": 2322060,
+        "n_distinct_tickers": 5507,
+        "n_sampled": 15000,
+        "n_sampled_px_both_null": 461,
+        "n_sampled_px_known_both": 14539,
+        "n_sampled_px_null_board": 461,
+        "px_et_exact_match": 15000,
+        "px_et_match_rate": 1.0,
+        "px_exact_match": 15000,
+        "px_exact_rate": 1.0,
+        "px_within_tol_match": 15000,
+        "px_within_tol_rate": 1.0
+      },
+      "px_et_match_rate": 1.0,
+      "px_exact_rate": 1.0,
+      "px_session_end": 959,
+      "px_within_1e6_rate": 1.0,
+      "seconds": 12.96,
+      "sha_match": true,
+      "sha_mismatches": [],
+      "status": "ok"
+    },
+    {
+      "board_days_in_discovery_window": 20,
+      "days_checked": [
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "dbf0a94a97945a1ad320e6ad1570f29ece52118ae51652580fb73d91f40382d8",
+          "combined_lane_sha256": "dbf0a94a97945a1ad320e6ad1570f29ece52118ae51652580fb73d91f40382d8",
+          "day": "2022-01-03",
+          "match": true
+        },
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "8cf52effe042894b3729e80982e559ffdb00e436c56377716410a86241b67279",
+          "combined_lane_sha256": "8cf52effe042894b3729e80982e559ffdb00e436c56377716410a86241b67279",
+          "day": "2022-01-18",
+          "match": true
+        }
+      ],
+      "file_sha256": "dbce3797b10f56062da509a1e1e07fadb3495e792236c36ae59bdbd7efc2e36c",
+      "lane_feed_era": "hf_era",
+      "lane_kind": "ohlcv_raw",
+      "lane_path": "/home/hillel/projects/Alpacatrader/data/ohlcv_2022-01.parquet",
+      "month": "2022-01",
+      "notes": "lane sha + 2 day digests verified; px exact on 15000/15000 sampled rows of 2022-01-18",
+      "px_day": "2022-01-18",
+      "px_detail": {
+        "max_abs_px_diff_known_both": 0.0,
+        "n_board_rows": 2336490,
+        "n_distinct_tickers": 5459,
+        "n_sampled": 15000,
+        "n_sampled_px_both_null": 416,
+        "n_sampled_px_known_both": 14584,
+        "n_sampled_px_null_board": 416,
+        "px_et_exact_match": 15000,
+        "px_et_match_rate": 1.0,
+        "px_exact_match": 15000,
+        "px_exact_rate": 1.0,
+        "px_within_tol_match": 15000,
+        "px_within_tol_rate": 1.0
+      },
+      "px_et_match_rate": 1.0,
+      "px_exact_rate": 1.0,
+      "px_session_end": 959,
+      "px_within_1e6_rate": 1.0,
+      "seconds": 10.68,
+      "sha_match": true,
+      "sha_mismatches": [],
+      "status": "ok"
+    },
+    {
+      "board_days_in_discovery_window": 19,
+      "days_checked": [
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "5ad3e9c0c4d3e6ec210a2bbee5ba55d69b372e0288fae1746876bafea42f15f3",
+          "combined_lane_sha256": "5ad3e9c0c4d3e6ec210a2bbee5ba55d69b372e0288fae1746876bafea42f15f3",
+          "day": "2022-02-01",
+          "match": true
+        },
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "06cf9fd2bff3f62dc54811b2e9224887acc38471b32ae3752711ea148d048932",
+          "combined_lane_sha256": "06cf9fd2bff3f62dc54811b2e9224887acc38471b32ae3752711ea148d048932",
+          "day": "2022-02-14",
+          "match": true
+        }
+      ],
+      "file_sha256": "6ef9894bac167a18b37ee7da4beab8989e3fb10611c6315166097368614db08d",
+      "lane_feed_era": "hf_era",
+      "lane_kind": "ohlcv_raw",
+      "lane_path": "/home/hillel/projects/Alpacatrader/data/ohlcv_2022-02.parquet",
+      "month": "2022-02",
+      "notes": "lane sha + 2 day digests verified; px exact on 15000/15000 sampled rows of 2022-02-14",
+      "px_day": "2022-02-14",
+      "px_detail": {
+        "max_abs_px_diff_known_both": 0.0,
+        "n_board_rows": 2347410,
+        "n_distinct_tickers": 5525,
+        "n_sampled": 15000,
+        "n_sampled_px_both_null": 533,
+        "n_sampled_px_known_both": 14467,
+        "n_sampled_px_null_board": 533,
+        "px_et_exact_match": 15000,
+        "px_et_match_rate": 1.0,
+        "px_exact_match": 15000,
+        "px_exact_rate": 1.0,
+        "px_within_tol_match": 15000,
+        "px_within_tol_rate": 1.0
+      },
+      "px_et_match_rate": 1.0,
+      "px_exact_rate": 1.0,
+      "px_session_end": 959,
+      "px_within_1e6_rate": 1.0,
+      "seconds": 7.98,
+      "sha_match": true,
+      "sha_mismatches": [],
+      "status": "ok"
+    },
+    {
+      "board_days_in_discovery_window": 23,
+      "days_checked": [
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "b82e6d01c20204bd680d1544996db9b051fc1a591f1ea8f611b0873912c9fd4d",
+          "combined_lane_sha256": "b82e6d01c20204bd680d1544996db9b051fc1a591f1ea8f611b0873912c9fd4d",
+          "day": "2022-03-01",
+          "match": true
+        },
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "117f3ef85171cc7d3959f7650ada4c2466ddc260adc7804891aed5325bcd0e2b",
+          "combined_lane_sha256": "117f3ef85171cc7d3959f7650ada4c2466ddc260adc7804891aed5325bcd0e2b",
+          "day": "2022-03-16",
+          "match": true
+        }
+      ],
+      "file_sha256": "23270e48dcdd5c7216b63b668cc88e6568936832f6b57b4ee12005f0b68147a7",
+      "lane_feed_era": "hf_era",
+      "lane_kind": "ohlcv_raw",
+      "lane_path": "/home/hillel/projects/Alpacatrader/data/ohlcv_2022-03.parquet",
+      "month": "2022-03",
+      "notes": "lane sha + 2 day digests verified; px exact on 15000/15000 sampled rows of 2022-03-16",
+      "px_day": "2022-03-16",
+      "px_detail": {
+        "max_abs_px_diff_known_both": 0.0,
+        "n_board_rows": 2352870,
+        "n_distinct_tickers": 5534,
+        "n_sampled": 15000,
+        "n_sampled_px_both_null": 552,
+        "n_sampled_px_known_both": 14448,
+        "n_sampled_px_null_board": 552,
+        "px_et_exact_match": 15000,
+        "px_et_match_rate": 1.0,
+        "px_exact_match": 15000,
+        "px_exact_rate": 1.0,
+        "px_within_tol_match": 15000,
+        "px_within_tol_rate": 1.0
+      },
+      "px_et_match_rate": 1.0,
+      "px_exact_rate": 1.0,
+      "px_session_end": 959,
+      "px_within_1e6_rate": 1.0,
+      "seconds": 10.66,
+      "sha_match": true,
+      "sha_mismatches": [],
+      "status": "ok"
+    },
+    {
+      "board_days_in_discovery_window": 20,
+      "days_checked": [
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "b74940a532400c7e35583f4cc0776503c5fda47bc6ab93032e84f45f55795fb0",
+          "combined_lane_sha256": "b74940a532400c7e35583f4cc0776503c5fda47bc6ab93032e84f45f55795fb0",
+          "day": "2022-04-01",
+          "match": true
+        },
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "593c097c8fcfe7eb10bd14aa383e395439035c28a8cabcaf3e78c7d816bbfa25",
+          "combined_lane_sha256": "593c097c8fcfe7eb10bd14aa383e395439035c28a8cabcaf3e78c7d816bbfa25",
+          "day": "2022-04-18",
+          "match": true
+        }
+      ],
+      "file_sha256": "1c364734509c6e713b94bb29a02d8162412f6debdf16a9afc21cb2e7f98b37c7",
+      "lane_feed_era": "hf_era",
+      "lane_kind": "ohlcv_raw",
+      "lane_path": "/home/hillel/projects/Alpacatrader/data/ohlcv_2022-04.parquet",
+      "month": "2022-04",
+      "notes": "lane sha + 2 day digests verified; px exact on 15000/15000 sampled rows of 2022-04-18",
+      "px_day": "2022-04-18",
+      "px_detail": {
+        "max_abs_px_diff_known_both": 0.0,
+        "n_board_rows": 2348190,
+        "n_distinct_tickers": 5541,
+        "n_sampled": 15000,
+        "n_sampled_px_both_null": 482,
+        "n_sampled_px_known_both": 14518,
+        "n_sampled_px_null_board": 482,
+        "px_et_exact_match": 15000,
+        "px_et_match_rate": 1.0,
+        "px_exact_match": 15000,
+        "px_exact_rate": 1.0,
+        "px_within_tol_match": 15000,
+        "px_within_tol_rate": 1.0
+      },
+      "px_et_match_rate": 1.0,
+      "px_exact_rate": 1.0,
+      "px_session_end": 959,
+      "px_within_1e6_rate": 1.0,
+      "seconds": 13.12,
+      "sha_match": true,
+      "sha_mismatches": [],
+      "status": "ok"
+    },
+    {
+      "board_days_in_discovery_window": 21,
+      "days_checked": [
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "2bc9f0624ce0abf4a771a0e50de4d3766f4b291316c8b0620cc3efb23d42adb8",
+          "combined_lane_sha256": "2bc9f0624ce0abf4a771a0e50de4d3766f4b291316c8b0620cc3efb23d42adb8",
+          "day": "2022-05-02",
+          "match": true
+        },
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "73b9dfa2ca055ab703cf3158215545cf736bb78bee470b65829808d9a97b1174",
+          "combined_lane_sha256": "73b9dfa2ca055ab703cf3158215545cf736bb78bee470b65829808d9a97b1174",
+          "day": "2022-05-16",
+          "match": true
+        }
+      ],
+      "file_sha256": "fb55dd8780255311ed0736eaaf947b61069cb1668e9fc6afa213d1e3b8eb8115",
+      "lane_feed_era": "hf_era",
+      "lane_kind": "ohlcv_raw",
+      "lane_path": "/home/hillel/projects/Alpacatrader/data/ohlcv_2022-05.parquet",
+      "month": "2022-05",
+      "notes": "lane sha + 2 day digests verified; px exact on 15000/15000 sampled rows of 2022-05-16",
+      "px_day": "2022-05-16",
+      "px_detail": {
+        "max_abs_px_diff_known_both": 0.0,
+        "n_board_rows": 2318940,
+        "n_distinct_tickers": 5478,
+        "n_sampled": 15000,
+        "n_sampled_px_both_null": 500,
+        "n_sampled_px_known_both": 14500,
+        "n_sampled_px_null_board": 500,
+        "px_et_exact_match": 15000,
+        "px_et_match_rate": 1.0,
+        "px_exact_match": 15000,
+        "px_exact_rate": 1.0,
+        "px_within_tol_match": 15000,
+        "px_within_tol_rate": 1.0
+      },
+      "px_et_match_rate": 1.0,
+      "px_exact_rate": 1.0,
+      "px_session_end": 959,
+      "px_within_1e6_rate": 1.0,
+      "seconds": 8.7,
+      "sha_match": true,
+      "sha_mismatches": [],
+      "status": "ok"
+    },
+    {
+      "board_days_in_discovery_window": 21,
+      "days_checked": [
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "f39ba78faceb597019f678217e6b3d3193a433c28ca760afbef0a87807716fa6",
+          "combined_lane_sha256": "f39ba78faceb597019f678217e6b3d3193a433c28ca760afbef0a87807716fa6",
+          "day": "2022-06-01",
+          "match": true
+        },
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "7214d97a38e4a8ed0da89b6307f13a5e4b1c504589efce098e2a32a8eaa4daca",
+          "combined_lane_sha256": "7214d97a38e4a8ed0da89b6307f13a5e4b1c504589efce098e2a32a8eaa4daca",
+          "day": "2022-06-15",
+          "match": true
+        }
+      ],
+      "file_sha256": "2fcdd641984a2fbac537fb52feb4cf2f26befd1ca52b24afc28da7d0729cdbbf",
+      "lane_feed_era": "hf_era",
+      "lane_kind": "ohlcv_raw",
+      "lane_path": "/home/hillel/projects/Alpacatrader/data/ohlcv_2022-06.parquet",
+      "month": "2022-06",
+      "notes": "lane sha + 2 day digests verified; px exact on 15000/15000 sampled rows of 2022-06-15",
+      "px_day": "2022-06-15",
+      "px_detail": {
+        "max_abs_px_diff_known_both": 0.0,
+        "n_board_rows": 2351310,
+        "n_distinct_tickers": 5538,
+        "n_sampled": 15000,
+        "n_sampled_px_both_null": 469,
+        "n_sampled_px_known_both": 14531,
+        "n_sampled_px_null_board": 469,
+        "px_et_exact_match": 15000,
+        "px_et_match_rate": 1.0,
+        "px_exact_match": 15000,
+        "px_exact_rate": 1.0,
+        "px_within_tol_match": 15000,
+        "px_within_tol_rate": 1.0
+      },
+      "px_et_match_rate": 1.0,
+      "px_exact_rate": 1.0,
+      "px_session_end": 959,
+      "px_within_1e6_rate": 1.0,
+      "seconds": 10.69,
+      "sha_match": true,
+      "sha_mismatches": [],
+      "status": "ok"
+    },
+    {
+      "board_days_in_discovery_window": 20,
+      "days_checked": [
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "4a8e6d4230d22962b10e4917ed60b7c9932ea30d6067bbeb69918ab2b2943f1c",
+          "combined_lane_sha256": "4a8e6d4230d22962b10e4917ed60b7c9932ea30d6067bbeb69918ab2b2943f1c",
+          "day": "2022-07-01",
+          "match": true
+        },
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "80d37424e1e9124bc611266cadda92bfec3e27c3f5e81cf345656d31b500031c",
+          "combined_lane_sha256": "80d37424e1e9124bc611266cadda92bfec3e27c3f5e81cf345656d31b500031c",
+          "day": "2022-07-18",
+          "match": true
+        }
+      ],
+      "file_sha256": "d7bab2924e1eae0271db94671cd208478a0220adcc80a728eb9d7dd156f5ca87",
+      "lane_feed_era": "hf_era",
+      "lane_kind": "ohlcv_raw",
+      "lane_path": "/home/hillel/projects/Alpacatrader/data/ohlcv_2022-07.parquet",
+      "month": "2022-07",
+      "notes": "lane sha + 2 day digests verified; px exact on 15000/15000 sampled rows of 2022-07-18",
+      "px_day": "2022-07-18",
+      "px_detail": {
+        "max_abs_px_diff_known_both": 0.0,
+        "n_board_rows": 2335710,
+        "n_distinct_tickers": 5514,
+        "n_sampled": 15000,
+        "n_sampled_px_both_null": 467,
+        "n_sampled_px_known_both": 14533,
+        "n_sampled_px_null_board": 467,
+        "px_et_exact_match": 15000,
+        "px_et_match_rate": 1.0,
+        "px_exact_match": 15000,
+        "px_exact_rate": 1.0,
+        "px_within_tol_match": 15000,
+        "px_within_tol_rate": 1.0
+      },
+      "px_et_match_rate": 1.0,
+      "px_exact_rate": 1.0,
+      "px_session_end": 959,
+      "px_within_1e6_rate": 1.0,
+      "seconds": 13.81,
+      "sha_match": true,
+      "sha_mismatches": [],
+      "status": "ok"
+    },
+    {
+      "board_days_in_discovery_window": 23,
+      "days_checked": [
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "1666b0ef5380faf943bfddeeea9c5a9aa87864d125d8f0a7a3e02cdd8c4d6a51",
+          "combined_lane_sha256": "1666b0ef5380faf943bfddeeea9c5a9aa87864d125d8f0a7a3e02cdd8c4d6a51",
+          "day": "2022-08-01",
+          "match": true
+        },
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "ea7066ac7abc3c7bcdd04229cbeaac2602243a23785fafbed1dfad99fa261c44",
+          "combined_lane_sha256": "ea7066ac7abc3c7bcdd04229cbeaac2602243a23785fafbed1dfad99fa261c44",
+          "day": "2022-08-16",
+          "match": true
+        }
+      ],
+      "file_sha256": "9d6a1358d4ae2b869e4e968c103c0e2c4d62429d884889e0fecdd399e3b25200",
+      "lane_feed_era": "hf_era",
+      "lane_kind": "ohlcv_raw",
+      "lane_path": "/home/hillel/projects/Alpacatrader/data/ohlcv_2022-08.parquet",
+      "month": "2022-08",
+      "notes": "lane sha + 2 day digests verified; px exact on 15000/15000 sampled rows of 2022-08-16",
+      "px_day": "2022-08-16",
+      "px_detail": {
+        "max_abs_px_diff_known_both": 0.0,
+        "n_board_rows": 2315430,
+        "n_distinct_tickers": 5464,
+        "n_sampled": 15000,
+        "n_sampled_px_both_null": 557,
+        "n_sampled_px_known_both": 14443,
+        "n_sampled_px_null_board": 557,
+        "px_et_exact_match": 15000,
+        "px_et_match_rate": 1.0,
+        "px_exact_match": 15000,
+        "px_exact_rate": 1.0,
+        "px_within_tol_match": 15000,
+        "px_within_tol_rate": 1.0
+      },
+      "px_et_match_rate": 1.0,
+      "px_exact_rate": 1.0,
+      "px_session_end": 959,
+      "px_within_1e6_rate": 1.0,
+      "seconds": 10.98,
+      "sha_match": true,
+      "sha_mismatches": [],
+      "status": "ok"
+    },
+    {
+      "board_days_in_discovery_window": 21,
+      "days_checked": [
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "687ec3f6f54699ea16b4cbdc890ae12254e02b431ab502a9ae24bad3caa9e4e5",
+          "combined_lane_sha256": "687ec3f6f54699ea16b4cbdc890ae12254e02b431ab502a9ae24bad3caa9e4e5",
+          "day": "2022-09-01",
+          "match": true
+        },
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "4cad1f9d387ee1a70b5c7a8c4997d2f5c5ff201ac4d9489387c224275976d55e",
+          "combined_lane_sha256": "4cad1f9d387ee1a70b5c7a8c4997d2f5c5ff201ac4d9489387c224275976d55e",
+          "day": "2022-09-16",
+          "match": true
+        }
+      ],
+      "file_sha256": "f64dc2ee95671bb3749b55f26978295356f501bdf7f93ed6986d243873678334",
+      "lane_feed_era": "hf_era",
+      "lane_kind": "ohlcv_raw",
+      "lane_path": "/home/hillel/projects/Alpacatrader/data/ohlcv_2022-09.parquet",
+      "month": "2022-09",
+      "notes": "lane sha + 2 day digests verified; px exact on 15000/15000 sampled rows of 2022-09-16",
+      "px_day": "2022-09-16",
+      "px_detail": {
+        "max_abs_px_diff_known_both": 0.0,
+        "n_board_rows": 2331810,
+        "n_distinct_tickers": 5513,
+        "n_sampled": 15000,
+        "n_sampled_px_both_null": 597,
+        "n_sampled_px_known_both": 14403,
+        "n_sampled_px_null_board": 597,
+        "px_et_exact_match": 15000,
+        "px_et_match_rate": 1.0,
+        "px_exact_match": 15000,
+        "px_exact_rate": 1.0,
+        "px_within_tol_match": 15000,
+        "px_within_tol_rate": 1.0
+      },
+      "px_et_match_rate": 1.0,
+      "px_exact_rate": 1.0,
+      "px_session_end": 959,
+      "px_within_1e6_rate": 1.0,
+      "seconds": 13.25,
+      "sha_match": true,
+      "sha_mismatches": [],
+      "status": "ok"
+    },
+    {
+      "board_days_in_discovery_window": 21,
+      "days_checked": [
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "92de393c63fc45edba36a48d03f6072860a1d83889016e31f8778f3582ea4019",
+          "combined_lane_sha256": "92de393c63fc45edba36a48d03f6072860a1d83889016e31f8778f3582ea4019",
+          "day": "2022-10-03",
+          "match": true
+        },
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "da0314bb62689e4859b8b4657ecd8a879c9fc4bee50757ab7df2dd61faf2efcd",
+          "combined_lane_sha256": "da0314bb62689e4859b8b4657ecd8a879c9fc4bee50757ab7df2dd61faf2efcd",
+          "day": "2022-10-17",
+          "match": true
+        }
+      ],
+      "file_sha256": "599a7d2e61accd31e9d0bb658fa03a5d1ebc068ceb8e14367da9c578defa64b6",
+      "lane_feed_era": "hf_era",
+      "lane_kind": "ohlcv_raw",
+      "lane_path": "/home/hillel/projects/Alpacatrader/data/ohlcv_2022-10.parquet",
+      "month": "2022-10",
+      "notes": "lane sha + 2 day digests verified; px exact on 15000/15000 sampled rows of 2022-10-17",
+      "px_day": "2022-10-17",
+      "px_detail": {
+        "max_abs_px_diff_known_both": 0.0,
+        "n_board_rows": 2339220,
+        "n_distinct_tickers": 5493,
+        "n_sampled": 15000,
+        "n_sampled_px_both_null": 571,
+        "n_sampled_px_known_both": 14429,
+        "n_sampled_px_null_board": 571,
+        "px_et_exact_match": 15000,
+        "px_et_match_rate": 1.0,
+        "px_exact_match": 15000,
+        "px_exact_rate": 1.0,
+        "px_within_tol_match": 15000,
+        "px_within_tol_rate": 1.0
+      },
+      "px_et_match_rate": 1.0,
+      "px_exact_rate": 1.0,
+      "px_session_end": 959,
+      "px_within_1e6_rate": 1.0,
+      "seconds": 12.12,
+      "sha_match": true,
+      "sha_mismatches": [],
+      "status": "ok"
+    },
+    {
+      "board_days_in_discovery_window": 21,
+      "days_checked": [
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "fe3b5a5aac06454a6e3dfbdae2a31822309f1b56ebce05e75369d173533d602b",
+          "combined_lane_sha256": "fe3b5a5aac06454a6e3dfbdae2a31822309f1b56ebce05e75369d173533d602b",
+          "day": "2022-11-01",
+          "match": true
+        },
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "409fecaf7690fdb2b623861fe07d3add01baa52c8ae7964874b5967d81748294",
+          "combined_lane_sha256": "409fecaf7690fdb2b623861fe07d3add01baa52c8ae7964874b5967d81748294",
+          "day": "2022-11-15",
+          "match": true
+        }
+      ],
+      "file_sha256": "d2253146601ab99023b006d767ef3e2c1581e6722cbc75a90efebb95561c11e8",
+      "lane_feed_era": "hf_era",
+      "lane_kind": "ohlcv_raw",
+      "lane_path": "/home/hillel/projects/Alpacatrader/data/ohlcv_2022-11.parquet",
+      "month": "2022-11",
+      "notes": "lane sha + 2 day digests verified; px exact on 15000/15000 sampled rows of 2022-11-15",
+      "px_day": "2022-11-15",
+      "px_detail": {
+        "max_abs_px_diff_known_both": 0.0,
+        "n_board_rows": 2324010,
+        "n_distinct_tickers": 5499,
+        "n_sampled": 15000,
+        "n_sampled_px_both_null": 556,
+        "n_sampled_px_known_both": 14444,
+        "n_sampled_px_null_board": 556,
+        "px_et_exact_match": 15000,
+        "px_et_match_rate": 1.0,
+        "px_exact_match": 15000,
+        "px_exact_rate": 1.0,
+        "px_within_tol_match": 15000,
+        "px_within_tol_rate": 1.0
+      },
+      "px_et_match_rate": 1.0,
+      "px_exact_rate": 1.0,
+      "px_session_end": 959,
+      "px_within_1e6_rate": 1.0,
+      "seconds": 8.86,
+      "sha_match": true,
+      "sha_mismatches": [],
+      "status": "ok"
+    },
+    {
+      "board_days_in_discovery_window": 21,
+      "days_checked": [
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "98201b2baaae59942a459318de3ce4ce5ca0bbe9f9b351e0f452b7a208fbc99b",
+          "combined_lane_sha256": "98201b2baaae59942a459318de3ce4ce5ca0bbe9f9b351e0f452b7a208fbc99b",
+          "day": "2022-12-01",
+          "match": true
+        },
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "4cc524527e0113a228b417f314f9251ae22787b780761fc2b747f57cbeeb0668",
+          "combined_lane_sha256": "4cc524527e0113a228b417f314f9251ae22787b780761fc2b747f57cbeeb0668",
+          "day": "2022-12-15",
+          "match": true
+        }
+      ],
+      "file_sha256": "e7eda896f41201fb2ba2e1cb8e2da1c8e741e46303e5b0f50b47d953b52f54db",
+      "lane_feed_era": "hf_era",
+      "lane_kind": "ohlcv_raw",
+      "lane_path": "/home/hillel/projects/Alpacatrader/data/ohlcv_2022-12.parquet",
+      "month": "2022-12",
+      "notes": "lane sha + 2 day digests verified; px exact on 15000/15000 sampled rows of 2022-12-15",
+      "px_day": "2022-12-15",
+      "px_detail": {
+        "max_abs_px_diff_known_both": 0.0,
+        "n_board_rows": 2320110,
+        "n_distinct_tickers": 5516,
+        "n_sampled": 15000,
+        "n_sampled_px_both_null": 558,
+        "n_sampled_px_known_both": 14442,
+        "n_sampled_px_null_board": 558,
+        "px_et_exact_match": 15000,
+        "px_et_match_rate": 1.0,
+        "px_exact_match": 15000,
+        "px_exact_rate": 1.0,
+        "px_within_tol_match": 15000,
+        "px_within_tol_rate": 1.0
+      },
+      "px_et_match_rate": 1.0,
+      "px_exact_rate": 1.0,
+      "px_session_end": 959,
+      "px_within_1e6_rate": 1.0,
+      "seconds": 8.81,
+      "sha_match": true,
+      "sha_mismatches": [],
+      "status": "ok"
+    },
+    {
+      "board_days_in_discovery_window": 20,
+      "days_checked": [
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "10287c6e15d0bb5f8241419716567531a39c8483da71d6b86d6e27c8d595b4c8",
+          "combined_lane_sha256": "10287c6e15d0bb5f8241419716567531a39c8483da71d6b86d6e27c8d595b4c8",
+          "day": "2023-01-03",
+          "match": true
+        },
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "5c0a356dc9d259e70f73277d73f62ceab490063cc20db4086d5f5f3d26ba076c",
+          "combined_lane_sha256": "5c0a356dc9d259e70f73277d73f62ceab490063cc20db4086d5f5f3d26ba076c",
+          "day": "2023-01-18",
+          "match": true
+        }
+      ],
+      "file_sha256": "97da6528a3f8e1e274f7663947129a59070feb550df226b15058f38e55742ad2",
+      "lane_feed_era": "hf_era",
+      "lane_kind": "ohlcv_raw",
+      "lane_path": "/home/hillel/projects/Alpacatrader/data/ohlcv_2023-01.parquet",
+      "month": "2023-01",
+      "notes": "lane sha + 2 day digests verified; px exact on 15000/15000 sampled rows of 2023-01-18",
+      "px_day": "2023-01-18",
+      "px_detail": {
+        "max_abs_px_diff_known_both": 0.0,
+        "n_board_rows": 2304900,
+        "n_distinct_tickers": 5429,
+        "n_sampled": 15000,
+        "n_sampled_px_both_null": 581,
+        "n_sampled_px_known_both": 14419,
+        "n_sampled_px_null_board": 581,
+        "px_et_exact_match": 15000,
+        "px_et_match_rate": 1.0,
+        "px_exact_match": 15000,
+        "px_exact_rate": 1.0,
+        "px_within_tol_match": 15000,
+        "px_within_tol_rate": 1.0
+      },
+      "px_et_match_rate": 1.0,
+      "px_exact_rate": 1.0,
+      "px_session_end": 959,
+      "px_within_1e6_rate": 1.0,
+      "seconds": 8.05,
+      "sha_match": true,
+      "sha_mismatches": [],
+      "status": "ok"
+    },
+    {
+      "board_days_in_discovery_window": 19,
+      "days_checked": [
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "c6c993b8d39fce35f90f9b0e1a690a7be46e340115830acd663afa3957edb055",
+          "combined_lane_sha256": "c6c993b8d39fce35f90f9b0e1a690a7be46e340115830acd663afa3957edb055",
+          "day": "2023-02-01",
+          "match": true
+        },
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "69dd0eef93c150ab64ab7ab2c07ee5685cd105d7652334f15093f2c0dfa47cb9",
+          "combined_lane_sha256": "69dd0eef93c150ab64ab7ab2c07ee5685cd105d7652334f15093f2c0dfa47cb9",
+          "day": "2023-02-14",
+          "match": true
+        }
+      ],
+      "file_sha256": "bd6a8131c65d00cd3402eac49561fdda39f4490a57b6b29caaa9f6cacecbe108",
+      "lane_feed_era": "hf_era",
+      "lane_kind": "ohlcv_raw",
+      "lane_path": "/home/hillel/projects/Alpacatrader/data/ohlcv_2023-02.parquet",
+      "month": "2023-02",
+      "notes": "lane sha + 2 day digests verified; px exact on 15000/15000 sampled rows of 2023-02-14",
+      "px_day": "2023-02-14",
+      "px_detail": {
+        "max_abs_px_diff_known_both": 0.0,
+        "n_board_rows": 2266290,
+        "n_distinct_tickers": 5392,
+        "n_sampled": 15000,
+        "n_sampled_px_both_null": 561,
+        "n_sampled_px_known_both": 14439,
+        "n_sampled_px_null_board": 561,
+        "px_et_exact_match": 15000,
+        "px_et_match_rate": 1.0,
+        "px_exact_match": 15000,
+        "px_exact_rate": 1.0,
+        "px_within_tol_match": 15000,
+        "px_within_tol_rate": 1.0
+      },
+      "px_et_match_rate": 1.0,
+      "px_exact_rate": 1.0,
+      "px_session_end": 959,
+      "px_within_1e6_rate": 1.0,
+      "seconds": 11.99,
+      "sha_match": true,
+      "sha_mismatches": [],
+      "status": "ok"
+    },
+    {
+      "board_days_in_discovery_window": 10,
+      "days_checked": [
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "2f1f8fcb37cf26a730f7915ccc1dc6d07618e89f96bd06e7d38049a171140b24",
+          "combined_lane_sha256": "2f1f8fcb37cf26a730f7915ccc1dc6d07618e89f96bd06e7d38049a171140b24",
+          "day": "2023-03-01",
+          "match": true
+        },
+        {
+          "alias_map_sha256": "7a67f5281f2c34841e34be18f8429302b84aac7246554f5b1141cc0aab3d584c",
+          "board_source_sha256": "2b2aeada64cd97afced04c5bdd311a9fc0639183bfed01c82b9713f1c1255e77",
+          "combined_lane_sha256": "2b2aeada64cd97afced04c5bdd311a9fc0639183bfed01c82b9713f1c1255e77",
+          "day": "2023-03-08",
+          "match": true
+        }
+      ],
+      "file_sha256": "fdf67c1fe00c047b81b2c2063e35ba321509af3daa56ce014d1f5031e8bb0600",
+      "lane_feed_era": "hf_era",
+      "lane_kind": "ohlcv_raw",
+      "lane_path": "/home/hillel/projects/Alpacatrader/data/ohlcv_2023-03.parquet",
+      "month": "2023-03",
+      "notes": "lane sha + 2 day digests verified; px exact on 15000/15000 sampled rows of 2023-03-08",
+      "px_day": "2023-03-08",
+      "px_detail": {
+        "max_abs_px_diff_known_both": 0.0,
+        "n_board_rows": 2259270,
+        "n_distinct_tickers": 5373,
+        "n_sampled": 15000,
+        "n_sampled_px_both_null": 606,
+        "n_sampled_px_known_both": 14394,
+        "n_sampled_px_null_board": 606,
+        "px_et_exact_match": 15000,
+        "px_et_match_rate": 1.0,
+        "px_exact_match": 15000,
+        "px_exact_rate": 1.0,
+        "px_within_tol_match": 15000,
+        "px_within_tol_rate": 1.0
+      },
+      "px_et_match_rate": 1.0,
+      "px_exact_rate": 1.0,
+      "px_session_end": 959,
+      "px_within_1e6_rate": 1.0,
+      "seconds": 10.82,
+      "sha_match": true,
+      "sha_mismatches": [],
+      "status": "ok"
+    }
+  ],
+  "px_rule": "px = close of the last completed lane bar with ET minute-of-day <= t-1 (searchsorted(et, t-1, 'right')-1); etm = hour*60+minute, each part CAST Int32; lane rows trimmed to (ET date == day, RTH_LO <= etm <= session_end) and alias-canonicalised, exactly as build_minute_board",
+  "px_sample_rows_requested": 15000,
+  "px_sample_seed": 7,
+  "px_tolerance": 1e-06,
+  "runtime_seconds": 409.3,
+  "schema": "entry_ev/lane_verification/v0",
+  "sealed_reserved_untouched": {
+    "guard": "basket_sim.guard_day applied to every day before any path was opened",
+    "reserved_months": [
+      "2026-06",
+      "2026-07",
+      "2026-08"
+    ],
+    "sealed_prefixes": [
+      "2024-",
+      "2025-01"
+    ]
+  },
+  "sha_days_per_month": 2,
+  "study": "PRE-REG-ENTRY-EV-01",
+  "summary": {
+    "anomalies": [],
+    "months_anomalous": 0,
+    "months_checked": 26,
+    "months_ok": 26,
+    "months_with_lane_sha_match": 26,
+    "months_with_px_et_match_rate_1": 26,
+    "months_with_px_exact_rate_1": 26,
+    "total_board_rows_sampled_for_px": 390000,
+    "total_px_exact_matches": 390000
+  }
+}
