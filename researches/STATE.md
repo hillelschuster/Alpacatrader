@@ -1,6 +1,53 @@
-# STATE — current truth (latest update 2026-10-03). Full chronicle: factory/STATE.md (append-only log).
+# STATE — current truth (latest update 2026-10-05). Full chronicle: factory/STATE.md (append-only log).
 # Hypothesis ranking + falsifiers: researches/HYPOTHESES.md (living).
 # History before 2026-09-04: researches/CANONICAL_STATE.md (superseded snapshot, kept for trust map).
+
+## UPDATE 2026-10-05 — owned-claim clock windows + direct-minute ownership (FULL COMPLETE-NEGATIVE; discovery only)
+
+New discovery work on the first533 days (2021-02-01..2023-03-14) only; no protected-half read, no
+FREEZE, no deploy, no promoted edge. The clock/anatomy layer is NOT strategy.
+
+**Per-clock episode windows (bg36, COMPLETE).** `factory/artifacts/owned_claim_clock_windows.json`
+(producer `factory/scripts/owned_claim_clock_windows.py`, source pin verified): 533 dates, 892.99s,
+5,575 pushes, 63,424 legs; 24 first-push / 16 leg profiles / 720 contrasts / 896 contexts, 0
+pooled-clock cells. Units: `inherited_*` = dollars per $100 original equal-dollar claim budget on
+the fixed inherited share count 100/(fill_px·1.005), entry fee SUNK and never re-charged;
+`fresh_*` = a separate new $100 of cash at that episode's own executable entry open — a conditional
+ruler that sizes nothing. Parent proved the owned/fresh fee share-count math at 100/150bps. Actual
+N3 clean 540 (n=401 episodes, 315 known dates): h1 owned +0.699 / fresh −0.375; h15 +1.545 / +0.415
+CI[−0.590,1.668]; h30 +1.756 / +0.628 CI[−0.897,2.349]; h60 −0.060 / −1.047. NO portfolio alpha and
+NO universal-exit claim; a conditional positive owned EV does not erase the initial dud tax.
+
+**Direct-minute ownership (EXP-86 / H041) — FULL COMPLETE, NEGATIVE.** bg45 finished 7779.73s;
+`factory/artifacts/owned_claim_minute_discovery.json` (`evidence: true`, kind
+`DISCOVERY-FULL-MINUTE-OWNED-CLAIM-PORTFOLIO-PROXY-NOT-VALIDATED-EDGE`; pins match replay + engine +
+fit source). Distinct from the eight-event-hop / EOD planning-index: 533 dates / 3,935,543 minute
+rows / 164 causal features (h1/3/5/10/15/30/60/120), separate N3/N5 models, 3 fixed chronological
+folds / 48 fits / 80 rounds baseline LightGBM, original-CASH@50 forecast SIGN-only stop; raw GROSS
+equivalent = cash/0.990049 (not an identity). **0/176 net-positive cells** — no edge promoted, no
+protected-half read. Best N3 `569 max:stop` @100bps net −0.510461% (gross +0.474685%, fees 0.985146%,
+379/383 known, day SE 0.307470%); best N5 `571 h1:stop` net −0.962846% (gross −0.023450%, fees
+0.939396%, 380/383 known, day SE 0.108141%). Fine cadence alone FAILED as a priced implementation —
+NOT a roster/window falsification. Parent removed a future `feature_sellable` leakage and a manifest
+missing horizons/Ns/clocks (pre-fix agent smokes INVALID); corrected bg43 smoke 208.28s pin
+`71fa3b67`; parent 25 financial regressions PASS (8 baseline + 9 minute + 8 cash levers); Ruff/syntax
+PASS.
+
+**Money-gap consolidation (`factory/scripts/owned_claim_money_gap.py`).** Producer fixed a NET dud +
+fee double count (now GROSS price-loss with fees disjoint); baseline fixed other-outcome TAIL
+requirement = deficit; worst/best DATE sensitivities on the same population primary per BOOK DATE;
+cross-case Σ is not portfolio. FULL money-gap (383 dates, 352 cells) actual reconciliation
+4.263256414560601e-14 with source pin match; old counterfactual double-fee / denominator bugs
+corrected; parent 25 fiscal regressions passed.
+
+**NEXT (PLANNING ONLY — no new ID, no outcomes).** Parent's next target is a cash-first fee-aware
+admission hypothesis on the SAME original roster: direct-minute values used only where there is a
+clear fresh cost, with entry sunk and the owned exit treated differently. This is hypothesis
+PLANNING only; a new record ID and any producer/contract are withheld until the parent supplies
+them (no fabricated outcomes). Existing baseline `460b1d1` unchanged.
+
+**Bot (offline):** final lagging-position coverage closure is still pending (actual parent 59 tests,
+before the latest source fix); NOT marked closed; main/flags/orders unchanged. No restart.
 
 ## UPDATE 2026-10-03 — owned-claim lifecycle dollars (corrected two-method replays + three exploratory diagnostics COMPLETE; declared source_correction_status NOT_VERIFIED — parent source/runtime checks observed PASS)
 

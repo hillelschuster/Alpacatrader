@@ -1,6 +1,6 @@
 # HANDOFF — Flush-Bid Top-Gainer Mechanism
 
-**Written 2026-09-11; current research entry is §20 (2026-10-03 owned-claim discovery). It supersedes the older research entry points below. The frozen H025 specification and historical live-operational records remain separate; old account/process observations are not current broker truth.**
+**Written 2026-09-11; current research entry is §21 (2026-10-05 clock-conditioned dollars and direct-minute discovery). It supersedes the older research entry points below. The frozen H025 specification and historical live-operational records remain separate; old account/process observations are not current broker truth.**
 
 **This file is the single project anchor.** Do not create parallel anchor documents; durable
 philosophy lives in `researches/INTENT.md` and is *pointed to* from here, not duplicated.
@@ -8,8 +8,8 @@ philosophy lives in `researches/INTENT.md` and is *pointed to* from here, not du
 **Durability split.** §0–§11 are the **durable core** (objective, the frozen flush-bid spec,
 the evidence base, live systems, environment, research discipline, key-file index). They change
 only by deliberate amendment. **§12 onward is live state**: dated research records, expected to
-change, superseded by later sections where they conflict. §20 is the current research
-handoff; §17–§19 retain historical BASKET/C1 evidence.
+change, superseded by later sections where they conflict. §21 is the current research
+handoff; §17–§20 retain the preceding BASKET/C1/owned-claim evidence.
 
 **Authority rule.** When a new verified result materially changes the thesis, the economic center,
 or the known evidence, update this file **immediately** — do not let contradictory context
@@ -407,7 +407,7 @@ negative (Study B + EXIT-01). Files: `factory/scripts/lb18_exit.py`,
 
 ---
 
-## 16. Latest state (2026-09-13...) — research superseded by §20; paper observations below are historical
+## 16. Latest state (2026-09-13...) — research superseded by §21; paper observations below are historical
 ### §16.1 UPDATE 2026-09-27 — BASKET Phase 1 (ATLAS measurement) CLOSED; Phase 2 = E1 execution test
 **§16.2 (2026-09-28): ATLAS Phase 2 also CLOSED** — E1 (management by exhaustion score) has no dollar
 increment over the trivial giveback:10 ruler (its conditional niche was a look-ahead artifact), and E3
@@ -1278,3 +1278,53 @@ and no bot/supervisor process was observed in the operational check. Current
 broker exposure is unobserved. Offline worktree execution-safety corrections
 are undergoing asynchronous fill/cancel/exit regression and review closure.
 Keep research out of the frozen H025/A3b bot; do not arm from these diagnostics.
+
+## 21. 2026-10-05 — clock-conditioned dollars; full-minute policy running
+
+**Continue the thesis, not a classifier.** Baseline source/evidence/records were
+published as `460b1d6` on `basket-phase2-f1`. Negative tested implementations do not
+reject early top-gainer optionality. Research and paper execution remain separate.
+
+**New exercised evidence:** `owned_claim_clock_windows.py` /
+`factory/artifacts/owned_claim_clock_windows.json`: all 533 discovery dates,
+5,575 first pushes, 63,424 declared leg events, independent clocks and N3/N5.
+Correct fresh cash charges both legs; the earlier fee-omitting artifact is withdrawn.
+For N3 clean first pushes at admission 540, owned continuation per $100 original
+claim cash is +0.699 at 1m, +1.545 at 15m and +1.756 at 30m; fresh entry is
+-0.375, +0.415 and +0.628 respectively. Fresh 15m/30m day-bootstrap intervals
+are [-0.590,1.668] / [-0.897,2.349]. These are conditional episode dollars,
+not portfolio EV. No universal exit rule or supported fresh-entry edge follows.
+
+**H041 / EXP-86: COMPLETE-NEGATIVE, discovery only.** New
+`owned_claim_minute_value.py` / `owned_claim_minute_replay.py` use every post-fill
+minute, 164 causal features, direct mean-dollar horizons 1/3/5/10/15/30/60/120,
+independent N3/N5, three fixed chronological folds and the declared 80-round
+benchmark learner. Scores are original-claim cash at 50bps; only their sign
+enters the unchanged stop-only accounting engine. Calendar exit is an explicit
+action code, not a zero forecast; unknown forecasts fail rather than silently hold.
+The removed `feature_sellable` availability predictor was future leakage.
+All pre-correction agent numerical runs are invalid.
+
+Parent-exercised full run completed in 7,779.73s: 533 dates / 3,935,543 minutes,
+164 features, 48 fits on three chronological folds, and 383-date/176-case replay.
+**0/176 net-positive cases.** Best modeled N3: 569/max:stop at 100bps,
+net -0.510461% = gross +0.474685% less fees 0.985146% (379/383 known).
+Best modeled N5: 571/h1:stop, net -0.962846% (380/383 known).
+Fine cadence alone failed this priced implementation, not the roster or window.
+Twenty-five financial regressions passed. Executed producers/evidence are archived
+at `b3b1790`; no protected outcomes, freeze, deployment or profitable promotion.
+
+**Consolidation:** `owned_claim_money_gap.py` separates gross-price loss from
+fees (the former net-loss-plus-fees ladder double-counted fees). Its fixed-other-
+outcome tail requirement is the cash deficit, not an oracle residual after
+zeroing all duds and fees. Full 383-date/352-cell output reconciles to <4.3e-14.
+Cross-case sums are not portfolio P&L; MFE classes remain retrospective rulers.
+The next hypothesis keeps the original roster but starts in cash: fresh admission
+must clear entry-and-exit friction, while already-owned retention has entry sunk.
+Cash-first cost-hysteretic ownership is planning/implementation, not a result.
+
+**Paper boundary:** offline restart/cancel/partial-fill/protection fixes remain
+under final lagging-position coverage review and runtime closure. Main bot code,
+LIVE/KILL flags and trading orders were not changed by this work. Broker exposure
+is unobserved. Offline proofs do not certify broker OCO cancellation/double-fill
+races. Keep the frozen H025/A3b strategy unchanged; no activation from this research.

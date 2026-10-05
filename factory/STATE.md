@@ -1,7 +1,8 @@
 # STATE.md — Top-Gainer Research Factory
 
-> **Current status (2026-10-03)**: append-only chronicle — read the tail first. The latest lane
-> is the owned-claim / lifecycle discovery. Its first model numbers (the 8-event fitted value
+> **Current status (2026-10-05)**: append-only chronicle — read the tail first. The latest lane is
+> the owned-claim direct-minute ownership work (EXP-86 / H041, discovery-only, RUNNING); the
+> 2026-10-03 lane is the two-method owned-claim discovery. Its first model numbers (the 8-event fitted value
 > iteration, "FVI8", and the first `policy_return` pass) were **PROVISIONAL / INVALID-AS-CAUSAL**
 > (future-status peer/scanner leakage, strict-pointer skipping of same-open releases,
 > over-censoring of the fit mask, misapplied strict-control entry gate). The corrected 533-event
@@ -11,9 +12,9 @@
 > structured source-correction verification record published; separately observed parent
 > source/runtime checks passed (source pins, 8 financial regressions, review PASS). Three
 > exploratory diagnostics (push/probe/retrieval) also complete — anatomy only, no policy/P&L. See
-> the 2026-10-03 tail entries.
+> the 2026-10-03 / 2026-10-05 tail entries.
 
-**Last updated**: 2026-08-28 (initial snapshot; chronicle continues to 2026-10-03)
+**Last updated**: 2026-08-28 (initial snapshot; chronicle continues to 2026-10-05)
 **Phase**: 2025-06 AND 2025-05 CERTIFIED (both with microstructure adjudications),
 on Drive. H006 tail + H009 faithful replicated on May: NOT ROBUST (H006 edge →~0,
 H009 edge halved). H007/H010 killed. Next: download+certify 2025-07 as the true
@@ -3034,3 +3035,42 @@ Compact follow-up to the entry above (same EXP-85; no new hypothesis ID).
   other current pins (events/helper/model/replay/surfaces/loss/probe/retrieval) verified.
 * **Bot:** NOT closed — pending restart-to-existing OCO integration and final gates (obsolete T5
   failure counts are not the latest boundary). No live code/flags touched.
+
+## 2026-10-05 — owned-claim clock windows + direct-minute ownership (bg36 + bg45 COMPLETE-NEGATIVE)
+
+New discovery-only lane on the first533 days (2021-02-01..2023-03-14); no protected-half read,
+FREEZE or deploy. Clock/anatomy is NOT strategy; no edge promoted.
+
+* **Per-clock episode windows (bg36, COMPLETE):** `owned_claim_clock_windows.json` (producer
+  `owned_claim_clock_windows.py`, source pin verified). 533 dates, 892.99s, 5,575 pushes, 63,424
+  legs; 24 first-push / 16 leg profiles / 720 contrasts / 896 contexts, 0 pooled-clock cells.
+  Units: `inherited_*` = $ per $100 original budget on the fixed inherited share count
+  100/(fill_px·1.005) with entry fee SUNK; `fresh_*` = a separate new $100 cash at the episode's own
+  entry open, a conditional ruler that sizes nothing; fee share-count math proved at 100/150bps.
+  N3 clean 540 (401 episodes, 315 dates): h1 +0.699/−0.375; h15 +1.545/+0.415 CI[−0.590,1.668];
+  h30 +1.756/+0.628 CI[−0.897,2.349]; h60 −0.060/−1.047. NO portfolio alpha / universal-exit claim;
+  conditional positive owned EV does not erase the initial dud tax.
+* **Direct-minute ownership (EXP-86 / H041) — FULL COMPLETE, NEGATIVE:** `owned_claim_minute_value.py`
+  + `owned_claim_minute_replay.py` (test `test_owned_claim_minute_causality.py`); 533 dates /
+  3,935,543 minute rows / 164 causal features (h1/3/5/10/15/30/60/120), separate N3/N5 models, 3
+  fixed chronological folds / 48 fits / 80 rounds baseline LGB, original-CASH@50 forecast SIGN-only
+  stop; raw GROSS equiv = cash/0.990049 (not an identity). Parent removed a future `feature_sellable`
+  leakage + a manifest missing horizons/Ns/clocks (pre-fix agent smokes INVALID); corrected bg43
+  smoke 208.28s pin `71fa3b67`; parent 25 financial regressions PASS (8 baseline + 9 minute + 8 cash
+  levers); Ruff/syntax PASS. FULL bg45 7779.73s →
+  `factory/artifacts/owned_claim_minute_discovery.json` (`evidence: true`): **0/176 net-positive
+  cells** — no edge promoted, no protected-half read. Best N3 `569 max:stop` net −0.510461% (gross
+  +0.474685%, fees 0.985146%, 379/383, day SE 0.307470%); best N5 `571 h1:stop` net −0.962846%
+  (gross −0.023450%, fees 0.939396%, 380/383, day SE 0.108141%). Fine cadence alone FAILED as a
+  priced implementation — NOT a roster/window falsification.
+* **Money-gap (`owned_claim_money_gap.py`):** fixed a NET dud+fee double count (now GROSS
+  price-loss with fees disjoint); baseline other-outcome TAIL requirement = deficit; worst/best DATE
+  sensitivities on the same population primary per BOOK DATE; cross-case Σ not portfolio. FULL
+  money-gap (383 dates, 352 cells) actual reconciliation 4.263256414560601e-14, source pin match;
+  old double-fee/denominator counterfactual bugs corrected; parent 25 fiscal regressions passed.
+* **NEXT (PLANNING ONLY — no new ID, no outcomes):** a cash-first fee-aware admission hypothesis on
+  the SAME original roster, direct-minute values used only where there is a clear fresh cost, entry
+  sunk and owned exit treated differently. A new ID and any producer/contract are withheld until the
+  parent supplies them. Existing baseline `460b1d1` unchanged.
+* **Bot (offline):** final lagging-position coverage closure is still pending (actual parent 59
+  tests, before the latest source fix); NOT marked closed; main/flags/orders unchanged. No restart.

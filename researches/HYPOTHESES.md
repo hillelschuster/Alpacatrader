@@ -1,5 +1,40 @@
 # HYPOTHESES — living source of truth (created 2026-09-06; rewritten 2026-09-08 post-H11-collision)
 
+## OWNED-CLAIM UPDATE 2026-10-05 — H041 direct-minute ownership, FAILED DISCOVERY IMPLEMENTATION (EXP-86 COMPLETE-NEGATIVE; discovery only)
+
+Direct per-minute causal CV/ownership value with separate N3/N5 models, as opposed to the
+eight-event-hop / EOD planning-index. Producers `owned_claim_minute_value.py` +
+`owned_claim_minute_replay.py` (test `factory/scripts/test_owned_claim_minute_causality.py`); 533
+dates / 3,935,543 minute rows / 164 causal features (h1/3/5/10/15/30/60/120), 3 fixed chronological
+folds / 48 fits / 80 rounds baseline LightGBM, original-CASH@50 forecast SIGN-only stop; raw GROSS
+equivalent = cash/0.990049 (not an identity). Parent removed a future `feature_sellable` leakage + a
+manifest missing horizons/Ns/clocks (all pre-fix agent smokes INVALID); corrected bg43 smoke 208.28s
+pin `71fa3b67`; parent 25 financial regressions PASS (8 baseline + 9 minute + 8 cash levers);
+Ruff/syntax PASS. **FULL bg45 complete 7779.73s → `factory/artifacts/owned_claim_minute_discovery.json`
+(`evidence: true`)**: 0/176 net-positive cells at 100/150bps — no edge promoted, no protected-half
+read. Best N3 `569 max:stop` net −0.510461% (gross +0.474685%, fees 0.985146%, 379/383, day SE
+0.307470%); best N5 `571 h1:stop` net −0.962846% (gross −0.023450%, fees 0.939396%, 380/383, day SE
+0.108141%). Fine cadence alone FAILED as a priced implementation — NOT a roster/window falsification.
+
+Clock/anatomy (`owned_claim_clock_windows.json`; producer `owned_claim_clock_windows.py`) is NOT
+strategy (bounded facts retained): 533 dates, 892.99s, 5,575 pushes, 63,424 legs; 24 first-push / 16
+leg / 720 contrast / 896 context cells, 0 pooled. Units: `inherited_*` dollars per $100 original
+budget (entry fee sunk); `fresh_*` a separate new $100 cash ruler that sizes nothing; fee share-count
+math proved 100/150bps. N3 clean 540 (401 episodes, 315 dates): h1 owned +0.699 / fresh −0.375; h15
++1.545 / +0.415 CI[−0.590,1.668]; h30 +1.756 / +0.628 CI[−0.897,2.349]; h60 −0.060 / −1.047 —
+conditional owned EV, NO portfolio alpha or universal-exit claim; it does not erase the initial dud
+tax. Money-gap producer (`owned_claim_money_gap.py`) fixed a NET dud+fee double count (GROSS
+price-loss, fees disjoint); FULL money-gap (383 dates, 352 cells) actual reconciliation
+4.263256414560601e-14, source pin match; old counterfactual double-fee/denominator bugs corrected;
+parent 25 fiscal regressions passed. Existing baseline `460b1d1` unchanged.
+
+**NEXT (PLANNING ONLY — no new ID, no outcomes).** Next target: a cash-first fee-aware admission
+hypothesis on the SAME original roster, direct-minute values used only where there is a clear fresh
+cost, entry sunk and owned exit treated differently. Recorded as planning only; a new ID and any
+producer/contract are withheld until the parent supplies them. Bot offline: final lagging-position
+coverage closure still pending (parent 59 tests before latest source fix); not closed; main/flags/
+orders unchanged. No protected-half read, FREEZE or deploy.
+
 ## OWNED-CLAIM UPDATE 2026-10-03 — H040, dollar-value discovery (corrected two-method replays + three exploratory diagnostics COMPLETE; declared source_correction_status NOT_VERIFIED — parent source/runtime checks observed PASS)
 
 673,035 causal events on first533 days; original N3/N5 ownership views separate.
