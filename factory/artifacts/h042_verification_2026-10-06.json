@@ -1,0 +1,106 @@
+{
+  "id": "h042-verification-2026-10-06",
+  "date": "2026-10-06",
+  "object": "H042 / EXP-87 four-cost cash-first ownership (25/50/100/150bps TOTAL) on the first533 discovery days",
+  "verdict": "NOT ESTABLISHED AS AN EXECUTABLE EDGE. The discovery-positive region does not survive selection-aware statistics and measured execution. The evidence remains causally clean and arithmetically exact; it stands as description (the gate concentrates gross continuation; gross per trade rises with the hurdle), not as an extraction candidate.",
+  "scope": {
+    "discovery_only": true,
+    "protected_half_read": false,
+    "freeze": false,
+    "deploy": false
+  },
+  "strands": {
+    "leak_audit": {
+      "method": "6-channel code audit + future-perturbation attack (NaN every non-key panel column for t>cutoff, re-run the real feature builder, diff all 164 features) + label/sizing/proceeds/cash0 probes (12 empirical probes).",
+      "result": "NO LOOK-AHEAD CHANNEL FOUND. 11/11 channels CLEARED. Future-perturbation produced 0 changed cells over 3,900 prefix rows x 164 features (3 cutoffs x 2 days); independent rebuild == published corpus. OOF strict (train/test disjoint, per-fold day assignment exact); sizing never uses fill px (max sizing error 0.0; px/mark p50 1.0000); cash0 identity exact (12,256 books, 0 orders, |ret| = 0).",
+      "caveats_not_leaks": [
+        "UNKNOWN book-dates (3,068/232,864 = 1.32%) are dropped non-randomly: affordability-voided shadow +0.37%/day (dropping conservative), unresolved -0.45%/day (dropping optimistic); net ~+0.15%/day, roughly self-cancelling; headline cell's own 2 dropped days -0.30% and -1.27%.",
+        "Headline cell is best-of-576 read on test days; no selection adjustment exists in the artifact.",
+        "Provenance gap: the frozen panel names bars_source=ohlcv_<month> but current raw files no longer contain matching bars for at least one sampled claim (AMST 2023-02-14); downstream is internally consistent and sha-pinned at every hop, but raw-independent re-derivation of the panel is not currently possible."
+      ]
+    },
+    "selection_statistics": {
+      "method": "parent, over daily.parquet (known book-dates only, NaN=UNKNOWN); day = cluster; per cost rung the 144 active cells.",
+      "family_wise_reality_check": {
+        "statistic": "max over cells of mean/day; null centers each cell and resamples days with replacement (shared draw preserves cross-section); 10,000 draws",
+        "p_values": {"25bps": 0.0771, "50bps": 0.3317, "100bps": 0.7671, "150bps": 0.9852},
+        "observed_best_cell_mean": {"25bps": 0.00905361, "50bps": 0.00529910, "100bps": 0.00268540, "150bps": 0.00109992}
+      },
+      "internal_forward_select_folds01_gt0_eval_fold2": {
+        "25bps": {"cells_selected": 106, "f2_mean_per_day": 0.002887, "f2_se": 0.002064, "f2_all_cells_mean_per_day": 0.002338, "random_subset_p": 0.003},
+        "50bps": {"cells_selected": 86, "f2_mean_per_day": 0.000273, "f2_se": 0.001654, "f2_all_cells_mean_per_day": 0.000060, "random_subset_p": 0.042},
+        "100bps": {"cells_selected": 43, "f2_mean_per_day": -0.000227, "f2_se": 0.001454, "f2_all_cells_mean_per_day": -0.000895, "random_subset_p": 0.015},
+        "150bps": {"cells_selected": 20, "f2_mean_per_day": -0.000585, "f2_se": 0.001017, "f2_all_cells_mean_per_day": -0.001369, "random_subset_p": 0.085}
+      },
+      "fold_cell_mean_spearman": {
+        "25bps": {"f0_f1": -0.006, "f1_f2": 0.240, "f01_f2": 0.240},
+        "50bps": {"f0_f1": 0.106, "f1_f2": 0.268, "f01_f2": 0.064},
+        "100bps": {"f0_f1": 0.073, "f1_f2": 0.148, "f01_f2": 0.176},
+        "150bps": {"f0_f1": 0.118, "f1_f2": 0.344, "f01_f2": 0.329}
+      },
+      "topk_by_folds01_to_fold2_100bps": {"top5": 0.001277, "top10": 0.000061, "top20": -0.000442, "top40": -0.000186},
+      "family_mean_per_day": {"25bps": 0.001626, "50bps": 0.000373, "100bps": -0.000795, "150bps": -0.001256},
+      "family_mean_se_per_day": {"25bps": 0.000936, "50bps": 0.000851, "100bps": 0.000712, "150bps": 0.000614},
+      "artifact": "factory/artifacts/h042_verification_selection_folds.json",
+      "producer": "factory/scripts/verify_h042_selection.py"
+    },
+    "tail_power": {
+      "method": "independent agent over daily/per_date/members/fills + the stability artifact (0 discrepancies in 24 best-k cross-checks).",
+      "headline_cells": {
+        "A_clock540_n3_100bps_h3_once": {"n": 381, "mean_per_day": 0.002685, "median": 0.0, "win_all_days": 0.1995, "zero_days": 188, "top1_date_share": 0.213, "top10_date_share": 1.199, "remove_best_1_3_5_10": [0.0021184, 0.0014738, 0.0008606, -0.0005488], "boot_ci95": [-0.000028, 0.005603], "p_boot_le0": 0.027, "month_block_ci95": [-0.000679, 0.006154], "t": 1.85, "trades": 254, "net_per_trade": 0.004028, "median_trade": -0.004493, "win_rate_trades": 0.362, "mean_win": 0.033652, "mean_loss": -0.012796},
+        "B_clock569_n5_100bps_h60_once": {"n": 382, "mean_per_day": 0.001383, "median": 0.0, "top1_date_share": 0.619, "top10_date_share": 1.882, "remove_best_1_3": [0.0005281, -0.0001301], "boot_ci95": [-0.000976, 0.004096], "p_boot_le0": 0.138, "t": 1.07, "trades": 244, "net_per_trade": 0.002164, "win_rate_trades": 0.467},
+        "C_clock569_n5_150bps_h60_once": {"n": 381, "mean_per_day": 0.001100, "top1_date_share": 0.781, "remove_best_1_3": [0.0002413, -0.0002519], "boot_ci95": [-0.001144, 0.003727], "p_boot_le0": 0.189, "t": 0.88},
+        "D_clock540_n3_25bps_h3_repeat": {"n": 377, "mean_per_day": 0.009054, "median": -0.000748, "win_all_days": 0.3528, "top1_date_share": 0.222, "top10_date_share": 0.763, "remove_best_10": 0.0021996, "boot_ci95": [0.003051, 0.015834], "p_boot_le0": 0.001, "month_block_ci95": [0.000888, 0.019609], "t": 2.77, "folds": [-0.001969, 0.008916, 0.029445]},
+        "E_clock540_n3_50bps_h3_repeat": {"n": 376, "mean_per_day": 0.005299, "folds": [-0.000875, 0.006615, 0.014287], "boot_ci95": [0.000540, 0.010368], "p_boot_le0": 0.014},
+        "F_clock560_n5_25bps_max_repeat": {"n": 367, "mean_per_day": 0.006521, "median": -0.003268, "remove_best_10": 0.0002048, "folds": [0.005686, 0.004366, 0.012118], "boot_ci95_kg": "see stability artifact"}
+      },
+      "power_note": "The three ONCE cells (A/B/C) are each 1-3-date phenomena; their bootstrap CIs all include zero; at their observed dispersion 383 dates are short of the ~413/1,328/1,897 independent dates needed to exclude zero. D/E survive remove-best-10 and have month-block CIs excluding zero, but D/E are negative in fold0 (2021-09..2022-04) and derive strength from fold2/2023 (D fold2 +2.94%/day on 81 dates)."
+    },
+    "execution_recost": {
+      "method": "independent agent; SIP quotes (data/sip/net/quotes, ATLAS top-3 union; window 09:25-16:05; 2024/2025-01 absent) + trades; covered legs re-costed at each leg's measured full quoted spread (monotone, conservative); unquoted legs extrapolated at the cell median.",
+      "measured_spread": {"bps_per_leg_median": "46-58", "round_trip_bps": "92-116", "source": "quote-covered legs of the audited cells; px is the SIP tape (|first_print/px-1| median 2.8e-4; 42% exact) and sits ~0.19% from mid"},
+      "recost_results": {
+        "D_clock540_n3_25bps_h3_repeat": {"modeled": 0.009054, "covered_legs_recost": -0.001470, "extrapolated_all_legs": -0.006690},
+        "E_clock540_n3_50bps_h3_repeat": {"modeled": 0.005299, "covered_legs_recost": 0.001096, "extrapolated_all_legs": -0.000601},
+        "A_clock540_n3_100bps_h3_once": {"modeled": 0.002685, "covered_legs_recost": 0.002333},
+        "B_clock569_n5_100bps_h60_once": {"modeled": 0.001383, "covered_legs_recost": 0.000789},
+        "C_clock569_n5_150bps_h60_once": {"modeled": 0.001100, "covered_legs_recost": 0.001047},
+        "F_clock569_n3_100bps_h3_once": {"modeled": 0.001886, "covered_legs_recost": 0.000865}
+      },
+      "size_realism": {
+        "displayed_top_of_book_median": "5-7 shares ($30-40)",
+        "order_size_exceeds_displayed_depth": {"$500": "73-88% of covered legs", "$1000": "82-94%"},
+        "participation_gt_1_bar_volume_legs": "202/8213 (2.5%), p99 5.04x"
+      },
+      "quote_coverage_limit": "quotes cover only the ATLAS top-3 union (13-17 symbols/day); 24-48% of legs outside; for cell A 148/511 legs execute before 09:25 and are structurally uncoverable; unquoted legs carry 24-40% of gross notional.",
+      "tail_and_instrument_flags": "top-5 round trips = 37-81% of net P&L per cell; 86 legs are [A-Z]{1,4}[UW] tickers; 24.3% of legs px<$1; 2-6% of legs inside 09:29-09:31."
+    },
+    "symbol_quality": {
+      "method": "independent agent over members/fills/daily + universe files.",
+      "verdict": "mild contamination; no warrant/unit exclusion flips any cell sign (all structural deltas <= 0.06pp/day).",
+      "defect_found": {
+        "case": "AMV 2022-09-28 clock540 n3: prev_close_adj=52.01 (a 19:12 UTC intraday print) vs true prior-session close 82.12 -> bogus +438% gain ranked #1; worst single member in cell D (net +0.115011 on 25bps; +0.065768 on 50bps; -0.019071 on 100bps).",
+        "mechanism": "AMV absent from the prior-day universe file -> ratio_pc NaN -> flag_prevclose_discrepancy silently False (basket_tape_atlas_observation.py:~3654 requires ~isnan(ratio_pc)).",
+        "prevalence": "309/997 distinct traded claims in the audited cells are absent from the prior-day universe file (same silent-NaN class); ~15 more with gain_adj>1.93 flagged UNKNOWN (MARK, WBX, ABVC, BSFC, IDAI, TXMD, BCAN, FNHC, XPON, HZN, LHDX, PEPLW, INBS, BLPH, ICCM).",
+        "reach": "cell D mean/day impact of the AMV date ~-0.00022 in daily terms, but it is a genuine substrate defect: any roster study should require a verified non-NaN prev_close."
+      }
+    },
+    "simple_form": {
+      "method": "independent agent over importances, scores, fills/members, decision grids.",
+      "importances": "horizon-averaged LightGBM gain mass stable core: pm_range_asof ~9-10%, race_n_known ~9%, pm_cum_vol ~6-7%, scan3_mean_ret ~6-7%, pm_n_bars ~5-6%, recovery_from_low ~3.5-5.5%, race_gain ~5.3%, event_count_new_high ~5.2%, event_count_push ~5.0%, peak_gain ~3-4%. Fold-to-fold #1 churns; no per-horizon importances exist.",
+      "entry_portrait": "A (540/n3/h3 once) buys vertical continuation: median ret5 +10.3%, dd_from_high -1.2%, 37% of entries within 30min of 09:00; 195/383 days active, 1-3 entries. B (569/n5/h60 once) buys stalled/faded names: median dd_from_high -5.9%, median 54min after clock, spread to 14:58; 188/383 days active.",
+      "winner_vs_loser": "NO SEPARATION VISIBLE: every coordinate's winner/loser IQRs overlap; best rank statistic P(win>loss) 0.63-0.65 vs SE 0.05, signs flip across cells. The gating forecast does not order outcomes within the admitted band (P 0.421 A / 0.521 B).",
+      "view_effects": "sel_h argmax equals the gated view only 43% (A) / 57% (B); pred_max carries a 48-68% optimism premium and the max view takes 2-3x more entries and loses (clock540 n3 100bps max once -0.00069/day; clock569 n5 100bps max once -0.00227/day)."
+    },
+    "data_blocks": {
+      "discovery": "2021-02-01..2023-03-14 (533 days) - used; H042 replayed the 383 union of the 3 fold test windows (2021-09-03..2023-03-14), first 150 days train-only.",
+      "validation": "2023-03-15..2023-12-29 (201d) + 2025-02-03..2026-05-29 (332d) = 533 days - PROTECTED, inputs present, no fetches needed.",
+      "sealed": "2024 (252d) + 2025-01 (20d) - mechanically acquired/certified, unseen; candidates lane present (leakage hazard), no nets.",
+      "reserved": "2026-06..08 - SIP/basket lanes stop at 2026-05-29; non-SIP ML/scratch artifacts exist physically; exclude by path allowlist, not by month assumption."
+    }
+  },
+  "artifacts_and_producers": {
+    "selection_analysis": ["factory/scripts/verify_h042_selection.py", "factory/artifacts/h042_verification_selection_folds.json"],
+    "session_verification_tasks": "six independent read-only agent runs (leak audit; execution re-costing; tail/power; symbol quality; simple-form; data-block inventory) executed 2026-10-06 against worktree HEAD 59f3f10; their scratch was ephemeral under /tmp; numbers above transcribed from their reports."
+  }
+}

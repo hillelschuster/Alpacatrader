@@ -3322,3 +3322,62 @@ replay; the parent's final artifact/docs commit follows this READY (hash not yet
   status COMPLETE, bounded review CLOSED, **no RUNNING/PENDING**. Final source 68-union PASS 5.67s +
   Ruff PASS. Only the 6 doc/ledger paths + HANDOFF remain; the parent commits them after this READY
   (hash unknown, not invented).
+
+## 2026-10-06 — H042/EXP-87 independent verification wave (parent-orchestrated; read-only agents; discovery-only)
+
+Six independent read-only agents + parent analyses over the four-cost cash-first discovery
+(worktree HEAD 59f3f10; no protected-half read; no FREEZE; no deploy; no repo mutation beyond
+these records). Findings (full detail: `factory/artifacts/h042_verification_2026-10-06.json`):
+
+* **Leak audit: 0 channels.** 11 channels CLEARED via code read + future-perturbation attack
+  (NaN-ing every non-key panel column for t>cutoff leaves all 164 features byte-identical over
+  3,900 prefix rows × 3 cutoffs × 2 days); labels/OOF/sizing/proceeds/cash0 all verified; the
+  tightest timing edge (decision at t filling at the open of a bar in minute t) is safe because
+  fill price never enters sizing (max sizing error 0.0; px/mark p50 1.0000). Bounded caveats, not
+  leaks: UNKNOWN drop (3,068/232,864 = 1.32%) is non-random but ~self-cancelling (net shadow
+  ~+0.15%/day; headline's own dropped days −0.30%/−1.27%); the headline is best-of-576 with no
+  selection adjustment in the artifact; frozen panel not re-derivable from current raw files
+  (AMST 2023-02-14), though every downstream hop is sha-pinned.
+* **Selection statistics (parent; `factory/scripts/verify_h042_selection.py`,
+  `factory/artifacts/h042_verification_selection_folds.json`).** Family-wise Reality Check
+  (max over 144 active cells/rung, day-resampled null, 10k draws): p = 0.0771/0.3317/0.7671/0.9852
+  at 25/50/100/150. Internal-forward (select cells by folds0+1 mean>0 → fold2): 25bps +0.289%/day
+  (p=0.003 vs random subsets), 50bps +0.027%, 100bps **−0.023%**, 150bps **−0.059%**; random-subset
+  p 0.003/0.042/0.015/0.085. Cell-mean Spearman f0~f1 = −0.006..+0.118 (no persistence);
+  top-k-by-folds01 → fold2 at 100bps: top5 +0.128% (SE 0.199), top10 +0.006%, top20 −0.044%,
+  top40 −0.019%. Family means/day (SE): +0.163% (0.094) / +0.037% (0.085) / −0.080% (0.071) /
+  −0.126% (0.061).
+* **Tail/power (agent).** ONCE A/B/C: top-1 date = 21.3%/61.9%/78.1% of net; top-10 = 120%/188%/
+  223%; remove-best-3: A +0.147% (still), B **−0.013%**, C **−0.025%**; bootstrap CIs include zero;
+  ~413/1,328/1,897 independent dates needed to exclude zero at observed dispersion. D/E survive
+  remove-best-10 (+0.220%/+0.196%) and month-block CIs exclude zero, but fold0 negative and
+  fold2-driven (D fold2 +2.94%/day on 81 dates; 2023 alone +3.70%/day on 48 dates).
+* **Execution re-cost (agent; SIP quotes ATLAS-top-3 union, covered legs).** Measured full quoted
+  spread 46–58bps per leg (round trip 92–116bps); px is the SIP tape (|first_print/px−1| median
+  2.8e-4; 42% exact) sitting ~0.19% from mid. Re-cost: D +0.905% → **−0.147%** (covered) /
+  **−0.669%** extrapolated; E +0.530% → +0.110% / −0.060%; A/B/C/F survive cost re-pricing
+  (+0.233/+0.079/+0.105/+0.087%/day) but are the statistically weak ones. $500/$1000 orders exceed
+  displayed top-of-book depth (median 5–7 sh) on 73–94% of covered legs; 2.5% of legs participation
+  >1× bar volume; top-5 round trips = 37–81% of net.
+* **Symbol/data quality (agent).** Silent NaN prev_close path: `basket_tape_atlas_observation.py`
+  requires ~isnan(ratio_pc), so a name absent from the prior-day universe file skips the
+  discrepancy flag entirely. Verified case: AMV 2022-09-28 clock540/n3 (prev_close 52.01 vs true
+  82.12 → bogus +438% gain; member nets +0.115/+0.066/−0.019 across 25/50/100bps). 309/997 traded
+  claims in the audited cells take the same path; ~15 more with gain_adj>1.93 flagged UNKNOWN.
+  Excluding structural/suspect names does not flip any cell sign (deltas ≤ 0.06pp/day).
+* **Simple form (agent).** Horizon-averaged importance stable core: pm_range_asof ~9–10%,
+  race_n_known ~9%, pm_cum_vol ~6–7%, scan3_mean_ret, pm_n_bars, recovery_from_low, race_gain,
+  event_count_new_high, event_count_push, peak_gain. No entry-state coordinate separates winners
+  from losers (IQR overlaps; best rank statistic 0.63–0.65 vs SE 0.05; signs flip across cells);
+  the gating forecast does not order outcomes (P(win>loss) 0.421/0.521); `sel_h` ≠ gated view
+  43%/57%; `pred_max` optimism premium 48–68% and the max view loses (−0.069%/−0.227%/day).
+* **Data blocks (agent).** Discovery 533d 2021-02-01..2023-03-14 (H042 replayed the 383-day
+  3-fold test union; first 150 days train-only). Validation 533d = 2023-03-15..2023-12-29 (201)
+  + 2025-02-03..2026-05-29 (332), inputs present, zero fetches needed, locked. Sealed 2024+2025-01
+  certified, unseen. Reserved 2026-06..08: SIP lanes stop 2026-05-29; non-SIP ML/scratch artifacts
+  exist physically — exclude by path allowlist, not month assumption.
+
+**Verdict:** H042 stands as description, not as an extraction candidate. No read of the
+validation half; no FREEZE; bot/flags untouched. Next: PRE-REG-ENTRY-EV-01 (conditional
+executable continuation surface + entry-location families on the first533; internally split;
+protected block sealed).

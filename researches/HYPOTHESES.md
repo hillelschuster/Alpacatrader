@@ -1,5 +1,35 @@
 # HYPOTHESES — living source of truth (created 2026-09-06; rewritten 2026-09-08 post-H11-collision)
 
+## VERIFICATION UPDATE 2026-10-06 — H042/EXP-87 four-cost region NOT ESTABLISHED (selection-aware statistics + measured execution)
+
+Six-strand independent verification (leak audit, execution re-costing, tail/power,
+symbol/data quality, simple-form, data-block inventory) plus parent selection analyses
+(producer `factory/scripts/verify_h042_selection.py`, artifact
+`factory/artifacts/h042_verification_selection_folds.json`; summary
+`factory/artifacts/h042_verification_2026-10-06.json`). Numbers causally clean (0 leak
+channels; future-perturbation byte-identical; 0 arithmetic mismatches) but the positive
+region fails multiplicity and measured cost:
+
+- Reality Check (max over 144 cells/rung, day-resampled null): p = 0.077/0.332/**0.767**/
+  **0.985** at 25/50/100/150bps.
+- Internal-forward select(folds0+1>0) → fold2: **−0.023%/day** at 100bps (all-cell
+  −0.089%), −0.059%/day at 150bps; per-fold cell-mean Spearman f0~f1 ≈ 0.
+- Headline ONCE cells: top-1 date = 21–78% of net; ~413–1,897 independent dates needed
+  to exclude zero; repeat leaders D/E are fold0-negative and cost-fragile.
+- Measured SIP spread 46–58bps/leg (92–116bps RT): 25bps D re-costs to −0.15..−0.67%/day;
+  50bps E to +0.11% covered / −0.06% extrapolated. $500–$1k orders exceed displayed
+  top-of-book depth on most covered legs.
+- Substrate defect: silent-NaN prev_close path; AMV 2022-09-28 verified false winner;
+  309/997 traded claims lack prior-day universe rows. Any future roster work must require
+  a verified non-NaN prev_close.
+- No entry-state coordinate separates winners from losers within the admitted bands; the
+  gating forecast does not order outcomes; `max` view loses.
+
+Verdict: H042 is closed as an extraction candidate; it stands as description. No
+protected-half read, no FREEZE, no deploy. Next: PRE-REG-ENTRY-EV-01 (conditional
+executable continuation surface + entry-location families on the first533; internally
+split; protected block sealed).
+
 ## OWNED-CLAIM UPDATE 2026-10-05 (later) — H042 cash-first fee-aware ownership, DISCOVERY-POSITIVE-MEANS-NOT-VALIDATED (EXP-87)
 
 **Current:** four-cost 25/50/100/150bps TOTAL replay and all three dollar readers are COMPLETE.

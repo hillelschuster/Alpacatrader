@@ -1,6 +1,48 @@
-# STATE — current truth (latest update 2026-10-05). Full chronicle: factory/STATE.md (append-only log).
+# STATE — current truth (latest update 2026-10-06). Full chronicle: factory/STATE.md (append-only log).
 # Hypothesis ranking + falsifiers: researches/HYPOTHESES.md (living).
 # History before 2026-09-04: researches/CANONICAL_STATE.md (superseded snapshot, kept for trust map).
+
+## CURRENT VERIFICATION 2026-10-06 — H042/EXP-87 four-cost region: NOT ESTABLISHED as an executable edge (discovery-only; no protected read)
+
+Independent six-strand verification of the completed four-cost cash-first discovery. The
+numbers are causally clean (11-channel leak audit, no look-ahead; future-perturbation
+attack byte-identical) and arithmetically exact (0 mismatches in independent recompute),
+but the positive region fails selection-aware statistics and measured execution:
+
+- **Selection-aware statistics (parent; producer `factory/scripts/verify_h042_selection.py`,
+  artifact `factory/artifacts/h042_verification_selection_folds.json`).** Family-wise
+  Reality Check (max over the 144 active cells per rung, day-resampled null, 10k draws):
+  p = 0.077 / 0.332 / **0.767** / **0.985** at 25/50/100/150bps. Internal-forward
+  (select cells with folds0+1 mean > 0, evaluate fold2): 100bps selected set **−0.023%/day**
+  (all-cell −0.089%), 150bps **−0.059%/day**; per-fold cell-mean Spearman f0~f1 ≈ 0
+  (−0.01..+0.12) — cell means do not persist. Family means: +0.163% (25bps, SE 0.094),
+  +0.037 (50), −0.080 (100), −0.126 (150).
+- **Tail/power (agent).** The three headline ONCE cells are 1–3-date phenomena (top-1 date
+  = 21–78% of net; top-10 dates = 120–190% of net; 188–195 of ~382 days exactly zero);
+  bootstrap CIs include zero; ~413/1,328/1,897 independent dates would be needed to
+  exclude zero at observed dispersion. Repeat leaders D/E survive remove-best-10 but are
+  fold0-negative and fold2/2023-driven.
+- **Execution (agent; SIP quotes where covered).** Measured full quoted spread for these
+  names is 46–58bps **per leg** (92–116bps round trip; px sits ~0.19% from mid). Re-costed:
+  25bps repeat D +0.905% → **−0.15%/day** covered / **−0.67%/day** extrapolated; 50bps
+  repeat E +0.530% → +0.11% covered / −0.06% extrapolated; the 100/150bps cells survive
+  cost re-pricing (A +0.233, B +0.079, C +0.105, F +0.087%/day) but are exactly the
+  statistically-weak ones. $500/$1000 orders exceed displayed top-of-book depth (median
+  5–7 shares) on 73–94% of covered legs.
+- **Data quality (agent).** Silent NaN prev_close path in the roster builder: 309/997
+  traded claims in the audited cells lack prior-day universe rows; AMV 2022-09-28 is a
+  verified false winner (prev_close 52.01 vs true 82.12; bogus +438% gain). Excluding
+  structural/verified-bad names does not flip any cell sign (deltas ≤ 0.06pp/day).
+- **Simple form (agent).** No entry-state coordinate separates winners from losers within
+  the admitted bands (best rank statistic ~0.63 vs SE 0.05; signs flip across cells); the
+  gating forecast does not order outcomes (P(win>loss) 0.42/0.52); `max` takes 2–3× more
+  entries and loses.
+
+**Verdict:** H042 stands as description (the gate does concentrate gross continuation;
+gross per trade rises with the hurdle), NOT as an extraction candidate. Nothing in the
+four-cost lane is promoted; no protected-day read; no FREEZE; bot untouched.
+**Next:** PRE-REG-ENTRY-EV-01 (conditional executable continuation surface + entry-location
+families on the first533; internally split; protected block sealed).
 
 ## CURRENT — completed 25/50/100/150bps cash-first discovery (H042 / EXP-87)
 
