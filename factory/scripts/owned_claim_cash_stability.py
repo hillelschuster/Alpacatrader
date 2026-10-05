@@ -2,8 +2,8 @@
 """OWNED-CLAIM CASH-FIRST BOOK STABILITY -- the SHAPE of every TEST book over time.
 
 This producer is a READ-ONLY reader.  It opens exactly two things: the executed
-discovery artifact (``owned_claim_cash_first_discovery.json``) and the replay parquet
-outputs that same run wrote (``<v2>/owned_claim/replay_cash_first``).  It replays
+discovery artifact (``owned_claim_cash_first_four_costs.json``) and the replay parquet
+outputs it wrote (``<v2>/owned_claim/replay_cash_first_four_costs``). It replays
 nothing, re-prices nothing, re-hurdles nothing, re-fits nothing and reads no price,
 volume, roster or score value.  The score/panel/roster bytes are only re-hashed, to
 prove the published corpus on disk is still the published corpus.
@@ -15,8 +15,8 @@ one book; it is NOT the upstream forecast's unit (incremental inherited dollars 
 claim cash dollar), which is kept verbatim and separate under
 ``historical_lineage.upstream_forecast_and_fee_contracts`` and is never mixed in.
 
-What it reports, for ALL active cells (9 views x 2 cycles x 4 clocks x 2 N x 2 cost
-legs = 288), never for a hand-picked cell:
+What it reports, for ALL active cells (9 views x 2 cycles x 4 clocks x 2 N x 4 costs
+= 576), never for a hand-picked cell:
 
   * the exact book-date shape: book dates, KNOWN dates, the EXACT dates whose book is
     UNKNOWN, known-date sum / mean / median / day SE, positive / negative / zero counts;
@@ -27,7 +27,7 @@ legs = 288), never for a hand-picked cell:
     with its share of that cell's positive mass and of its known net;
   * best-1 / best-3 / best-5 / best-10 DATE removal: that cell's own most favourable book
     dates removed, the mean over the REMAINING book dates, and the exact removed dates;
-  * the same-cell 100bps vs 150bps matched-date difference and the repeat-minus-once
+  * adjacent-cost matched-date differences and the repeat-minus-once
     matched-date difference, both only on dates where BOTH books are KNOWN, each with the
     exact excluded dates;
   * an UNKNOWN break-even BOUND, never an imputed mean: the cell's known net divided by its
@@ -39,7 +39,7 @@ legs = 288), never for a hand-picked cell:
     that moves whole calendar months and keeps UNKNOWN out of numerator and denominator;
   * all-cell breadth, so the spread is visible instead of a winner.
 
-The cash0 control (``cash0:cash``, 16 cells) is carried in its OWN section and never
+The cash0 control (``cash0:cash``, 32 cells) is carried in its OWN section and never
 mixed into the active population, the breadth counts or any contrast.
 
 Boundaries, repeated in the artifact itself:
@@ -48,7 +48,7 @@ Boundaries, repeated in the artifact itself:
     forecasts and the same dates.  A cell's own figures are one book's normalized portfolio
     rate; what is forbidden is SUMMING or averaging ACROSS cells, treating them as
     independent samples, or reading a breadth average as one portfolio's dollars.
-  * 288 cells were scored on one TEST corpus.  The largest cell mean is an order statistic
+  * 576 cells were scored on one TEST corpus. The largest cell mean is an order statistic
     over correlated alternatives.  No cell is selected, promoted, named best or validated
     here; no significance test is run and no p-value is published.
   * There is deliberately NO universal stability threshold in this artifact: no pass,
@@ -61,10 +61,10 @@ Denominators are printed beside every statistic; see the ``denominators`` sectio
 CLI:
   python factory/scripts/owned_claim_cash_stability.py \
       --data-root /home/hillel/projects/Alpacatrader/data \
-      --out factory/artifacts/owned_claim_cash_stability.json
-  [--replay-dir DIR]      # default <data-root>/harvest01/lifecycle/v2/owned_claim/replay_cash_first
+      --out factory/artifacts/owned_claim_cash_stability_four_costs.json
+  [--replay-dir DIR]      # default <v2>/owned_claim/replay_cash_first_four_costs
   [--artifacts-root DIR]  # default <repo>/factory/artifacts
-  [--discovery NAME]      # default owned_claim_cash_first_discovery.json
+  [--discovery NAME]      # default owned_claim_cash_first_four_costs.json
   [--boot N]              # month-block draws per cell; 0 disables (default 200)
   [--seed N]
   [--no-input-rehash]     # skip re-hashing the declared score/panel/roster bytes
@@ -99,8 +99,8 @@ import lifecycle_study as ls  # noqa: E402  (canonical discovery-day guard only)
 
 ROOT = Path(__file__).resolve().parents[2]
 KIND = "OWNED-CLAIM-CASH-FIRST-BOOK-STABILITY-DIAGNOSTIC-NOT-A-SELECTED-EDGE"
-ARTIFACT_NAME = "owned_claim_cash_first_discovery.json"
-REPLAY_RELPATH = ("owned_claim", "replay_cash_first")
+ARTIFACT_NAME = "owned_claim_cash_first_four_costs.json"
+REPLAY_RELPATH = ("owned_claim", "replay_cash_first_four_costs")
 CELL_KEYS = ("clock", "n", "side", "policy", "cycles")
 CASH0_POLICY = "cash0:cash"
 REMOVALS = (1, 3, 5, 10)
@@ -793,7 +793,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument(
         "--out",
         type=Path,
-        default=ROOT / "factory/artifacts/owned_claim_cash_stability.json",
+        default=ROOT / "factory/artifacts/owned_claim_cash_stability_four_costs.json",
     )
     ap.add_argument("--boot", type=int, default=BOOT_DEFAULT, help="month-block draws/cell; 0 off")
     ap.add_argument("--seed", type=int, default=SEED_DEFAULT)
@@ -1274,8 +1274,8 @@ def main(argv: list[str] | None = None) -> int:
             "best_k_removal": "the k largest KNOWN book-date returns OF THAT CELL removed, "
             "then the mean over the remaining KNOWN book dates; removed dates are listed "
             "exactly, by date and value",
-            "cost_contrast": "mean over dates where BOTH the 100bps and the 150bps book of the "
-            "same (clock, N, view, cycle) are KNOWN; excluded dates are listed exactly",
+            "cost_contrast": "mean over dates where BOTH adjacent-cost books of the same "
+            "(clock, N, view, cycle) are KNOWN; excluded dates are listed exactly",
             "cycle_contrast": f"mean of {cycle_names[1]} minus {cycle_names[0]} over dates "
             "where both books of the same (clock, N, cost, view) are KNOWN; excluded dates "
             "are listed exactly",
@@ -1337,7 +1337,7 @@ def main(argv: list[str] | None = None) -> int:
             "what": "same-cell, same-date DIFFERENCES between two alternative books of the "
             "same replay run, each side already a normalized rate on its own book.  Neither "
             "side is selected, and no difference is a total across books.",
-            "cost_100bps_minus_150bps": cost_contrasts,
+            "cost_adjacent_contrasts": cost_contrasts,
             "cycle_contrasts": cycle_contrasts,
             "cycle_contrast_direction": f"{cycle_names[1]} minus {cycle_names[0]}",
         },
@@ -1383,8 +1383,8 @@ def main(argv: list[str] | None = None) -> int:
             "not an out-of-sample check and not a selection rule.",
             "month-block resampling describes dispersion on the observed calendar; it is not "
             "a significance test, not a p-value and not a confidence claim.",
-            "the 100bps-vs-150bps difference is a fee SENSITIVITY of the same modelled "
-            "trades on the same book dates, not an observed execution cost.",
+            "cost contrasts change both modeled fees and cost-aware admission on the same "
+            "frozen forecasts and roster; actual trades can differ, and costs are not observed.",
             f"the {cycle_names[1]}-minus-{cycle_names[0]} contrast is a cycle-control "
             "difference over the same forecast corpus; neither cycle control is selected here.",
             "cash0:cash is a ledger identity and is excluded from every active count.",

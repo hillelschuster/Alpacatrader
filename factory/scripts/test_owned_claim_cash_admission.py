@@ -601,3 +601,34 @@ def test_calendar_exit_action_can_never_buy_fresh_capital():
     assert daily["ret"] == pytest.approx(0.0, **MONEY)
     assert daily["fees"] == pytest.approx(0.0, **MONEY)
     assert _member(members, "A")["cash_slot_end"] == pytest.approx(1.0, **MONEY)
+
+
+@pytest.mark.parametrize(
+    "round_trip_bps, enters", [(25, True), (50, True), (100, False), (150, False)]
+)
+def test_declared_cost_hurdle_controls_entry_and_charges_both_flat_price_legs(
+    round_trip_bps, enters
+):
+    side = round_trip_bps / 20000.0
+    rows = [
+        _minute(600, "A", 10.0, 600, 10.0),
+        _minute(610, "A", 10.0, 610, 10.0),
+        _minute(615, "A", 10.0, 615, 10.0),
+    ]
+    daily, members, fills = simulate(
+        rows,
+        _roster(["A"]),
+        _pred({("A", 610): 0.007, ("A", 615): -0.001}),
+        side,
+        1,
+        CASH_POLICY,
+        admission="cash",
+        cycles="once",
+    )
+    expected_fee = 2 * side * DEPLOY_HEADROOM / (1 + side) if enters else 0.0
+    assert daily["fresh_entries"] == int(enters)
+    assert daily["orders"] == (2 if enters else 0)
+    assert daily["ret"] == pytest.approx(-expected_fee, **MONEY)
+    assert daily["fees"] == pytest.approx(expected_fee, **MONEY)
+    assert members[0]["net_pnl"] == pytest.approx(-expected_fee, **MONEY)
+    assert sum(f["fee_fraction"] for f in fills) == pytest.approx(expected_fee, **MONEY)

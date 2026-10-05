@@ -11,7 +11,7 @@ statement about the ALLOCATION, not yet about the PREDICTION, because upfront ad
 also commits capital to the claims a forecast likes least and forces an exit on any
 negative number regardless of whether the exit itself costs money.
 
-This replay changes exactly one economic assumption and nothing else:
+This replay changes capital admission and sizing on the frozen original roster and scores:
 
   * the account starts as CASH on the SAME original roster -- no initial buy, no
     reservation, no entry fee;
@@ -22,8 +22,8 @@ This replay changes exactly one economic assumption and nothing else:
 That is COST HYSTERESIS, the economically correct asymmetry: once entry is paid, the
 entry cost is SUNK and only the marginal continuation matters, so the held threshold is
 zero; before entry, the round-trip fee is still ahead of the decision maker, so the fresh
-threshold is the derived hurdle ``h = 2*s/(1-s)``.  This is not a lower cost assumption --
-both legs still pay the modeled 100/150bps -- and not a time or return-count rule.
+threshold is the derived hurdle ``h = 2*s/(1-s)``. Both legs pay half of the declared
+25/50/100/150bps total round-trip friction; no time or return-count rule is introduced.
 
 This is distinct from the already-tested forced-upfront 8-event/EOD-PI admission and from
 the static first+5 reserve: here the same minute grid, the same frozen OOF forecasts and
@@ -32,9 +32,9 @@ the same roster decide BOTH whether to enter and when to leave.
 Contracts
 ---------
 * Engine: ``owned_claim_replay.simulate`` is imported and called with the approved
-  keyword-only ``admission='cash'``.  Actual fills, the cash ledger, the T+1 settlement
-  delay, per-claim segregation and the UNKNOWN accounting are the canonical ones, never
-  re-implemented or copied here.
+  keyword-only ``admission='cash'``. Actual fills, the cash ledger, the execution-minute
+  +1 proceeds-reuse delay, per-claim segregation and UNKNOWN accounting are canonical,
+  never re-implemented or copied here.
 * Units: the frozen scores are incremental dollars per ORIGINAL CLAIM CASH dollar at the
   modeled 50bps fee, i.e. ``cash = GROSS delta * F`` with ``F = 0.995/1.005``.  The fresh
   hurdle is a GROSS-magnitude comparison, so this consumer converts
@@ -105,7 +105,8 @@ CORE_SRC = Path(core.__file__).resolve()
 
 CLOCKS = tuple(core.CLOCKS)  # (540, 560, 569, 571)
 NS = (3, 5)
-SIDES = tuple(core.SIDES)  # 0.005 / 0.0075 -> the modeled 100/150bps traded leg pair
+ROUND_TRIP_BPS = (25, 50, 100, 150)
+SIDES = tuple(bps / 20000.0 for bps in ROUND_TRIP_BPS)
 # The two predeclared cycle controls, reported side by side.  Neither is selected on TEST.
 CYCLES = ("once", "repeat")
 # The producer's published fee factor: cash = GROSS * F.  Read from the score metadata
@@ -1101,12 +1102,14 @@ def main(argv: list[str] | None = None) -> int:
         ),
         "fee_contract": {
             "per_leg_side_costs": list(SIDES),
+            "total_round_trip_bps": list(ROUND_TRIP_BPS),
+            "split": "half of the declared round-trip friction on each actual leg",
             "both_legs_paid": True,
             "hurdle_formula": "h = 2*s/(1-s), the round-trip fee on one account dollar",
             "hurdle_values": {str(s): 2 * s / (1 - s) for s in SIDES},
             "hurdle_is_derived_not_tuned": True,
-            "cost_model": "modeled 100/150bps per actual traded leg pair, not quote/queue "
-            "certified",
+            "cost_model": "modeled 25/50/100/150bps total round-trip, equally split between "
+            "actual legs; not quote/queue certified",
         },
         "unit_contract": {
             "prediction_units": meta.get("prediction_units"),
@@ -1170,8 +1173,8 @@ def main(argv: list[str] | None = None) -> int:
             "remains undeployed in the per-claim slots when the book closes",
             "borrowing": "never: a fresh buy spends only its own claim's settled slot",
             "proceeds_source": (
-                "a sale's ACTUAL net receipt returns to ITS OWN slot after the T+1 "
-                "settlement delay, never a lifetime-profit figure"
+                "a sale's ACTUAL net receipt returns to ITS OWN slot at execution minute +1, "
+                "never a lifetime-profit figure; not broker business-day settlement"
             ),
             "unaffordable_gap": "UNKNOWN; the order is never resized and never levered",
             "terminal_unresolved_fresh_buy": (

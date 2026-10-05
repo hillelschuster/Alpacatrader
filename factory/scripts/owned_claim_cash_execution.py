@@ -63,8 +63,8 @@ whose book is absent from ``daily``, is a hard failure rather than a dropped row
 Usage
 -----
     .venv/bin/python factory/scripts/owned_claim_cash_execution.py \
-        --evidence factory/artifacts/owned_claim_cash_first_discovery.json \
-        --out factory/artifacts/owned_claim_cash_execution.json
+        --evidence factory/artifacts/owned_claim_cash_first_four_costs.json \
+        --out factory/artifacts/owned_claim_cash_execution_four_costs.json
 """
 
 from __future__ import annotations
@@ -89,7 +89,7 @@ import lifecycle_study as ls  # noqa: E402
 SCRIPT = Path(__file__).resolve()
 PRODUCER = SCRIPT.with_name("owned_claim_cash_first_replay.py")
 ENGINE = SCRIPT.with_name("owned_claim_replay.py")
-REPLAY_SUBDIR = ("owned_claim", "replay_cash_first")
+REPLAY_SUBDIR = ("owned_claim", "replay_cash_first_four_costs")
 
 # The engine's PUBLISHED ``notional`` default.  The producer calls simulate() without that
 # argument, so this default is the size behind every participation figure.  Verified here.
@@ -1539,8 +1539,8 @@ def main(argv: list[str] | None = None) -> int:
                 "verified_not_assumed": True,
             },
             "fee_model": (
-                "MODELLED 100/150bps per actual traded leg, charged on that leg's actual fill "
-                "price. A cost assumption, not an observed broker fee, rebate or venue schedule"
+                "MODELLED 25/50/100/150bps TOTAL round-trip friction, split equally between "
+                "legs and charged on each leg's actual fill price; not observed broker costs"
             ),
             "no_dollar_pnl_is_published": (
                 "a dollar P&L would require choosing an account size; that choice is not made "
@@ -1666,9 +1666,8 @@ def main(argv: list[str] | None = None) -> int:
             "active_cells": sum(1 for c in cells if c["policy"] != "cash0:cash"),
             "cash0_reference_cells": sum(1 for c in cells if c["policy"] == "cash0:cash"),
             "cell_count_note": (
-                "9 active views x 2 cycle controls x 4 clocks x 2 roster sizes x 2 modelled cost "
-                "sides = 288 active cells, plus 16 cash0 reference cells (4 clocks x 2 N x 2 "
-                "cost sides, once only) = 304"
+                "active cells are the artifact's views x cycle controls x clocks x roster "
+                "sizes x declared costs; cash0 runs once per clock, roster size and cost"
             ),
             "cash0_meaning": (
                 "the literal policy string is cash0:cash -- the SAME book with every forecast "
@@ -1677,8 +1676,8 @@ def main(argv: list[str] | None = None) -> int:
                 "cannot bind when nothing executes"
             ),
             "side_cost_note": (
-                "side_cost is the modelled per-leg cost in decimal: 0.005 = 100bps, 0.0075 = "
-                "150bps; it is the replay's daily.side and fills.side_cost under one name"
+                "side_cost is the per-leg decimal cost; total round-trip bps = 20000*side_cost "
+                "(0.00125/0.0025/0.005/0.0075 = 25/50/100/150bps total), under one column name"
             ),
         },
         "cells": cells,
