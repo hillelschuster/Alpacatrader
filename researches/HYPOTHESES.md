@@ -31,9 +31,16 @@ parent 25 fiscal regressions passed. Existing baseline `460b1d1` unchanged.
 **NEXT (PLANNING ONLY — no new ID, no outcomes).** Next target: a cash-first fee-aware admission
 hypothesis on the SAME original roster, direct-minute values used only where there is a clear fresh
 cost, entry sunk and owned exit treated differently. Recorded as planning only; a new ID and any
-producer/contract are withheld until the parent supplies them. Bot offline: final lagging-position
-coverage closure still pending (parent 59 tests before latest source fix); not closed; main/flags/
-orders unchanged. No protected-half read, FREEZE or deploy.
+producer/contract are withheld until the parent supplies them. Bot offline paper closure
+parent-verified final (2026-10-05): 34 safety tests PASS + legacy T1–T14 module collection PASS;
+new Safety file Ruff / 3-file syntax / F-E9 / LSP request OK; real alpaca-py nested-Order
+temp-journal restart smoke PASS (original B/ts retained, stop child fill 100 + 2 stale held
+snapshots, no OCO/close, true flat books); ProtectionRestartAudit all source findings closed incl
+lag-position post-fill quantity via the shared handler `pos`. OFFLINE fix/test/source-review CLOSED —
+NOT deploy/broker-cert; broker exposure UNOBSERVED; intrinsic OCO double-fill/cancel race NOT
+certified; ordinary multiple over-covering families not consolidated (pre-existing, out of scope, not
+hidden). Source-only WT3 files `flush_bot.py`, `test_flush_bot.py`, new Safety file; main/flags/orders
+unchanged. No protected-half read, FREEZE or deploy.
 
 ## OWNED-CLAIM UPDATE 2026-10-03 — H040, dollar-value discovery (corrected two-method replays + three exploratory diagnostics COMPLETE; declared source_correction_status NOT_VERIFIED — parent source/runtime checks observed PASS)
 
@@ -103,9 +110,9 @@ recorded`; that overclaim is withdrawn.] First+5% moves and the dollar-window an
 descriptively useful. The three exploratory diagnostics (push-legs / recovery-retrieval /
 probe-reserve, EXP-85) are COMPLETE (bg_523, 705.56s) as discovery anatomy/diagnostics only — no
 policy, classifier or promoted edge (units differ per diagnostic; probe is a modeled portfolio
-cash/wealth endpoint diagnostic). Bot: NOT closed — pending restart-to-existing OCO integration and
-final gates (obsolete T5 failure counts are not the latest boundary); no live
-code/flags touched.
+cash/wealth endpoint diagnostic). Bot: at that time NOT closed — pending restart-to-existing OCO
+integration and final gates (obsolete T5 failure counts, not the latest boundary) — SUPERSEDED by
+the 2026-10-05 paper closure above; no live code/flags touched then.
 
 ## CURRENT 2026-10-03 — top-gainer optionality; harvesting remains unresolved
 

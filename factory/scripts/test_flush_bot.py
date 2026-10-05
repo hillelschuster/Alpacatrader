@@ -2,7 +2,7 @@ import sys, pathlib, json, tempfile
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 import pandas as pd
-sys.path.insert(0, '/mnt/c/Users/הלל/Desktop/algo projects/Alpacatrader/factory/scripts')
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import flush_bot as fb
 
 ET = ZoneInfo("America/New_York")
@@ -23,13 +23,21 @@ class Pos:
     def __init__(self, sym, qty, avg): self.symbol=sym; self.qty=qty; self.avg_entry_price=avg
 class Br:
     live=True
-    def __init__(self): self.canceled=[]; self.closed=[]; self.buys=[]
-    def cancel(self, oid): self.canceled.append(oid)
+    def __init__(self): self.canceled=[]; self.closed=[]; self.buys=[]; self.sells=[]
+    def cancel(self, oid): self.canceled.append(oid)  # request only: order stays live
     def submit_buy(self, sym, q, p):
         o=Order(sym,"buy",f"b{len(self.buys)}",p); self.buys.append(o); return o
-    def sell_oco(self, sym, q, stop, lim): return Order(sym,"sell","oco1",lim, qty=q)
-    def close_market(self, sym): self.closed.append(sym)
-    def order(self, oid): return None
+    def sell_oco(self, sym, q, stop, lim):
+        o=Order(sym,"sell",f"oco{len(self.sells)+1}",lim, qty=q)
+        self.sells.append(o); return o
+    def close_market(self, sym):
+        self.closed.append(sym)
+        return Order(sym,"sell",f"close{len(self.closed)}",0.0)  # accepted close
+    def order(self, oid):
+        # broker truth: a cancelled id reports terminal, everything else unknown
+        if str(oid) in [str(x) for x in self.canceled]:
+            return Order("AAA","buy",oid,1.8,status="canceled")
+        return None
     def trades_at_bid(self, *a, **k): return {}
 
 et_now = datetime(2026,9,11,11,0,tzinfo=ET)
@@ -47,11 +55,14 @@ bars_ns = pd.DataFrame({"ts": bars["ts"], "et": bars["et"], "close": [2.0]*20})
 n=35
 bars35 = pd.DataFrame({"ts": pd.to_datetime([f"2026-09-11T{13+i//60:02d}:{i%60:02d}:00Z" for i in range(n)]), "et": list(range(570,570+n)), "close": [2.0]*(n-5)+[2.0,2.0,2.05,2.2,2.4]})
 
-# T1 refresh on tick change
+# T1 refresh on tick change: cancel the stale bid, replace only once the
+# broker confirms it left the book (no overlapping second bid)
 m={"prev_close":1.0,"order_id":"o1","anchor_ts":et_now,"entry_B":1.8}
 br=Br(); ords=[Order("AAA","buy","o1",1.80)]
 fb.manage_symbol(br,"AAA",m,bars,{},ords,600,et_now)
-assert "o1" in br.canceled and br.buys and m["entry_B"]==2.16, (br.canceled,br.buys,m)
+assert "o1" in br.canceled and not br.buys and m["entry_B"]==1.8, (br.canceled,br.buys,m)
+fb.manage_symbol(br,"AAA",m,bars,{},[],600,et_now)
+assert br.buys and abs(m["entry_B"]-2.16)<1e-9, (br.canceled,br.buys,m)
 print("T1 refresh OK", m["entry_B"])
 
 # T2 expiry
@@ -68,18 +79,23 @@ fb.manage_symbol(br,"AAA",m,bars,pos,[],600,et_now)
 assert m.get("oco_id")=="oco1"
 print("T3 protect OK")
 
-# T4 tl30 with protection already in place
+# T4 tl30 with protection already in place: cancel the OCO first, flatten
+# only once the broker confirms the protective order terminal
+z=Order("AAA","sell","z",2.0,cid="flushbot-s-z",qty=500)
 m={"prev_close":1.0,"entry_ts":et_now-timedelta(minutes=30),"entry_B":1.8,"entry_bar_i":0,"oco_id":"z"}
 br=Br(); pos={"AAA":Pos("AAA",500,1.80)}
+fb.manage_symbol(br,"AAA",m,bars35,pos,[z],600,et_now)
+assert "z" in br.canceled and br.closed==[], br.closed
 fb.manage_symbol(br,"AAA",m,bars35,pos,[],600,et_now)
-assert br.closed==["AAA"]
+assert br.closed==["AAA"], br.closed
 print("T4 tl30 OK")
 
-# T5 exit bookkeeping
+# T5 exit bookkeeping: the protective OCO is broker-terminal and inventory is
+# flat, so the completed exit clears the lifecycle anchor
 m={"prev_close":1.0,"entry_ts":et_now-timedelta(minutes=5),"entry_B":1.8,"oco_id":"z"}
-br=Br(); LOGS.clear()
+br=Br(); br.canceled.append("z")   # broker reports the protective OCO canceled
 fb.manage_symbol(br,"AAA",m,bars,{},[],600,et_now)
-assert m["entry_ts"] is None and m.get("last_exit_ts")==et_now and LOGS[0]["event"]=="exit"
+assert m["entry_ts"] is None and m.get("last_exit_ts")==et_now, m
 print("T5 exit OK")
 
 # T6 day-roll: stale meta + owned resting buy + open position -> cancel, close, reset
@@ -124,23 +140,34 @@ o2, t2 = b2.clock()
 assert o2 is True and t2=="T" and not any(l["event"]=="clock_fallback" for l in LOGS)
 print("T7 clock retry/fallback OK")
 
-# T8 partial fill on a still-open order: book fill, cancel remainder, protect
+# T8 partial fill: book the fill, cancel the remainder, and keep reconciling
+# the entry id until the broker reports a terminal state
 o=Order("AAA","buy","p1",1.80,status="partially_filled",fq=100); o.filled_at=et_now
 m={"prev_close":1.0,"order_id":"p1","entry_B":1.8,"pf_est":3}
 metaP={"AAA":m}; brp=Br(); LOGS.clear()
 fb.sync_fills(brp, metaP, [o], {"AAA":Pos("AAA",100,1.80)}, {"AAA":bars}, et_now)
 assert "p1" in brp.canceled, brp.canceled
-assert m["order_id"] is None and m["entry_ts"] is not None
-assert m["oco_id"]=="oco1", m
+assert m["order_id"]=="p1" and m["entry_ts"] is not None
 assert any(l["event"]=="fill" for l in LOGS) and any(l["event"]=="partial" for l in LOGS)
+# protection submission belongs to manage_symbol (sync_fills only books/cancels)
+fb.manage_symbol(brp,"AAA",m,bars,{"AAA":Pos("AAA",100,1.80)},[o],600,et_now)
+assert m["oco_id"]=="oco1", m
+# broker truth terminal -> entry id released
+brp.order = lambda oid: Order("AAA","buy",oid,1.80,status="canceled",fq=100,cid="flushbot-b-x")
+fb.sync_fills(brp, metaP, [], {"AAA":Pos("AAA",100,1.80)}, {"AAA":bars}, et_now)
+assert m["order_id"] is None, m
 print("T8 partial fill OK")
 
-# T8b overfill race: remaining buy filled after protection -> resize OCO
+# T8b overfill race: remaining buy filled after protection -> resize OCO is
+# deferred until the old one is broker-terminal (no overlapping protection)
 sell=Order("AAA","sell","s1",2.0,cid="flushbot-s-1",qty=100)
 m={"prev_close":1.0,"entry_ts":et_now,"entry_B":1.8,"entry_c0":2.0,"oco_id":"oco1"}
 br3=Br(); LOGS.clear()
 fb.manage_symbol(br3,"AAA",m,bars,{"AAA":Pos("AAA",300,1.80)},[sell],600,et_now)
-assert "s1" in br3.canceled and any(l["event"]=="protect_resize" for l in LOGS), LOGS
+assert "s1" in br3.canceled and br3.sells==[], br3.sells
+assert any(l["event"]=="protect_resize" for l in LOGS), LOGS
+fb.manage_symbol(br3,"AAA",m,bars,{"AAA":Pos("AAA",300,1.80)},[],600,et_now)
+assert br3.sells and int(br3.sells[-1].qty)==300, br3.sells
 print("T8b protect_resize OK")
 
 # T9 startup reconcile: cancel owned entry buy, keep sell, rehydrate held fill
@@ -195,7 +222,7 @@ m={"prev_close":1.0,"order_id":"p1","entry_B":1.8}
 metaX={"_day":"2026-09-14","_strict_seen":{"AAA"},"AAA":m}
 brx=Br(); LOGS.clear()
 fb.sync_fills(brx, metaX, [o], {"AAA":Pos("AAA",100,1.80)}, {"AAA":bars}, et_now)
-assert m["entry_ts"] is not None and m["oco_id"]=="oco1", (m,)
+assert m["entry_ts"] is not None and m["order_id"] is None, (m,)
 assert any(l["event"]=="fill" for l in LOGS)
 print("T12 meta non-dict keys OK")
 

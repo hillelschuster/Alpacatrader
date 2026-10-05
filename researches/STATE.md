@@ -46,8 +46,18 @@ clear fresh cost, with entry sunk and the owned exit treated differently. This i
 PLANNING only; a new record ID and any producer/contract are withheld until the parent supplies
 them (no fabricated outcomes). Existing baseline `460b1d1` unchanged.
 
-**Bot (offline):** final lagging-position coverage closure is still pending (actual parent 59 tests,
-before the latest source fix); NOT marked closed; main/flags/orders unchanged. No restart.
+**Bot offline paper closure — parent-verified final (2026-10-05).** Latest 34 safety tests PASS +
+legacy T1–T14 module collection PASS; new Safety file Ruff PASS / source 3-file syntax / F-E9 PASS /
+LSP diagnostics request OK. Real alpaca-py nested-Order temp-journal restart smoke PASS (original
+B/ts retained, stop child fill 100 + 2 stale held snapshots, no OCO/close, true flat books).
+ProtectionRestartAudit bounded all source findings closed, including lag-position post-fill quantity
+via the shared handler `pos` (not a stale scalar); source Qty/liveness and all family IDs preserved.
+OFFLINE fix/test/source-review **CLOSED** — but this is NOT deploy or broker-cert: current broker
+exposure is UNOBSERVED and the intrinsic OCO double-fill/cancel race is NOT certified. Known ordinary
+multiple over-covering families are not consolidated (pre-existing, out of scope — scope not hidden).
+Source-only worktree files: `flush_bot.py`, `test_flush_bot.py`, new Safety file (parent commits these
++ records/HANDOFF; no DATA). No runtime/gates/git/source changes. Fiscal 25 actual PASS earlier; the
+source-budget new core cash mode is a separate phase, not part of paper.
 
 ## UPDATE 2026-10-03 — owned-claim lifecycle dollars (corrected two-method replays + three exploratory diagnostics COMPLETE; declared source_correction_status NOT_VERIFIED — parent source/runtime checks observed PASS)
 
@@ -148,9 +158,10 @@ UNKNOWN; no protected-half read, freeze or deployment. First+5% push moves and t
 anatomy remain descriptively useful. The exploratory push-legs / recovery-retrieval /
 probe-reserve scripts (EXP-85) are now COMPLETE (bg_523, 705.56s): three canaries passed and the
 full outcomes are reported above as discovery anatomy/diagnostics only — no policy, classifier or
-promoted edge; units differ per diagnostic. Bot: NOT closed — pending restart-to-existing OCO
-integration and final gates (obsolete T5 failure counts are not the latest boundary). No live
-code/flags touched (H025 constants/signals/sizing preserved).
+promoted edge; units differ per diagnostic. Bot: at that time NOT closed — pending
+restart-to-existing OCO integration and final gates (obsolete T5 failure counts, not the latest
+boundary) — SUPERSEDED by the 2026-10-05 parent-verified offline paper closure above. No live
+code/flags touched then (H025 constants/signals/sizing preserved).
 
 ## UPDATE 2026-10-03 — research takeover: harvesting, not selection substitution
 

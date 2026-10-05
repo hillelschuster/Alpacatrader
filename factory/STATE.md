@@ -3033,8 +3033,9 @@ Compact follow-up to the entry above (same EXP-85; no new hypothesis ID).
   archived git blob `76db4a1` (historical `owned_claim_attribution.py`), NOT the current formatted
   script `8942b8e7` — ARCHIVED lineage, not current-producer output (no rerun needed, format only);
   other current pins (events/helper/model/replay/surfaces/loss/probe/retrieval) verified.
-* **Bot:** NOT closed — pending restart-to-existing OCO integration and final gates (obsolete T5
-  failure counts are not the latest boundary). No live code/flags touched.
+* **Bot:** at that time NOT closed — pending restart-to-existing OCO integration and final gates
+  (obsolete T5 failure counts, not the latest boundary) — SUPERSEDED by the 2026-10-05
+  parent-verified offline paper closure below. No live code/flags touched then.
 
 ## 2026-10-05 — owned-claim clock windows + direct-minute ownership (bg36 + bg45 COMPLETE-NEGATIVE)
 
@@ -3072,5 +3073,14 @@ FREEZE or deploy. Clock/anatomy is NOT strategy; no edge promoted.
   the SAME original roster, direct-minute values used only where there is a clear fresh cost, entry
   sunk and owned exit treated differently. A new ID and any producer/contract are withheld until the
   parent supplies them. Existing baseline `460b1d1` unchanged.
-* **Bot (offline):** final lagging-position coverage closure is still pending (actual parent 59
-  tests, before the latest source fix); NOT marked closed; main/flags/orders unchanged. No restart.
+* **Bot offline paper closure — parent-verified final:** 34 safety tests PASS + legacy T1–T14 module
+  collection PASS; new Safety file Ruff PASS / 3-file syntax / F-E9 PASS / LSP diagnostics request OK;
+  real alpaca-py nested-Order temp-journal restart smoke PASS (original B/ts retained, stop child fill
+  100 + 2 stale held snapshots, no OCO/close, true flat books). ProtectionRestartAudit bounded all
+  source findings closed incl lag-position post-fill quantity via the shared handler `pos` (source
+  Qty/liveness + family IDs preserved). OFFLINE fix/test/source-review **CLOSED** — NOT deploy or
+  broker-cert: broker exposure UNOBSERVED, intrinsic OCO double-fill/cancel race NOT certified; known
+  ordinary multiple over-covering families not consolidated (pre-existing, out of scope, not hidden).
+  Source-only WT3 files `flush_bot.py`, `test_flush_bot.py`, new Safety file (parent commits +records/
+  HANDOFF; no DATA). Fiscal 25 PASS earlier; source-budget new core cash mode is a separate phase. No
+  runtime/gates/git/source changes; main/flags/orders unchanged.

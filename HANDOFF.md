@@ -1279,7 +1279,7 @@ broker exposure is unobserved. Offline worktree execution-safety corrections
 are undergoing asynchronous fill/cancel/exit regression and review closure.
 Keep research out of the frozen H025/A3b bot; do not arm from these diagnostics.
 
-## 21. 2026-10-05 — clock-conditioned dollars; full-minute policy running
+## 21. 2026-10-05 — completed minute dollars; cash-first capital experiment
 
 **Continue the thesis, not a classifier.** Baseline source/evidence/records were
 published as `460b1d6` on `basket-phase2-f1`. Negative tested implementations do not
@@ -1323,8 +1323,10 @@ The next hypothesis keeps the original roster but starts in cash: fresh admissio
 must clear entry-and-exit friction, while already-owned retention has entry sunk.
 Cash-first cost-hysteretic ownership is planning/implementation, not a result.
 
-**Paper boundary:** offline restart/cancel/partial-fill/protection fixes remain
-under final lagging-position coverage review and runtime closure. Main bot code,
-LIVE/KILL flags and trading orders were not changed by this work. Broker exposure
-is unobserved. Offline proofs do not certify broker OCO cancellation/double-fill
-races. Keep the frozen H025/A3b strategy unchanged; no activation from this research.
+**Paper boundary:** offline restart/cancel/partial-fill/protection fixes are closed
+within the reviewed scope. Parent exercised 34 safety tests, legacy T1–T14 collection,
+syntax/F-E9/new-test Ruff checks and a real-SDK nested-Order temporary-journal smoke.
+Main bot code, LIVE/KILL flags and trading orders were not changed. Broker exposure
+is unobserved. This is not deployment or broker certification: intrinsic OCO
+cancellation/double-fill races remain unproved. Frozen H025/A3b is unchanged;
+ordinary over-covering multiple families are not consolidated (pre-existing scope).
