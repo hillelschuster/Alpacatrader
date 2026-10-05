@@ -1,4 +1,18 @@
-# HYPOTHESES — living source of truth (created 2026-09-06; rewritten 2026-09-08 post-H11-collision)
+# HYPOTHESES — living source of truth (created 2026-09-06; rewritten 2026-10-06 post-verification)
+
+## ENTRY-EV-01 STAGE A 2026-10-06 — no marketable minute-level pocket on the top-10 board; promotion climax is future-conditioned (discovery block; measurement only)
+
+Full-board measurement (533 days; 1.6M guarded events; gross next-open→next-open h∈{1..60};
+`factory/scripts/entry_ev/stage_a_{build,read}.py`; `factory/artifacts/entry_ev/`):
+- pooled negative at every horizon (h1 −0.011% → h60 −0.411%, both halves);
+- best eligible conditional region +3.7bps (median 0.0) vs 92–116bps measured round trip —
+  no pocket clears cost; momentum/spike/boundary states are negative;
+- `promo_age ∈ [−5,0)` (crossing into top-5 within 1–5 min ahead) = +3.09% at h5 (n=18.9k,
+  527 days, stable halves) but **future-conditioned** — the crossing is the move; every
+  causal proxy at t is ≈0/negative; post-promotion fades (−0.21% h5, −1.03% h30).
+- Stage-B gate not triggered; (c) deferred. Scope: falsifies marketable next-open
+  minute-level entries in this coordinate set ≤60m; NOT passive entries, other
+  populations/states, longer holds, funded/owned mechanisms, or H025.
 
 ## VERIFICATION UPDATE 2026-10-06 — H042/EXP-87 four-cost region NOT ESTABLISHED (selection-aware statistics + measured execution)
 

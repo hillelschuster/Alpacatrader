@@ -3381,3 +3381,31 @@ these records). Findings (full detail: `factory/artifacts/h042_verification_2026
 validation half; no FREEZE; bot/flags untouched. Next: PRE-REG-ENTRY-EV-01 (conditional
 executable continuation surface + entry-location families on the first533; internally split;
 protected block sealed).
+
+## 2026-10-06 (later) — ENTRY-EV-01 Stage A COMPLETE (discovery block; measurement only; negative, scoped)
+
+Pre-registered Stage A ran end-to-end on the full discovery block: 533/533 days built, top-10
+causal minute board, guard = verified non-null prev_close ≥ $1.00 (dropped 468,146 rows, ALL
+`prev_close_lt_1`; zero null/stale/floor/discrepancy), 1,601,807 kept events; gross next-open →
+next-open at h ∈ {1,3,5,10,15,30,60}; forward coverage 99.35% (h1) → 84.16% (h60, EOD censoring
+= UNKNOWN). Lane verified across all 26 months (`factory/scripts/entry_ev/verify_lane_months.py`,
+52/52 board digests matched, px exact 1.000000, 390k sampled rows). Producers
+`factory/scripts/entry_ev/stage_a_build.py` (FE-0 parity exact; 15 tests) + `stage_a_read.py`;
+artifacts `factory/artifacts/entry_ev/{lane_verification,stage_a_readout}.json` + `READ_PACKET.md`.
+FE-0/FE-0b feasibility: board lane pinned (`data/ohlcv_<month>.parquet`), quotes ~34% / SIP trades
+~81% of top-10 symbol-days (Stage A independent of both); resting-limit mechanism deferred to its
+own registration (gain-correlated gated download).
+
+Results: pooled continuation negative gross at every horizon (h1 −0.011% → h60 −0.411%; halves
+agree). No conditional pocket clears cost: best eligible region +3.7bps (median 0.0) vs the
+92–116bps measured round trip; momentum spikes, volume spikes, near-boundary rank state,
+at-day-high all ≈0/negative. The one large positive region — `promo_age ∈ [−5,0)` (first top-5
+crossing 1–5 minutes AHEAD; n=18,904, 527 days): h1 +0.994%, h3 +2.379%, h5 +3.086%, h15 +2.620% —
+is **future-conditioned**: the crossing is (mostly) the price move itself, and every causal proxy
+observable at t (rank 6–10 + momentum/boundary/volume/HOD) is ≈0 or negative. Post-promotion
+(0–5 min) fades (h5 −0.206%, h30 −1.032%). Stage-B gate NOT triggered (best eligible +3.7bps ≪
+120bps criterion; hindsight excluded by construction); Stage B(c) stays deferred. Sub-$1 cohort
+recorded as labeled sensitivity (not silently dropped). Scope: falsifies marketable next-open
+minute-level entries on the top-10 board in this coordinate set at h≤60; does NOT falsify passive
+entries, other populations/states, longer holds, the funded/owned mechanisms, or H025. No
+protected read; no FREEZE; no deploy; bot/flags untouched. EXP-89.

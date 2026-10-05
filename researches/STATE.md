@@ -2,6 +2,35 @@
 # Hypothesis ranking + falsifiers: researches/HYPOTHESES.md (living).
 # History before 2026-09-04: researches/CANONICAL_STATE.md (superseded snapshot, kept for trust map).
 
+## UPDATE 2026-10-06 (later) — ENTRY-EV-01 Stage A COMPLETE: no marketable minute-level pocket; the promotion climax is future-conditioned (measurement only; discovery block)
+
+Full board measured (533 days, top-10 causal minute board, 1,601,807 guarded events, gross
+next-open→next-open at h∈{1..60}; lane verified 26/26 months; producers
+`factory/scripts/entry_ev/stage_a_{build,read}.py`; artifacts `factory/artifacts/entry_ev/`
++ `READ_PACKET.md`). Findings:
+
+- **Unconditional continuation is negative gross at every horizon** (h1 −0.011% → h60
+  −0.411%; both halves agree).
+- **No conditional pocket clears cost.** Across 8 coordinate families the best eligible
+  gross region is **+3.7bps** (median 0.0; volume dry-up) versus the 92–116bps measured
+  round trip. Momentum, volume spikes, near-boundary rank state, at-day-high: ≈0 to
+  clearly negative (ret1>2%: −0.21% at h5, −0.86% at h30).
+- **The one large positive region is future-conditioned.** `promo_age ∈ [−5,0)` (name
+  crosses into top-5 within 1–5 minutes ahead): h1 +0.99%, h3 +2.38%, h5 **+3.09%**
+  (n=18,904; 527 days; stable across halves). It conditions on the crossing, which is
+  (mostly) the price move itself. Post-promotion (0–5 min): h5 −0.21%, h30 −1.03%.
+  Every causal observable proxy at t (rank 6–10 + momentum / boundary / volume / HOD) is
+  ≈0 or negative. **The climax is un-enterable by prediction; the run-up belongs to the
+  already-long.**
+- **Stage-B gate not triggered** (best eligible +3.7bps ≪ 120bps criterion; hindsight
+  region excluded by construction); (c) remains deferred. Sub-$1-prev_close cohort
+  (468,146 rows; all guard drops; rising ~7%→47% share across the block) recorded as a
+  labeled sensitivity, not silently dropped.
+
+Scope: falsifies marketable next-open minute-level entries on the top-10 board in this
+coordinate set at h≤60; does not falsify passive entries, other populations/states, longer
+holds, the funded/owned mechanisms, or H025. No protected read; no freeze; no deploy.
+
 ## CURRENT VERIFICATION 2026-10-06 — H042/EXP-87 four-cost region: NOT ESTABLISHED as an executable edge (discovery-only; no protected read)
 
 Independent six-strand verification of the completed four-cost cash-first discovery. The
