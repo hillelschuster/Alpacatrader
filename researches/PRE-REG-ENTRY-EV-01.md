@@ -128,10 +128,38 @@ half** — that remains a separate owner-gated decision after a frozen formulati
   must never be quoted as conclusions.
 - No interference with H025 / the paper bot; no live code or flag changes.
 
-## 8. Deliverables
+## 8. FE-0 / FE-0b outcomes (2026-10-06, appended before any Stage-A number; economic design unchanged)
+
+- **Lane pinned (verified)**: the board's price lane is `data/ohlcv_<month>.parquet`
+  (board `source_sha256` reproduced exactly from that lane's file sha + alias-map sha;
+  `px` = close of last completed bar `et ≤ t−1` reproduced exactly on 2.0M+ rows × 3 days).
+  `clean_ohlcv_*` is a near-miss (99.5–99.8%); `sip/net/bars` is roster-only. Lower
+  coverage months must pass the same lane-sha gate before use.
+- **Coverage (rank ≤ 10 rows)**: forward open at h=0 100%, h=5 ≈ 98.5–98.7%, h=30 ≈ 92%
+  (dominated by end-of-day censoring); coverage is rank-bucket invariant; missing =
+  UNKNOWN, never 0. Volume joins in the same lane with identical coverage.
+- **Runtime**: ≈ 59 s/day single-threaded → ≈ 8–9 h for 533 days; shardable; per-day
+  incremental outputs + resume required (repo doctrine).
+- **Guard (AMV class)**: require `prev_close` non-null AND ≥ $1.00 AND not stale /
+  floor-qualified, and exclude `flag_prevclose_discrepancy`. Verified trap: GHSI
+  2021-03-01 (prev_close $0.508, gain 4.5–4.8×) passes the board's own flags.
+- **Execution-data limits**: SIP quotes cover ≈ 34% of top-10 symbol-days; SIP trades
+  ≈ 81%. Stage A does not depend on either; measured-spread re-cost applies to the covered
+  subset only.
+- **Stage B(c) resting-limit deferred**: mechanically computable from SIP trades, but that
+  lane is a gain-correlated gated download (72.4% of top-10 symbol-days; in-lane share
+  rises monotonically with gain decile; plus fill-rate compounding). Per §4 it is not run
+  on this subset; it requires its own registration (re-ingest the missing days, or a
+  differently framed measurement). Stage B(a)/(b) run on the full ohlcv lane.
+- **FE-0 smoke baseline (3 days, gross, acceptance target for the Stage-A producer)**:
+  pooled h=5 n=11,510 mean −0.078% median +0.000%; h=30 n=10,757 mean −0.310% median
+  −0.293%; rank 1-3 worse than 6-10; T2 (12:00–14:49) positive at both horizons.
+
+## 9. Deliverables
 
 Producer scripts under `factory/scripts/entry_ev/`; artifacts + a read packet under
-`factory/artifacts/entry_ev/`; `factory/EXPERIMENTS.jsonl` entry; STATE/HYPOTHESES record.
-Commit + push to `basket-phase2-f1` (clean cutover; no unrelated files).
+`factory/artifacts/entry_ev/`; per-day event tables under `data/entry_ev/stage_a/`;
+`factory/EXPERIMENTS.jsonl` entry; STATE/HYPOTHESES record. Commit + push to
+`basket-phase2-f1` (clean cutover; no unrelated files).
 
 — parent, 2026-10-06
