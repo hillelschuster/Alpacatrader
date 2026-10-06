@@ -1537,4 +1537,6 @@ resolved fills: no positive bin across 11 features (best -0.33%/fill). **H025 ro
 closed** — no freezable formulation; the paper bot must not be armed on this rule (it
 is not currently running; LIVE+KILL flags present in the main checkout — user's call).
 Evidence: `factory/artifacts/h025_research/{exit,stabilize,chronology,core,execution}/`.
-Entry discount sweep (orderings included) still completing for the record.
+Entry discount surface (orderings included) completed: pessimistic negative at every depth on
+all 1046d (-5.9 $/day at 20% deep .. -17.9 at 6%; per-fill -1.9..-2.6%); qualification curves
+0/13 pessimistic positive (legacy 96/98 "positive" = artifact). EXP-95; closure complete.

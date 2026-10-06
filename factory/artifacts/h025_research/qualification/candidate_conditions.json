@@ -1,0 +1,516 @@
+[
+  {
+    "family": "history_range",
+    "nonworse_original_years": [],
+    "conditions": [
+      {
+        "name": "history_range_pf1_r0.02",
+        "parameters": {
+          "prior_flush_min": 1
+        },
+        "conditions": [
+          [
+            "range5",
+            "ge",
+            0.02
+          ]
+        ]
+      },
+      {
+        "name": "history_range_pf2_r0.02",
+        "parameters": {
+          "prior_flush_min": 2
+        },
+        "conditions": [
+          [
+            "range5",
+            "ge",
+            0.02
+          ]
+        ]
+      },
+      {
+        "name": "history_range_pf3_r0.02",
+        "parameters": {
+          "prior_flush_min": 3
+        },
+        "conditions": [
+          [
+            "range5",
+            "ge",
+            0.02
+          ]
+        ]
+      },
+      {
+        "name": "history_range_pf1_r0.03",
+        "parameters": {
+          "prior_flush_min": 1
+        },
+        "conditions": [
+          [
+            "range5",
+            "ge",
+            0.03
+          ]
+        ]
+      },
+      {
+        "name": "history_range_pf2_r0.03",
+        "parameters": {
+          "prior_flush_min": 2
+        },
+        "conditions": [
+          [
+            "range5",
+            "ge",
+            0.03
+          ]
+        ]
+      },
+      {
+        "name": "history_range_pf3_r0.03",
+        "parameters": {
+          "prior_flush_min": 3
+        },
+        "conditions": [
+          [
+            "range5",
+            "ge",
+            0.03
+          ]
+        ]
+      },
+      {
+        "name": "history_range_pf1_r0.05",
+        "parameters": {
+          "prior_flush_min": 1
+        },
+        "conditions": [
+          [
+            "range5",
+            "ge",
+            0.05
+          ]
+        ]
+      },
+      {
+        "name": "history_range_pf2_r0.05",
+        "parameters": {
+          "prior_flush_min": 2
+        },
+        "conditions": [
+          [
+            "range5",
+            "ge",
+            0.05
+          ]
+        ]
+      },
+      {
+        "name": "history_range_pf3_r0.05",
+        "parameters": {
+          "prior_flush_min": 3
+        },
+        "conditions": [
+          [
+            "range5",
+            "ge",
+            0.05
+          ]
+        ]
+      }
+    ],
+    "status": "historical hypothesis only; source uncertified; no freeze"
+  },
+  {
+    "family": "clock_thrust",
+    "nonworse_original_years": [],
+    "conditions": [
+      {
+        "name": "clock_thrust_t690_v0.03",
+        "parameters": {
+          "prior_flush_min": 2,
+          "r15_min": 0.03
+        },
+        "conditions": [
+          [
+            "t",
+            "le",
+            690
+          ]
+        ]
+      },
+      {
+        "name": "clock_thrust_t690_v0.05",
+        "parameters": {
+          "prior_flush_min": 2,
+          "r15_min": 0.05
+        },
+        "conditions": [
+          [
+            "t",
+            "le",
+            690
+          ]
+        ]
+      },
+      {
+        "name": "clock_thrust_t690_v0.1",
+        "parameters": {
+          "prior_flush_min": 2,
+          "r15_min": 0.1
+        },
+        "conditions": [
+          [
+            "t",
+            "le",
+            690
+          ]
+        ]
+      },
+      {
+        "name": "clock_thrust_t750_v0.03",
+        "parameters": {
+          "prior_flush_min": 2,
+          "r15_min": 0.03
+        },
+        "conditions": [
+          [
+            "t",
+            "le",
+            750
+          ]
+        ]
+      },
+      {
+        "name": "clock_thrust_t750_v0.05",
+        "parameters": {
+          "prior_flush_min": 2,
+          "r15_min": 0.05
+        },
+        "conditions": [
+          [
+            "t",
+            "le",
+            750
+          ]
+        ]
+      },
+      {
+        "name": "clock_thrust_t750_v0.1",
+        "parameters": {
+          "prior_flush_min": 2,
+          "r15_min": 0.1
+        },
+        "conditions": [
+          [
+            "t",
+            "le",
+            750
+          ]
+        ]
+      },
+      {
+        "name": "clock_thrust_t810_v0.03",
+        "parameters": {
+          "prior_flush_min": 2,
+          "r15_min": 0.03
+        },
+        "conditions": [
+          [
+            "t",
+            "le",
+            810
+          ]
+        ]
+      },
+      {
+        "name": "clock_thrust_t810_v0.05",
+        "parameters": {
+          "prior_flush_min": 2,
+          "r15_min": 0.05
+        },
+        "conditions": [
+          [
+            "t",
+            "le",
+            810
+          ]
+        ]
+      },
+      {
+        "name": "clock_thrust_t810_v0.1",
+        "parameters": {
+          "prior_flush_min": 2,
+          "r15_min": 0.1
+        },
+        "conditions": [
+          [
+            "t",
+            "le",
+            810
+          ]
+        ]
+      }
+    ],
+    "status": "historical hypothesis only; source uncertified; no freeze"
+  },
+  {
+    "family": "activity_liquidity",
+    "nonworse_original_years": [
+      "activity_liquidity_n0.5_d100000.0",
+      "activity_liquidity_n0.5_d1000000.0"
+    ],
+    "conditions": [
+      {
+        "name": "activity_liquidity_n0.5_d100000.0",
+        "parameters": {
+          "prior_flush_min": 2
+        },
+        "conditions": [
+          [
+            "nprint20",
+            "ge",
+            0.5
+          ],
+          [
+            "dollar5",
+            "ge",
+            100000.0
+          ]
+        ]
+      },
+      {
+        "name": "activity_liquidity_n0.5_d1000000.0",
+        "parameters": {
+          "prior_flush_min": 2
+        },
+        "conditions": [
+          [
+            "nprint20",
+            "ge",
+            0.5
+          ],
+          [
+            "dollar5",
+            "ge",
+            1000000.0
+          ]
+        ]
+      },
+      {
+        "name": "activity_liquidity_n0.75_d100000.0",
+        "parameters": {
+          "prior_flush_min": 2
+        },
+        "conditions": [
+          [
+            "nprint20",
+            "ge",
+            0.75
+          ],
+          [
+            "dollar5",
+            "ge",
+            100000.0
+          ]
+        ]
+      },
+      {
+        "name": "activity_liquidity_n0.75_d1000000.0",
+        "parameters": {
+          "prior_flush_min": 2
+        },
+        "conditions": [
+          [
+            "nprint20",
+            "ge",
+            0.75
+          ],
+          [
+            "dollar5",
+            "ge",
+            1000000.0
+          ]
+        ]
+      },
+      {
+        "name": "activity_liquidity_n1.0_d100000.0",
+        "parameters": {
+          "prior_flush_min": 2
+        },
+        "conditions": [
+          [
+            "nprint20",
+            "ge",
+            1.0
+          ],
+          [
+            "dollar5",
+            "ge",
+            100000.0
+          ]
+        ]
+      },
+      {
+        "name": "activity_liquidity_n1.0_d1000000.0",
+        "parameters": {
+          "prior_flush_min": 2
+        },
+        "conditions": [
+          [
+            "nprint20",
+            "ge",
+            1.0
+          ],
+          [
+            "dollar5",
+            "ge",
+            1000000.0
+          ]
+        ]
+      }
+    ],
+    "status": "historical hypothesis only; source uncertified; no freeze"
+  },
+  {
+    "family": "counter_activity",
+    "nonworse_original_years": [
+      "carry_activity_0.25",
+      "carry_activity_0.5"
+    ],
+    "conditions": [
+      {
+        "name": "carry_pf_0",
+        "parameters": {
+          "prior_flush_min": 0,
+          "flush_counter": "carried"
+        },
+        "conditions": []
+      },
+      {
+        "name": "fresh_pf_0",
+        "parameters": {
+          "prior_flush_min": 0,
+          "fresh_state_only": true
+        },
+        "conditions": []
+      },
+      {
+        "name": "carry_pf_1",
+        "parameters": {
+          "prior_flush_min": 1,
+          "flush_counter": "carried"
+        },
+        "conditions": []
+      },
+      {
+        "name": "fresh_pf_1",
+        "parameters": {
+          "prior_flush_min": 1,
+          "fresh_state_only": true
+        },
+        "conditions": []
+      },
+      {
+        "name": "carry_pf_2",
+        "parameters": {
+          "prior_flush_min": 2,
+          "flush_counter": "carried"
+        },
+        "conditions": []
+      },
+      {
+        "name": "fresh_pf_2",
+        "parameters": {
+          "prior_flush_min": 2,
+          "fresh_state_only": true
+        },
+        "conditions": []
+      },
+      {
+        "name": "carry_pf_3",
+        "parameters": {
+          "prior_flush_min": 3,
+          "flush_counter": "carried"
+        },
+        "conditions": []
+      },
+      {
+        "name": "fresh_pf_3",
+        "parameters": {
+          "prior_flush_min": 3,
+          "fresh_state_only": true
+        },
+        "conditions": []
+      },
+      {
+        "name": "carry_fresh_pf2",
+        "parameters": {
+          "prior_flush_min": 2,
+          "flush_counter": "carried",
+          "fresh_state_only": true
+        },
+        "conditions": []
+      },
+      {
+        "name": "carry_activity_0.25",
+        "parameters": {
+          "prior_flush_min": 2,
+          "flush_counter": "carried"
+        },
+        "conditions": [
+          [
+            "nprint20",
+            "ge",
+            0.25
+          ]
+        ]
+      },
+      {
+        "name": "carry_activity_0.5",
+        "parameters": {
+          "prior_flush_min": 2,
+          "flush_counter": "carried"
+        },
+        "conditions": [
+          [
+            "nprint20",
+            "ge",
+            0.5
+          ]
+        ]
+      },
+      {
+        "name": "carry_activity_0.75",
+        "parameters": {
+          "prior_flush_min": 2,
+          "flush_counter": "carried"
+        },
+        "conditions": [
+          [
+            "nprint20",
+            "ge",
+            0.75
+          ]
+        ]
+      },
+      {
+        "name": "carry_activity_1.0",
+        "parameters": {
+          "prior_flush_min": 2,
+          "flush_counter": "carried"
+        },
+        "conditions": [
+          [
+            "nprint20",
+            "ge",
+            1.0
+          ]
+        ]
+      }
+    ],
+    "status": "historical hypothesis only; source uncertified; no freeze"
+  }
+]

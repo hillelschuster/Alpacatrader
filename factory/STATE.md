@@ -3542,6 +3542,8 @@ protected collision. EXP-90.
   entry: 32/32 cells negative (best -2.4%/fill 100bps), both blocks, every year. (c) causal
   pocket scan on resolved fills: no positive bin across 11 features (best -0.33%/fill).
   H025 route CLOSED; no freeze; bot not to be armed (not running; LIVE+KILL flags present
-  in main checkout). Producers/evidence committed; entry discount sweep still completing.
+  in main checkout). Producers/evidence committed. Entry discount surface completed: pessimistic
+  negative at every depth on all 1046d (-5.9 $/day at 20% deep .. -17.9 at 6%; per-fill
+  -1.9..-2.6%); qualification curves 0/13 pessimistic positive. EXP-95; route closure complete.
 - Evidence JSONs under
   factory/artifacts/h025_research/; producers factory/scripts/h025_research_*.py.

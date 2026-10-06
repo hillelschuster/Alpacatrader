@@ -40,6 +40,11 @@ Follow-ups — ALL RAN, ALL NEGATIVE (2026-10-06):
   stops -6.7% avg; confirmation removes churn but the discount is gone by then).
 - Causal pocket scan on resolved fills: NO positive bin across 11 causal features
   (best -0.33%/fill, n=200). No observable state makes the trade work.
+- Entry discount surface (complete, all 1046d): pessimistic negative at EVERY depth
+  (per-fill -1.9..-2.6%; -5.9 $/day at the 20% deep bid .. -17.9 at 6%); qualification
+  curves: 0/13 pessimistic cells positive (legacy 96/98 "positive" = artifact).
+  Deep discounts reduce losses only by reducing count. Legacy positives are the
+  artifact everywhere, in every family tested.
 
 H025 ROUTE CLOSED: the flush-buy family shows negative drift at every honest entry,
 exit and evaluation point; no freezable formulation; the paper bot is not to be armed
