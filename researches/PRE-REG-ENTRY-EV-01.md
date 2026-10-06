@@ -1,10 +1,46 @@
 # PRE-REG-ENTRY-EV-01 — Where does the next dollar have positive realistic EV? (measurement; staged; internally split)
 
-**Status: FROZEN 2026-10-06, before any number of this study is computed.**
-Measurement / description only. No rule promotion, no strategy selection, no threshold
-tuning, no protected-half read, no bot or live-flag changes. If a design element is found
-unimplementable, the study stops and is re-registered; it is never silently adjusted after
-seeing outcomes.
+**Status: HISTORICAL DESIGN; economic interpretation and Stage-B gate superseded 2026-10-06.**
+The **original design was recorded before FE-0** (freeze commit `f7cdc5c`, 2026-10-06
+00:11 +0300; FE-0/FE-0b outcomes appended later the same day in `ebcaed5`, 00:55; the
+533 day tables built after that, 01:18–01:43 +0300). This correction does **not** imply
+the original freeze happened after outcomes. What is not pristine is the *present
+combined document*: it carries the original design plus later feasibility/outcome
+amendments in one file, and the discovery calendar was globally seen, so no section
+here — including the DISCOVER/CONFIRM halves — is a fresh outcome-blind artifact. See
+the provenance caution at §8. The completed measurement remains evidence about its
+original population and timing. This correction does not retroactively turn it into a
+sparse A+ event test or a new pre-registration, and it does not re-freeze or re-arm the
+superseded gate. No new outcomes are authorized. Protected blocks and live code/flags
+remain untouched.
+
+### Interpretation correction — applies before reading the historical design below
+- Stage A sampled repeated, minute-weighted top-ten states, not independent rare setups.
+  The committed reader implements pooled horizons and eight specific rank-6–10 proxies,
+  not the advertised complete coordinate surfaces.
+- Its ≥$1 previous-close filter does not verify the denominator or repair upstream rank.
+  The NaN-comparison defect can pass the filter; validate before reranking the full board.
+- The builder anchors exits to `decision_time+h`, not necessarily `actual_fill_time+h`.
+  Retrospective signed promotion age and its pre-promotion/null states are not predictors.
+- Full-spread-per-leg repricing is a conservative scenario, not an exact unavoidable
+  92–116bps round-trip floor; quote-side executable prices and size units require audit.
+- The Stage-A→Stage-B gate is **retired**: poor immediate continuation does not veto
+  pullback/reclaim or discounted entry after candidate qualification. Those are NOT TESTED.
+- Positive median and deleting top-five days are not universal requirements for convex
+  mechanisms. Tail sensitivity is diagnostic; tail reality/executability is the question.
+- The uniform −259bps fill offset below a buy limit is **not a queue-adverse fill model**.
+  A lower buy price is price improvement; selection, timing and subsequent path are separate.
+  Do not execute Stage B from this specification without a separate corrected registration.
+- Observed constraints on record: `exact_zero_return_share` cannot identify same-bar
+  collapse because actual exit stamps are absent; the reader emits only pooled horizons,
+  retrospective promotion anatomy and eight rank-6–10 proxies; the day tables live under
+  the gitignored `data/entry_ev/stage_a/` root (1,599 files: 533 parquet + manifest + done
+  markers) and are reproducible from the committed producer, not carried in git.
+- Unresolved authoritative-close information: AMV 2022-09-28's official close identity is
+  still open. An earlier audit reported 82.12 at a 16:00 bar stamp, which under the
+  bar-start contract is outside RTH; that needs an authoritative closing-price/auction
+  source and is NOT certified here. Do not substitute the 16:00 stamp, and do not
+  substitute any value for the board's unverified 52.01 (prior-session bar 912 stamp).
 
 ## 0. Posture (what the project already knows)
 
@@ -19,8 +55,8 @@ seeing outcomes.
   economics materially vs forced-upfront ownership (gross per trade rises with the derived
   fee hurdle; a >0 discovery region existed where the forced-upfront forms were uniformly
   negative). Its tested **marketable** implementations did not earn promotion: at
-  25/50bps they under-price measured crossing cost (92–116bps round trip for covered
-  names); at 100/150bps the surviving cells are too weak/tail-dependent as measured.
+  25/50bps they were weakened by conservative quote-cost sensitivity; at 100/150bps
+  the surviving cells remain too weak/tail-dependent to promote as measured.
   **Non-promotion of those formulations ≠ absence of signal or of selectivity economics.**
 - Coarse matched-state lookalike studies found no robust directional separation; that
   constrains representations already tested, not the question.
@@ -31,11 +67,15 @@ Economic question (the only objective of this study):
 
 ## 1. Cost is mechanism-specific (no single friction for all entries)
 
-- **Marketable entry** pays crossing cost: measured full quoted spread 46–58bps per leg
-  for covered names (round trip 92–116bps); the 25/50bps rungs are below this floor.
-- **Resting-limit entry** does not pay crossing cost; it pays fill probability and adverse
-  selection (live fills realized a mean −259bps vs the intended price; that offset is a
-  measured ruler, not a law).
+- **Marketable entry** costs must be reconstructed side-by-side: ask minus modeled buy
+  price, and modeled sell price minus bid. The old full-spread-on-each-leg numbers are
+  sensitivity scenarios, not an exact round-trip floor.
+- **Resting-limit entry** does not pay crossing cost; it pays fill probability and
+ selection. The historical phrasing "live fills realized a mean −259bps vs the intended
+ price; that offset is a measured ruler, not a law" should not be read as an adverse-
+ selection or queue-priority ruler: **−259bps is not a queue-adverse fill model**. It is
+ price improvement on a separate selection/path. Tape first-touch support and paper
+ broker fills do not certify real exchange queue priority.
 - Every result in this study is reported under the mechanism that produced it. No
   mechanism's number is transferred to another mechanism.
 
@@ -51,12 +91,12 @@ time-of-day; promotion age (first minute rank ≤ 5); pullback depth. Volume rat
 join is available. No cell selection, no fitted combination: the deliverable is **shape +
 breadth + tail anatomy** (see §5). Budget guard: ≤ 7 horizons × ≤ 4 coordinate families.
 
-**Stage B — entry mechanism only where Stage A warrants it.**
-Stage B runs only for Stage-A regions meeting a pre-stated economic criterion (gross mean
-AND median in the region exceed the measured mechanism-equivalent cost floor by a stated
-margin — the criterion is fixed in the Stage-A readout BEFORE Stage B runs, and Stage A
-itself is reported in full regardless). For those regions only, compare, on the same
-events and horizons, in net dollars per $100 deployed:
+**Stage B — HISTORICAL, RETIRED immediate-continuation prerequisite.**
+The original gate below was conceptually invalid for qualified-name + delayed entry:
+it required chasing to work before allowing non-chasing mechanisms. Failure of Stage A
+does not close these alternatives. They remain untested and require a new specification,
+not a silent amendment using already-inspected outcomes.
+The historical, unexecuted mechanism list was:
   (a) marketable next-open;
   (b) first pullback-reclaim: after a pullback ≥ x% from the running high, enter at the
       next open after the first completed bar that reclaims the running high since that
@@ -88,9 +128,15 @@ negative for the tested representation.
   exists. **Quotes**: `data/sip/net/quotes/<day>.parquet` where covered (ATLAS top-3 union;
   coverage reported per bucket).
 - Decision at t uses bars et ≤ t−1 only; entries at the open of the first valid bar et ≥ t;
-  no same-bar execution; prev_close used by the board must be verified non-NaN (the
-  AMV-2022-09-28 defect class — any event with an unverifiable prev_close is excluded and
-  counted).
+  no same-bar execution.
+- **Correction to this clause (2026-10-06):** the design *required* `prev_close` to be
+  verified non-NaN and stated that any event with an unverifiable prev_close would be
+  excluded and counted. That requirement was **NOT implemented and NOT met**. The
+  executed guard only tested the board's stored value for non-null and ≥$1, which does
+  not verify the true prior-session close; AMV 2022-09-28's incorrect value is above $1
+  and passed with a false discrepancy flag. Treat the design clause as unmet, not as a
+  satisfied guard, and see §8 and the selection-integrity audit for what was actually
+  filtered and what remains to be rebuilt.
 
 ## 4. FE-0 feasibility spike (go/no-go, before the full run)
 
@@ -105,17 +151,21 @@ is reported, and the study proceeds on it only if the subset is not outcome-sele
 For the top contributing days/trades of any positive region, record: (i) data validity —
 verified prev_close, split sanity, halt/auction context; (ii) executability — measured
 spread and displayed depth at the entry/exit minutes, resting-fill realism; (iii) mechanism
-membership — does it belong to the state/mechanism being measured, or is it a one-off?
+membership — does it belong to the state/mechanism being measured, or is it one-off?
 Monster days stay in the mean; they are classified, not deleted.
+**Correction note (2026-10-06):** the depth component must apply the local lot-to-share
+×100 conversion. The historical raw-lot depth percentages were computed without it and
+are WITHDRAWN, not rescaled; $500/$1000 in the old audit meant account capital, not
+$500/$1000 order sizes. No corrected depth percentage is asserted anywhere in this
+document.
 
-## 6. Escalation gates (for a later, separate internal-forward study)
+## 6. Historical escalation gates — RETIRED, not current requirements
 
-A (state × mechanism × h) family may be carried into a separate confirm-only study iff, in
-DISCOVER alone: n ≥ 200 events on ≥ 100 distinct days; net > 0 at the mechanism-specific
-measured cost; day-clustered 95% CI lower bound > 0; survives excluding its top-5
-event-days; and CONFIRM shows the same sign with a 95% CI excluding 0. Failing families are
-recorded negative for the tested representation. **No gate authorizes reading the protected
-half** — that remains a separate owner-gated decision after a frozen formulation.
+The original design required ≥200 observations, ≥100 days, positive net and CI bounds,
+and survival after deleting the top-five days. This was not a general economic standard:
+minute counts are not sparse event counts and convex EV can legitimately depend on real
+monster days. The corrected question separates name qualification from entry price and
+anatomizes the tail rather than requiring its removal. No protected-half read is authorized.
 
 ## 7. Non-goals and discipline
 
@@ -128,21 +178,42 @@ half** — that remains a separate owner-gated decision after a frozen formulati
   must never be quoted as conclusions.
 - No interference with H025 / the paper bot; no live code or flag changes.
 
-## 8. FE-0 / FE-0b outcomes (2026-10-06, appended before any Stage-A number; economic design unchanged)
+## 8. FE-0 / FE-0b outcomes (2026-10-06)
+**Provenance caution on this block (added 2026-10-06):** the original design was recorded
+before FE-0 (freeze `f7cdc5c`, 00:11 +0300), and this section was appended afterwards
+(`ebcaed5`, 00:55) — so the original freeze was **not** post-outcome. What is not pristine
+is the *present combined document*: it now carries the original design plus
+feasibility/outcome amendments in one file, and §8 itself already contains Stage-A-shaped
+numbers (the 3-day smoke baseline, below). The design header's "before any number of this
+study is computed" wording therefore holds for the original design text but **not** for
+this document as a whole, and the discovery calendar was globally seen — the
+DISCOVER/CONFIRM halves are not a fresh outcome-blind confirmation set. Treat §8 as
+contemporaneous FE-0 record, not as a clean pre-outcome document.
 
-- **Lane pinned (verified)**: the board's price lane is `data/ohlcv_<month>.parquet`
-  (board `source_sha256` reproduced exactly from that lane's file sha + alias-map sha;
-  `px` = close of last completed bar `et ≤ t−1` reproduced exactly on 2.0M+ rows × 3 days).
+- **Lane pinned (px parity verified; this does NOT certify ranking or denominators)**:
+  the board's price lane is `data/ohlcv_<month>.parquet`. Recorded verification:
+  board `source_sha256` reproduced exactly from that lane's file sha + alias-map sha, and
+  `px` = close of last completed bar `et ≤ t−1` reproduced exactly (FE-0: 2.0M+ rows × 3
+  days; committed `lane_verification.json`: 26/26 months lane-sha + 52/52 day digests,
+  390,000/390,000 sampled px exact). Byte parity with the frozen board establishes
+  consistency of reproduction only — it does **not** validate previous-close semantics,
+  corporate actions, or economic ranking.
   `clean_ohlcv_*` is a near-miss (99.5–99.8%); `sip/net/bars` is roster-only. Lower
   coverage months must pass the same lane-sha gate before use.
 - **Coverage (rank ≤ 10 rows)**: forward open at h=0 100%, h=5 ≈ 98.5–98.7%, h=30 ≈ 92%
   (dominated by end-of-day censoring); coverage is rank-bucket invariant; missing =
   UNKNOWN, never 0. Volume joins in the same lane with identical coverage.
-- **Runtime**: ≈ 59 s/day single-threaded → ≈ 8–9 h for 533 days; shardable; per-day
-  incremental outputs + resume required (repo doctrine).
-- **Guard (AMV class)**: require `prev_close` non-null AND ≥ $1.00 AND not stale /
-  floor-qualified, and exclude `flag_prevclose_discrepancy`. Verified trap: GHSI
-  2021-03-01 (prev_close $0.508, gain 4.5–4.8×) passes the board's own flags.
+- **Runtime — the original estimate was wrong; observed values below supersede it.** The
+  pre-run estimate "≈ 59 s/day single-threaded → ≈ 8–9 h for 533 days" was roughly an
+  order of magnitude too high. Observed from the 533 committed per-day manifests:
+  median **8.8 s/day** (min 3.4, max 13.7), **total 4,677.9 s ≈ 1.30 h** of summed
+  per-day runtime, built 2026-10-05 22:18:17Z → 22:43:28Z across parallel shards.
+  Sharding + per-day incremental outputs + resume did work as designed; use the
+  observed figures for any future capacity estimate.
+- **Population filter, NOT an AMV repair**: `prev_close` non-null and ≥$1 plus old board
+  flags selects a narrower cohort. It does not independently verify the true prior-session
+  close; confirmed AMV's incorrect value is above $1 and can pass. Reranking must follow
+  verified denominators and any intended universe exclusions.
 - **Execution-data limits**: SIP quotes cover ≈ 34% of top-10 symbol-days; SIP trades
   ≈ 81%. Stage A does not depend on either; measured-spread re-cost applies to the covered
   subset only.

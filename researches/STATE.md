@@ -2,84 +2,132 @@
 # Hypothesis ranking + falsifiers: researches/HYPOTHESES.md (living).
 # History before 2026-09-04: researches/CANONICAL_STATE.md (superseded snapshot, kept for trust map).
 
-## UPDATE 2026-10-06 (later) — ENTRY-EV-01 Stage A COMPLETE: no marketable minute-level pocket; the promotion climax is future-conditioned (measurement only; discovery block)
+## CURRENT CORRECTION 2026-10-06 — preserve the evidence; narrow the economic conclusions
 
-Full board measured (533 days, top-10 causal minute board, 1,601,807 guarded events, gross
-next-open→next-open at h∈{1..60}; lane verified 26/26 months; producers
-`factory/scripts/entry_ev/stage_a_{build,read}.py`; artifacts `factory/artifacts/entry_ev/`
-+ `READ_PACKET.md`). Findings:
+### H042 / EXP-87 remains CLOSED AS EXTRACTION CANDIDATE
+The tested cash-first formulations have not earned promotion. The correlated 576-cell
+discovery, fold/persistence checks, tail attribution and execution sensitivity remain
+evidence about those formulations, not proof that selective admission has no value.
+Economics changed materially versus forced ownership; admission, sizing and exposure
+also changed, so this was not a controlled one-factor admission ablation.
 
-- **Unconditional continuation is negative gross at every horizon** (h1 −0.011% → h60
-  −0.411%; both halves agree).
-- **No conditional pocket clears cost.** Across 8 coordinate families the best eligible
-  gross region is **+3.7bps** (median 0.0; volume dry-up) versus the 92–116bps measured
-  round trip. Momentum, volume spikes, near-boundary rank state, at-day-high: ≈0 to
-  clearly negative (ret1>2%: −0.21% at h5, −0.86% at h30).
-- **The one large positive region is future-conditioned.** `promo_age ∈ [−5,0)` (name
-  crosses into top-5 within 1–5 minutes ahead): h1 +0.99%, h3 +2.38%, h5 **+3.09%**
-  (n=18,904; 527 days; stable across halves). It conditions on the crossing, which is
-  (mostly) the price move itself. Post-promotion (0–5 min): h5 −0.21%, h30 −1.03%.
-  Every causal observable proxy at t (rank 6–10 + momentum / boundary / volume / HOD) is
-  ≈0 or negative. **The climax is un-enterable by prediction; the run-up belongs to the
-  already-long.**
-- **Stage-B gate not triggered** (best eligible +3.7bps ≪ 120bps criterion; hindsight
-  region excluded by construction); (c) remains deferred. Sub-$1-prev_close cohort
-  (468,146 rows; all guard drops; rising ~7%→47% share across the block) recorded as a
-  labeled sensitivity, not silently dropped.
+The quote audit charged full quoted width on each leg (~twice midpoint-to-touch cost
+at the same quotes), summarized over execution minute ±1 minute INCLUDING future quotes.
+Its 92–116bps is a stress scenario, **not an exact floor or an as-of execution estimate**.
+Side-aware ask/bid adjustments, quote age, size units, latency and impact are separate.
+The old depth percentages are WITHDRAWN: historical lot sizes missed the ×100 conversion;
+$500/$1000 meant account capital, not $500/$1000 ORDERS. No corrected percentages asserted.
+Do not reopen H042 on this qualification; preserve its structural lesson.
 
-Scope: falsifies marketable next-open minute-level entries on the top-10 board in this
-coordinate set at h≤60; does not falsify passive entries, other populations/states, longer
-holds, the funded/owned mechanisms, or H025. No protected read; no freeze; no deploy.
+### ENTRY-EV-01 measured minute-state continuation, not a sparse A+ event
+The original artifact contains 1,601,807 repeated minute observations across 533 seen
+discovery dates, after filtering already-ranked top-ten rows by previous close ≥$1.
+Its **minute-weighted** gross next-open returns are negative across decision-time
+horizons 1–60 minutes: approximately −0.011% at h1 and −0.411% at h60.
+Several specifically reported rank-6–10 chase proxies were also poor. These numbers
+describe the existing substrate; they are not a rank-repaired population estimate.
 
-## CURRENT VERIFICATION 2026-10-06 — H042/EXP-87 four-cost region: NOT ESTABLISHED as an executable edge (discovery-only; no protected read)
+The committed reader outputs pooled horizons, retrospective promotion anatomy and
+eight hand-written proxy subsets—not the eight full coordinate surfaces previously
+claimed. Broad gain/time-of-day/decile surface claims lack the committed producer-to-
+artifact chain and are withdrawn. “Best +3.7bps” means best of those tested proxy/horizon
+subsets only, not best causal opportunity in the phenomenon.
 
-Independent six-strand verification of the completed four-cost cash-first discovery. The
-numbers are causally clean (11-channel leak audit, no look-ahead; future-perturbation
-attack byte-identical) and arithmetically exact (0 mismatches in independent recompute),
-but the positive region fails selection-aware statistics and measured execution:
+The future-conditioned pre-promotion window remains interesting anatomy (~+3.09% gross
+at h5 among available observations); it cannot be used as an observable entry state.
+Its limited tested causal proxies did not reproduce that value. **Predictability in
+other representations is open.** The observed post-promotion average fade does not
+close sparse events, small causal conjunctions, or qualified-name + delayed-entry setups.
 
-- **Selection-aware statistics (parent; producer `factory/scripts/verify_h042_selection.py`,
-  artifact `factory/artifacts/h042_verification_selection_folds.json`).** Family-wise
-  Reality Check (max over the 144 active cells per rung, day-resampled null, 10k draws):
-  p = 0.077 / 0.332 / **0.767** / **0.985** at 25/50/100/150bps. Internal-forward
-  (select cells with folds0+1 mean > 0, evaluate fold2): 100bps selected set **−0.023%/day**
-  (all-cell −0.089%), 150bps **−0.059%/day**; per-fold cell-mean Spearman f0~f1 ≈ 0
-  (−0.01..+0.12) — cell means do not persist. Family means: +0.163% (25bps, SE 0.094),
-  +0.037 (50), −0.080 (100), −0.126 (150).
-- **Tail/power (agent).** The three headline ONCE cells are 1–3-date phenomena (top-1 date
-  = 21–78% of net; top-10 dates = 120–190% of net; 188–195 of ~382 days exactly zero);
-  bootstrap CIs include zero; ~413/1,328/1,897 independent dates would be needed to
-  exclude zero at observed dispersion. Repeat leaders D/E survive remove-best-10 but are
-  fold0-negative and fold2/2023-driven.
-- **Execution (agent; SIP quotes where covered).** Measured full quoted spread for these
-  names is 46–58bps **per leg** (92–116bps round trip; px sits ~0.19% from mid). Re-costed:
-  25bps repeat D +0.905% → **−0.15%/day** covered / **−0.67%/day** extrapolated; 50bps
-  repeat E +0.530% → +0.11% covered / −0.06% extrapolated; the 100/150bps cells survive
-  cost re-pricing (A +0.233, B +0.079, C +0.105, F +0.087%/day) but are exactly the
-  statistically-weak ones. $500/$1000 orders exceed displayed top-of-book depth (median
-  5–7 shares) on 73–94% of covered legs.
-- **Data quality (agent).** Silent NaN prev_close path in the roster builder: 309/997
-  traded claims in the audited cells lack prior-day universe rows; AMV 2022-09-28 is a
-  verified false winner (prev_close 52.01 vs true 82.12; bogus +438% gain). Excluding
-  structural/verified-bad names does not flip any cell sign (deltas ≤ 0.06pp/day).
-- **Simple form (agent).** No entry-state coordinate separates winners from losers within
-  the admitted bands (best rank statistic ~0.63 vs SE 0.05; signs flip across cells); the
-  gating forecast does not order outcomes (P(win>loss) 0.42/0.52); `max` takes 2–3× more
-  entries and loses.
+**Explicitly NOT TESTED by ENTRY-EV** (untested, not falsified): sparse 2–4-condition A+
+setup events; qualified-name-conditioned economics; delayed pullback/reclaim entries;
+passive discounted entries; any population rebuilt on validated denominators. The
+exact-zero-return share cannot identify same-bar collapse — actual exit stamps are
+absent — and the tested proxies do not establish prediction impossibility.
 
-**Verdict (formulation-scoped):** the tested cash-first implementations have NOT earned
-deployment — at 25/50bps because measured crossing costs (92–116bps RT) exceed the assumed
-friction for those repeated marketable trades, and at 100/150bps because the surviving
-cells are too weak/tail-dependent to promote. This is **not** a signal-absence or
-selectivity-negative conclusion: what stands positive is that selective admission changed
-the economics materially versus forced-upfront ownership (gross per trade rises with the
-derived fee hurdle; the same roster/scores produced a >0 region rather than a uniformly
-negative one), and entry mechanism (crossing vs passive) is a formulation variable, not an
-economic falsification. Nothing in the four-cost lane is promoted; no protected-day read;
-no FREEZE; bot untouched.
-**Next:** PRE-REG-ENTRY-EV-01 (staged: gross continuation shape → mechanism-specific net
-dollars with tail anatomy as real/executable vs artifact; first533 internally split;
-protected block sealed).
+Measurement qualifications:
+- Rows repeat ticker-days; counts are not independent setups or executable daily P&L.
+- Existing exits target `decision_time + h`, not necessarily `actual_fill_time + h`.
+  In gappy names the realized holding duration can differ; no EOD value target was used.
+- Legacy `top5_share` removes five observations, not five days.
+- The ≥$1 filter is a population choice, not a repair of previous-close provenance.
+- The AMV-class NaN-comparison defect can survive this filter. Validation and any
+  exclusion/correction must occur **before reranking the full universe**; filtering
+  the old top ten cannot restore missing replacements. Infrastructure is not repaired.
+Concrete discovery audit (`selection_integrity_audit.json`): Stage A retained AMV's
+unverified 52.01 denominator from prior-session bar 912. GHSI's 1-for-6 split changes
+its 09:45 raw gain from +433% to −11%; reranking before selection restores ITI (old
+rank 11), which the post-hoc filter omitted. This is a counterfactual selection audit,
+not a repaired full board or a corrected-return experiment.
+Corrected reader/artifact: `stage_a_read.py` → `stage_a_readout_v2.json`; the actual
+533-day run preserved all original pooled/proxy values and now separates five observations
+from five day-means, labels retrospective information, and retires the invalid gate.
+Authoritative official-close identity for AMV 2022-09-28 remains unresolved (see the
+prerequisite below); no value is silently substituted for the unverified 52.01.
+
+### Invalid gate withdrawn; two separate economic questions remain
+Requiring positive immediate continuation before studying pullback/reclaim or discounted
+entry was conceptually wrong. ENTRY-EV Stage B was **NOT TESTED**, not falsified.
+The old pre-registration is historical; its gate is retired, not silently revised into
+a fresh strategy freeze. No claim that only already-owned/passive positions have value.
+
+**No new experiment is launched by this correction.** No grid, no new rule, no new
+threshold, no deployment, no protected-half outcome read, no bot/flag change, no H042
+resurrection. This is a priority ordering, not an experiment plan, and there is **no
+prerequisite that the chasing mechanism must first be shown to work**.
+
+*Cold-start map — tested object:* repeated minute states of an ALREADY-ranked top ten,
+filtered afterwards by stored previous close ≥$1, measured with decision-anchored
+next-open horizons. *Open, none refuted:* sparse 2–4-condition A+ setup events;
+qualified-name economics; pullback/reclaim entries; passive/discounted entries; other
+populations and representations; how much right-tail EV is actually executable at real
+order size. The measured post-promotion fade describes one substrate, not the
+phenomenon. Right-tail dependence is decomposed (real/executable vs artifact), not
+punished: real monster days stay in the mean, and no positive-median or
+top-days-deleted rule is a current requirement for a convex mechanism.
+
+**Prerequisite — mandatory before NEW rank-based outcome tests on this board.**
+Evidence-backed previous ACTUAL session closes plus split/corporate-action conventions;
+explicit verified / unverified / discrepant / missing denominator states (a null
+independent comparison is not verified agreement); and the intended universe/quality
+filters applied BEFORE a full-universe rerank, with dependent selections rebuilt in a
+separate versioned data root. Until that exists, old averages stay historical-substrate
+measurements. Hash/byte parity with the frozen board does NOT certify economic ranking
+or denominators. Reproduction case, discovery-only: AMV 2022-09-28 kept the old filter
+with an unverified 52.01 taken from a prior-session bar 912 stamp (independent prior
+netbar rows 0, 47-minute within-session gap). An earlier audit reported 82.12 at a 16:00
+bar stamp; under the bar-start contract that stamp is outside RTH and official-close
+identity needs an authoritative closing-price/auction source — not certified here, so
+82.12 is NOT silently substituted. GHSI's local 1-for-6 split record on 2021-03-01 turns
+a 09:45 raw +433% gain into −11%; reranking the full cross-section before selection
+restores ITI from old rank 11, which post-hoc filtering dropped. That is split/selection
+mechanics only: the full board is NOT rebuilt and no corrected-return result exists.
+
+Scope of that prerequisite: it governs NEW rank-based outcome tests on this board. It
+does NOT block the queue/fill audit of H025's already-fixed historical fills, which can
+proceed on those inputs' own provenance. H025 keeps its validated OOS-PASS-PAPER
+historical status and is not recast as unestablished merely because this board is
+unvalidated. No shared denominator defect is asserted to reach H025 — that would
+require demonstrating one in an actual shared denominator implementation.
+
+**Lane 1 — H025 passive-fill / queue realism.** Valuable and high-information, not sole
+doctrine: historical tape first-touch support and paper-broker fills do NOT certify real
+exchange queue priority, and the fixed −259bps lower buy price is price improvement on a
+separate selection/path, not a queue model. Do not resurrect H025's exact rule and do not
+let it replace the broader entry question. Prior evidence stands as measured: the frozen
+flush-bid rule, +1.14%/trade net of 100bps over 12/14 untouched OOS months (pf>=2,
+n=381; all fills n=541 +0.91%).
+
+**Lane 2 — sparse causal qualification, then entry location.** Name qualification and
+entry price are separate questions. First establish a sparse, causally computable
+qualified-name event; only then measure entry location independently (delayed,
+pullback/reclaim, passive). H025 is prior evidence that a qualified name can be a poor
+immediate buy. Design discipline when this is run: separate qualification from entry,
+include failed contemporaneous lookalikes, fixed quantities/dollars, report tail
+executability, keep it bounded.
+Historical sections below retain their original numerical lineage; this correction
+supersedes their stronger interpretation, execution-floor and “repaired guard” claims.
+
 
 ## CURRENT — completed 25/50/100/150bps cash-first discovery (H042 / EXP-87)
 

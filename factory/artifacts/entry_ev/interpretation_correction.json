@@ -1,0 +1,83 @@
+{
+  "schema": "entry_ev/interpretation_correction/v1",
+  "date": "2026-10-06",
+  "scope": "Evidence/provenance and interpretation correction; no new strategy outcome experiment",
+  "h042": {
+    "status": "CLOSED_AS_EXTRACTION_CANDIDATE",
+    "retained_structure": "Selective admission materially changed development economics; not a pure one-factor ablation (size/exposure also changed).",
+    "withdrawn_claims": [
+      "Exact 92-116bps unavoidable round trip",
+      "Realistic low-cost-repeat failure established by full-spread repricing alone",
+      "5-7 raw quote-size units are shares",
+      "$500/$1000 account-capital depth rulers answer $500/$1000 ORDER execution"
+    ],
+    "quote_alignment": "Historical spread summary used exec_et +/-1 minute including future quotes; direction relative to actual as-of spread UNKNOWN.",
+    "size_convention": "Local lifecycle_tape policy: pre-2025-11-03 quote sizes x100; historical raw-size depth percentages withdrawn, not rescaled.",
+    "arithmetic_illustration": {
+      "model_px": 10,
+      "bid": 9.975,
+      "ask": 10.025,
+      "buy_bps": 25,
+      "sell_bps": 25,
+      "side_round_trip_bps": 50,
+      "full_width_both_legs_bps": 100,
+      "historical_estimate": false
+    }
+  },
+  "entry_ev": {
+    "actual_unit": "Repeated ticker-minute observations, minute-weighted",
+    "original_days": 533,
+    "original_rows": 1601807,
+    "population": "Already-ranked top10 then stored prev_close >=$1 filter; upstream ranks not validated/reranked",
+    "reader_actually_emits": [
+      "pooled horizons",
+      "retrospective promotion anatomy",
+      "eight rank6-10 proxy subsets"
+    ],
+    "complete_coordinate_surfaces": "NOT_EMITTED_BY_COMMITTED_READER; broad surface claims withdrawn",
+    "horizons": "Decision-time+h; not necessarily fill-time+h; no EOD value target",
+    "tail_units": "Legacy top5 was five observations; v2 separately computes day-balanced five-DAY sensitivities, neither is portfolio PnL",
+    "zero_return_share": "Zero values do not establish how many entry/exit bar identities collapsed; actual exit stamps absent",
+    "promotion": "Future-conditioned run-up is anatomy; limited observable proxies failed, no general prediction-impossibility claim",
+    "gate": "RETIRED_CONCEPTUALLY_INVALID: immediate-continuation failure cannot veto delayed-entry mechanisms",
+    "not_tested": [
+      "sparse 2-4-condition A+ setup events",
+      "qualified-name-conditioned economics",
+      "pullback/reclaim entries",
+      "passive discounted entries"
+    ],
+    "old_numeric_lineage_preserved": true
+  },
+  "selection_integrity": {
+    "producer": "factory/scripts/entry_ev/audit_selection_integrity.py",
+    "artifact": "factory/artifacts/entry_ev/selection_integrity_audit.json",
+    "amv": "Original unresolved above-$1 denominator retained by StageA; missing comparison flag false. Official closing-price source not independently certified in this audit.",
+    "ghsi": "Local 1-for-6 reverse split; at 09:45 original +433% gain becomes -11%; full cross-section rerank restores old rank11 ITI lost by post-hoc filtering.",
+    "counterfactual_scope": "Split/selection mechanics only; not a repaired full population or outcome test",
+    "full_board_rebuilt": false,
+    "needed_before_next_rank_based_outcome": "Evidence-backed previous ACTUAL session closes plus split conventions, explicit quality states, universe filters BEFORE full rerank and versioned downstream rebuild"
+  },
+  "verification": {
+    "parent_tests": "23 build/read behavioral regressions PASS (0.96s)",
+    "actual_cli": "Corrected reader exercised end-to-end on all 533 frozen day tables",
+    "original_pooled_proxy_numeric_differences": [],
+    "gate_output": "RETIRED_CONCEPTUALLY_INVALID; delayed_entry NOT_TESTED; no stage_b_eligible boolean",
+    "lsp_diagnostics": "Corrected reader OK",
+    "selection_audit_cli": "Executed; AMV retained, GHSI split result and ITI replacement observed"
+  },
+  "lineage": {
+    "legacy_artifact": "factory/artifacts/entry_ev/stage_a_readout.json (annotated; original numbers retained)",
+    "corrected_artifact": "factory/artifacts/entry_ev/stage_a_readout_v2.json",
+    "reader": "factory/scripts/entry_ev/stage_a_read.py",
+    "reader_sha256": "fb5bfc8fbac58a5c8b17359146fb36b926d7769278e8703b60e439f784c73cba",
+    "selection_audit_sha256": "470564274811c788b6d1af0cebd17ae8d295de3355c130dc3f805a6b2e8108b8"
+  },
+  "next_priorities": {
+    "shared_prerequisite": "Population/denominator/ranking integrity before another rank-based outcome test",
+    "lane_1": "H025 passive-fill realism: historical tape support and paper broker fills do not certify real exchange queue access; no fixed -259bps offset model",
+    "lane_2": "Sparse causal qualified-name event followed by independently measured favorable entry; 2-4-condition hypothesis remains OPEN",
+    "design_discipline": "Separate name qualification from entry, include failed contemporaneous lookalikes, fixed quantities/dollars, tail executability, no giant grid, no protected outcomes"
+  },
+  "protected_outcomes_read": false,
+  "bot_flags_or_orders_changed": false
+}

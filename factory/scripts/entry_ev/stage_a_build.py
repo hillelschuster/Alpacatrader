@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""ENTRY-EV-01 Stage-A producer: per-day entry-event tables (gross, pre-cost).
+"""ENTRY-EV-01 historical Stage-A producer: per-day minute-state tables (gross).
 
 Reads only the DISCOVERY block of PRE-REG-ENTRY-EV-01 (2021-02-01 .. 2023-03-14);
 protected / sealed / reserved days are refused by an assertion before any file is
@@ -15,7 +15,7 @@ Inputs (READ ONLY)
           uncast it overflows i8 and silently corrupts etm), restricted to
           etm 570..959 and to etm <= session_end of the day.
 
-Semantics (all causal; decision at t uses bars et <= t-1 only)
+Semantics (price/volume inputs at t use bars et <= t-1; promo_age is retrospective)
   entry      : open of the first lane bar with et >= t   (never the bar at t-1)
   exit(h)    : open of the first lane bar with et >= t+h
   fwd_ret_h  : exit_open / entry_open - 1                (gross, no costs)
@@ -31,18 +31,18 @@ Semantics (all causal; decision at t uses bars et <= t-1 only)
   ret_k      : px(t)/px(t-k) - 1 on the board's own px column (dense minute grid).
   dd_from_high: px(t)/cummax_px(t) - 1, cummax over the board px of the same
                ticker from the open of the session to t.
-  promo_age  : t - (first minute of the day with rank_known <= 5 for the
-               ticker); null when the ticker never reached rank <= 5.  Signed on
-               purpose: a negative value marks an event that PRECEDES that
-               ticker's first top-5 minute.
+  promo_age  : t minus the first rank<=5 minute in the FULL day. Negative ages and
+               the null never-promoted indicator use future information; diagnostic
+               anatomy only, never a causal predictor. Post-promotion elapsed age is
+               observable after the first promotion.
 
-Guard (AMV class, FE-0 §8): rows are dropped when prev_close is null,
-prev_close < 1.00, prev_close_stale, prev_close_floor_qualified, or
-flag_prevclose_discrepancy.  Per-reason counts are reported per day (a row can
-fail several reasons).  flag_extreme_gain rows are REPORTED, never dropped.
+Population filter (not a previous-close validation or reranking repair): drop on
+null / below-$1 prev_close, stale / floor-qualified flags, or discrepancy flags.
+A wrong non-null, above-$1 denominator can pass a missing-comparison flag; inherited
+top-ten ranks remain unvalidated. Counts are reported; flag_extreme_gain is retained.
 
 Output (default data/entry_ev/stage_a, i.e. <data-root>/entry_ev/stage_a):
-  <day>.parquet        one row per surviving (day, t, ticker) board event
+  <day>.parquet        one row per surviving (day, t, ticker) minute observation
   <day>.manifest.json  provenance, guard counts, coverage/censor counts, runtime
   <day>_done           marker written last; its presence means the day is done
   Resume skips any day whose <day>_done marker exists (unless --force).
@@ -392,7 +392,7 @@ def dense_bars(lane_day: pl.DataFrame, ticker: str, session_end: int) -> dict[st
 # Day build
 # --------------------------------------------------------------------------- #
 def select_events(board_day: pl.DataFrame, session_end: int) -> tuple[pl.DataFrame, dict[str, int], int]:
-    """rank_known<=10, RTH rows; apply the AMV guard; return (kept, counts, n_selected)."""
+    """Filter inherited top-ten rows; this does not validate denominators or rerank."""
     sel = board_day.filter(
         (pl.col("rank_known") <= 10) & (pl.col("t") >= T0) & (pl.col("t") <= session_end)
     )

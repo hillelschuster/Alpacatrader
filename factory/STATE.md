@@ -3409,3 +3409,83 @@ recorded as labeled sensitivity (not silently dropped). Scope: falsifies marketa
 minute-level entries on the top-10 board in this coordinate set at h≤60; does NOT falsify passive
 entries, other populations/states, longer holds, the funded/owned mechanisms, or H025. No
 protected read; no FREEZE; no deploy; bot/flags untouched. EXP-89.
+
+## 2026-10-06 (final) — SCOPE/PROVENANCE CORRECTION (EXP-90): the stronger October-6 wording above is superseded
+
+Append-only. This entry is the scope of record and **SUPERSEDES the stronger claims** in the two
+October-6 entries above (the H042/EXP-87 independent verification wave and the ENTRY-EV-01 Stage A
+entry). Their text stays verbatim as history; where the two disagree, THIS entry governs. Machine
+records: `factory/HYPOTHESES.jsonl` (H042), `factory/EXPERIMENTS.jsonl` (EXP-88, EXP-89, EXP-90).
+EXP-90 is a **scope and provenance correction audit — NOT a new strategy trial**: no new hypothesis,
+no new arm, no population rebuild, no repaired board, no claim that the population is fixed.
+
+**Current statuses (unambiguous).** H042 = **CLOSED AS EXTRACTION CANDIDATE; NOT PROMOTED** —
+selective admission stays retained structural evidence (size and exposure changed too, so it is not a
+one-factor ablation), and no no-signal claim stands. Stage A (EXP-89) = **immediate next-open
+continuation measured on the ORIGINAL sample only** (533 days / 1,601,807 stored top-10 minute rows,
+already-ranked roster, post-hoc stored `prev_close ≥ $1`). Sparse qualified-name events,
+delayed/pullback/reclaim entry and passive entry = **NOT_TESTED** (untested, not falsified).
+
+**Verified reader lineage.** Corrected reader `factory/scripts/entry_ev/stage_a_read.py`
+(sha256 `fb5bfc8f…c73cba`) was actually exercised through its CLI over all 533 frozen day tables and
+wrote `factory/artifacts/entry_ev/stage_a_readout_v2.json`; every original pooled/proxy numeric field is
+unchanged (difference list empty), so the legacy `stage_a_readout.json` numbers remain reproducible
+(annotated, not overwritten). The observational unit is a REPEATED ticker-minute state, not a sparse
+event — 1,601,807 rows are minute states, and outside the day-balanced blocks every mean/median is
+row (=minute)-weighted. The committed reader emits pooled horizons, retrospective promotion anatomy and
+eight rank6–10 proxy subsets; it did **not** emit the advertised eight full coordinate surfaces, so the
+broad gain/time/decile conclusions are withdrawn. Horizons are `decision_time + h` (entry = first bar
+with stamp ≥ t), not `fill_time + h`, and there is no EOD target. `exact_zero_return_share` cannot
+identify same-bar collapse: it counts all zeros and actual exit stamps are absent. Verification: 23
+build/read behavioral regressions PASS (0.96s); reader LSP diagnostics clean.
+
+**Incomplete board repair (nothing rebuilt).** `selection_integrity_audit.json` is a discovery-only
+selection/provenance audit with no future-return test; frozen board unmodified, population NOT repaired.
+AMV 2022-09-28 t679 is retained by Stage A on stored prev_close 52.01 from prior bar 912 — the
+independent comparison is null and its discrepancy flag false; the officially reported 82.12 sits at a
+16:00 bar stamp that the bar-start contract excludes, so it is not certified here as the official close
+and is not silently substituted. GHSI carries a local 1-for-6 reverse split on 2021-03-01: at 09:45,
+px 2.71 against raw prior 0.508 reads +433%, while the split-adjusted reading is −11%; a full-universe
+re-sort restores old rank 11 ITI, dropped by the post-hoc top-10 filter. Contamination is proven and the
+full board is deliberately NOT rebuilt. Metadata/hash parity does not certify economic ranking.
+
+**Price and size audit withdrawals.** Full-spread-per-leg repricing at the same quotes doubled touch
+cost near the midpoint, so 92–116bps is a STRESS SCENARIO, not an exact or unavoidable floor; the
+`exec_et ±1 minute` spread summary includes future quotes, so direction relative to the actual as-of
+spread is UNKNOWN. Plain arithmetic: bid 9.975 / model 10 / ask 10.025 = 25bps to buy + 25bps to sell =
+50bps round trip at one side; 100bps is the full width charged on both legs. All historical depth
+percentages are WITHDRAWN (not rescaled): the local `lifecycle_tape` policy converts pre-2025-11-03 raw
+quote sizes ×100. $500/$1000 denoted ACCOUNT CAPITAL, not order sizes, so no depth percentages and no
+queue probabilities are established, and a fixed −259bps lower buy price is price improvement on a
+separate selection/path — not a queue model.
+
+**Conceptual gate retirement.** The Stage-B criterion (immediate continuation mean AND median clearing
+~120bps over a ~92–116bps floor) prices exactly one mechanism, so failing it cannot veto delayed-entry or
+passive mechanisms. It is **RETIRED_CONCEPTUALLY_INVALID** — informational only, no `stage_b_eligible`
+boolean, no replacement hurdle imposed by this audit (any threshold is a separate registration with its
+own measured cost floor). Positive median and delete-the-monster-days diagnostics are not universal
+gates. `promo_age < 0` (top-5 crossing 1–5 minutes AHEAD) and the full-day null (never-promoted
+membership) are retrospective anatomy, not enterable states; the limited observable proxies tested did
+fail, which is NOT a general prediction-impossibility claim.
+
+**Two next priorities, plus a shared prerequisite.**
+
+0. *Shared prerequisite — scope: NEW rank-based selection/outcome tests only.* Before any further
+   rank-based outcome test: evidence-backed immediately prior ACTUAL session closes plus split
+   conventions, explicit verified/unverified states, and the intended universe filters applied BEFORE a
+   full re-rank with a versioned downstream rebuild. It does NOT gate audits of already-fixed
+   historical fills (lane A below).
+1. *Lane A — real passive-fill/queue realism for H025.* H025's pre-registered OOS pass (frozen block
+   2024-01..2025-02, pf>=2 n=381, +1.14%/trade net100bps, 12/14 months) **stands and is neither withdrawn
+   nor downgraded by this correction**; the correction bounds only execution realism. Historical tape
+   support and paper-broker fills do NOT certify real exchange queue priority, and a fixed −259bps lower
+   buy price is price improvement on a separate selection/path, not a queue model. This lane audits
+   H025's own fixed historical fills directly, checking that lane's own universe/provenance inside the
+   lane; it does not wait on the new-board rebuild and it does not replace the broader entry question.
+2. *Lane B — sparse causal qualified-name event followed by an independently measured favorable entry.*
+   The 2–4-condition A+ formulation stays **OPEN**. Discipline: separate name qualification from entry,
+   include failed contemporaneous lookalikes, fixed quantities/dollars, tail executability, no giant
+   grid, no protected outcomes.
+
+**Boundaries.** No protected/sealed read, no FREEZE, no deployment, no bot flag/order change, no new
+protected collision. EXP-90.

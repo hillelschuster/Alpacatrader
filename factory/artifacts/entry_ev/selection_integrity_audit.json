@@ -1,0 +1,236 @@
+{
+  "schema": "entry_ev/selection_integrity_audit/v1",
+  "producer_sha256": "470564274811c788b6d1af0cebd17ae8d295de3355c130dc3f805a6b2e8108b8",
+  "scope": "discovery inputs only; selection/provenance, no future-return evaluation",
+  "frozen_board_modified": false,
+  "population_repaired": false,
+  "amv": {
+    "original_state": [
+      {
+        "t": 679,
+        "ticker": "AMV",
+        "px": 80.0,
+        "px_et": 678,
+        "gain": 0.5381657373582005,
+        "rank_known": 5,
+        "prev_close": 52.01,
+        "prev_close_et": 912,
+        "prev_close_day": "2022-09-27",
+        "prev_close_source": "raw_prior_session",
+        "prevclose_vs_sip_clast_ratio": null,
+        "flag_prevclose_discrepancy": false
+      }
+    ],
+    "retained_by_stage_a": [
+      {
+        "t": 679,
+        "ticker": "AMV",
+        "rank_known": 5,
+        "prev_close": 52.01
+      }
+    ],
+    "independent_prior_netbar_rows": 0,
+    "within_session_close_gap_minutes": 47,
+    "reading": "The old guard retained a non-null above-$1 denominator from an earlier prior-session print; the independent comparison is null and its discrepancy flag is false. Missing verification is not a pass.",
+    "official_close_status": "Prior audit reported 82.12 at a 16:00 bar stamp. Under the bar-start contract that stamp is outside RTH. Official-close identity requires an authoritative closing-price/auction source; not certified here."
+  },
+  "ghsi": {
+    "corporate_actions": [
+      {
+        "symbol": "GHSI",
+        "ex_date": "2021-03-01",
+        "old_rate": 6.0,
+        "new_rate": 1.0
+      },
+      {
+        "symbol": "TGC",
+        "ex_date": "2021-03-01",
+        "old_rate": 12.0,
+        "new_rate": 1.0
+      }
+    ],
+    "original_and_split_adjusted": [
+      {
+        "ticker": "GHSI",
+        "px": 2.71,
+        "prev_close": 0.508,
+        "gain": 4.334645669291339,
+        "split_multiplier": 6.0,
+        "gain_counterfactual": -0.11089238845144356
+      }
+    ],
+    "original_top10": [
+      {
+        "ticker": "GHSI",
+        "px": 2.71,
+        "prev_close": 0.508,
+        "gain": 4.334645669291339,
+        "rank_known": 1
+      },
+      {
+        "ticker": "MORF",
+        "px": 57.92,
+        "prev_close": 36.14,
+        "gain": 0.6026563364692861,
+        "rank_known": 2
+      },
+      {
+        "ticker": "HCI",
+        "px": 78.865,
+        "prev_close": 57.95,
+        "gain": 0.3609145815358066,
+        "rank_known": 3
+      },
+      {
+        "ticker": "ECOR",
+        "px": 2.9,
+        "prev_close": 2.19,
+        "gain": 0.32420091324200917,
+        "rank_known": 4
+      },
+      {
+        "ticker": "APEN",
+        "px": 5.98,
+        "prev_close": 4.69,
+        "gain": 0.2750533049040511,
+        "rank_known": 5
+      },
+      {
+        "ticker": "VACQ",
+        "px": 13.04,
+        "prev_close": 10.27,
+        "gain": 0.26971762414800393,
+        "rank_known": 6
+      },
+      {
+        "ticker": "STSA",
+        "px": 7.17,
+        "prev_close": 5.68,
+        "gain": 0.262323943661972,
+        "rank_known": 7
+      },
+      {
+        "ticker": "FSTX",
+        "px": 9.7,
+        "prev_close": 8.07,
+        "gain": 0.201982651796778,
+        "rank_known": 8
+      },
+      {
+        "ticker": "AMTX",
+        "px": 11.81,
+        "prev_close": 9.88,
+        "gain": 0.19534412955465585,
+        "rank_known": 9
+      },
+      {
+        "ticker": "INUV",
+        "px": 1.27,
+        "prev_close": 1.07,
+        "gain": 0.1869158878504673,
+        "rank_known": 10
+      }
+    ],
+    "split_adjusted_top10": [
+      {
+        "ticker": "MORF",
+        "gain_counterfactual": 0.6026563364692861,
+        "rank_known": 2
+      },
+      {
+        "ticker": "HCI",
+        "gain_counterfactual": 0.3609145815358066,
+        "rank_known": 3
+      },
+      {
+        "ticker": "ECOR",
+        "gain_counterfactual": 0.32420091324200917,
+        "rank_known": 4
+      },
+      {
+        "ticker": "APEN",
+        "gain_counterfactual": 0.2750533049040511,
+        "rank_known": 5
+      },
+      {
+        "ticker": "VACQ",
+        "gain_counterfactual": 0.26971762414800393,
+        "rank_known": 6
+      },
+      {
+        "ticker": "STSA",
+        "gain_counterfactual": 0.262323943661972,
+        "rank_known": 7
+      },
+      {
+        "ticker": "FSTX",
+        "gain_counterfactual": 0.201982651796778,
+        "rank_known": 8
+      },
+      {
+        "ticker": "AMTX",
+        "gain_counterfactual": 0.19534412955465585,
+        "rank_known": 9
+      },
+      {
+        "ticker": "INUV",
+        "gain_counterfactual": 0.1869158878504673,
+        "rank_known": 10
+      },
+      {
+        "ticker": "ITI",
+        "gain_counterfactual": 0.18297101449275366,
+        "rank_known": 11
+      }
+    ],
+    "old_top10_after_posthoc_filter": [
+      {
+        "ticker": "AMTX",
+        "rank_known": 9
+      },
+      {
+        "ticker": "APEN",
+        "rank_known": 5
+      },
+      {
+        "ticker": "ECOR",
+        "rank_known": 4
+      },
+      {
+        "ticker": "FSTX",
+        "rank_known": 8
+      },
+      {
+        "ticker": "HCI",
+        "rank_known": 3
+      },
+      {
+        "ticker": "INUV",
+        "rank_known": 10
+      },
+      {
+        "ticker": "MORF",
+        "rank_known": 2
+      },
+      {
+        "ticker": "STSA",
+        "rank_known": 7
+      },
+      {
+        "ticker": "VACQ",
+        "rank_known": 6
+      }
+    ],
+    "replacement_names": [
+      "ITI"
+    ],
+    "reading": "Split adjustment occurs before sorting the FULL cross-section. Dropping the contaminated leader after top10 selection loses the original rank11 replacement. This counterfactual verifies selection mechanics; other denominators remain unchanged/unvalidated."
+  },
+  "required_repair": [
+    "Evidence-backed previous ACTUAL session closing price per ticker, not merely the last available intraday bar or a non-null value.",
+    "Explicit verified/unverified/discrepant/missing denominator states; null independent comparison is not verified agreement.",
+    "Corporate-action normalization between the denominator session and decision day under the intended scanner contract.",
+    "Apply universe/quality filters and validated gains before full-universe reranking; rebuild dependent selections in a separate versioned data root.",
+    "Do not claim the frozen H042 or ENTRY-EV populations were repaired."
+  ]
+}

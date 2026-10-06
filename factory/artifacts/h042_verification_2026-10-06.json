@@ -2,12 +2,20 @@
   "id": "h042-verification-2026-10-06",
   "date": "2026-10-06",
   "object": "H042 / EXP-87 four-cost cash-first ownership (25/50/100/150bps TOTAL) on the first533 discovery days",
-  "verdict": "NOT ESTABLISHED AS AN EXECUTABLE EDGE. The discovery-positive region does not survive selection-aware statistics and measured execution. The evidence remains causally clean and arithmetically exact; it stands as description (the gate concentrates gross continuation; gross per trade rises with the hurdle), not as an extraction candidate.",
+  "verdict": "H042 REMAINS CLOSED AS EXTRACTION CANDIDATE: the tested formulations have not earned promotion. Selective-admission structure is retained. Downstream causality/accounting checks passed on the frozen inputs, but the full-spread repricing is a conservative scenario, not an exact execution-cost floor, and upstream ranking integrity is unresolved.",
   "scope": {
     "discovery_only": true,
     "protected_half_read": false,
     "freeze": false,
     "deploy": false
+  },
+  "interpretation_correction": {
+    "status": "SUPERSEDES_STRONGER_EXECUTION_AND_SIGNAL_ABSENCE_CLAIMS",
+    "full_spread_recost": "Stress scenario only: near midpoint one full width per leg doubles touch-crossing cost. Quotes were summarized over exec minute +/-1 minute, including post-fill quotes; temporal estimation error is not necessarily conservative. The 92-116bps figure is not an exact unavoidable round trip.",
+    "depth": "WITHDRAWN: pre-2025-11-03 raw SIP sizes were labeled shares instead of applying the repo's x100 lot conversion. Original depth-exceedance percentages are invalid; $500/$1000 were account-capital rulers, not actual order notionals. No replacement percentages or queue probabilities are inferred.",
+    "tails": "Date-removal sensitivities describe concentration; they do not falsify real executable tail mechanisms or sparse setups.",
+    "rank_integrity": "A non-null or above-$1 denominator does not repair the AMV-class missing-validation path. Validate prior-session closes and split conventions before reranking.",
+    "selection": "The iid-day centered max-mean bootstrap is a selection diagnostic with stated assumptions, not proof of signal absence or a universally valid inferential certificate."
   },
   "strands": {
     "leak_audit": {
@@ -57,8 +65,10 @@
       "power_note": "The three ONCE cells (A/B/C) are each 1-3-date phenomena; their bootstrap CIs all include zero; at their observed dispersion 383 dates are short of the ~413/1,328/1,897 independent dates needed to exclude zero. D/E survive remove-best-10 and have month-block CIs excluding zero, but D/E are negative in fold0 (2021-09..2022-04) and derive strength from fold2/2023 (D fold2 +2.94%/day on 81 dates)."
     },
     "execution_recost": {
-      "method": "independent agent; SIP quotes (data/sip/net/quotes, ATLAS top-3 union; window 09:25-16:05; 2024/2025-01 absent) + trades; covered legs re-costed at each leg's measured full quoted spread (monotone, conservative); unquoted legs extrapolated at the cell median.",
-      "measured_spread": {"bps_per_leg_median": "46-58", "round_trip_bps": "92-116", "source": "quote-covered legs of the audited cells; px is the SIP tape (|first_print/px-1| median 2.8e-4; 42% exact) and sits ~0.19% from mid"},
+      "method": "Historical stress calculation replaced each modeled leg fee with full quoted width summarized over exec_et-1, exec_et, exec_et+1 minutes; uncovered legs were extrapolated using cell medians. It was NOT as-of side-aware executable pricing.",
+      "measured_spread": {"bps_per_leg_median": "46-58 FULL quote-width observations (historical report), not per-leg touch costs", "round_trip_bps": "92-116 full-width-on-both-legs stress multiplier, NOT exact cost or a floor", "source": "Historical quote-covered audit; future-inclusive quote window cannot certify executed prices. Mid-to-ask plus mid-to-bid normally sums to one full width at the same spread."},
+      "side_aware_arithmetic_smoke": {"modeled_price": 10.0, "bid": 9.975, "ask": 10.025, "quoted_width_bps": 50.0, "buy_adjustment_bps": 25.0, "sell_adjustment_bps": 25.0, "side_adjustment_round_trip_bps": 50.0, "full_width_each_leg_bps": 100.0, "kind": "arithmetic illustration, NOT historical execution estimate"},
+      "recost_result_status": "Numbers below retained as historical stress-scenario outputs; they do not establish realistic low-cost-repeat failure. H042 non-promotion stands for the tested formulation, not on an exact cost claim.",
       "recost_results": {
         "D_clock540_n3_25bps_h3_repeat": {"modeled": 0.009054, "covered_legs_recost": -0.001470, "extrapolated_all_legs": -0.006690},
         "E_clock540_n3_50bps_h3_repeat": {"modeled": 0.005299, "covered_legs_recost": 0.001096, "extrapolated_all_legs": -0.000601},
@@ -68,8 +78,10 @@
         "F_clock569_n3_100bps_h3_once": {"modeled": 0.001886, "covered_legs_recost": 0.000865}
       },
       "size_realism": {
-        "displayed_top_of_book_median": "5-7 shares ($30-40)",
-        "order_size_exceeds_displayed_depth": {"$500": "73-88% of covered legs", "$1000": "82-94%"},
+        "interpretation_status": "WITHDRAWN_UNIT_ERROR_AND_ACCOUNT_ORDER_MISMATCH",
+        "displayed_top_of_book_median": "Historical raw field 5-7 was lots, not shares under lifecycle_tape.detect_size_unit's pre-cutoff x100 policy; no actual executable depth is inferred.",
+        "order_size_exceeds_displayed_depth": {"status": "WITHDRAWN; no corrected percentages asserted", "historical_invalid_account_capital_values": {"$500": "73-88%", "$1000": "82-94%"}},
+        "order_notional_status": "$500/$1000 in this audit meant account capital; typical orders were fractions of that. Actual $500/$1000 ORDERS were NOT_TESTED.",
         "participation_gt_1_bar_volume_legs": "202/8213 (2.5%), p99 5.04x"
       },
       "quote_coverage_limit": "quotes cover only the ATLAS top-3 union (13-17 symbols/day); 24-48% of legs outside; for cell A 148/511 legs execute before 09:25 and are structurally uncoverable; unquoted legs carry 24-40% of gross notional.",

@@ -1,4 +1,14 @@
 {
+ "interpretation_correction": {
+  "status": "LEGACY_NUMBERS_PRESERVED; STRONGER_ECONOMIC_CONCLUSIONS_WITHDRAWN",
+  "population": "Minute-weighted repeated observations after filtering pre-ranked top10 by previous-close >=$1; upstream denominators/ranking not certified or repaired.",
+  "coverage": "No complete eight-coordinate surfaces are emitted by the committed original reader.",
+  "tail_unit": "Legacy top5_share and mean_excl_top5 are individual-observation statistics, NOT top-five-day statistics.",
+  "horizon": "Exit target is decision_time+h; gappy fills can have a different actual holding duration.",
+  "promotion": "Negative signed promotion age and never-promoted-vs-pre-promotion membership use future information; retrospective anatomy only.",
+  "gate": "Legacy false gate retained below as history; gate is RETIRED_CONCEPTUALLY_INVALID and delayed-entry mechanisms remain NOT_TESTED.",
+  "scope": "Generic immediate continuation and listed proxies only; sparse A+ events, causal conjunctions, and qualification followed by delayed entry were not tested."
+ },
  "days": 533,
  "rows": 1601807,
  "pooled": {
