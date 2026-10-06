@@ -3489,3 +3489,35 @@ fail, which is NOT a general prediction-impossibility claim.
 
 **Boundaries.** No protected/sealed read, no FREEZE, no deployment, no bot flag/order change, no new
 protected collision. EXP-90.
+
+## 2026-10-06 — Research concentration review (f9e156d; no strategy launch)
+
+- Decision: bounded H025 attainable-dollar audit first; main upside discovery remains sparse causal
+  NAME qualification followed by independently favorable ENTRY. E is an earned micro-entry extension;
+  C is a serious early-optionality rival, not an automatic funded basket. D is question-driven.
+- H025's +1.14%/trade net100bps OOS pass stands. Its own prior-close loader uses surviving filtered
+  bars; old denominators recover from all 541 saved paths. Existing SIP references are positive for
+  515/541 fixed events, but `c_last` is last retained RTH minute close, not certified official close.
+  Classify source/scale/split/age conflicts before claiming wrong gains; no 13-month bulk refetch first.
+- Read-only cache audit: 541 base +500 exit-quote files, ~317.6MB compressed in external MAIN
+  `data/subminute`. All 381 primary OWN caches omit credited `[tf-1,tf)`; earlier same-symbol requests
+  overlap 129 primary trade windows, leaving 252 missing one-minute windows. Quote requests overlap
+  fully for 87, partially for 7, not at all for 287. Request overlap is NOT completeness/eligibility.
+  Exchange/conditions/tape/IDs were stripped. Retain raw fields on targeted reacquisition, extend
+  event-specific preorder/quote/long-halt gaps, and explicitly bind worktree reads to external data.
+- Parent clock smoke: LBPH 2024-01-02 tf801 needs 13:20–13:21 ET; first own-cache trade is
+  18:21:00.694018 UTC, zero credited-minute rows. Prior SIP LBPH c_last=5.97, last_et=959.
+  Queue ahead remains exogenous unknown on BOTH legs. Start with buy-before-active-target chronology;
+  report assumed queue/arrival/protection/service frontiers, not empirical fill probabilities. Use
+  $250/$500/$1000 ORDER notionals, partials and no-fill cash; missing data is UNKNOWN, not a cash zero.
+- B is a genuinely different causal-qualification hypothesis, not positive evidence by non-testing:
+  ten of twelve nearby repair/pullback cells failed, including all six pullbacks. Sparse episodes need
+  independent-day power; neither more minute rows nor ticks fixes that. C already has causal release,
+  reserve, rotation and allocation negatives; unequal shared weights remain unestablished. Uniform
+  fraction-only scaling cannot change per-dollar EV under proportional costs/actions.
+- Cloud inventory: public Dukascopy candidate is FX/metals quotes, not US equities. Configured project
+  Drive root/list/about all failed OAuth `invalid_grant` before enumeration; zero object rows observed.
+  Private dates/symbols/feed/partitions/cost remain blocked on OAuth reconnection or another locator;
+  corpus absence is NOT inferred. This does not block local evidence or the narrow first measurement.
+- Two final independent reviews reconciled evidence and economic priorities. No new strategy test,
+  protected outcome selection, live order, bot restart, or artifact promotion; H042/EXIT01 stay closed.

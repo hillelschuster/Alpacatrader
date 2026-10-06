@@ -118,6 +118,17 @@ let it replace the broader entry question. Prior evidence stands as measured: th
 flush-bid rule, +1.14%/trade net of 100bps over 12/14 untouched OOS months (pf>=2,
 n=381; all fills n=541 +0.91%).
 
+Research-concentration audit: H025's **own** loader uses the last surviving filtered
+prior-session bar, so reconcile its source/price-scale/split semantics inside this lane.
+Existing SIP compact references cover 515/541 fixed events; `c_last` plus `last_et` is
+reusable provenance, not an official-close certificate. No bulk monthly redownload is
+prerequisite to this comparison. Own sub-minute caches begin at wall `tf`, after the
+credited `[tf-1,tf)` minute; earlier-cache trade-request overlap covers 129/381 primary
+minutes, leaving 252 without overlap. Overlap does not certify completeness or print
+eligibility. Audit buy-before-active-target chronology first, then unknown queue/latency
+frontiers on both legs at actual $250/$500/$1000 order sizes; do not infer fill probability.
+Resolve the external MAIN cache root explicitly before running a worktree producer.
+
 **Lane 2 — sparse causal qualification, then entry location.** Name qualification and
 entry price are separate questions. First establish a sparse, causally computable
 qualified-name event; only then measure entry location independently (delayed,
