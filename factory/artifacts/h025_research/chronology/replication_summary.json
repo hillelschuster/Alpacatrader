@@ -1,0 +1,68 @@
+{
+  "days": 513,
+  "fills": 1789,
+  "populations": {
+    "legacy_all": {
+      "fills": 987,
+      "legacy_net": -0.00028934682381893603,
+      "resolved_net": -0.0226944872882639,
+      "resolved_n": 986,
+      "pessimistic_net": -0.024942602706379727,
+      "same_bar_target_fills": 241,
+      "ambiguous_fills": 211,
+      "ambiguous_net_present": 210,
+      "ambiguous_target_after": 29,
+      "ambiguous_after_share": 0.13744075829383887,
+      "unknown_tape_same_bar_target": 2,
+      "years": {
+        "2023": {
+          "fills": 258,
+          "legacy_net": -0.009132629661542484,
+          "resolved_net": -0.03429916314539291
+        },
+        "2025": {
+          "fills": 507,
+          "legacy_net": 0.004698678889488045,
+          "resolved_net": -0.013995628932233715
+        },
+        "2026": {
+          "fills": 222,
+          "legacy_net": -0.0014035903576656242,
+          "resolved_net": -0.029126557068557372
+        }
+      },
+      "months": {}
+    },
+    "pf2_preorder": {
+      "fills": 802,
+      "legacy_net": 0.007508390451261284,
+      "resolved_net": -0.016340889348476564,
+      "resolved_n": 802,
+      "pessimistic_net": -0.01795178144195591,
+      "same_bar_target_fills": 208,
+      "ambiguous_fills": 184,
+      "ambiguous_net_present": 184,
+      "ambiguous_target_after": 20,
+      "ambiguous_after_share": 0.10869565217391304,
+      "unknown_tape_same_bar_target": 1,
+      "years": {
+        "2023": {
+          "fills": 204,
+          "legacy_net": 0.005070945872266874,
+          "resolved_net": -0.022912160149624272
+        },
+        "2025": {
+          "fills": 419,
+          "legacy_net": 0.008660610815468128,
+          "resolved_net": -0.01087643496290859
+        },
+        "2026": {
+          "fills": 179,
+          "legacy_net": 0.007589163420603144,
+          "resolved_net": -0.021642940432939416
+        }
+      },
+      "months": {}
+    }
+  }
+}

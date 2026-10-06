@@ -1,5 +1,20 @@
 # HYPOTHESES — living source of truth (created 2026-09-06; rewritten 2026-10-06 post-verification)
 
+## CURRENT 2026-10-06 (later) — H025 rules out: extraction artifact (fill-bar convention)
+
+H025 as formulated (rolling -10% bid, target = state close, same-bar exit credit) is
+RESOLVED NEGATIVE at the print level: among its ambiguous same-bar target fills, only
+~10% had the >=c0 print AFTER the bid fill; the rest were pre-fill spikes (fill minutes
+open at the high, then collapse through the bid). Resolved net/fill: all-orders +0.09%
+legacy -> -2.27%; pf2 +0.66% -> -1.72% (pessimistic bounds -2.45%/-1.86%); negative in
+every year 2021-2026. The published +1.14% OOS pass and backbone replication ride the
+same fiction. Do NOT resurrect this formulation; its freeze/forward plans are void.
+
+Still-open object (separate, not tested): post-flush CONFIRMATION entry — qualified
+flush, wait for exhaustion/reclaim, enter at a completed bar (no same-bar credit
+possible by construction), target the pre-flush level. Any version must be resolved
+against real print ordering and pre-registered before outcome selection.
+
 ## CURRENT CORRECTION 2026-10-06 — tested negatives do not close the A+ object
 
 **H042 remains CLOSED AS EXTRACTION CANDIDATE.** Its tested cash-first policies have

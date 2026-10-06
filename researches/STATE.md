@@ -2,6 +2,38 @@
 # Hypothesis ranking + falsifiers: researches/HYPOTHESES.md (living).
 # History before 2026-09-04: researches/CANONICAL_STATE.md (superseded snapshot, kept for trust map).
 
+## CURRENT 2026-10-06 (later) — H025 EXTRACTION ARTIFACT: frozen rule resolved NEGATIVE
+
+H025's measured positive economics were manufactured by the engine's fill-bar
+convention (credit exit-at-c0 whenever the fill bar's high tagged c0). Local NET full
+SIP prints (exchange/conditions included; all 1068 stored days) resolve the ordering
+per fill: among ambiguous same-bar target fills, only ~10-12% had >=c0 prints AFTER
+the bid fill; ~88-90% preceded it — the fill minute typically OPENS at/near c0 and
+collapses through the resting bid (flushes begin at the high). Print-level example:
+AAME 2021-02-05 10:24 — 1,134 prints >= c0 before the 11.646 fill, zero after.
+
+Resolved net per fill (substitute the pessimistic continuation wherever the same-bar
+target print preceded the fill), 100bps, 1046-day allowed calendar:
+- all-orders: legacy +0.09% -> RESOLVED -2.27% (pessimistic -2.45%; n=1580)
+- pf2-preorder: legacy +0.66% -> RESOLVED -1.72% (pessimistic -1.86%; n=1265)
+- every year flips negative (pf2 legacy->resolved: 2021 +0.31->-1.93, 2022 +0.77->-1.15,
+  2023 +0.53->-2.57, 2025 +0.87->-1.09, 2026 +0.76->-2.16).
+- Independent bounds agree: pessimistic -1.86% (core), original533 resolved -1.13% /
+  replication -1.63% (pf2). No positive block survives.
+
+CONSEQUENCE: the frozen +1.14% OOS paper pass, the 2021-23 backbone replication and all
+legacy-convention backtests are NOT executable evidence for this rule. No freeze, no
+forward of the old formulation; do not resurrect it. The paper bot's premise is void
+(0 fills; arming is the user's call — untouched here).
+
+Evidence: factory/artifacts/h025_research/{core/baseline.json (exact published parity:
+729/729 + 851/851 fills, 0.0 diff), execution/*, chronology/{replication,all}_summary.json};
+producers factory/scripts/h025_research_*.py (core daily replay; chronology NET
+resolution; entry/exit/execution/qualification sweeps), all per-day resumable.
+
+Next open door (design only, NOT yet run): post-flush confirmation entry — wait for the
+flush to exhaust, buy a reclaim/stabilization instead of the falling knife.
+
 ## CURRENT CORRECTION 2026-10-06 — preserve the evidence; narrow the economic conclusions
 
 ### H042 / EXP-87 remains CLOSED AS EXTRACTION CANDIDATE

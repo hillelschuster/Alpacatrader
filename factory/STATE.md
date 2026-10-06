@@ -3521,3 +3521,21 @@ protected collision. EXP-90.
   corpus absence is NOT inferred. This does not block local evidence or the narrow first measurement.
 - Two final independent reviews reconciled evidence and economic priorities. No new strategy test,
   protected outcome selection, live order, bot restart, or artifact promotion; H042/EXIT01 stay closed.
+
+## 2026-10-06 (later) — H025 extraction artifact resolved: old rule NEGATIVE at print level
+
+- Rebuilt the frozen engine as a daily replay (h025_research_core.py): EXACT published parity
+  (lb18_oos_dev 729/729, lb18_backbone 851/851, max |ret diff| 0.0) over 1046 allowed days;
+  fast-root bulk at data/h025_research/ (worktree), per-day resumable.
+- Chronology scenarios disagree massively: pf2-preorder legacy +0.66%/fill vs pessimistic -1.86%.
+  Cause isolated: same-bar target credit. h025_research_execution.py annotated the original533
+  (135 fill-bar targets; 127 without close proof) from full NET prints.
+- h025_research_chronology.py resolves every fill with NET prints (first <=B touch vs >=c0 prints
+  in the fill minute): ambiguous same-bar targets have only 10.6-12.0% after-touch; ~89% are
+  pre-fill spikes. Resolved net/fill: all +0.09% -> -2.27%; pf2 +0.66% -> -1.72%; negative every
+  year. Published OOS pass + backbone replication = non-executable evidence. No freeze/forward;
+  bot premise void (0 fills; KILL/arming = user decision).
+- Sweeps under the honest lens (exit main-effects partial, 447d): all recovery/stop/hold variants
+  negative (-8..-12 $/day at 500/150bps). Entry/qualification sweeps still completing.
+- Next: post-flush confirmation-entry study (design note before run). Evidence JSONs under
+  factory/artifacts/h025_research/; producers factory/scripts/h025_research_*.py.

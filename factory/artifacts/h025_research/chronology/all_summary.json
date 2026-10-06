@@ -1,0 +1,88 @@
+{
+  "days": 1046,
+  "fills": 2845,
+  "populations": {
+    "legacy_all": {
+      "fills": 1580,
+      "legacy_net": 0.000933908017261639,
+      "resolved_net": -0.02268297262106299,
+      "resolved_n": 1578,
+      "pessimistic_net": -0.024537352816409952,
+      "same_bar_target_fills": 371,
+      "ambiguous_fills": 333,
+      "ambiguous_net_present": 331,
+      "ambiguous_target_after": 40,
+      "ambiguous_after_share": 0.12012012012012012,
+      "unknown_tape_same_bar_target": 3,
+      "years": {
+        "2021": {
+          "fills": 350,
+          "legacy_net": 0.0014425699841768853,
+          "resolved_net": -0.02308133698740989
+        },
+        "2022": {
+          "fills": 190,
+          "legacy_net": 0.003396834634305691,
+          "resolved_net": -0.019038982560981195
+        },
+        "2023": {
+          "fills": 311,
+          "legacy_net": -0.005612078923714706,
+          "resolved_net": -0.034061477299944146
+        },
+        "2025": {
+          "fills": 507,
+          "legacy_net": 0.004698678889488045,
+          "resolved_net": -0.013995628932233715
+        },
+        "2026": {
+          "fills": 222,
+          "legacy_net": -0.0014035903576656242,
+          "resolved_net": -0.029126557068557372
+        }
+      },
+      "months": {}
+    },
+    "pf2_preorder": {
+      "fills": 1265,
+      "legacy_net": 0.006559668984629055,
+      "resolved_net": -0.017169775859273043,
+      "resolved_n": 1264,
+      "pessimistic_net": -0.018579082964086058,
+      "same_bar_target_fills": 304,
+      "ambiguous_fills": 274,
+      "ambiguous_net_present": 273,
+      "ambiguous_target_after": 29,
+      "ambiguous_after_share": 0.10583941605839416,
+      "unknown_tape_same_bar_target": 2,
+      "years": {
+        "2021": {
+          "fills": 273,
+          "legacy_net": 0.0031417854381917687,
+          "resolved_net": -0.01926518013267374
+        },
+        "2022": {
+          "fills": 148,
+          "legacy_net": 0.007730099152640021,
+          "resolved_net": -0.011478052278281227
+        },
+        "2023": {
+          "fills": 246,
+          "legacy_net": 0.00532098773320964,
+          "resolved_net": -0.025741477097127617
+        },
+        "2025": {
+          "fills": 419,
+          "legacy_net": 0.008660610815468128,
+          "resolved_net": -0.01087643496290859
+        },
+        "2026": {
+          "fills": 179,
+          "legacy_net": 0.007589163420603144,
+          "resolved_net": -0.021642940432939416
+        }
+      },
+      "months": {}
+    }
+  }
+}

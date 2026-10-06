@@ -1499,3 +1499,37 @@ work.
 No giant grid, no new thresholds earned merely by prior scripts, no H042 resurrection,
 no positive-median or top-days-deleted doctrinal gate, no protected outcome read, no
 bot/flag change, no deployment.
+
+---
+
+## 23. 2026-10-06 (later) — H025 EXTRACTION ARTIFACT: frozen rule NEGATIVE at print level
+
+**Checkout:** `basket-phase2-f1`. Read `researches/STATE.md` top section; evidence under
+`factory/artifacts/h025_research/`; producers `factory/scripts/h025_research_*.py`.
+
+**Verdict.** H025's positive backtest economics came from the engine's same-bar target
+credit (exit at c0 whenever the fill bar's high tagged c0). Full SIP prints (local NET,
+all 1068 days) show the fill minute usually OPENS at/near c0 and collapses through the
+resting bid: among ambiguous same-bar target fills only ~10–12% had >=c0 prints AFTER
+the fill; ~89% preceded it. Resolved net/fill (1046 allowed days, 100bps): all-orders
++0.09% -> -2.27%; pf2-preorder +0.66% -> -1.72% (pessimistic -2.45%/-1.86%); every year
+2021/22/23/25/26 negative. The published +1.14% OOS pass (n=381) and 2021–23 backbone
+replication are non-executable evidence; the frozen rule must not be resurrected or
+frozen/forwarded. Paper bot premise void (0 fills); KILL/arming is the user's call.
+
+**Verified parity of the rebuild:** exact fill-level reproduction (729/729 dev + 851/851
+backbone, diff 0.0) — the daily replay core is trustworthy for BOTH conventions.
+
+**Infrastructure left for continuation:** `h025_research_core.py` (Parameterized daily
+replay; legacy/pessimistic/optimistic orderings; causal pf2-preorder policy; carried/
+fresh flush counters), `h025_research_chronology.py` (NET print resolution, per-day
+checkpoints), execution/entry/exit/qualification sweeps (resumable), `h025_research_forward.py`
+(non-trading shadow harness verified against live IEX: freeze gate, calendar, journal).
+Allowed calendar: 1046 days (533 original + 513 seen replication; 2024/Feb-25/Jun-Aug-26
+excluded from new selection). Bulk output relocated to worktree `data/h025_research/`
+(fast disk); `/mnt/c` writes were the original 10x I/O tax.
+
+**Next open door (design only):** post-flush CONFIRMATION entry — qualified flush, wait
+for exhaustion/reclaim, enter at a completed bar (same-bar credit impossible by
+construction), target the pre-flush reference. Resolve against print ordering; no OOS
+consumption; pre-register before outcome selection.

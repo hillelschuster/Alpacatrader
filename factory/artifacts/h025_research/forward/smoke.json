@@ -1,0 +1,145 @@
+{
+  "kind": "synthetic_research_smoke_not_forward_evidence",
+  "scenarios": [
+    "shared_opportunity_and_identical_intents",
+    "no_pre_activation_fill",
+    "pessimistic_optimistic_fillbar_frontier",
+    "gap_stop_min_open",
+    "clock_hold_dispatch",
+    "delayed_and_future_bar_rejection",
+    "unresolved_non_scored_session_end",
+    "partial_transaction_resume",
+    "freeze_mismatch_refusal",
+    "all_core_policy_fields_supported",
+    "actual_calendar_holiday_and_earlyclose"
+  ],
+  "initial_intents": [
+    {
+      "event": "shadow_intent",
+      "symbol": "X",
+      "branch": "baseline/pessimistic",
+      "order": {
+        "buy": 18.0,
+        "quantity": 27,
+        "target": 20.0,
+        "state_known_at": "2026-10-06T14:00:00+00:00",
+        "active_at": "2026-10-06T14:01:00+00:00",
+        "expires_at": "2026-10-06T16:00:00+00:00"
+      },
+      "opportunity_known_at": "2026-10-06T14:00:00+00:00"
+    },
+    {
+      "event": "shadow_intent",
+      "symbol": "X",
+      "branch": "baseline/optimistic",
+      "order": {
+        "buy": 18.0,
+        "quantity": 27,
+        "target": 20.0,
+        "state_known_at": "2026-10-06T14:00:00+00:00",
+        "active_at": "2026-10-06T14:01:00+00:00",
+        "expires_at": "2026-10-06T16:00:00+00:00"
+      },
+      "opportunity_known_at": "2026-10-06T14:00:00+00:00"
+    },
+    {
+      "event": "shadow_intent",
+      "symbol": "X",
+      "branch": "candidate/pessimistic",
+      "order": {
+        "buy": 18.0,
+        "quantity": 27,
+        "target": 20.0,
+        "state_known_at": "2026-10-06T14:00:00+00:00",
+        "active_at": "2026-10-06T14:01:00+00:00",
+        "expires_at": "2026-10-06T16:00:00+00:00"
+      },
+      "opportunity_known_at": "2026-10-06T14:00:00+00:00"
+    },
+    {
+      "event": "shadow_intent",
+      "symbol": "X",
+      "branch": "candidate/optimistic",
+      "order": {
+        "buy": 18.0,
+        "quantity": 27,
+        "target": 20.0,
+        "state_known_at": "2026-10-06T14:00:00+00:00",
+        "active_at": "2026-10-06T14:01:00+00:00",
+        "expires_at": "2026-10-06T16:00:00+00:00"
+      },
+      "opportunity_known_at": "2026-10-06T14:00:00+00:00"
+    }
+  ],
+  "optimistic_exits": [
+    {
+      "event": "shadow_model_exit",
+      "branch": "baseline/optimistic",
+      "bar": "2026-10-06T14:01:00Z",
+      "reason": "target",
+      "price": 20.0,
+      "stop_gap": 0,
+      "net_return": 0.10111111111111117,
+      "quantity": 27,
+      "net_order_dollars": 49.14,
+      "symbol": "X"
+    },
+    {
+      "event": "shadow_model_exit",
+      "branch": "candidate/optimistic",
+      "bar": "2026-10-06T14:01:00Z",
+      "reason": "target",
+      "price": 20.0,
+      "stop_gap": 0,
+      "net_return": 0.10111111111111117,
+      "quantity": 27,
+      "net_order_dollars": 49.14,
+      "symbol": "X"
+    }
+  ],
+  "pessimistic_exits": [
+    {
+      "event": "shadow_model_exit",
+      "branch": "baseline/pessimistic",
+      "bar": "2026-10-06T14:02:00Z",
+      "reason": "stop_first",
+      "price": 15.0,
+      "stop_gap": 0.07407407407407403,
+      "net_return": -0.17666666666666664,
+      "quantity": 27,
+      "net_order_dollars": -85.86,
+      "symbol": "X"
+    },
+    {
+      "event": "shadow_model_exit",
+      "branch": "candidate/pessimistic",
+      "bar": "2026-10-06T14:02:00Z",
+      "reason": "stop_first",
+      "price": 15.0,
+      "stop_gap": 0.07407407407407403,
+      "net_return": -0.17666666666666664,
+      "quantity": 27,
+      "net_order_dollars": -85.86,
+      "symbol": "X"
+    }
+  ],
+  "terminal": [
+    {
+      "event": "shadow_session_cancel",
+      "symbol": "X",
+      "branch": "baseline/pessimistic",
+      "order": {
+        "buy": 18
+      }
+    },
+    {
+      "event": "unresolved_end_of_session_not_scored",
+      "symbol": "X",
+      "branch": "baseline/pessimistic",
+      "position": {
+        "buy": 18
+      }
+    }
+  ],
+  "calendar_provenance": "GET https://paper-api.alpaca.markets/v2/calendar"
+}
