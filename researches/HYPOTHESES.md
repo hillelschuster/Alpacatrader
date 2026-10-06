@@ -10,10 +10,13 @@ legacy -> -2.27%; pf2 +0.66% -> -1.72% (pessimistic bounds -2.45%/-1.86%); negat
 every year 2021-2026. The published +1.14% OOS pass and backbone replication ride the
 same fiction. Do NOT resurrect this formulation; its freeze/forward plans are void.
 
-Still-open object (separate, not tested): post-flush CONFIRMATION entry — qualified
-flush, wait for exhaustion/reclaim, enter at a completed bar (no same-bar credit
-possible by construction), target the pre-flush level. Any version must be resolved
-against real print ordering and pre-registered before outcome selection.
+Post-flush CONFIRMATION entry: RAN (PRE-REG-STABILIZE-01, 32 cells) — NEGATIVE in all
+cells; best -2.4%/fill at 100bps; both blocks and every year; the no-confirmation
+control is worse per-day but the same ~-3%/fill. Exit surface (0/29 positive under
+pessimistic) and a resolved-fill pocket scan (no positive bin; best -0.33%/fill)
+complete the picture: the flush-buy family has negative drift at every honest
+evaluation point. H025 route closed — do not resurrect any variant without a
+genuinely new causal mechanism and fresh unseen data.
 
 ## CURRENT CORRECTION 2026-10-06 — tested negatives do not close the A+ object
 

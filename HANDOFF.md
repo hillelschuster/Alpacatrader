@@ -1529,7 +1529,12 @@ Allowed calendar: 1046 days (533 original + 513 seen replication; 2024/Feb-25/Ju
 excluded from new selection). Bulk output relocated to worktree `data/h025_research/`
 (fast disk); `/mnt/c` writes were the original 10x I/O tax.
 
-**Next open door (design only):** post-flush CONFIRMATION entry — qualified flush, wait
-for exhaustion/reclaim, enter at a completed bar (same-bar credit impossible by
-construction), target the pre-flush reference. Resolve against print ordering; no OOS
-consumption; pre-register before outcome selection.
+**Follow-ups ran the same day — all negative.** Exit surface (29 main-effect policies,
+1046d): 0/29 positive under pessimistic at $500/150bps (best -11.6 $/day, baseline
+-13.9 $/day; candidate null). PRE-REG-STABILIZE-01 confirmation entry: 32/32 cells
+negative (best -2.38%/fill at 100bps; both blocks, every year). Causal pocket scan on
+resolved fills: no positive bin across 11 features (best -0.33%/fill). **H025 route
+closed** — no freezable formulation; the paper bot must not be armed on this rule (it
+is not currently running; LIVE+KILL flags present in the main checkout — user's call).
+Evidence: `factory/artifacts/h025_research/{exit,stabilize,chronology,core,execution}/`.
+Entry discount sweep (orderings included) still completing for the record.

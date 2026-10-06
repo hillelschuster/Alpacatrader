@@ -31,8 +31,20 @@ Evidence: factory/artifacts/h025_research/{core/baseline.json (exact published p
 producers factory/scripts/h025_research_*.py (core daily replay; chronology NET
 resolution; entry/exit/execution/qualification sweeps), all per-day resumable.
 
-Next open door (design only, NOT yet run): post-flush confirmation entry — wait for the
-flush to exhaust, buy a reclaim/stabilization instead of the falling knife.
+Follow-ups — ALL RAN, ALL NEGATIVE (2026-10-06):
+- Exit surface (29 main-effect policies, 1046d): 0/29 positive under pessimistic at
+  $500/150bps (best -11.6 $/day; baseline -13.9 $/day; candidate null). Legacy shows
+  18/29 "positive" only via the artifact.
+- Post-flush confirmation entry (PRE-REG-STABILIZE-01): 32/32 cells negative; best cell
+  -2.38%/fill (100bps) / -2.88% (150bps), both blocks, every year (targets +3.9% avg,
+  stops -6.7% avg; confirmation removes churn but the discount is gone by then).
+- Causal pocket scan on resolved fills: NO positive bin across 11 causal features
+  (best -0.33%/fill, n=200). No observable state makes the trade work.
+
+H025 ROUTE CLOSED: the flush-buy family shows negative drift at every honest entry,
+exit and evaluation point; no freezable formulation; the paper bot is not to be armed
+on this rule (it is not currently running; LIVE+KILL flags present in the main checkout
+— cleanup is the user's call).
 
 ## CURRENT CORRECTION 2026-10-06 — preserve the evidence; narrow the economic conclusions
 

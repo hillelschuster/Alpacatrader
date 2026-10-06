@@ -3537,5 +3537,11 @@ protected collision. EXP-90.
   bot premise void (0 fills; KILL/arming = user decision).
 - Sweeps under the honest lens (exit main-effects partial, 447d): all recovery/stop/hold variants
   negative (-8..-12 $/day at 500/150bps). Entry/qualification sweeps still completing.
-- Next: post-flush confirmation-entry study (design note before run). Evidence JSONs under
+- Follow-ups ran the same day: (a) exit surface complete (29 policies, 1046d): 0/29 positive
+  under pessimistic at $500/150bps; candidate null. (b) PRE-REG-STABILIZE-01 confirmation
+  entry: 32/32 cells negative (best -2.4%/fill 100bps), both blocks, every year. (c) causal
+  pocket scan on resolved fills: no positive bin across 11 features (best -0.33%/fill).
+  H025 route CLOSED; no freeze; bot not to be armed (not running; LIVE+KILL flags present
+  in main checkout). Producers/evidence committed; entry discount sweep still completing.
+- Evidence JSONs under
   factory/artifacts/h025_research/; producers factory/scripts/h025_research_*.py.
