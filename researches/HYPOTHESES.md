@@ -1,15 +1,215 @@
-# HYPOTHESES — living source of truth (created 2026-09-06; rewritten 2026-09-08 post-H11-collision)
+# HYPOTHESES — living source of truth (created 2026-09-06; rewritten 2026-10-08
+# post-H025-print-resolution; open-anchor program)
 
-STATUS HEADER (read this first): H11 failed collision 2026-09-08 and is RETIRED.
-No hypothesis below currently holds dev+collision support. Ranking below is by
-next-test EV under the power constraint (see researches/STATE.md). H1-H7 were the
-2026-09-06 pre-runner-era ranking; entries below them are historical layers —
-retain for falsifier logic, do not treat as active queue.
+STATUS HEADER (read this first; updated 2026-10-09): H11 failed collision 2026-09-08 and
+is RETIRED; H025 flush-buy is RESOLVED NEGATIVE at print level (do not arm, do not
+resurrect); H042 cash-first stays CLOSED AS EXTRACTION CANDIDATE. WAVE-2 (2026-10-09,
+real actual-touch quotes over all 1,003 panel sessions) is CLOSED NEGATIVE on:
+opening-range pullback, liquidity recovery after flush, multi-session carry (dead
+gate), cross-name rotation (negative OOS), the hour-of-day learner, and the h390
+whole-day hold on validation. LEADS ONLY (not validated, not promotion grounds):
+passive mid resting entry + TTL, adaptive depth participation, and the retained h60
+tail (best MEASURED form = repeat cadence, +$1,430.80/yr simple on the $3,000 proxy).
+Power note: every wave-2 lane ran >=250 dev + >=332 unseen sessions and still produced
+no validated positive — exploratory sub-floor cells (30<=known<100) and
+validation-negative/late-positive splits are regime evidence, never promotion grounds.
+H1-H7 were the 2026-09-06 pre-runner-era ranking; entries below them are historical
+layers — retain for falsifier logic, do not treat as active queue.
+
+## CURRENT 2026-10-08 — H025 resolved NEGATIVE; the live lane is the independent
+## open-anchor program; per-study status comes only from the generated packet
+
+**H025 flush-bid — RESOLVED NEGATIVE at print level; DO NOT ARM.** The historical
+2026-09-11 OOS pass (pf>=2 n=381, +1.14%/trade net 100bps, 2024-01..2025-02) rode the
+engine's same-bar target credit. NET-print resolution (worktree basket-phase2-f1,
+2026-10-06; ~10-12% of ambiguous same-bar target fills printed >=c0 AFTER the fill)
+gives resolved net/fill at 100bps over 1046 allowed days: pf2-preorder +0.66% ->
+-1.72% (pessimistic -1.86%); all-orders +0.09% -> -2.27%; negative every year
+2021-2026. Every derived family also failed: exit surface 0/29, PRE-REG-STABILIZE-01
+confirmation 32/32 cells, resolved-fill pocket scan no positive bin, entry-discount
+surface negative at every depth, qualification curves 0/13. **Ranking rule for any
+fresh agent: no flush-buy variant is promotable — do not arm flush_bot.py, do not
+resurrect the frozen rule, do not treat the old OOS pass as executable.** Bot
+flags/orders untouched (not running; user's call).
+
+**Standing corrections (worktree basket-phase2-f1, 2026-10-06; canonical):** H042
+CLOSED AS EXTRACTION CANDIDATE (selective admission = structural evidence only;
+depth percentages WITHDRAWN; 92-116bps = stress scenario, not an as-of floor).
+ENTRY-EV-01 Stage A measured repeated already-ranked minute states (negative generic
+next-open continuation, h1..h60); its Stage-B gate is retired as conceptually
+invalid; sparse A+ qualified-name + delayed/passive entry is NOT_TESTED and stays
+open. Population-integrity prerequisite (verified prior ACTUAL session closes +
+split conventions before any new rank-based outcome test) governs new rank tests.
+
+**Independent open-anchor program (this checkout — the live lane).** Separate
+producers `factory/scripts/alpha_*.py`, separate data root `~/alpha-data/
+open-search-v1`, no previous-close features, open-anchored entries at the minute-t
+open proxy, fixed-time exits, unresolved exits UNKNOWN, costs 100/150/200bps round
+trip. Blocks: fit 2021-02..2022-12 / validation 2023 / out-of-fit confirmation
+2025-02..2026-05 (NOT pristine); protected 2024, 2025-01, 2026-06..08 never read.
+Study families: events, learned (models h15/h60/h390 + surface validation +
+frozen contract + quote audits), causal sequence payoff, corrected proven-push,
+short-liquid diagnostic, overnight, raw micro_flow, raw micro_reclaim.
+Replay: `python factory/scripts/alpha_open_panel.py` then the per-family commands
+listed in researches/STATE.md CURRENT 2026-10-08.
+Per-study outcomes — source of record `factory/artifacts/alpha_search_20261008.json`
+(status COMPLETE, asof 2026-10-08; sha256 at this consolidation
+dea9e466017a4ccf36ce76a4ffc977f6b4d0726e9e3608d06bf1fadee965b461, 837,893 bytes —
+the producer regenerates this file; earlier generations are recorded in the
+factory/STATE.md attribution-correction entry and the headline values re-verified
+unchanged). Ten registered
+studies (8 base + rare sparse extension + bid-backed burst); panel 1,066 days /
+1,076,304 rows (train 484 / validation 250 / confirmation 332); $3,000 book = 3 x
+$1,000 slots, micro $750 = 3 x $250.
+
+| study | verdict | key readings | status |
+|---|---|---|---|
+| events | FROZEN_DIAGNOSTIC_NO_EDGE | val chosen squeeze_release_h390 -0.2429 %/day @100 (n=352 known); late -1.7345 %/order (n=543 known + 8 UNKNOWN) = -1.7489 %/day | all-known-negative |
+| learned | frozen h15 thr0.01 | val +0.0926 %/day (n=208, CI [-0.3028,+0.5871]); late -0.2922 %/day (n=447, CI [-0.7199,+0.1619]); quote audits NOT whole-portfolio certified (val 132/208, late 218/447 pairs UNKNOWN) | val-positive subset only; late negative |
+| sequence | no_selected_head_positive_on_late_block | late h60/scale30 -0.3752 %/day (n=235); h15 -0.6057 %/day; encoder fit exposure | negative |
+| proven_push | negative_at_all_cost_rungs | late -1.8365 %/order (n=1680) = -3.0976 %/day @100; -3.93/-4.75 @150/200 | negative |
+| short_diagnostic | CONDITIONAL_SHORT_DIAGNOSTIC_NOT_EXECUTABLE_ALPHA | per-order: train +1.1562 (n=377), val +2.257 (n=119), late -1.5353 (n=339 known + 4 UNKNOWN); borrow/SSR unverified | late negative |
+| overnight | negative_at_all_cost_rungs | chosen qA late -1.1466 %/day @100 (n=954 known + 4 UNKNOWN); -1.62/-2.10 @150/200 | negative |
+| learned_sparse_extension (rare) | DISCOVERY-NOT-VALIDATED | h60 thr0.03: val +0.0907 %/day (n=61); LATE +0.1417 %/day @100 (n=143, 124 traded days, 8/16 months, +0.9869 %/order), +0.0694 @150, -0.0026 @200; quote audit 77/143 covered | ONLY positive lead |
+| micro_flow | no_edge_at_any_cost | late -1.0333 %/order @0 residual, -2.0181 @100 (book -1.0891 %/day); 58 dev dates UNKNOWN -> dev means are lower bounds | negative |
+| micro_reclaim | not_positive | late -0.4533 %/order @0 residual, -1.4438 @100 (book -0.8986 %/day), 1 UNKNOWN | negative |
+| bid_backed_burst | DIAGNOSTIC not promoted | val @100 -0.8203 %/day (CI [-1.1788,-0.5876], 0 unknown); late @100 -0.9803, @150 -1.2225 %/day | negative |
+
+**Best candidate mechanism (keep, do not kill):** learned_sparse_extension h=60
+thr=0.03 — the sparse LightGBM payoff model's rare tail on the open-anchored panel:
+late block +0.1417 %/day of the $3,000 book at 100bps (143 known fills / 124 traded
+days, 8/16 months positive, +0.9869 %/order; +0.0694 %/day at 150bps).
+DISCOVERY-positive, NOT validated, and RETAINED (not closed, not failed): CI includes
+zero; the 30<=known<100 window was the exploratory lane's initial selector floor
+(traded_days>=30), not a one-number veto — the late block already carries 143 known
+fills over 124 traded days; non-pristine late block; quote audit 77/143 pairs (66
+pairs UNKNOWN, not cash). Worst measured month -1.1858 %/day of book (2026-02) is a
+reported regime/tail risk, not a kill; promotion still requires the standing power
+doctrine (>=6 months pooled dev + >=2 pre-registered unseen collision months at
+100bps) cleared on a pristine block.
+
+**Precise missing data:** whole-portfolio side-aware quote audit (77/143) +
+capacity/queue realism at order size; a pristine holdout block (2024/2025-01 sealed,
+2026-06..08 protected); forward/unseen validation under the standing power doctrine
+(>=6 months pooled dev + >=2 pre-registered unseen collision months at 100bps) on a
+pristine block — the >=100-known-fills figure is the historical lane-selector floor
+(primary vs exploratory), not a blanket veto; exit/stop-risk and re-entry-frequency
+evidence — DELIVERED by the 2026-10-09 NIGHT-WAVE packet (the four former
+IN_PROGRESS night-extension workers are the completed wave; source of record
+`factory/artifacts/alpha_night_extensions.json`, 857,352 bytes, sha256
+e5d77d39cbaf90c5981c38a696eafed09ec9d963a74858a40d0bbe8345f8e683, status
+COMPLETE-4-OF-4-EXTENSIONS, kind ALPHA_NIGHT_EXTENSIONS_NOT_GOAL_COMPLETION — the
+NIGHT-WAVE outcomes block below supersedes the IN_PROGRESS wording; absence was NOT
+a negative and the full validation objective stays active); official real-time feed
+($99/mo = $1,188/yr SIP, Alpaca market-data docs Oct 6) only if a yearly 24/7 service
+framing is required (current service: regular US sessions, 252/yr).
+
+**Replay (cwd = repo root):** packet:
+`uv run --no-sync python factory/scripts/alpha_search_report.py --root ~/alpha-data/open-search-v1 --out factory/artifacts/alpha_search_20261008.json`;
+families: `alpha_open_events.py`, `alpha_open_learned.py` (replay
+`--horizon {15,60,390} --threshold {0.01,0.03,0.05} --period ... --cost 100`),
+`alpha_sequence_payoff.py run --npz data/atlas/sequence/v1/runs/causal/block/embeddings.npz`,
+`alpha_proven_push.py`, `alpha_short_diagnostic.py`, `alpha_open_overnight.py`,
+`alpha_sparse_model_extension.py` (+ mandatory `alpha_quote_audit.py --trades .../trades_confirmation_100.parquet --out .../learned_sparse_extension/quote_confirmation --latency-ms 250 --max-age-s 2.0 --order-budget 1000`),
+`alpha_micro_flow.py --stage all`, `alpha_micro_reclaim.py report`,
+`alpha_bid_backed_burst.py --command report` (all `uv run --no-sync python`, outputs
+under ~/alpha-data/open-search-v1/<family>). Models: `learned/models/payoff_h{15,60,390}.joblib`
++ feature_order.json (`alpha_open_learned.load_models/score_frame/feature_matrix/make_signals`).
+
+**Execution risks:** minute-open proxy in six families — quote support is not a
+guaranteed fill; micro ASK@+250ms/BID@target touches are capacity-checked at $250/side
+but still not fill guarantees; 0bps residual = diagnostic, not a free fill; UNKNOWN
+exits charged -100% of order budget (never dropped, never cash); no-fill intents keep
+cash, no fee (not losses, not cash returns); confirmation block previously explored,
+NOT pristine; short borrow/SSR/locates/margin unverified; micro_flow 58 UNKNOWN dev
+dates -> development figures are lower bounds; micro book assumes margin-style funded
+cash reuse. A row positive only at low residual cost or with UNKNOWN fills present is
+reported as such, never as a pass.
+
+**NIGHT-WAVE outcomes (2026-10-09) — four extensions COMPLETE; source of record
+`factory/artifacts/alpha_night_extensions.json` (857,352 bytes, sha256
+e5d77d39cbaf90c5981c38a696eafed09ec9d963a74858a40d0bbe8345f8e683; status
+COMPLETE-4-OF-4-EXTENSIONS, kind ALPHA_NIGHT_EXTENSIONS_NOT_GOAL_COMPLETION; every
+program DISCOVERY-NOT-VALIDATED; packet goal OPEN — not a self-issued completion;
+base packet referenced by path+SHA 8887fb1e… only).** The four earlier IN_PROGRESS
+night workers are this completed research wave.
+
+| extension | verdict | key readings | status |
+|---|---|---|---|
+| sparse_daily re-entry (SAME immutable payoff_h60.joblib, 26 features, no refit) | repeat_h60 val-positive; DISCOVERY-NOT-VALIDATED | val $/day @100bps: repeat_h60 +$2.8387 > control once_h60 +$2.7222 (exact original reproduction) > repeat_h30 +0.9254 > repeat_h30_strong -0.4563 > repeat_h15 -1.1317; LATE +0.0018926/day = +$5.6778/day = **+$1,430.80/yr simple**, 157 known fills / 0 UNKNOWN on the same 124 traded days; +14 added legs net +$33.84/leg; repeat_h30 legs -$9.23/leg; new-cohort quote audit 85/157 (+2.7513%/fill @0 extra), 72 UNKNOWN | BEST MEASURED lead (not global best, not live-filled) |
+| sparse_execution_frontier (actual touch, L1 capacity) | DISCOVERY-NOT-VALIDATED | late @$1k/250ms/2s: 79/143 L1-supported (55.2%), covered +2.5102% = +$25.10/fill, CI95 [-2.02,+7.19]% incl. zero; observed covered $1,505.23/yr ($317.23 net of SIP); $2,724.66/yr conditional-not-confirmed; val61 $111.03/yr covered; 4 latencies x 5 sizes x 0/10/25/50bps, no best-latency pick; 8/8 missing legs acquired (RKDA/RPGL/JCSE/CODX, HTTP 200); qty-0 corrected to known no-order | touch cost, not fills |
+| sparse_exit_management (paired stop10/stop15 vs hold60m) | DISCOVERY-NOT-VALIDATED; keep BASE hold60m | val selection @+25bps unknown-full-loss coding bound (frozen pre-late): hold60m -0.0383711; stop10 -0.0374688 (highest bound); stop15 -0.0407160 — not measured portfolio EV; paired val 31 known pairs worsened 10 vs improved 8 (delta mean -0.79%); late whole-book bound -$38,069.40/yr = SYNTHETIC unpriced-UNKNOWN charge, NOT expected loss (known-covered contribution -$876.63/yr); stops clamp the tail but cut recoveries (25 gaps mean -100.1bps, worst -368.1bps); base reproduction exact | stop risk priced, no promotion |
+| micro_payoff (supervised 5/15s scalp) | no_edge_at_any_cost for THIS fixed model | fit 2021-05-03..10-29 (127 days); chosen h5 thr0.001 frozen before late — validation EMPTY (0 signals/0 fills/250 days = actual no evidence, NOT a measured zero edge); late 187 days: 9 signals, 8 fills/6 days, -$0.0439/day @0 residual, -$0.0546 @10, -$0.0705 @25, -$0.1499 @100bps, 0/9 positive months, CI incl. zero | everyday goal measured-not-forced; no universal scalping-impossibility claim |
+
+**Implications for the ranking above:** (a) the retained h60 tail is still the ONLY
+positive family and its best MEASURED form is the repeat cadence — 119.17 fills/yr
+(157/332 x 252) on the same 124 traded days, ~10 fills/month, still not a daily
+program; (b) stops do not pay on this signal — keep the base 60m exit; (c) the fixed
+micro learner produced no frequent profit — scalping frequency was investigated with
+real quotes and stays negative for that formulation, while no impossibility claim is
+licensed; (d) promotion still requires the standing power doctrine on pristine data
+(2024/2025-01 sealed, 2026-06..08 protected) plus L2/actual-fill evidence; the
+everyday-goal search stays ACTIVE. Cash-reuse framing per CURRENT Alpaca docs
+(2026-04-27 intraday-margin rule; 2026-07-06 PDT changelog): PDT designation, the
+4/5-day cap and the $25k floor are REMOVED; house intraday-buying-power and asset
+eligibility still apply and remain unverified; no account CAGR; cash-account
+settlement not modeled.
 
 Premise (working, not axiom): extreme top-gainer momentum contains real inefficiency.
 Retail extracts it live. Our formulations have been wrong, not necessarily the thesis.
 Adversarial check lives at the bottom and stays open. EV is the sole criterion for
 every entry below: does this serve potential profitability?
+
+## WAVE-2 (2026-10-09) formulation entries  -  real-quote battery; LEAD entries + falsifiers
+
+Source of record for every number below: `factory/artifacts/wave2_alpha_search_summary.json`
+(sha256 17515f55be035139ef1b731a03e01a8b4ac0cb9368e34d590568671a2f170273; 10 lanes with
+verbatim decision texts). Quote acquisition covers the full admitted PANEL universe
+across all 1,003 sessions (train 421 / validation 250 / confirmation 332, the latter
+previously explored  -  NOT pristine). Dollar figures are $/calendar day at the 25bps rung
+on the stated book ($750 or $3,000), simple 252-session convention, not a CAGR.
+
+CLOSED NEGATIVE (no new hypothesis entry; do not reopen without a genuinely new mechanism):
+- opening-range pullback: all six views negative on both blocks at every rung (best
+  validation pullback_retest@15m -1.21 $/day, 233 known fills).
+- liquidity recovery after flush: DIAGNOSTIC, nothing promoted; least-bad
+  flip_first_positive_1s hold900 val -0.31851 / conf -0.35026 fraction of book/day,
+  0/9 positive confirmation months (parent-reported; the lane's results.json is absent
+  at write time).
+- multi-session carry: NO_EDGE_EVIDENCE  -  a dead gate, not a robustness statement; only
+  3 funded intents per view, all exits UNKNOWN, every view $0.00/day.
+- cross-name rotation: negative OOS (late -1.26 $/day); touch-only baselines -61.15
+  validation / -62.31 late $/day; lgbm_rank family produced 0 fills at every bar (a
+  limitation: untested by construction, not falsified).
+- hour-of-day learner: negative on both blocks (late -1.07 $/day; validation partial
+  +0.098 $/day over 25 known fills with whole-basis -3.90 $/day).
+- h390 whole-day hold: all 12 cells negative on 2023 validation (best -11.56 $/day)
+  vs the frozen repeat_h60 reference (VAL +4.88 / late +9.28)  -  parent-reported,
+  artifact absent at write time.
+
+New formulation entries (machine records: factory/HYPOTHESES.jsonl H044-H046; every
+study status DISCOVERY-NOT-VALIDATED):
+- **H044  -  passive mid resting entry + TTL** (alpha_passive_quote_confirmation.py):
+  resting mid-quote limit with a time-to-live on the immutable learned h60 sparse
+  selector at theta 0.0200 earns quote-supported fills the marketable lanes miss
+  (chosen h60_thr200bps_mid_ttl120s validation +4.66 $/day on $3,000, late +8.59
+  $/day; non-chosen late ttl30 +12.15 $/day). Falsifier = the UNKNOWN share: 57.7% of
+  validation and 54.0% of late attempts are UNKNOWN (105/182 and 189/350), the
+  full-loss lower bounds are -415.34 / -560.69 $/day, and a resting quote-supported
+  fill is not an exchange-fill guarantee.
+- **H045  -  adaptive depth participation** (alpha_adaptive_depth_sizing.py): the same
+  h60 head with an integer quantity causally capped by BOTH displayed top-of-book sides
+  at 50% depth participation (validation +1.36 $/day on $3,000, 53 known + 8 UNKNOWN =
+  12.9%; late +5.95 $/day, 122 known of 142 attempts). Falsifier = cost fragility:
+  already negative at the 125bps rung on validation (-0.10 $/day); displayed depth is
+  capacity visibility, not a fill guarantee.
+- **H046  -  retained h390 whole-day hold** (alpha_retained_h390_lane.py): the h390 head
+  held to the session close under delay/threshold/cadence cells. Falsifier = the
+  validation-negative block: all 12 cells negative on 2023 validation (best -11.56
+  $/day) while the late block is strongly positive (+12.01 $/day chosen once_d2_thr050;
+  +37.21 $/day non-chosen d2_thr030) against the frozen repeat_h60 reference — a
+  val-negative/late-positive split is regime evidence, not promotion grounds
+  (parent-reported; artifact absent at write time).
 
 Settled facts: researches/STATE.md (current snapshot; CANONICAL_STATE.md is frozen history).
 Measurement contract: ET clocks, causal-only, 1-bar lag, open-anchored gains,

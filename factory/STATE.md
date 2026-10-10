@@ -2327,3 +2327,394 @@ amended (single-strategy freeze moves to Phase 3). Sealed 2024/2025-01 outcomes 
 2026-06..08 remain untouched; no BASKET computation has touched them. Sim-core engine build
 + leaderboard-truth worker launched; family runs start only after the engine passes its
 canaries and this freeze commit exists.
+
+## 2026-10-08 — open-anchor research program consolidated (documentation pass; MAIN checkout)
+
+Append-only status entry for the four research documents (researches/STATE.md,
+researches/HYPOTHESES.md, factory/STATE.md, HANDOFF.md). The 2026-10-01..06 chronicle
+(CV01, HARVEST01, LIFECYCLE-01, H042/EXP-87 verification wave, ENTRY-EV-01 Stage A,
+EXP-90 scope correction, H025 print-resolution, EXP-95) lives in the ACTUAL worktree
+basket-phase2-f1 (HEAD 203ddaf) and is deliberately not duplicated into this root;
+this root's September entries above stay as written (history, not deleted).
+
+**H025 flush-bid is HISTORICAL.** The 2026-09-11/13 OOS pass entries above (pf>=2
+n=381, +1.14%/trade net100bps, 2024-01..2025-02, plus the backbone replication) stand
+as historical evidence only — they are non-executable. Print-level resolution
+(worktree, 2026-10-06; evidence factory/artifacts/h025_research/ in that worktree)
+resolved the rule NEGATIVE: pf2-preorder +0.66% legacy -> -1.72% resolved
+(pessimistic -1.86%); all-orders +0.09% -> -2.27%; negative every year 2021-2026;
+exit surface 0/29 policies positive; PRE-REG-STABILIZE-01 confirmation 32/32 cells
+negative; resolved-fill pocket scan no positive bin; entry-discount surface negative
+at every depth; qualification curves 0/13 pessimistic positive. H025 route CLOSED;
+the paper bot must not be armed on this rule (it is not running; LIVE+KILL flags are
+present in this MAIN checkout — cleanup/arming is the user's decision). No bot flag,
+order, deploy action or protected read was performed by this program.
+
+**New independent program (MAIN checkout; producers currently untracked — no git
+commit made).** Open-anchored top-gainer research on the shared SIP full-PIT
+substrate, deliberately independent of the dead flush rule and of previous-close
+denominators (no prev-close features, so the AMV/GHSI denominator class cannot
+propagate). Producers factory/scripts/alpha_*.py (open_panel, open_sim, open_events,
+open_overnight, open_learned, sequence_payoff, proven_push, short_diagnostic,
+quote_audit, micro_core, micro_flow, micro_reclaim). Data root
+/home/hillel/alpha-data/open-search-v1 (Linux local disk; contract.json pins:
+admission = full-PIT SIP B snapshot top-10, gain>=5%, $1 floor, fresh price; 5-minute
+causal clock, OHLCV strictly et<t and last actual bar must be t-1; entry = minute-t
+open proxy with bar-less minutes left unfilled in cash; fixed-time exits at first
+actual open >= entry+h; unresolved exits stay UNKNOWN and are never dropped;
+round-trip costs 100/150/200bps). Blocks: fit 2021-02..2022-12, validation 2023,
+out-of-fit confirmation 2025-02..2026-05 (previously explored market periods, NOT a
+pristine holdout). Protected 2024 / 2025-01 / 2026-06..08 never read. Shared Windows
+data mount C: holds ~24Gi free; all bulk outputs stay on Linux storage. Per-study
+outcomes (registered study families: events, learned [models + surface validation +
+frozen contract + quote audits], sequence, proven_push, short_diagnostic,
+overnight, micro_flow, micro_reclaim — later extended with learned_sparse_extension
+and bid_backed_burst) are published ONLY from the generated packet
+factory/artifacts/alpha_search_20261008.json; the producer was executed by the
+parent after the remaining runs landed, and the packet's numbers are appended in the
+packet addendum entry directly below (and in researches/HYPOTHESES.md). This entry
+itself carries no per-study numbers.
+
+## 2026-10-08 (packet addendum) — BASE-WAVE outcomes from the generated packet
+
+The parent executed the producer (`uv run --no-sync python factory/scripts/alpha_search_report.py --root
+~/alpha-data/open-search-v1 --out factory/artifacts/alpha_search_20261008.json`, exit 0). Packet:
+`factory/artifacts/alpha_search_20261008.json`, status COMPLETE, asof 2026-10-08, sha256
+71acbc2a5288b162ddf3ff072717dc86134c7b4b2c38a437c79ad8244b350529 (823,200 bytes; generator script sha
+c766671c4e7291f368806c4c0446077339402cdccb21e578775de80e1679bc90)  -  the packet has since been
+regenerated (see the attribution-correction entry below; current generation sha256
+dea9e466017a4ccf36ce76a4ffc977f6b4d0726e9e3608d06bf1fadee965b461, 837,893 bytes, with all headline
+values re-verified unchanged). Ten registered studies = the 8 base
+families + learned_sparse_extension (rare secondary probe) + bid_backed_burst. Panel: 1,066 days /
+1,076,304 rows (train 484 / validation 250 / confirmation 332; confirmation 2025-02..2026-05 NOT a
+pristine holdout). Books: $3,000 = 3 x $1,000 slots (open families); $750 = 3 x $250 (micro families).
+`%/day` = mean_daily_lower_bound_book_pct; `%/order` = mean_net_known_fill_per_order_pct.
+
+Outcomes (all values from the packet; UNKNOWN fills charged -100% of order budget, never dropped):
+
+- events — FROZEN_DIAGNOSTIC_NO_EDGE. Val chosen squeeze_release_h390 -0.2429 %/day @100bps (n=352
+  known); late -1.7345 %/order (n=543 known + 8 UNKNOWN) = -1.7489 %/day; -2.0161/-2.2819 %/day
+  @150/200. all_known_negative=true.
+- learned — frozen h15 thr0.01: val +0.0926 %/day @100 (n=208, CI [-0.3028,+0.5871]); late -0.2922
+  %/day @100 (n=447, CI [-0.7199,+0.1619]); -0.5146 @150, -0.7359 @200. Quote audits NOT whole-
+  portfolio certified (val 132/208, late 218/447 pairs UNKNOWN). Val-positive subset only.
+- sequence — no_selected_head_positive_on_late_block: late h60/scale30 -0.3752 %/day (n=235), h15
+  -0.6057 %/day; TCN encoder fit unsupervised on all 734 fit-block days 2021-02..2023-12 (validation
+  exposure).
+- proven_push — negative_at_all_cost_rungs: late -1.8365 %/order (n=1680) = -3.0976 %/day @100;
+  -3.9251 @150; -4.7458 @200.
+- short_diagnostic — CONDITIONAL_SHORT_DIAGNOSTIC_NOT_EXECUTABLE_ALPHA (per-order unit, NOT a book %):
+  train +1.1562 %/order (n=377), val +2.257 (n=119), late -1.5353 %/order (n=339 known + 4 UNKNOWN)
+  @100; -2.0285 @150; -2.5216 @200; borrow/SSR/locates/margin/buy-in unverified.
+- overnight — negative_at_all_cost_rungs: chosen qA late -1.1466 %/day @100 (n=954 known + 4
+  UNKNOWN); -1.6221 @150; -2.0952 @200; val -2.6414 %/day.
+- learned_sparse_extension (rare secondary probe) — DISCOVERY-NOT-VALIDATED, the ONLY positive family,
+  RETAINED as the lead (not closed, not failed): h60 thr0.03 val +0.0907 %/day (n=61, CI
+  [-0.2759,+0.5043]); LATE +0.1417 %/day @100bps (n=143 known, 124 traded days, 8/16 months
+  positive, worst measured month -1.1858 %/day of book (2026-02), +0.9869 %/order), +0.0694 %/day
+  @150, -0.0026 @200; CI includes zero; the 30<=known<100 window was the exploratory lane's initial
+  selector floor, not a one-number veto (the late block already carries 143 known fills over 124
+  traded days); quote audit covers 77/143 pairs, the other 66 UNKNOWN not cash
+  (whole_portfolio_certified=false); promotion still requires the standing power doctrine (>=6
+  months pooled dev + >=2 pre-registered unseen collision months at 100bps) on a pristine block.
+- micro_flow — no_edge_at_any_cost: late -1.0333 %/order @0 residual (book -0.5577 %/day), -2.0181
+  @100 (-1.0891 %/day); 58 development dates UNKNOWN (raw '?' quote flags) so development means are
+  worst-case lower bounds, not observed edges.
+- micro_reclaim — not_positive: late -0.4533 %/order @0 residual (-0.4636 %/day), -1.4438 @100
+  (-0.8986 %/day), 1 UNKNOWN.
+- bid_backed_burst — DIAGNOSTIC not promoted (chosen 15s horizon least-bad): val @100 -0.8203 %/day
+  (CI [-1.1788,-0.5876], 0 unknown days); late @100 -0.9803, @150 -1.2225 %/day.
+
+Best candidate mechanism: learned_sparse_extension h=60 thr=0.03 (sparse LightGBM payoff model, 26
+causal open-panel features, no previous-close features) on its rare tail — RETAINED, discovery-
+positive, not closed and not failed. Exact annualization from the packet's own source facts
+(regular 252-session service, before operating costs and tax, SIMPLE not CAGR): (143/332) x 252 =
+108.542 fills/yr x $1,000 order x +0.9869 %/order = $1,071.196/yr = 35.7065% of the $3,000 book;
+the $2,510.991/yr all-fills figure holds ONLY if the 77/143 quote-covered pairs (mean +2.5716
+%/order @0 extra, +2.3134 @25) represent all fills — representativity NOT confirmed; the 66
+uncovered pairs stay UNKNOWN, not cash; stress is the measured 100/150/200bps rungs (1000bps was
+never used; no one-number sample/CI/cost-stress veto); official SIP = $99/mo = $1,188/yr unless
+already covered. Precise missing data to promote: whole-portfolio side-aware quote audit (77/143)
++ capacity/queue realism at order size; a pristine holdout block (2024/2025-01 sealed, 2026-06..08
+protected); forward/unseen validation under the standing power doctrine (>=6 months pooled
+development + >=2 pre-registered unseen collision months at 100bps) on a pristine block — the
+>=100-known-fills figure is the historical lane-selector floor (primary vs exploratory), not a
+blanket veto; exit/stop-risk and re-entry-frequency evidence. Wave status: this BASE-WAVE packet
+(ten studies) is COMPLETE for its registered wave only; the four night-extension workers
+(quote/service + execution frontier; stop-risk; daily frequency/re-entry h15/h30; supervised micro
+5/15s) remain IN_PROGRESS — their results are NOT in this packet, absence is NOT a negative, and
+the full validation objective stays active.
+
+Execution risks (standing): minute-open proxy in six families (quote support != guaranteed fill);
+micro ASK@signal+250ms / BID@target touches capacity-checked at $250/side, still not fill guarantees;
+0bps residual = diagnostic, not a free fill; UNKNOWN exits never dropped and never cash; no-fill
+intents keep cash, no fee (not losses, not cash returns); confirmation block previously explored (NOT
+pristine); short borrow/SSR unverified; micro_flow 58 UNKNOWN dev dates; micro book assumes
+margin-style funded cash reuse. No live flags/orders changed; no deployment. Replay commands and the
+full table are in researches/STATE.md / researches/HYPOTHESES.md CURRENT 2026-10-08 and HANDOFF §17.
+
+## 2026-10-08 (attribution correction) — base-wave packet regenerated
+
+The original base packet identity above records the first run. The parent regenerated
+`factory/artifacts/alpha_search_20261008.json` after fixing the selected-horizon headline
+and deriving annualized confidence bounds from the actual bootstrap artifact. Current
+packet: 832,676 bytes, sha256
+`8887fb1e74ff1abdb763a4c3f9aad332f2cefc1a34c53b4ce709d11b071ff157`;
+producer sha256 `4cc0bd555a865e87edaa2d57ab3af3f3dc9c6e39df7f56ab621f230de8e82ed3`.
+Chosen BID horizon remains 15 seconds; its late 100bps-residual result is -0.9803% of
+the research book per day, not the non-selected five-second view. The retained sparse
+lead and its underlying returns are unchanged. Four night-extension studies remain
+in progress; this correction is not a claim that the full research goal is complete.
+The parent also passed 34 causal/accounting/quote/streaming boundary regressions.
+
+## 2026-10-09 — NIGHT-WAVE (four night extensions) packet outcomes — best MEASURED
+## candidate is the repeat cadence of the SAME frozen h60 model; goal stays OPEN
+
+This entry supersedes the "four night-extension studies remain in progress" wording in
+the 2026-10-08 entries above (append-only history kept). Night packet:
+`factory/artifacts/alpha_night_extensions.json`, 857,352 bytes, sha256
+`e5d77d39cbaf90c5981c38a696eafed09ec9d963a74858a40d0bbe8345f8e683`, status
+COMPLETE-4-OF-4-EXTENSIONS, kind ALPHA_NIGHT_EXTENSIONS_NOT_GOAL_COMPLETION, asof
+2026-10-09; the base packet is referenced by path+SHA only (8887fb1e…, 832,676 bytes).
+Producer (read-only): `uv run --no-sync python factory/scripts/alpha_night_report.py
+--root ~/alpha-data/open-search-v1 --base factory/artifacts/alpha_search_20261008.json
+--out factory/artifacts/alpha_night_extensions.json`. Script sha256 recorded in the
+packet's generator lineage: eec4bcdfcfec7cdbe218a51266fe37aaf7acb78a27e71a911103b9108c2e8a25;
+the on-disk script sha differs (92b7afce…) because the RuffsafeFixAll+one-file formatter
+pass changed source hashes after this run — packet SHAs stay the actual-run identity
+until the parent regenerates reports (no financial change). Every program is
+DISCOVERY-NOT-VALIDATED; the packet's goal_status is OPEN and it is NOT a self-issued
+goal completion. "Best measured candidate" below = best MEASURED on previously
+explored blocks, not global-best and not live-filled.
+
+**1) sparse_daily (daily frequency / re-entry; program alpha_sparse_daily.py,
+output ~/alpha-data/open-search-v1/learned_sparse_daily, runtime 90.8s).** SAME
+immutable 2021-22 LightGBM `learned/models/payoff_h60.joblib` (sha256
+c5493c6c043a22e544ca98aa4fb5620292d4a1aeb370f63f6492907334f0bf96, 26 causal features,
+no refit/HPO/feature/ticker changes); only the admission CADENCE varies. Chosen on
+2023 validation $/day @100bps, never on late outcomes: repeat_h60 (thr0.03 |
+quality=none | exit_h60 | flat 15-min cooldown | max 3 attempts/ticker/day)
++$2.8387/day > control once_h60 +$2.7222/day (+0.000907 of the $3,000 reserve, exact
+reproduction all_match=true) > repeat_h30 +0.9254 > repeat_h30_strong -0.4563 >
+repeat_h15 -1.1317. Val repeat_h60: 67 known fills / 55 traded days. LATE block
+(2025-02..2026-05, 332 days; previously explored, NOT pristine): +0.0018926 of the
+$3,000 book/day @100bps = +$5.6778/day = **+$1,430.80/yr simple (x252)**, 157 known
+fills / 157 attempts / 0 UNKNOWN on the SAME 124 traded days, +0.000305 @200bps.
+Incremental value of the added legs (vs the same-cadence first-attempt baseline):
++14 legs/net +$33.84 per added fill = +$1.4270/day (+$473.76 total); on validation
++6 legs at +$4.86/leg. Shorter re-entries do NOT carry: repeat_h30 added legs
+-$9.23/leg late, repeat_h15 tiny +$1.05/leg late but validation NEGATIVE
+(-$1.13/day), repeat_h30_strong only 6 val / 14 late attempts and val-negative —
+no trend-follower churn. Quote audit of the NEW repeat cohort (separate downstream
+stage, never attributed to the replay economics): 157 trades, 85 quote-supported
+(54.14%), 72 UNKNOWN; covered mean net +2.7513%/fill @0 extra residual, +2.4918 @25,
++2.2366 @50, +1.7249 @100; whole_portfolio_certified=false (a quote is not an
+exchange fill). Scale: $3,000 reserve = 3 x $1,000 tickets, no leverage; annual
+capital density 47.69%, mean peak deployed $403.72, mean 0.218 positions open;
+NOT a capacity claim (L1 depth at $1,000 unpriced). Frequency honesty: (157/332)x252
+= **119.17 fills/yr on the same 124 traded days** — ~10 fills/month, NOT a daily
+program. Cash-reuse/eligibility framing per CURRENT Alpaca docs (updated 2026-04-27,
+"Understanding the new intraday margin rule"): pattern-day-trader designation, the
+4-trades/5-days cap and the $25,000 minimum are REMOVED and non-leveraged margin
+accounts re-enter without T+1 locks (PDT account/config fields removed in the
+2026-07-06 changelog); sufficient-equity and house intraday-buying-power rules still
+apply and remain UNVERIFIED here; no account CAGR, cash-account settlement not modeled.
+
+**2) sparse_execution_frontier (quote service + capacity/latency ladder; program
+alpha_sparse_execution_frontier.py, runtime 849.1s).** Actual ASK/BID touch at
+arrival latency with L1 capacity check; latencies 250/1000/2000/5000ms (250ms = base
+evidence, never a best-latency pick), primary as-of quote age 2s (the 15s stale leg
+is a corroborated scenario, separate), sizes $250..$5,000, residuals 0/10/25/50bps.
+Integer-qty=0 quarter-budget pairs corrected to a KNOWN no-order cash class
+(n_known_no_order; never an UNKNOWN loss, never a false fill; $1,000 cohort has zero
+such rows so q>=1 economics are unchanged). All 8 missing-quote legs acquired
+read-only (HTTP 200; RKDA 2023-12-28, RPGL 2026-01-30, JCSE 2026-03-30, CODX
+2026-05-26) merged OVER the ranked cache. Late cohort @$1,000/250ms/2s: 143
+intents, 110 priced, 79 L1-supported (55.25%), 64 UNKNOWN; covered mean net
++2.5102% = +$25.10/fill, covered win 40.5%, PF 1.379, worst -30.26%, 73 covered
+traded days, day-bootstrap CI95 [-2.02%, +7.19%] (includes zero). Observed covered
+contribution $1,505.23/yr; net of the $1,188/yr SIP plan $317.23/yr; the $2,724.66/yr
+whole-case figure is CONDITIONAL on the unknown 64 matching the covered (NOT
+confirmed). Validation cohort: 41/61 supported, +1.0746%/fill = $111.03/yr observed
+covered. Other-venue depth, L2 and actual fills remain UNKNOWN — an L1 shortfall is
+unmeasured, never 'cannot fill'.
+
+**3) sparse_exit_management (paired stop-risk; program
+alpha_sparse_exit_management.py, runtime 669.9s).** Entries/quantities immutable;
+policies hold60m (original control at actual NBBO touch) vs quote-triggered stop10 /
+stop15 (market exit on first regular BID <= entry_ask*(1-L) after fill-ack +250ms;
+priced at arrival BID or the first subsequent valid regular quote in a halt gap;
+never filled at the stop level). Selection on the 2023 validation calendar lower
+bound @+25bps only, frozen 2026-10-09T02:39:27+0300 BEFORE late outcomes:
+hold60m -0.0383711 / stop10 -0.0374688 / stop15 -0.0407160 (all negative) -> chosen
+stop10 by the validation lower bound with the data-unknown count caveat (validation
+stop10 prices only 34 of 61 fills; the other 27 are UNKNOWN, so the all-calendar lower
+bound that picked stop10 is dominated by unknown-charging conventions). Late headline stop10 @25bps: whole-book
+lower bound -$38,069.40/yr — a SYNTHETIC convention charging every UNKNOWN leg a full
+$1,000 unit (49 UNKNOWN legs of the 143; 94 known), explicitly NOT observed PnL and
+NOT an expected loss;
+covered EV -$876.63/yr; known-only -$876.63/yr at 71.35 known fills/yr. Paired
+validation (31 known pairs): worsened 10 vs improved 8, unchanged 13, delta mean
+-0.79% (-$245.49 per 1,000 units), delta median 0, p05 -12.51% / p95 +7.93%. Stop
+mechanics: 28 triggers, 25 stop-through gaps (mean -100.1bps, worst -368.1bps);
+stops clamp the worst tail (control worst-5 net -32.2% vs policy -10.3%) but CUT
+recoveries — the covered actual stop is WORSE than the control, so the BASE hold60m
+policy is kept. Base reproduction exact (val +0.0009073964, late +0.0014169262,
+match=true). The late control's 92 known fills price exits resting-until-next-regular
+-quote (90/92 after the supplement rerun); the original base study's 77 known pairs
+used the instant-quote protocol — different price protocols, annotated, never blended.
+
+**4) micro_payoff (supervised 5/15-second scalping learner; program
+alpha_micro_payoff.py).** Fit on the FULLY covered development months 2021-05-03..
+2021-10-29 (127 days, 214,506 states per head, 5s sampling, equal-day weights,
+labels clipped [-0.2,0.3] fit-only); validation = all 2023 (250 days); late =
+2025-09..2026-05 (187 days). Chosen BEFORE any late record: h5, thr0.001 on 10bps
+residual — validation is EMPTY (0 signals / 0 fills over 250 days, 546,586 qualified
+states): an ACTUAL no-evidence outcome, NOT a measured zero edge (no power floor
+applied). Late: 9 signals, 8 fills on 6 traded days; mean daily net -$0.0439 @0
+residual (-$1.03/fill, win 37.5%, PF 0.396, worst -$6.83, best +$3.75), -$0.0546
+@10bps, -$0.0705 @25, -$0.1499 @100; annualized -$11.07 / -$13.75 / -$17.77 /
+-$37.78 on the $750 (3x$250) book; 0/9 positive months; day-bootstrap CI includes
+zero. Verdict no_edge_at_any_cost for THIS FIXED model — the everyday/scalping goal
+was MEASURED, not forced, and this is NOT a universal claim that micro/scalping is
+impossible; it falsifies only this formulation on this substrate.
+
+**Retained-lead mechanism profile (descriptive only; producer
+factory/scripts/alpha_retained_mechanism.py, runtime 20.2s, output
+~/alpha-data/open-search-v1/alpha_retained_mechanism/profile.json, sha256
+4d6d23d8ef73e9a14d552bf9cb4cce85d806612f4a9c4c4a2641bb509f7b8230).** The rare h60
+head earns a DEEP-DRAWDOWN-RECOVERY-IN-STRONG-INTRADAY-UPTREND state, not positive
+chase: validation medians gain_open +62.7% vs open, -15.2% off the day high, +12.8%
+vs VWAP, ret3 +0.50% / ret15 -2.26%, dv_accel 1.33x, entry ~33min off the high ~80min
+after admission at rank 1 (late block: +56.3% vs open). Calibration is GROSS vs
+GROSS: predict_gross 3.688% vs realized_gross 2.132% (val, error +1.557pp) and
+3.657% vs 2.002% (late, error +1.656pp) — never compared to net (+1.116%/+0.987%).
+Quote coverage is endogenous: late quoted-77 proxy mean +2.111% vs unresolved-66
+-0.325% (gap +2.436pp), so the covered subset cannot certify the 143-trade portfolio;
+entry ASK sits ABOVE the entry bar-open (mean +29.6bps, median +20.8, p90 +64.5) —
+paying up, not a cheap-entry story. Pair economics (77 pairs, exact identity): actual
+price return +2.546% vs proxy gross +3.137% -> pure price effect -0.592pp; idle
+rounding +0.026pp; actual-touch net @25bps +2.313% vs proxy net @100bps +2.111% ->
+net difference +0.202pp (fee-model wedge +0.768pp). TOD/price-band splits are
+DESCRIPTIVE ONLY (late dollars concentrate in the 3-5 and >=10 price bands and late
+TOD; the 1-3 band is negative) — no new post-hoc filter, training or picks.
+
+**Standing guardrails carried into the record:** no arbitrary 100-fill / CI /
+cost-stress veto (100bps is the bookkeeping baseline rung; CIs include zero and are
+reported, not kills); UNKNOWN outcomes are counted, charged the producer's full-unit
+lower bound, never cash, never dropped; a known no-order keeps cash and is never a
+loss; the whole-book lower bounds of the exit study are synthetic unpriced-UNKNOWN
+conventions, NOT expected loss; the 252-session simple annualization is never a CAGR
+and a daily-reset research book does not self-finance; $1,071.196/yr (base h60) and
+$1,430.80/yr (repeat h60) are research estimates at the tested $3,000/$1,000 sizing,
+before operating costs and tax, with no guaranteed or projected profit claimed.
+
+**News/catalyst metadata access (repair, not alpha): artifact
+factory/artifacts/alpha_news_access.json (sha256 994d680337724eb360f41c259db78e6414eabc41f9308e9251d37b71b954f4e6).**
+VERIFIED_DATA_ACCESS_NOT_ALPHA_EVIDENCE: the observer's historical NewsClient call
+passed a list where `NewsRequest.symbols` requires a comma-separated string
+(fix: `NewsRequest(symbols=symbol, limit=10)` in factory/scripts/forward_observe.py
+:deep_snapshot). Parent smoke runs: AAPL 2023-01-01..06 -> NewsSet with 2 articles;
+RKDA 2023-12-27..29 -> 0 articles = a SUCCESSFUL EMPTY response, not a generic
+absence-of-news claim. Static future-catalyst availability is REAL but
+point-in-time limits are explicit: current article text/summaries/symbol tags may
+have been revised (created_at alone does not prove as-of visibility; updated_at
+implies version uncertainty, not absence), yfinance float is not PIT historical
+float, SEC shares-outstanding is dated but not float. Open data questions:
+immutable as-of catalyst text/version, dated security-to-issuer mapping, PIT float
+proxy. No catalyst or float profitability claim was inferred.
+
+**Remaining unknowns (execution + validation):** L2 depth beyond displayed
+top-of-book; actual exchange fill sizes/flags (no order telemetry exists, so a quote
+touch is not a fill guarantee); minute-bar feature publication latency (why the
+latency ladder is reported instead of assumed away); a pristine holdout block (2024 /
+2025-01 sealed, 2026-06..08 protected, never read); promotion still requires the
+standing power doctrine (>=6 months pooled dev + >=2 pre-registered unseen collision
+months at 100bps) on pristine data. Goal status: OPEN. Next actions: parent final
+regeneration of the reports after the source-hash-changing fix pass, then the
+documented SHAs update; whole-portfolio quote/certification work on the repeat
+cohort; no live flags/orders changed and nothing here is a deployment.
+
+**Replay commands (exact, cwd = repo root, all `uv run --no-sync python ...`; defaults
+are the paths actually used by the runs):**
+`factory/scripts/alpha_search_report.py --root ~/alpha-data/open-search-v1 --out factory/artifacts/alpha_search_20261008.json` (base packet);
+`factory/scripts/alpha_night_report.py --root ~/alpha-data/open-search-v1 --base factory/artifacts/alpha_search_20261008.json --out factory/artifacts/alpha_night_extensions.json` (night packet);
+`factory/scripts/alpha_sparse_model_extension.py --panel ~/alpha-data/open-search-v1 --out ~/alpha-data/open-search-v1/learned_sparse_extension` (original h60 model + trades);
+`factory/scripts/alpha_sparse_daily.py` (chosen repeat views; defaults out ~/alpha-data/open-search-v1/learned_sparse_daily; flags --resume, --days, --skip-late);
+`factory/scripts/alpha_sparse_execution_frontier.py` (defaults out ~/alpha-data/open-search-v1/sparse_execution_frontier; --only late143, --fetch-missing, --sizes, --residuals, --latencies, --max-age-s);
+`factory/scripts/alpha_sparse_exit_management.py` (defaults out ~/alpha-data/open-search-v1/sparse_exit_management; inputs default to the frozen learned_sparse_extension trades);
+`factory/scripts/alpha_micro_payoff.py run` / `... replay --horizon 5 --threshold 0.001 --period late --cost 10` (defaults out ~/alpha-data/open-search-v1/micro_payoff);
+`factory/scripts/alpha_quote_audit.py --trades <trades.parquet> --out <dir> --latency-ms 250 --max-age-s 2.0 --order-budget 1000` (as-of NBBO audit; the old learner alpha_open_learned.py has no --out flag — it writes learned/models only).
+Models: `~/alpha-data/open-search-v1/learned/models/payoff_h{15,60,390}.joblib` + feature_order.json (api `alpha_open_learned.load_models/score_frame/feature_matrix/make_signals`); the h60 model used by every night extension is the immutable `payoff_h60.joblib` above.
+
+### 2026-10-09 — Flexible costs, quote coverage expansion, and executable-order repairs
+
+- User clarified the objective: 25–150 bps comparisons, not a fixed 100–150 bps profitability hurdle; low actual provider fees and profitable daily/scalping alternatives stay in contention. Smaller coupled work is delegated; parent consolidates and runs actual gates.
+- Parent full retained-cadence replay passed 13 behavioral tests and all 582 validation/late sessions. `repeat_h60` remains the validation choice at both the historical 100 bps rung and the predefined 25 bps comparison. At $1,000 tickets, simple annualized minute-open-proxy net over 25/50/75/100/125/150 bps is $2,338.70/$2,035.31/$1,732.68/$1,430.80/$1,129.67/$829.28 before fixed data costs/tax. Same 157 known proxy trades on 124/332 days; not broker CAGR or certified fills.
+- Multi-day turnover/hold accumulators were corrected without changing PnL: late repeat @100 total turnover is $315,885.02, not the last day's $1,707.94. The separate provider fee ledger passed 14 behavioral tests and repriced three fixed cohorts across nine extra-cost rungs/eight profiles; a subsequent cash reconciliation found raw-vs-posted daily rounding and one-way RT-bps reporting issues, now assigned for correction before its net-income figures are used.
+- Primary Alpaca Oct-1 fee schedule confirms ordinary retail equity commission zero, SEC/CAT charges, current TAF holiday, and per-account/per-type daily up-cent posting. These are distinct from observed ASK/BID spread and modelled slippage. Qualified IBKR Lite zero-commission pricing is conditional on residency/product/retail eligibility; current eligibility is not inferred.
+- Full qualified-pool scoring exposed 68,360/149,284 validation and 119,985/247,345 late states without acquired symbol quote streams. On 2023-03-15, raw trades cover all 17 qualified names but quotes only eight. The smaller legacy micro loader uses top-three/price-five admissions, so its complete-cohort sample cannot refute the full top-ten gap.
+- Parent acquisition plan passed ten tests and covers 9,650 missing ticker/session streams over 1,003 allowed days. Full read-only SIP acquisition is running with per-page raw/parquet/cursor checkpoints; first 2021-05-03 raw pages/cursors were observed. Linux output storage had 882 GiB available. Original data is not overwritten; no paid purchases/orders or protected outcomes were used.
+- Pre-fix quote-aware pilot results remain historical only: IOC entries were wrongly allowed to rest, market-exit cash could release before its actual priced clock, and quantities needed max-rung fee funding. Repaired shared pricing APIs, strict actual clocks, a versioned v2 root, and caller cutover are in progress. Opening/carry lookahead, split-adjusted exit shares, and broader full-RTH/full-PIT micro opportunities are checked before real-corpus interpretation.
+
+## 2026-10-09 (wave-2 battery)  -  ten real-quote lanes on the full acquired universe; no new lane validated
+
+Acquisition complete: `alpha_quote_universe_acquire.py --universe panel --resume --blocks <block>`
+(4 shards) now covers the full admitted PANEL universe (not just liquidity-qualified names) across
+all 1,003 sessions  -  train 421 (2021-05..2022-12), validation 250 (2023), confirmation 332
+(2025-02..2026-05, previously explored, NOT pristine); confirmation-block acquire_summary.json:
+4,984/4,984 candidate day-ticker pairs resolved, ~4,031s. Committed evidence for every number:
+`factory/artifacts/wave2_alpha_search_summary.json` (sha256
+1cc83572dd29b6432dcf90889fbc99cef5de0865a49089ba3de843f31334be5b; 10 lanes with verbatim decision
+texts). Books: $750 (3x$250) / $3,000 (3x$1,000); dollars are $/calendar day at the 25bps rung,
+simple 252-session convention, not a CAGR. Lane outcomes (all artifact-verified unless noted):
+PARENT RE-VERIFICATION (same day): the artifact was regenerated after the h390 and liquidity lanes were
+re-run with persisted outputs, so its sha256 is now
+17515f55be035139ef1b731a03e01a8b4ac0cb9368e34d590568671a2f170273 (the 1cc83572 digest above was the
+first write; content differs only in those two lanes' artifact_path/verification note). retained_h390_lane
+re-ran the producer (56.2s, default out) -> /home/hillel/alpha-data/open-search-v1/retained_h390_lane/
+results.json now exists and its numbers re-read exactly (12/12 val cells negative, best once_d2_thr050
+-11.56 $/day; late chosen +12.01, non-chosen d2_thr030 +37.21 with 426 known); liquidity_recovery_five_min
+decision re-read from .../liquidity_recovery_five_min/summary.json (verdict DIAGNOSTIC: no
+(confirmation, hold) cell positive on 2023 validation; least-bad val -0.31851 / conf -0.35026 of book/day).
+Both lanes now carry artifact_persisted=true.
+- quote_entry_delay (alpha_quote_entry_delay.py): DISCOVERY-NOT-VALIDATED; chosen d2min_h60_thr0.0300
+  val +1.57 $/day (49 known, 9 UNKNOWN = 15.5%), late +2.29; d=0 control val +0.28 / late +3.38.
+- quote_hourly_payoff (alpha_touch_hourly_payoff.py): NEGATIVE both blocks; chosen h15_net100bps val
+  partial +0.098 (25 known, whole-basis -3.90), late -1.07 (86 known).
+- cross_name_rotation (alpha_cross_name_rotation.py): DISCOVERY-NOT-VALIDATED but negative OOS  - 
+  chosen lgbm_reg_h15_thr50bps val +0.67 (115 known), late -1.26 (277 known); touch-only baselines
+  -61.15 val / -62.31 late; lgbm_rank family 0 fills at every bar (limitation, untested).
+- opening_range_pullback (alpha_opening_range_pullback.py): NO_ACTUAL_TOUCH_POSITIVE_FORMULATION;
+  all six views negative on both blocks; best val pullback_retest@15m -1.21 (233 known).
+- passive_quote_confirmation (alpha_passive_quote_confirmation.py): DISCOVERY-NOT-VALIDATED LEAD  - 
+  chosen h60_thr200bps_mid_ttl120s val +4.66 / late +8.59 on $3,000 (45/105 known; late ttl30
+  +12.15) with >50% attempts UNKNOWN and full-loss bounds -415.34/-560.69 $/day.
+- adaptive_depth_sizing (alpha_adaptive_depth_sizing.py): DISCOVERY-NOT-VALIDATED LEAD  -  chosen
+  h60_thr300bps_part50pct val +1.36 / late +5.95 on $3,000 (53 known, 8 UNKNOWN = 12.9%; 122 of 142
+  attempts late); negative by the 125bps rung on validation.
+- multi_session_carry (alpha_multi_session_carry.py): NO_EDGE_EVIDENCE  -  dead gate: 3 funded intents
+  per view across 397 pre-freeze candidate days, all exits UNKNOWN, every view $0.00/day.
+- retained_h390_lane (alpha_retained_h390_lane.py): DISCOVERY-NOT-VALIDATED; all 12 cells negative
+  on 2023 validation (best -11.56 $/day), late +12.01 chosen / +37.21 non-chosen vs repeat_h60
+  reference val +4.88 / late +9.28  -  a val-negative/late-positive regime split (parent-reported;
+  the lane's results.json is absent at write time and no figure is adopted as verified).
+- delayed_sip_iex (alpha_delayed_sip_iex.py): IN-FLIGHT at write time  -  plan stage 582 days
+  (396,629 signals; 10,256 candidate pairs) on disk; results.json absent; absence is not a negative.
+- liquidity_recovery_five_min (alpha_liquidity_recovery.py): DIAGNOSTIC, nothing promoted  -  least-bad
+  flip_first_positive_1s hold900 val -0.31851 / conf -0.35026 fraction of book/day, 0/9 positive
+  confirmation months, 656 known + 173 UNKNOWN (parent-reported; results.json absent at write time).
+No lane is validated; the retained rare h60 cell (repeat cadence) stays the program lead.
+
+Repairs made today (producers unchanged by this documentation pass): multi_session_carry
+double-population fix + regression tests; delayed-lane schema repair against the real panel schema
+(entry_status + gross_15/60/390 + exit_et_*/exit_status_*) + 10 test fixes + 2 runtime bugs;
+liquidity supplement-stream creation (2021-05-03: 8/26 -> 26/26 covered; full build 564/564, 534
+complete, 30 UNKNOWN with reason no_supplement_quotes_or_admission; supplement digest aed5f905) + 2
+latent bugs; universe-acquire panel mode. Files touched (evidence only): the ten lane
+results.json/contract files under ~/alpha-data/open-search-v1, quote_universe_acquire
+{acquire_summary,plan_summary}.json, and the new factory/artifacts/wave2_alpha_search_summary.json.
+Machine records appended: factory/EXPERIMENTS.jsonl EXP-98..EXP-104 (one per artifact-verified
+lane), factory/HYPOTHESES.jsonl H044-H046 (the three LEAD entries with falsifiers). No live
+flags/orders changed; no deployment; no protected/sealed read.
+
