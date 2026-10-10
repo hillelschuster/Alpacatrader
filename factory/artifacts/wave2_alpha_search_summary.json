@@ -155,5 +155,67 @@
       "honest_note": "At write time liquidity_recovery_five_min/ contains contract.json, day_stage.json, summary.json (contract/metadata only) and per-day trades parquets - there is no results.json with the outcome text, so the figures above are the parent's reported numbers carried as unverified. On-disk day_stage.json corroborates the repair narrative (564 days staged, coverage complete/unknown tracked, supplement digest present) but does not itself carry the decision numbers. No dollar value for this lane is written into the research docs.",
       "artifact_persisted": true
     }
-  ]
+  ],
+  "audit_2026_10_09": {
+    "method": "six independent read-only adversarial audits fanned out over the positive lanes plus the parent's own recomputations (raw trade-row rebuilds, per-print uniqueness checks, exit/stop grid on the same entry events); auditors were required to reproduce numbers from raw data and to state the DIRECTION of any bias",
+    "verdict": "NO bug found that invalidates the sign of any positive lane: no look-ahead, no fabricated price, no off-day leak, no duplicate double-count, fees on both legs with real notional (hand-checked to 1e-4), freeze/selection order clean everywhere. The material defects are fill-realism of the PROXY lanes, dictionary/label errors, and concentration - all listed below.",
+    "per_lane": {
+      "adaptive_depth_sizing": {
+        "verdict": "ARITHMETICALLY EXACT: an independent re-implementation reproduced 122/122 fills and 1975.1082710000044 late total bit-for-bit; causality, both-sided participation cap, fill support, unknown accounting, fee ladder and freeze order all PASS",
+        "defects": [
+          "MEDIUM states_sha256 written stale in 549/600 replay cov files (loop-variable bug; provenance only)",
+          "MEDIUM results key named known_usd_per_calendar_day but divided by panel SESSIONS",
+          "MEDIUM fixed-size reference arm skips thin-book intents the adaptive arm caps down, so the arms do not trade the same intent set (142 vs 125 late attempts): 'adaptive beats fixed' is FALSE in absolute late $/day (+5.95 vs +6.13), true on validation and per deployed dollar",
+          "LOW peak_reserved_usd held a sum, not a peak"
+        ],
+        "honest_restatement": "+5.95 $/PANEL SESSION = +4.11 $/CALENDAR day (332 sessions spanning 2025-02-03..2026-05-29 = 481 calendar days; 1975.1082710000044/481); validation +1.36/session = +0.94/calendar day (361-day span). Median known fill -9.21; win 44.3%; top-5 fills = 124.6% of the total; unknown-charged lower bound -54.29/session"
+      },
+      "passive_quote_confirmation": {
+        "verdict": "no look-ahead or fabrication, but the headline MAGNITUDE is not a rate",
+        "defects": [
+          "CRITICAL concentration: 2026-05 = 94.7% of the late total and the single day 2026-05-13 = 56.5%; rest-of-block +0.49/calendar day",
+          "HIGH 54.0% of funded attempts UNKNOWN and excluded from the numerator; the only resolvable unknown sub-bucket (18 attempts with both prices) is ADVERSE (-372.96 = -1.12/day)",
+          "HIGH queue position ignored: 75/105 known fills and 156/166 unknown touches occur with ask == the posted limit exactly (a bare mid touch)",
+          "MEDIUM exit-deferral to the first firm fresh print adds +2.92/day of the headline (21 deferred exits mean +6.69% vs +2.14% for fresh-due fills)"
+        ],
+        "honest_restatement": "defensible expected rate +0.5..7 $/calendar day, not +8.59"
+      },
+      "retained_h390_lane": {
+        "verdict": "no mechanical bug; the late positive is a real but one-day-dominated tape move",
+        "defects": [
+          "single fill TDIC 2026-05-13 = 38.73% of the printed +37.21/day headline; verified REAL on the raw tape (2.99 -> 23.35, no duplicate rows)",
+          "the printed headline cell is the post-hoc MAX over the 12-cell late surface; the frozen validation choice once_d2_thr050 is 121.7% one fill",
+          "label: 'h390' is never a 390-minute hold (structurally unreachable for t>=575; median ~210 min, min 4 min, max 384; early-close days truncate h15/h60 to as little as 4 minutes)"
+        ],
+        "robust_remainder": "ex-TDIC +22.80/day; ex-top-5 tickers +13.80/day; ex-top-5 days +12.82/day with day-bootstrap p>0 = 0.893"
+      },
+      "proxy_family_and_programme_lead": {
+        "verdict": "assumes an entire $1,000 ticket clears at a single print with no volume or depth gate",
+        "measured": [
+          "5.2% of sampled late-block entries and 3.6% of exits had whole-minute volume below the ticket's share requirement",
+          "27.5% of the h390 d2 lane's next-bar opens cannot cover $1,000 at all",
+          "the QUOTE-BACKED lanes are exempt: they gate qty on displayed depth (depth lane caps at 50% of the thinner side)"
+        ],
+        "honest_restatement": "the minute-proxy lead (sparse_daily repeat_h60, +$1,430/yr simple) carries this optimism; quantify its volume-gated fill share before treating it as executable"
+      },
+      "quote_and_cost_substrate": {
+        "verdict": "CLEAN and CORRECT",
+        "evidence": [
+          "no duplicate prints across the three supplement roots, no double count, no look-ahead, no off-day leak; 100% of checked fills priced at prints that really existed",
+          "25bps rung = 12.5bps per leg on both legs at real notional in every lane; hand-checks tie to 1e-4",
+          "CAVEAT cross-family: in quote-touch lanes the rung is a RESIDUAL on top of touch prices that already embed the spread, while in minute-proxy lanes it is TOTAL friction - 'the same rung' is not comparable across families"
+        ]
+      }
+    },
+    "parent_checks": {
+      "denominator": "all wave-2 $/'day' figures divide by panel SESSIONS; corrected 2026-10-10 from the day files: the late block spans 481 calendar days (332 sessions, 1.45x) and 2023 spans 361 (250 sessions, 1.44x). The producer now emits both rates under explicit keys (known_usd_per_panel_session / known_usd_per_calendar_day_span) plus calendar_days_spanned",
+      "tail_sensitivity": "on the same raw rows: depth val +1.36 -> -1.04 dropping its single best fill; passive late +8.59 -> -0.83 dropping its best three; core d0 val +0.28 -> -0.49 dropping its best fill",
+      "exit_engineering": "on the SAME depth-lane entry events, the 60-minute exit is the grid peak on both blocks (val H45 -0.98 / H60 +1.89 / H90 -1.18 $/session; late H45 +4.35 / H60 +6.74 / H90 +2.59); intrabar stops do not help (-20% stop is a wash, -10% stop destroys); and SHORTER holds are falsified on dev - H15 val -0.97 $/session (3/12 months positive) and H30 val -1.47, even though H15 looks attractive on the late block (+2.98, median +3.92, 66/122 wins). No exit variant improves this lane: the model's own 60-minute horizon is the edge"
+    },
+    "fixes_applied_today": [
+      "quote duplicate resolution made deterministic (documented total order; verified: 50/50 sampled consumed prints have a unique bid/ask at their timestamp, so no consumed price moves)",
+      "harvest summary regenerated from disk (1003 panel-universe manifests; the lanes' mounted root is a SUPERSET of the qualified harvest, not the neutral one the provenance text claimed)",
+      "depth lane: stale cov states hash fixed (582/582 replay cov files now match their own day's states parquet; was 581/582 wrong), true concurrent peak_reserved_usd, per-session + per-calendar-day-span keys, comparator intent_set/admission caveat; re-run complete - all headline numbers BIT-IDENTICAL (validation +1.3635270500000087/session, late +5.949121298192784/session, 1975.1082710000044), 26/26 tests (6 new failing pre-fix), ruff clean"
+    ]
+  }
 }

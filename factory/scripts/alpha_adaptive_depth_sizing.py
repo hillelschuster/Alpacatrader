@@ -19,7 +19,12 @@ BEFORE the position exists.
   participation rate is a book-participation cap, never a re-fit knob. THREE further
   fixed-size reference arms replay the SAME signals, book and rules with the capital cap
   only (no depth participation) so the adaptive result is compared against a SIMULATED
-  fixed-size baseline and never against a linear rescale of itself.
+  fixed-size baseline and never against a linear rescale of itself. The two arms do NOT
+  trade the same intent set: the fixed-size arm SKIPS an intent whose capital-cap ticket
+  exceeds the displayed ask depth (intent_depth_unsupported) while the adaptive arm caps
+  the ticket down and ATTEMPTS it, so every baseline comparison carries both arms'
+  intent-set sizes and admission rules beside the numbers and is never readable as a
+  like-for-like 'adaptive beats fixed' claim.
 * SIZING is causal and fixed BEFORE the arrival print is seen. At the OBSERVED intent
   quote: q = min( floor(1000 / (limit * 1.0075)),
                   floor(participation * min(INTENT ask_shares, INTENT bid_shares)) ).
@@ -67,18 +72,26 @@ BEFORE the position exists.
 
 Feasibility/selection: the ENTIRE nine-view contract (plus the three fixed-size reference
 arms) is frozen to disk BEFORE any validation outcome exists. The single view is then
-chosen ONLY by 2023 validation actual-touch known contribution in dollars per full
-calendar day at the 25bps residual rung, on an explicit PARTIAL basis (unknown executions
-are excluded from the numerator and reported beside it). No synthetic full-loss UNKNOWN
+chosen ONLY by 2023 validation actual-touch known contribution in dollars per panel
+session (the historical "per full calendar day" wording; the per-session and the true
+per-calendar-day-span rates are both reported under explicit keys) at the 25bps residual
+rung, on an explicit PARTIAL basis (unknown executions are excluded from the numerator and
+reported beside it). No synthetic full-loss UNKNOWN
 veto, no minimum known-fill count, no median or CI gate, no cost/count kill. The late
 block then runs every arm for transparency while the choice stays immutable.
 
 Reported per view and per 0/5/10/25/50/75/100/125/150bps round-trip residual rung over the
 whole calendar: known contributions, fills / known fills / traded days / attempts, the
-supported share and the UNKNOWN and no-match counts, causal skip reasons, deployed capital
-and its density (known $ per deployed dollar), the simulated fixed-size baseline
-comparison, monthly and yearly accounting, a day-level bootstrap, the worst known fill and
-the simple $/(year on a $3,000 book) at 252 sessions. The headline is the measured
+supported share and the UNKNOWN and no-match counts, causal skip reasons, deployed capital,
+its density (known $ per deployed dollar) and the peak concurrently reserved cash, the
+simulated fixed-size baseline comparison (an explicitly NON-like-for-like arm: see
+``baseline_comparison``), monthly and yearly accounting, a day-level bootstrap, the worst
+known fill and the simple $/(year on a $3,000 book) at 252 sessions. Per-day rates are
+reported under explicit names: ``*_per_panel_session`` divides by the block's panel
+SESSIONS and ``*_per_calendar_day_span`` by the block's calendar-day span (first..last
+session day inclusive); the historical ``*_per_calendar_day`` keys are kept with their
+original per-session values for backward compatibility and are labelled as such in every
+cell. The headline is the measured
 KNOWN-contribution expectation of the chosen view - not an actual account CAGR, not a
 self-financing return, and not a claim that the unknown share is zero.
 
@@ -122,6 +135,7 @@ import sys
 import time
 from collections import Counter
 from dataclasses import dataclass
+from datetime import date
 from fractions import Fraction
 from pathlib import Path
 
@@ -191,10 +205,11 @@ REPLAY_SCHEMA = 1
 PROTECTED_UNREAD = ["2024", "2025-01", "2026-06", "2026-07", "2026-08"]
 # Existing fetch caches merged as supplements (original prints always win; a supplement may
 # only ADD timestamps, never silently replace or revise a print). The acquisition root is
-# the neutral ALL-PIT missing-symbol harvest (alpha_quote_universe_acquire): it is DISCOVERED
-# when present and contributes nothing while the harvest is still pending. A ticker whose
-# historical stream is still absent after every root is an ACQUISITION UNKNOWN - never known
-# cash and never a future-availability entry filter.
+# the panel-universe harvest (alpha_quote_universe_acquire, run --universe panel): it holds
+# EVERY panel ticker, a SUPERSET of the qualified harvest (extra names, never fewer). It is
+# DISCOVERED when present; the harvest is complete (1,003 day manifests on disk at
+# 2026-10-10). A ticker whose historical stream is still absent after every root is an
+# ACQUISITION UNKNOWN - never known cash and never a future-availability entry filter.
 SUPPLEMENT_ROOTS = (
     PANEL_ROOT / "sparse_execution_frontier" / "fetched_quotes" / "quotes",
     PANEL_ROOT / "quote_completeness_audit" / "quotes",
@@ -903,6 +918,7 @@ def replay_day(
     attempts: dict[str, int] = {}
     cooldown_until: dict[str, int] = {}
     queue: list[tuple[int, int, str, float]] = []
+    open_reserved: dict[str, float] = {}  # per-ticker reserved cash of the OPEN positions
     seq = 0
     trades: list[dict] = []
     positions_samples: list[int] = []
@@ -912,6 +928,7 @@ def replay_day(
             _, _, sym, proceeds = heapq.heappop(queue)
             active.discard(sym)
             cash += proceeds
+            open_reserved.pop(sym, None)
         admitted: list[tuple[dict, int]] = []
         for r in groups[minute]:
             sym = r["ticker"]
@@ -935,7 +952,14 @@ def replay_day(
             attempts[sym] = int(attempts.get(sym, 0)) + 1
             cash -= reserved
             active.add(sym)
+            open_reserved[sym] = reserved
             positions_samples.append(len(active))
+            # Reserved cash only grows at an admission and shrinks at a release, so the
+            # true concurrent peak is the running sum of the OPEN reservations sampled at
+            # every admission - never the day's cumulative deployed total.
+            daily["peak_reserved_usd"] = max(
+                daily["peak_reserved_usd"], float(sum(open_reserved.values()))
+            )
             daily["deployed_reserved_usd"] += reserved
             daily["intents_funded"] += 1
             daily["attempts"] += 1
@@ -969,7 +993,6 @@ def replay_day(
             trades.append(record)
     daily["positions_peak"] = max(positions_samples) if positions_samples else 0
     daily["positions_mean"] = float(np.mean(positions_samples)) if positions_samples else 0.0
-    daily["peak_reserved_usd"] = float(daily["deployed_reserved_usd"])
     for rung in RUNG_COSTS:
         daily[f"lower_bound_usd_{int(rung)}"] = (
             daily[f"known_usd_{int(rung)}"] - ORDER_BUDGET * daily["unknown_fills"]
@@ -1164,6 +1187,27 @@ def score_day(
 
 def state_paths(out_dir: Path, day: str) -> tuple[Path, Path]:
     return out_dir / "states" / f"{day}.parquet", out_dir / "states" / f"{day}.cov.json"
+
+
+def day_states_sha256(out_dir: Path, day: str) -> str | None:
+    """The day's OWN scored-states sha256, read per day (never a value left from another day).
+
+    The states cov record carries score_block's ``sha256_file(states parquet)``; an
+    unreadable record falls back to hashing that record itself, exactly as the resume
+    lookup does. Every pass calls this per day so a replay coverage record can only ever
+    carry its own day's states hash, and the recorded hash is by construction the same
+    value the day's resume hash was computed from.
+    """
+    _, spath = state_paths(out_dir, day)
+    if not spath.exists():
+        return None
+    try:
+        sha = json.loads(spath.read_text()).get("states_sha256")
+    except (json.JSONDecodeError, OSError):
+        sha = None
+    if sha is None:
+        sha = sha256_file(spath)
+    return sha
 
 
 def score_block(
@@ -1465,15 +1509,7 @@ def replay_block(
         dpath = root / f"{day}.parquet"
         tpath = root / f"{day}.trades.parquet"
         cpath = root / f"{day}.cov.json"
-        _, spath = state_paths(out_dir, day)
-        states_sha = None
-        if spath.exists():
-            try:
-                states_sha = json.loads(spath.read_text()).get("states_sha256")
-            except (json.JSONDecodeError, OSError):
-                states_sha = None
-            if states_sha is None:
-                states_sha = sha256_file(spath)
+        states_sha = day_states_sha256(out_dir, day)
         expect = _digest_bytes(
             {
                 "day": day,
@@ -1511,6 +1547,9 @@ def replay_block(
                 f"[adaptive-depth] scored states missing for {day} ({states_path}); run the "
                 "score stage for the whole block before replaying it"
             )
+        # THIS day's states hash, recomputed per day: the record must never carry the
+        # value left in a loop variable from another day's lookup.
+        day_states_sha = day_states_sha256(out_dir, day)
         tickers = sorted(set(states["ticker"].to_list())) if states.height else []
         quote_frame = (
             quote_day_frame(DATA_ROOT, day, set(tickers), supplemental_roots) if tickers else None
@@ -1556,7 +1595,7 @@ def replay_block(
                 "producer_sha256": producer,
                 "contract_sha256": contract_sha,
                 "supplement_digest": sup_digest,
-                "states_sha256": states_sha,
+                "states_sha256": day_states_sha,
                 "schema": REPLAY_SCHEMA,
                 "coverage": day_cov,
             },
@@ -1679,19 +1718,38 @@ def _empty_trade_stats(rung_keys: list[int]) -> dict:
     }
 
 
+def calendar_days_spanned(days: list[str]) -> int:
+    """The block's calendar-day count: first..last session day INCLUSIVE.
+
+    A panel session is a trading day, so this count includes every weekend and holiday
+    between the block's first and last session. It is a DIFFERENT denominator from the
+    panel-session count and the two rates must never share one key name: a per-session
+    rate answers "per trading session", a per-calendar-day rate answers "per day of
+    wall-clock time". Computed from the block's own day list, so a restricted smoke
+    calendar is labelled honestly too.
+    """
+    if not days:
+        return 0
+    return (date.fromisoformat(days[-1]) - date.fromisoformat(days[0])).days + 1
+
+
 def view_cell(daily: pl.DataFrame, trades: pl.DataFrame, arm: View, days: list[str]) -> dict:
     """Every reported number for one arm on one block's calendar."""
     rows = daily.filter(pl.col("arm_key") == arm.key)
-    n_days = len(days)
-    if int(rows.height) != n_days:
+    n_sessions = len(days)
+    n_calendar_days = calendar_days_spanned(days)
+    if int(rows.height) != n_sessions:
         raise ValueError(
-            f"arm {arm.key}: {rows.height} daily rows on disk for {n_days} calendar days; "
-            "replay the whole block before aggregating"
+            f"arm {arm.key}: {rows.height} daily rows on disk for {n_sessions} panel "
+            "sessions; replay the whole block before aggregating"
         )
     rung_keys = [int(r) for r in RUNG_COSTS]
     known_total = {r: float(rows[f"known_usd_{r}"].sum()) for r in rung_keys}
-    known_per_day = {r: known_total[r] / n_days for r in rung_keys}
-    bound_per_day = {r: float(rows[f"lower_bound_usd_{r}"].sum()) / n_days for r in rung_keys}
+    known_per_session = {r: known_total[r] / n_sessions for r in rung_keys}
+    known_per_calendar_day = {r: known_total[r] / n_calendar_days for r in rung_keys}
+    bound_total = {r: float(rows[f"lower_bound_usd_{r}"].sum()) for r in rung_keys}
+    bound_per_session = {r: bound_total[r] / n_sessions for r in rung_keys}
+    bound_per_calendar_day = {r: bound_total[r] / n_calendar_days for r in rung_keys}
     deployed_total = float(rows["deployed_reserved_usd"].sum())
     funded = int(rows["intents_funded"].sum())
     known_fills = int(rows["known_fills"].sum())
@@ -1711,7 +1769,8 @@ def view_cell(daily: pl.DataFrame, trades: pl.DataFrame, arm: View, days: list[s
         "threshold": arm.threshold,
         "participation": arm.participation,
         "is_fixed_size_baseline": bool(arm.is_baseline),
-        "days_replayed": n_days,
+        "days_replayed": n_sessions,
+        "calendar_days_spanned": n_calendar_days,
         "signals": int(rows["signals"].sum()),
         "intents_funded": funded,
         "attempts": int(rows["attempts"].sum()),
@@ -1723,27 +1782,50 @@ def view_cell(daily: pl.DataFrame, trades: pl.DataFrame, arm: View, days: list[s
         "positions_peak": int(rows["positions_peak"].max() or 0),
         "positions_mean": float(rows["positions_mean"].mean()),
         "known_usd": {str(r): known_total[r] for r in rung_keys},
-        "known_usd_per_calendar_day": {str(r): known_per_day[r] for r in rung_keys},
-        "full_loss_lower_bound_usd_per_calendar_day": {str(r): bound_per_day[r] for r in rung_keys},
+        # The three per-day families: the legacy keys keep their historical VALUES (a
+        # per-session rate) for backward compatibility, and the explicitly named keys say
+        # which denominator they actually use. See per_day_denominator_note below.
+        "known_usd_per_calendar_day": {str(r): known_per_session[r] for r in rung_keys},
+        "known_usd_per_panel_session": {str(r): known_per_session[r] for r in rung_keys},
+        "known_usd_per_calendar_day_span": {str(r): known_per_calendar_day[r] for r in rung_keys},
+        "full_loss_lower_bound_usd_per_calendar_day": {
+            str(r): bound_per_session[r] for r in rung_keys
+        },
+        "full_loss_lower_bound_usd_per_panel_session": {
+            str(r): bound_per_session[r] for r in rung_keys
+        },
+        "full_loss_lower_bound_usd_per_calendar_day_span": {
+            str(r): bound_per_calendar_day[r] for r in rung_keys
+        },
         "lower_bound_is_coding_convention_not_ev": (
             "the lower bound charges every UNKNOWN execution a full $1,000 ticket loss; it "
             "is a coded convention driven by how many legs stayed unpriced, NOT observed "
             "PnL and NOT an expected loss of that size"
+        ),
+        "per_day_denominator_note": (
+            "the historical *_per_calendar_day keys divide by PANEL SESSIONS "
+            f"(days_replayed = {n_sessions}), NOT calendar days - they are kept verbatim for "
+            "backward compatibility and are repeated under the honest name "
+            "*_per_panel_session; the *_per_calendar_day_span keys divide by the block's "
+            f"calendar-day span, first..last session day inclusive (calendar_days_spanned = "
+            f"{n_calendar_days})"
         ),
         "supported_share_of_funded_intents": (known_fills / funded) if funded else None,
         "unknown_share_of_funded_intents": (
             float(rows["unknown_fills"].sum() / funded) if funded else None
         ),
         "deployed_capital_usd_total": deployed_total,
-        "deployed_capital_usd_per_calendar_day": deployed_total / n_days,
+        "deployed_capital_usd_per_calendar_day": deployed_total / n_sessions,
+        "deployed_capital_usd_per_panel_session": deployed_total / n_sessions,
+        "deployed_capital_usd_per_calendar_day_span": deployed_total / n_calendar_days,
         "known_usd_25_per_deployed_dollar": (
             known_total[25] / deployed_total if deployed_total > 0 else None
         ),
         "dollars_per_year_252_on_book_3000": {
-            str(r): known_per_day[r] * ANNUAL_SESSIONS for r in rung_keys
+            str(r): known_per_session[r] * ANNUAL_SESSIONS for r in rung_keys
         },
         "annualization": (
-            f"mean daily known contribution x {ANNUAL_SESSIONS} sessions on a "
+            f"mean per-session known contribution x {ANNUAL_SESSIONS} sessions on a "
             f"${int(BOOK)} nominal book; a simple session-count convention on a daily-reset "
             "research book, NOT a CAGR and NOT an account claim"
         ),
@@ -1833,6 +1915,14 @@ def baseline_comparison(surface: dict) -> dict:
     capital-cap quantity only), so a smaller adaptive ticket is never assumed to scale PnL
     linearly: at a fixed size the displayed depth support and the exit capacity bind, which
     is exactly the shortfall the participation cap is meant to reduce.
+
+    The two arms also do NOT trade the same intent set: the fixed-size arm SKIPS an intent
+    whose capital-cap ticket exceeds the displayed ask depth (``intent_depth_unsupported``)
+    while the adaptive arm caps the ticket down and ATTEMPTS it. Every entry therefore
+    carries both arms' intent-set sizes and admission rules beside the numbers, and the
+    dollar comparison is explicitly annotated as NOT a like-for-like 'adaptive beats
+    fixed' claim: the honest reads are which arm is positive on a block and the known $
+    per deployed dollar, never the absolute $/day delta.
     """
     out = {}
     for arm in VIEWS:
@@ -1842,21 +1932,51 @@ def baseline_comparison(surface: dict) -> dict:
         f_known = fixed["known_usd"]["25"]
         a_deployed = adaptive["deployed_capital_usd_total"]
         f_deployed = fixed["deployed_capital_usd_total"]
+        f_depth_skips = fixed["skip_reasons"]["intent_depth_unsupported"]
         out[arm.key] = {
             "adaptive_view": arm.label,
             "fixed_size_baseline_arm": base.label,
+            "intent_set": {
+                "adaptive_attempts": adaptive["attempts"],
+                "fixed_size_baseline_attempts": fixed["attempts"],
+                "adaptive_intents_funded": adaptive["intents_funded"],
+                "fixed_size_baseline_intents_funded": fixed["intents_funded"],
+                "adaptive_intent_depth_unsupported_skips": adaptive["skip_reasons"][
+                    "intent_depth_unsupported"
+                ],
+                "fixed_size_baseline_intent_depth_unsupported_skips": f_depth_skips,
+            },
+            "admission_rule": {
+                "adaptive": (
+                    "q = min(capital cap, participation x displayed depth): a capital-cap "
+                    "ticket wider than the displayed ask is CAPPED DOWN and ATTEMPTED"
+                ),
+                "fixed_size_baseline": (
+                    "q = capital cap only: an intent whose capital-cap ticket exceeds the "
+                    "displayed ask depth is SKIPPED (intent_depth_unsupported) and NEVER "
+                    "ATTEMPTED, so this arm trades a SMALLER intent set"
+                ),
+            },
             "known_net_usd_absolute_25": {
                 "adaptive": a_known,
                 "fixed_size_baseline": f_known,
                 "absolute_delta_usd": a_known - f_known,
             },
-            "known_usd_per_calendar_day_25": {
-                "adaptive": adaptive["known_usd_per_calendar_day"]["25"],
-                "fixed_size_baseline": fixed["known_usd_per_calendar_day"]["25"],
+            "known_usd_per_panel_session_25": {
+                "adaptive": adaptive["known_usd_per_panel_session"]["25"],
+                "fixed_size_baseline": fixed["known_usd_per_panel_session"]["25"],
             },
-            "deployed_capital_usd_per_calendar_day": {
-                "adaptive": adaptive["deployed_capital_usd_per_calendar_day"],
-                "fixed_size_baseline": fixed["deployed_capital_usd_per_calendar_day"],
+            "known_usd_per_calendar_day_span_25": {
+                "adaptive": adaptive["known_usd_per_calendar_day_span"]["25"],
+                "fixed_size_baseline": fixed["known_usd_per_calendar_day_span"]["25"],
+            },
+            "deployed_capital_usd_per_panel_session": {
+                "adaptive": adaptive["deployed_capital_usd_per_panel_session"],
+                "fixed_size_baseline": fixed["deployed_capital_usd_per_panel_session"],
+            },
+            "deployed_capital_usd_per_calendar_day_span": {
+                "adaptive": adaptive["deployed_capital_usd_per_calendar_day_span"],
+                "fixed_size_baseline": fixed["deployed_capital_usd_per_calendar_day_span"],
             },
             "deployed_capital_usd_total": {
                 "adaptive": a_deployed,
@@ -1883,6 +2003,15 @@ def baseline_comparison(surface: dict) -> dict:
                 "depth support and exit bid capacity that the participation cap keeps, so "
                 "PnL is NOT assumed to scale with ticket size"
             ),
+            "comparison_caveat": (
+                "NOT a like-for-like 'adaptive beats fixed' claim: the arms trade DIFFERENT "
+                f"intent sets ({adaptive['attempts']} adaptive attempts vs "
+                f"{fixed['attempts']} fixed-size attempts here; the fixed-size arm skips "
+                f"{f_depth_skips} intents outright as intent_depth_unsupported while the "
+                "adaptive arm caps down and attempts them), so the absolute $/day delta "
+                "mixes intent-set composition with sizing. The defensible reads are which "
+                "arm is positive on the block and the known $ per deployed dollar."
+            ),
         }
     return out
 
@@ -1894,6 +2023,7 @@ def aggregate_block(out_dir: Path, block: str, days: list[str]) -> tuple[dict, d
     coverage = {
         "block": block,
         "days": len(days),
+        "calendar_days_spanned": calendar_days_spanned(days),
         "signals": int(daily["signals"].sum()),
         "intents_funded": int(daily["intents_funded"].sum()),
         "attempts": int(daily["attempts"].sum()),
@@ -1944,7 +2074,20 @@ def choose_view(surface: dict) -> tuple[View, list[dict]]:
     return ranked[0], ranking
 
 
-def decision_text(chosen: View, val: dict, late: dict | None, frozen: bool) -> str:
+def decision_text(
+    chosen: View,
+    val: dict,
+    late: dict | None,
+    frozen: bool,
+    val_comparison: dict | None = None,
+    late_comparison: dict | None = None,
+) -> str:
+    """The decision paragraph: the honest denominator, the confirmation, the comparator.
+
+    ``val_comparison`` / ``late_comparison`` are the FULL per-arm
+    ``baseline_comparison`` maps; the chosen arm's entry is looked up here by key so no
+    call site can pass the whole map where one arm's entry belongs.
+    """
     objective = val["known_usd_per_calendar_day"]["25"]
     fills = val["known_fills"]
     boot = val["bootstrap_daily_known_usd"]["25bps"]
@@ -1957,7 +2100,7 @@ def decision_text(chosen: View, val: dict, late: dict | None, frozen: bool) -> s
     if objective <= 0:
         return (
             f"NO_ACTUAL_TOUCH_POSITIVE_FORMULATION: the best of the nine views "
-            f"({chosen.label}) measures {objective:+.2f} $/calendar day of KNOWN "
+            f"({chosen.label}) measures {objective:+.2f} $/panel session of KNOWN "
             f"contribution on 2023 validation at 25bps over {fills} known fills "
             f"(day bootstrap p>0 = {boot.get('p_gt_zero')}). All nine views are measured "
             "and none is positive, so the retained rare h60 lead stays the reference; the "
@@ -1966,11 +2109,14 @@ def decision_text(chosen: View, val: dict, late: dict | None, frozen: bool) -> s
     text = (
         f"{STATUS}: chosen {chosen.label} (h{HEAD} at threshold {chosen.threshold:.4f}, "
         f"participation {chosen.participation:.2f}) by 2023 validation actual-touch known "
-        f"contribution: {objective:+.2f} $/calendar day at 25bps = "
+        f"contribution: {objective:+.2f} $/panel session at 25bps "
+        f"(= {val['known_usd_per_calendar_day_span']['25']:+.2f} $/calendar day over the "
+        f"{val['calendar_days_spanned']}-calendar-day span; {val['days_replayed']} panel "
+        f"sessions) = "
         f"{val['dollars_per_year_252_on_book_3000']['25']:+.0f} $/year on the "
         f"${int(BOOK)} nominal book (simple 252-session daily-reset convention, not a CAGR), "
         f"{fills} known fills on {val['traded_days']} traded days of {val['days_replayed']} "
-        f"calendared days, {val['unknown_fills']} UNKNOWN executions "
+        f"panel sessions, {val['unknown_fills']} UNKNOWN executions "
         f"({100.0 * val['unknown_fills'] / max(1, val['attempts']):.1f}% of attempts) and "
         f"{val['no_match_fills']} no-match unfilled intents. Day bootstrap p>0 = "
         f"{boot.get('p_gt_zero')}. This is the measured KNOWN-contribution expectation on a "
@@ -1979,7 +2125,9 @@ def decision_text(chosen: View, val: dict, late: dict | None, frozen: bool) -> s
     if frozen and late is not None:
         late_obj = late["known_usd_per_calendar_day"]["25"]
         text += (
-            f" The frozen late block measures {late_obj:+.2f} $/calendar day at 25bps over "
+            f" The frozen late block measures {late_obj:+.2f} $/panel session at 25bps "
+            f"(= {late['known_usd_per_calendar_day_span']['25']:+.2f} $/calendar day over "
+            f"the {late['calendar_days_spanned']}-calendar-day span) over "
             f"{late['known_fills']} known fills of {late['attempts']} attempts on the "
             "previously explored 2025-02..2026-05 window; the choice was frozen before any "
             "late file was read, so this is confirmation of an already-frozen decision, not "
@@ -1987,7 +2135,60 @@ def decision_text(chosen: View, val: dict, late: dict | None, frozen: bool) -> s
         )
     elif not frozen:
         text += " Late block not run (--skip-late)."
+    if val_comparison is not None:
+        val_cmp = val_comparison[chosen.key]
+        late_cmp = late_comparison[chosen.key] if late_comparison is not None else None
+        text += _comparator_caveat_sentence(val_cmp, late_cmp)
     return text
+
+
+def _signed_or_na(value: float | None) -> str:
+    """A signed four-decimal rendering, or ``n/a`` when the ratio has no denominator."""
+    return f"{value:+.4f}" if value is not None else "n/a"
+
+
+def _comparator_caveat_sentence(val_comparison: dict, late_comparison: dict | None) -> str:
+    """The fixed-size comparator caveat for the decision text (never a like-for-like claim).
+
+    The fixed-size reference arm skips an intent whose capital-cap ticket exceeds the
+    displayed ask depth while the adaptive arm caps down and attempts it, so the two arms
+    trade DIFFERENT intent sets and the absolute $/day delta mixes intent-set composition
+    with sizing: it is not an 'adaptive beats fixed' result, only the per-block sign and
+    the known $ per deployed dollar are defensible reads.
+    """
+    v_int = val_comparison["intent_set"]
+    v_skips = v_int["fixed_size_baseline_intent_depth_unsupported_skips"]
+    parts = [
+        " Comparator caveat - NOT a like-for-like 'adaptive beats fixed' claim: the "
+        f"fixed-size reference arm skips {v_skips} "
+        "intents outright (intent_depth_unsupported: its capital-cap ticket exceeds the "
+        "displayed ask depth) while the adaptive arm caps down and attempts them, so the "
+        f"arms trade different intent sets ({v_int['adaptive_attempts']} adaptive vs "
+        f"{v_int['fixed_size_baseline_attempts']} fixed-size attempts on validation"
+    ]
+    if late_comparison is not None:
+        l_int = late_comparison["intent_set"]
+        l_density = late_comparison["known_usd_25_per_deployed_dollar"]
+        parts.append(
+            f", {l_int['adaptive_attempts']} vs {l_int['fixed_size_baseline_attempts']} on "
+            "the late block"
+        )
+    else:
+        l_density = None
+    v_density = val_comparison["known_usd_25_per_deployed_dollar"]
+    parts.append(
+        "); the absolute $/day delta therefore mixes intent-set composition with sizing, "
+        "and the defensible reads are the block-by-block sign and the known $ per deployed "
+        f"dollar (validation {_signed_or_na(v_density['adaptive'])} vs "
+        f"{_signed_or_na(v_density['fixed_size_baseline'])}"
+    )
+    if l_density is not None:
+        parts.append(
+            f", late {_signed_or_na(l_density['adaptive'])} vs "
+            f"{_signed_or_na(l_density['fixed_size_baseline'])}"
+        )
+    parts.append(").")
+    return "".join(parts)
 
 
 def provenance_block(
@@ -2108,7 +2309,7 @@ def run(args: argparse.Namespace) -> None:
         boot = cell["bootstrap_daily_known_usd"]["25bps"]
         tag = "fixed-size baseline" if arm.is_baseline else "adaptive view"
         print(
-            f"[val@25] {arm.label:<28} {cell['known_usd_per_calendar_day']['25']:+8.2f} $/day "
+            f"[val@25] {arm.label:<28} {cell['known_usd_per_calendar_day']['25']:+8.2f} $/session "
             f"({tag}; fills={cell['known_fills']} unknown={cell['unknown_fills']} "
             f"nomatch={cell['no_match_fills']} attempts={cell['attempts']} "
             f"signals={cell['signals']} traded_days={cell['traded_days']} "
@@ -2117,6 +2318,7 @@ def run(args: argparse.Namespace) -> None:
         )
 
     chosen, ranking = choose_view(val_surface)
+    val_comparison = baseline_comparison(val_surface)
     frozen_at = time.strftime("%Y-%m-%dT%H:%M:%S%z")
     freeze = {
         "frozen_before_late_file_access": True,
@@ -2162,20 +2364,21 @@ def run(args: argparse.Namespace) -> None:
             for v in ARMS
         ],
         "validation_surface": val_surface,
-        "validation_fixed_size_baseline_comparison": baseline_comparison(val_surface),
+        "validation_fixed_size_baseline_comparison": val_comparison,
         "model": model_report,
         "provenance": provenance_block(out, days_val, None, supplemental_roots, val_cov, None),
     }
     write_json_atomic(out / "selection_freeze.json", freeze)
     print(
         f"[freeze] selection_freeze.json -> chosen {chosen.label} "
-        f"({val_surface[chosen.key]['known_usd_per_calendar_day']['25']:+.2f} $/day @25) "
+        f"({val_surface[chosen.key]['known_usd_per_calendar_day']['25']:+.2f} $/session @25) "
         "AFTER validation, BEFORE any late file is read",
         flush=True,
     )
 
     late_surface = None
     late_cov = None
+    late_comparison = None
     days_late = None
     late_score_cov = None
     late_replay_cov = None
@@ -2202,13 +2405,14 @@ def run(args: argparse.Namespace) -> None:
                 out, LATE_BLOCK, days_late, args.resume, supplemental_roots
             )
             late_surface, late_cov = aggregate_block(out, LATE_BLOCK, days_late)
+            late_comparison = baseline_comparison(late_surface)
             for arm in ARMS:
                 cell = late_surface[arm.key]
                 boot = cell["bootstrap_daily_known_usd"]["25bps"]
                 tag = "fixed-size baseline" if arm.is_baseline else "adaptive view"
                 print(
                     f"[late@25] {arm.label:<28} "
-                    f"{cell['known_usd_per_calendar_day']['25']:+8.2f} $/day "
+                    f"{cell['known_usd_per_calendar_day']['25']:+8.2f} $/session "
                     f"({tag}; fills={cell['known_fills']} unknown={cell['unknown_fills']} "
                     f"nomatch={cell['no_match_fills']} attempts={cell['attempts']} "
                     f"signals={cell['signals']} traded_days={cell['traded_days']} "
@@ -2224,6 +2428,8 @@ def run(args: argparse.Namespace) -> None:
             val_surface[chosen.key],
             late_surface[chosen.key] if late_surface else None,
             frozen=late_surface is not None,
+            val_comparison=val_comparison,
+            late_comparison=late_comparison,
         ),
         "chosen": freeze["chosen"],
         "frozen_choice_immutable": True,
@@ -2231,13 +2437,13 @@ def run(args: argparse.Namespace) -> None:
         "model": model_report,
         "validation": {v.key: val_surface[v.key] for v in VIEWS},
         "validation_fixed_size_baseline": {v.key: val_surface[v.key] for v in BASELINE_VIEWS},
-        "validation_baseline_comparison": baseline_comparison(val_surface),
+        "validation_baseline_comparison": val_comparison,
         "validation_ranking": ranking,
         "late": ({v.key: late_surface[v.key] for v in VIEWS} if late_surface else None),
         "late_fixed_size_baseline": (
             {v.key: late_surface[v.key] for v in BASELINE_VIEWS} if late_surface else None
         ),
-        "late_baseline_comparison": (baseline_comparison(late_surface) if late_surface else None),
+        "late_baseline_comparison": late_comparison,
         "late_ranking": (
             [
                 {

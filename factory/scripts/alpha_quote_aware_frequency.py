@@ -158,8 +158,11 @@ from alpha_quote_audit import clock_us
 from alpha_sparse_daily import day_context
 from alpha_sparse_quote_service import (
     QUOTE_COLS,
+    SOURCE_RANK_CACHE,
+    SOURCE_RANK_SUPPLEMENT,
     UNIT_EPOCH,
     day_quote_path,
+    dedup_quote_frames,
     regular_mask,
     supplement_day_path,
 )
@@ -377,9 +380,12 @@ CONTRACT = {
     "supplements": {
         "merge_order": ["ranked SIP day cache"] + [str(r) for r in SUPPLEMENT_ROOTS],
         "dedup_rule": (
-            "unique (symbol, ts_utc) keep=first in that order: the ORIGINAL print always "
-            "wins, a supplement may ONLY add timestamps and never silently replaces or "
-            "revises an original print"
+            "sort the merged frame by (source rank in merge_order, then every quoted "
+            "field) and keep the first row per (symbol, ts_utc) with the order "
+            "maintained: the ORIGINAL print always wins, a supplement may ONLY add "
+            "timestamps and never silently replaces or revises an original print, and "
+            "the winner inside one source is the smallest print of the quoted-field "
+            "order (never the friendlier side)"
         ),
         "completeness_audit_quotes": str(SUPPLEMENT_ROOTS[1]),
         "audit_results_awaited": False,
@@ -492,26 +498,29 @@ def quote_day_frame(
 ) -> pl.DataFrame | None:
     """One ET day's raw quotes: the ranked SIP cache first, then supplement-only prints.
 
-    Mirrors ``alpha_sparse_quote_service.load_day_quotes``: the ORIGINAL print wins for a
+    Mirrors ``alpha_sparse_quote_service.load_day_quotes`` through the same shared
+    deterministic merge (``dedup_quote_frames``): the ORIGINAL print wins for a
     duplicated (symbol, ts_utc) and a supplement may only add timestamps, so no original
-    print is ever silently replaced or revised. The full raw history is returned; the
-    R-only / un-crossed eligibility mask is applied at READ time (never by dropping rows),
+    print is ever silently replaced or revised. Inside one source the surviving print is
+    the minimum of the quoted-field order of ``DEDUP_SORT`` (bid, bid size, ask, ask
+    size, exchanges, conditions, tape) - a stable documented rule, never the friendlier
+    side of the market - and the resolution no longer depends on the order the frames
+    are read or concatenated in. The full raw history is returned; the R-only /
+    un-crossed eligibility mask is applied at READ time (never by dropping rows),
     so the latest RAW state at any clock stays observable.
     """
-    frames = []
+    ranked: list[tuple[int, pl.DataFrame]] = []
     primary = day_quote_path(data_root, day)
     if primary.exists():
-        frames.append(_read_quote_day(primary, tickers))
-    for root in supplemental_roots:
+        ranked.append((SOURCE_RANK_CACHE, _read_quote_day(primary, tickers)))
+    for rank, root in enumerate(supplemental_roots, start=SOURCE_RANK_SUPPLEMENT):
         spath = supplement_day_path(root, day)
         if spath.exists():
-            frames.append(_read_quote_day(spath, tickers))
-    if not frames:
+            ranked.append((rank, _read_quote_day(spath, tickers)))
+    if not ranked:
         return None
-    merged = frames[0] if len(frames) == 1 else pl.concat(frames, how="vertical")
-    if merged.is_empty():
-        return None
-    return merged.unique(subset=["symbol", "ts_utc"], keep="first").sort("symbol", "ts_utc")
+    merged = dedup_quote_frames(ranked)
+    return None if merged.is_empty() else merged
 
 
 @dataclass(frozen=True)

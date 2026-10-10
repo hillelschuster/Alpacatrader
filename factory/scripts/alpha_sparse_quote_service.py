@@ -64,6 +64,20 @@ QUOTE_SCHEMA = {
 # Alpaca quote sizes are round lots before this date, single shares after.
 UNIT_EPOCH = "2025-11-03"
 
+# Deterministic duplicate resolution for one merged day of quote prints. A duplicated
+# (symbol, ts_utc) is resolved by a TOTAL order, never by whichever row the parquet
+# readers happened to emit first:
+#   1. the SOURCE rank first (lower wins): the ranked SIP day cache is authoritative, a
+#      supplement fetch cache may only ADD a print and never revises one;
+#   2. then every quoted field in QUOTE_COLS order (bid, bid size, ask, ask size,
+#      exchanges, conditions, tape), so within one source the smallest print wins.
+# The order spans every column of the frame, so two rows can only tie by being the very
+# same print, and no rule here ever prefers the friendlier side of the market.
+SOURCE_RANK_COL = "_source_rank"
+SOURCE_RANK_CACHE = 0
+SOURCE_RANK_SUPPLEMENT = 1
+DEDUP_SORT = (SOURCE_RANK_COL, *QUOTE_COLS)
+
 SUPPORTED_STATUS = "quoted_capacity_supported_not_fill_guaranteed"
 UNKNOWN_CAPACITY_STATUS = "unknown_l1_capacity"
 # Budget below one integer share at the quoted fee-adjusted ASK: no order is
@@ -90,12 +104,32 @@ def _read_day(path: Path) -> pl.DataFrame:
     return df.select(list(QUOTE_COLS))
 
 
-def _dedup_keep_original(frames: list[pl.DataFrame]) -> pl.DataFrame:
-    """Original rows first, supplement-only rows appended, one row per print."""
-    merged = pl.concat([f for f in frames if f.height], how="vertical")
-    if merged.is_empty():
+def dedup_quote_frames(ranked: list[tuple[int, pl.DataFrame]]) -> pl.DataFrame:
+    """One row per (symbol, ts_utc) from ``(source_rank, frame)`` pairs, any argument order.
+
+    The old rule was ``merged.unique(subset=["symbol", "ts_utc"], keep="first")`` on the
+    UNSORTED vertical concat, so the surviving print of a duplicated key was decided by
+    the readers' row order (duplicate prints are common INSIDE a single cache file, not
+    only across sources): the same input files could resolve the same duplicate
+    differently depending on how the frame was built, which is not a reproducibility
+    contract. Sorting the concatenated frame to the total order ``DEDUP_SORT`` first and
+    then keeping the first row per key with the order maintained makes the winner a
+    property of the inputs alone.
+    """
+    tagged = [
+        frame.with_columns(pl.lit(rank, dtype=pl.Int32).alias(SOURCE_RANK_COL))
+        for rank, frame in ranked
+        if frame.height
+    ]
+    if not tagged:
         return pl.DataFrame(schema=QUOTE_SCHEMA)
-    return merged.unique(subset=["symbol", "ts_utc"], keep="first").sort("symbol", "ts_utc")
+    merged = pl.concat(tagged, how="vertical") if len(tagged) > 1 else tagged[0]
+    return (
+        merged.sort(DEDUP_SORT, nulls_last=True)
+        .unique(subset=["symbol", "ts_utc"], keep="first", maintain_order=True)
+        .drop(SOURCE_RANK_COL)
+        .sort("symbol", "ts_utc")
+    )
 
 
 def load_day_quotes(
@@ -106,7 +140,10 @@ def load_day_quotes(
     ``data_root`` is the panel data root (``.../data``); ``supplemental_root`` is a
     fetch-cache directory of same-schema ``<day>.parquet`` files. Rows that exist
     in both are taken from the original file; only supplement-only prints are
-    added. Returns an empty typed frame when neither source has the day.
+    added. Duplicated (symbol, ts_utc) prints are resolved by the total order in
+    ``DEDUP_SORT`` (source rank, then the quoted fields), so the result depends only
+    on the inputs and never on the order the frames are read or concatenated in.
+    Returns an empty typed frame when neither source has the day.
     """
     primary, supplement = None, None
     p = day_quote_path(data_root, day)
@@ -118,7 +155,12 @@ def load_day_quotes(
             supplement = _read_day(sp)
     if primary is None and supplement is None:
         return pl.DataFrame(schema=QUOTE_SCHEMA)
-    frame = _dedup_keep_original([f for f in (primary, supplement) if f is not None])
+    ranked: list[tuple[int, pl.DataFrame]] = []
+    if primary is not None:
+        ranked.append((SOURCE_RANK_CACHE, primary))
+    if supplement is not None:
+        ranked.append((SOURCE_RANK_SUPPLEMENT, supplement))
+    frame = dedup_quote_frames(ranked)
     if tickers:
         frame = frame.filter(pl.col("symbol").is_in(sorted(tickers)))
     return frame

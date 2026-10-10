@@ -564,7 +564,7 @@ live flags or orders were changed.
 ### WAVE-2 (2026-10-09)  -  real-quote battery; entry point is the wave-2 summary artifact
 
 **Source of record:** `factory/artifacts/wave2_alpha_search_summary.json` (sha256
-`e7cd3640e10da3091e119abc769ae35cd3415a420ab688a263fbb0609acdd1e8`; 10 lanes, each with
+`b68cf658dc7701bcad143cc6ec4d44516da515f536ef089aa42445786eb7cc90`; 10 lanes, each with
 its verbatim decision text and honest note). Quote acquisition now covers the full
 admitted PANEL universe across all 1,003 sessions (train 421 / validation 250 /
 confirmation 332, the latter previously explored  -  NOT pristine) via
@@ -608,6 +608,21 @@ charged the full budget in the day lower bound, never dropped.
   25bps on the $750 book (131 known fills); the frozen minute-proxy retained rare h60
   cell stays the program lead (+$1,430.80/yr simple on the $3,000 proxy, repeat
   cadence  -  see 18).
+
+**AUDIT (2026-10-09, six independent read-only audits):** no bug invalidates the sign of any
+positive lane - no look-ahead, no fabricated price, fees on both legs verified to 1e-4,
+freeze order clean, and the depth lane reproduced bit-for-bit by an independent
+re-implementation (122/122 fills). Read the corrections before quoting any number here:
+(a) all "$/day" figures divide by SESSIONS, so the depth lead is +5.95 $/session =
++4.11 $/calendar day (late block spans 481 calendar days); (b) minute-proxy lanes (including the sparse_daily programme lead)
+assume the whole $1,000 ticket fills at one print with no volume gate - 27.5% of the h390 d2
+next-bar opens cannot cover the ticket - quantify before treating the proxy lead as
+executable; (c) 'h390' is never a 390-minute hold (median ~210 min); (d) the passive +8.59
+late is 94.7% one month and 56.5% one day (rest-of-block +0.49/calendar day) - its
+defensible rate is +0.5..7 $/calendar day; (e) the adaptive fixed-size comparator is
+asymmetric (142 vs 125 attempts) so "adaptive beats fixed" is false in absolute late $/day;
+(f) exit engineering is exhausted (60-minute exit is the grid peak on both blocks; stops do
+not help). Ledger: factory/artifacts/wave2_alpha_search_summary.json -> audit_2026_10_09.
 
 **Exact next action for a future session:** (1) collapse the UNKNOWN share on the two
 LEAD cells under a whole-portfolio side-aware quote audit (currently 57.7%/54.0% for

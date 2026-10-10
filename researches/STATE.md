@@ -169,7 +169,7 @@ claim). No live flags/orders changed; nothing here is a deployment.
 ### WAVE-2 (2026-10-09)  -  real-quote battery on the full acquired quote universe
 
 Source of record: `factory/artifacts/wave2_alpha_search_summary.json` (sha256
-e7cd3640e10da3091e119abc769ae35cd3415a420ab688a263fbb0609acdd1e8; 10 lanes, each with its
+b68cf658dc7701bcad143cc6ec4d44516da515f536ef089aa42445786eb7cc90; 10 lanes, each with its
 verbatim decision text and honest note). Acquisition is now complete: quotes for the full
 admitted PANEL universe across all 1,003 sessions  -  train 421 (2021-05..2022-12),
 validation 250 (2023), confirmation 332 (2025-02..2026-05, previously explored, NOT
@@ -225,14 +225,74 @@ retained rare h60 cell stays the program lead (+$1,430/yr simple on the $3,000 r
   only $314/calendar day)  -  falsifiers: cost fragility (already negative at the 125bps
   rung on validation, -0.10 $/day), the 14.1% UNKNOWN share, and the full-loss lower
   bound -54.29 $/day; displayed depth is capacity visibility, not a fill guarantee.
+  DENOMINATOR + COMPARATOR NOTE (2026-10-10, producer re-run; every figure above
+  reproduced bit-exactly): every "$/day" here is per PANEL SESSION (250 val / 332 late),
+  not per calendar day - the per-calendar-day-span rates are +0.94 val / +4.11 late
+  (spans 361 / 481 days) and the "$314/calendar day" deployed capital is likewise per
+  session ($217/calendar day). The fixed-size reference comparison is NOT like-for-like:
+  the fixed-size arm skips intents whose capital-cap ticket exceeds the displayed ask
+  (21 val / 29 late) while the adaptive arm caps down and attempts them, so the arms
+  trade different intent sets (62 vs 51 val attempts, 142 vs 125 late) and the absolute
+  late $/day is 5.95 adaptive vs 6.13 fixed; the defensible reads are the positive
+  validation result and the known $ per deployed dollar, never an 'adaptive beats fixed'
+  claim.
 - the retained core lane (theta.030/h60/d0) remains the reference row above.
+
+### AUDIT (2026-10-09)  -  six independent read-only adversarial audits + parent recomputations
+
+Verdict: **no bug invalidates the sign of any positive lane.** No look-ahead, no fabricated
+price, no off-day leak, no duplicate double-count anywhere; fees are charged on both legs at
+real notional and hand-check the ladder to 1e-4; freeze/selection order is clean in every lane.
+The depth lane's numbers were reproduced bit-for-bit by an independent re-implementation
+(122/122 fills, late total 1975.1082710000044). The defects that were found are realism,
+labelling and concentration defects - all now recorded:
+
+1. **Every "$/day" figure in this block divides by SESSIONS, not calendar days.** Corrected
+   2026-10-10 from the day files on disk: the late block's sessions span 2025-02-03..2026-05-29
+   = 481 calendar days (332 sessions, 1.45x) and validation spans 2023-01-03..2023-12-29 = 361
+   (250 sessions, 1.44x). The depth lead is therefore **+5.95 $/SESSION = +4.11 $/CALENDAR day**
+   late (1975.1082710000044/481) and +1.36 = +0.94 validation (340.8817625000022/361). Read the
+   words, not the legacy key name: the producer now reports both rates under explicit keys
+   (known_usd_per_panel_session / known_usd_per_calendar_day_span) plus calendar_days_spanned.
+2. **Minute-proxy lanes (the sparse_daily programme lead included) assume the whole $1,000
+   ticket clears at a single print with no volume/depth gate.** Measured: 5.2% of sampled
+   entries and 3.6% of exits had less whole-minute volume than the ticket needs, and 27.5% of
+   the h390 d2 lane's next-bar opens cannot cover $1,000 at all. The quote-backed lanes are
+   exempt (they gate size on displayed depth). Quantify this before treating the proxy lead
+   as executable.
+3. **h390 label:** 'h390' is never a 390-minute hold (unreachable for t>=575; median ~210 min,
+   minimum 4 min; early-close days truncate h15/h60 to as little as 4 minutes), and its printed
+   late headline is the post-hoc max over 12 cells with one real day (TDIC 2026-05-13, verified
+   on the tape) at 38.7%. Robust remainder ex-top-5 days: +12.82/day, p>0 = 0.893.
+4. **Passive mid:** headline magnitude is not a rate - 2026-05 is 94.7% of the late total and
+   one day is 56.5%; rest-of-block +0.49/calendar day; the only resolvable unknown sub-bucket
+   is adverse; queue position is ignored (75/105 fills are bare mid touches). Defensible
+   expected rate +0.5..7 $/calendar day, not +8.59.
+5. **Depth comparator:** the fixed-size arm skips thin-book intents the adaptive arm caps down
+   (142 vs 125 late attempts), so "adaptive beats fixed" is FALSE in absolute late $/day
+   (+5.95 vs +6.13); it holds on validation and per deployed dollar.
+6. **Cost caveat:** the same "25bps rung" means a residual on top of spread-embedded touch
+   prices in quote-touch lanes but TOTAL friction in minute-proxy lanes - never compare the
+   two families at "the same rung".
+7. **Exit engineering is exhausted (parent check, same entry events):** the 60-minute exit is
+   the grid peak on both blocks (val H45 -0.98 / H60 +1.89 / H90 -1.18; late H45 +4.35 /
+   H60 +6.74 / H90 +2.59 $/session) and intrabar stops do not help. Profitability leverage is
+   selection, entry cost and size - not exits.
+
+Fixed today: quote duplicate resolution is now a documented deterministic total order (50/50
+sampled consumed prints have a unique bid/ask at their timestamp, so no consumed price moved);
+the harvest summary was regenerated from disk (1,003 panel-universe manifests; the root the
+lanes mount is a SUPERSET of the qualified harvest, not the neutral one the old text claimed);
+the depth lane's stale cov hash, per-session/per-calendar-day keys, peak label and comparator
+labelling were corrected and the lane re-run.
 
 **No new lane is validated.** A validation-negative / late-positive split (h390 hold,
 passive mid, adaptive depth) is regime evidence across previously-explored periods, not
 promotion grounds; the late block is not a pristine holdout, UNKNOWN-heavy positives
 are not firm, and the four night-extension workers (quote/service + execution
-frontier, stop-risk, daily frequency/re-entry h15/h30, supervised micro 5/15s) remain
-IN_PROGRESS. No live flags/orders changed; no deployment.
+frontier, stop-risk, daily frequency/re-entry h15/h30, supervised micro 5/15s) COMPLETED
+earlier today (see the NIGHT-WAVE section below; all DISCOVERY-NOT-VALIDATED). No live
+flags/orders changed; no deployment.
 
 ### 2026-10-09 NIGHT-WAVE outcomes — four extensions COMPLETE (all numbers from
 ### `factory/artifacts/alpha_night_extensions.json`, 857,352 bytes, sha256

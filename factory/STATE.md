@@ -2670,7 +2670,7 @@ texts). Books: $750 (3x$250) / $3,000 (3x$1,000); dollars are $/calendar day at 
 simple 252-session convention, not a CAGR. Lane outcomes (all artifact-verified unless noted):
 PARENT RE-VERIFICATION (same day): the artifact was regenerated after the h390 and liquidity lanes were
 re-run with persisted outputs, so its sha256 is now
-e7cd3640e10da3091e119abc769ae35cd3415a420ab688a263fbb0609acdd1e8 (the 1cc83572 digest above was the
+b68cf658dc7701bcad143cc6ec4d44516da515f536ef089aa42445786eb7cc90 (the 1cc83572 digest above was the
 first write; content differs only in those two lanes' artifact_path/verification note). retained_h390_lane
 re-ran the producer (56.2s, default out) -> /home/hillel/alpha-data/open-search-v1/retained_h390_lane/
 results.json now exists and its numbers re-read exactly (12/12 val cells negative, best once_d2_thr050
@@ -2692,7 +2692,17 @@ Both lanes now carry artifact_persisted=true.
   +12.15) with >50% attempts UNKNOWN and full-loss bounds -415.34/-560.69 $/day.
 - adaptive_depth_sizing (alpha_adaptive_depth_sizing.py): DISCOVERY-NOT-VALIDATED LEAD  -  chosen
   h60_thr300bps_part50pct val +1.36 / late +5.95 on $3,000 (53 known, 8 UNKNOWN = 12.9%; 122 of 142
-  attempts late); negative by the 125bps rung on validation.
+  attempts late); negative by the 125bps rung on validation.  DENOMINATOR + COMPARATOR NOTE
+  (2026-10-10, producer re-run; numbers bit-identical): the $/day figures above are per PANEL
+  SESSION (250 validation / 332 late), NOT per calendar day - the true per-calendar-day-span
+  rates are +0.94 val / +4.11 late (block spans 2023-01-03..2023-12-29 = 361 and
+  2025-02-03..2026-05-29 = 481 calendar days); the fixed-size reference comparison is NOT
+  like-for-like: the fixed-size arm SKIPS an intent whose $1,000 capital-cap ticket exceeds the
+  displayed ask depth (21 val / 29 late skips) while the adaptive arm caps down and ATTEMPTS it,
+  so the arms trade different intent sets (62 vs 51 val attempts, 142 vs 125 late attempts) and
+  the absolute late $/day reads 5.95 adaptive vs 6.13 fixed - the honest reads are the positive
+  validation result (+1.36 vs -1.00 $/session) and the known $ per deployed dollar (+0.0078 vs
+  -0.0049 val, +0.0189 vs +0.0163 late), never an 'adaptive beats fixed' claim.
 - multi_session_carry (alpha_multi_session_carry.py): NO_EDGE_EVIDENCE  -  dead gate: 3 funded intents
   per view across 397 pre-freeze candidate days, all exits UNKNOWN, every view $0.00/day.
 - retained_h390_lane (alpha_retained_h390_lane.py): DISCOVERY-NOT-VALIDATED; all 12 cells negative
@@ -2727,4 +2737,62 @@ results.json/contract files under ~/alpha-data/open-search-v1, quote_universe_ac
 Machine records appended: factory/EXPERIMENTS.jsonl EXP-98..EXP-104 (one per artifact-verified
 lane), factory/HYPOTHESES.jsonl H044-H046 (the three LEAD entries with falsifiers). No live
 flags/orders changed; no deployment; no protected/sealed read.
+
+## 2026-10-09 (post-wave-2 adversarial audit)  -  no sign-invalidating bug; realism, labels and
+## concentration defects found and fixed
+
+Six independent read-only audits (core sim engine, adaptive-depth lane, passive resting lane,
+quote-data layer, h390 lane, cost/accounting layer) plus parent recomputations from raw trade
+rows; auditors had to reproduce numbers from raw data and state the bias direction.
+
+VERDICTS.
+- Core engine (alpha_open_sim/-learned/-panel): no critical, no sign-flipping leak; decision
+  clock, one-bar lag, next-bar-open fills, admission/exit causality and two-leg fees proven on
+  real data. Findings: proxy lanes assume the whole $1,000 ticket clears at ONE print with no
+  volume/depth gate (5.2% of sampled entries and 3.6% of exits had whole-minute volume below
+  the ticket's share requirement; 27.5% of the h390 d2 lane's next-bar opens cannot cover
+  $1,000) - the quote-backed lanes are exempt (they gate size on displayed depth); exits are a
+  single print with no intraday path (reported +/-7-9% marks vs a 1.6-2.9% per-fill edge);
+  'h390' is never a 390-minute hold (median ~210 min, min 4 min, early-close truncation).
+- adaptive_depth_sizing: ARITHMETICALLY EXACT - an independent re-implementation reproduced
+  122/122 fills and the late total 1975.1082710000044 bit-for-bit; causality, the both-sided
+  participation cap, fill support, UNKNOWN accounting, fee ladder and freeze order all PASS.
+  Defects: stale states_sha256 in 549/600 replay cov files (loop-variable bug, provenance only);
+  known_usd_per_calendar_day actually divided by SESSIONS; the fixed-size reference arm is not a
+  like-for-like comparator (142 vs 125 late attempts; 'adaptive beats fixed' FALSE in absolute
+  late $/day +5.95 vs +6.13, true on validation and per deployed dollar); peak_reserved_usd held
+  a sum. FIXED and the lane re-run.
+- passive_quote_confirmation: no look-ahead/fabrication, but the headline magnitude is a
+  one-month/one-day tail (2026-05 = 94.7%, 2026-05-13 = 56.5%; rest-of-block +0.49/calendar
+  day), the one resolvable UNKNOWN sub-bucket is adverse (-1.12/day), queue position is ignored
+  (75/105 fills touch the posted mid exactly) and the exit-deferral rule adds +2.92/day.
+- retained_h390_lane: no mechanical bug; one real day (TDIC, tape-verified) is 38.7% of the
+  printed +37.21/day; post-hoc max over 12 cells; robust remainder ex-top-5 days +12.82/day.
+- quote-data layer: CLEAN (no duplicate prints, no double count, no look-ahead, no off-day leak;
+  100% of checked fills priced at prints that really existed). One HIGH provenance bug: the
+  acquire summary described a 332-day run while the root holds 1,003 panel-universe manifests -
+  regenerated honestly from disk, and 10 repo files now say the root is the panel-universe
+  harvest (SUPERSET of qualified), not neutral.
+- cost layer: CORRECT (25bps = 12.5bps/leg on both legs at real notional; hand-checks to 1e-4).
+  Cross-family caveat: quote-touch lanes treat the rung as a residual on spread-embedded touch
+  prices, minute-proxy lanes as TOTAL friction - 'the same rung' is not comparable across them.
+
+PARENT CHECKS. Denominator: every wave-2 $/day divides by SESSIONS (late 332 sessions = 481
+calendar days, 1.45x - the session span 2025-02-03..2026-05-29 inclusive, recomputed from the
+day files 2026-10-10; the earlier audit text said 482, an off-by-one, and its +4.07 quoted 485
+while writing 482 - the producer's own calendar_days_spanned is 481, so the depth lead is
++5.95 $/SESSION = +4.11 $/CALENDAR day; validation 250 sessions over 361 calendar days
+2023-01-03..2023-12-29 = +1.36 $/SESSION = +0.94 $/CALENDAR day). Tail: depth val +1.36 ->
+-1.04 dropping its single best fill; passive
+late +8.59 -> -0.83 dropping its best three; core d0 val +0.28 -> -0.49 dropping its best fill.
+Exit engineering is exhausted: on the same depth-lane entries the 60-minute exit is the grid
+peak on both blocks (val H45 -0.98 / H60 +1.89 / H90 -1.18; late H45 +4.35 / H60 +6.74 / H90
++2.59 $/session) and intrabar stops do not help.
+
+FIXES. Quote duplicate resolution is now a documented deterministic total order in
+alpha_sparse_quote_service.dedup_quote_frames (parent check: 50/50 sampled consumed prints have
+a unique bid/ask at their timestamp, so no consumed price moved). Harvest summary regenerated;
+provenance text corrected in 10 files. Depth-lane defects fixed + re-run. Audit ledger recorded
+in factory/artifacts/wave2_alpha_search_summary.json under audit_2026_10_09. No live flags or
+orders changed; no deployment.
 

@@ -163,7 +163,7 @@ every entry below: does this serve potential profitability?
 ## WAVE-2 (2026-10-09) formulation entries  -  real-quote battery; LEAD entries + falsifiers
 
 Source of record for every number below: `factory/artifacts/wave2_alpha_search_summary.json`
-(sha256 e7cd3640e10da3091e119abc769ae35cd3415a420ab688a263fbb0609acdd1e8; 10 lanes with
+(sha256 b68cf658dc7701bcad143cc6ec4d44516da515f536ef089aa42445786eb7cc90; 10 lanes with
 verbatim decision texts). Quote acquisition covers the full admitted PANEL universe
 across all 1,003 sessions (train 421 / validation 250 / confirmation 332, the latter
 previously explored  -  NOT pristine). Dollar figures are $/calendar day at the 25bps rung
@@ -200,20 +200,41 @@ study status DISCOVERY-NOT-VALIDATED):
   $/day; non-chosen late ttl30 +12.15 $/day). Falsifier = the UNKNOWN share: 57.7% of
   validation and 54.0% of late attempts are UNKNOWN (105/182 and 189/350), the
   full-loss lower bounds are -415.34 / -560.69 $/day, and a resting quote-supported
-  fill is not an exchange-fill guarantee.
+  fill is not an exchange-fill guarantee. AUDIT (2026-10-09): headline magnitude is not a
+  rate - 2026-05 is 94.7% of the late total and the single day 2026-05-13 is 56.5%; the
+  rest-of-block is +0.49/calendar day; the only resolvable unknown sub-bucket (18 attempts
+  with both prices recorded) is ADVERSE (-372.96 = -1.12/day); queue position is ignored
+  (75/105 known fills touch the posted mid exactly); the exit-deferral rule contributes
+  +2.92/day of the headline. Defensible expected rate: +0.5..7 $/calendar day.
 - **H045  -  adaptive depth participation** (alpha_adaptive_depth_sizing.py): the same
   h60 head with an integer quantity causally capped by BOTH displayed top-of-book sides
   at 50% depth participation (validation +1.36 $/day on $3,000, 53 known + 8 UNKNOWN =
   12.9%; late +5.95 $/day, 122 known of 142 attempts). Falsifier = cost fragility:
   already negative at the 125bps rung on validation (-0.10 $/day); displayed depth is
-  capacity visibility, not a fill guarantee.
+  capacity visibility, not a fill guarantee. AUDIT (2026-10-09): PASS on causality, the
+  both-sided participation cap, fill support, unknown accounting, the fee ladder and the
+  freeze order - an independent re-implementation reproduced 122/122 fills and the late
+  total 1975.1082710000044 bit-for-bit. Corrections: the figure is +5.95 $/SESSION =
+  +4.07 $/CALENDAR day (the key name said calendar); median known fill -9.21 with a 44.3%
+  win rate and top-5 fills = 124.6% of the total; the fixed-size reference arm skips
+  thin-book intents the adaptive arm caps down, so 'adaptive beats fixed' is FALSE in
+  absolute late $/day (+5.95 vs +6.13) and true only on validation and per deployed dollar.
+  CORRECTED 2026-10-10 (producer re-run, headline numbers bit-identical, the lane's own
+  keys now say the denominator): the late session span 2025-02-03..2026-05-29 is 481
+  calendar days, not 482, so the late rate is +5.95 $/SESSION = +4.11 $/CALENDAR day (the
+  audit's +4.07 had divided by 485 while writing 482); validation spans 361 calendar
+  days (2023-01-03..2023-12-29), so +1.36 $/SESSION = +0.94 $/CALENDAR day.
 - **H046  -  retained h390 whole-day hold** (alpha_retained_h390_lane.py): the h390 head
   held to the session close under delay/threshold/cadence cells. Falsifier = the
   validation-negative block: all 12 cells negative on 2023 validation (best -11.56
   $/day) while the late block is strongly positive (+12.01 $/day chosen once_d2_thr050;
   +37.21 $/day non-chosen d2_thr030) against the frozen repeat_h60 reference — a
-  val-negative/late-positive split is regime evidence, not promotion grounds
-  (parent-reported; artifact absent at write time).
+  val-negative/late-positive split is regime evidence, not promotion grounds. AUDIT
+  (2026-10-09): no mechanical bug, but the printed late headline is the post-hoc max over
+  the 12-cell late surface and one REAL day (TDIC 2026-05-13, verified on the raw tape at
+  2.99 -> 23.35) is 38.7% of it while the frozen validation choice is 121.7% that one fill;
+  the robust remainder ex-top-5 days is +12.82/day with day-bootstrap p>0 = 0.893; and the
+  label is wrong - 'h390' is never a 390-minute hold (median ~210 min, min 4 min).
 
 Settled facts: researches/STATE.md (current snapshot; CANONICAL_STATE.md is frozen history).
 Measurement contract: ET clocks, causal-only, 1-bar lag, open-anchored gains,

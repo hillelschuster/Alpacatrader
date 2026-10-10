@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Read-only SIP quote-UNIVERSE acquisition for the not-acquired panel tickers.
+"""Read-only SIP quote-UNIVERSE acquisition for the not-acquired tickers of the chosen universe.
 
 The ranked SIP day cache was captured for an OLD ticker universe: roughly half of the
 causal-liquidity-qualified open-anchored top-gainer states have NO quote stream for
@@ -34,16 +34,25 @@ producer closes exactly that gap, and nothing else:
   tradable absence forever); any HTTP error or request exception is a DATA UNKNOWN for
   that (day, ticker) - never fabricated, never silently treated as cash.
 
-TWO UNIVERSES, ONE MECHANISM (``--universe``): ``qualified`` (the default, and the behavior
-of every manifest already written) plans the causal-liquidity-qualified states, bit-identical
-to the label producer's row set. ``panel`` plans EVERY ticker present in the day's panel
-file instead, because the qualified pass leaves ~4-14 admitted names per session - present in
-the panel day file but failing DV>=1M or bars15>=12 (ATHX/BCAB-like names) - with NO quote
-stream, which forces every consumer of the full admitted watchlist to report the session as
-coverage-unknown. The option changes nothing else: the same gates, the same per-day window,
-the same pacing, pagination, resume and merge. It enters the per-day resume/plan hash, so a
-panel-mode plan can never reuse a qualified-mode manifest; run each mode into its own
-``--out`` root.
+TWO UNIVERSES, ONE MECHANISM (``--universe``): ``qualified`` (the default) plans the
+causal-liquidity-qualified states, bit-identical to the label producer's row set. ``panel``
+plans EVERY ticker present in the day's panel file instead, because the qualified pass leaves
+~4-14 admitted names per session - present in the panel day file but failing DV>=1M or
+bars15>=12 (ATHX/BCAB-like names) - with NO quote stream, which forces every consumer of the
+full admitted watchlist to report the session as coverage-unknown. The option changes nothing
+else: the same gates, the same per-day window, the same pacing, pagination, resume and merge.
+It enters the per-day resume/plan hash, so a panel-mode plan can never reuse a qualified-mode
+manifest; run each mode into its own ``--out`` root.
+
+PROVENANCE OF THE ROOT ALREADY ON DISK: a panel-mode pass SHOULD write into its own
+``--out`` root (the usage example below). The shared default root - ``$ALPHA_OPEN_SEARCH_V1``
+or ``~/alpha-data/open-search-v1``, directory ``quote_universe_acquire`` - was NOT produced
+that way: four shard invocations (train 2021, train 2022, validation, confirmation) all ran
+``--universe panel`` into that one root, so every day manifest under it is
+``"universe": "panel"`` (1,003 manifests when the root's acquire_summary.json was
+regenerated on 2026-10-10). Read that root as the PANEL-UNIVERSE harvest: its ticker set is
+a SUPERSET of the qualified harvest - extra names, never fewer - so a consumer finds quote
+streams there for names the liquidity filter would have excluded.
 
 Pacing is a request sleep (default 0.35s, ~171 req/min, below the historical Basic
 200/min) with the shared 429-aware GET. Credentials are read from the repo root .env
@@ -63,6 +72,8 @@ Usage:
       --out /home/hillel/alpha-data/open-search-v1/quote_universe_acquire_panel --plan-only
       # second pass: EVERY panel ticker with no quote stream - including the admitted
       # names that fail causal_liquidity - planned into its own output root
+      # NOTE: the shared default root (no --out) already holds panel-mode output written by
+      # the four shard invocations, so a panel plan pointed there resumes into that harvest
 """
 
 from __future__ import annotations
@@ -748,10 +759,11 @@ def main() -> None:
         choices=UNIVERSES,
         default=DEFAULT_UNIVERSE,
         help="per-day candidate universe. qualified (default): the causal-liquidity-qualified "
-        "states, exactly what the already-written manifests hold. panel: EVERY ticker in the "
-        "day's panel file, so the admitted names that fail DV>=1M/bars15>=12 still get a quote "
-        "stream. The choice enters the resume hash, so a panel plan never reuses a qualified "
-        "manifest - run each mode into its own --out root.",
+        "states. panel: EVERY ticker in the day's panel file, so the admitted names that fail "
+        "DV>=1M/bars15>=12 still get a quote stream. The choice enters the resume hash, so a "
+        "panel plan never reuses a qualified manifest - run each mode into its own --out root "
+        "(the existing default root already holds panel-mode output: every manifest under it "
+        "is universe=panel, see the module docstring).",
     )
     p.add_argument(
         "--resume", action="store_true", help="resume from the cursors, parts and manifests"
