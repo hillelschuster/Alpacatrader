@@ -2670,7 +2670,7 @@ texts). Books: $750 (3x$250) / $3,000 (3x$1,000); dollars are $/calendar day at 
 simple 252-session convention, not a CAGR. Lane outcomes (all artifact-verified unless noted):
 PARENT RE-VERIFICATION (same day): the artifact was regenerated after the h390 and liquidity lanes were
 re-run with persisted outputs, so its sha256 is now
-17515f55be035139ef1b731a03e01a8b4ac0cb9368e34d590568671a2f170273 (the 1cc83572 digest above was the
+e7cd3640e10da3091e119abc769ae35cd3415a420ab688a263fbb0609acdd1e8 (the 1cc83572 digest above was the
 first write; content differs only in those two lanes' artifact_path/verification note). retained_h390_lane
 re-ran the producer (56.2s, default out) -> /home/hillel/alpha-data/open-search-v1/retained_h390_lane/
 results.json now exists and its numbers re-read exactly (12/12 val cells negative, best once_d2_thr050
@@ -2697,13 +2697,23 @@ Both lanes now carry artifact_persisted=true.
   per view across 397 pre-freeze candidate days, all exits UNKNOWN, every view $0.00/day.
 - retained_h390_lane (alpha_retained_h390_lane.py): DISCOVERY-NOT-VALIDATED; all 12 cells negative
   on 2023 validation (best -11.56 $/day), late +12.01 chosen / +37.21 non-chosen vs repeat_h60
-  reference val +4.88 / late +9.28  -  a val-negative/late-positive regime split (parent-reported;
-  the lane's results.json is absent at write time and no figure is adopted as verified).
-- delayed_sip_iex (alpha_delayed_sip_iex.py): IN-FLIGHT at write time  -  plan stage 582 days
-  (396,629 signals; 10,256 candidate pairs) on disk; results.json absent; absence is not a negative.
+  reference val +4.88 / late +9.28  -  a val-negative/late-positive regime split (re-verified
+  2026-10-09: the producer was re-run, 56.2s, and results.json now exists at
+  ~/alpha-data/open-search-v1/retained_h390_lane/results.json; the figures above were re-read
+  from it; no figure is adopted as a validated lane).
+- delayed_sip_iex (alpha_delayed_sip_iex.py): COMPLETE 2026-10-09  -  DISCOVERY-NOT-VALIDATED; the
+  free-feed (15-20 min delayed, IEX-only observability) path is measured NEGATIVE: chosen
+  thr200bps_d15min_orig61 val +4.73 $/day @25 (5 known fills of 8 attempts, 3 UNKNOWN = 37.5%,
+  p>0 = 0.988) but late -1.76 $/day (13 known of 16 attempts) and ALL 12 predeclared views negative
+  late (best +0.06). Acquire 10,256 day-ticker windows (29,392s), run 418s. Honest read: this prices
+  the DATA COST, not the entry rule - the same immutable h60 model traded off a delayed feed does not
+  keep the money a real-time SIP desk keeps; the theta>=0.02 signal family is sparse (5-15 signals per
+  250 days), so the lane is weakly powered.
 - liquidity_recovery_five_min (alpha_liquidity_recovery.py): DIAGNOSTIC, nothing promoted  -  least-bad
   flip_first_positive_1s hold900 val -0.31851 / conf -0.35026 fraction of book/day, 0/9 positive
-  confirmation months, 656 known + 173 UNKNOWN (parent-reported; results.json absent at write time).
+  confirmation months, 656 known + 173 UNKNOWN (re-verified 2026-10-09 from
+  ~/alpha-data/open-search-v1/liquidity_recovery_five_min/summary.json; 534/564 built days
+  coverage-complete after the supplement-stream repair).
 No lane is validated; the retained rare h60 cell (repeat cadence) stays the program lead.
 
 Repairs made today (producers unchanged by this documentation pass): multi_session_carry

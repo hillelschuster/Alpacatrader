@@ -564,7 +564,7 @@ live flags or orders were changed.
 ### WAVE-2 (2026-10-09)  -  real-quote battery; entry point is the wave-2 summary artifact
 
 **Source of record:** `factory/artifacts/wave2_alpha_search_summary.json` (sha256
-`17515f55be035139ef1b731a03e01a8b4ac0cb9368e34d590568671a2f170273`; 10 lanes, each with
+`e7cd3640e10da3091e119abc769ae35cd3415a420ab688a263fbb0609acdd1e8`; 10 lanes, each with
 its verbatim decision text and honest note). Quote acquisition now covers the full
 admitted PANEL universe across all 1,003 sessions (train 421 / validation 250 /
 confirmation 332, the latter previously explored  -  NOT pristine) via
@@ -614,10 +614,13 @@ LEAD cells under a whole-portfolio side-aware quote audit (currently 57.7%/54.0%
 passive mid, 12.9% for adaptive depth) and price capacity/queue realism at order size;
 (2) keep every cell on the flexible 25-150bps ladder  -  no fixed 100-150bps hurdle and no
 arbitrary veto of the h390 hold's late positives, which are regime evidence on a
-previously-explored block, not promotion grounds; (3) locate or re-emit the
-retained_h390_lane and liquidity_recovery_five_min artifacts so their parent-reported
-numbers can be verified and adopted; (4) let `alpha_delayed_sip_iex` finish its 582-day
-run and read its decision text (absent results.json is IN-FLIGHT, not a negative);
+previously-explored block, not promotion grounds; (3) both remaining lane artifacts are NOW persisted and re-verified (2026-10-09):
+~/alpha-data/open-search-v1/retained_h390_lane/results.json (producer re-run, 56.2s; all 12 val
+cells negative, late +12.01 chosen / +37.21 non-chosen) and
+~/alpha-data/open-search-v1/liquidity_recovery_five_min/summary.json (DIAGNOSTIC;
+least-bad val -0.31851 / conf -0.35026 of book/day); (4) `alpha_delayed_sip_iex` COMPLETE:
+the free-feed path is NEGATIVE (chosen val +4.73 $/day but late -1.76 $/day, all 12 views
+negative late) - real-time SIP is required, so do NOT trade this model off a delayed feed;
 (5) promotion still requires the standing power doctrine on pristine data (2024/2025-01
 sealed, 2026-06..08 protected) plus actual-fill evidence. No live flags/orders changed;
 nothing in this section is a deployment; do not arm the flush bot (17) and do not treat

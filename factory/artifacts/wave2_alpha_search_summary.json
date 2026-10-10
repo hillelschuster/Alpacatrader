@@ -127,7 +127,7 @@
       "study": "alpha_delayed_sip_iex",
       "producer_path": "factory/scripts/alpha_delayed_sip_iex.py",
       "artifact_path": "/home/hillel/alpha-data/open-search-v1/delayed_sip_iex/results.json",
-      "status_string": "IN-FLIGHT at write time (plan stage only; results.json absent)",
+      "status_string": "DISCOVERY-NOT-VALIDATED (completed 2026-10-09, 418s run after a 10,256-window IEX acquire): chosen thr200bps_d15min_orig61 VALIDATION +4.73 $/day @25 (5 known fills of 8 attempts, 3 UNKNOWN = 37.5%, p>0=0.988) but LATE -1.76 $/day (13 known of 16 attempts) and ALL 12 predeclared views negative on the late block (best +0.06); the retained h60 theta>=0.02 signal family is sparse (5-15 signals/250 days), so this lane is weakly powered - the measured read is that the edge does not survive a 15-20 minute delayed feed + IEX-only observability",
       "chosen_cell": null,
       "validation_daily_usd": null,
       "late_daily_usd": null,
@@ -136,7 +136,8 @@
       "unknown_share": null,
       "book_usd": null,
       "decision_text": "IN-FLIGHT (parent-reported, verbatim from the orchestration message, consistent with the plan_summary.json on disk): the full 582-day plan/acquire/run was launched on 2026-10-09 and may still be running at write time; plan_summary.json on disk shows study alpha_delayed_sip_iex, status DISCOVERY-NOT-VALIDATED, stage=plan, days_planned 582, signals 396,629, candidate_day_ticker_pairs 10,256, requests_planned 10,256, 12 views, producer sha 5578fa7e118fa602cfa9ba48908a22ab9e5de4625cea4839d8e5f46b128a8e55, runtime 89.7s. The producer was repaired on 2026-10-09 against the real panel schema (entry_status + gross_15/60/390 + exit_et_*/exit_status_*), 23/23 unit tests green, and the end-to-end smoke on 2023-09-13 produced 1 qualified state whose IEX ask spread of 1889bps exceeded the frozen spread bar, so the rule refused to fund - the rule working, not a bug.",
-      "honest_note": "Absence of results.json at write time is an IN-FLIGHT state, not a negative; the plan-stage artifact exists (delayed_sip_iex/plan_summary.json) and only 2023-05-15 and 2023-09-13 state files are present. No outcome is claimed for this lane."
+      "honest_note": "the free-plan path is measured negative on the frozen choice; the honest conclusion is about the DATA COST, not about the entry rule: the same model traded from a delayed feed loses the money the SIP desk keeps, and the sparse signal count makes the late block thin",
+      "artifact_persisted": true
     },
     {
       "study": "alpha_liquidity_recovery",

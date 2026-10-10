@@ -163,7 +163,7 @@ every entry below: does this serve potential profitability?
 ## WAVE-2 (2026-10-09) formulation entries  -  real-quote battery; LEAD entries + falsifiers
 
 Source of record for every number below: `factory/artifacts/wave2_alpha_search_summary.json`
-(sha256 17515f55be035139ef1b731a03e01a8b4ac0cb9368e34d590568671a2f170273; 10 lanes with
+(sha256 e7cd3640e10da3091e119abc769ae35cd3415a420ab688a263fbb0609acdd1e8; 10 lanes with
 verbatim decision texts). Quote acquisition covers the full admitted PANEL universe
 across all 1,003 sessions (train 421 / validation 250 / confirmation 332, the latter
 previously explored  -  NOT pristine). Dollar figures are $/calendar day at the 25bps rung
@@ -174,8 +174,8 @@ CLOSED NEGATIVE (no new hypothesis entry; do not reopen without a genuinely new 
   validation pullback_retest@15m -1.21 $/day, 233 known fills).
 - liquidity recovery after flush: DIAGNOSTIC, nothing promoted; least-bad
   flip_first_positive_1s hold900 val -0.31851 / conf -0.35026 fraction of book/day,
-  0/9 positive confirmation months (parent-reported; the lane's results.json is absent
-  at write time).
+  0/9 positive confirmation months (re-verified 2026-10-09 from
+  .../liquidity_recovery_five_min/summary.json after the supplement-stream repair).
 - multi-session carry: NO_EDGE_EVIDENCE  -  a dead gate, not a robustness statement; only
   3 funded intents per view, all exits UNKNOWN, every view $0.00/day.
 - cross-name rotation: negative OOS (late -1.26 $/day); touch-only baselines -61.15
@@ -184,8 +184,12 @@ CLOSED NEGATIVE (no new hypothesis entry; do not reopen without a genuinely new 
 - hour-of-day learner: negative on both blocks (late -1.07 $/day; validation partial
   +0.098 $/day over 25 known fills with whole-basis -3.90 $/day).
 - h390 whole-day hold: all 12 cells negative on 2023 validation (best -11.56 $/day)
-  vs the frozen repeat_h60 reference (VAL +4.88 / late +9.28)  -  parent-reported,
-  artifact absent at write time.
+  vs the frozen repeat_h60 reference (VAL +4.88 / late +9.28)  -  re-verified 2026-10-09
+  from .../retained_h390_lane/results.json (producer re-run, default out).
+- free-feed (delayed) execution: measured NEGATIVE on the frozen choice (val +4.73 $/day
+  over 5 known fills of 8 attempts, late -1.76 $/day over 13 known of 16) and all 12
+  predeclared views negative late (best +0.06); weakly powered (5-15 signals per 250
+  days) but the conclusion is about DATA COST: real-time SIP is required.
 
 New formulation entries (machine records: factory/HYPOTHESES.jsonl H044-H046; every
 study status DISCOVERY-NOT-VALIDATED):

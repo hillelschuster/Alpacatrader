@@ -169,7 +169,7 @@ claim). No live flags/orders changed; nothing here is a deployment.
 ### WAVE-2 (2026-10-09)  -  real-quote battery on the full acquired quote universe
 
 Source of record: `factory/artifacts/wave2_alpha_search_summary.json` (sha256
-17515f55be035139ef1b731a03e01a8b4ac0cb9368e34d590568671a2f170273; 10 lanes, each with its
+e7cd3640e10da3091e119abc769ae35cd3415a420ab688a263fbb0609acdd1e8; 10 lanes, each with its
 verbatim decision text and honest note). Acquisition is now complete: quotes for the full
 admitted PANEL universe across all 1,003 sessions  -  train 421 (2021-05..2022-12),
 validation 250 (2023), confirmation 332 (2025-02..2026-05, previously explored, NOT
@@ -204,6 +204,12 @@ retained rare h60 cell stays the program lead (+$1,430/yr simple on the $3,000 r
   +37.21 $/day (426 known) - re-verified 2026-10-09 from
   .../retained_h390_lane/results.json (producer re-run, 56.2s, default out).
 
+- free-feed execution (alpha_delayed_sip_iex.py): the 15-20 minute delayed / IEX-only path is
+  measured NEGATIVE on the frozen choice (val +4.73 $/day over 5 known fills of 8 attempts, 37.5%
+  UNKNOWN, p>0=0.988; late -1.76 $/day over 13 known of 16 attempts) and all 12 predeclared views
+  are negative late (best +0.06). Weakly powered (the theta>=0.02 family yields 5-15 signals per 250
+  days), but the read is about DATA COST: real-time SIP is required; trading this model off a delayed
+  feed does not keep the money.
 **LEADS ONLY (not validated, not promotion grounds):**
 - passive mid resting entry + TTL (alpha_passive_quote_confirmation.py): chosen
   h60_thr200bps_mid_ttl120s validation +4.66 $/day, late +8.59 $/day at 25bps on the
