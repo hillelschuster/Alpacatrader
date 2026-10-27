@@ -2850,3 +2850,13 @@ marketable entry; 16/20 late UNKNOWNs are exits into thin/stale bids. Signal sup
 binding cost (late +0.86 / val -2.31 $/calendar day net of data on $3,000). Bot: depth_bot_features.py
 live rebuild = panel with 0 mismatches on 3 frozen days (tests pass). Frozen spec + pristine/paper plan:
 researches/PRE-REG-DEPTH-01.md. Runtime depth_bot.py in progress (replay parity -> shadow -> paper).
+
+2026-10-27 (later): depth_bot.py runtime COMPLETE in replay/shadow/paper modes (21 tests incl. features
+pass; replay reproduces the research arm's attempts field-for-field on 2023-01-19, 2023-01-24,
+2025-03-31, 2025-04-01; shadow journal == replay journal on a fake stream; paper fails closed without
+data/forward/depth_bot/ARMED + --paper). Gaps before arming: REST fallback/refusal on incomplete
+universe snapshot, quote backfill after mid-day restart, partial-exit policy, alert/supervisor/day-roll.
+PRE-REG-DEPTH-UNIVERSE-01: BLOCKED_ON_STORAGE (not evaluated - host C: drive has ~26 GB free; WSL `df /`
+over-reports). K=10 control reproduced exactly (582/582 days bit-identical). Reopen cost measured:
+K=20 ~1.45 GB quotes/1.13 h (validation), K=30 ~2.65 GB/2.08 h, + ~0.15 GB bars. Resumes once an off-host
+data root (Hetzner Storage Box) is mounted. Producer: factory/scripts/alpha_depth_universe.py.
