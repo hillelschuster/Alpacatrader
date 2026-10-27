@@ -58,12 +58,14 @@ ARMED_PATH = BOT_ROOT / "ARMED"
 KILL_PATH = DATA_ROOT / "KILL"
 
 ARM = research.View(0.030, 0.50)
-LOSS_LIMIT_USD = 90.0
+LOSS_LIMIT_USD = 300.0  # PRE-REG-DEPTH-01 amendment (was 90)
 LATTICE_START = 575
 ENTRY_CUTOFF_MINUTE = 895  # research: the last decision lattice t with an entry
 FLATTEN_MINUTE = 955  # ops: hard flatten at 15:55 ET
 BAR_SETTLE_US = 2_000_000  # a minute is closed only after its own bar can have arrived
 MAX_ORDER_NOTIONAL = 1_100.0  # ops sanity guard; the frozen sizing never reaches it
+EXIT_RETRY_MAX = 5  # a dead exit order is retried at most this many times
+EXIT_RETRY_BACKOFF_US = 2_000_000  # 2 s, doubling per retry
 ALERT_PATH = BOT_ROOT / "ALERT"
 STATES_ROOT = BOT_ROOT / "states"
 
@@ -873,7 +875,9 @@ def empty_trade_record(state: dict, quantity: int, arm=ARM) -> dict:
         "positions_at_entry": None,
         "broker_order_id": None,
         "broker_fill_us": None,
-        "broker_fill_price": None,
+        "broker_fill_price": None,  # ENTRY fill price (never overwritten by the exit)
+        "broker_entry_price": None,
+        "broker_exit_price": None,
         "broker_filled_qty": None,
         "partial_entry": False,
         "late_exit": False,
@@ -918,9 +922,9 @@ class Position:
     exit_notional: float = 0.0
     realized_usd: float = 0.0
     partials: int = 0
-    sim_order: Any = None
-    sim_outcome: dict | None = None
     retries: int = 0
+    next_retry_us: int = 0
+    retry_blocked: bool = False
 
 
 class DepthEngine:
@@ -939,7 +943,6 @@ class DepthEngine:
         risk: DailyRiskStop | None = None,
         fresh: bool = False,
         flatten: bool = True,
-        risk_stop: bool = True,
         quotes: QuoteCache | None = None,
         alert_path: Path | None = None,
         history: HistorySource | None = None,
@@ -957,9 +960,6 @@ class DepthEngine:
         # ``None`` means this run has no kill control (an offline replay is a what-if).
         self.kill_path = Path(kill_path) if kill_path is not None else None
         self.flatten_enabled = bool(flatten)
-        # Ops stop. An OFFLINE replay is a what-if of the frozen rule (like its absent
-        # KILL file), so the stop is disabled there and stays on for every live mode.
-        self.risk_stop = bool(risk_stop)
         self.features = depth_bot_features.IncrementalDepthFeatures(
             day, self.session_end, model
         )
@@ -992,6 +992,7 @@ class DepthEngine:
         self.sim: SimBroker | None = (
             SimBroker(day, self.quotes, self.session_end_us) if mode == "paper" else None
         )
+        self.sim_attempts: list[dict] = []
         self.last_et: dict[str, int] = {}
         self._accepted_fresh: int | None = None
         self.refusal: str | None = None
@@ -1129,6 +1130,11 @@ class DepthEngine:
         if quantity <= 0:
             return
         entry_minute = int(saved.get("entry_minute", 0))
+        clock_known = bool(saved.get("entry_clock_known", entry_minute)) and entry_minute > 0
+        if not clock_known:
+            # The broker has no fill clock for this position: adopt it at the restart minute
+            # and mark it as a late, parity-excluded exit instead of a 01:00 skeleton.
+            entry_minute = et_minute_of(self.now_us) if self.now_us else 0
         exit_minute = int(saved.get("exit_minute", 0)) or min(
             entry_minute + research.HEAD, self.session_end
         )
@@ -1143,7 +1149,10 @@ class DepthEngine:
             entry_price=float(saved.get("entry_price", 0.0)) or None,
             record=dict(saved.get("record") or {}),
         )
-        if not position.record:
+        if not clock_known:
+            position.record["late_exit"] = True
+            self._exclude(position.record, "entry_clock_unknown")
+        if not position.record or not position.record.get("intent_us"):
             position.record = {
                 "day": self.day,
                 "ticker": ticker,
@@ -1152,6 +1161,7 @@ class DepthEngine:
                 "exit_minute": exit_minute,
                 "entry_price": position.entry_price,
                 "entry_ask": position.entry_price,
+                "broker_fill_price": position.entry_price,
                 "fill_status": None,
                 "exit_bid": None,
                 "actual_exit_us": None,
@@ -1458,6 +1468,18 @@ class DepthEngine:
                 self.quotes.add(quote)
         self.now_us = self.resume_us
         for position in self.positions.values():
+            if int(position.entry_minute) <= 0:
+                # The broker had no fill clock for this position: adopt it at the restart
+                # minute, flagged, instead of a 01:00 skeleton.
+                position.entry_minute = et_minute_of(self.now_us)
+                position.exit_minute = min(
+                    position.entry_minute + research.HEAD, self.session_end
+                )
+                position.due_us = minute_us(self.day, position.exit_minute)
+                position.record["entry_minute"] = position.entry_minute
+                position.record["exit_minute"] = position.exit_minute
+                position.record["late_exit"] = True
+                self._exclude(position.record, "entry_clock_unknown")
             if int(position.due_us) <= self.now_us and not position.forced:
                 # The exit clock already passed while the process was down.
                 position.forced = True
@@ -1511,7 +1533,7 @@ class DepthEngine:
             return "universe_refused"
         if self.kill_path is not None and not entry_control_allowed(self.kill_path):
             return "kill_stop"
-        if self.risk_stop and not self.risk.entries_allowed:
+        if not self.risk.entries_allowed:
             return "daily_loss_stop"
         if not entries_allowed_at_minute(minute):
             return "flatten_time"
@@ -1645,17 +1667,27 @@ class DepthEngine:
         order = self.broker.submit_entry(
             ticker, item["qty"], float(state["limit_price"]), client_id, intent_us
         )
-        sim_order = (
-            self.sim.submit_entry(
-                ticker, item["qty"], float(state["limit_price"]), client_id, intent_us
+        if self.sim is not None:
+            self.sim_attempts.append(
+                {
+                    "record": record,
+                    "ticker": ticker,
+                    "qty": item["qty"],
+                    "client_id": client_id,
+                    "entry_minute": int(state["entry_minute"]),
+                    "entry_order": self.sim.submit_entry(
+                        ticker, item["qty"], float(state["limit_price"]), client_id, intent_us
+                    ),
+                    "entry_outcome": None,
+                    "due_minute": None,
+                    "due_us": None,
+                    "exit_order": None,
+                    "exit_outcome": None,
+                }
             )
-            if self.sim is not None
-            else None
-        )
         self.pending_entries.append(
             {
                 "order": order,
-                "sim_order": sim_order,
                 "record": record,
                 "qty": item["qty"],
                 "reserve": item["reserve"],
@@ -1665,17 +1697,26 @@ class DepthEngine:
         )
 
     # -- order settlement ------------------------------------------------------
+    def _exit_submit_clock(
+        self, ticker: str, due_us: int, now_us: int
+    ) -> tuple[int, str] | None:
+        """The research fresh-gate: submit at the due clock or at the first eligible print."""
+        stream = self.quotes.stream(ticker)
+        if stream is None:
+            return None
+        quote, _why = stream.latest_raw(int(due_us))
+        if quote is not None and float(quote["age_s"]) <= MAX_AGE_S:
+            return int(due_us), "submit_at_due_intent_firm_fresh"
+        rested, _why = stream.first_eligible_at_or_after(int(due_us), int(now_us))
+        if rested is None:
+            return None
+        return int(rested["quote_us"]), "submit_at_first_regular_after_due_intent"
+
     def _poll_orders(self) -> None:
+        self._poll_sim()
         if not self.pending_entries and not self.positions:
             return
         for pending in list(self.pending_entries):
-            if (
-                pending.get("sim_order") is not None
-                and pending["record"]["sim_entry_status"] is None
-            ):
-                sim_outcome = self.sim.poll_entry(pending["sim_order"], self.now_us)
-                if sim_outcome is not None:
-                    self._record_sim_entry(pending["record"], sim_outcome)
             outcome = self.broker.poll_entry(pending["order"], self.now_us)
             if outcome is None:
                 continue
@@ -1684,21 +1725,52 @@ class DepthEngine:
         for position in list(self.positions.values()):
             if position.exit_order is None:
                 self._maybe_submit_exit(position)
-            if (
-                position.sim_order is not None
-                and position.sim_outcome is None
-                and self.sim is not None
-            ):
-                sim_outcome = self.sim.poll_exit(position.sim_order, self.now_us)
-                if sim_outcome is not None:
-                    position.sim_outcome = sim_outcome
-                    self._record_sim_exit(position.record, sim_outcome)
             if position.exit_order is None:
                 continue
             outcome = self.broker.poll_exit(position.exit_order, self.now_us)
             if outcome is None:
                 continue
             self._settle_exit(position, outcome)
+
+    def _poll_sim(self) -> None:
+        """Drive the comparator on its OWN positions, independent of the real account."""
+        if self.sim is None:
+            return
+        for attempt in self.sim_attempts:
+            record = attempt["record"]
+            if attempt["entry_outcome"] is None:
+                outcome = self.sim.poll_entry(attempt["entry_order"], self.now_us)
+                if outcome is None:
+                    continue
+                attempt["entry_outcome"] = outcome
+                self._record_sim_entry(record, outcome)
+                if outcome["state"] != OPEN_POSITION:
+                    continue
+                due_minute = min(int(attempt["entry_minute"]) + research.HEAD, self.session_end)
+                attempt["due_minute"] = due_minute
+                attempt["due_us"] = minute_us(self.day, due_minute)
+            if attempt["entry_outcome"]["state"] != OPEN_POSITION:
+                continue
+            if attempt["exit_outcome"] is not None:
+                continue
+            if attempt["exit_order"] is None:
+                if int(self.now_us) < int(attempt["due_us"]):
+                    continue
+                clock = self._exit_submit_clock(
+                    attempt["ticker"], int(attempt["due_us"]), int(self.now_us)
+                )
+                if clock is None:
+                    continue
+                submit_us, status = clock
+                record["sim_exit_submit_status"] = status
+                attempt["exit_order"] = self.sim.submit_exit(
+                    attempt["ticker"], attempt["qty"], f"{attempt['client_id']}-sim", submit_us
+                )
+            outcome = self.sim.poll_exit(attempt["exit_order"], self.now_us)
+            if outcome is None:
+                continue
+            attempt["exit_outcome"] = outcome
+            self._record_sim_exit(record, outcome)
 
     def _record_sim_entry(self, record: dict, outcome: dict) -> None:
         record["sim_entry_status"] = outcome.get("entry_status")
@@ -1715,13 +1787,15 @@ class DepthEngine:
         self._settle_sim_verdict(record)
 
     def _record_sim_exit(self, record: dict, outcome: dict) -> None:
+        if record.get("sim_entry_status") != "conditional_ioc_fill":
+            return  # the simulated arm never had a position: its entry verdict stands
         record["sim_exit_status"] = outcome.get("exit_status")
         record["sim_exit_bid"] = outcome.get("exit_bid")
         record["sim_exit_bid_shares"] = outcome.get("exit_bid_shares")
         record["sim_exit_quote_us"] = outcome.get("exit_quote_us")
         if outcome["state"] == "closed":
             record["sim_fill_status"] = "conditional_fill"
-        elif record["sim_fill_status"] != "no_match_at_l1_unfilled_cash":
+        else:
             record["sim_fill_status"] = "unknown_exit_execution"
         self._settle_sim_verdict(record)
 
@@ -1769,6 +1843,7 @@ class DepthEngine:
             record["broker_fill_us"] = int(outcome["filled_at_us"])
         if outcome.get("filled_avg_price") is not None:
             record["broker_fill_price"] = float(outcome["filled_avg_price"])
+            record["broker_entry_price"] = float(outcome["filled_avg_price"])
         if outcome.get("filled_qty") is not None:
             record["broker_filled_qty"] = int(outcome["filled_qty"])
         if outcome.get("partial"):
@@ -1865,6 +1940,10 @@ class DepthEngine:
         self._finish_trade(record)
 
     def _maybe_submit_exit(self, position: Position) -> None:
+        if position.retry_blocked:
+            return  # the retry cap was hit; only the alert path remains
+        if int(self.now_us) < int(position.next_retry_us):
+            return  # exponential backoff between retries
         if int(self.now_us) < int(position.due_us) and not position.forced:
             return
         submit_us = int(position.due_us)
@@ -1873,18 +1952,10 @@ class DepthEngine:
             submit_us = int(self.now_us)
             status = "flatten_forced"
         else:
-            stream = self.quotes.stream(position.ticker)
-            if stream is None:
+            clock = self._exit_submit_clock(position.ticker, submit_us, int(self.now_us))
+            if clock is None:
                 return
-            quote, _why = stream.latest_raw(submit_us)
-            if quote is not None and float(quote["age_s"]) <= MAX_AGE_S:
-                status = "submit_at_due_intent_firm_fresh"
-            else:
-                rested, _why = stream.first_eligible_at_or_after(submit_us, self.now_us)
-                if rested is None:
-                    return
-                submit_us = int(rested["quote_us"])
-                status = "submit_at_first_regular_after_due_intent"
+            submit_us, status = clock
         if status == "flatten_forced":
             self._exclude(position.record, "flatten_forced")
         client_id = f"depthbot-s-{position.ticker}-{submit_us}"
@@ -1909,11 +1980,6 @@ class DepthEngine:
         position.exit_order = self.broker.submit_exit(
             position.ticker, position.qty, client_id, submit_us
         )
-        if self.sim is not None:
-            position.sim_order = self.sim.submit_exit(
-                position.ticker, position.qty, f"{client_id}-sim", submit_us
-            )
-            position.sim_outcome = None
 
     def _settle_exit(self, position: Position, outcome: dict) -> None:
         record = position.record
@@ -1932,12 +1998,35 @@ class DepthEngine:
         if outcome.get("broker_order_id"):
             record["broker_order_id"] = outcome["broker_order_id"]
         if outcome["state"] == "retry":
-            # The real order died without a fill: keep the position, work it again.
+            # The real order died without a fill: keep the position, but never loop on it.
             position.retries += 1
             record["exit_status"] = outcome.get("exit_status")
             position.exit_order = None
             position.exit_client_id = None
             position.due_us = int(self.now_us)
+            if position.retries > EXIT_RETRY_MAX:
+                position.retry_blocked = True
+                self._log(
+                    {
+                        "event": "exit_retry_exhausted",
+                        "day": self.day,
+                        "ticker": position.ticker,
+                        "qty": position.qty,
+                        "retries": position.retries - 1,
+                        "status": outcome.get("exit_status"),
+                    }
+                )
+                self._alert(
+                    "exit_retry_exhausted",
+                    ticker=position.ticker,
+                    qty=position.qty,
+                    retries=position.retries - 1,
+                    status=outcome.get("exit_status"),
+                )
+                return
+            position.next_retry_us = int(self.now_us) + EXIT_RETRY_BACKOFF_US * (
+                2 ** (position.retries - 1)
+            )
             self._log(
                 {
                     "event": "exit_retry",
@@ -1947,6 +2036,7 @@ class DepthEngine:
                     "status": outcome.get("exit_status"),
                     "broker_status": outcome.get("broker_status"),
                     "retry_index": position.retries,
+                    "next_retry_us": position.next_retry_us,
                 }
             )
             self._alert(
@@ -1989,7 +2079,7 @@ class DepthEngine:
             quantity = min(int(outcome.get("filled_qty") or position.qty), position.qty)
             tranche = (
                 quantity * (float(exit_price) - float(entry_price))
-                if exit_price is not None and entry_price is not None
+                if exit_price is not None and (entry_price or 0) > 0
                 else 0.0
             )
             position.filled_qty += quantity
@@ -2028,7 +2118,7 @@ class DepthEngine:
                     )
                 return
             record["fill_status"] = "conditional_fill"
-            if record["exit_bid"] is not None and record["entry_ask"] is not None:
+            if record["exit_bid"] is not None and (record.get("entry_ask") or 0) > 0:
                 for rung in research.RUNG_COSTS:
                     record[f"net_usd_{int(rung)}"] = research.net_usd(
                         position.filled_qty,
@@ -2036,7 +2126,7 @@ class DepthEngine:
                         float(record["entry_ask"]),
                         rung,
                     )
-            record["broker_fill_price"] = None if broker_price is None else float(broker_price)
+            record["broker_exit_price"] = None if broker_price is None else float(broker_price)
             record["broker_filled_qty"] = (
                 None if outcome.get("filled_qty") is None else position.filled_qty
             )
@@ -2091,7 +2181,7 @@ class DepthEngine:
                 "late_exit": bool(record.get("late_exit")),
             }
         )
-        if self.risk_stop and self.risk.stopped and not was_stopped:
+        if self.risk.stopped and not was_stopped:
             self._log(
                 {
                     "event": "risk_stop",
@@ -2122,7 +2212,53 @@ class DepthEngine:
         if record.get("parity_excluded"):
             self.daily["parity_excluded"] += 1
         self.trades.append(record)
-        self._log({"event": "trade_result", **record})
+        if self.sim is None:
+            self._log({"event": "trade_result", **record})
+        # In paper mode the record is journalled at the close instead: the simulated arm's
+        # verdict for the SAME attempt may still be resolving, and it must not be lost.
+
+    def _close_sim_attempts(self) -> None:
+        """Settle the comparator at the close, independently of the real account."""
+        if self.sim is None:
+            return
+        for attempt in self.sim_attempts:
+            record = attempt["record"]
+            if attempt["entry_outcome"] is None:
+                outcome = self.sim.poll_entry(attempt["entry_order"], self.session_end_us)
+                if outcome is None:
+                    outcome = self.sim.close_entry(attempt["entry_order"], self.session_end_us)
+                attempt["entry_outcome"] = outcome
+                self._record_sim_entry(record, outcome)
+            if (
+                attempt["entry_outcome"]["state"] == OPEN_POSITION
+                and attempt["exit_outcome"] is None
+            ):
+                if attempt["exit_order"] is None:
+                    clock = self._exit_submit_clock(
+                        attempt["ticker"], int(attempt["due_us"]), self.session_end_us
+                    )
+                    if clock is not None:
+                        attempt["exit_order"] = self.sim.submit_exit(
+                            attempt["ticker"],
+                            attempt["qty"],
+                            f"{attempt['client_id']}-sim",
+                            clock[0],
+                        )
+                outcome = None
+                if attempt["exit_order"] is not None:
+                    outcome = self.sim.poll_exit(attempt["exit_order"], self.session_end_us)
+                    if outcome is None:
+                        outcome = self.sim.close_exit(
+                            attempt["exit_order"], self.session_end_us
+                        )
+                if outcome is None:
+                    outcome = {
+                        "state": UNKNOWN,
+                        "exit_status": "unknown_exit_no_valid_regular_quote",
+                        "actual_exit_us": self.session_end_us + 1,
+                    }
+                attempt["exit_outcome"] = outcome
+                self._record_sim_exit(record, outcome)
 
     def _release(self, clock_us: int, payload: dict) -> None:
         ticker = payload["ticker"]
@@ -2181,7 +2317,25 @@ class DepthEngine:
                     "actual_exit_us": self.session_end_us + 1,
                 }
             self._settle_exit(position, outcome)
+        self._close_sim_attempts()
         self._drain_tasks()
+        # A real position still open at the close is unresolved, not absent: it gets its own
+        # trade_result so the parity diff can see it.
+        for position in list(self.positions.values()):
+            record = position.record
+            record["fill_status"] = "unresolved_open"
+            record["actual_exit_us"] = self.session_end_us + 1
+            self._exclude(record, "unresolved_open")
+            self._log(
+                {
+                    "event": "position_unresolved",
+                    "day": self.day,
+                    "ticker": position.ticker,
+                    "qty": position.qty,
+                    "exit_status": record.get("exit_status"),
+                }
+            )
+            self._finish_trade(record)
         samples = self.daily.pop("_position_samples", [])
         self.daily["positions_peak"] = max(samples) if samples else 0
         self.daily["positions_mean"] = float(sum(samples) / len(samples)) if samples else 0.0
@@ -2189,6 +2343,9 @@ class DepthEngine:
         self.daily["mode"] = getattr(self.broker, "mode", "unknown")
         # Attempts are reported in INTENT order, never in settlement order.
         self.trades.sort(key=lambda record: (int(record["intent_us"]), str(record["ticker"])))
+        if self.sim is not None:
+            for record in self.trades:
+                self._log({"event": "trade_result", **record})
         self.write_states()
         summary = dict(self.daily)
         summary["skip_reasons"] = dict(self.daily["skip_reasons"])
@@ -2281,14 +2438,22 @@ def default_stream_factory(key: str, secret: str):
     return StockDataStream(key, secret, feed=DataFeed.SIP)
 
 
+class StreamEndedEarlyError(RuntimeError):
+    """The venue socket returned before the session end and could not be revived."""
+
+
 class AlpacaSIPStream:
     """Live SIP stream in a WORKER thread; the caller's thread owns subscriptions + close.
 
     alpaca-py 0.43.4 ``subscribe_quotes`` blocks on ``run_coroutine_threadsafe(...).result()``,
     so calling it from inside a stream handler deadlocks the event loop. Handlers therefore
-    only enqueue the names the engine admitted, the caller's thread subscribes them, and at
-    ``session_end_us`` the caller stops the socket and returns so the day can be finished,
-    captured and rolled.
+    only enqueue the names the engine admitted (under a lock), the caller's thread subscribes
+    them, and at ``session_end_us`` the caller stops the socket and returns so the day can be
+    finished, captured and rolled.
+
+    A socket that returns BEFORE the session end is never silent: the reason and error are
+    recorded, an ``ALERT stream_ended_early`` is written, and the socket is re-created with an
+    exponential backoff. Only a revive that survives to ``session_end_us`` lets the day finish.
     """
 
     def __init__(
@@ -2302,6 +2467,9 @@ class AlpacaSIPStream:
         poll_s: float = 0.2,
         sleep: Callable[[float], None] = time.sleep,
         now_us: Callable[[], int] = lambda: int(time.time() * 1_000_000),
+        alert_path: Path | None = None,
+        max_reconnects: int = 5,
+        backoff_s: float = 2.0,
     ):
         self.key = key
         self.secret = secret
@@ -2311,15 +2479,57 @@ class AlpacaSIPStream:
         self.poll_s = float(poll_s)
         self.sleep = sleep
         self.now_us = now_us
+        self.alert_path = Path(alert_path) if alert_path is not None else None
+        self.max_reconnects = int(max_reconnects)
+        self.backoff_s = float(backoff_s)
         self.subscribed: set[str] = set()
         self.sessions = 0
+        self.reconnects = 0
         self.stop_reason: str | None = None
         self.error: BaseException | None = None
 
     def run(self, on_bar, on_quote) -> None:
+        while True:
+            self._run_socket(on_bar, on_quote)
+            if self.stop_reason == "session_end":
+                return
+            if int(self.now_us()) >= self.session_end_us:
+                self.stop_reason = self.stop_reason or "session_end"
+                return
+            self.reconnects += 1
+            reason = self.stop_reason or "socket_returned_early"
+            write_alert(
+                self.alert_path,
+                "stream_ended_early",
+                reason=reason,
+                error=None if self.error is None else repr(self.error),
+                attempt=self.reconnects,
+                resume_at_us=int(self.now_us()),
+                session_end_us=self.session_end_us,
+            )
+            self.error = self.error or RuntimeError(f"socket returned before session end: {reason}")
+            if self.reconnects > self.max_reconnects:
+                self.stop_reason = "reconnect_exhausted"
+                write_alert(
+                    self.alert_path,
+                    "stream_reconnect_exhausted",
+                    attempts=self.reconnects - 1,
+                    error=repr(self.error),
+                )
+                raise StreamEndedEarlyError(str(self.error)) from self.error
+            self.sleep(self.backoff_s * (2 ** (self.reconnects - 1)))
+            self.error = None
+            self.stop_reason = None
+
+    def _run_socket(self, on_bar, on_quote) -> None:
         stream = self.stream_factory(self.key, self.secret)
-        pending: list[list[str]] = []
+        pending: list[str] = []
+        pending_lock = threading.Lock()
         subscribed: set[str] = set()
+
+        def enqueue(names) -> None:
+            with pending_lock:
+                pending.extend(sorted(set(names)))
 
         async def bar_handler(bar):
             clock = bar.timestamp.astimezone(ET)
@@ -2334,7 +2544,7 @@ class AlpacaSIPStream:
             }
             added = on_bar(pl.DataFrame([row]))
             if added:
-                pending.append(sorted(added - subscribed))
+                enqueue(name for name in added if name not in subscribed)
 
         async def quote_handler(quote):
             added = on_quote(
@@ -2351,9 +2561,12 @@ class AlpacaSIPStream:
                 }
             )
             if added:
-                pending.append(sorted(added - subscribed))
+                enqueue(name for name in added if name not in subscribed)
 
         stream.subscribe_bars(bar_handler, *self.universe)
+        if self.subscribed:
+            stream.subscribe_quotes(quote_handler, *sorted(self.subscribed))
+            subscribed.update(self.subscribed)
 
         def worker() -> None:
             try:
@@ -2366,24 +2579,27 @@ class AlpacaSIPStream:
         self.sessions += 1
         try:
             while thread.is_alive():
-                if pending:
-                    names = sorted({name for batch in pending for name in batch} - subscribed)
+                # Drain atomically: a handler may append while we read.
+                with pending_lock:
+                    names = sorted(set(pending) - subscribed)
                     pending.clear()
-                    if names:
-                        # Never from inside a handler: this runs on the caller's thread.
-                        stream.subscribe_quotes(quote_handler, *names)
-                        subscribed.update(names)
+                if names:
+                    # Never from inside a handler: this runs on the caller's thread.
+                    stream.subscribe_quotes(quote_handler, *names)
+                    subscribed.update(names)
                 if int(self.now_us()) >= self.session_end_us:
                     self.stop_reason = "session_end"
                     break
                 self.sleep(self.poll_s)
+            else:
+                # The worker thread is gone: the socket returned before the session end.
+                if int(self.now_us()) < self.session_end_us and self.stop_reason is None:
+                    self.stop_reason = "socket_returned_early"
         finally:
-            self.subscribed = set(subscribed)
+            self.subscribed |= subscribed
             with contextlib.suppress(Exception):  # a dead socket is already stopped
                 stream.stop()
             thread.join(timeout=10.0)
-        if self.error is not None:
-            raise RuntimeError(f"stream failed: {self.error}") from self.error
 
 
 # ----- reference data ---------------------------------------------------------
@@ -2503,7 +2719,6 @@ def replay_day(
         fresh=True,
         quotes=quotes,
         kill_path=None,  # an offline replay is a what-if, never an order path
-        risk_stop=False,  # and it is the frozen rule, not the ops stop
         states_path=states_path_for(journal_root, states_root, day),
         universe=universe,
         mode="sim",
@@ -2521,9 +2736,17 @@ def replay_day(
 
 
 def reconcile_positions(
-    journal_file: Path, broker_positions: dict[str, dict]
+    journal_file: Path,
+    broker_positions: dict[str, dict],
+    broker_fills: dict[str, dict] | None = None,
 ) -> dict[str, dict]:
-    """Adopt broker positions and re-derive their exit clocks from the journal."""
+    """Adopt broker positions with the broker's own entry clock and price.
+
+    The journal is preferred when it has a fill for today; otherwise the broker order's
+    ``filled_at``/``filled_avg_price`` is used, so an overnight position is never adopted with
+    a skeleton ``entry_minute=0`` record.
+    """
+    broker_fills = broker_fills or {}
     saved = {}
     for event in read_events(journal_file):
         if event.get("event") in {"position_open", "fill"}:
@@ -2533,20 +2756,29 @@ def reconcile_positions(
     adopted: dict[str, dict] = {}
     for ticker, position in broker_positions.items():
         prior = saved.get(ticker, {})
+        fill = broker_fills.get(ticker, {})
+        entry_minute = int(prior.get("entry_minute", fill.get("entry_minute", 0)) or 0)
+        entry_price = float(
+            prior.get("price")
+            or prior.get("entry_price")
+            or fill.get("entry_price")
+            or position.get("entry_price", 0.0)
+        )
         adopted[ticker] = {
             "qty": int(position.get("qty", 0)),
-            "entry_price": float(position.get("entry_price", 0.0)),
-            "entry_minute": int(prior.get("entry_minute", position.get("entry_minute", 0))),
+            "entry_price": entry_price,
+            "entry_minute": entry_minute,
+            "entry_clock_known": bool(entry_minute),
             "exit_minute": int(prior.get("exit_minute", 0)),
             "reserved_usd": float(
                 prior.get(
                     "reserved_usd",
                     float(position.get("qty", 0))
-                    * float(position.get("entry_price", 0.0))
+                    * entry_price
                     * research.FUNDING_SIDE_FACTOR,
                 )
             ),
-            "client_order_id": prior.get("client_order_id"),
+            "client_order_id": prior.get("client_order_id") or fill.get("client_order_id"),
         }
     for ticker in sorted(set(adopted) - set(saved)):
         append_event(
@@ -2589,7 +2821,11 @@ def run_live(
         universe = universe or load_pit_universe(day)
         history = history or AlpacaHistory(key, secret)
         source = AlpacaSIPStream(
-            key, secret, universe, session_end_us=minute_us(day, session_end)
+            key,
+            secret,
+            universe,
+            session_end_us=minute_us(day, session_end),
+            alert_path=alerts,
         )
     open_positions: dict[str, dict] = {}
     if mode == "paper" and broker is None:
@@ -2605,8 +2841,28 @@ def run_live(
             for position in client.get_all_positions()
             if float(position.qty) != 0
         }
-        open_positions = reconcile_positions(journal_file, positions)
-        for order in client.get_orders():
+        orders = client.get_orders()
+        fills: dict[str, dict] = {}
+        for order in orders:
+            if _order_status(_attr(order, "side", "")) != "buy":
+                continue
+            if _order_status(_attr(order, "status", "")) != "filled":
+                continue
+            filled_at = _attr(order, "filled_at", None)
+            if filled_at is None:
+                continue
+            stamp = ts_us_of(filled_at)
+            known = fills.get(order.symbol)
+            if known is not None and known["filled_at_us"] >= stamp:
+                continue
+            fills[order.symbol] = {
+                "entry_minute": et_minute_of(stamp),
+                "entry_price": float(_attr(order, "filled_avg_price", 0) or 0),
+                "client_order_id": str(_attr(order, "client_order_id", "")),
+                "filled_at_us": stamp,
+            }
+        open_positions = reconcile_positions(journal_file, positions, fills)
+        for order in orders:
             client_id = str(getattr(order, "client_order_id", ""))
             if client_id.startswith("depthbot-"):
                 append_event(
@@ -2657,6 +2913,28 @@ def run_live(
     if resume_us is not None:
         engine.bootstrap(resume_us=int(resume_us))
     source.run(engine.on_bar, engine.on_quote)
+    reason = getattr(source, "stop_reason", None)
+    if reason not in (None, "session_end"):
+        # The feed died and could not be revived: never write a completed empty day.
+        engine.write_states()
+        engine._alert(
+            "session_incomplete",
+            reason=reason,
+            bars=len(engine.bar_rows),
+            decisions=len(engine.decision_ticks),
+        )
+        append_event(
+            journal_file,
+            {
+                "event": "session_incomplete",
+                "day": day,
+                "mode": mode,
+                "reason": reason,
+                "bars": len(engine.bar_rows),
+                "decisions": len(engine.decision_ticks),
+            },
+        )
+        raise StreamEndedEarlyError(f"{day} session ended early: {reason}")
     daily, trades = engine.finish()
     write_capture(
         {"bars": pl.DataFrame(engine.bar_rows) if engine.bar_rows else None,

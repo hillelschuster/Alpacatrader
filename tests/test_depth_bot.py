@@ -643,6 +643,8 @@ def test_partial_exit_keeps_working_the_remainder(tmp_path: Path):
     assert engine.positions == {}
     closed = [event for event in journal if event["event"] == "position_closed"][-1]
     assert closed["qty"] == quantity
+    engine.finish()
+    journal = events(tmp_path / "journal.jsonl")
     trade = [event for event in journal if event["event"] == "trade_result"][-1]
     assert trade["parity_excluded"] is True
     assert "partial_exit" in trade["parity_excluded_reason"]
@@ -654,7 +656,9 @@ def test_partial_exit_keeps_working_the_remainder(tmp_path: Path):
 # ----- (4) alerting + supervisor ---------------------------------------------
 def test_loss_stop_alerts_to_the_alert_file(tmp_path: Path):
     alerts = tmp_path / "ALERT"
-    engine, _sim = make_engine(tmp_path, alert_path=alerts)
+    engine, _sim = make_engine(
+        tmp_path, alert_path=alerts, risk=depth_bot.DailyRiskStop(limit_usd=1.0)
+    )
     run_one_trade(engine)
     due = engine.positions["AAA"].due_us
     push_quote(engine, "AAA", due - 200_000, 9.00, 9.05)
@@ -984,8 +988,9 @@ def test_canceled_exit_is_retried_as_marketable(tmp_path: Path):
     due = engine.positions["AAA"].due_us
     push_quote(engine, "AAA", due - 200_000, 10.10, 10.15)
     push_quote(engine, "AAA", due + 300_000, 10.10, 10.15)  # submitted, canceled at the venue
-    push_quote(engine, "AAA", due + 1_000_000, 10.10, 10.15)  # retry submitted
-    push_quote(engine, "AAA", due + 1_500_000, 10.10, 10.15)  # retry fills
+    # The retry waits for the exponential backoff (2 s), then fills.
+    push_quote(engine, "AAA", due + 2_500_000, 10.10, 10.15)
+    push_quote(engine, "AAA", due + 3_000_000, 10.10, 10.15)
     journal = events(tmp_path / "journal.jsonl")
     assert [event["event"] for event in journal].count("exit_retry") == 1
     sells = [order for order in broker.submitted if order["side"] == "sell"]
@@ -1009,3 +1014,283 @@ def test_unfilled_exit_keeps_the_position_and_alerts(tmp_path: Path):
     assert not any(event["event"] == "position_closed" for event in journal)
     kinds = [json.loads(line)["kind"] for line in alerts.read_text().splitlines()]
     assert "position_not_flattened" in kinds
+
+
+# ----- round 3: stream early return, sim independence, retries, adoption ------
+class DyingSocket(FakeSocket):
+    """The venue closes the socket immediately (subscription error path)."""
+
+    def run(self):
+        self.run_thread = threading.get_ident()
+
+
+def test_socket_return_before_session_end_alerts_and_reconnects(tmp_path: Path):
+    alerts = tmp_path / "ALERT"
+    sockets = []
+
+    def factory(key, secret):
+        socket = DyingSocket(key, secret) if not sockets else FakeSocket(key, secret)
+        sockets.append(socket)
+        return socket
+
+    source = depth_bot.AlpacaSIPStream(
+        "k",
+        "s",
+        ["UNIV"],
+        session_end_us=int(time.time() * 1_000_000) + 600_000,
+        stream_factory=factory,
+        poll_s=0.01,
+        sleep=lambda _s: None,
+        alert_path=alerts,
+        max_reconnects=3,
+        backoff_s=0.01,
+    )
+    source.run(lambda _frame: {"AAA"}, lambda _quote: set())
+    assert len(sockets) >= 2, "an early return must be retried on a fresh socket"
+    assert source.stop_reason == "session_end"
+    kinds = [json.loads(line)["kind"] for line in alerts.read_text().splitlines()]
+    assert "stream_ended_early" in kinds
+
+
+def test_socket_reconnect_exhaustion_raises(tmp_path: Path):
+    alerts = tmp_path / "ALERT"
+    sockets = []
+
+    def factory(key, secret):
+        socket = DyingSocket(key, secret)
+        sockets.append(socket)
+        return socket
+
+    source = depth_bot.AlpacaSIPStream(
+        "k",
+        "s",
+        ["UNIV"],
+        session_end_us=int(time.time() * 1_000_000) + 5_000_000,
+        stream_factory=factory,
+        poll_s=0.005,
+        sleep=lambda _s: None,
+        alert_path=alerts,
+        max_reconnects=2,
+        backoff_s=0.0,
+    )
+    with pytest.raises(depth_bot.StreamEndedEarlyError):
+        source.run(lambda _frame: set(), lambda _quote: set())
+    assert source.stop_reason == "reconnect_exhausted"
+    assert len(sockets) == 3  # initial + max_reconnects
+    kinds = [json.loads(line)["kind"] for line in alerts.read_text().splitlines()]
+    assert kinds.count("stream_ended_early") == 3
+    assert kinds[-1] == "stream_reconnect_exhausted"
+
+
+def test_run_live_never_writes_a_completed_day_after_an_early_end(tmp_path: Path):
+    class DeadSource:
+        stop_reason = "reconnect_exhausted"
+
+        def __init__(self, bars):
+            self.bars = bars
+
+        def run(self, on_bar, on_quote):
+            return None
+
+    alerts = tmp_path / "ALERT"
+    (tmp_path / "ARMED").touch()
+    with pytest.raises(depth_bot.StreamEndedEarlyError):
+        depth_bot.run_live(
+            "shadow",
+            False,
+            DAY,
+            source=DeadSource(pl.DataFrame({"ticker": ["AAA"]})),
+            journal_root=tmp_path / "shadow",
+            alert_path=alerts,
+        )
+    journal = events(tmp_path / "shadow" / f"{DAY}.jsonl")
+    kinds = {event["event"] for event in journal}
+    assert "session_incomplete" in kinds
+    assert "session_end" not in kinds and "daily_summary" not in kinds
+    assert "session_incomplete" in [
+        json.loads(line)["kind"] for line in alerts.read_text().splitlines()
+    ]
+
+
+def test_stream_subscribes_every_admission_from_its_thread(tmp_path: Path):
+    class BurstSocket(FakeSocket):
+        """Many admissions dispatched from the loop thread while the caller drains."""
+
+        def run(self):
+            self.run_thread = threading.get_ident()
+            stamp = datetime.now(ZoneInfo("UTC"))
+            for index in range(60):
+                asyncio.run(
+                    self.bar_handler(
+                        SimpleNamespace(
+                            symbol=f"S{index:02d}",
+                            timestamp=stamp,
+                            open=1.0,
+                            high=1.0,
+                            low=1.0,
+                            close=1.0,
+                            volume=1.0,
+                        )
+                    )
+                )
+            while not self.stopped:
+                time.sleep(0.005)
+
+    sockets = []
+
+    def factory(key, secret):
+        socket = BurstSocket(key, secret)
+        sockets.append(socket)
+        return socket
+
+    source = depth_bot.AlpacaSIPStream(
+        "k",
+        "s",
+        ["UNIV"],
+        session_end_us=int(time.time() * 1_000_000) + 500_000,
+        stream_factory=factory,
+        poll_s=0.005,
+    )
+    source.run(lambda frame: {str(frame["ticker"][0])}, lambda _quote: set())
+    subscribed = {name for names, _ in sockets[0].subscriptions for name in names}
+    assert subscribed == {f"S{index:02d}" for index in range(60)}
+
+
+def test_loss_stop_default_is_the_amended_300():
+    assert depth_bot.DailyRiskStop().limit_usd == 300.0
+
+
+class FillingPaperBroker(depth_bot.FakePaperBroker):
+    """Fills whatever the sim says (or nothing), to force the divergence cases."""
+
+    def __init__(self, fill: bool = True):
+        super().__init__()
+        self.fill = fill
+
+    def poll_entry(self, order, now_us):
+        if not self.fill:
+            return {
+                "state": "unfilled",
+                "entry_status": "canceled",
+                "release_us": int(order["submit_us"]),
+            }
+        return super().poll_entry(order, now_us)
+
+
+def test_sim_no_match_with_a_real_fill_keeps_the_sim_verdict(tmp_path: Path):
+    engine, _sim = make_engine(tmp_path, broker=FillingPaperBroker(fill=True))
+    intent_us = minute_us(DAY, 601)
+    push_quote(engine, "AAA", intent_us - 500_000, 10.00, 10.05)
+    # The arrival book is 30 cents wide of the limit: the simulated IOC cannot execute.
+    push_quote(engine, "AAA", intent_us + 200_000, 10.30, 10.40)
+    engine.pending_intents[601] = [intent_row("AAA", t=600)]
+    engine._process_intent_clock(601)
+    engine.advance(intent_us + 400_000)
+    engine.finish()
+    results = list(events(tmp_path / "journal.jsonl"))
+    trade = [event for event in results if event["event"] == "trade_result"][-1]
+    assert trade["sim_fill_status"] == "no_match_at_l1_unfilled_cash"
+    assert trade["sim_would_be_unknown"] is False
+    assert trade["sim_exit_bid"] is None and trade["sim_net_usd_25"] is None
+    assert trade["broker_fill_price"] is not None, "the real fill is recorded separately"
+    assert trade["broker_exit_price"] != trade["broker_fill_price"]
+
+
+def test_sim_fill_with_a_real_no_fill_still_gets_the_sim_exit(tmp_path: Path):
+    engine, _sim = make_engine(tmp_path, broker=FillingPaperBroker(fill=False))
+    intent_us = minute_us(DAY, 601)
+    push_quote(engine, "AAA", intent_us - 500_000, 10.00, 10.05)
+    engine.pending_intents[601] = [intent_row("AAA", t=600)]
+    engine._process_intent_clock(601)
+    engine.advance(intent_us + 400_000)
+    # The simulated arm holds a position to 661: drive it and settle at the close.
+    sim_due = minute_us(DAY, 661)
+    push_quote(engine, "AAA", sim_due - 200_000, 10.10, 10.15)
+    push_quote(engine, "AAA", sim_due + 300_000, 10.10, 10.15)
+    engine.finish()
+    results = list(events(tmp_path / "journal.jsonl"))
+    trade = [event for event in results if event["event"] == "trade_result"][-1]
+    assert trade["fill_status"] == "no_match_at_l1_unfilled_cash"
+    assert trade["sim_fill_status"] == "conditional_fill"
+    assert trade["sim_exit_bid"] == pytest.approx(10.10)
+    assert trade["sim_net_usd_25"] is not None
+    assert trade["broker_fill_price"] is None
+
+
+def test_position_open_at_the_close_still_gets_a_trade_result(tmp_path: Path):
+    engine, _sim = make_engine(tmp_path, broker=StuckExitBroker())
+    run_one_trade(engine)
+    due = engine.positions["AAA"].due_us
+    push_quote(engine, "AAA", due - 200_000, 10.10, 10.15)
+    push_quote(engine, "AAA", due + 300_000, 10.10, 10.15)
+    engine.finish()
+    journal = list(events(tmp_path / "journal.jsonl"))
+    results = [event for event in journal if event["event"] == "trade_result"]
+    assert results[-1]["fill_status"] == "unresolved_open"
+    assert "unresolved_open" in results[-1]["parity_excluded_reason"]
+
+
+class AlwaysRetryBroker(depth_bot.FakePaperBroker):
+    """Every exit order dies without a fill."""
+
+    def poll_exit(self, order, now_us):
+        return {
+            "state": "retry",
+            "exit_status": "exit_rejected",
+            "broker_status": "rejected",
+            "exit_submit_us": int(order["submit_us"]),
+            "actual_exit_us": int(now_us),
+        }
+
+
+def test_exit_retry_is_capped_with_backoff(tmp_path: Path):
+    alerts = tmp_path / "ALERT"
+    broker = AlwaysRetryBroker()
+    engine, _sim = make_engine(tmp_path, broker=broker, alert_path=alerts)
+    run_one_trade(engine)
+    due = engine.positions["AAA"].due_us
+    push_quote(engine, "AAA", due - 200_000, 10.10, 10.15)
+    for step in range(1, 90):  # doubling backoff, so a long clock is needed to hit the cap
+        push_quote(engine, "AAA", due + step * 8_000_000 - 100_000, 10.10, 10.15)
+        engine.advance(due + step * 8_000_000)
+    sells = [order for order in broker.submitted if order["side"] == "sell"]
+    assert len(sells) <= depth_bot.EXIT_RETRY_MAX + 1, "a dead exit must not loop on orders"
+    assert engine.positions["AAA"].retry_blocked
+    kinds = [json.loads(line)["kind"] for line in alerts.read_text().splitlines()]
+    assert "exit_retry_exhausted" in kinds
+    journal = events(tmp_path / "journal.jsonl")
+    assert any(event["event"] == "exit_retry_exhausted" for event in journal)
+
+
+def test_reconcile_uses_the_broker_fill_clock_and_price(tmp_path: Path):
+    journal = tmp_path / "journal.jsonl"
+    fills = {
+        "OVNT": {
+            "entry_minute": 640,
+            "entry_price": 4.25,
+            "client_order_id": "depthbot-b-OVNT-1",
+            "filled_at_us": minute_us(DAY, 640),
+        }
+    }
+    adopted = depth_bot.reconcile_positions(
+        journal, {"OVNT": {"qty": 100, "entry_price": 4.20}}, fills
+    )
+    assert adopted["OVNT"]["entry_minute"] == 640
+    assert adopted["OVNT"]["entry_price"] == 4.25
+    assert adopted["OVNT"]["entry_clock_known"] is True
+    # Adopted into a live engine, the position sells at once with a real entry clock.
+    engine, _sim = make_engine(tmp_path, open_positions=adopted)
+    assert engine.positions["OVNT"].entry_minute == 640
+    assert engine.positions["OVNT"].record["broker_fill_price"] == 4.25
+
+
+def test_adopted_position_without_a_broker_clock_is_flagged(tmp_path: Path, h60_model):
+    engine, _sim = make_engine(
+        tmp_path, open_positions={"MYST": {"qty": 10, "entry_price": 7.0}}
+    )
+    engine.history = FakeHistory()
+    engine.bootstrap(resume_us=minute_us(DAY, 660))
+    position = engine.positions["MYST"]
+    assert position.entry_minute == 660, "no 01:00 skeleton"
+    assert position.record["late_exit"] is True
+    assert "entry_clock_unknown" in position.record["parity_excluded_reason"]
