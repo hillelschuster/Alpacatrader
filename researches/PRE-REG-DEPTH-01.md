@@ -84,3 +84,12 @@ C. Paper (Alpaca paper, after A or with owner override): judge after >= 30 attem
   N=1).
 - Universe expansion beyond the panel's top ~11 is the open supply lever and needs new data
   acquisition - a separate pre-registration.
+
+## Amendment 2026-10-27 (live-only ops parameter; the frozen research rule is unchanged)
+
+The live daily realised-loss stop moves from $90 to **$300** (a catastrophe brake). Evidence
+(independent review, full-coverage replay of both blocks): $90 fires on 6 validation + 22 late
+days and blocks a later attempt on 3 of them - one a known winner (2025-07-15 CYCC +$120.81,
+-6.1% of the late edge) - and breaks shadow==replay on those days. $300 (~1.1x the worst observed
+daily loss, -$265.32) never fires in-sample, so the live bot trades exactly the frozen rule while
+still capping a catastrophic day. Fat-tailed payoff: a tight stop must not cut the tail.
