@@ -1,7 +1,14 @@
 from __future__ import annotations
 
+import asyncio
 import json
+import os
+import threading
+import time
+from datetime import datetime
 from pathlib import Path
+from types import SimpleNamespace
+from zoneinfo import ZoneInfo
 
 import polars as pl
 import pytest
@@ -15,6 +22,9 @@ PARITY_DAYS = (
     ("2023-01-24", "validation"),
     ("2025-03-31", "confirmation"),
     ("2025-04-01", "confirmation"),
+    ("2025-07-31", "confirmation"),  # t == admit_t (quote-tracking lag)
+    ("2026-03-24", "confirmation"),
+    ("2026-04-20", "confirmation"),
 )
 PARITY_FIELDS = (
     "ticker",
@@ -94,6 +104,7 @@ def make_engine(
     alert_path=None,
     states_path=None,
     fresh=True,
+    model=None,
 ):
     cache = depth_bot.QuoteCache(DAY)
     sim = broker if broker is not None else depth_bot.SimBroker(
@@ -102,7 +113,7 @@ def make_engine(
     engine = depth_bot.DepthEngine(
         DAY,
         SESSION_END,
-        None,
+        model,
         sim,
         tmp_path / "journal.jsonl",
         quotes=cache,
@@ -292,16 +303,15 @@ def test_restart_never_double_enters_an_adopted_broker_position(tmp_path: Path):
 
 
 # ----- parity against the frozen research replay ------------------------------
-@pytest.mark.parametrize("day,block", PARITY_DAYS)
-def test_replay_parity_against_frozen_research_outputs(day: str, block: str, tmp_path: Path):
+def assert_replay_parity(day: str, block: str, journal_root: Path) -> None:
+    """The engine's own trades must equal the frozen chosen-arm trades, attempt by attempt."""
     research = depth_bot.research
     expected = research.pl.read_parquet(
         RESEARCH_OUTPUT / "replay" / block / f"{day}.trades.parquet"
     ).filter(research.pl.col("arm_key") == depth_bot.ARM.key)
-    journal_root = tmp_path / "journal"
     daily, trades = depth_bot.replay_day(day, RESEARCH_OUTPUT, research.DATA_ROOT, journal_root)
-    assert daily["attempts"] == expected.height
-    assert len(trades) == expected.height
+    assert daily["attempts"] == expected.height, (day, daily["attempts"], expected.height)
+    assert len(trades) == expected.height, day
     references = expected.select(*PARITY_FIELDS).to_dicts()
     for actual, reference in zip(trades, references, strict=True):
         for key in PARITY_FIELDS:
@@ -309,16 +319,49 @@ def test_replay_parity_against_frozen_research_outputs(day: str, block: str, tmp
             got = actual.get(key)
             if key == "net_usd_25" or isinstance(want, float) or isinstance(got, float):
                 if want is None or got is None:
-                    assert got == want, key
+                    assert got == want, (day, key, got, want)
                 else:
-                    assert abs(float(got) - float(want)) <= 1e-6, key
+                    assert abs(float(got) - float(want)) <= 1e-6, (day, key, got, want)
             else:
-                assert got == want, (key, got, want)
+                assert got == want, (day, key, got, want)
     recorded = events(journal_root / f"{day}.jsonl")
     assert sum(event["event"] == "decision_tick" for event in recorded) > 0
     assert sum(event["event"] == "signal" for event in recorded) >= expected.height
     assert sum(event["event"] == "intent" for event in recorded) >= expected.height
     assert sum(event["event"] == "trade_result" for event in recorded) == expected.height
+
+
+@pytest.mark.parametrize("day,block", PARITY_DAYS)
+def test_replay_parity_against_frozen_research_outputs(day: str, block: str, tmp_path: Path):
+    assert_replay_parity(day, block, tmp_path / "journal")
+
+
+def traded_days() -> list[tuple[str, str]]:
+    """Every day the chosen arm has >= 1 attempt on (the full-coverage law)."""
+    days = []
+    for block in ("validation", "confirmation"):
+        for path in sorted((RESEARCH_OUTPUT / "replay" / block).glob("*.trades.parquet")):
+            arm = pl.read_parquet(path, columns=["arm_key"])["arm_key"]
+            if (arm == depth_bot.ARM.key).any():
+                days.append((path.name.split(".")[0], block))
+    shard = os.environ.get("DEPTH_PARITY_SHARD")
+    if shard:
+        index, count = (int(part) for part in shard.split("/"))
+        days = [day for position, day in enumerate(days) if position % count == index]
+    return days
+
+
+SLOW_PARITY = os.environ.get("DEPTH_PARITY_SLOW") == "1"
+
+
+@pytest.mark.slow
+@pytest.mark.skipif(
+    not SLOW_PARITY,
+    reason="full-coverage parity sweep (~170 sessions): set DEPTH_PARITY_SLOW=1",
+)
+@pytest.mark.parametrize("day,block", traded_days(), ids=lambda value: str(value))
+def test_replay_parity_every_traded_day(day: str, block: str, tmp_path: Path):
+    assert_replay_parity(day, block, tmp_path / "journal")
 
 
 # ----- shadow: the injected stream must reproduce the replay journal ----------
@@ -436,6 +479,17 @@ def test_fake_paper_broker_receives_ioc_entry_and_market_exit(
     assert trades and all(trade["parity_excluded"] for trade in trades)
     assert all("mode_paper" in trade["parity_excluded_reason"] for trade in trades)
     assert trades[0]["broker_order_id"], "a paper fill records the broker order id"
+    # PRE-REG-DEPTH-01 C(i)-(iv): the sim's would-be verdict sits beside the broker fields.
+    for trade in trades:
+        assert trade["sim_entry_status"] is not None
+        assert trade["sim_fill_status"] is not None
+        assert trade["sim_entry_ask"] is not None
+        assert trade["sim_would_be_unknown"] is not None
+        if trade["sim_fill_status"] == "conditional_fill":
+            assert trade["sim_exit_bid"] is not None
+            assert trade["sim_net_usd_25"] is not None
+        else:
+            assert trade["sim_would_be_unknown"] is True
 
 
 # ----- (1) universe sweep: REST repair + refusal ------------------------------
@@ -784,3 +838,174 @@ def test_restart_at_11_reproduces_later_decisions(
     reference_trades = [event for event in reference if event["event"] == "trade_result"]
     assert restarted_trades == reference_trades
     assert any(event["event"] == "session_resumed" for event in events(journal))
+
+
+# ----- live stream lifecycle (worker thread, queued subscriptions) -----------
+class FakeSocket:
+    """alpaca-py DataStream stand-in: dispatches once, then blocks until stop()."""
+
+    def __init__(self, key, secret):
+        self.key = key
+        self.stopped = False
+        self.subscriptions = []
+        self.run_thread = None
+
+    def subscribe_bars(self, handler, *symbols):
+        self.bar_handler = handler
+        self.universe = symbols
+
+    def subscribe_quotes(self, handler, *symbols):
+        self.subscriptions.append((tuple(symbols), threading.get_ident()))
+        self.quote_handler = handler
+
+    def run(self):
+        self.run_thread = threading.get_ident()
+        stamp = datetime.now(ZoneInfo("UTC"))
+        asyncio.run(
+            self.bar_handler(
+                SimpleNamespace(
+                    symbol="AAA",
+                    timestamp=stamp,
+                    open=10.0,
+                    high=10.0,
+                    low=10.0,
+                    close=10.0,
+                    volume=100.0,
+                )
+            )
+        )
+        while not self.stopped and not hasattr(self, "quote_handler"):
+            time.sleep(0.005)
+        if hasattr(self, "quote_handler"):
+            asyncio.run(
+                self.quote_handler(
+                    SimpleNamespace(
+                        symbol="BBB",
+                        timestamp=stamp,
+                        bid_price=10.0,
+                        ask_price=10.05,
+                        bid_size=100.0,
+                        ask_size=100.0,
+                        bid_exchange="Q",
+                        ask_exchange="Q",
+                        conditions=["R"],
+                    )
+                )
+            )
+        while not self.stopped:
+            time.sleep(0.005)
+
+    def stop(self):
+        self.stopped = True
+
+
+def test_stream_subscribes_off_thread_and_stops_at_session_end():
+    caller = threading.get_ident()
+    sockets = []
+
+    def factory(key, secret):
+        socket = FakeSocket(key, secret)
+        sockets.append(socket)
+        return socket
+
+    source = depth_bot.AlpacaSIPStream(
+        "key",
+        "secret",
+        ["UNIV"],
+        session_end_us=int(time.time() * 1_000_000) + 400_000,
+        stream_factory=factory,
+        poll_s=0.01,
+    )
+    source.run(lambda _frame: {"AAA"}, lambda _quote: {"BBB"})
+    socket = sockets[0]
+    assert socket.run_thread != caller, "the socket must run on a worker thread"
+    assert socket.subscriptions, "admissions must be subscribed"
+    assert all(
+        thread == caller for _names, thread in socket.subscriptions
+    ), "subscribe_quotes must never be called from a stream handler thread"
+    assert {name for names, _ in socket.subscriptions for name in names} == {"AAA", "BBB"}
+    assert source.subscribed == {"AAA", "BBB"}
+    assert source.stop_reason == "session_end"
+    assert socket.stopped, "the socket must be stopped at session_end"
+
+
+def test_quote_driven_admission_is_returned_for_subscription(tmp_path: Path, h60_model):
+    engine, _sim = make_engine(tmp_path, universe=["AAA"], model=h60_model)
+    rows = [
+        bar("AAA", minute, close=10.0 + max(0, minute - 576) * 0.5) for minute in range(570, 585)
+    ]
+    assert engine.on_bar(pl.DataFrame(rows)) == set(), "no admission before the 585 snapshot"
+    # The 09:45 snapshot decision is computed on a QUOTE advance, not on a bar.
+    added = engine.on_quote(quote("AAA", minute_us(DAY, 586) + 2_000_000, 13.4, 13.5))
+    assert "AAA" in added
+    assert "AAA" in engine.admitted
+
+
+# ----- paper exit lifecycle ---------------------------------------------------
+class CanceledExitBroker(depth_bot.FakePaperBroker):
+    """The venue cancels the first exit order; the retry is marketable and fills."""
+
+    def __init__(self):
+        super().__init__()
+        self.exit_polls = 0
+
+    def poll_exit(self, order, now_us):
+        self.exit_polls += 1
+        if self.exit_polls == 1:
+            return {
+                "state": "retry",
+                "exit_status": "exit_canceled",
+                "broker_status": "canceled",
+                "exit_submit_us": int(order["submit_us"]),
+                "actual_exit_us": int(now_us),
+            }
+        return super().poll_exit(order, now_us)
+
+
+class StuckExitBroker(depth_bot.FakePaperBroker):
+    """The exit never fills: the position must stay open and alert, never be dropped."""
+
+    def poll_exit(self, order, now_us):
+        return None
+
+    def close_exit(self, order, session_end_us):
+        return {
+            "state": "open",
+            "exit_status": "exit_order_still_working",
+            "actual_exit_us": int(session_end_us) + 1,
+        }
+
+
+def test_canceled_exit_is_retried_as_marketable(tmp_path: Path):
+    alerts = tmp_path / "ALERT"
+    broker = CanceledExitBroker()
+    engine, _sim = make_engine(tmp_path, broker=broker, alert_path=alerts)
+    run_one_trade(engine)
+    due = engine.positions["AAA"].due_us
+    push_quote(engine, "AAA", due - 200_000, 10.10, 10.15)
+    push_quote(engine, "AAA", due + 300_000, 10.10, 10.15)  # submitted, canceled at the venue
+    push_quote(engine, "AAA", due + 1_000_000, 10.10, 10.15)  # retry submitted
+    push_quote(engine, "AAA", due + 1_500_000, 10.10, 10.15)  # retry fills
+    journal = events(tmp_path / "journal.jsonl")
+    assert [event["event"] for event in journal].count("exit_retry") == 1
+    sells = [order for order in broker.submitted if order["side"] == "sell"]
+    assert len(sells) == 2, "a canceled exit must be worked again"
+    assert engine.positions == {}
+    kinds = [json.loads(line)["kind"] for line in alerts.read_text().splitlines()]
+    assert "exit_retry" in kinds
+
+
+def test_unfilled_exit_keeps_the_position_and_alerts(tmp_path: Path):
+    alerts = tmp_path / "ALERT"
+    broker = StuckExitBroker()
+    engine, _sim = make_engine(tmp_path, broker=broker, alert_path=alerts)
+    run_one_trade(engine)
+    due = engine.positions["AAA"].due_us
+    push_quote(engine, "AAA", due - 200_000, 10.10, 10.15)
+    push_quote(engine, "AAA", due + 300_000, 10.10, 10.15)
+    engine.finish()
+    assert engine.positions, "an unfilled real exit must not be booked flat"
+    journal = events(tmp_path / "journal.jsonl")
+    assert not any(event["event"] == "position_closed" for event in journal)
+    kinds = [json.loads(line)["kind"] for line in alerts.read_text().splitlines()]
+    assert "position_not_flattened" in kinds

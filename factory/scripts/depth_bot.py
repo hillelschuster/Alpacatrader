@@ -14,10 +14,12 @@ an order unless ``--paper`` was passed AND ``data/forward/depth_bot/ARMED`` exis
 from __future__ import annotations
 
 import argparse
+import contextlib
 import heapq
 import json
 import os
 import sys
+import threading
 import time
 from collections import Counter
 from collections.abc import Callable, Iterator
@@ -65,7 +67,7 @@ MAX_ORDER_NOTIONAL = 1_100.0  # ops sanity guard; the frozen sizing never reache
 ALERT_PATH = BOT_ROOT / "ALERT"
 STATES_ROOT = BOT_ROOT / "states"
 
-UNIVERSE_COLLAPSE = 0.5  # a sweep keeping <50% of the last accepted fresh set is incomplete
+UNIVERSE_MIN_FRACTION = 0.5  # a sweep covering <50% of the declared universe is incomplete
 REPAIR_LOOKBACK_MIN = 6  # window re-fetched from REST when the stream misses bars
 REST_REQUESTS_PER_MINUTE = 150  # the repo measures ~171 req/min as safe
 REST_SYMBOLS_PER_REQUEST = 500
@@ -349,30 +351,76 @@ class DailyRiskStop:
 class QuoteCache:
     """Incremental per-ticker NBBO cache with the research read semantics.
 
-    Stores only the prints actually observed at/after a ticker's admission and builds the
-    same ``SymbolQuotes`` arrays ``alpha_quote_aware_frequency.symbol_quotes`` would build
-    from the full day, so ``latest_raw``/``first_eligible_at_or_after`` answer identically
-    on every prefix of the day.
+    Prints are appended into preallocated numpy buffers, so a read is O(1) (a view of the
+    first ``n`` slots) and the arrays are byte-identical to what
+    ``alpha_quote_aware_frequency.symbol_quotes`` would build from the same prints.
     """
+
+    _FLOAT_FIELDS = ("_bid", "_ask", "_bid_size", "_ask_size")
+    _BOOL_FIELDS = ("_regular", "_valid")
 
     def __init__(self, day: str):
         self.day = day
         self.size_multiplier = 100 if day < UNIT_EPOCH else 1
         self.raw: dict[str, list[dict]] = {}
-        self._stamps: dict[str, list[int]] = {}
-        self._bid: dict[str, list[float]] = {}
-        self._ask: dict[str, list[float]] = {}
-        self._bid_size: dict[str, list[float]] = {}
-        self._ask_size: dict[str, list[float]] = {}
-        self._regular: dict[str, list[bool]] = {}
-        self._streams: dict[str, SymbolQuotes] = {}
-        self._dirty: set[str] = set()
+        self._count: dict[str, int] = {}
+        self._capacity: dict[str, int] = {}
+        self._stamps: dict[str, np.ndarray] = {}
+        for name in (*self._FLOAT_FIELDS, *self._BOOL_FIELDS):
+            setattr(self, name, {})
+
+    def _grow(self, symbol: str, needed: int) -> None:
+        capacity = self._capacity.get(symbol, 0)
+        if needed <= capacity:
+            return
+        new_capacity = max(64, capacity * 2, needed)
+        used = self._count.get(symbol, 0)
+        stamps = np.empty(new_capacity, dtype=np.int64)
+        if symbol in self._stamps:
+            stamps[:used] = self._stamps[symbol][:used]
+        self._stamps[symbol] = stamps
+        for name in self._FLOAT_FIELDS:
+            store = getattr(self, name)
+            buffer = np.empty(new_capacity, dtype=float)
+            if symbol in store:
+                buffer[:used] = store[symbol][:used]
+            store[symbol] = buffer
+        for name in self._BOOL_FIELDS:
+            store = getattr(self, name)
+            buffer = np.zeros(new_capacity, dtype=bool)
+            if symbol in store:
+                buffer[:used] = store[symbol][:used]
+            store[symbol] = buffer
+        self._capacity[symbol] = new_capacity
 
     def add(self, quote: dict) -> None:
         symbol = str(quote["symbol"])
         conditions = [str(c) for c in (quote.get("conditions") or [])]
         regular = bool(conditions) and all(condition == "R" for condition in conditions)
         stamp = ts_us_of(quote["ts_utc"])
+        bid = float(quote.get("bid_price") or 0.0)
+        ask = float(quote.get("ask_price") or 0.0)
+        bid_shares = float(quote.get("bid_size") or 0.0) * self.size_multiplier
+        ask_shares = float(quote.get("ask_size") or 0.0) * self.size_multiplier
+        valid = (
+            np.isfinite(bid)
+            and np.isfinite(ask)
+            and np.isfinite(bid_shares)
+            and np.isfinite(ask_shares)
+            and bid > 0
+            and ask > 0
+            and bid <= ask
+        )
+        index = self._count.get(symbol, 0)
+        self._grow(symbol, index + 1)
+        self._stamps[symbol][index] = stamp
+        self._bid[symbol][index] = bid
+        self._ask[symbol][index] = ask
+        self._bid_size[symbol][index] = bid_shares  # already in shares
+        self._ask_size[symbol][index] = ask_shares
+        self._regular[symbol][index] = regular
+        self._valid[symbol][index] = bool(valid)
+        self._count[symbol] = index + 1
         self.raw.setdefault(symbol, []).append(
             {
                 "symbol": symbol,
@@ -384,46 +432,42 @@ class QuoteCache:
                 "conditions": conditions,
             }
         )
-        self._stamps.setdefault(symbol, []).append(stamp)
-        self._bid.setdefault(symbol, []).append(float(quote.get("bid_price") or 0.0))
-        self._ask.setdefault(symbol, []).append(float(quote.get("ask_price") or 0.0))
-        self._bid_size.setdefault(symbol, []).append(float(quote.get("bid_size") or 0.0))
-        self._ask_size.setdefault(symbol, []).append(float(quote.get("ask_size") or 0.0))
-        self._regular.setdefault(symbol, []).append(regular)
-        self._dirty.add(symbol)
 
     def stream(self, ticker: str) -> SymbolQuotes | None:
-        if ticker not in self._stamps:
+        count = self._count.get(ticker, 0)
+        if not count:
             return None
-        if ticker in self._dirty:
-            bid = np.asarray(self._bid[ticker], dtype=float)
-            ask = np.asarray(self._ask[ticker], dtype=float)
-            bid_shares = np.asarray(self._bid_size[ticker], dtype=float) * self.size_multiplier
-            ask_shares = np.asarray(self._ask_size[ticker], dtype=float) * self.size_multiplier
-            valid = (
-                np.isfinite(bid)
-                & np.isfinite(ask)
-                & np.isfinite(bid_shares)
-                & np.isfinite(ask_shares)
-                & (bid > 0)
-                & (ask > 0)
-                & (bid <= ask)
-            )
-            self._streams[ticker] = SymbolQuotes(
-                ticker=ticker,
-                stamps=np.asarray(self._stamps[ticker], dtype=np.int64),
-                bid=bid,
-                ask=ask,
-                bid_shares=bid_shares,
-                ask_shares=ask_shares,
-                regular=np.asarray(self._regular[ticker], dtype=bool),
-                valid=valid,
-            )
-            self._dirty.discard(ticker)
-        return self._streams.get(ticker)
+        return SymbolQuotes(
+            ticker=ticker,
+            stamps=self._stamps[ticker][:count],
+            bid=self._bid[ticker][:count],
+            ask=self._ask[ticker][:count],
+            bid_shares=self._bid_size[ticker][:count],
+            ask_shares=self._ask_size[ticker][:count],
+            regular=self._regular[ticker][:count],
+            valid=self._valid[ticker][:count],
+        )
 
-    def rows(self) -> list[dict]:
-        return [row for ticker in sorted(self.raw) for row in self.raw[ticker]]
+    def capture_frames(self) -> Iterator[tuple[str, pl.DataFrame]]:
+        """Per-symbol print frames straight from the buffers (no dict round trip)."""
+        for ticker in sorted(self._count):
+            count = self._count[ticker]
+            yield ticker, pl.DataFrame(
+                {
+                    "symbol": [ticker] * count,
+                    "ts_utc": pl.Series(self._stamps[ticker][:count]).cast(
+                        pl.Datetime("us", "UTC")
+                    ),
+                    "bid_price": self._bid[ticker][:count],
+                    "ask_price": self._ask[ticker][:count],
+                    "bid_size": self._bid_size[ticker][:count] / self.size_multiplier,
+                    "ask_size": self._ask_size[ticker][:count] / self.size_multiplier,
+                    "conditions": pl.Series(
+                        [["R"] if flag else [] for flag in self._regular[ticker][:count]],
+                        dtype=pl.List(pl.String),
+                    ),
+                }
+            )
 
 
 # ----- broker boundary --------------------------------------------------------
@@ -740,9 +784,13 @@ class AlpacaPaperBroker:
         if status not in TERMINAL_ORDER_STATUS:
             return None
         if status != "filled":
+            # canceled / expired / rejected: the POSITION IS STILL OPEN. Retry it
+            # marketable; never book it closed on a non-fill.
             return {
-                "state": UNKNOWN,
+                "state": "retry",
                 "exit_status": f"exit_{status}",
+                "broker_status": status,
+                "broker_order_id": str(_attr(current, "id", "")),
                 "exit_submit_us": int(_attr(order, "submit_us", now_us)),
                 "actual_exit_us": int(now_us),
             }
@@ -759,12 +807,24 @@ class AlpacaPaperBroker:
 
     def close_exit(self, order: Any, session_end_us: int) -> dict:
         current = self._refresh(order)
+        filled = float(_attr(current, "filled_qty", 0) or 0)
+        if filled <= 0:
+            # Unfilled at the close: the position is real and still ours.
+            return {
+                "state": "open",
+                "exit_status": "exit_order_still_working",
+                "broker_status": _order_status(_attr(current, "status", "unknown")),
+                "exit_submit_us": int(_attr(order, "submit_us", session_end_us)),
+                "actual_exit_us": int(session_end_us) + 1,
+            }
         return {
-            "state": UNKNOWN,
-            "exit_status": "exit_order_still_working",
+            "state": "closed",
+            "exit_status": "conditional_market_fill",
             "exit_submit_us": int(_attr(order, "submit_us", session_end_us)),
             "actual_exit_us": int(session_end_us) + 1,
-            "broker_status": _order_status(_attr(current, "status", "unknown")),
+            "filled_qty": int(filled),
+            "filled_avg_price": float(_attr(current, "filled_avg_price", 0) or 0),
+            "broker_order_id": str(_attr(current, "id", "")),
         }
 
 
@@ -819,6 +879,21 @@ def empty_trade_record(state: dict, quantity: int, arm=ARM) -> dict:
         "late_exit": False,
         "parity_excluded": False,
         "parity_excluded_reason": None,
+        # The simulated arm's verdict for the SAME intent, journalled beside the broker
+        # fields so PRE-REG-DEPTH-01 C(i)-(iv) is computable from the journal alone.
+        "sim_entry_status": None,
+        "sim_entry_ask": None,
+        "sim_entry_bid": None,
+        "sim_entry_age_s": None,
+        "sim_entry_quote_us": None,
+        "sim_exit_status": None,
+        "sim_exit_bid": None,
+        "sim_exit_bid_shares": None,
+        "sim_exit_quote_us": None,
+        "sim_fill_status": None,
+        "sim_would_be_unknown": None,
+        "sim_net_usd_0": None,
+        "sim_net_usd_25": None,
     }
     for rung in research.RUNG_COSTS:
         record[f"net_usd_{int(rung)}"] = None
@@ -843,6 +918,9 @@ class Position:
     exit_notional: float = 0.0
     realized_usd: float = 0.0
     partials: int = 0
+    sim_order: Any = None
+    sim_outcome: dict | None = None
+    retries: int = 0
 
 
 class DepthEngine:
@@ -861,6 +939,7 @@ class DepthEngine:
         risk: DailyRiskStop | None = None,
         fresh: bool = False,
         flatten: bool = True,
+        risk_stop: bool = True,
         quotes: QuoteCache | None = None,
         alert_path: Path | None = None,
         history: HistorySource | None = None,
@@ -878,6 +957,9 @@ class DepthEngine:
         # ``None`` means this run has no kill control (an offline replay is a what-if).
         self.kill_path = Path(kill_path) if kill_path is not None else None
         self.flatten_enabled = bool(flatten)
+        # Ops stop. An OFFLINE replay is a what-if of the frozen rule (like its absent
+        # KILL file), so the stop is disabled there and stays on for every live mode.
+        self.risk_stop = bool(risk_stop)
         self.features = depth_bot_features.IncrementalDepthFeatures(
             day, self.session_end, model
         )
@@ -893,6 +975,8 @@ class DepthEngine:
         self.tasks: list[tuple[int, int, int, str, Any]] = []
         self._task_seq = 0
         self._bar_buffer: dict[int, list[dict]] = {}
+        self._flush_at: int | None = None
+        self._announce: set[str] = set()
         self.bar_rows: list[dict] = []
         self.admitted: set[str] = set()
         self.decision_ticks: list[dict] = []
@@ -903,6 +987,11 @@ class DepthEngine:
         self.universe: set[str] = set(universe or ())
         self.states_path = Path(states_path) if states_path is not None else None
         self.mode = mode
+        # Paper runs a second, deterministic broker over the same prints: its verdict is the
+        # research answer to the same intent and is journalled beside the real fill.
+        self.sim: SimBroker | None = (
+            SimBroker(day, self.quotes, self.session_end_us) if mode == "paper" else None
+        )
         self.last_et: dict[str, int] = {}
         self._accepted_fresh: int | None = None
         self.refusal: str | None = None
@@ -1101,8 +1190,16 @@ class DepthEngine:
         self._drain_tasks()
 
     # -- stream callbacks ------------------------------------------------------
+    def _announce_drain(self) -> set[str]:
+        added, self._announce = set(self._announce), set()
+        return added
+
+    def _sync_admissions(self) -> None:
+        new = set(self.features.admissions) - self.admitted
+        self.admitted |= new
+        self._announce |= new
+
     def on_bar(self, bars: pl.DataFrame) -> set[str]:
-        before = set(self.features.admissions)
         rows = (
             bars.select("ticker", "et", "open", "high", "low", "close", "volume")
             .sort(["et", "ticker"])
@@ -1120,24 +1217,34 @@ class DepthEngine:
                 continue  # this minute ended before the rebuilt state was taken
             self.advance(minute_us(self.day, minute + 1))
             self._bar_buffer.setdefault(minute, []).append(row)
-        return set(self.features.admissions) - before
+            flush_at = minute_us(self.day, minute + 1) + BAR_SETTLE_US
+            if self._flush_at is None or flush_at < self._flush_at:
+                self._flush_at = flush_at
+        return self._announce_drain()
 
-    def on_quote(self, quote: dict) -> None:
+    def on_quote(self, quote: dict) -> set[str]:
         symbol = str(quote["symbol"])
-        admitted = symbol in self.admitted
-        if admitted:
+        if symbol in self.admitted:
             self.quotes.add(quote)
         self.advance(ts_us_of(quote["ts_utc"]))
+        return self._announce_drain()
 
     # -- minute/decision pipeline ---------------------------------------------
     def _close_minutes(self) -> None:
-        ready = [
+        if self._flush_at is None or self.now_us < self._flush_at:
+            return
+        ready = sorted(
             minute
             for minute in self._bar_buffer
             if minute_us(self.day, minute + 1) + BAR_SETTLE_US <= self.now_us
-        ]
-        for minute in sorted(ready):
+        )
+        for minute in ready:
             self._flush_minute(minute)
+        self._flush_at = (
+            min(minute_us(self.day, minute + 1) + BAR_SETTLE_US for minute in self._bar_buffer)
+            if self._bar_buffer
+            else None
+        )
 
     def _flush_minute(self, minute: int, *, decide: bool = True) -> None:
         rows = self._bar_buffer.pop(minute, [])
@@ -1148,7 +1255,7 @@ class DepthEngine:
         for row in rows:
             ticker = row["ticker"]
             self.last_et[ticker] = int(row["et"])
-        self.admitted.update(self.features.admissions)
+        self._sync_admissions()
         t = minute + 1
         if not decide:
             return
@@ -1161,6 +1268,9 @@ class DepthEngine:
 
     def _flush_decisions(self, t: int) -> None:
         scored = self.features.decision(t)
+        # A snapshot inside decision(t) can admit names; they must be quote-tracked from
+        # this minute on, not from the next flush (2025-07-31 SNGX t=630).
+        self._sync_admissions()
         rows = scored.to_dicts() if scored.height else []
         signals = [row for row in rows if float(row["pred_60"]) >= self.arm.threshold]
         tick = {
@@ -1221,7 +1331,17 @@ class DepthEngine:
             reason = self._sweep_verdict(t, stats)
         if reason is None:
             self._accepted_fresh = int(stats["fresh"])
-            self._log({"event": "snapshot_coverage", "day": self.day, "t": int(t), **stats})
+            ratio = float(stats["alive"]) / len(self.universe) if self.universe else None
+            self._log(
+                {
+                    "event": "snapshot_coverage",
+                    "day": self.day,
+                    "t": int(t),
+                    "declared": len(self.universe),
+                    "ratio": ratio,
+                    **stats,
+                }
+            )
             return True
         self.refuse(reason, t=int(t), **stats)
         return False
@@ -1231,7 +1351,10 @@ class DepthEngine:
             return "universe_empty"
         if stats["newest"] is None or int(stats["newest"]) < int(t) - 2:
             return "universe_stale"
-        if self._accepted_fresh and int(stats["fresh"]) < UNIVERSE_COLLAPSE * self._accepted_fresh:
+        declared = len(self.universe)
+        if declared and int(stats["alive"]) < UNIVERSE_MIN_FRACTION * declared:
+            # A subscription cap or a partial feed looks exactly like a quiet tape; the
+            # declared universe is the only honest denominator, so fail closed.
             return "universe_incomplete"
         return None
 
@@ -1279,7 +1402,7 @@ class DepthEngine:
             batch = accepted[minute]
             self.features.add_bars(pl.DataFrame(batch))
             self.bar_rows.extend(batch)
-        self.admitted.update(self.features.admissions)
+        self._sync_admissions()
         return added
 
     # -- restart backfill ------------------------------------------------------
@@ -1327,7 +1450,7 @@ class DepthEngine:
             for snapshot in depth_bot_features.SNAPSHOTS:
                 if snapshot <= resume_minute - 1:
                     self.features.feature_frame(snapshot)
-            self.admitted.update(self.features.admissions)
+            self._sync_admissions()
         if quotes is None:
             quotes = self.fetch_quotes(self.session_start_us(), self.resume_us)
         for quote in quotes or ():
@@ -1388,7 +1511,7 @@ class DepthEngine:
             return "universe_refused"
         if self.kill_path is not None and not entry_control_allowed(self.kill_path):
             return "kill_stop"
-        if not self.risk.entries_allowed:
+        if self.risk_stop and not self.risk.entries_allowed:
             return "daily_loss_stop"
         if not entries_allowed_at_minute(minute):
             return "flatten_time"
@@ -1522,9 +1645,17 @@ class DepthEngine:
         order = self.broker.submit_entry(
             ticker, item["qty"], float(state["limit_price"]), client_id, intent_us
         )
+        sim_order = (
+            self.sim.submit_entry(
+                ticker, item["qty"], float(state["limit_price"]), client_id, intent_us
+            )
+            if self.sim is not None
+            else None
+        )
         self.pending_entries.append(
             {
                 "order": order,
+                "sim_order": sim_order,
                 "record": record,
                 "qty": item["qty"],
                 "reserve": item["reserve"],
@@ -1535,7 +1666,16 @@ class DepthEngine:
 
     # -- order settlement ------------------------------------------------------
     def _poll_orders(self) -> None:
+        if not self.pending_entries and not self.positions:
+            return
         for pending in list(self.pending_entries):
+            if (
+                pending.get("sim_order") is not None
+                and pending["record"]["sim_entry_status"] is None
+            ):
+                sim_outcome = self.sim.poll_entry(pending["sim_order"], self.now_us)
+                if sim_outcome is not None:
+                    self._record_sim_entry(pending["record"], sim_outcome)
             outcome = self.broker.poll_entry(pending["order"], self.now_us)
             if outcome is None:
                 continue
@@ -1544,12 +1684,61 @@ class DepthEngine:
         for position in list(self.positions.values()):
             if position.exit_order is None:
                 self._maybe_submit_exit(position)
+            if (
+                position.sim_order is not None
+                and position.sim_outcome is None
+                and self.sim is not None
+            ):
+                sim_outcome = self.sim.poll_exit(position.sim_order, self.now_us)
+                if sim_outcome is not None:
+                    position.sim_outcome = sim_outcome
+                    self._record_sim_exit(position.record, sim_outcome)
             if position.exit_order is None:
                 continue
             outcome = self.broker.poll_exit(position.exit_order, self.now_us)
             if outcome is None:
                 continue
             self._settle_exit(position, outcome)
+
+    def _record_sim_entry(self, record: dict, outcome: dict) -> None:
+        record["sim_entry_status"] = outcome.get("entry_status")
+        record["sim_entry_ask"] = outcome.get("entry_ask")
+        record["sim_entry_bid"] = outcome.get("entry_bid")
+        record["sim_entry_age_s"] = outcome.get("entry_age_s")
+        record["sim_entry_quote_us"] = outcome.get("entry_quote_us")
+        if outcome["state"] == OPEN_POSITION:
+            record["sim_fill_status"] = "conditional_fill"
+        elif outcome["state"] == UNFILLED:
+            record["sim_fill_status"] = "no_match_at_l1_unfilled_cash"
+        else:
+            record["sim_fill_status"] = "unknown_entry_execution"
+        self._settle_sim_verdict(record)
+
+    def _record_sim_exit(self, record: dict, outcome: dict) -> None:
+        record["sim_exit_status"] = outcome.get("exit_status")
+        record["sim_exit_bid"] = outcome.get("exit_bid")
+        record["sim_exit_bid_shares"] = outcome.get("exit_bid_shares")
+        record["sim_exit_quote_us"] = outcome.get("exit_quote_us")
+        if outcome["state"] == "closed":
+            record["sim_fill_status"] = "conditional_fill"
+        elif record["sim_fill_status"] != "no_match_at_l1_unfilled_cash":
+            record["sim_fill_status"] = "unknown_exit_execution"
+        self._settle_sim_verdict(record)
+
+    def _settle_sim_verdict(self, record: dict) -> None:
+        status = record.get("sim_fill_status")
+        if status is None:
+            return
+        record["sim_would_be_unknown"] = "unknown" in status
+        if status == "conditional_fill":
+            quantity = int(record.get("qty") or 0)
+            entry_ask = record.get("sim_entry_ask")
+            exit_bid = record.get("sim_exit_bid")
+            if entry_ask is not None and exit_bid is not None:
+                for rung in (0.0, 25.0):
+                    record[f"sim_net_usd_{int(rung)}"] = research.net_usd(
+                        quantity, float(exit_bid), float(entry_ask), rung
+                    )
 
     def _arrival_quote(self, ticker: str, arrival: int) -> dict | None:
         stream = self.quotes.stream(ticker)
@@ -1564,14 +1753,16 @@ class DepthEngine:
         record["entry_status"] = outcome["entry_status"]
         arrive = int(record["entry_arrival_us"])
         arrival = self._arrival_quote(pending["state"]["ticker"], arrive)
-        if arrival is not None:
-            record["entry_ask"] = float(arrival["ask"])
-            record["entry_bid"] = float(arrival["bid"])
-            record["entry_age_s"] = float(arrival["age_s"])
-            record["entry_quote_us"] = int(arrival["quote_us"])
-        for key in ("entry_ask", "entry_bid", "entry_age_s", "entry_quote_us"):
-            if outcome.get(key) is not None:
-                record[key] = outcome[key]
+        if state == OPEN_POSITION:
+            # The research record carries the priced entry ONLY for an executed IOC.
+            if arrival is not None:
+                record["entry_ask"] = float(arrival["ask"])
+                record["entry_bid"] = float(arrival["bid"])
+                record["entry_age_s"] = float(arrival["age_s"])
+                record["entry_quote_us"] = int(arrival["quote_us"])
+            for key in ("entry_ask", "entry_bid", "entry_age_s", "entry_quote_us"):
+                if outcome.get(key) is not None:
+                    record[key] = outcome[key]
         if outcome.get("broker_order_id"):
             record["broker_order_id"] = outcome["broker_order_id"]
         if outcome.get("filled_at_us"):
@@ -1718,6 +1909,11 @@ class DepthEngine:
         position.exit_order = self.broker.submit_exit(
             position.ticker, position.qty, client_id, submit_us
         )
+        if self.sim is not None:
+            position.sim_order = self.sim.submit_exit(
+                position.ticker, position.qty, f"{client_id}-sim", submit_us
+            )
+            position.sim_outcome = None
 
     def _settle_exit(self, position: Position, outcome: dict) -> None:
         record = position.record
@@ -1735,6 +1931,48 @@ class DepthEngine:
                 record[key] = outcome[key]
         if outcome.get("broker_order_id"):
             record["broker_order_id"] = outcome["broker_order_id"]
+        if outcome["state"] == "retry":
+            # The real order died without a fill: keep the position, work it again.
+            position.retries += 1
+            record["exit_status"] = outcome.get("exit_status")
+            position.exit_order = None
+            position.exit_client_id = None
+            position.due_us = int(self.now_us)
+            self._log(
+                {
+                    "event": "exit_retry",
+                    "day": self.day,
+                    "ticker": position.ticker,
+                    "qty": position.qty,
+                    "status": outcome.get("exit_status"),
+                    "broker_status": outcome.get("broker_status"),
+                    "retry_index": position.retries,
+                }
+            )
+            self._alert(
+                "exit_retry",
+                ticker=position.ticker,
+                qty=position.qty,
+                status=outcome.get("exit_status"),
+                retry_index=position.retries,
+            )
+            return
+        if self.mode == "paper" and outcome["state"] != "closed":
+            # A real position cannot be booked flat on a non-fill; keep it open so the
+            # flatten path and position_not_flattened can act on it.
+            position.exit_order = None
+            position.exit_client_id = None
+            position.due_us = int(self.now_us)
+            self._log(
+                {
+                    "event": "exit_unconfirmed",
+                    "day": self.day,
+                    "ticker": position.ticker,
+                    "qty": position.qty,
+                    "status": outcome.get("exit_status"),
+                }
+            )
+            return
         if self.mode == "paper" and str(record.get("exit_status") or "").startswith("exit_"):
             self._alert(
                 "broker_unexpected",
@@ -1853,7 +2091,7 @@ class DepthEngine:
                 "late_exit": bool(record.get("late_exit")),
             }
         )
-        if self.risk.stopped and not was_stopped:
+        if self.risk_stop and self.risk.stopped and not was_stopped:
             self._log(
                 {
                     "event": "risk_stop",
@@ -1918,6 +2156,7 @@ class DepthEngine:
     # -- shutdown --------------------------------------------------------------
     def finish(self) -> tuple[dict, list[dict]]:
         self.now_us = max(self.now_us, self.session_end_us)
+        self._poll_orders()  # last comparator/real order read at the session clock
         for minute in sorted(self._bar_buffer):
             self._flush_minute(minute, decide=False)
         # Any entry whose arrival never produced a print is the research UNKNOWN.
@@ -1948,6 +2187,8 @@ class DepthEngine:
         self.daily["positions_mean"] = float(sum(samples) / len(samples)) if samples else 0.0
         self.daily["trade_count"] = len(self.trades)
         self.daily["mode"] = getattr(self.broker, "mode", "unknown")
+        # Attempts are reported in INTENT order, never in settlement order.
+        self.trades.sort(key=lambda record: (int(record["intent_us"]), str(record["ticker"])))
         self.write_states()
         summary = dict(self.daily)
         summary["skip_reasons"] = dict(self.daily["skip_reasons"])
@@ -1991,41 +2232,93 @@ class ReplayStreamSource:
         groups.sort(key=lambda item: item[0])
         return groups
 
-    def _quote_events(self) -> list[dict]:
+    def _quote_events(self) -> Iterator[dict]:
         if self.quotes is None or not self.quotes.height:
-            return []
-        frame = self.quotes.with_columns(pl.col("ts_utc").cast(pl.Int64).alias("ts_us"))
-        return frame.sort(["ts_us", "symbol"]).to_dicts()
+            return iter(())
+        frame = self.quotes.sort(["ts_utc", "symbol"])
+        columns = {
+            name: frame[name].to_list()
+            for name in ("symbol", "bid_price", "ask_price", "bid_size", "ask_size", "conditions")
+        }
+        stamps = frame["ts_utc"].cast(pl.Int64).to_numpy()
+        symbols = columns["symbol"]
+        bids = columns["bid_price"]
+        asks = columns["ask_price"]
+        bid_sizes = columns["bid_size"]
+        ask_sizes = columns["ask_size"]
+        conditions = columns["conditions"]
+        for index in range(frame.height):
+            yield {
+                "symbol": symbols[index],
+                "ts_utc": int(stamps[index]),
+                "bid_price": bids[index],
+                "ask_price": asks[index],
+                "bid_size": bid_sizes[index],
+                "ask_size": ask_sizes[index],
+                "conditions": conditions[index],
+            }
 
     def run(self, on_bar, on_quote) -> None:
         bar_events = self._bar_events()
-        quote_events = self._quote_events()
-        bar_i = quote_i = 0
-        while bar_i < len(bar_events) or quote_i < len(quote_events):
+        quotes = self._quote_events()
+        bar_i = 0
+        quote_row = next(quotes, None)
+        while bar_i < len(bar_events) or quote_row is not None:
             bar_clock = bar_events[bar_i][0] if bar_i < len(bar_events) else None
-            quote_row = quote_events[quote_i] if quote_i < len(quote_events) else None
-            quote_clock = int(quote_row["ts_us"]) if quote_row is not None else None
+            quote_clock = ts_us_of(quote_row["ts_utc"]) if quote_row is not None else None
             if bar_clock is not None and (quote_clock is None or bar_clock <= quote_clock):
                 on_bar(bar_events[bar_i][1])
                 bar_i += 1
             else:
                 on_quote(quote_row)
-                quote_i += 1
+                quote_row = next(quotes, None)
+
+
+def default_stream_factory(key: str, secret: str):
+    from alpaca.data.enums import DataFeed
+    from alpaca.data.live import StockDataStream
+
+    return StockDataStream(key, secret, feed=DataFeed.SIP)
 
 
 class AlpacaSIPStream:
-    """Live Alpaca SIP stream: all-symbol minute bars, quotes for admitted names."""
+    """Live SIP stream in a WORKER thread; the caller's thread owns subscriptions + close.
 
-    def __init__(self, key: str, secret: str, universe: list[str]):
+    alpaca-py 0.43.4 ``subscribe_quotes`` blocks on ``run_coroutine_threadsafe(...).result()``,
+    so calling it from inside a stream handler deadlocks the event loop. Handlers therefore
+    only enqueue the names the engine admitted, the caller's thread subscribes them, and at
+    ``session_end_us`` the caller stops the socket and returns so the day can be finished,
+    captured and rolled.
+    """
+
+    def __init__(
+        self,
+        key: str,
+        secret: str,
+        universe: list[str],
+        *,
+        session_end_us: int,
+        stream_factory: Callable[[str, str], Any] | None = None,
+        poll_s: float = 0.2,
+        sleep: Callable[[float], None] = time.sleep,
+        now_us: Callable[[], int] = lambda: int(time.time() * 1_000_000),
+    ):
         self.key = key
         self.secret = secret
         self.universe = list(universe)
+        self.session_end_us = int(session_end_us)
+        self.stream_factory = stream_factory or default_stream_factory
+        self.poll_s = float(poll_s)
+        self.sleep = sleep
+        self.now_us = now_us
+        self.subscribed: set[str] = set()
+        self.sessions = 0
+        self.stop_reason: str | None = None
+        self.error: BaseException | None = None
 
     def run(self, on_bar, on_quote) -> None:
-        from alpaca.data.enums import DataFeed
-        from alpaca.data.live import StockDataStream
-
-        stream = StockDataStream(self.key, self.secret, feed=DataFeed.SIP)
+        stream = self.stream_factory(self.key, self.secret)
+        pending: list[list[str]] = []
         subscribed: set[str] = set()
 
         async def bar_handler(bar):
@@ -2039,14 +2332,12 @@ class AlpacaSIPStream:
                 "close": bar.close,
                 "volume": bar.volume,
             }
-            newly = on_bar(pl.DataFrame([row]))
-            names = sorted(set(newly or ()) - subscribed)
-            if names:
-                stream.subscribe_quotes(quote_handler, *names)
-                subscribed.update(names)
+            added = on_bar(pl.DataFrame([row]))
+            if added:
+                pending.append(sorted(added - subscribed))
 
         async def quote_handler(quote):
-            on_quote(
+            added = on_quote(
                 {
                     "symbol": quote.symbol,
                     "ts_utc": quote.timestamp,
@@ -2059,9 +2350,40 @@ class AlpacaSIPStream:
                     "conditions": list(quote.conditions or []),
                 }
             )
+            if added:
+                pending.append(sorted(added - subscribed))
 
         stream.subscribe_bars(bar_handler, *self.universe)
-        stream.run()
+
+        def worker() -> None:
+            try:
+                stream.run()
+            except BaseException as exc:  # noqa: BLE001 - surfaced to the caller below
+                self.error = exc
+
+        thread = threading.Thread(target=worker, name="depthbot-sip", daemon=True)
+        thread.start()
+        self.sessions += 1
+        try:
+            while thread.is_alive():
+                if pending:
+                    names = sorted({name for batch in pending for name in batch} - subscribed)
+                    pending.clear()
+                    if names:
+                        # Never from inside a handler: this runs on the caller's thread.
+                        stream.subscribe_quotes(quote_handler, *names)
+                        subscribed.update(names)
+                if int(self.now_us()) >= self.session_end_us:
+                    self.stop_reason = "session_end"
+                    break
+                self.sleep(self.poll_s)
+        finally:
+            self.subscribed = set(subscribed)
+            with contextlib.suppress(Exception):  # a dead socket is already stopped
+                stream.stop()
+            thread.join(timeout=10.0)
+        if self.error is not None:
+            raise RuntimeError(f"stream failed: {self.error}") from self.error
 
 
 # ----- reference data ---------------------------------------------------------
@@ -2124,13 +2446,12 @@ def write_capture(
         bars_dir = root / "bars"
         bars_dir.mkdir(parents=True, exist_ok=True)
         bars.write_parquet(bars_dir / f"{day}.parquet")
-    quotes = capture.get("quotes")
-    if quotes:
-        frame = pl.DataFrame(quotes)
-        for (ticker,), part in frame.partition_by("symbol", as_dict=True).items():
+    cache = capture.get("quote_cache")
+    if cache is not None:
+        for ticker, frame in cache.capture_frames():
             quote_dir = root / "quotes" / str(ticker)
             quote_dir.mkdir(parents=True, exist_ok=True)
-            part.write_parquet(quote_dir / f"{day}.parquet")
+            frame.write_parquet(quote_dir / f"{day}.parquet")
 
 
 # ----- modes ------------------------------------------------------------------
@@ -2182,6 +2503,7 @@ def replay_day(
         fresh=True,
         quotes=quotes,
         kill_path=None,  # an offline replay is a what-if, never an order path
+        risk_stop=False,  # and it is the frozen rule, not the ops stop
         states_path=states_path_for(journal_root, states_root, day),
         universe=universe,
         mode="sim",
@@ -2190,7 +2512,7 @@ def replay_day(
     daily, trades = engine.finish()
     write_capture(
         {"bars": pl.DataFrame(engine.bar_rows) if engine.bar_rows else None,
-         "quotes": engine.quotes.rows()},
+         "quote_cache": engine.quotes},
         day,
         journal_root,
         data_root,
@@ -2266,7 +2588,9 @@ def run_live(
         key, secret = _load_credentials()
         universe = universe or load_pit_universe(day)
         history = history or AlpacaHistory(key, secret)
-        source = AlpacaSIPStream(key, secret, universe)
+        source = AlpacaSIPStream(
+            key, secret, universe, session_end_us=minute_us(day, session_end)
+        )
     open_positions: dict[str, dict] = {}
     if mode == "paper" and broker is None:
         from alpaca.trading.client import TradingClient
@@ -2336,7 +2660,7 @@ def run_live(
     daily, trades = engine.finish()
     write_capture(
         {"bars": pl.DataFrame(engine.bar_rows) if engine.bar_rows else None,
-         "quotes": engine.quotes.rows()},
+         "quote_cache": engine.quotes},
         day,
         journal_root,
     )
@@ -2374,13 +2698,18 @@ def supervise(
     backoff_s: float = 5.0,
     max_restarts: int | None = None,
     max_sessions: int | None = None,
+    day_fn: Callable[[], str] | None = None,
+    wait_next_day: bool = True,
+    day_poll_s: float = 60.0,
 ) -> int:
-    """Tiny supervisor: restart the session on crash, stop the moment data/KILL exists."""
+    """Restart on crash, one session per ET day, stop the moment data/KILL exists."""
     restarts = 0
     sessions = 0
+    day_fn = day_fn or (lambda: datetime.now(ET).date().isoformat())
     while not kill_active(kill_path):
         if max_sessions is not None and sessions >= max_sessions:
             break
+        session_day = day_fn()
         try:
             run_session()
         except KeyboardInterrupt:
@@ -2403,7 +2732,11 @@ def supervise(
         sessions += 1
         if max_sessions is not None and sessions >= max_sessions:
             break
-        sleep(backoff_s)
+        if wait_next_day:
+            while not kill_active(kill_path) and day_fn() == session_day:
+                sleep(day_poll_s)
+        else:
+            sleep(backoff_s)
     if kill_active(kill_path):
         write_alert(alert_path, "kill_stop", kill_path=str(kill_path))
     return 0
