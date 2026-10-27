@@ -10,6 +10,11 @@ prediction first) while a simulated broker owns the frozen fill rules
 (``price_entry_ioc``/``submission_clock``/``priced_leg``) read on the prints observed so
 far. ``paper`` replaces only that broker with an Alpaca paper account and refuses to send
 an order unless ``--paper`` was passed AND ``data/forward/depth_bot/ARMED`` exists.
+
+Operational switches are this lane's OWN: ``data/forward/depth_bot/KILL`` halts new entries
+(``--kill-file`` overrides it) and ``data/forward/depth_bot/ARMED`` arms orders. The retired
+flush bot's ``data/KILL`` is never read or written here - it must stay put so flush_bot stays
+dead.
 """
 from __future__ import annotations
 
@@ -18,7 +23,9 @@ import contextlib
 import heapq
 import json
 import os
+import re
 import sys
+import tempfile
 import threading
 import time
 from collections import Counter
@@ -55,7 +62,7 @@ DATA_ROOT = research.DATA_ROOT
 BOT_ROOT = DATA_ROOT / "forward" / "depth_bot"
 JOURNAL_ROOT = BOT_ROOT / "journal"
 ARMED_PATH = BOT_ROOT / "ARMED"
-KILL_PATH = DATA_ROOT / "KILL"
+KILL_PATH = BOT_ROOT / "KILL"  # data/forward/depth_bot/KILL, NEVER the flush bot's data/KILL
 
 ARM = research.View(0.030, 0.50)
 LOSS_LIMIT_USD = 300.0  # PRE-REG-DEPTH-01 amendment (was 90)
@@ -297,6 +304,10 @@ def et_minute_of(us: int) -> int:
     return clock.hour * 60 + clock.minute
 
 
+def _et_day_of(us: int) -> str:
+    return datetime.fromtimestamp(int(us) / 1_000_000, tz=UTC).astimezone(ET).date().isoformat()
+
+
 def _attr(value: Any, name: str, default=None):
     return value.get(name, default) if isinstance(value, dict) else getattr(value, name, default)
 
@@ -306,11 +317,12 @@ def _order_status(value: Any) -> str:
 
 
 # ----- operational controls ---------------------------------------------------
-def kill_active(kill_path: Path = KILL_PATH) -> bool:
-    return Path(kill_path).exists()
+def kill_active(kill_path: Path | None = None) -> bool:
+    """True when THIS bot's kill file exists (the retired flush bot keeps data/KILL)."""
+    return Path(kill_path if kill_path is not None else KILL_PATH).exists()
 
 
-def entry_control_allowed(kill_path: Path = KILL_PATH, exit_order: bool = False) -> bool:
+def entry_control_allowed(kill_path: Path | None = None, exit_order: bool = False) -> bool:
     """KILL suppresses new entries immediately without disabling position exits."""
     return bool(exit_order) or not kill_active(kill_path)
 
@@ -635,9 +647,10 @@ class FakePaperBroker:
 
     mode = "paper"
 
-    def __init__(self, positions: dict[str, int] | None = None):
+    def __init__(self, positions: dict[str, int] | None = None, exit_price: float | None = None):
         self.positions = dict(positions or {})
         self.submitted: list[dict] = []
+        self.exit_price = exit_price
 
     def submit_entry(
         self, ticker: str, quantity: int, limit_price: float, client_order_id: str, submit_us: int
@@ -686,7 +699,7 @@ class FakePaperBroker:
     def poll_exit(self, order: dict, now_us: int) -> dict | None:
         if int(now_us) < int(order["submit_us"]) + 60_000:
             return None
-        return {
+        outcome = {
             "state": "closed",
             "exit_status": "conditional_market_fill",
             "exit_submit_us": int(order["submit_us"]),
@@ -694,8 +707,10 @@ class FakePaperBroker:
             "actual_exit_us": int(order["submit_us"]) + 60_000,
             "broker_order_id": order["client_order_id"],
             "filled_qty": int(order["qty"]),
-            "filled_avg_price": 0.0,
         }
+        if self.exit_price is not None:
+            outcome["filled_avg_price"] = float(self.exit_price)
+        return outcome
 
     def close_exit(self, order: dict, session_end_us: int) -> dict:
         return {
@@ -925,6 +940,7 @@ class Position:
     retries: int = 0
     next_retry_us: int = 0
     retry_blocked: bool = False
+    overdue_checked: bool = False
 
 
 class DepthEngine:
@@ -1196,8 +1212,38 @@ class DepthEngine:
             return
         self.now_us = int(now_us)
         self._close_minutes()
+        self._flag_overdue_positions()
         self._poll_orders()
         self._drain_tasks()
+
+    def _flag_overdue_positions(self) -> None:
+        """Any position whose exit clock already passed is late: exit at once, and alert."""
+        for position in self.positions.values():
+            if position.overdue_checked:
+                continue
+            position.overdue_checked = True
+            if int(position.due_us) > int(self.now_us) or position.forced:
+                continue
+            position.forced = True
+            position.record["late_exit"] = True
+            self._exclude(position.record, "late_exit")
+            self._log(
+                {
+                    "event": "late_exit",
+                    "day": self.day,
+                    "ticker": position.ticker,
+                    "qty": position.qty,
+                    "due_us": int(position.due_us),
+                    "now_us": int(self.now_us),
+                }
+            )
+            self._alert(
+                "late_exit",
+                ticker=position.ticker,
+                qty=position.qty,
+                due_us=int(position.due_us),
+                now_us=int(self.now_us),
+            )
 
     # -- stream callbacks ------------------------------------------------------
     def _announce_drain(self) -> set[str]:
@@ -2167,10 +2213,18 @@ class DepthEngine:
                 "side": "sell",
                 "qty": closed_qty,
                 "exit_bid": record.get("exit_bid"),
-                "broker_exit_price": record.get("broker_fill_price"),
+                "sim_exit_bid": record.get("sim_exit_bid"),
+                "broker_exit_price": record.get("broker_exit_price"),
+                "entry_slippage": (
+                    float(record["broker_fill_price"]) - float(record["entry_ask"])
+                    if record.get("broker_fill_price") is not None
+                    and record.get("entry_ask") is not None
+                    else None
+                ),
                 "exit_slippage": (
-                    float(record["broker_fill_price"]) - float(record["exit_bid"])
-                    if record.get("broker_fill_price") and record.get("exit_bid")
+                    float(record["broker_exit_price"]) - float(record["sim_exit_bid"])
+                    if record.get("broker_exit_price") is not None
+                    and record.get("sim_exit_bid") is not None
                     else None
                 ),
                 "realized_pnl_usd": float(realized),
@@ -2603,7 +2657,16 @@ class AlpacaSIPStream:
 
 
 # ----- reference data ---------------------------------------------------------
+SYMBOL_PATTERN = re.compile(r"^[A-Z]+$")
+
+
 def load_pit_universe(day: str, data_root: Path = DATA_ROOT) -> list[str]:
+    """Today's PIT symbols that Alpaca can actually subscribe.
+
+    The SIP bar websocket rejects the WHOLE subscription with "invalid syntax (400)" when any
+    symbol is non-alphabetic, and the PIT list carries preferred/warrant/class forms
+    (``BRK/A``, ``BAC^E``). Such tickers are dropped here, before the bar subscription.
+    """
     path = Path(data_root) / "pit" / "pit_symbols.parquet"
     if not path.is_file():
         raise FileNotFoundError(f"PIT symbol universe missing: {path}")
@@ -2612,7 +2675,8 @@ def load_pit_universe(day: str, data_root: Path = DATA_ROOT) -> list[str]:
     if eligible.is_empty():
         raise ValueError(f"no PIT universe vintage exists on or before {day}")
     latest = eligible["vintage"].max()
-    return sorted(set(eligible.filter(pl.col("vintage") == latest)["symbol"].to_list()))
+    symbols = set(eligible.filter(pl.col("vintage") == latest)["symbol"].to_list())
+    return sorted(symbol for symbol in symbols if SYMBOL_PATTERN.match(str(symbol)))
 
 
 def session_end_for_day(day: str) -> int:
@@ -2802,8 +2866,10 @@ def run_live(
     history: HistorySource | None = None,
     universe: list[str] | None = None,
     resume_us: int | None = None,
+    kill_path: Path | None = None,
 ) -> tuple[dict, list[dict]]:
     """Run one session: shadow never orders, paper requires --paper AND the ARMED file."""
+    kill_file = Path(kill_path) if kill_path is not None else KILL_PATH
     if mode not in {"shadow", "paper"}:
         raise ValueError(f"unsupported live mode: {mode}")
     day = day or datetime.now(ET).date().isoformat()
@@ -2841,7 +2907,12 @@ def run_live(
             for position in client.get_all_positions()
             if float(position.qty) != 0
         }
-        orders = client.get_orders()
+        from alpaca.trading.enums import QueryOrderStatus
+        from alpaca.trading.requests import GetOrdersRequest
+
+        # The default query returns OPEN orders only: a filled buy from last night would be
+        # invisible and the position adopted with no clock. Ask for ALL and filter.
+        orders = client.get_orders(GetOrdersRequest(status=QueryOrderStatus.ALL))
         fills: dict[str, dict] = {}
         for order in orders:
             if _order_status(_attr(order, "side", "")) != "buy":
@@ -2852,6 +2923,8 @@ def run_live(
             if filled_at is None:
                 continue
             stamp = ts_us_of(filled_at)
+            if _et_day_of(stamp) != day:
+                continue  # only TODAY's fills describe today's positions
             known = fills.get(order.symbol)
             if known is not None and known["filled_at_us"] >= stamp:
                 continue
@@ -2901,7 +2974,7 @@ def run_live(
         open_positions=open_positions,
         fresh=False,
         quotes=quotes,
-        kill_path=KILL_PATH,
+        kill_path=kill_file,
         alert_path=alerts,
         history=history,
         universe=universe,
@@ -2970,19 +3043,21 @@ def restart_clock(
 def supervise(
     run_session: Callable[[], Any],
     *,
-    kill_path: Path = KILL_PATH,
+    kill_path: Path | None = None,
     alert_path: Path | None = None,
     sleep: Callable[[float], None] = time.sleep,
     backoff_s: float = 5.0,
-    max_restarts: int | None = None,
+    max_backoff_s: float = 300.0,
+    max_restarts: int | None = 5,
     max_sessions: int | None = None,
     day_fn: Callable[[], str] | None = None,
     wait_next_day: bool = True,
     day_poll_s: float = 60.0,
 ) -> int:
-    """Restart on crash, one session per ET day, stop the moment data/KILL exists."""
+    """Restart on crash with exponential backoff, one session per ET day, stop on data/KILL."""
     restarts = 0
     sessions = 0
+    kill_path = Path(kill_path) if kill_path is not None else KILL_PATH
     day_fn = day_fn or (lambda: datetime.now(ET).date().isoformat())
     while not kill_active(kill_path):
         if max_sessions is not None and sessions >= max_sessions:
@@ -3005,8 +3080,10 @@ def supervise(
             if max_restarts is not None and restarts > max_restarts:
                 write_alert(alert_path, "supervisor_giving_up", restarts=restarts)
                 return 2
-            sleep(backoff_s)
+            # Never a tight restart loop: the wait doubles per consecutive crash.
+            sleep(min(float(max_backoff_s), backoff_s * (2 ** (restarts - 1))))
             continue
+        restarts = 0  # a completed session resets the crash ladder
         sessions += 1
         if max_sessions is not None and sessions >= max_sessions:
             break
@@ -3024,6 +3101,280 @@ def kills_left(kill_path: Path) -> bool:
     return kill_active(kill_path)
 
 
+
+# ----- first-shadow-day journal checklist -------------------------------------
+SKIP_VOCABULARY = set(research.SKIP_REASONS) | {
+    "kill_stop",
+    "daily_loss_stop",
+    "flatten_time",
+    "universe_refused",
+}
+CHECKLIST_COMPARE_FIELDS = (
+    "ticker",
+    "t",
+    "entry_minute",
+    "intent_us",
+    "limit_price",
+    "qty",
+    "qty_capital",
+    "entry_status",
+    "entry_ask",
+    "entry_bid",
+    "entry_age_s",
+    "entry_quote_us",
+    "entry_arrival_us",
+    "exit_minute",
+    "exit_bid",
+    "exit_bid_shares",
+    "exit_status",
+    "actual_exit_us",
+    "fill_status",
+    "net_usd_25",
+    "attempt_index",
+    "positions_at_entry",
+)
+
+
+def _captured_frames(bot_root: Path, day: str) -> tuple[pl.DataFrame | None, pl.DataFrame | None]:
+    bars_path = Path(bot_root) / "bars" / f"{day}.parquet"
+    bars = pl.read_parquet(bars_path) if bars_path.is_file() else None
+    quote_dir = Path(bot_root) / "quotes"
+    frames = []
+    if quote_dir.is_dir():
+        for symbol_dir in sorted(quote_dir.iterdir()):
+            path = symbol_dir / f"{day}.parquet"
+            if path.is_file():
+                frames.append(pl.read_parquet(path))
+    quotes = pl.concat(frames) if frames else None
+    return bars, quotes
+
+
+def build_checklist(
+    day: str,
+    *,
+    journal_root: Path = JOURNAL_ROOT,
+    bot_root: Path | None = None,
+    states_root: Path | None = None,
+    data_root: Path = DATA_ROOT,
+    require_live: bool = True,
+    compare_replay: bool = True,
+) -> list[dict[str, Any]]:
+    """Evaluate the reviewer's first-shadow-day checklist from the artefacts of one day."""
+    journal_root = Path(journal_root)
+    bot_root = Path(bot_root) if bot_root is not None else journal_root.parent
+    states_file = states_path_for(journal_root, states_root, day)
+    journal_file = journal_file_for(journal_root, day)
+    recorded = list(read_events(journal_file))
+    kinds = [event.get("event") for event in recorded]
+    checks: list[dict[str, Any]] = []
+
+    def add(name: str, ok: bool, detail: str = "") -> None:
+        checks.append({"item": name, "ok": bool(ok), "detail": detail})
+
+    summary = next((event for event in recorded if event.get("event") == "daily_summary"), {})
+    session_end = int(summary.get("session_end") or session_end_for_day(day))
+    lattice = tuple(range(LATTICE_START, min(ENTRY_CUTOFF_MINUTE, session_end - 1) + 1, 5))
+
+    # 1. lifecycle
+    required = {"session_start", "session_end", "daily_summary"}
+    if require_live:
+        required.add("live_session_complete")
+    alerts = [
+        event.get("kind")
+        for event in recorded
+        if event.get("event") == "ALERT"
+    ]
+    fatal_alerts = {
+        "stream_ended_early",
+        "stream_reconnect_exhausted",
+        "crash",
+        "session_incomplete",
+    } & set(alerts)
+    add(
+        "1 complete lifecycle (start, end, summary, session marker)",
+        required <= set(kinds) and "session_incomplete" not in kinds and not fatal_alerts,
+        f"missing={sorted(required - set(kinds))} fatal={sorted(fatal_alerts)}",
+    )
+
+    # 2. snapshot coverage
+    coverage = {
+        int(event["t"]): event
+        for event in recorded
+        if event.get("event") == "snapshot_coverage"
+    }
+    expected_snapshots = [
+        snapshot
+        for snapshot in depth_bot_features.SNAPSHOTS
+        if snapshot in lattice
+    ]
+    thin = [
+        snapshot
+        for snapshot in expected_snapshots
+        if snapshot not in coverage
+        or coverage[snapshot].get("ratio") is None
+        or float(coverage[snapshot]["ratio"]) < 0.5
+    ]
+    refusals = sum(event == "universe_refused" for event in kinds)
+    backfills = sum(
+        event == "ALERT" and recorded[index].get("kind") == "backfill_failed"
+        for index, event in enumerate(kinds)
+    )
+    add(
+        "2 snapshot coverage >=50% of the declared universe at every snapshot",
+        not thin and refusals == 0 and backfills <= 1,
+        f"thin={thin} refusals={refusals} backfill_failed={backfills}",
+    )
+
+    # 3. decision lattice and skip vocabulary
+    ticks = [int(event["t"]) for event in recorded if event.get("event") == "decision_tick"]
+    latticed = len(set(ticks) & set(lattice))
+    intents = [event for event in recorded if event.get("event") == "intent"]
+    reasons = [event.get("skip_reason") for event in intents if event.get("skip_reason")]
+    unknown = sorted(set(reasons) - SKIP_VOCABULARY)
+    quote_skips = sum(
+        reason in {"quote_not_acquired", "intent_not_firm_fresh"} for reason in reasons
+    )
+    share = quote_skips / len(intents) if intents else 0.0
+    add(
+        "3 lattice ticks present, skip reasons in the research vocabulary",
+        len(lattice) > 0
+        and latticed >= 0.95 * len(lattice)
+        and not unknown
+        and share <= 0.5,
+        f"lattice={latticed}/{len(lattice)} unknown={unknown} quote_skip_share={share:.2f}",
+    )
+
+    # 4. persisted artefacts
+    bars_path = bot_root / "bars" / f"{day}.parquet"
+    columns_ok = False
+    if states_file.is_file():
+        states = pl.read_parquet(states_file)
+        columns_ok = tuple(states.columns) == tuple(research.STATE_COLUMNS)
+    quoted = {
+        event["ticker"]
+        for event in recorded
+        if event.get("event") == "intent"
+        and (event.get("intent_quote") or {}).get("intent_status") == "quoted"
+    }
+    missing_quotes = [
+        ticker
+        for ticker in sorted(quoted)
+        if not (bot_root / "quotes" / ticker / f"{day}.parquet").is_file()
+    ]
+    add(
+        "4 bars/states/quotes persisted (states schema = research.STATE_COLUMNS)",
+        bars_path.is_file() and states_file.is_file() and columns_ok and not missing_quotes,
+        f"bars={bars_path.is_file()} states={states_file.is_file()} schema={columns_ok} "
+        f"missing_quotes={missing_quotes[:5]}",
+    )
+
+    # 5. shadow journal vs a replay of the captured day
+    if compare_replay:
+        bars, quotes = _captured_frames(bot_root, day)
+        if bars is None or quotes is None:
+            add("5 shadow == replay on the captured tape", False, "captures missing")
+        else:
+            scratch = Path(tempfile.mkdtemp(prefix="depthbot-checklist-"))
+            replay_journal = journal_file_for(scratch / "journal", day)
+            try:
+                replay_day(
+                    day,
+                    research.OUTPUT,
+                    data_root,
+                    scratch / "journal",
+                    source=ReplayStreamSource(bars, quotes, day),
+                )
+            except Exception as exc:  # noqa: BLE001 - a broken capture is a checklist failure
+                add("5 shadow == replay on the captured tape", False, f"replay failed: {exc}")
+            else:
+                reference = list(read_events(replay_journal))
+                same = _compare_journals(recorded, reference)
+                stops = sum(event == "risk_stop" for event in kinds)
+                add(
+                    "5 shadow == replay on the captured tape ($300 stop fires 0)",
+                    same[0] and stops == 0,
+                    f"{same[1]} stop_fires={stops}",
+                )
+    else:
+        add("5 shadow == replay on the captured tape", True, "skipped (--no-replay)")
+
+    # 6. no orders, ARMED absent, one session
+    alert_file = bot_root / "ALERT"
+    alert_lines = (
+        [line for line in alert_file.read_text().splitlines() if line.strip()]
+        if alert_file.is_file()
+        else []
+    )
+    modes = {
+        event.get("mode")
+        for event in recorded
+        if event.get("event") in {"session_start", "daily_summary"} and event.get("mode")
+    }
+    starts = sum(event == "session_start" for event in kinds)
+    add(
+        "6 no paper orders, no alert, ARMED absent, one session",
+        not alert_lines
+        and modes <= {"sim"}
+        and not ARMED_PATH.is_file()
+        and starts == 1,
+        f"alerts={len(alert_lines)} modes={sorted(modes)} starts={starts} "
+        f"armed={ARMED_PATH.is_file()}",
+    )
+    return checks
+
+
+def _compare_journals(observed: list[dict], reference: list[dict]) -> tuple[bool, str]:
+    def pick(events_list: list[dict]) -> dict[str, list]:
+        ticks = [
+            (event["t"], event["candidate_count"], event["signal_count"])
+            for event in events_list
+            if event.get("event") == "decision_tick"
+        ]
+        signals = [
+            (event["ticker"], event["t"], event["intent_minute"], event["pred_60"])
+            for event in events_list
+            if event.get("event") == "signal"
+        ]
+        intents = [
+            (event["ticker"], event["intent_us"], event["qty"], event.get("skip_reason"))
+            for event in events_list
+            if event.get("event") == "intent"
+        ]
+        trades = [
+            tuple(event.get(field) for field in CHECKLIST_COMPARE_FIELDS)
+            for event in events_list
+            if event.get("event") == "trade_result"
+        ]
+        return {
+            "decision_ticks": ticks,
+            "signals": signals,
+            "intents": intents,
+            "trades": trades,
+        }
+
+    left, right = pick(observed), pick(reference)
+    for name in left:
+        if left[name] != right[name]:
+            return False, f"{name} differ ({len(left[name])} vs {len(right[name])})"
+    return True, "ticks/signals/intents/trades identical"
+
+
+def run_checklist(args: argparse.Namespace) -> int:
+    checks = build_checklist(
+        args.day,
+        journal_root=args.journal_root,
+        bot_root=args.bot_root,
+        states_root=args.states_root,
+        compare_replay=not args.no_replay,
+    )
+    for check in checks:
+        status = "PASS" if check["ok"] else "FAIL"
+        print(f"{status}  {check['item']}  [{check['detail']}]")
+    failed = [check for check in checks if not check["ok"]]
+    print(f"{len(checks) - len(failed)}/{len(checks)} checks pass for {args.day}")
+    return 0 if not failed else 1
+
+
 def make_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     subs = parser.add_subparsers(dest="mode")
@@ -3037,10 +3388,28 @@ def make_parser() -> argparse.ArgumentParser:
         live = subs.add_parser(name)
         live.add_argument("--day")
         live.add_argument("--paper", action="store_true", help="explicit paper-order opt-in")
+        live.add_argument(
+            "--kill-file",
+            type=Path,
+            default=None,
+            help="kill switch (default data/forward/depth_bot/KILL)",
+        )
     boss = subs.add_parser("supervise", help="restart the session on crash, stop on data/KILL")
     boss.add_argument("--live-mode", choices=("shadow", "paper"), default="shadow")
     boss.add_argument("--paper", action="store_true", help="explicit paper-order opt-in")
     boss.add_argument("--backoff", type=float, default=30.0)
+    boss.add_argument(
+        "--kill-file",
+        type=Path,
+        default=None,
+        help="kill switch (default data/forward/depth_bot/KILL)",
+    )
+    audit = subs.add_parser("checklist", help="evaluate the first-shadow-day journal checklist")
+    audit.add_argument("--day", required=True)
+    audit.add_argument("--journal-root", type=Path, default=JOURNAL_ROOT)
+    audit.add_argument("--bot-root", type=Path, default=None)
+    audit.add_argument("--states-root", type=Path, default=None)
+    audit.add_argument("--no-replay", action="store_true")
     return parser
 
 
@@ -3062,13 +3431,21 @@ def main(argv: list[str] | None = None) -> int:
             )
         )
         return 0
+    if args.mode == "checklist":
+        return run_checklist(args)
     if args.mode == "supervise":
         return supervise(
-            lambda: run_live(args.live_mode, args.paper, journal_root=JOURNAL_ROOT),
+            lambda: run_live(
+                args.live_mode,
+                args.paper,
+                journal_root=JOURNAL_ROOT,
+                kill_path=args.kill_file,
+            ),
+            kill_path=args.kill_file,
             alert_path=JOURNAL_ROOT.parent / "ALERT",
             backoff_s=float(args.backoff),
         )
-    run_live(args.mode, args.paper, args.day)
+    run_live(args.mode, args.paper, args.day, kill_path=args.kill_file)
     return 0
 
 

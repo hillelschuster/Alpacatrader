@@ -1294,3 +1294,126 @@ def test_adopted_position_without_a_broker_clock_is_flagged(tmp_path: Path, h60_
     assert position.entry_minute == 660, "no 01:00 skeleton"
     assert position.record["late_exit"] is True
     assert "entry_clock_unknown" in position.record["parity_excluded_reason"]
+
+
+# ----- round 4: overdue adoption, closed-event prices, supervisor, checklist --
+def test_adopted_position_past_due_exits_immediately_and_alerts(tmp_path: Path):
+    alerts = tmp_path / "ALERT"
+    broker = depth_bot.FakePaperBroker()
+    adopted = {"OVNT": {"qty": 50, "entry_price": 10.0, "entry_minute": 600, "exit_minute": 660}}
+    engine, _sim = make_engine(tmp_path, broker=broker, open_positions=adopted, alert_path=alerts)
+    push_quote(engine, "OVNT", minute_us(DAY, 700), 10.0, 10.05)
+    position = engine.positions["OVNT"]
+    assert position.forced is True
+    assert position.record["late_exit"] is True
+    assert [order["side"] for order in broker.submitted] == ["sell"]
+    kinds = [json.loads(line)["kind"] for line in alerts.read_text().splitlines()]
+    assert "late_exit" in kinds
+
+
+def test_position_closed_reports_exit_price_and_sim_slippage(tmp_path: Path):
+    broker = depth_bot.FakePaperBroker(exit_price=10.12)
+    engine, _sim = make_engine(tmp_path, broker=broker)
+    run_one_trade(engine)
+    due = engine.positions["AAA"].due_us
+    push_quote(engine, "AAA", due - 200_000, 10.10, 10.15)
+    push_quote(engine, "AAA", due + 300_000, 10.10, 10.15)
+    engine.finish()
+    journal = list(events(tmp_path / "journal.jsonl"))
+    closed = [event for event in journal if event["event"] == "position_closed"][-1]
+    assert closed["broker_exit_price"] == pytest.approx(10.12)
+    assert closed["sim_exit_bid"] == pytest.approx(10.10)
+    assert closed["exit_slippage"] == pytest.approx(10.12 - 10.10)
+    assert closed["entry_slippage"] == pytest.approx(10.16 - 10.05)
+
+
+def test_supervisor_backoff_doubles_and_gives_up(tmp_path: Path):
+    delays = []
+
+    def runner():
+        raise RuntimeError("always")
+
+    alerts = tmp_path / "ALERT"
+    code = depth_bot.supervise(
+        runner,
+        kill_path=tmp_path / "KILL",
+        alert_path=alerts,
+        sleep=delays.append,
+        backoff_s=5.0,
+        max_restarts=3,
+    )
+    assert code == 2
+    assert delays == [5.0, 10.0, 20.0]
+    kinds = [json.loads(line)["kind"] for line in alerts.read_text().splitlines()]
+    assert kinds[-1] == "supervisor_giving_up"
+
+
+def test_checklist_passes_a_clean_shadow_day(tmp_path: Path, stored_day, monkeypatch):
+    bars, quotes = stored_day
+    monkeypatch.setattr(depth_bot, "KILL_PATH", tmp_path / "KILL")
+    monkeypatch.setattr(depth_bot, "ARMED_PATH", tmp_path / "ARMED")
+    shadow_root = tmp_path / "shadow"
+    depth_bot.run_live(
+        "shadow",
+        False,
+        DAY,
+        source=FakeSIPStream(bars, quotes, DAY),
+        journal_root=shadow_root,
+    )
+    checks = depth_bot.build_checklist(
+        DAY, journal_root=shadow_root, bot_root=tmp_path, states_root=None
+    )
+    failed = [(check["item"], check["detail"]) for check in checks if not check["ok"]]
+    assert not failed, failed
+    assert len(checks) == 6
+
+
+def test_checklist_fails_an_incomplete_day(tmp_path: Path):
+    journal = tmp_path / "journal" / f"{DAY}.jsonl"
+    depth_bot.append_event(journal, {"event": "session_start", "day": DAY, "mode": "sim"})
+    depth_bot.append_event(journal, {"event": "session_incomplete", "day": DAY, "reason": "x"})
+    checks = depth_bot.build_checklist(
+        DAY, journal_root=tmp_path / "journal", bot_root=tmp_path, compare_replay=False
+    )
+    lifecycle = next(check for check in checks if check["item"].startswith("1 "))
+    assert lifecycle["ok"] is False
+
+
+# ----- this lane's own operational switches (never the flush bot's) ----------
+def test_depth_bot_has_its_own_kill_file():
+    assert depth_bot.KILL_PATH == depth_bot.BOT_ROOT / "KILL"
+    assert depth_bot.KILL_PATH != depth_bot.DATA_ROOT / "KILL"
+    assert str(depth_bot.KILL_PATH).endswith("data/forward/depth_bot/KILL")
+    assert depth_bot.ARMED_PATH == depth_bot.BOT_ROOT / "ARMED"
+
+
+def test_kill_file_cli_override():
+    parser = depth_bot.make_parser()
+    assert parser.parse_args(["shadow"]).kill_file is None
+    assert parser.parse_args(["shadow", "--kill-file", "/tmp/k"]).kill_file == Path("/tmp/k")
+    assert parser.parse_args(["paper", "--kill-file", "/tmp/k"]).kill_file == Path("/tmp/k")
+    assert (
+        parser.parse_args(["supervise", "--kill-file", "/tmp/k"]).kill_file == Path("/tmp/k")
+    )
+
+
+def test_entries_ignore_the_flush_bots_kill_file(tmp_path: Path):
+    # The retired flush bot's data/KILL stays in place; this lane must not read it.
+    assert (depth_bot.DATA_ROOT / "KILL").exists()
+    engine, sim = make_engine(tmp_path, kill_path=tmp_path / "depthbot-KILL")
+    run_one_trade(engine)
+    assert engine.positions, "the depth bot must not be stopped by the flush bot's kill file"
+    assert [order["side"] for order in sim.orders] == ["buy"]
+
+
+def test_pit_universe_drops_tickers_alpaca_cannot_subscribe(tmp_path: Path):
+    pit = tmp_path / "pit"
+    pit.mkdir(parents=True)
+    pl.DataFrame(
+        {
+            "vintage": ["2026-01-01"] * 6,
+            "symbol": ["AAPL", "BRK/A", "BAC^E", "ZZZ", "BRK-B", "aapl"],
+        }
+    ).write_parquet(pit / "pit_symbols.parquet")
+    # A non-alphabetic symbol makes the SIP bar subscription fail as a whole (400).
+    assert depth_bot.load_pit_universe("2026-04-20", data_root=tmp_path) == ["AAPL", "ZZZ"]
