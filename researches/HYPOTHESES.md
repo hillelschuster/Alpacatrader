@@ -1,6 +1,16 @@
 # HYPOTHESES — living source of truth (created 2026-09-06; rewritten 2026-10-08
 # post-H025-print-resolution; open-anchor program)
 
+STATUS 2026-10-27 (supersedes the header below where they conflict): H045 adaptive depth
+participation is FROZEN as researches/PRE-REG-DEPTH-01.md (thr .030 / p .50 sits on a
+threshold plateau 0.025-0.030, positive on both blocks at all participations and latencies;
+0.020 is a cliff) and is the build target for the paper bot; still DISCOVERY-NOT-VALIDATED
+pending the one-shot pristine 2024 test and paper evidence. CLOSED 2026-10-27: basket thesis
+reborn on the learned score + real quotes (36/36 N>=2 cells negative, worse than N=1);
+prediction cap; wait-for-mid entry; spread filter; repeat/re-entry and capacity controls
+(never binding); compact/monotone selectors. OPEN supply lever: universe expansion beyond
+the panel's top ~11 (separate pre-registration, needs acquisition).
+
 STATUS HEADER (read this first; updated 2026-10-09): H11 failed collision 2026-09-08 and
 is RETIRED; H025 flush-buy is RESOLVED NEGATIVE at print level (do not arm, do not
 resurrect); H042 cash-first stays CLOSED AS EXTRACTION CANDIDATE. WAVE-2 (2026-10-09,

@@ -2796,3 +2796,57 @@ provenance text corrected in 10 files. Depth-lane defects fixed + re-run. Audit 
 in factory/artifacts/wave2_alpha_search_summary.json under audit_2026_10_09. No live flags or
 orders changed; no deployment.
 
+
+## 2026-10-12 — SPARSE-LEAD QUOTE AUDIT: the only internally positive lead DIES on real quotes
+
+TOOL. `factory/scripts/alpha_sparse_lead_quote_audit.py` (new; extends
+`alpha_quote_audit.py` to the FULL quote universe) -> ONE artifact
+`factory/artifacts/overnight/sparse_lead_quote_audit.json` + per-fill rows in
+`~/alpha-data/open-search-v1/sparse_lead_quote_audit/fills_<block>_<view>.parquet`.
+
+SAME FILLS, PROVEN. The audit regenerates the lead's own fills with the lead's own engine
+(`alpha_sparse_daily.replay_view`, stored h60 model, thr 0.03) and reproduces the stored
+proxy numbers to 1e-12 on all four (block, cadence) cells before reading a single quote
+(once_h60 val 61 fills +0.0907%/day, repeat_h60 val 67 +0.0946%; late once_h60 143
++0.1417%/day, late repeat_h60 157 +0.1893%/day of the $3,000 book @100bps).
+
+COVERAGE. Primary SIP cache + the three supplement roots (sparse_execution_frontier
+fetched_quotes, quote_completeness_audit quotes, quote_universe_acquire quotes; the
+non-existent fourth root contributes nothing), 179 ET days merged, primary prints KEEP
+FIRST. Late block stream coverage 100%; both-legs-priced 110/143 (76.9%) and 123/157
+(78.3%). Merging improved 3 fills per late cell, regressed 0, and revised NO supported
+net by more than half a cent. Validation block: 43/61 (70.5%) and 46/67 (68.7%), unchanged
+by the merge - its misses are stale prints, i.e. market facts, not acquisition gaps
+(consistent with the earlier API-fetch completeness audit).
+
+VERDICT. DIES at 100bps on both blocks and both cadences, and the verdict is NOT rung
+driven: the 0bps measured touch is already negative. Late repeat_h60 +0.1893%/day proxy
+-> -6.8838%/day (-$206.51/session; 87 asked-supported fills worth +$1,437 @100bps against
+70 conditional/no-match/unknown fills charged the full $1,000 = $70,000). Late once_h60
++0.1417 -> -6.3089%/day. The 2023 validation number on the SAME basis exists and is worse:
+repeat_h60 +0.0946 -> -5.9717%/day (-$179.15/session; 23 supported of 67 fills).
+Covered-only (the verifiable fills alone) is +0.144%/day @100bps late but -0.105%/day on
+validation: ALL of the validation edge sat in the fills the quote audit cannot price or
+cannot support.
+
+WEAK LINK. 44-45% of fills are non-asked-supported, so the lower bound is dominated by the
+full-loss charge; the touch-verified subset (87/157 late) is the only part with an
+observed price, and it is not a whole-book measurement.
+
+NEXT ACTION. The lead is closed on execution. Only a real fill/fee ledger for the
+conditional (depth-short) class, or a sizing rule that trades the displayed depth instead
+of the $1,000 ticket, could reopen it; nothing else in this lane does.
+
+## 2026-10-27 - consolidation wave; strategy frozen (PRE-REG-DEPTH-01); bot parity gate passed
+
+Nine analysis agents on the depth lead (arm thr300bps|p50). Leaderboard: depth = best REAL-QUOTE
+candidate (proxy lanes shrink on quotes). Plateau grid (alpha_depth_plateau.py, 96 cells): thr
+0.025-0.030 positive on both blocks at all participations and both latencies; 0.020 a val cliff;
+baseline kept. Microstructure (alpha_entry_microstructure.py, baseline reproduced to $0.01): keep
+marketable entry; 16/20 late UNKNOWNs are exits into thin/stale bids. Signal supply
+(alpha_signal_supply.py): controls never bind; universe (top ~11) is the constraint. Selector
+(alpha_selector_upgrade.py): keep h60 head; pred cap rejected. Basket reborn (alpha_basket_reborn.py):
+36/36 N>=2 cells negative and worse than N=1 - CLOSED. Costs: fees ~0.2 bps; SIP ~$99/month is the
+binding cost (late +0.86 / val -2.31 $/calendar day net of data on $3,000). Bot: depth_bot_features.py
+live rebuild = panel with 0 mismatches on 3 frozen days (tests pass). Frozen spec + pristine/paper plan:
+researches/PRE-REG-DEPTH-01.md. Runtime depth_bot.py in progress (replay parity -> shadow -> paper).

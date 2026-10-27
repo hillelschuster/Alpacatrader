@@ -764,3 +764,27 @@ limits are recorded (factory/artifacts/alpha_news_access.json) — no catalyst a
 inferred. No live flags or orders were changed; nothing here is a deployment; the
 paper bot must NOT be armed on the flush rule or on any DISCOVERY-NOT-VALIDATED
 candidate.
+
+## 19. Latest state (2026-10-27) — ENTRY POINT: strategy frozen as PRE-REG-DEPTH-01; paper bot under construction
+
+Read `researches/PRE-REG-DEPTH-01.md` first (frozen rule, reference numbers, evaluation plan),
+then the 2026-10-27 block at the top of `researches/STATE.md`. Sections 17-18 are superseded
+as the entry point (the sparse_daily repeat_h60 "best measured" in 18 is a minute-proxy number;
+on a common real-quote basis the adaptive depth lane is the best candidate).
+
+Strategy: h60 head pred >= 0.030 -> marketable IOC at the ask, qty = min($1,000, 50% of the
+thinner displayed side), exit at the bid after 60 min, 3 slots / $3,000. Val +0.94, late +4.11
+$/calendar day at 25 bps; real-time SIP (~$99/month) is the binding cost.
+
+Bot (shadow by default; orders only with data/forward/depth_bot/ARMED + --paper; data/KILL stops
+entries; never touches flush_bot or data/forward/bot/LIVE):
+- `factory/scripts/depth_bot_features.py` - live universe/rank/features/score, 0 mismatches vs
+  the panel on 3 frozen days (`tests/test_depth_bot_features.py`).
+- `factory/scripts/depth_bot.py` - runtime: replay (parity vs research replay), shadow (SIP
+  stream, journal + sim would-be outcome), paper. See factory/STATE.md tail for status.
+
+Owner decisions pending: (1) Alpaca real-time SIP subscription (and confirm the paper keys can
+read feed=sip); (2) approval to unseal 2024 for the one-shot pristine test; (3) universe
+expansion beyond the panel's top ~11 (the only measured supply lever; needs acquisition).
+Do NOT: lever up or enlarge tickets, re-tune thresholds on 2023/late, reopen the basket thesis,
+or arm the flush bot.

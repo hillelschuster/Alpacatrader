@@ -1,6 +1,46 @@
-# STATE — current truth (latest update 2026-10-09). Full chronicle: factory/STATE.md (append-only log).
+# STATE — current truth (latest update 2026-10-27). Full chronicle: factory/STATE.md (append-only log).
 # Hypothesis ranking + falsifiers: researches/HYPOTHESES.md (living).
 # History before 2026-09-04: researches/CANONICAL_STATE.md (superseded snapshot, kept for trust map).
+
+## CURRENT 2026-10-27 — strategy FROZEN as PRE-REG-DEPTH-01; paper bot under construction
+
+**The strategy.** Adaptive depth participation (`alpha_adaptive_depth_sizing.py`, arm
+`thr300bps|p50`) is frozen in `researches/PRE-REG-DEPTH-01.md`: immutable h60 head, pred >=
+0.030, marketable IOC at the ask, qty = min($1,000, 50% of the thinner displayed side), exit
+at the bid after 60 min, 3 slots / $3,000. Validation 2023 +1.36 $/session = +0.94 $/calendar
+day; late +5.95 $/session = +4.11 $/calendar day at 25 bps (fees measured ~0.2 bps; 25 bps
+is a slippage allowance on top of the touched spread). DISCOVERY-NOT-VALIDATED until the
+pristine 2024 test (needs owner approval to unseal) and paper evidence.
+
+**2026-10-27 analysis wave (9 agents; reports in the session's local:// store, numbers below
+are the load-bearing ones):**
+- Leaderboard on a common basis: depth is the best REAL-QUOTE candidate; higher figures
+  (sparse_daily repeat_h60, retained delay grids) are minute-proxy and shrink on quotes.
+- Plateau: threshold 0.025-0.030 is positive on both blocks at every participation
+  (0.25-1.00) and at 250 ms and 1 s latency (38/96 grid cells positive on both blocks at 25
+  bps); 0.020 is a validation cliff. thr .030/p .50 kept (safe neighbours, smaller orders).
+- Microstructure: baseline marketable entry kept; 16 of the 20 late UNKNOWNs are EXITS into
+  thin/stale bids - the live risk is exit slippage, logged by the bot.
+- Signal supply: slot/attempt/cooldown controls never bind (0 slot-full, 0 attempt-cap
+  rejects); the binding constraint is the panel universe (top ~11 gainers). Universe
+  expansion = the open supply lever (new acquisition).
+- Selector: keep the h60 head; compact/monotone variants thin or empty; the apparent
+  top-prediction loss is 3 validation fills (cap at 0.05 rejected: val/late disagree).
+- Basket thesis reborn on the learned score + real quotes: all 36 N=2/3 cells negative at
+  25 bps on both blocks and worse than N=1. Structural cause across all basket phases: top
+  gainers at a fixed T are negative-EV on average ("spike then bleed"); extra names add
+  negative tickets faster than any keep/cut rule recovers. CLOSED.
+- Costs: real-time SIP (~$99/month) is the binding cost, not fees. On the $3,000 book the
+  lane alone clears it only on the late basis (+0.86 $/calendar day net) and not on the
+  validation basis (-2.31). Leverage/bigger tickets measured worse (edge lives in thin books).
+- Bot feasibility gate PASSED: `factory/scripts/depth_bot_features.py` rebuilds the live
+  universe, ranks, 26 features, predictions and signals with 0 mismatches vs the panel on 3
+  frozen days (tests/test_depth_bot_features.py). Live needs full-universe consolidated SIP
+  minute bars (Alpaca SIP plan).
+
+**Next:** finish `factory/scripts/depth_bot.py` (replay parity -> shadow -> paper behind
+data/forward/depth_bot/ARMED); owner decisions: SIP subscription, unsealing 2024 for the one-shot
+pristine test, universe-expansion acquisition.
 
 ## CURRENT 2026-10-08 — H025 print-resolved NEGATIVE (do not arm); new independent
 ## open-anchor program is the live research lane
