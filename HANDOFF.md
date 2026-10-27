@@ -788,3 +788,7 @@ read feed=sip); (2) approval to unseal 2024 for the one-shot pristine test; (3) 
 expansion beyond the panel's top ~11 (the only measured supply lever; needs acquisition).
 Do NOT: lever up or enlarge tickets, re-tune thresholds on 2023/late, reopen the basket thesis,
 or arm the flush bot.
+
+Storage (2026-10-27): off-host data lives on the Hetzner Storage Box (`ssh storagebox`, rclone
+`storagebox:alpacatrader/`, port 23, key auth). Windows C: has ~26 GB free and WSL `df /` over-reports -
+see AGENTS.md "Storage" before writing anything large. Owner decision (1) above is resolved.

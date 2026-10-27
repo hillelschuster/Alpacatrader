@@ -70,3 +70,18 @@ evidence. (Full principle in the parent folder AGENTS.md.)
 - Uncommitted working-tree dirt from other workstreams (ml/* logs, certification
   artifacts, `PRE-REG-H12R.md`, CRLF churn) is NOT research state — do not commit it
   blindly.
+
+## Storage (IMPORTANT - read before writing anything large)
+
+- **This machine's disk is nearly full.** The real host is Windows C: (~26 GB free on
+  2026-10-27). WSL's `df /` shows a ~1 TB virtual disk and LIES about free space - check
+  `df -h /mnt/c` instead. Never write multi-GB outputs locally.
+- **Off-host store = Hetzner Storage Box** (FSN1-BX776, 1 TiB, ~975 GiB free at setup):
+  host `u678314.your-storagebox.de`, user `u678314`, **port 23**. Key auth is configured
+  (`~/.ssh/storagebox_ed25519`, alias `ssh storagebox`); rclone remote `storagebox:`.
+  Password only in the gitignored `.env` (`STORAGEBOX_*`) - never commit or print it.
+- Layout: `storagebox:alpacatrader/` = everything of ours (`alpha-data/` live research roots,
+  `archive/` retired lanes and old raw data). `storagebox:backup/` is pre-existing - do not touch.
+- Usage: `rclone copy <local> storagebox:alpacatrader/<path> --transfers 8`, then
+  `rclone check` before deleting anything local. New large research outputs: write a small
+  local staging batch, move it to the box per day; or `rclone mount storagebox:alpacatrader <dir>`.
