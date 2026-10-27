@@ -2860,3 +2860,11 @@ PRE-REG-DEPTH-UNIVERSE-01: BLOCKED_ON_STORAGE (not evaluated - host C: drive has
 over-reports). K=10 control reproduced exactly (582/582 days bit-identical). Reopen cost measured:
 K=20 ~1.45 GB quotes/1.13 h (validation), K=30 ~2.65 GB/2.08 h, + ~0.15 GB bars. Resumes once an off-host
 data root (Hetzner Storage Box) is mounted. Producer: factory/scripts/alpha_depth_universe.py.
+
+2026-10-27 PRE-REG-DEPTH-UNIVERSE-01 DECIDED (measured): K stays 10. Independent verification found a
+quote-path defect in alpha_depth_universe.py (newly acquired quotes never read); fixed + regression test,
+rebuilt 582 days from the storage-box tarballs. Corrected validation K=20 additive +1.88 $/session @25
+(+0.52 vs control; 3 extra known fills, mean +$43.28): (a) PASS, (b) PASS, (c) FAIL (3 < 10 fills),
+(d) FAIL (additive +0.52 vs pooled -2.88) -> no PRE-REG-DEPTH-02. Extras are genuinely rare at the head:
+4 of 153,813 extra rows score >= 0.030 (rank-11 behaviour of the frozen model). Raw data on the box:
+storagebox:alpacatrader/alpha-data/open-search-v1/depth_universe/raw/<day>.tar.gz (582, 0.7 GB).

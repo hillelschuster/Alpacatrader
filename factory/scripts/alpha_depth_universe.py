@@ -41,12 +41,17 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import contextlib
 import hashlib
 import json
 import os
+import shlex
+import shutil
+import subprocess
 import sys
 import time
 from concurrent.futures import ProcessPoolExecutor
+from datetime import date
 from pathlib import Path
 
 import numpy as np
@@ -448,24 +453,33 @@ def bars_day(day: str) -> pl.DataFrame:
     return pl.read_parquet(path)
 
 
-def day_tape(day: str, names: set[str]) -> pl.DataFrame:
+def day_tape(day: str, names: set[str], bars_path: Path | None = None) -> pl.DataFrame:
     """The day's trade-derived tape first (the K=10 panel source), provider bars second.
 
     A name present in the net tape is served from it, so the widened panel inherits the
     same bar source the frozen panel used wherever that source exists. Only names absent
     from the net tape can ever come from this study's provider bars archive.
     """
-    net = pl.read_parquet(
-        NET_BARS / f"{day}.parquet",
-        columns=["ticker", "et", "open", "high", "low", "close", "volume"],
-    ).filter(pl.col("ticker").is_in(list(names)))
+    net = (
+        pl.read_parquet(
+            NET_BARS / f"{day}.parquet",
+            columns=["ticker", "et", "open", "high", "low", "close", "volume"],
+        )
+        .filter(pl.col("ticker").is_in(list(names)))
+        .with_columns(pl.col("et").cast(pl.Int64))
+    )
     covered = set(net["ticker"].unique())
     todo = names - covered
     if not todo:
         return net.sort(["ticker", "et"])
-    prov = bars_day(day)
+    prov = (
+        bars_day(day)
+        if bars_path is None
+        else (pl.read_parquet(bars_path) if bars_path.exists() else _empty_bars_frame())
+    )
     if prov.height:
         prov = prov.filter(pl.col("ticker").is_in(list(todo))).select(net.columns)
+        prov = prov.with_columns(pl.col("et").cast(pl.Int64))
         return pl.concat([net, prov]).sort(["ticker", "et"])
     return net.sort(["ticker", "et"])
 
@@ -510,8 +524,8 @@ def stage1(args) -> None:
             req = StockBarsRequest(
                 symbol_or_symbols=batch,
                 timeframe=TimeFrame.Minute,
-                start=_et_us(day, 565),
-                end=_et_us(day, 962),
+                start=_et_dt(day, 565),
+                end=_et_dt(day, 965),
                 feed=DataFeed.SIP,
                 adjustment=Adjustment.RAW,
             )
@@ -565,10 +579,17 @@ def _write_empty_bars(day: str) -> None:
     bars_day(day).write_parquet(path)
 
 
-def _et_us(day: str, minute: int) -> int:
-    from alpha_quote_audit import clock_us
+def _et_dt(day: str, minute: int):
+    """ET wall-clock datetime for the bars window (alpaca-py wants a datetime, not us)."""
+    from datetime import datetime
+    from datetime import time as dtime
+    from zoneinfo import ZoneInfo
 
-    return clock_us(day, int(minute), 0)
+    return datetime.combine(
+        date.fromisoformat(day),
+        dtime(int(minute) // 60, int(minute) % 60),
+        tzinfo=ZoneInfo("America/New_York"),
+    )
 
 
 def _minute_of(ts) -> int:
@@ -706,7 +727,12 @@ def rank_map(plan: dict) -> dict[int, dict[str, int]]:
 
 
 def widen_panel(
-    day: str, plan: dict, k: int, arm: str, session_end: int
+    day: str,
+    plan: dict,
+    k: int,
+    arm: str,
+    session_end: int,
+    bars_path: Path | None = None,
 ) -> tuple[pl.DataFrame, dict]:
     """One day's widened panel frame WITH peer context, per the registered arm.
 
@@ -720,7 +746,7 @@ def widen_panel(
     admitted = plan["admitted"][str(k)]
     k10 = set(plan["admitted_sets"]["10"])
     names = sorted(set(admitted) - k10) if arm == "additive" else sorted(admitted)
-    tape = day_tape(day, set(names))
+    tape = day_tape(day, set(names), bars_path)
     have = set(tape["ticker"].unique()) if tape.height else set()
     rows = []
     for key, frame in tape.partition_by("ticker", as_dict=True).items() if tape.height else []:
@@ -767,6 +793,68 @@ def encode_rank(frame: pl.DataFrame, enc: str, k: int) -> pl.DataFrame:
     cap = 11 if enc == "A" else k + 1
     return frame.with_columns(
         pl.min_horizontal(pl.col("rank_snapshot"), pl.lit(float(cap))).alias("rank_snapshot")
+    )
+
+
+def score_rows(day: str, frame: pl.DataFrame, model: dict) -> pl.DataFrame:
+    """Liquidity-qualified rows + the frozen head's prediction. NO quotes are read.
+
+    The head's 26 features are all bar/peer derived, so every state's score is known before
+    any quote exists. Only states at/above the arm threshold can ever reach the replay, so
+    only THEIR quote streams are ever needed (see ``build_day_cells``).
+    """
+    if not frame.height:
+        return pl.DataFrame()
+    cand = frame.filter(causal_liquidity(frame))
+    if not cand.height:
+        return pl.DataFrame()
+    preds = np.asarray(model[frozen.HEAD]["lgbm"].predict(feature_matrix(cand)), dtype=float)
+    return cand.with_columns(pl.Series("pred_60", preds, dtype=pl.Float64))
+
+
+def states_from_rows(day: str, rows: pl.DataFrame, streams: dict) -> pl.DataFrame:
+    """The frozen state rows for the rows a stream exists for (candidates only)."""
+    if not rows.height:
+        return frozen.empty_states()
+    records = rows.select(
+        [
+            "day",
+            "ticker",
+            "t",
+            "admit_t",
+            "entry_et",
+            "entry_open",
+            "entry_status",
+            "session_end",
+            "gross_60",
+            "pred_60",
+        ]
+    ).to_dicts()
+    session_end = int(records[0]["session_end"])
+    out = []
+    for r in records:
+        entry_minute = int(r["t"]) + 1
+        intent_us = minute_us(day, entry_minute)
+        facts = frozen.intent_facts(streams.get(r["ticker"]), intent_us)
+        rec = {
+            "day": day,
+            "ticker": r["ticker"],
+            "t": int(r["t"]),
+            "admit_t": int(r["admit_t"]) if r["admit_t"] is not None else None,
+            "entry_et": int(r["entry_et"]) if r["entry_et"] is not None else None,
+            "entry_open": r["entry_open"],
+            "entry_status": r["entry_status"],
+            "session_end": session_end,
+            "proxy_gross_60": r["gross_60"],
+            "pred_60": float(r["pred_60"]),
+            "entry_minute": entry_minute,
+            "intent_us": intent_us,
+        }
+        rec.update(facts)
+        out.append(rec)
+    return pl.DataFrame(
+        {c: [rec[c] for rec in out] for c in frozen.STATE_COLUMNS},
+        schema={c: frozen.STATE_TYPES[c] for c in frozen.STATE_COLUMNS},
     )
 
 
@@ -961,10 +1049,15 @@ def _coverage_totals(cov: list[dict]) -> dict:
 
 # ----- harness: the K=10 control MUST reproduce the frozen rule exactly ----------------
 def _frame_from_records(records: list[dict], schema: dict[str, object]) -> pl.DataFrame:
+    """Schema-typed frame that KEEPS extra bookkeeping columns (``cell``)."""
     if not records:
         return pl.DataFrame(schema=schema)
     frame = pl.DataFrame(records)
-    return frame.select([pl.col(c).cast(t) for c, t in schema.items() if c in frame.columns])
+    cast = frame.select([pl.col(c).cast(t) for c, t in schema.items() if c in frame.columns])
+    extra = [c for c in frame.columns if c not in schema]
+    if not extra:
+        return cast
+    return pl.concat([cast, frame.select(extra)], how="horizontal_extend")
 
 
 def replay_day_in_memory(
@@ -1048,6 +1141,16 @@ def harness(args) -> None:
 
 def compare_states(stored: pl.DataFrame, rebuilt: pl.DataFrame) -> dict:
     """Bit-level control check: does the rebuilt K=10 state set equal the frozen one?"""
+    if not stored.height and not rebuilt.height:
+        return {
+            "rows_equal": True,
+            "keys_equal": True,
+            "bit_identical": True,
+            "max_abs_pred_diff": 0.0,
+            "intent_status_mismatches": 0,
+            "intent_ask_mismatches": 0,
+            "qty_capital_mismatches": 0,
+        }
     if stored.height != rebuilt.height:
         return {
             "rows_equal": False,
@@ -1074,8 +1177,695 @@ def compare_states(stored: pl.DataFrame, rebuilt: pl.DataFrame) -> dict:
     }
 
 
+# ----- day-by-day off-host pipeline (storage rule: large data never lives locally) ----
+STAGING = OUT / "_staging"
+DERIVED = OUT / "derived"
+REMOTE_RAW = "storagebox:alpacatrader/alpha-data/open-search-v1/depth_universe/raw"
+RAW_OBJECT_REL = "alpacatrader/alpha-data/open-search-v1/depth_universe/raw"
+LOCAL_CAP_BYTES = 1024**3  # 1 GB hard cap on the local footprint
+
+
+def local_footprint() -> int:
+    total = 0
+    for dirpath, _dirs, files in os.walk(OUT):
+        for name in files:
+            with contextlib.suppress(OSError):
+                total += os.path.getsize(os.path.join(dirpath, name))
+    return total
+
+
+def derived_paths(day: str) -> tuple[Path, Path]:
+    return DERIVED / f"{day}.daily.parquet", DERIVED / f"{day}.trades.parquet"
+
+
+def derived_done(day: str) -> bool:
+    dpath, _ = derived_paths(day)
+    if not dpath.exists():
+        return False
+    try:
+        frame = pl.read_parquet(dpath)
+    except Exception:
+        return False
+    return set(frame["cell"].to_list()) == {c[0] for c in CELL_SPECS}
+
+
+def remote_object_exists(day: str) -> bool:
+    ok, out = rclone(["lsf", raw_object(day), "--files-only"], retries=2)
+    return bool(ok and out.strip())
+
+
+def quote_roots(quotes_root: Path | None) -> tuple[Path, ...]:
+    """Supplement roots this study's own acquisition adds to the frozen merge order.
+
+    ``alpha_quote_universe_acquire.merge_day`` writes ``<root>/quotes/<day>.parquet`` while
+    ``supplement_day_path`` resolves a root as ``<root>/<day>.parquet``. The staging root
+    must therefore be passed as ``<root>/quotes`` - passing ``<root>`` silently hides every
+    quoted pair this study ever acquired (a fixed read-path defect, see the report).
+    """
+    if quotes_root is None:
+        return tuple(frozen.SUPPLEMENT_ROOTS)
+    return tuple(frozen.SUPPLEMENT_ROOTS) + (Path(quotes_root) / "quotes",)
+
+
+def raw_object(day: str) -> str:
+    """The day's raw acquisition is ONE object on the box (storagebox rule 1)."""
+    return f"{REMOTE_RAW}/{day}.tar.gz"
+
+
+def raw_object_rel(day: str) -> str:
+    return f"{RAW_OBJECT_REL}/{day}.tar.gz"
+
+
+def offload_marker(day: str) -> Path:
+    return DERIVED / f"{day}.offloaded"
+
+
+def rclone(args: list[str], retries: int = 4) -> tuple[bool, str]:
+    last = ""
+    for attempt in range(retries):
+        try:
+            proc = subprocess.run(["rclone", *args], capture_output=True, text=True, timeout=3600)
+        except subprocess.TimeoutExpired:
+            last = "timeout"
+            time.sleep(5 * (attempt + 1))
+            continue
+        if proc.returncode == 0:
+            return True, proc.stdout.strip()
+        last = (proc.stderr or proc.stdout).strip()[-400:]
+        time.sleep(5 * (attempt + 1))
+    return False, last
+
+
+def _tar_push(day: str) -> tuple[bool, str, str]:
+    """Stream ``staging/<day>`` -> gzip -> ONE object on the box; hash the same stream."""
+    stage = STAGING / day
+    sha_file = STAGING / f".{day}.sha"
+    sha_file.unlink(missing_ok=True)
+    command = (
+        f"set -o pipefail; tar -cf - -C {shlex.quote(str(stage.parent))} "
+        f"{shlex.quote(day)} "
+        "| gzip -1 | tee >(sha256sum | awk '{print $1}' > "
+        f"{shlex.quote(str(sha_file))}) | rclone rcat {shlex.quote(raw_object(day))}"
+    )
+    try:
+        proc = subprocess.run(
+            ["bash", "-lc", command], capture_output=True, text=True, timeout=7200
+        )
+    except subprocess.TimeoutExpired:
+        return False, "", "timeout"
+    time.sleep(1.0)
+    local = sha_file.read_text().strip() if sha_file.exists() else ""
+    sha_file.unlink(missing_ok=True)
+    if proc.returncode != 0 or not local:
+        # a failed stream may still have left a truncated object: never keep it
+        rclone(["delete", raw_object(day)], retries=1)
+        return False, local, (proc.stderr or proc.stdout).strip()[-300:]
+    return True, local, ""
+
+
+def remote_sha(day: str) -> str | None:
+    try:
+        proc = subprocess.run(
+            ["ssh", "storagebox", "sha256sum", raw_object_rel(day)],
+            capture_output=True,
+            text=True,
+            timeout=600,
+        )
+    except subprocess.TimeoutExpired:
+        return None
+    body = proc.stdout.strip()
+    if proc.returncode != 0 or not body:
+        return None
+    return body.split()[0]
+
+
+def remote_has_day(day: str) -> bool:
+    """The day's raw is on the box: as the ONE .tar.gz object, or as a legacy loose folder.
+
+    Loose folders are the pre-2026-10-27-rule form; they still count as present (so no day is
+    ever re-fetched) and ``migrate`` converts them to single objects.
+    """
+    ok, out = rclone(["lsf", raw_object(day), "--files-only"], retries=2)
+    if ok and out.strip():
+        return True
+    ok, out = rclone(["lsf", f"{REMOTE_RAW}/{day}/", "--files-only"], retries=2)
+    return bool(ok and out.strip())
+
+
+def offload_day(day: str) -> dict:
+    """Push the day's acquisition as ONE verified .tar.gz object, then drop the staging."""
+    stage = STAGING / day
+    if not stage.exists():
+        return {"day": day, "offloaded": False, "reason": "no_staging"}
+    raw_pages = stage / "quotes" / "raw"
+    if raw_pages.exists():
+        # Page JSON is resumability scaffolding for the FETCH only; the normalized parts
+        # and the merged day file carry every print.
+        shutil.rmtree(raw_pages, ignore_errors=True)
+    size = sum(os.path.getsize(os.path.join(dp, f)) for dp, _d, fs in os.walk(stage) for f in fs)
+    ok, local, msg, back = False, "", "", None
+    for attempt in range(3):
+        ok, local, msg = _tar_push(day)
+        if not ok:
+            time.sleep(5 * (attempt + 1))
+            continue
+        back = remote_sha(day)
+        if back == local:
+            break
+        msg = f"sha mismatch local={local} remote={back}"
+        rclone(["delete", raw_object(day)], retries=1)
+        time.sleep(5 * (attempt + 1))
+    if not ok or back != local:
+        return {"day": day, "offloaded": False, "error": msg, "bytes": size}
+    offload_marker(day).write_text(local + "\n")
+    shutil.rmtree(stage, ignore_errors=True)
+    return {"day": day, "offloaded": True, "bytes": size, "sha256": local}
+
+
+def restore_day(day: str) -> bool:
+    """Pull one day's .tar.gz object back from the box and unpack it into staging."""
+    stage = STAGING / day
+    stage.mkdir(parents=True, exist_ok=True)
+    tar_local = STAGING / f"{day}.tar.gz"
+    if not remote_object_exists(day):
+        ok, msg = rclone(
+            ["copy", f"{REMOTE_RAW}/{day}", str(stage), "--transfers", "16", "--checkers", "16"]
+        )
+        if not ok:
+            print(f"[pipeline] restore (loose) failed {day}: {msg}", flush=True)
+            shutil.rmtree(stage, ignore_errors=True)
+        return ok
+    ok, msg = rclone(["copyto", raw_object(day), str(tar_local)])
+    if not ok:
+        print(f"[pipeline] restore failed {day}: {msg}", flush=True)
+        shutil.rmtree(stage, ignore_errors=True)
+        return False
+    proc = subprocess.run(
+        ["tar", "-xzf", str(tar_local), "-C", str(STAGING)], capture_output=True, text=True
+    )
+    tar_local.unlink(missing_ok=True)
+    if proc.returncode != 0:
+        print(f"[pipeline] untar failed {day}: {proc.stderr[-200:]}", flush=True)
+        return False
+    return True
+
+
+def cells_for(kmax: int) -> list[tuple[str, int, str, str]]:
+    """The registered cells up to a rank cutoff (K=20 first pass, K=30 full pass)."""
+    return [c for c in CELL_SPECS if c[1] <= int(kmax)]
+
+
+def derived_ready(day: str, kmax: int = 30) -> bool:
+    """LOCAL-only check (no remote probe): the day's derived part exists and is complete."""
+    dpath, _ = derived_paths(day)
+    if not dpath.exists():
+        return False
+    try:
+        frame = pl.read_parquet(dpath)
+    except Exception:
+        return False
+    return {c[0] for c in cells_for(kmax)} <= set(frame["cell"].to_list())
+
+
+def day_done(day: str, kmax: int = 30) -> bool:
+    """Done = derived outputs here AND the raw object on the box (marker, else one probe)."""
+    dpath, _ = derived_paths(day)
+    if not dpath.exists():
+        return False
+    try:
+        frame = pl.read_parquet(dpath)
+    except Exception:
+        return False
+    if not {c[0] for c in cells_for(kmax)} <= set(frame["cell"].to_list()):
+        return False
+    if offload_marker(day).exists():
+        return True
+    if remote_has_day(day):
+        offload_marker(day).write_text("verified_elsewhere\n")
+        return True
+    return False
+
+
+def migrate_loose_objects(args) -> None:
+    """Convert every loose ``raw/<day>/`` folder on the box into ``raw/<day>.tar.gz``."""
+    ok, out = rclone(["lsf", REMOTE_RAW + "/", "--dirs-only"], retries=2)
+    if not ok:
+        raise SystemExit(f"[migrate] cannot list {REMOTE_RAW}: {out}")
+    loose = [line.strip("/") for line in out.splitlines() if line.strip()]
+    print(f"[migrate] {len(loose)} loose day folders on the box", flush=True)
+    for n, day in enumerate(loose, 1):
+        guard_day(day)
+        if remote_has_day(day):
+            print(f"[migrate] {day}: object already present, purging loose folder", flush=True)
+            rclone(["purge", f"{REMOTE_RAW}/{day}"], retries=2)
+            continue
+        stage = STAGING / day
+        shutil.rmtree(stage, ignore_errors=True)
+        ok, msg = rclone(["copy", f"{REMOTE_RAW}/{day}", str(stage)])
+        if not ok:
+            print(f"[migrate] {day}: copy failed {msg}", flush=True)
+            continue
+        res = offload_day(day)
+        if res.get("offloaded"):
+            rclone(["purge", f"{REMOTE_RAW}/{day}"], retries=2)
+            print(
+                f"[migrate] {n}/{len(loose)} {day} -> object ok sha={res['sha256'][:12]}",
+                flush=True,
+            )
+        else:
+            print(f"[migrate] {day}: FAILED {res.get('error')}", flush=True)
+            shutil.rmtree(stage, ignore_errors=True)
+
+
+def ensure_bars(day: str, bars_dir: Path, client) -> dict:
+    """Provider minute bars for the day's extra names absent from the net tape."""
+    dest = bars_dir / f"{day}.parquet"
+    if dest.exists():
+        return {"day": day, "bars": "cached"}
+    need = sorted(set(extra_symbols(day)) - net_tape_tickers(day))
+    need = [s for s in need if "^" not in s and "/" not in s]
+    bars_dir.mkdir(parents=True, exist_ok=True)
+    if not need:
+        _empty_bars_frame().write_parquet(dest)
+        return {"day": day, "bars": "none_needed"}
+    from alpaca.data.enums import Adjustment, DataFeed
+    from alpaca.data.requests import StockBarsRequest
+    from alpaca.data.timeframe import TimeFrame
+
+    rows = []
+    for i in range(0, len(need), 500):
+        batch = need[i : i + 500]
+        req = StockBarsRequest(
+            symbol_or_symbols=batch,
+            timeframe=TimeFrame.Minute,
+            start=_et_dt(day, 565),
+            end=_et_dt(day, 965),
+            feed=DataFeed.SIP,
+            adjustment=Adjustment.RAW,
+        )
+        res = client.get_stock_bars(req)
+        for symbol, bars in res.data.items():
+            for b in bars:
+                et = _minute_of(b.timestamp)
+                if not (570 <= et < 960):
+                    continue
+                rows.append(
+                    {
+                        "ticker": symbol,
+                        "et": int(et),
+                        "open": float(b.open),
+                        "high": float(b.high),
+                        "low": float(b.low),
+                        "close": float(b.close),
+                        "volume": float(b.volume or 0.0),
+                    }
+                )
+        time.sleep(0.4)
+    frame = pl.DataFrame(rows) if rows else _empty_bars_frame()
+    tmp = dest.with_name(f"{dest.name}.tmp{os.getpid()}")
+    frame.write_parquet(tmp)
+    os.replace(tmp, dest)
+    return {"day": day, "bars": "fetched", "names": len(need), "rows": frame.height}
+
+
+def _empty_bars_frame() -> pl.DataFrame:
+    return pl.DataFrame(
+        schema={
+            "ticker": pl.String,
+            "et": pl.Int64,
+            "open": pl.Float64,
+            "high": pl.Float64,
+            "low": pl.Float64,
+            "close": pl.Float64,
+            "volume": pl.Float64,
+        }
+    )
+
+
+def ensure_quotes(
+    day: str, quotes_root: Path, session, kmax: int = 30, tickers: list[str] | None = None
+) -> dict:
+    """Acquire the day's missing extra-pair NBBO quotes into the staging root."""
+    import alpha_quote_universe_acquire as uqa
+    from alpha_quote_audit import clock_us
+
+    plan_rec = load_plan(day)
+    need = sorted(tickers) if tickers is not None else sorted(plan_rec["extra"][str(int(kmax))])
+    if not need:
+        return {"day": day, "quotes": "none_needed"}
+    supplemental = tuple(list(uqa.DEFAULT_EXISTING_ROOTS) + list(SUPPLEMENT_ROOTS))
+    have = uqa.existing_symbols(day, DATA, supplemental)
+    staged = quotes_root / "quotes" / f"{day}.parquet"
+    if staged.exists():
+        have |= set(pl.read_parquet(staged, columns=["symbol"])["symbol"].unique())
+    missing = [t for t in need if t not in have and "^" not in t and "/" not in t]
+    if not missing:
+        return {"day": day, "quotes": "covered"}
+    plan = uqa.DayPlan(
+        day=day,
+        qualified=need,
+        missing=missing,
+        session_end=int(plan_rec["session_end"]),
+        earliest_intent_us=clock_us(day, min(int(k) for k in SNAPSHOTS) + 1, 0),
+        close_us=clock_us(day, uqa.SESSION_CLOSE_MINUTE, 0),
+        universe="wide",
+    )
+    headers = uqa._alpaca_headers(Path(__file__).resolve().parents[2] / ".env")
+    if headers is None:
+        raise SystemExit("[pipeline] no credentials in .env")
+    records = {}
+    for ticker in missing:
+        rec = uqa.fetch_symbol_day(session, headers, quotes_root, plan, ticker, 0.0)
+        records[ticker] = rec["status"]
+        if str(rec["status"]) in ("complete", "no_quotes_in_window"):
+            # The raw page JSON only exists to resume an INTERRUPTED fetch. A terminal status
+            # means the normalized parts are final, so the pages are dead weight: drop them
+            # pair by pair to keep the local staging footprint flat.
+            shutil.rmtree(quotes_root / "raw" / day / ticker, ignore_errors=True)
+    merged = uqa.merge_day(quotes_root, plan, DATA, supplemental)
+    write_json(
+        quotes_root / "manifest" / f"{day}.json",
+        {
+            "day": day,
+            "universe": "wide",
+            "extra_pairs_30": len(need),
+            "candidates": missing,
+            "statuses": records,
+            "merge": merged,
+            "unknown_tickers": [t for t, s in records.items() if str(s).startswith("unknown")],
+        },
+    )
+    return {
+        "day": day,
+        "quotes": "fetched",
+        "pairs": len(missing),
+        "merged": bool(merged.get("merged")),
+        "new_rows": int(merged.get("new_rows", 0)),
+        "unknown": sum(1 for s in records.values() if str(s).startswith("unknown")),
+    }
+
+
+def build_day_cells(
+    day: str,
+    plan: dict,
+    model: dict,
+    bars_path: Path,
+    quotes_root: Path | None,
+    stored: pl.DataFrame,
+    kmax: int = 30,
+    session=None,
+) -> tuple[list[dict], list[dict], dict]:
+    """All registered cells for one session, replayed through the frozen execution.
+
+    QUOTE-ONLY-WHERE-NEEDED: the head's features are bar/peer derived, so every state is
+    scored BEFORE any quote is read. The frozen replay only ever consumes an intent's quote
+    for states at/above its threshold, so only the (day, ticker) pairs that hold such a
+    state get a stream acquired. Every other state is provably unreachable by the replay.
+    """
+    session_end = int(plan["session_end"])
+    cells = cells_for(kmax)
+    frames: dict[tuple[int, str], pl.DataFrame] = {}
+    infos: dict[tuple[int, str], dict] = {}
+    for k, arm in sorted({(c[1], c[2]) for c in cells}):
+        frame, info = widen_panel(day, plan, k, arm, session_end, bars_path=bars_path)
+        frames[(k, arm)] = frame
+        infos[(k, arm)] = info
+    scored: dict[str, pl.DataFrame] = {}
+    need: set[str] = set()
+    if stored.height:
+        keep = stored.filter(pl.col("pred_60") >= VIEW.threshold)
+        if keep.height:
+            need |= set(keep["ticker"].unique())
+    for name, k, arm, enc in cells:
+        if k == 10 and arm == "additive":
+            continue
+        rows = score_rows(day, encode_rank(frames[(k, arm)], enc, k), model)
+        scored[name] = rows
+        if rows.height:
+            keep = rows.filter(pl.col("pred_60") >= VIEW.threshold)
+            if keep.height:
+                need |= set(keep["ticker"].unique())
+    if need and session is not None:
+        ensure_quotes(day, quotes_root, session, kmax, sorted(need))
+    supp = quote_roots(quotes_root)
+    qf = quote_day_frame(DATA, day, need, supp) if need else None
+    streams = symbol_quotes(qf, day)
+    del qf
+    daily_rows, trade_rows, cov = [], [], {}
+    for name, k, arm, _enc in cells:
+        if k == 10 and arm == "additive":
+            states = stored
+            info = {"panel_rows": int(stored.height), "qualified_rows": int(stored.height)}
+        else:
+            rows = scored[name]
+            info = dict(infos[(k, arm)])
+            info["panel_rows"] = int(frames[(k, arm)].height)
+            info["qualified_rows"] = int(rows.height)
+            cand = rows.filter(pl.col("pred_60") >= VIEW.threshold) if rows.height else rows
+            states = states_from_rows(day, cand, streams) if cand.height else frozen.empty_states()
+            info["candidate_rows"] = int(cand.height)
+            if k == 10:
+                info["control_state_match"] = compare_states(
+                    stored.filter(pl.col("pred_60") >= VIEW.threshold), states
+                )
+            if k > 10 and arm == "additive":
+                states = pl.concat([stored, states], how="vertical")
+                info["combined_rows"] = int(states.height)
+        daily, trades = frozen.replay_day(day, states, streams, VIEW)
+        daily["cell"] = name
+        for t in trades:
+            t["cell"] = name
+        daily_rows.append(daily)
+        trade_rows.extend(trades)
+        cov[name] = info
+    return daily_rows, trade_rows, cov
+
+
+PACING_STATE = OUT / "_pacing.lock"
+
+
+class PacedSession:
+    """requests.Session whose GETs share ONE global min-interval across worker processes.
+
+    The provider plan allows ~200 requests/min; the frontier helper's 0.35 s pacing is a
+    PER-PROCESS promise, so N workers would multiply it. This wrapper takes an exclusive
+    flock on a state file, enforces the interval against the last request of ANY process,
+    and only then issues the request. Workers therefore add latency overlap, never rate.
+    """
+
+    def __init__(self, min_interval: float = 0.35):
+        import requests
+
+        self._session = requests.Session()
+        self._min = float(min_interval)
+        self._requests = 0
+        self._throttled = 0
+
+    def get(self, *args, **kwargs):
+        import fcntl
+
+        PACING_STATE.parent.mkdir(parents=True, exist_ok=True)
+        with open(PACING_STATE, "a+") as handle:
+            fcntl.flock(handle, fcntl.LOCK_EX)
+            handle.seek(0)
+            raw = handle.read().strip()
+            last = float(raw) if raw else 0.0
+            now = time.time()
+            wait = self._min - (now - last)
+            if wait > 0:
+                time.sleep(wait)
+                now = time.time()
+            handle.seek(0)
+            handle.truncate()
+            handle.write(f"{now:.6f}")
+            handle.flush()
+            fcntl.flock(handle, fcntl.LOCK_UN)
+        response = self._session.get(*args, **kwargs)
+        self._requests += 1
+        if response.status_code == 429:
+            self._throttled += 1
+        return response
+
+
+def _piper(day: str, model: dict, client, session, kmax: int = 30, offload: bool = True) -> dict:
+    """One session end to end: ensure raw, build every cell, persist derived, offload."""
+    guard_day(day)
+    if day_done(day, kmax):
+        return {"day": day, "state": "cached"}
+    stage = STAGING / day
+    stage.mkdir(parents=True, exist_ok=True)
+    bars_path = stage / "bars" / f"{day}.parquet"
+    quotes_root = stage / "quotes"
+    ready = bars_path.exists() and (quotes_root / "quotes" / f"{day}.parquet").exists()
+    if not ready and remote_has_day(day) and restore_day(day):
+        acquired = {"restored_from_box": True}
+    else:
+        acquired = {"bars": ensure_bars(day, stage / "bars", client)}
+    plan = load_plan(day)
+    stored = pl.read_parquet(frozen.OUTPUT / "states" / f"{day}.parquet")
+    daily_rows, trade_rows, cov = build_day_cells(
+        day, plan, model, bars_path, quotes_root, stored, kmax, session
+    )
+    dpath, tpath = derived_paths(day)
+    tmp = dpath.with_name(f"{dpath.name}.tmp{os.getpid()}")
+    _frame_from_records(daily_rows, frozen.DAILY_TYPES).write_parquet(tmp)
+    os.replace(tmp, dpath)
+    trade_frame = _frame_from_records(trade_rows, frozen.TRADE_TYPES)
+    if "cell" not in trade_frame.columns:
+        trade_frame = trade_frame.with_columns(pl.lit(None, dtype=pl.String).alias("cell"))
+    tmp = tpath.with_name(f"{tpath.name}.tmp{os.getpid()}")
+    trade_frame.write_parquet(tmp)
+    os.replace(tmp, tpath)
+    write_json(DERIVED / f"{day}.cov.json", cov)
+    if not offload:
+        shutil.rmtree(stage, ignore_errors=True)
+        return {
+            "day": day,
+            "state": "done",
+            "acquired": acquired,
+            "trades": len(trade_rows),
+            "offloaded": "skipped_rebuild",
+            "day_bytes": 0,
+            "local_bytes": local_footprint(),
+        }
+    off = offload_day(day)
+    pace = {
+        "requests": int(getattr(session, "_requests", 0)),
+        "http_429": int(getattr(session, "_throttled", 0)),
+    }
+    return {
+        "day": day,
+        "state": "done",
+        "pace": pace,
+        "acquired": acquired,
+        "trades": len(trade_rows),
+        "offloaded": off.get("offloaded"),
+        "day_bytes": int(off.get("bytes", 0)),
+        "local_bytes": local_footprint(),
+    }
+
+
+def _piper_task(task: tuple) -> dict:
+    """Picklable worker entry: owns its clients, shares only the global request pace."""
+    day, min_interval, kmax, offload = task
+    from alpaca.data.historical import StockHistoricalDataClient
+    from dotenv import load_dotenv
+
+    load_dotenv(Path(__file__).resolve().parents[2] / ".env")
+    model, _ = frozen.load_stored_model()
+    client = StockHistoricalDataClient(
+        os.environ["ALPACA_API_KEY"], os.environ["ALPACA_SECRET_KEY"]
+    )
+    session = PacedSession(min_interval)
+    return _piper(day, model, client, session, kmax, offload)
+
+
+def pipeline(args) -> None:
+    """Day-by-day off-host pipeline: acquire -> build/score/replay -> offload -> derived."""
+    blocks = selected_days(args)
+    days = blocks[VAL_BLOCK] + blocks[LATE_BLOCK]
+    if not days:
+        raise SystemExit("[pipeline] no day selected")
+    DERIVED.mkdir(parents=True, exist_ok=True)
+    # The parent must NOT probe the box for every day here: 582 sequential SFTP round
+    # trips would idle the whole pool before a single task starts. Local state decides the
+    # shortlist; each worker makes the authoritative (and parallel) check.
+    kmax = int(getattr(args, "kmax", 30))
+    todo = [d for d in days if not derived_ready(d, kmax)]
+    t0, moved, done = time.time(), 0, 0
+    interval = max(0.35, float(getattr(args, "pace", 0.35)))
+    if args.workers > 1:
+        # SPAWN, never fork: the parent has already initialised LightGBM's OpenMP runtime,
+        # and OpenMP + fork is undefined (it deadlocks on the first predict in a child).
+        import multiprocessing
+
+        os.environ.setdefault("OMP_NUM_THREADS", "2")
+        tasks = [(d, interval, kmax, not args.no_offload) for d in todo]
+        ctx = multiprocessing.get_context("spawn")
+        with ProcessPoolExecutor(max_workers=args.workers, mp_context=ctx) as pool:
+            for n, res in enumerate(pool.map(_piper_task, tasks), 1):
+                done += int(res.get("state") == "done")
+                moved += int(res.get("day_bytes", 0))
+                print(
+                    f"[pipeline] {n}/{len(tasks)} {res.get('day')} {res.get('state')} "
+                    f"trades={res.get('trades')} day_bytes={res.get('day_bytes')} "
+                    f"local={int(res.get('local_bytes', 0)) / 1e6:.1f}MB "
+                    f"elapsed={time.time() - t0:.0f}s pace={res.get('pace')} "
+                    f"acquired={res.get('acquired')}",
+                    flush=True,
+                )
+                if int(res.get("local_bytes", 0)) > LOCAL_CAP_BYTES:
+                    raise SystemExit(
+                        f"[pipeline] local footprint {res['local_bytes'] / 1e9:.2f} GB "
+                        "exceeds the 1 GB cap; stopped"
+                    )
+    else:
+        for n, day in enumerate(todo, 1):
+            res = _piper_task((day, interval, kmax, not args.no_offload))
+            done += int(res.get("state") == "done")
+            moved += int(res.get("day_bytes", 0))
+            print(
+                f"[pipeline] {n}/{len(todo)} {day} {res.get('state')} "
+                f"trades={res.get('trades')} day_bytes={res.get('day_bytes')} "
+                f"local={int(res.get('local_bytes', 0)) / 1e6:.1f}MB "
+                f"elapsed={time.time() - t0:.0f}s pace={res.get('pace')} "
+                f"acquired={res.get('acquired')}",
+                flush=True,
+            )
+            if int(res.get("local_bytes", 0)) > LOCAL_CAP_BYTES:
+                raise SystemExit(
+                    f"[pipeline] local footprint {res['local_bytes'] / 1e9:.2f} GB "
+                    "exceeds the 1 GB cap; stopped"
+                )
+    write_json(
+        OUT / "pipeline_summary.json",
+        {
+            "study": STUDY,
+            "stage": "pipeline_days",
+            "days_processed_this_run": done,
+            "days_outstanding_at_start": len(todo),
+            "derived_days": len(list(DERIVED.glob("????-??-??.daily.parquet"))),
+            "bytes_moved_to_box_this_run": moved,
+            "runtime_s": round(time.time() - t0, 1),
+            "workers": args.workers,
+            "remote_raw": REMOTE_RAW,
+            "producer_sha256": sha256_file(Path(__file__)),
+        },
+    )
+    print(f"[pipeline] done {done} days in {time.time() - t0:.0f}s", flush=True)
+
+
 # ----- stage 4: the pre-registered selection rule ------------------------------
 REPORT_RUNGS = (0, 25, 50, 100)
+
+
+def load_cells() -> dict[str, tuple[int, str, str, pl.DataFrame, pl.DataFrame]]:
+    """Every cell's daily/trades frames, assembled from the per-day derived parts."""
+    days = sorted(DERIVED.glob("????-??-??.daily.parquet"))
+    if not days:
+        return {}
+    daily_all = pl.concat([pl.read_parquet(p) for p in days], how="vertical")
+    trade_parts = []
+    for p in days:
+        tp = DERIVED / f"{p.name.replace('.daily.', '.trades.')}"
+        if tp.exists():
+            part = pl.read_parquet(tp)
+            if "cell" not in part.columns:
+                part = part.with_columns(pl.lit(None, dtype=pl.String).alias("cell"))
+            trade_parts.append(part)
+    trades_all = (
+        pl.concat(trade_parts, how="vertical")
+        if trade_parts
+        else pl.DataFrame(schema={"cell": pl.String})
+    )
+    out = {}
+    for name, k, arm, enc in CELL_SPECS:
+        daily = daily_all.filter(pl.col("cell") == name)
+        if not daily.height:
+            continue
+        trades = trades_all.filter(pl.col("cell") == name) if trades_all.height else trades_all
+        out[name] = (k, arm, enc, daily, trades)
+    return out
 
 
 def cell_report(daily: pl.DataFrame, trades: pl.DataFrame, days: list[str]) -> dict:
@@ -1143,8 +1933,10 @@ def extra_split(trades: pl.DataFrame, plans: dict[str, dict], k: int) -> dict:
 def stage4(args) -> None:
     """Assemble the pre-registered report and apply the selection rule mechanically."""
     blocks = study_days()
+    have = {p.stem.split(".")[0] for p in DERIVED.glob("????-??-??.daily.parquet")}
     days_by_block = {
-        b: [d for d in v if not args.days or d in set(args.days)] for b, v in blocks.items()
+        b: [d for d in v if d in have and (not args.days or d in set(args.days))]
+        for b, v in blocks.items()
     }
     plans = {d: load_plan(d) for b in days_by_block for d in days_by_block[b]}
     results = {
@@ -1154,24 +1946,30 @@ def stage4(args) -> None:
         "blocks": {},
         "cells": {},
     }
-    available = {}
-    for name, k, arm, enc in CELL_SPECS:
-        dpath, tpath = REPLAY / f"{name}.daily.parquet", REPLAY / f"{name}.trades.parquet"
-        if not dpath.exists():
-            continue
-        daily = pl.read_parquet(dpath)
-        trades = pl.read_parquet(tpath) if tpath.exists() else pl.DataFrame()
-        available[name] = (k, arm, enc, daily, trades)
+    available = load_cells()
+    expected = {
+        b: len([d for d in v if not args.days or d in set(args.days)]) for b, v in blocks.items()
+    }
     for block, days in days_by_block.items():
-        results["blocks"][block] = {"sessions": len(days)}
+        results["blocks"][block] = {
+            "sessions": len(days),
+            "sessions_expected": expected[block],
+            "complete": len(days) == expected[block],
+        }
     for name, (k, arm, enc, daily, trades) in available.items():
         cells = {}
         for block, days in days_by_block.items():
             if not days:
                 continue
             sub = daily.filter(pl.col("day").is_in(days))
-            tr = trades.filter(pl.col("day").is_in(days)) if trades.height else trades
-            cell = cell_report(sub, tr, days)
+            cell_days = sorted(set(sub["day"].to_list()))
+            if not cell_days:
+                continue
+            tr = trades.filter(pl.col("day").is_in(cell_days)) if trades.height else trades
+            cell = cell_report(sub, tr, cell_days)
+            cell["sessions"] = len(cell_days)
+            cell["sessions_in_block_on_disk"] = len(days)
+            cell["complete_block"] = len(cell_days) == len(days)
             cell["extra_names"] = (
                 extra_split(tr, plans, k)
                 if k > 10
@@ -1192,6 +1990,17 @@ def apply_rule(results: dict) -> dict:
     control = results["cells"].get("k10_control", {}).get("blocks", {}).get(VAL_BLOCK)
     if control is None:
         return {"decision": "NOT-EVALUABLE", "reason": "control cell missing"}
+    if not control.get("complete_block") or not results["blocks"].get(VAL_BLOCK, {}).get(
+        "complete"
+    ):
+        return {
+            "decision": "BLOCKED_ON_STORAGE - not evaluated; K=10 control reproduced exactly; "
+            "reopen cost K=20 ~1.45 GB/1.13 h validation-only, K=30 ~2.65 GB/2.08 h; resumes "
+            "when an off-host data root is mounted",
+            "reason": "validation block acquisition still in progress",
+            "control_sessions_on_disk": control.get("sessions"),
+            "control_usd_per_session_25": control["usd_per_session"]["25"],
+        }
     base = control["usd_per_session"]["25"]
     verdicts = {}
     for k in (20, 30):
@@ -1199,6 +2008,14 @@ def apply_rule(results: dict) -> dict:
         pool = results["cells"].get(f"k{k}_pool_A", {}).get("blocks", {}).get(VAL_BLOCK)
         if prim is None or pool is None:
             verdicts[str(k)] = {"state": "not_evaluated", "reason": "widened cell absent (no data)"}
+            continue
+        block_complete = bool(results["blocks"].get(VAL_BLOCK, {}).get("complete"))
+        if not block_complete or not prim.get("complete_block") or not pool.get("complete_block"):
+            verdicts[str(k)] = {
+                "state": "not_evaluated",
+                "reason": "validation block incomplete on disk",
+                "sessions": prim.get("sessions"),
+            }
             continue
         inc_prim = prim["usd_per_session"]["25"] - base
         inc_pool = pool["usd_per_session"]["25"] - base
@@ -1243,7 +2060,18 @@ def main() -> None:
     )
     p.add_argument(
         "stage",
-        choices=("stage0", "verify0", "harness", "stage1", "stage2", "stage3", "stage4", "all"),
+        choices=(
+            "stage0",
+            "verify0",
+            "harness",
+            "stage1",
+            "stage2",
+            "stage3",
+            "pipeline",
+            "migrate",
+            "stage4",
+            "all",
+        ),
     )
     p.add_argument("--days", nargs="+", default=None, help="smoke subset (debug only)")
     p.add_argument(
@@ -1256,7 +2084,24 @@ def main() -> None:
     p.add_argument("--plan-only", action="store_true")
     p.add_argument("--allow-network", action="store_true", help="unlock stage1/stage2 acquisition")
     p.add_argument("--cells", nargs="+", default=None, help="subset of cell names (debug)")
+    p.add_argument(
+        "--no-offload",
+        action="store_true",
+        help="rebuild derived outputs from the already-verified raw objects; never re-upload",
+    )
+    p.add_argument(
+        "--kmax",
+        type=int,
+        default=30,
+        help="rank cutoff acquired and built in this pass (20 = the decision pass)",
+    )
     p.add_argument("--req-sleep", type=float, default=0.35)
+    p.add_argument(
+        "--pace",
+        type=float,
+        default=0.35,
+        help="global minimum seconds between quote requests across ALL workers",
+    )
     args = p.parse_args()
     if args.stage == "stage0":
         stage0(args)
@@ -1266,6 +2111,10 @@ def main() -> None:
         stage2(args)
     elif args.stage == "stage3":
         stage3(args)
+    elif args.stage == "pipeline":
+        pipeline(args)
+    elif args.stage == "migrate":
+        migrate_loose_objects(args)
     elif args.stage == "verify0":
         stage0_verify(args)
     elif args.stage == "harness":
