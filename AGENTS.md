@@ -82,6 +82,10 @@ evidence. (Full principle in the parent folder AGENTS.md.)
   Password only in the gitignored `.env` (`STORAGEBOX_*`) - never commit or print it.
 - Layout: `storagebox:alpacatrader/` = everything of ours (`alpha-data/` live research roots,
   `archive/` retired lanes and old raw data). `storagebox:backup/` is pre-existing - do not touch.
-- Usage: `rclone copy <local> storagebox:alpacatrader/<path> --transfers 8`, then
-  `rclone check` before deleting anything local. New large research outputs: write a small
-  local staging batch, move it to the box per day; or `rclone mount storagebox:alpacatrader <dir>`.
+- Tidiness rules live in `storagebox:alpacatrader/README.md` (read it before writing): mirror the
+  local path; archive as monthly `tar.gz` batches streamed with `tar | gzip -1 | rclone rcat`
+  (never thousands of loose files - per-file upload is ~20x slower), verify each batch with
+  `ssh storagebox sha256sum` vs the local stream hash, write a `MANIFEST.md`, add a row to the
+  README index, and only then delete locally. Use `factory/scripts/archive_to_storagebox.sh <dir> "<why>" [--delete-local]` (does all of this; re-runnable). Example: the 2026-10-27
+  delayed_sip_iex archive (MANIFEST on the box). Running lanes stage per day locally (< 1 GB)
+  and move each day to `storagebox:alpacatrader/alpha-data/<same path>/`.
