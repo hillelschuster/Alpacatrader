@@ -70,7 +70,31 @@ def intent_row(ticker: str = "AAA", t: int = 600, pred: float = 0.05) -> dict:
     }
 
 
-def make_engine(tmp_path: Path, *, broker=None, kill_path=None, open_positions=None, risk=None):
+def bar(ticker: str, minute: int, close: float = 10.0, volume: float = 1000.0) -> dict:
+    return {
+        "ticker": ticker,
+        "et": int(minute),
+        "open": close,
+        "high": close,
+        "low": close,
+        "close": close,
+        "volume": volume,
+    }
+
+
+def make_engine(
+    tmp_path: Path,
+    *,
+    broker=None,
+    kill_path=None,
+    open_positions=None,
+    risk=None,
+    history=None,
+    universe=None,
+    alert_path=None,
+    states_path=None,
+    fresh=True,
+):
     cache = depth_bot.QuoteCache(DAY)
     sim = broker if broker is not None else depth_bot.SimBroker(
         DAY, cache, depth_bot.minute_us(DAY, SESSION_END)
@@ -85,7 +109,12 @@ def make_engine(tmp_path: Path, *, broker=None, kill_path=None, open_positions=N
         kill_path=kill_path,
         open_positions=open_positions,
         risk=risk,
-        fresh=True,
+        history=history,
+        universe=universe,
+        alert_path=alert_path,
+        states_path=states_path,
+        fresh=fresh,
+        mode=str(getattr(sim, "mode", "sim")),
     )
     return engine, sim
 
@@ -237,7 +266,8 @@ def test_restart_rebuilds_attempts_and_cooldown_from_the_journal(tmp_path: Path)
         kill_path=None,
         fresh=False,
     )
-    assert journal_file.read_text() == before, "a restart must not rewrite the day journal"
+    after = journal_file.read_text()
+    assert after.startswith(before), "a restart must never rewrite the day journal"
     assert restarted.attempts["AAA"] == 1
     assert restarted.cooldown_until["AAA"] == exit_us + 15 * 60_000_000
     # Inside the cooldown window the same ticker cannot re-enter.
@@ -402,3 +432,355 @@ def test_fake_paper_broker_receives_ioc_entry_and_market_exit(
         event["event"] == "order_submitted" and event["side"] == "entry" for event in journal
     )
     assert any(event["event"] == "daily_summary" for event in journal)
+    trades = [event for event in journal if event["event"] == "trade_result"]
+    assert trades and all(trade["parity_excluded"] for trade in trades)
+    assert all("mode_paper" in trade["parity_excluded_reason"] for trade in trades)
+    assert trades[0]["broker_order_id"], "a paper fill records the broker order id"
+
+
+# ----- (1) universe sweep: REST repair + refusal ------------------------------
+class FakeHistory:
+    """HistorySource stand-in: serves in-memory rows, counts calls, can fail."""
+
+    def __init__(self, bar_rows=None, quote_rows=None, fail=False):
+        self.bar_rows = list(bar_rows or [])
+        self.quote_rows = list(quote_rows or [])
+        self.fail = fail
+        self.bar_calls = []
+        self.quote_calls = []
+
+    def bars(self, day, tickers, start_us, end_us):
+        self.bar_calls.append((tuple(tickers), int(start_us), int(end_us)))
+        if self.fail:
+            raise RuntimeError("rest down")
+        return [dict(row) for row in self.bar_rows]
+
+    def quotes(self, day, tickers, start_us, end_us):
+        self.quote_calls.append((tuple(tickers), int(start_us), int(end_us)))
+        if self.fail:
+            raise RuntimeError("rest down")
+        return [dict(row) for row in self.quote_rows]
+
+
+def test_token_bucket_limits_rest_requests():
+    clock = {"t": 0.0}
+    sleeps = []
+
+    def fake_sleep(seconds):
+        sleeps.append(seconds)
+        clock["t"] += seconds
+
+    bucket = depth_bot.TokenBucket(per_minute=60, clock=lambda: clock["t"], sleep=fake_sleep)
+    for _ in range(60):
+        bucket.acquire()
+    assert sleeps == []
+    bucket.acquire()
+    assert sleeps and sleeps[0] > 0, "the 61st request in a minute must wait for a token"
+
+
+def test_stale_universe_sweep_refuses_the_session(tmp_path: Path):
+    alerts = tmp_path / "ALERT"
+    engine, sim = make_engine(tmp_path, alert_path=alerts, universe=["AAA", "BBB"])
+    engine.on_bar(pl.DataFrame([bar("AAA", 570), bar("AAA", 571), bar("BBB", 571)]))
+    engine.advance(minute_us(DAY, depth_bot.LATTICE_START) + 3_000_000)
+    assert engine.refusal == "universe_stale"
+    journal = events(tmp_path / "journal.jsonl")
+    assert any(event["event"] == "universe_refused" for event in journal)
+    alert = json.loads(alerts.read_text().splitlines()[-1])
+    assert alert["kind"] == "universe_refused"
+    # A refused session keeps its exits but never opens a new position.
+    push_quote(engine, "AAA", minute_us(DAY, 600) - 500_000, 10.0, 10.05)
+    engine.pending_intents[600] = [intent_row("AAA", t=599)]
+    engine._process_intent_clock(600)
+    last = [event for event in events(tmp_path / "journal.jsonl") if event["event"] == "intent"][-1]
+    assert last["skip_reason"] == "universe_refused"
+    assert sim.orders == []
+
+
+def test_rest_repair_avoids_a_refusal(tmp_path: Path):
+    history = FakeHistory(bar_rows=[bar("AAA", 573), bar("AAA", 574)])
+    engine, _sim = make_engine(tmp_path, history=history, universe=["AAA", "BBB"])
+    engine.on_bar(
+        pl.DataFrame(
+            [
+                bar("AAA", 570),
+                bar("AAA", 571),
+                bar("AAA", 572),
+                bar("BBB", 570),
+                bar("BBB", 571),
+                bar("BBB", 572),
+            ]
+        )
+    )
+    engine.advance(minute_us(DAY, depth_bot.LATTICE_START) + 3_000_000)
+    assert engine.refusal is None
+    assert engine.repairs == 1
+    assert history.bar_calls[0][0] == ("AAA", "BBB"), "the repair must batch the universe"
+    assert any(
+        event["event"] == "snapshot_coverage"
+        for event in events(tmp_path / "journal.jsonl")
+    )
+
+
+def test_failed_repair_raises_an_alert_and_refuses(tmp_path: Path):
+    alerts = tmp_path / "ALERT"
+    history = FakeHistory(fail=True)
+    engine, _sim = make_engine(
+        tmp_path, history=history, universe=["AAA"], alert_path=alerts
+    )
+    engine.on_bar(pl.DataFrame([bar("AAA", 570), bar("AAA", 571)]))
+    engine.advance(minute_us(DAY, depth_bot.LATTICE_START) + 3_000_000)
+    assert engine.refusal == "universe_stale"
+    kinds = [json.loads(line)["kind"] for line in alerts.read_text().splitlines()]
+    assert "backfill_failed" in kinds and "universe_refused" in kinds
+
+
+# ----- (3) partial exit policy ------------------------------------------------
+class PartialExitBroker(depth_bot.FakePaperBroker):
+    """Fills the exit in two tranches, then the rest (the live-only partial state)."""
+
+    def __init__(self, first_fill: int):
+        super().__init__()
+        self.first_fill = int(first_fill)
+        self.exit_calls = 0
+
+    def poll_exit(self, order, now_us):
+        self.exit_calls += 1
+        quantity = int(order["qty"])
+        if self.exit_calls == 1:
+            return {
+                "state": "closed",
+                "exit_status": "conditional_market_fill",
+                "exit_submit_us": int(order["submit_us"]),
+                "exit_arrival_us": int(order["submit_us"]),
+                "actual_exit_us": int(order["submit_us"]) + 60_000,
+                "filled_qty": self.first_fill,
+                "filled_avg_price": 10.20,
+            }
+        return {
+            "state": "closed",
+            "exit_status": "conditional_market_fill",
+            "exit_submit_us": int(order["submit_us"]),
+            "exit_arrival_us": int(order["submit_us"]),
+            "actual_exit_us": int(order["submit_us"]) + 60_000,
+            "filled_qty": quantity,
+            "filled_avg_price": 10.20,
+        }
+
+
+def test_partial_exit_keeps_working_the_remainder(tmp_path: Path):
+    broker = PartialExitBroker(first_fill=40)
+    engine, _sim = make_engine(tmp_path, broker=broker)
+    run_one_trade(engine)
+    position = engine.positions["AAA"]
+    quantity = position.qty
+    due = position.due_us
+    push_quote(engine, "AAA", due - 200_000, 10.10, 10.15)
+    push_quote(engine, "AAA", due + 300_000, 10.10, 10.15)  # submits at due, fills 40
+    assert engine.positions["AAA"].qty == quantity - 40
+    push_quote(engine, "AAA", due + 900_000, 10.10, 10.15)  # works the remaining 57
+    journal = events(tmp_path / "journal.jsonl")
+    partials = [event for event in journal if event["event"] == "exit_partial"]
+    assert len(partials) == 1
+    assert partials[0]["qty"] == 40
+    assert partials[0]["remaining"] == quantity - 40
+    sells = [order["qty"] for order in broker.submitted if order["side"] == "sell"]
+    assert sells == [quantity, quantity - 40], "the remainder needs its own marketable order"
+    assert engine.positions == {}
+    closed = [event for event in journal if event["event"] == "position_closed"][-1]
+    assert closed["qty"] == quantity
+    trade = [event for event in journal if event["event"] == "trade_result"][-1]
+    assert trade["parity_excluded"] is True
+    assert "partial_exit" in trade["parity_excluded_reason"]
+    assert trade["realized_pnl_usd"] == pytest.approx(
+        quantity * (10.20 - float(position.entry_price))
+    )
+
+
+# ----- (4) alerting + supervisor ---------------------------------------------
+def test_loss_stop_alerts_to_the_alert_file(tmp_path: Path):
+    alerts = tmp_path / "ALERT"
+    engine, _sim = make_engine(tmp_path, alert_path=alerts)
+    run_one_trade(engine)
+    due = engine.positions["AAA"].due_us
+    push_quote(engine, "AAA", due - 200_000, 9.00, 9.05)
+    push_quote(engine, "AAA", due + 300_000, 9.00, 9.05)
+    kinds = [json.loads(line)["kind"] for line in alerts.read_text().splitlines()]
+    assert "loss_stop" in kinds
+    assert any(event["event"] == "risk_stop" for event in events(tmp_path / "journal.jsonl"))
+
+
+def test_supervisor_restarts_on_crash_and_stops_on_kill(tmp_path: Path):
+    kill = tmp_path / "KILL"
+    alerts = tmp_path / "ALERT"
+    calls = []
+
+    def runner():
+        calls.append(1)
+        if len(calls) < 3:
+            raise RuntimeError("boom")
+
+    code = depth_bot.supervise(
+        runner, kill_path=kill, alert_path=alerts, sleep=lambda _s: None, max_sessions=1
+    )
+    assert code == 0
+    assert len(calls) == 3, "two crashes must be restarted, then the run completes"
+    kinds = [json.loads(line)["kind"] for line in alerts.read_text().splitlines()]
+    assert kinds.count("crash") == 2
+    kill.touch()
+    calls.clear()
+    depth_bot.supervise(runner, kill_path=kill, alert_path=alerts, sleep=lambda _s: None)
+    assert calls == [], "data/KILL must stop the supervisor"
+
+
+def test_supervisor_gives_up_after_max_restarts(tmp_path: Path):
+    def runner():
+        raise RuntimeError("always")
+
+    alerts = tmp_path / "ALERT"
+    code = depth_bot.supervise(
+        runner,
+        kill_path=tmp_path / "KILL",
+        alert_path=alerts,
+        sleep=lambda _s: None,
+        max_restarts=1,
+    )
+    assert code == 2
+    kinds = [json.loads(line)["kind"] for line in alerts.read_text().splitlines()]
+    assert kinds[-1] == "supervisor_giving_up"
+
+
+def test_unexpected_broker_state_alerts(tmp_path: Path):
+    class RejectedEntryBroker(depth_bot.FakePaperBroker):
+        def poll_entry(self, order, now_us):
+            return {
+                "state": "unfilled",
+                "entry_status": "rejected",
+                "release_us": int(order["submit_us"]),
+            }
+
+    alerts = tmp_path / "ALERT"
+    engine, _sim = make_engine(tmp_path, broker=RejectedEntryBroker(), alert_path=alerts)
+    run_one_trade(engine)
+    kinds = [json.loads(line)["kind"] for line in alerts.read_text().splitlines()]
+    assert "broker_unexpected" in kinds
+
+
+# ----- (5) day roll + states persistence -------------------------------------
+def test_day_roll_closes_a_session_a_crash_left_open(tmp_path: Path):
+    journal = tmp_path / "journal.jsonl"
+    depth_bot.append_event(journal, {"event": "session_start", "day": DAY})
+    alerts = tmp_path / "ALERT"
+    make_engine(tmp_path, alert_path=alerts, fresh=False)
+    journal_events = events(journal)
+    rolled = [event for event in journal_events if event.get("rolled_over")]
+    assert rolled and rolled[0]["event"] == "session_end"
+    assert journal_events[-1]["event"] == "session_start"
+    assert "previous_session_incomplete" in [
+        json.loads(line)["kind"] for line in alerts.read_text().splitlines()
+    ]
+
+
+def test_replay_persists_the_states_parquet(replay_journal, tmp_path: Path):
+    journal_file, _daily, trades = replay_journal
+    states_path = journal_file.parent.parent / "states" / f"{DAY}.parquet"
+    assert states_path.is_file()
+    frame = pl.read_parquet(states_path)
+    assert tuple(frame.columns) == tuple(depth_bot.research.STATE_COLUMNS)
+    assert frame.height >= len(trades)
+    journaled = {event["ticker"] for event in events(journal_file) if event["event"] == "signal"}
+    assert set(frame["ticker"].to_list()) <= journaled
+
+
+# ----- (2) restart backfill: identical later decisions ------------------------
+class FrameHistory:
+    """HistorySource over the stored day's frames (no network, no copies per call)."""
+
+    def __init__(self, bars: pl.DataFrame, quotes: pl.DataFrame):
+        self.bars_frame = bars
+        self.quotes_frame = quotes.with_columns(
+            pl.col("ts_utc").cast(pl.Int64).alias("ts_us")
+        )
+        self.bar_calls = 0
+        self.quote_calls = 0
+
+    def bars(self, day, tickers, start_us, end_us):
+        self.bar_calls += 1
+        lo = depth_bot.et_minute_of(start_us)
+        hi = depth_bot.et_minute_of(end_us)
+        return self.bars_frame.filter(pl.col("et").is_between(lo, hi)).to_dicts()
+
+    def quotes(self, day, tickers, start_us, end_us):
+        self.quote_calls += 1
+        return (
+            self.quotes_frame.filter(
+                pl.col("symbol").is_in(list(tickers)), pl.col("ts_us") <= int(end_us)
+            )
+            .drop("ts_us")
+            .to_dicts()
+        )
+
+
+@pytest.fixture(scope="module")
+def h60_model():
+    return depth_bot.depth_bot_features.load_model()
+
+
+def test_restart_at_11_reproduces_later_decisions(
+    tmp_path: Path, stored_day, replay_journal, h60_model
+):
+    reference_journal, _daily, _trades = replay_journal
+    bars, quotes = stored_day
+    resume_us = depth_bot.minute_us(DAY, 660)  # 11:00 ET
+    cache = depth_bot.QuoteCache(DAY)
+    sim = depth_bot.SimBroker(DAY, cache, depth_bot.minute_us(DAY, SESSION_END))
+    journal = tmp_path / "restart" / f"{DAY}.jsonl"
+    engine = depth_bot.DepthEngine(
+        DAY,
+        SESSION_END,
+        h60_model,
+        sim,
+        journal,
+        quotes=cache,
+        kill_path=None,
+        fresh=True,
+    )
+    history = FrameHistory(bars, quotes)
+    engine.history = history
+    engine.universe = sorted(set(bars["ticker"].to_list()))
+    engine.bootstrap(resume_us=resume_us)
+    assert history.bar_calls == 1 and history.quote_calls == 1
+    # Feed the remainder of the same day through the normal stream callbacks.
+    remainder = bars.filter(pl.col("et") >= 659)
+    depth_bot.ReplayStreamSource(
+        remainder,
+        quotes.filter(pl.col("ts_utc").cast(pl.Int64) > resume_us),
+        DAY,
+    ).run(engine.on_bar, engine.on_quote)
+    engine.finish()
+
+    def after_resume(path: Path) -> list[dict]:
+        kept = []
+        for event in events(path):
+            if event["event"] in {"decision_tick", "signal"}:
+                fresh = depth_bot.minute_us(DAY, int(event["t"])) >= resume_us
+            elif event["event"] in {"intent", "trade_result"}:
+                fresh = int(event.get("intent_us", 0)) > resume_us
+            else:
+                continue
+            if fresh:
+                kept.append(event)
+        return kept
+
+    restarted = after_resume(journal)
+    reference = after_resume(reference_journal)
+    assert [event for event in restarted if event["event"] == "decision_tick"] == [
+        event for event in reference if event["event"] == "decision_tick"
+    ]
+    assert [event for event in restarted if event["event"] == "signal"] == [
+        event for event in reference if event["event"] == "signal"
+    ]
+    restarted_trades = [event for event in restarted if event["event"] == "trade_result"]
+    reference_trades = [event for event in reference if event["event"] == "trade_result"]
+    assert restarted_trades == reference_trades
+    assert any(event["event"] == "session_resumed" for event in events(journal))
