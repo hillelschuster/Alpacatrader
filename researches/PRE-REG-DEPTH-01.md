@@ -30,7 +30,7 @@ researches/STATE.md.
 6. Exit: marketable sell of the full quantity at entry + 60 minutes.
 7. Book: 3 slots, $3,000 reserve, 15-minute cooldown after the actual exit, max 3 attempts
    per ticker per day, one position per ticker. Live-only safety additions (not part of the
-   research edge, logged separately): daily realised-loss stop $90, hard flatten 15:55 ET.
+   research edge, logged separately): daily realised-loss stop $300 (amended 2026-10-27, see end), hard flatten 15:55 ET.
 8. Costs: primary residual rungs 25 and 50 bps round-trip on top of the touched spread
    (entry at ask, exit at bid). All-in Alpaca fees measured at ~0.2 bps (1.2 bps worst case
    from 2027-01); 0 and 100 bps reported alongside.
