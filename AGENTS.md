@@ -83,9 +83,10 @@ evidence. (Full principle in the parent folder AGENTS.md.)
 - Layout: `storagebox:alpacatrader/` = everything of ours (`alpha-data/` live research roots,
   `archive/` retired lanes and old raw data). `storagebox:backup/` is pre-existing - do not touch.
 - Tidiness rules live in `storagebox:alpacatrader/README.md` (read it before writing): mirror the
-  local path; archive as monthly `tar.gz` batches streamed with `tar | gzip -1 | rclone rcat`
+  local path; archive as monthly, content-aware batches streamed with `tar | [gzip -1] | rclone rcat`
+  (already-compressed data - parquet/npz/pt/zip/gz/zst/feather/joblib - goes into a plain `.tar`)
   (never thousands of loose files - per-file upload is ~20x slower), verify each batch with
-  `ssh storagebox sha256sum` vs the local stream hash, write a `MANIFEST.md`, add a row to the
-  README index, and only then delete locally. Use `factory/scripts/archive_to_storagebox.sh <dir> "<why>" [--delete-local]` (does all of this; re-runnable). Example: the 2026-10-27
+  `ssh storagebox sha256sum` vs the local stream hash, write a `MANIFEST.md` + `RESTORE.sh`, add a row to the
+  README index, and only then delete locally. Use `factory/scripts/archive_to_storagebox.sh <dir> "<why>" [--dest-name NAME] [--max-batch-bytes 6G] [--jobs 3] [--exclude PATTERN] [--dry-run] [--delete-local]` (does all of this; re-runnable). Example: the 2026-10-27
   delayed_sip_iex archive (MANIFEST on the box). Running lanes stage per day locally (< 1 GB)
   and move each day to `storagebox:alpacatrader/alpha-data/<same path>/`.
