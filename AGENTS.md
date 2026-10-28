@@ -90,3 +90,25 @@ evidence. (Full principle in the parent folder AGENTS.md.)
   README index, and only then delete locally. Use `factory/scripts/archive_to_storagebox.sh <dir> "<why>" [--dest-name NAME] [--max-batch-bytes 6G] [--jobs 3] [--exclude PATTERN] [--dry-run] [--delete-local]` (does all of this; re-runnable). Example: the 2026-10-27
   delayed_sip_iex archive (MANIFEST on the box). Running lanes stage per day locally (< 1 GB)
   and move each day to `storagebox:alpacatrader/alpha-data/<same path>/`.
+
+### Storage workflow for a machine with no data (`factory/scripts/box.sh`)
+
+Full setup, measured numbers and rules: `NEW_MACHINE.md`. In short:
+
+- **Pull, don't mount.** Measured: box downlink ~10-14 MB/s, but a FUSE mount answers a random
+  512 KiB read in **631 ms** vs 0.073 ms locally (8,600x), so a column-selective parquet read that
+  takes 0.08 s on disk costs ~30 s over a mount. Mount read-only only to browse (command in
+  `NEW_MACHINE.md`).
+- Data lives in a cache, `$CACHE_ROOT` (default `~/boxcache`, cap `CACHE_CAP_GB=20`, config
+  `factory/box.conf`). `factory/scripts/box.sh link` points `~/alpha-data`, `~/sip` and the repo's
+  `data/` symlink at it, so research producers find data **unchanged** (no path edits).
+- Daily: `box status` → `box set depth-min` (or `box pull <dest> --match 'quotes_2025-*'`) → run →
+  `box pull` verifies each batch's sha256 against the dataset's `MANIFEST.md` and skips verified
+  ones → push the day's outputs with `box push <dir> <dest-name> --why "…"` (never
+  `--delete-local` unless `--allow-delete-local`) → `box evict --lru 5G`.
+- `box evict` only deletes files recorded as extracted from a verified batch, refuses when such a
+  file was modified after the pull, and leaves unmanaged files alone. Never evict unpushed work.
+- Named working sets (with size estimates) live in `factory/box_working_sets.tsv`:
+  `depth-min`, `depth-bot`, `basket-all`, `sip-tape`, `everything-derived` (`box set --list`).
+- A dataset whose archive is still being written has no `MANIFEST.md`; `box pull` refuses it
+  instead of guessing.

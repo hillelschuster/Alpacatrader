@@ -1,0 +1,10 @@
+# box_datasets.tsv - where an archive dest-name is extracted locally.
+#
+# dest-name<TAB>cache-relative path<TAB>note
+#
+# Only needed for dest-names that do NOT mirror a path under $HOME. Dest-names under
+# archive/alpha-data/... map automatically to CACHE_ROOT/alpha-data/... (same relative path).
+# `box pull <dest>` extracts into CACHE_ROOT/<path below>; override per run with --to DIR.
+# Keep the tabs. Comments (#) and blank lines are ignored.
+windows-data	data	Windows "Desktop/algo projects/Alpacatrader/data" contents (OHLCV panel, atlas, backfill, ...)
+algo projects/data/Alpacatrader/sip/net	data/sip/net	SIP net tape (bars/ coverage/ quotes/ trades/), 27 GB local - pull months, not all

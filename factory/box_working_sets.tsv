@@ -1,0 +1,30 @@
+# box_working_sets.tsv - named local working sets for `box set <name>`.
+#
+# set<TAB>dest-name<TAB>batch-glob<TAB>est_gb<TAB>note
+#
+#   dest-name   archive dest-name, exactly as `box ls` prints it (storagebox:alpacatrader/archive/<dest>)
+#   batch-glob  shell glob on batch file names (empty = every batch of that dataset)
+#   est_gb      expected size on disk after extraction, in GB (10^9); measured or marked ~est
+#
+# A row whose dest-name is not on the box yet is reported as "pending archive" and skipped,
+# so this file can list the intended end state while the migration queue is still running.
+# Keep the tabs.
+# ---
+# Everything a normal research run needs: merged NBBO quotes, panel days, models, bot sizing curves.
+depth-min	alpha-data/open-search-v1/quote_universe_acquire	quotes_*	4.68	merged quotes, 48 months, every real-quote lane reads these
+depth-min	alpha-data/open-search-v1/quote_universe_acquire	manifest_*	0.01	per-day provenance written by the harvest
+depth-min	alpha-data/open-search-v1	days__*	0.39	panel days (the panel every producer consumes)
+depth-min	alpha-data/open-search-v1	learned__*	0.01	payoff_h15/h60/h390 models + feature_order.json
+depth-min	alpha-data/open-search-v1	adaptive_depth_sizing__*	0.02	sizing curves / selection_freeze consumed by the bot
+# What the live depth_shadow bot needs (code lives in its own worktree; data is tiny).
+depth-bot	alpha-data/open-search-v1	learned__*	0.01	models only
+depth-bot	alpha-data/open-search-v1	adaptive_depth_sizing__*	0.02	sizing curves + freeze
+# Basket line: the phase-2 worktree archive plus the lane outputs.
+basket-all	algo projects/worktrees/Alpacatrader/basket-phase2-f1	*	4.00	~est: worktree incl. untracked F-line artifacts
+basket-all	alpha-data/open-search-v1	basket_reborn__*	0.50	~est: basket_reborn results/replay
+# SIP net tape. 27 GB: pull one batch at a time (--match 'trades__plain_001.tar'), never the whole set
+# on a 20 GB cap.
+sip-tape	algo projects/data/Alpacatrader/sip/net	*	25.00	~est: trades 22 GiB + quotes 3.9 GiB + bars/coverage
+# Every derived lane output (small, but they need days/ and quotes/ to be useful).
+everything-derived	alpha-data/open-search-v1	*	3.00	~est: all lane results/replay/states/models
+everything-derived	alpha-data/open-search-v1/delayed_sip_iex	other*	0.05	~est: lane results/states (raw tape is cold)
