@@ -154,7 +154,8 @@ prune_conds=()
 add_prune() {
   local pat=$1
   [ ${#prune_conds[@]} -gt 0 ] && prune_conds+=(-o)
-  if [[ $pat == */* ]]; then prune_conds+=(-path "./$pat"); else prune_conds+=(-name "$pat"); fi
+  # find is invoked per top-level entry (paths print as "top/..." without ./), so match both forms.
+  if [[ $pat == */* ]]; then prune_conds+=(-path "$pat" -o -path "./$pat"); else prune_conds+=(-name "$pat"); fi
 }
 for p in "${ALWAYS_PRUNE[@]}" "${ALWAYS_EXCLUDE[@]}" ${EXCLUDES[@]+"${EXCLUDES[@]}"}; do add_prune "$p"; done
 
