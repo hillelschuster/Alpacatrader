@@ -792,3 +792,16 @@ or arm the flush bot.
 Storage (2026-10-27): off-host data lives on the Hetzner Storage Box (`ssh storagebox`, rclone
 `storagebox:alpacatrader/`, port 23, key auth). Windows C: has ~26 GB free and WSL `df /` over-reports -
 see AGENTS.md "Storage" before writing anything large. Owner decision (1) above is resolved.
+
+## 20. Storage migration COMPLETE (2026-10-29) - all project data lives on the Hetzner Storage Box
+
+184 GB / 2,131 verified objects under `storagebox:alpacatrader/archive/` (README index on the box):
+alpha-data (quote harvest, all lanes), sip-net-tape, windows-data (+ __harvest01, __atlas-observation,
+__forward, __h025-forward), windows-project-copy, basket-worktree, alpacatrader-repo-main,
+alpacatrader-git (full bundle), omp-sessions (conversation store snapshot). Every dataset passed an
+independent audit (coverage exact, hashes re-checked on the box, restores byte-identical). Local copies of
+the data were then deleted; kept locally: repo + .git + .env + SSH keys, data/forward (live bot state).
+Workflow: `box set depth-min` (4.7 GB) / `box pull <dataset>` / `box push` - see NEW_MACHINE.md. Never
+mount the box for reads (631 ms/random read). Archiver: factory/scripts/archive_to_storagebox.sh
+(dest-names must not contain spaces). Conversation: run factory/scripts/snapshot_sessions.sh when closing one.
+Secrets (.env, SSH keys, .pem) are intentionally NOT on the box.

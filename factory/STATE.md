@@ -2868,3 +2868,9 @@ rebuilt 582 days from the storage-box tarballs. Corrected validation K=20 additi
 (d) FAIL (additive +0.52 vs pooled -2.88) -> no PRE-REG-DEPTH-02. Extras are genuinely rare at the head:
 4 of 153,813 extra rows score >= 0.030 (rank-11 behaviour of the frozen model). Raw data on the box:
 storagebox:alpacatrader/alpha-data/open-search-v1/depth_universe/raw/<day>.tar.gz (582, 0.7 GB).
+
+2026-10-29 STORAGE MIGRATION complete: 184 GB to storagebox:alpacatrader/archive/ (2,131 objects), all verified
+independently (3+1 audits: coverage, sha re-hash, byte-identical restores); bugs found and fixed on the way:
+path-style --exclude never matched; space in dest-name broke remote verification (now rejected); basename
+exclude `forward` skipped data/h025_research/forward (archived separately). Local data deleted (C: 15 -> 136 GB
+free); WSL vhdx needs compaction from Windows to return the WSL part. See HANDOFF.md section 20.
