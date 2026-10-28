@@ -218,8 +218,9 @@ QUOTE_CACHE_ROOT = DATA_ROOT / "sip" / "net" / "quotes"
 SPLITS = DATA_ROOT / "harvest01" / "base" / "splits.parquet"
 OUTPUT = PANEL_ROOT / "multi_session_carry"
 # Existing read-only fetch caches, merged as supplements (originals always win). A root
-# that does not exist yet is simply skipped, so the neutral ALL-PIT acquisition root owned
-# by TouchHourlyPayoffLearning is picked up automatically the moment it lands.
+# that does not exist yet is simply skipped, so the panel-universe acquisition root owned
+# by TouchHourlyPayoffLearning (EVERY panel ticker, a SUPERSET of the qualified harvest) is
+# picked up automatically the moment it lands.
 SUPPLEMENT_ROOTS = (
     PANEL_ROOT / "sparse_execution_frontier" / "fetched_quotes" / "quotes",
     PANEL_ROOT / "quote_completeness_audit" / "quotes",

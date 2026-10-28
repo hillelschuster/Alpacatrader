@@ -179,9 +179,11 @@ OUTPUT = PANEL_ROOT / "quote_hourly_payoff"
 LABELS_ROOT = OUTPUT / "labels"
 STATES_ROOT = OUTPUT / "states"
 # This producer's OWN quote-universe acquisition (alpha_quote_universe_acquire.py): a
-# PRIMARY_KEEPFIRST combined day cache for the not-acquired panel tickers. It is the
-# LAST supplement, so the ranked SIP original always wins and a run before the harvest
-# exists is bit-identical to one that never sees it.
+# PRIMARY_KEEPFIRST combined day cache for the not-acquired tickers. The producer was run
+# --universe panel, so the root holds EVERY panel ticker - a SUPERSET of the qualified
+# harvest (extra names, never fewer) - written by four shard invocations into the one shared
+# root. It is the LAST supplement, so the ranked SIP original always wins and a run before
+# the harvest exists is bit-identical to one that never sees it.
 ACQUIRE_QUOTES_ROOT = PANEL_ROOT / "quote_universe_acquire" / "quotes"
 DEFAULT_SUPPLEMENTS = tuple(SUPPLEMENT_ROOTS) + (ACQUIRE_QUOTES_ROOT,)
 

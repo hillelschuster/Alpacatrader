@@ -178,7 +178,9 @@ PANEL_CONTRACT = PANEL_ROOT / "contract.json"
 OUTPUT = PANEL_ROOT / "delayed_sip_iex"
 # SIP execution-benchmark substrate (read-only, the same merge order the retained
 # studies use: the ranked SIP day cache first, supplements may only add timestamps,
-# this producer's own acquisition root last).
+# this producer's own acquisition root last). That acquisition root is the panel-universe
+# harvest (alpha_quote_universe_acquire --universe panel): EVERY panel ticker, a SUPERSET
+# of the qualified harvest (extra names, never fewer).
 SIP_BENCHMARK_ROOTS = tuple(SUPPLEMENT_ROOTS) + (
     PANEL_ROOT / "quote_universe_acquire" / "quotes",
 )

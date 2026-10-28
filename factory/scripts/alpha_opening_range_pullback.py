@@ -128,10 +128,11 @@ REPLAY_SCHEMA = 1
 UNDERPOWERED_KNOWN_FILLS = 25  # label only; NEVER a drop or auto-kill threshold
 PROTECTED_UNREAD = ["2024", "2025-01", "2026-06", "2026-07", "2026-08"]
 SUPPLEMENT_ROOTS = tuple(aqf.SUPPLEMENT_ROOTS) + (
-    # Neutral full-PIT quote-harvest root (TouchHourlyPayoffLearning owner). The raw
-    # SIP captures only a minority of PIT-qualified names; this root may ADD
-    # timestamps for the rest. Missing today is fine: every merge helper skips a
-    # non-existent root, and its files (when present) enter the supplement digest
+    # Panel-universe quote-harvest root (TouchHourlyPayoffLearning owner): the
+    # quote_universe_acquire root holds the PANEL ticker universe, a SUPERSET of the
+    # qualified harvest (extra names, never fewer), so it may ADD timestamps for the
+    # names the raw SIP captures never covered. Missing today is fine: every merge helper
+    # skips a non-existent root, and its files (when present) enter the supplement digest
     # that drives resume invalidation. Original prints still always win.
     PANEL_ROOT / "quote_universe_acquire" / "quotes",
 )

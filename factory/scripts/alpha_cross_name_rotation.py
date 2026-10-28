@@ -202,7 +202,9 @@ SUPPLEMENT_ROOTS = (
     PANEL_ROOT / "sparse_execution_frontier" / "fetched_quotes" / "quotes",
     PANEL_ROOT / "quote_completeness_audit" / "quotes",
     PANEL_ROOT / "quote_completeness_audit" / "fetched_quotes" / "quotes",
-    # The ALL-PIT missing-symbol acquisition cache (TouchHourlyPayoffLearning's producer).
+    # The panel-universe acquisition cache (TouchHourlyPayoffLearning's producer): the
+    # quote_universe_acquire root holds EVERY panel ticker, a SUPERSET of the qualified
+    # harvest (extra names, never fewer).
     # Discovered when present; the original PRIMARY print always wins (PRIMARY_KEEPFIRST),
     # so a supplement can only ADD timestamps and never revises an observed print. A day
     # whose stream is still absent afterwards is an acquisition UNKNOWN - reported as

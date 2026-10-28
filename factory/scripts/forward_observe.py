@@ -223,7 +223,7 @@ def deep_snapshot(day_dir: Path, symbol: str, now: str):
         from alpaca.data.historical.news import NewsClient
         from alpaca.data.requests import NewsRequest
         nc = NewsClient(api_key, secret)
-        news = nc.get_news(NewsRequest(symbols=[symbol], limit=10)).data.get("news", [])
+        news = nc.get_news(NewsRequest(symbols=symbol, limit=10)).data.get("news", [])
         out["news"] = [{"t": str(n.created_at), "headline": n.headline[:200],
                         "source": n.source} for n in news]
     except Exception as e:

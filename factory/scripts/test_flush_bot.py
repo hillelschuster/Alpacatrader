@@ -2,7 +2,7 @@ import sys, pathlib, json, tempfile
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 import pandas as pd
-sys.path.insert(0, '/mnt/c/Users/הלל/Desktop/algo projects/Alpacatrader/factory/scripts')
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import flush_bot as fb
 
 ET = ZoneInfo("America/New_York")

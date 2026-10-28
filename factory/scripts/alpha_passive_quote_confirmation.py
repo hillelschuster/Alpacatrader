@@ -197,7 +197,9 @@ DATA_ROOT = aqf.DATA_ROOT
 QUOTE_CACHE_ROOT = aqf.QUOTE_CACHE_ROOT
 # The ranked SIP day cache plus the existing supplement caches, plus the read-only
 # quote-universe acquisition root when it exists (originals always win; a supplement may
-# only add timestamps, never revise an original print).
+# only add timestamps, never revise an original print). That root is the panel-universe
+# harvest (alpha_quote_universe_acquire --universe panel): EVERY panel ticker, a SUPERSET of
+# the qualified harvest (extra names, never fewer).
 ACQUIRE_ROOT = PANEL_ROOT / "quote_universe_acquire" / "quotes"
 SUPPLEMENT_ROOTS = tuple(aqf.SUPPLEMENT_ROOTS) + (ACQUIRE_ROOT,)
 

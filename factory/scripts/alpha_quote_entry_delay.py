@@ -193,8 +193,9 @@ LABEL_NOTE = (
 )
 EXPECTED_DAYS = {VAL_BLOCK: 250, LATE_BLOCK: 332}
 OUTPUT = PANEL_ROOT / "quote_entry_delay"
-# Quote supplements, ranked: the engine's own fetch caches first, then the ALL-PIT
-# missing-symbol acquisition cache (still being harvested by the parent). Originals always
+# Quote supplements, ranked: the engine's own fetch caches first, then the panel-universe
+# acquisition cache (quote_universe_acquire: EVERY panel ticker, a SUPERSET of the qualified
+# harvest - extra names, never fewer). Originals always
 # KEEP FIRST - a supplement may only ADD timestamps, never replace or revise a print - and a
 # stream that is still absent afterwards is an acquisition UNKNOWN, never known cash.
 QUOTE_SUPPLEMENT_ROOTS = tuple(SUPPLEMENT_ROOTS) + (

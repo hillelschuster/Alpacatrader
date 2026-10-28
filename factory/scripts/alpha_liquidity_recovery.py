@@ -76,12 +76,13 @@ cash day.
 
 Optional
 --supplement roots - plus the discovered ~/alpha-data/open-search-v1/quote_universe_acquire/
-quotes cache owned by alpha_quote_universe_acquire.py - may ADD quote timestamps only, with
-the original PRIMARY_KEEPFIRST (a supplement never replaces or revises a print) and a
-per-file sha256 supplement digest inside the per-day resume hash. A historical stream no
-source covers is acquisition UNKNOWN: the whole date is coverage-UNKNOWN (never known cash)
-and an unobservable intent/exit clock is UNKNOWN, never a favourable print. Quote coverage
-is never used as an entry filter (no future-availability filtering).
+quotes cache owned by alpha_quote_universe_acquire.py (a panel-universe harvest: EVERY panel
+ticker, a SUPERSET of the qualified harvest - extra names, never fewer) - may ADD quote
+timestamps only, with the original PRIMARY_KEEPFIRST (a supplement never replaces or revises a
+print) and a per-file sha256 supplement digest inside the per-day resume hash. A historical
+stream no source covers is acquisition UNKNOWN: the whole date is coverage-UNKNOWN (never
+known cash) and an unobservable intent/exit clock is UNKNOWN, never a favourable print. Quote
+coverage is never used as an entry filter (no future-availability filtering).
 
 Usage:
     uv run --no-sync python factory/scripts/alpha_liquidity_recovery.py \
@@ -124,8 +125,10 @@ from sip_bars import AUCTION_CODES, combine
 DATA = ROOT / "data"
 CALENDAR = ROOT / "factory" / "artifacts" / "basket" / "sip" / "phase2_session_calendar.json"
 UNIT_EPOCH = "2025-11-03"  # raw quote sizes are round lots (x100) before this date
-# Neutral ALL-PIT missing-symbol acquisition cache owned by alpha_quote_universe_acquire.py
-# (a sibling producer): <root>/<day>.parquet with the standard SIP raw quote columns.
+# Panel-universe acquisition cache owned by alpha_quote_universe_acquire.py
+# (a sibling producer): <root>/<day>.parquet with the standard SIP raw quote columns. The
+# root holds every PANEL ticker, a SUPERSET of the qualified harvest (extra names, never
+# fewer), and it was written by four shard invocations into the one shared default root.
 DEFAULT_SUPPLEMENT_ROOT = (
     Path.home() / "alpha-data" / "open-search-v1" / "quote_universe_acquire" / "quotes"
 )
@@ -2245,7 +2248,8 @@ def main() -> None:
         nargs="+",
         metavar="ROOT",
         help="additional raw-quote supplement roots (<root>/<day>.parquet, SIP quote "
-        "columns); the quote_universe_acquire cache is discovered automatically when "
+        "columns); the quote_universe_acquire panel-universe cache (EVERY panel ticker, a "
+        "SUPERSET of the qualified harvest) is discovered automatically when "
         "present. Supplements may only ADD quote timestamps (original PRIMARY_KEEPFIRST) "
         "and enter the per-day resume hash through their per-file sha256 digest.",
     )
