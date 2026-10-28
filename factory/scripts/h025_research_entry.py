@@ -151,11 +151,13 @@ class CurveAccumulator:
         self.active += frame.fills.to_numpy() > 0
         self.positive += frame.net_dollars.to_numpy() > 0
         self.peak = np.maximum(self.peak,frame.peak_committed_dollars)
-        self.worst_return = np.minimum(self.worst_return,frame.worst_fill_net_return.fillna(np.inf))
-        self.worst_dollars = np.minimum(self.worst_dollars,frame.worst_fill_net_dollars.fillna(np.inf))
+        self.worst_return = np.minimum(self.worst_return,frame.worst_fill_net_return.astype("float64").fillna(np.inf).to_numpy(float))
+        self.worst_dollars = np.minimum(self.worst_dollars,frame.worst_fill_net_dollars.astype("float64").fillna(np.inf).to_numpy(float))
         self.daily_pnl.append(frame.net_dollars.to_numpy(float))
 
     def finish(self):
+        self.worst_return = np.asarray(self.worst_return,dtype=float)
+        self.worst_dollars = np.asarray(self.worst_dollars,dtype=float)
         out = self.metadata.copy()
         for j,name in enumerate(SUMS):
             out[name] = self.total[:,j]
