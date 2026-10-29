@@ -805,3 +805,7 @@ Workflow: `box set depth-min` (4.7 GB) / `box pull <dataset>` / `box push` - see
 mount the box for reads (631 ms/random read). Archiver: factory/scripts/archive_to_storagebox.sh
 (dest-names must not contain spaces). Conversation: run factory/scripts/snapshot_sessions.sh when closing one.
 Secrets (.env, SSH keys, .pem) are intentionally NOT on the box.
+
+Safety note (2026-10-29): the retired flush bot's global kill switch `data/KILL` was deleted by the storage
+cleanup (it lived in the old Windows data dir) and has been RECREATED (empty file, in ~/boxcache/data via the
+repo `data` link). `data/forward/bot/LIVE` still exists - do not remove KILL; never restart flush_bot.
