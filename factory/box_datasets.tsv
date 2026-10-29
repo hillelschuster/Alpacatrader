@@ -3,8 +3,26 @@
 # dest-name<TAB>cache-relative path<TAB>note
 #
 # Only needed for dest-names that do NOT mirror a path under $HOME. Dest-names under
-# archive/alpha-data/... map automatically to CACHE_ROOT/alpha-data/... (same relative path).
+# archive/alpha-data/... map automatically to CACHE_ROOT/alpha-data/... (same relative path),
+# including the nested datasets delayed_sip_iex/, quote_universe_acquire/ and the live tree
+# depth_universe/.
+#
+#   * live paths (data/..., alpha-data/...) are paths the code reads unchanged through the
+#     links made by `box link`.
+#   * restore/... paths are COLD restores: archives of a tree that no longer exists locally.
+#     They never land on a live path, so pulling one can never overwrite current state.
+#
 # `box pull <dest>` extracts into CACHE_ROOT/<path below>; override per run with --to DIR.
+# `box get <dest>` copies a single-object dataset (git bundle / session tar) there instead.
 # Keep the tabs. Comments (#) and blank lines are ignored.
-windows-data	data	Windows "Desktop/algo projects/Alpacatrader/data" contents (OHLCV panel, atlas, backfill, ...)
-algo projects/data/Alpacatrader/sip/net	data/sip/net	SIP net tape (bars/ coverage/ quotes/ trades/), 27 GB local - pull months, not all
+windows-data	data	Windows "Desktop/algo projects/Alpacatrader/data" minus forward/harvest01/atlas/observation: monthly OHLCV (root), backfill, atlas, sip, ml_features, pit, leaderboard, scratch
+windows-data__atlas-observation	data/atlas/observation	Basket atlas observation tape (48.9 GiB on box) - only to replay the basket tape
+windows-data__harvest01	data/harvest01	Basket harvest01 (626 small batches; regenerate with the basket_harvest_* scripts instead when possible)
+windows-data__h025-forward	data/h025_research/forward	h025_research/forward (basename-excluded from windows-data)
+windows-data__forward	restore/windows-data__forward	COLD point-in-time copy of the live bot state (data/forward): restore to a temp dir and diff - never restore on top of data/forward
+windows-project-copy	restore/windows-project-copy	COLD stale Windows project copy: only for the unique basket F1/F4/F9/F10/F11 artifacts
+basket-worktree	restore/basket-worktree	COLD basket-phase2-f1 worktree incl. 4.7 GiB untracked artifacts
+alpacatrader-repo-main	restore/alpacatrader-repo-main	COLD main repo tree incl. untracked research artifacts (git history is on GitHub)
+alpacatrader-git	restore/alpacatrader-git	COLD single object: a git bundle (all refs, 2026-10-28). Restore: box get alpacatrader-git && git clone restore/alpacatrader-git/alpacatrader_all_refs_2026-10-28.bundle <dir>
+omp-sessions	restore/omp-sessions	COLD single object: omp session transcript snapshot (point-in-time 2026-10-29). Restore: box get omp-sessions && tar -xf restore/omp-sessions/*.tar -C <dir>
+sip-net-tape	data/sip/net	SIP net tape (bars/ coverage/ quotes/ trades/), 26.3 GiB: pull the month you need, never the whole set on a 20 GB cap

@@ -4,27 +4,43 @@
 #
 #   dest-name   archive dest-name, exactly as `box ls` prints it (storagebox:alpacatrader/archive/<dest>)
 #   batch-glob  shell glob on batch file names (empty = every batch of that dataset)
-#   est_gb      expected size on disk after extraction, in GB (10^9); measured or marked ~est
+#   est_gb      expected size on disk after extraction, in GB (10^9); measured 2026-10-29 or ~est
 #
-# A row whose dest-name is not on the box yet is reported as "pending archive" and skipped,
-# so this file can list the intended end state while the migration queue is still running.
+# A dest-name that is not on the box is reported PENDING and skipped, so this file can list
+# the intended end state. `box set --list` prints one line per row with its state.
+# `box set <name>` refuses (exit 2) when the set needs more than CACHE_CAP_GB unless --force.
+#
+# Batch-name shapes (see `box ls <dest>`): most lanes exist twice, `<lane>__gz_001.tar.gz`
+# (gzip-compressible files: json/txt/py) and `<lane>__plain_001.tar` (already-compressed data:
+# parquet/npz/joblib). A `<lane>__*` glob pulls both, which is what you normally want. Monthly
+# tape batches carry the month: `days_2023-01__plain_001.tar`, `bars_2025-02__plain_001.tar`.
 # Keep the tabs.
 # ---
 # Everything a normal research run needs: merged NBBO quotes, panel days, models, bot sizing curves.
-depth-min	alpha-data/open-search-v1/quote_universe_acquire	quotes_*	4.68	merged quotes, 48 months, every real-quote lane reads these
+depth-min	alpha-data/open-search-v1/quote_universe_acquire	quotes_*	4.68	merged NBBO quotes, 48 months (plain tar only), every real-quote lane reads these
 depth-min	alpha-data/open-search-v1/quote_universe_acquire	manifest_*	0.01	per-day provenance written by the harvest
-depth-min	alpha-data/open-search-v1	days__*	0.39	panel days (the panel every producer consumes)
+depth-min	alpha-data/open-search-v1	days_*	0.17	panel days (plain tar has the parquet, gz the json) - the panel every producer consumes
 depth-min	alpha-data/open-search-v1	learned__*	0.01	payoff_h15/h60/h390 models + feature_order.json
-depth-min	alpha-data/open-search-v1	adaptive_depth_sizing__*	0.02	sizing curves / selection_freeze consumed by the bot
-# What the live depth_shadow bot needs (code lives in its own worktree; data is tiny).
-depth-bot	alpha-data/open-search-v1	learned__*	0.01	models only
-depth-bot	alpha-data/open-search-v1	adaptive_depth_sizing__*	0.02	sizing curves + freeze
+depth-min	alpha-data/open-search-v1	adaptive_depth_sizing__*	0.05	sizing curves, selection freeze, states/, replay/ consumed by the bot and reports
+# What the live depth_shadow bot needs (code lives in its own worktree; forward/ state is live on the Windows disk).
+depth-bot	alpha-data/open-search-v1	learned__*	0.01	models only (payoff_h60 = the frozen bot model)
+depth-bot	alpha-data/open-search-v1	adaptive_depth_sizing__*	0.05	sizing curves + freeze + states/replay for replay checks
+depth-bot	alpha-data/open-search-v1	days_*	0.17	panel days for `depth_bot.py replay` / feature parity checks
+depth-bot	sip-net-tape	bars_*	0.06	SIP minute bars, all months (replay input; the live shadow streams from REST)
+# Panel/universe builders: what factory/scripts/{build_path_panel,alpha_open_panel,build_features}.py read.
+panel-data	windows-data	backfill__plain_001.tar	6.25	data/backfill monthly clean_ohlcv/ohlcv/premarket (the 2026-03+ months live here)
+panel-data	windows-data	root__plain_007.tar	3.27	data/ root monthly ohlcv_/clean_ohlcv_ - batches 001..006 hold the rest, 6.3 GiB each (see `box ls windows-data`)
+panel-data	windows-data	ml_features__plain_001.tar	0.49	data/ml_features/features_YYYY-MM.parquet
+panel-data	windows-data	pit__plain_001.tar	0.05	data/pit/ point-in-time symbol tables
 # Basket line: the phase-2 worktree archive plus the lane outputs.
-basket-all	algo projects/worktrees/Alpacatrader/basket-phase2-f1	*	4.00	~est: worktree incl. untracked F-line artifacts
-basket-all	alpha-data/open-search-v1	basket_reborn__*	0.50	~est: basket_reborn results/replay
-# SIP net tape. 27 GB: pull one batch at a time (--match 'trades__plain_001.tar'), never the whole set
-# on a 20 GB cap.
-sip-tape	algo projects/data/Alpacatrader/sip/net	*	25.00	~est: trades 22 GiB + quotes 3.9 GiB + bars/coverage
+basket-all	basket-worktree	*	5.28	~est: basket-phase2-f1 worktree incl. untracked F-line artifacts -> restore/basket-worktree
+basket-all	alpha-data/open-search-v1	basket_reborn__*	0.01	basket_reborn results/replay
+# COLD basket archaeology: 11 GiB of stale trees. Regenerate harvest01 instead when you can.
+cold-basket	windows-project-copy	*	5.76	stale Windows project copy (unique F1/F4/F9/F10/F11 artifacts) -> restore/
+cold-basket	windows-data__harvest01	*	10.49	basket harvest01, 626 small batches -> data/harvest01
+# SIP net tape: 26.3 GiB, larger than the cache cap - pull one month at a time, e.g.
+#   box pull sip-net-tape --match 'bars_2025-*'   or   --match 'trades__plain_001.tar'
+sip-tape	sip-net-tape	*	26.31	~est: trades 22 GiB + quotes 3.9 GiB + bars/coverage; never pull the whole set on a 20 GB cap
 # Every derived lane output (small, but they need days/ and quotes/ to be useful).
-everything-derived	alpha-data/open-search-v1	*	3.00	~est: all lane results/replay/states/models
-everything-derived	alpha-data/open-search-v1/delayed_sip_iex	other*	0.05	~est: lane results/states (raw tape is cold)
+everything-derived	alpha-data/open-search-v1	*	1.55	all lane results/replay/states/models (both gz and plain variants)
+everything-derived	alpha-data/open-search-v1/delayed_sip_iex	other.tar.gz	1.53	closed-negative IEX lane outputs: 40k small files (raw_*.tar.gz is cold tape; pull it by dest, not by set)

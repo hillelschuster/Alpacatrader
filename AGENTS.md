@@ -101,14 +101,24 @@ Full setup, measured numbers and rules: `NEW_MACHINE.md`. In short:
   `NEW_MACHINE.md`).
 - Data lives in a cache, `$CACHE_ROOT` (default `~/boxcache`, cap `CACHE_CAP_GB=20`, config
   `factory/box.conf`). `factory/scripts/box.sh link` points `~/alpha-data`, `~/sip` and the repo's
-  `data/` symlink at it, so research producers find data **unchanged** (no path edits).
+  `data/` symlink at it, so research producers find data **unchanged** (no path edits). It also
+  links `$CACHE_ROOT/data/forward` to the live bot state (`BOT_FORWARD`, the Windows
+  `data/forward`), so relinking `data/` never touches the running bot; `box link` refuses a real
+  directory with files and is idempotent.
 - Daily: `box status` → `box set depth-min` (or `box pull <dest> --match 'quotes_2025-*'`) → run →
   `box pull` verifies each batch's sha256 against the dataset's `MANIFEST.md` and skips verified
   ones → push the day's outputs with `box push <dir> <dest-name> --why "…"` (never
   `--delete-local` unless `--allow-delete-local`) → `box evict --lru 5G`.
 - `box evict` only deletes files recorded as extracted from a verified batch, refuses when such a
   file was modified after the pull, and leaves unmanaged files alone. Never evict unpushed work.
-- Named working sets (with size estimates) live in `factory/box_working_sets.tsv`:
-  `depth-min`, `depth-bot`, `basket-all`, `sip-tape`, `everything-derived` (`box set --list`).
-- A dataset whose archive is still being written has no `MANIFEST.md`; `box pull` refuses it
-  instead of guessing.
+- Named working sets (size + readiness shown by `box set --list`) live in
+  `factory/box_working_sets.tsv`: `depth-min` (4.9 GB), `depth-bot`, `panel-data`, `basket-all`,
+  `cold-basket`, `sip-tape` (26 GB, pull per month), `everything-derived`. `box set` refuses a set
+  larger than the cache cap unless `--force`.
+- Dest-name -> local path lives in `factory/box_datasets.tsv` (also the box README "Dataset map").
+  Live data (`data/`, `alpha-data/`) extracts onto the linked paths; old trees (`basket-worktree`,
+  `windows-project-copy`, `alpacatrader-repo-main`, `windows-data__forward`) restore to
+  `$CACHE_ROOT/restore/<dest-name>/` so a cold pull cannot overwrite live state.
+- Single-object datasets (no batches/MANIFEST: `alpacatrader-git` bundle, `omp-sessions` tar)
+  restore with `box get <dest>`, which prints the `git clone` / `tar -xf` command. A dataset whose
+  archive is still being written has no `MANIFEST.md`; `box pull` refuses it instead of guessing.

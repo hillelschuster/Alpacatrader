@@ -86,8 +86,12 @@ factory/scripts/box.sh link               # ~/alpha-data, ~/sip, <repo>/data -> 
 factory/scripts/box.sh set depth-min      # ~4.7 GB working set
 ```
 
-`box link` never deletes: a non-empty real directory is refused, and `--force` renames it to
-`<name>.pre-link-<timestamp>` before creating the symlink.
+`box link` never deletes data: a real directory holding only empty directories is replaced
+(rmdir tree), a real directory WITH files is refused, and `--force` renames it to
+`<name>.pre-link-<timestamp>` before creating the symlink. It is idempotent (re-runs print `ok`)
+and also keeps the live bot state reachable: `BOT_FORWARD` in `factory/box.conf` (the Windows
+`data/forward` directory) is linked as `$CACHE_ROOT/data/forward`, so `REPO/data -> cache`
+never orphans the running bot. Nothing inside it is read, written or moved by `box`.
 
 ### How the cache is found by existing code (no edits to research producers)
 
@@ -96,11 +100,17 @@ factory/scripts/box.sh set depth-min      # ~4.7 GB working set
 | `Path.home()/"alpha-data"/...` (research root) | `~/alpha-data` → `$CACHE_ROOT/alpha-data` |
 | `REPO/data` (e.g. `PANEL_DATA_ROOT`, `data/sip/net`) | `REPO/data` → `$CACHE_ROOT/data` |
 | `/home/hillel/sip/net` (absolute refs in scripts) | `~/sip` → `$CACHE_ROOT/data/sip` |
+| `data/forward/...` (live depth_shadow bot state, journals) | `$CACHE_ROOT/data/forward` → the Windows `data/forward` (BOT_FORWARD), untouched |
 
 Datasets are extracted under `$CACHE_ROOT`, mirroring the path they were archived from, e.g.
 `$CACHE_ROOT/alpha-data/open-search-v1/quote_universe_acquire/quotes/2022-03-01.parquet` or
-`$CACHE_ROOT/data/sip/net/trades/`. `$CACHE_ROOT` defaults to `~/boxcache` (`factory/box.conf`,
-override with `CACHE_ROOT=...`), cap `CACHE_CAP_GB=20`.
+`$CACHE_ROOT/data/sip/net/trades/`. Trees that no longer exist locally (old worktrees, stale
+project copies, the point-in-time bot state) restore to `$CACHE_ROOT/restore/<dest-name>/`, so a
+cold pull can never land on a live path. `$CACHE_ROOT` defaults to `~/boxcache`
+(`factory/box.conf`, override with `CACHE_ROOT=...`), cap `CACHE_CAP_GB=20`.
+
+The dest-name -> local path mapping is `factory/box_datasets.tsv`, the same table is on the box
+README ("Dataset map"). `box ls` prints it per dataset.
 
 ---
 
@@ -129,13 +139,42 @@ Pull is verify-first: every batch's sha256 is checked against the dataset's `MAN
 it streams, and a mismatch rolls the extracted files back. A batch pulled correctly is recorded
 in `$CACHE_ROOT/.boxstate/` and skipped next time; `--force` re-pulls.
 
-Working sets (`factory/box_working_sets.tsv`, estimates included):
+Working sets (`factory/box_working_sets.tsv`, sizes measured 2026-10-29):
 
 ```bash
-factory/scripts/box.sh set --list        # depth-min, depth-bot, basket-all, sip-tape, everything-derived
-factory/scripts/box.sh set depth-bot     # models + bot sizing curves (tiny)
-factory/scripts/box.sh set sip-tape --dry-run   # 25 GB: pull per batch, never all at once
+factory/scripts/box.sh set --list        # state + size per set and per row
+factory/scripts/box.sh set depth-min     # 4.9 GB: quotes 48 months + panel days + models + sizing
+factory/scripts/box.sh set depth-bot     # 0.3 GB: models + sizing + days + SIP bars (live bot)
+factory/scripts/box.sh set panel-data    # 10.1 GB: backfill + root__plain_007 + ml_features + pit
+factory/scripts/box.sh set basket-all    # 5.3 GB: basket worktree + basket_reborn
+factory/scripts/box.sh set cold-basket   # 16.3 GB: stale project copy + harvest01 (archaeology only)
+factory/scripts/box.sh set sip-tape --dry-run   # 26.3 GB, larger than the cap: pull one month
 ```
+
+Single-object datasets (no batches, no MANIFEST) restore with `box get`, which copies the object
+and prints the command:
+
+```bash
+factory/scripts/box.sh get alpacatrader-git     # then: git clone $CACHE_ROOT/restore/alpacatrader-git/*.bundle <dir>
+factory/scripts/box.sh get omp-sessions         # then: tar -xf $CACHE_ROOT/restore/omp-sessions/*.tar -C <dir>
+```
+
+### Batch names (read this before writing a --match)
+
+- `<lane>__gz_001.tar.gz` holds the gzip-compressible files of a lane (json/txt/py),
+  `<lane>__plain_001.tar` the already-compressed ones (parquet/npz/joblib); a lane usually has
+  BOTH, so use `<lane>__*` unless you want one. The old `days__*`-style patterns match nothing.
+- Month-scoped tape: `days_2023-01__plain_001.tar`, `bars_2025-02__plain_001.tar`,
+  `quotes_2021-05__plain_001.tar`, `trades_2024-06__...` - the month is in the batch name.
+- `windows-data` `root__plain_00N.tar` (7 x ~6.3 GB) and `backfill__plain_00N.tar` are split by
+  SIZE, not by month: a single month cannot be pulled alone (the cheapest monthly-OHLCV proof is
+  one 3.05 GiB `root__plain_007.tar`). Measured throughput: one 3 GB batch 21.5 MB/s; 200 small
+  batches 5.3 MB/s; 106 tiny `bars_*` batches 1.1 MB/s (per-batch SSH/tar overhead dominates).
+- `archive/alpha-data/open-search-v1` also carries the lane snapshot `delayed_sip_iex__*`, which
+  extracts INTO `delayed_sip_iex/` - the same directory as the nested dataset
+  `alpha-data/open-search-v1/delayed_sip_iex`. Pull one or the other, not both.
+- Pulling a dest-name with no row in `factory/box_datasets.tsv` (e.g. after `box push`) extracts to
+  `$CACHE_ROOT/restore/<dest-name>/`; add a row or use `--to DIR` to choose a live path.
 
 ---
 
@@ -154,4 +193,10 @@ factory/scripts/box.sh set sip-tape --dry-run   # 25 GB: pull per batch, never a
 6. `storagebox:backup/` and `archive/` object names are off limits to ad-hoc writes; `box push`
    places datasets under `archive/<dest-name>/` for you.
 7. Datasets whose archive is still being written have no `MANIFEST.md` yet and can't be pulled —
-   `box pull` says so instead of guessing.
+   `box pull` says so instead of guessing. Single-object datasets (`alpacatrader-git`,
+   `omp-sessions`) have no batches at all: `box get <dest>`.
+8. `flush_bot`'s kill switch is `data/KILL` (check: `factory/scripts/flush_bot.py`). It was archived
+   inside `archive/windows-data/root__plain_001.tar` during the migration, so after `box link` the
+   path does not exist: if flush_bot is ever launched from here, `touch data/KILL` first so it stops
+   at startup. The running depth_shadow bot uses `data/forward/depth_bot/{KILL,ARMED}` instead,
+   which lives in the untouched Windows state.
