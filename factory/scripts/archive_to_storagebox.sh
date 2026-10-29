@@ -137,6 +137,7 @@ DEST_NAME=${DEST_NAME#/}
 DEST_NAME=${DEST_NAME%/}
 [ -n "$DEST_NAME" ] || die "--dest-name resolved to an empty path"
 case "/$DEST_NAME/" in *"/../"*|*"//"*) die "invalid --dest-name: $DEST_NAME";; esac
+case $DEST_NAME in *[[:space:]]*) die "--dest-name must not contain whitespace (the box's remote shell splits it and verification fails): pass e.g. --dest-name sip-net-tape";; esac
 case $DEST_NAME in backup|backup/*) die "storagebox:backup/ is off limits";; esac
 
 DST="alpacatrader/archive/$DEST_NAME"
